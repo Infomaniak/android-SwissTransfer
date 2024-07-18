@@ -17,5 +17,5 @@
   -->
 
 <resources>
-    <string name="app_name">SwissTransfer</string>
+    <string name="appName">SwissTransfer</string>
 </resources>
