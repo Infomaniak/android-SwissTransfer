@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?><!--
   ~ Infomaniak SwissTransfer - Android
   ~ Copyright (C) 2024 Infomaniak Network SA
   ~
@@ -15,11 +15,8 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <resources>
-    <string name="appName">SwissTransfer</string>
-
-    <string name="receivedTitle">Received</string>
-    <string name="sentTitle">Sent</string>
-    <string name="settingsTitle">Settings</string>
+    <string name="receivedTitle">Recu</string>
+    <string name="sentTitle">Envoyé</string>
+    <string name="settingsTitle">Paramètres</string>
 </resources>

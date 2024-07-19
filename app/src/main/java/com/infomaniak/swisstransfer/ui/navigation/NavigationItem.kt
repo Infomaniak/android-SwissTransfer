@@ -19,14 +19,14 @@
 package com.infomaniak.swisstransfer.ui.navigation
 
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.NavigationRail
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.app.ArrowDownCircle
+import com.infomaniak.swisstransfer.ui.icons.app.ArrowUpCircle
+import com.infomaniak.swisstransfer.ui.icons.app.Settings
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 
 /**
@@ -40,7 +40,7 @@ enum class NavigationItem(
     val icon: ImageVector,
     val destination: MainNavigation,
 ) {
-    SENT(R.string.appName, Icons.AutoMirrored.Filled.Send, SentDestination),
-    RECEIVED(R.string.appName, Icons.Default.Star, ReceivedDestination),
-    SETTINGS(R.string.appName, Icons.Default.Settings, SettingsDestination),
+    SENT(R.string.sentTitle, AppIcons.ArrowUpCircle, SentDestination),
+    RECEIVED(R.string.receivedTitle, AppIcons.ArrowDownCircle, ReceivedDestination),
+    SETTINGS(R.string.settingsTitle, AppIcons.Settings, SettingsDestination),
 }
