@@ -30,7 +30,7 @@ If applicable, add screenshots to help explain your problem.
 
 - Device: [e.g. Samsung S20 Ultra 5G]
 - Android version: [e.g. Android 11]
-- App version: [e.g. 4.0.1]
+- App version: [e.g. 1.0.1]
 
 **Additional context**
 Add any other context about the problem here.
