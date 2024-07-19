@@ -22,24 +22,24 @@ package com.infomaniak.swisstransfer.ui.navigation
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 sealed class MainNavigation private constructor() : NavigationArgs() {
-    data object SentNavArgs : MainNavigation()
-    data object ReceivedNavArgs : MainNavigation()
-    data class TransferDetailsNavArgs(val transferId: Int) : MainNavigation()
+    data object Sent : MainNavigation()
+    data object Received : MainNavigation()
+    data class TransferDetails(val transferId: Int) : MainNavigation()
 
-    data object SettingsNavArgs : MainNavigation()
+    data object Settings : MainNavigation()
 }
 
 /**
  * Sealed class representing the navigation arguments for the new transfer flow.
  */
 sealed class NewTransferNavigation private constructor() : NavigationArgs() {
-    data object ImportFilesNavArgs : NavigationArgs()
-    data object TransferTypeNavArgs : NavigationArgs()
-    data object TransferOptionsNavArgs : NavigationArgs()
-    data object ValidateUserEmailNavArgs : NavigationArgs()
+    data object ImportFiles : NavigationArgs()
+    data object TransferType : NavigationArgs()
+    data object TransferOptions : NavigationArgs()
+    data object ValidateUserEmail : NavigationArgs()
 
-    data object UploadProgressNavArgs : NavigationArgs()
-    data object UploadSuccessNavArgs : NavigationArgs()
+    data object UploadProgress : NavigationArgs()
+    data object UploadSuccess : NavigationArgs()
 }
 
 /**
