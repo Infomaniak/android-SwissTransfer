@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 
 private val DarkColorScheme = darkColorScheme(
     primary = dark_primary,
@@ -36,15 +38,24 @@ private val LightColorScheme = lightColorScheme(
     background = light_background,
 )
 
+val LocalCustomTypography = staticCompositionLocalOf { Typography }
+
 @Composable
 fun SwissTransferTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
-        shapes = Shapes,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalCustomTypography provides Typography) {
+        MaterialTheme(
+            colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+            shapes = Shapes,
+            content = content
+        )
+    }
+}
+
+object SwissTransferTheme {
+    val typography: CustomTypography
+        @Composable
+        get() = LocalCustomTypography.current
 }
