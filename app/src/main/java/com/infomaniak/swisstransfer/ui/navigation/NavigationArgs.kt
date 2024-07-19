@@ -18,40 +18,31 @@
 
 package com.infomaniak.swisstransfer.ui.navigation
 
-import androidx.annotation.StringRes
-import com.infomaniak.swisstransfer.R
-
 /**
  * Sealed class representing the navigation arguments for the main navigation flow.
- *
- * @property title The resource ID of the title string.
  */
-sealed class MainNavigation private constructor(@StringRes title: Int) : NavigationArgs(title) {
-    data object SentNavArgs : MainNavigation(R.string.appName)
-    data object ReceivedNavArgs : MainNavigation(R.string.appName)
-    data class TransferDetailsNavArgs(val transferId: Int) : MainNavigation(R.string.appName)
+sealed class MainNavigation private constructor() : NavigationArgs() {
+    data object SentNavArgs : MainNavigation()
+    data object ReceivedNavArgs : MainNavigation()
+    data class TransferDetailsNavArgs(val transferId: Int) : MainNavigation()
 
-    data object SettingsNavArgs : MainNavigation(R.string.appName)
+    data object SettingsNavArgs : MainNavigation()
 }
 
 /**
  * Sealed class representing the navigation arguments for the new transfer flow.
- *
- * @property title The resource ID of the title string.
  */
-sealed class NewTransferNavigation private constructor(@StringRes title: Int) : NavigationArgs(title) {
-    data object ImportFilesNavArgs : NavigationArgs(R.string.appName)
-    data object TransferTypeNavArgs : NavigationArgs(R.string.appName)
-    data object TransferOptionsNavArgs : NavigationArgs(R.string.appName)
-    data object ValidateUserEmailNavArgs : NavigationArgs(R.string.appName)
+sealed class NewTransferNavigation private constructor() : NavigationArgs() {
+    data object ImportFilesNavArgs : NavigationArgs()
+    data object TransferTypeNavArgs : NavigationArgs()
+    data object TransferOptionsNavArgs : NavigationArgs()
+    data object ValidateUserEmailNavArgs : NavigationArgs()
 
-    data object UploadProgressNavArgs : NavigationArgs(R.string.appName)
-    data object UploadSuccessNavArgs : NavigationArgs(R.string.appName)
+    data object UploadProgressNavArgs : NavigationArgs()
+    data object UploadSuccessNavArgs : NavigationArgs()
 }
 
 /**
  * Sealed class representing navigation arguments with a title resource.
- *
- * @property title The resource ID of the title string.
  */
-sealed class NavigationArgs protected constructor(@StringRes val title: Int)
+sealed class NavigationArgs
