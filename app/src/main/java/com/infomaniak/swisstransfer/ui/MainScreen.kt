@@ -18,13 +18,8 @@
 
 package com.infomaniak.swisstransfer.ui
 
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
-import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 
 @Composable
 fun MainScreen() {
