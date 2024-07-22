@@ -20,11 +20,16 @@ package com.infomaniak.swisstransfer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
+import com.infomaniak.swisstransfer.BuildConfig
 
 private val DarkColorScheme = darkColorScheme(
     primary = dark_primary,
@@ -40,6 +45,26 @@ private val LightColorScheme = lightColorScheme(
 
 val LocalCustomTypography = staticCompositionLocalOf { Typography }
 
+private val TypographyDefault = if (BuildConfig.DEBUG) {
+    val debugTextStyle = TextStyle(color = Color(0xFFFF00FF), fontSize = 24.sp)
+    Typography(
+        headlineLarge = debugTextStyle,
+        headlineMedium = debugTextStyle,
+        headlineSmall = debugTextStyle,
+        titleLarge = debugTextStyle,
+        titleMedium = debugTextStyle,
+        titleSmall = debugTextStyle,
+        bodyLarge = debugTextStyle,
+        bodyMedium = debugTextStyle,
+        bodySmall = debugTextStyle,
+        labelLarge = debugTextStyle,
+        labelMedium = debugTextStyle,
+        labelSmall = debugTextStyle,
+    )
+} else {
+    Typography()
+}
+
 @Composable
 fun SwissTransferTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -49,6 +74,7 @@ fun SwissTransferTheme(
         MaterialTheme(
             colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
+            typography = TypographyDefault,
             content = content
         )
     }
