@@ -129,18 +129,3 @@ data class CustomTypography(
     val specificLight22: TextStyle,
     val specificLight18: TextStyle
 )
-
-//val Typography = Typography(
-//    headlineLarge = h1,
-//    headlineMedium = TextStyle(),
-//    headlineSmall = TextStyle(),
-//    titleLarge = TextStyle(),
-//    titleMedium = h2,
-//    titleSmall = TextStyle(),
-//    bodyLarge = bodyMedium,
-//    bodyMedium = bodyRegular,
-//    bodySmall = bodySmallMedium,
-//    labelLarge = bodySmallRegular,
-//    labelMedium = labelMedium,
-//    labelSmall = labelRegular,
-//)
