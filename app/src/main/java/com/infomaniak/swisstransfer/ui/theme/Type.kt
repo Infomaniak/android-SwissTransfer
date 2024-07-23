@@ -87,6 +87,13 @@ private val specificMedium22 = TextStyle(
     lineHeight = 28.sp,
 )
 
+private val specificMedium32 = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = 32.sp,
+    lineHeight = 42.sp,
+)
+
 private val specificLight22 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Light,
@@ -110,6 +117,7 @@ val Typography = CustomTypography(
     bodySmallRegular = bodySmallRegular,
     labelMedium = labelMedium,
     labelRegular = labelRegular,
+    specificMedium32 = specificMedium32,
     specificMedium22 = specificMedium22,
     specificLight22 = specificLight22,
     specificLight18 = specificLight18,
@@ -125,6 +133,7 @@ data class CustomTypography(
     val bodySmallRegular: TextStyle,
     val labelMedium: TextStyle,
     val labelRegular: TextStyle,
+    val specificMedium32: TextStyle,
     val specificMedium22: TextStyle,
     val specificLight22: TextStyle,
     val specificLight18: TextStyle
