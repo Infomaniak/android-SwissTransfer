@@ -24,77 +24,77 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val h1 = TextStyle(
+private val h1 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.SemiBold,
     fontSize = 22.sp,
     lineHeight = 28.sp,
 )
 
-val h2 = TextStyle(
+private val h2 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.SemiBold,
     fontSize = 18.sp,
     lineHeight = 24.sp,
 )
 
-val bodyMedium = TextStyle(
+private val bodyMedium = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Medium,
     fontSize = 16.sp,
     lineHeight = 20.sp,
 )
 
-val bodyRegular = TextStyle(
+private val bodyRegular = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = 16.sp,
     lineHeight = 20.sp,
 )
 
-val bodySmallMedium = TextStyle(
+private val bodySmallMedium = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
     lineHeight = 20.sp,
 )
 
-val bodySmallRegular = TextStyle(
+private val bodySmallRegular = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = 14.sp,
     lineHeight = 20.sp,
 )
 
-val labelMedium = TextStyle(
+private val labelMedium = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Medium,
     fontSize = 12.sp,
     lineHeight = 18.sp,
 )
 
-val labelRegular = TextStyle(
+private val labelRegular = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
     fontSize = 12.sp,
     lineHeight = 18.sp,
 )
 
-val specificMedium22 = TextStyle(
+private val specificMedium22 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Medium,
     fontSize = 22.sp,
     lineHeight = 28.sp,
 )
 
-val specificLight22 = TextStyle(
+private val specificLight22 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Light,
     fontSize = 22.sp,
     lineHeight = 28.sp,
 )
 
-val specificLight18 = TextStyle(
+private val specificLight18 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Light,
     fontSize = 18.sp,
