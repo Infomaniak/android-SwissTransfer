@@ -18,7 +18,10 @@
 
 package com.infomaniak.swisstransfer.ui.navigation
 
+import android.os.Bundle
+import androidx.navigation.NavBackStackEntry
 import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
 /**
  * Sealed class representing the navigation arguments for the main navigation flow.
@@ -34,6 +37,12 @@ sealed class MainNavigation : NavigationDestination() {
 
     @Serializable
     data object SettingsDestination : MainNavigation()
+
+    companion object {
+        fun fromRoute(backStackEntry: NavBackStackEntry?, startDestination: MainNavigation): MainNavigation {
+            return fromRoute(MainNavigation::class, backStackEntry, startDestination)
+        }
+    }
 }
 
 /**
@@ -54,6 +63,12 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object UploadProgressDestination : NewTransferNavigation()
     @Serializable
     data object UploadSuccessDestination : NewTransferNavigation()
+
+    companion object {
+        fun fromRoute(backStackEntry: NavBackStackEntry?, startDestination: NewTransferNavigation): NewTransferNavigation {
+            return fromRoute(NewTransferNavigation::class, backStackEntry, startDestination)
+        }
+    }
 }
 
 /**
@@ -61,4 +76,29 @@ sealed class NewTransferNavigation : NavigationDestination() {
  */
 @Serializable
 sealed class NavigationDestination {
+    companion object {
+        fun <T : NavigationDestination> fromRoute(
+            kClass: KClass<T>,
+            backStackEntry: NavBackStackEntry?,
+            startDestination: T,
+        ): T {
+            if (backStackEntry == null) return startDestination
+            val route = backStackEntry.destination.route ?: ""
+            val args = backStackEntry.arguments
+            val subclass = kClass.sealedSubclasses.firstOrNull {
+                route.contains(it.qualifiedName.toString())
+            }
+            return subclass?.let { createInstance(it, args) } ?: startDestination
+        }
+
+        private fun <T : NavigationDestination> createInstance(kClass: KClass<T>, bundle: Bundle?): T? {
+            val primaryConstructor = kClass.constructors.firstOrNull()
+            return primaryConstructor?.let {
+                val args = it.parameters.associateWith { parameter ->
+                    bundle?.get(parameter.name)
+                }
+                it.callBy(args)
+            } ?: kClass.objectInstance
+        }
+    }
 }
