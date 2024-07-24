@@ -47,16 +47,13 @@ fun MainScaffold(
 
     val navType by remember(showBottomBar, adaptiveInfo) {
         derivedStateOf {
-            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo).let {
+                if (it == NavigationSuiteType.NavigationBar && !showBottomBar) NavigationSuiteType.None else it
+            }
         }
     }
 
-    MainScaffold(
-        navType = navType,
-        currentDestination = currentDestination,
-        navController = navController,
-        content = content,
-    )
+    MainScaffold(navType, currentDestination, navController, content)
 }
 
 @Composable
