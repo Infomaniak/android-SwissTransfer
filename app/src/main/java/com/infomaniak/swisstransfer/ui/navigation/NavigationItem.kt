@@ -27,6 +27,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.NavigationRail
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 
 /**
  * Enum class representing the different destinations in the app's [BottomAppBar] or [NavigationRail].
@@ -39,8 +40,9 @@ enum class NavigationItem(
     @StringRes val label: Int,
     val icon: ImageVector,
     @StringRes val contentDescription: Int,
+    val destination: MainNavigation,
 ) {
-    SENT(R.string.appName, Icons.AutoMirrored.Filled.Send, R.string.appName),
-    RECEIVED(R.string.appName, Icons.Default.Star, R.string.appName),
-    SETTINGS(R.string.appName, Icons.Default.Settings, R.string.appName),
+    SENT(R.string.appName, Icons.AutoMirrored.Filled.Send, R.string.appName, SentDestination),
+    RECEIVED(R.string.appName, Icons.Default.Star, R.string.appName, ReceivedDestination),
+    SETTINGS(R.string.appName, Icons.Default.Settings, R.string.appName, SettingsDestination),
 }
