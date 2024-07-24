@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
+import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -38,7 +39,7 @@ fun MainScreen() {
 
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf {
-            MainNavigation.fromRoute(navBackStackEntry, SentDestination)
+            navBackStackEntry?.toDestination<MainNavigation>() ?: SentDestination
         }
     }
 
