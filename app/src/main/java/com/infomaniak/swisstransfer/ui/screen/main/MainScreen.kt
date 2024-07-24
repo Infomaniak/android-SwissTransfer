@@ -18,18 +18,18 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun MainScreen() {
@@ -49,26 +49,10 @@ fun MainScreen() {
     }
 }
 
-@Preview(name = "LightMode")
-@Preview(name = "DarkMode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@PreviewMobile
+@PreviewTablet
 @Composable
 private fun MainScreenPreview() {
-    SwissTransferTheme {
-        MainScreen()
-    }
-}
-
-@Preview(device = "spec:parent=pixel_8_pro,orientation=landscape")
-@Composable
-private fun MainScreenPortraitPreview() {
-    SwissTransferTheme {
-        MainScreen()
-    }
-}
-
-@Preview(device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240")
-@Composable
-private fun MainScreenTabletPreview() {
     SwissTransferTheme {
         MainScreen()
     }
