@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("kotlin-parcelize")
+    kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
 val sharedMinSdk: Int by rootProject.extra
@@ -52,6 +54,7 @@ android {
 }
 
 dependencies {
+    implementation(kotlin("reflect"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -62,10 +65,14 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
+
+    // Others
+    implementation(libs.kotlinx.serialization)
 
     // Test
     testImplementation(libs.junit)
