@@ -19,7 +19,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -39,7 +38,6 @@ fun MainScreen() {
 
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf {
-            Log.e("sisi", ">MainScreen: current destination recreated ${navBackStackEntry?.destination?.route}")
             MainNavigation.fromRoute(navBackStackEntry, SentDestination)
         }
     }
