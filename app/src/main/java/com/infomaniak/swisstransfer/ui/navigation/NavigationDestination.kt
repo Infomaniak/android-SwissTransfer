@@ -64,7 +64,9 @@ sealed class NewTransferNavigation : NavigationDestination() {
  */
 @Serializable
 sealed class NavigationDestination {
+
     companion object {
+
         inline fun <reified T : NavigationDestination> NavBackStackEntry.toDestination(): T? {
             return toDestination(T::class, backStackEntry = this)
         }

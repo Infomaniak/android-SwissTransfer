@@ -34,17 +34,18 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val startDestination = SentDestination
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf {
-            navBackStackEntry?.toDestination<MainNavigation>() ?: SentDestination
+            navBackStackEntry?.toDestination<MainNavigation>() ?: startDestination
         }
     }
 
     MainScaffold(navController, currentDestination) {
-        MainNavHost(navController)
+        MainNavHost(navController, startDestination)
     }
 }
 

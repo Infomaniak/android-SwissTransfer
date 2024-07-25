@@ -29,8 +29,8 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 
 @Composable
-fun MainNavHost(navController: NavHostController) {
-    NavHost(navController, startDestination = SentDestination, modifier = Modifier.safeDrawingPadding()) {
+fun MainNavHost(navController: NavHostController, startDestination: SentDestination) {
+    NavHost(navController, startDestination, modifier = Modifier.safeDrawingPadding()) {
         composable<SentDestination> {
             Text("Sent")
         }
