@@ -71,7 +71,11 @@ private fun MainScaffold(
             NavigationItem.entries.forEach { navigationItem ->
                 item(
                     icon = {
-                        Icon(navigationItem.icon, stringResource(navigationItem.label))
+                        val contentDescription = when (navType) {
+                            NavigationSuiteType.NavigationRail -> stringResource(navigationItem.label)
+                            else -> ""
+                        }
+                        Icon(navigationItem.icon, contentDescription)
                     },
                     label = {
                         if (navType == NavigationSuiteType.NavigationBar) {
