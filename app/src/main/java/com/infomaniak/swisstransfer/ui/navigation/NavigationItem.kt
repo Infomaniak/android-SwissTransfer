@@ -34,15 +34,13 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
  *
  * @property label The resource ID of the string label for the destination.
  * @property icon The icon to be displayed for the destination.
- * @property contentDescription The resource ID of the content description for accessibility.
  */
 enum class NavigationItem(
     @StringRes val label: Int,
     val icon: ImageVector,
-    @StringRes val contentDescription: Int,
     val destination: MainNavigation,
 ) {
-    SENT(R.string.appName, Icons.AutoMirrored.Filled.Send, R.string.appName, SentDestination),
-    RECEIVED(R.string.appName, Icons.Default.Star, R.string.appName, ReceivedDestination),
-    SETTINGS(R.string.appName, Icons.Default.Settings, R.string.appName, SettingsDestination),
+    SENT(R.string.appName, Icons.AutoMirrored.Filled.Send, SentDestination),
+    RECEIVED(R.string.appName, Icons.Default.Star, ReceivedDestination),
+    SETTINGS(R.string.appName, Icons.Default.Settings, SettingsDestination),
 }

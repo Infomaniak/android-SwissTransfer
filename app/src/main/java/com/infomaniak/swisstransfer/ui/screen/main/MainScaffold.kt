@@ -71,7 +71,7 @@ private fun MainScaffold(
             NavigationItem.entries.forEach { navigationItem ->
                 item(
                     icon = {
-                        Icon(navigationItem.icon, stringResource(navigationItem.contentDescription))
+                        Icon(navigationItem.icon, stringResource(navigationItem.label))
                     },
                     label = {
                         if (navType == NavigationSuiteType.NavigationBar) {
@@ -90,8 +90,7 @@ private fun MainScaffold(
 
 private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
     navigate(destination) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
+        // Pop up to the start destination of the graph to avoid building up a large stack of destinations
         // on the back stack as users select items
         popUpTo(this@navigateToSelectedItem.graph.findStartDestination().id) {
             saveState = true
