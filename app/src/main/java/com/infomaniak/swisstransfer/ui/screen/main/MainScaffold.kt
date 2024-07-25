@@ -18,9 +18,13 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
@@ -28,11 +32,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
 fun MainScaffold(
@@ -68,6 +75,16 @@ private fun MainScaffold(
     navController: NavHostController,
     content: @Composable () -> Unit,
 ) {
+    Navigation(currentDestination, navController::navigateToSelectedItem, navType, content)
+}
+
+@Composable
+private fun Navigation(
+    currentDestination: MainNavigation,
+    navigateToSelectedItem: (MainNavigation) -> Unit,
+    navType: NavigationSuiteType,
+    content: @Composable () -> Unit
+) {
     val isNavigationBar = navType == NavigationSuiteType.NavigationBar
 
     NavigationSuiteScaffold(
@@ -77,12 +94,28 @@ private fun MainScaffold(
                     icon = { NavigationIcon(isNavigationBar, navigationItem) },
                     label = { NavigationLabel(isNavigationBar, navigationItem) },
                     selected = currentDestination == navigationItem.destination,
-                    onClick = { navController.navigateToSelectedItem(navigationItem.destination) }
+                    onClick = { navigateToSelectedItem(navigationItem.destination) }
                 )
             }
         },
+        navigationSuiteColors = NavigationSuiteDefaults.colors(
+            navigationBarContainerColor = SwissTransferTheme.colors.navBarBackground,
+            navigationRailContainerColor = SwissTransferTheme.colors.navBarBackground,
+            navigationDrawerContainerColor = SwissTransferTheme.colors.navBarBackground,
+        ),
         layoutType = navType,
-        content = content,
+        content = {
+            if (navType == NavigationSuiteType.None) {
+                content()
+            } else {
+                Column {
+                    Box(modifier = Modifier.weight(1f)) {
+                        content()
+                    }
+                    HorizontalDivider(color = SwissTransferTheme.colors.divider)
+                }
+            }
+        },
     )
 }
 
@@ -110,5 +143,18 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
         launchSingleTop = true
         // Restore state when re-selecting a previously selected item
         restoreState = true
+    }
+}
+
+@PreviewMobile
+@Composable
+private fun NavigationPreview() {
+    SwissTransferTheme {
+        Navigation(
+            currentDestination = MainNavigation.SentDestination,
+            navigateToSelectedItem = {},
+            navType = NavigationSuiteType.NavigationBar,
+            content = {},
+        )
     }
 }
