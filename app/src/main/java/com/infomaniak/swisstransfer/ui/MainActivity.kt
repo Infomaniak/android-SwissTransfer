@@ -18,13 +18,10 @@
 
 package com.infomaniak.swisstransfer.ui
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -38,13 +35,5 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
-    }
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
-@Composable
-fun GreetingPreview() {
-    SwissTransferTheme {
-        MainScreen()
     }
 }
