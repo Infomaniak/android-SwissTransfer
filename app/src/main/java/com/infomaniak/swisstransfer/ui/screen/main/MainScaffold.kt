@@ -39,16 +39,19 @@ fun MainScaffold(
 ) {
     val adaptiveInfo by rememberUpdatedState(currentWindowAdaptiveInfo())
 
-    val showBottomBar by remember(currentDestination) {
+    val showNavigation by remember(currentDestination) {
         derivedStateOf {
-            NavigationItem.entries.any { it.destination == currentDestination }
+            if (currentDestination == MainNavigation.SettingsDestination) false else
+                NavigationItem.entries.any { it.destination == currentDestination }
         }
     }
 
-    val navType by remember(showBottomBar, adaptiveInfo) {
+    val navType by remember(showNavigation, adaptiveInfo) {
         derivedStateOf {
-            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo).let {
-                if (it == NavigationSuiteType.NavigationBar && !showBottomBar) NavigationSuiteType.None else it
+            if (showNavigation) {
+                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+            } else {
+                NavigationSuiteType.None
             }
         }
     }
