@@ -66,7 +66,7 @@ private fun MainScreenPortraitPreview() {
     }
 }
 
-@Preview(device = "spec:width=1280dp,height=800dp,dpi=240,orientation=landscape")
+@Preview(device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240")
 @Composable
 private fun MainScreenTabletPreview() {
     SwissTransferTheme {
