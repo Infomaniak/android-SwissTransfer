@@ -48,13 +48,13 @@ annotation class PreviewMobile
 @Preview(
     name = "(1) Tablet portrait light",
     group = "Tablet",
-    device = "spec:width=1280dp,height=800dp,dpi=240,orientation=portrait",
+    device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
 )
 @Preview(
     name = "(2) Tablet portrait dark",
     group = "Tablet",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "spec:width=1280dp,height=800dp,dpi=240,orientation=portrait",
+    device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
 )
 @Preview(
     name = "(3) Tablet landscape light",
