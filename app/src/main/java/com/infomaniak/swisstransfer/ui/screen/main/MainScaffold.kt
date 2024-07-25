@@ -66,22 +66,14 @@ private fun MainScaffold(
     navController: NavHostController,
     content: @Composable () -> Unit,
 ) {
+    val isNavigationBar = navType == NavigationSuiteType.NavigationBar
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             NavigationItem.entries.forEach { navigationItem ->
                 item(
-                    icon = {
-                        val contentDescription = when (navType) {
-                            NavigationSuiteType.NavigationRail -> stringResource(navigationItem.label)
-                            else -> ""
-                        }
-                        Icon(navigationItem.icon, contentDescription)
-                    },
-                    label = {
-                        if (navType == NavigationSuiteType.NavigationBar) {
-                            Text(stringResource(navigationItem.label))
-                        }
-                    },
+                    icon = { NavigationIcon(isNavigationBar, navigationItem) },
+                    label = { NavigationLabel(isNavigationBar, navigationItem) },
                     selected = currentDestination == navigationItem.destination,
                     onClick = { navController.navigateToSelectedItem(navigationItem.destination) }
                 )
@@ -90,6 +82,19 @@ private fun MainScaffold(
         layoutType = navType,
         content = content,
     )
+}
+
+@Composable
+private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationItem) {
+    val contentDescription = if (isNavigationBar) null else stringResource(navigationItem.label)
+    Icon(navigationItem.icon, contentDescription)
+}
+
+@Composable
+private fun NavigationLabel(isNavigationBar: Boolean, navigationItem: NavigationItem) {
+    if (isNavigationBar) {
+        Text(stringResource(navigationItem.label))
+    }
 }
 
 private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
