@@ -19,6 +19,7 @@
 package com.infomaniak.swisstransfer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -45,7 +46,10 @@ fun SwissTransferTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(LocalCustomTypography provides Typography) {
+    CompositionLocalProvider(
+        LocalCustomTypography provides Typography,
+        LocalTextStyle provides SwissTransferTheme.typography.bodyRegular,
+    ) {
         MaterialTheme(
             colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
