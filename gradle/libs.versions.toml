@@ -7,7 +7,9 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlin = "2.0.0"
 lifecycleRuntimeKtx = "2.8.3"
+material3Beta = "1.3.0-beta04"
 navigation = "2.8.0-beta05"
+serialization = "1.7.1"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -15,10 +17,12 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material3-adaptative-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref = "material3Beta" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 # Tests
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
