@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
@@ -35,19 +34,18 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val startDestination = SentDestination
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf {
-            navBackStackEntry?.toDestination<MainNavigation>() ?: startDestination
+            navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination
         }
     }
 
     MainScaffold(navController, currentDestination, windowAdaptiveInfo) {
-        MainNavHost(navController, startDestination, windowAdaptiveInfo)
+        MainNavHost(navController, windowAdaptiveInfo)
     }
 }
 
