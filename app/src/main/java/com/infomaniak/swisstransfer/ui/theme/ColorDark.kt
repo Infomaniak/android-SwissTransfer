@@ -53,6 +53,6 @@ val dark_onSurfaceContainerHighest = Color(dark2)
 val DarkColors = CustomColors(
     primaryTextColor = Color(rabbit),
     secondaryTextColor = Color(shark),
-    navBarBackground = Color(dark2),
+    navigationItemBackground = Color(dark2),
     divider = Color(dark3),
 )
