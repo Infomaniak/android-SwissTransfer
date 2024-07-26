@@ -19,7 +19,7 @@
 package com.infomaniak.swisstransfer.ui.screen.main
 
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -27,22 +27,36 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
+import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
+import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 
 @Composable
-fun MainNavHost(navController: NavHostController, startDestination: SentDestination) {
+fun MainNavHost(
+    navController: NavHostController,
+    startDestination: SentDestination,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
+) {
     NavHost(navController, startDestination, modifier = Modifier.safeDrawingPadding()) {
         composable<SentDestination> {
-            Text("Sent")
+            SentScreen(
+                navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
+            )
         }
         composable<ReceivedDestination> {
-            Text("Received")
+            ReceivedScreen(
+                navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
+            )
         }
         composable<TransferDetailsDestination> {
             val transferDetails: TransferDetailsDestination = it.toRoute()
-            Text("TransferDetails for transfer ${transferDetails.transferId}")
+            TransferDetailsScreen(
+                transferId = transferDetails.transferId,
+            )
         }
         composable<SettingsDestination> {
-            Text("Settings")
+            SettingsScreenWrapper(windowAdaptiveInfo)
         }
     }
 }
