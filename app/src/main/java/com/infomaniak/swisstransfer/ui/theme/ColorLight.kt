@@ -59,7 +59,7 @@ val light_onSurfaceContainerHighest = Color(polar_bear)
 val LightColors = CustomColors(
     primaryTextColor = Color(orca),
     secondaryTextColor = Color(elephant),
-    navBarBackground = light_background,
+    navigationItemBackground = light_background,
     divider = Color(mouse),
 )
 
@@ -67,6 +67,6 @@ val LightColors = CustomColors(
 data class CustomColors(
     val primaryTextColor: Color,
     val secondaryTextColor: Color,
-    val navBarBackground: Color,
+    val navigationItemBackground: Color,
     val divider: Color,
 )

@@ -99,9 +99,9 @@ private fun Navigation(
             }
         },
         navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationBarContainerColor = SwissTransferTheme.colors.navBarBackground,
-            navigationRailContainerColor = SwissTransferTheme.colors.navBarBackground,
-            navigationDrawerContainerColor = SwissTransferTheme.colors.navBarBackground,
+            navigationBarContainerColor = SwissTransferTheme.colors.navigationItemBackground,
+            navigationRailContainerColor = SwissTransferTheme.colors.navigationItemBackground,
+            navigationDrawerContainerColor = SwissTransferTheme.colors.navigationItemBackground,
         ),
         layoutType = navType,
         content = {
