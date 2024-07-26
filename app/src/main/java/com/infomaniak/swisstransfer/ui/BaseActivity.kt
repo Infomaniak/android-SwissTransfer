@@ -19,18 +19,13 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 
-class MainActivity : BaseActivity() {
+open class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            SwissTransferTheme {
-                MainScreen()
-            }
-        }
+        enableEdgeToEdge()
     }
 }
