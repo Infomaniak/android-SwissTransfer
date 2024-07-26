@@ -34,15 +34,13 @@ import androidx.window.core.layout.WindowHeightSizeClass
  * A composable function that sets up a List-Detail interface using a three-pane scaffold navigator.
  * This function adapts its layout based on the given window size class and manages the navigation
  * between list and detail panes.
- *
- * @param T The type parameter representing the data model used in the navigator.
+ * @param T the type representing the item displayed in the detail pane. This can be an item id or a whole instance.
+ * This type must be storable in a Bundle. If this customization is unneeded, you can pass [Nothing]
  * @param windowAdaptiveInfo An instance of [WindowAdaptiveInfo] that provides information about
  * the current window's size class and adaptive state.
  * @param listPane A composable function that describes the content of the list pane.
- * It is provided with an instance of [ThreePaneScaffoldNavigator].
  * @param detailPane A composable function that describes the content of the detail pane.
- * It is provided with an instance of [ThreePaneScaffoldNavigator].
- * @param modifier A [Modifier] for this composable. Defaults to [Modifier].
+ * @param modifier [Modifier] of the scaffold layout.
  *
  * @sample com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
  */
