@@ -66,6 +66,11 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
+
+    implementation(libs.androidx.adaptive)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation)
+
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)

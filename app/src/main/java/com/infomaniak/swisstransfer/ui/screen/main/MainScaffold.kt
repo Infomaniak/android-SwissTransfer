@@ -20,11 +20,14 @@ package com.infomaniak.swisstransfer.ui.screen.main
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -35,21 +38,20 @@ import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
     content: @Composable () -> Unit = {},
 ) {
-    val adaptiveInfo by rememberUpdatedState(currentWindowAdaptiveInfo())
 
     val showNavigation by remember(currentDestination) {
         derivedStateOf {
-            if (currentDestination == MainNavigation.SettingsDestination) false else
-                NavigationItem.entries.any { it.destination == currentDestination }
+            NavigationItem.entries.any { it.destination == currentDestination }
         }
     }
 
-    val navType by remember(showNavigation, adaptiveInfo) {
+    val navType by remember(showNavigation, windowAdaptiveInfo) {
         derivedStateOf {
             if (showNavigation) {
-                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
             } else {
                 NavigationSuiteType.None
             }
