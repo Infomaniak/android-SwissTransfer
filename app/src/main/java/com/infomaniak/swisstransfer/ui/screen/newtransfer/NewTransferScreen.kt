@@ -16,44 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui.screen.main
+package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
-import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun MainScreen() {
+fun NewTransferScreen() {
     val navController = rememberNavController()
-    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-    val currentDestination by remember(navBackStackEntry) {
-        derivedStateOf {
-            navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination
-        }
-    }
-
-    MainScaffold(navController, currentDestination, windowAdaptiveInfo) {
-        MainNavHost(navController, windowAdaptiveInfo)
+    Scaffold { paddingValues ->
+        NewTransferNavHost(navController, modifier = Modifier.padding(paddingValues))
     }
 }
 
 @PreviewMobile
 @PreviewTablet
 @Composable
-private fun MainScreenPreview() {
+private fun NewTransferPreview() {
     SwissTransferTheme {
-        MainScreen()
+        NewTransferScreen()
     }
 }

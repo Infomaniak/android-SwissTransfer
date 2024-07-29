@@ -26,6 +26,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
@@ -35,10 +36,9 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    startDestination: SentDestination,
     windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
-    NavHost(navController, startDestination, modifier = Modifier.safeDrawingPadding()) {
+    NavHost(navController, MainNavigation.startDestination, modifier = Modifier.safeDrawingPadding()) {
         composable<SentDestination> {
             SentScreen(
                 navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
