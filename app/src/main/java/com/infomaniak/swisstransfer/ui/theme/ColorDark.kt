@@ -48,7 +48,7 @@ val dark_background = Color(dark1)
 val dark_surface = dark_background
 val dark_onSurface = Color(green_main)
 val dark_onSurfaceVariant = Color(rabbit)
-val dark_onSurfaceContainerHighest = Color(dark2)
+val dark_surfaceContainerHighest = Color(dark2)
 
 val DarkColors = CustomColors(
     primaryTextColor = Color(rabbit),

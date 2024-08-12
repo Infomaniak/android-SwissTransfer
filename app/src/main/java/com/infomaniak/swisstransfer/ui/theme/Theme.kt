@@ -34,7 +34,7 @@ private val DarkColorScheme = darkColorScheme(
     surface = dark_surface,
     onSurface = dark_onSurface,
     onSurfaceVariant = dark_onSurfaceVariant,
-    surfaceContainerHighest = dark_onSurfaceContainerHighest,
+    surfaceContainerHighest = dark_surfaceContainerHighest,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -48,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
     surface = light_surface,
     onSurface = light_onSurface,
     onSurfaceVariant = light_onSurfaceVariant,
-    surfaceContainerHighest = light_onSurfaceContainerHighest,
+    surfaceContainerHighest = light_surfaceContainerHighest,
 )
 
 val LocalCustomTypography = staticCompositionLocalOf { Typography }

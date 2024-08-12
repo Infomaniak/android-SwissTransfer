@@ -53,7 +53,7 @@ val light_background = Color(white)
 val light_surface = light_background
 val light_onSurface = Color(green_main)
 val light_onSurfaceVariant = Color(green_dark)
-val light_onSurfaceContainerHighest = Color(polar_bear)
+val light_surfaceContainerHighest = Color(polar_bear)
 
 val LightColors = CustomColors(
     primaryTextColor = Color(orca),
