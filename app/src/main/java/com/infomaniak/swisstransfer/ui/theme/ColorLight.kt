@@ -18,7 +18,6 @@
 
 package com.infomaniak.swisstransfer.ui.theme
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 // Palette
@@ -61,12 +60,4 @@ val LightColors = CustomColors(
     secondaryTextColor = Color(elephant),
     navigationItemBackground = light_background,
     divider = Color(mouse),
-)
-
-@Immutable
-data class CustomColors(
-    val primaryTextColor: Color,
-    val secondaryTextColor: Color,
-    val navigationItemBackground: Color,
-    val divider: Color,
 )

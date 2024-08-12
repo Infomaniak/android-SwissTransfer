@@ -40,6 +40,7 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun MainScaffold(
@@ -65,25 +66,15 @@ fun MainScaffold(
         }
     }
 
-    MainScaffold(navType, currentDestination, navController, content)
+    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
 }
 
 @Composable
 private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
-    navController: NavHostController,
-    content: @Composable () -> Unit,
-) {
-    Navigation(currentDestination, navController::navigateToSelectedItem, navType, content)
-}
-
-@Composable
-private fun Navigation(
-    currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    navType: NavigationSuiteType,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val isNavigationBar = navType == NavigationSuiteType.NavigationBar
 
@@ -148,12 +139,25 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
 
 @PreviewMobile
 @Composable
-private fun NavigationPreview() {
+private fun NavigationPreviewMobile() {
     SwissTransferTheme {
-        Navigation(
+        MainScaffold(
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
+            content = {},
+        )
+    }
+}
+
+@PreviewTablet
+@Composable
+private fun NavigationPreviewTablet() {
+    SwissTransferTheme {
+        MainScaffold(
+            currentDestination = MainNavigation.SentDestination,
+            navigateToSelectedItem = {},
+            navType = NavigationSuiteType.NavigationRail,
             content = {},
         )
     }

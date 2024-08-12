@@ -19,14 +19,9 @@
 package com.infomaniak.swisstransfer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = dark_primary,
@@ -57,7 +52,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 val LocalCustomTypography = staticCompositionLocalOf { Typography }
-val LocalCustomColors: ProvidableCompositionLocal<CustomColors?> = staticCompositionLocalOf { null }
+val LocalCustomColors: ProvidableCompositionLocal<CustomColors> = staticCompositionLocalOf { CustomColors() }
 
 @Composable
 fun SwissTransferTheme(
@@ -84,5 +79,16 @@ object SwissTransferTheme {
         get() = LocalCustomTypography.current
     val colors: CustomColors
         @Composable
-        get() = LocalCustomColors.current ?: error("Cannot access uninitialized LocalCustomColors")
+        get() = LocalCustomColors.current
+    val materialColors: ColorScheme
+        @Composable
+        get() = MaterialTheme.colorScheme
 }
+
+@Immutable
+data class CustomColors(
+    val primaryTextColor: Color = Color.Unspecified,
+    val secondaryTextColor: Color = Color.Unspecified,
+    val navigationItemBackground: Color = Color.Unspecified,
+    val divider: Color = Color.Unspecified,
+)
