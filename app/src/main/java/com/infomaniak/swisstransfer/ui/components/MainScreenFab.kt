@@ -23,8 +23,8 @@ import androidx.compose.runtime.Composable
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 
 @Composable
-fun MainScreenFab(navigateToNewTransfer: () -> Unit) {
-    if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
+fun MainScreenFab(navType: NavigationSuiteType, navigateToNewTransfer: () -> Unit) {
+    if (navType == NavigationSuiteType.NavigationBar) {
         SwissTransferFab(onClick = navigateToNewTransfer)
     }
 }
