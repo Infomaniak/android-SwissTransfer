@@ -18,6 +18,7 @@
 
 package com.infomaniak.swisstransfer.ui.theme
 
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 // Palette
@@ -41,23 +42,24 @@ private const val specific4 = 0xFFCF9E1B
 private const val on_primary = 0xFFF7FCFA
 private const val white = 0xFFFFFFFF
 
-// Roles
-val light_primary = Color(green_main)
-val light_onPrimary = Color(on_primary)
-val light_secondaryContainer = Color(green_secondary)
-val light_onSecondaryContainer = Color(green_main)
-val light_tertiary = Color(green_dark)
-val light_onTertiary = Color(green_contrast)
+val LightColorScheme = lightColorScheme(
+    primary = Color(green_main),
+    onPrimary = Color(on_primary),
+    secondaryContainer = Color(green_secondary),
+    onSecondaryContainer = Color(green_main),
+    tertiary = Color(green_dark),
+    onTertiary = Color(green_contrast),
 
-val light_background = Color(white)
-val light_surface = light_background
-val light_onSurface = Color(green_main)
-val light_onSurfaceVariant = Color(green_dark)
-val light_surfaceContainerHighest = Color(polar_bear)
+    background = Color(white),
+    surface = Color(white), // Same value as background
+    onSurface = Color(green_main),
+    onSurfaceVariant = Color(green_dark),
+    surfaceContainerHighest = Color(polar_bear),
+)
 
-val LightColors = CustomColors(
+val CustomLightColorScheme = CustomColorScheme(
     primaryTextColor = Color(orca),
     secondaryTextColor = Color(elephant),
-    navigationItemBackground = light_background,
+    navigationItemBackground = LightColorScheme.background,
     divider = Color(mouse),
 )
