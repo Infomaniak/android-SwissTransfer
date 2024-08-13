@@ -17,7 +17,7 @@
   -->
 
 <resources>
-    <string name="appName">SwissTransfer</string>
+    <string name="appName" translatable="false">SwissTransfer</string>
 
     <string name="receivedTitle">Received</string>
     <string name="sentTitle">Sent</string>
