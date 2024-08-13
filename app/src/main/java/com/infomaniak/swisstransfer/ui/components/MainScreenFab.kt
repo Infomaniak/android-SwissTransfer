@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui.theme
+package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.unit.dp
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.runtime.Composable
+import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 
-val Shapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(50),
-)
+@Composable
+fun MainScreenFab(navigateToNewTransfer: () -> Unit) {
+    if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
+        SwissTransferFab(onClick = navigateToNewTransfer)
+    }
+}

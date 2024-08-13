@@ -18,13 +18,37 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.ui.components.MainScreenFab
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SentScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    val navType = LocalNavType.current
+fun SentScreen(
+    navigateToDetails: (transferId: Int) -> Unit,
+    navigateToNewTransfer: () -> Unit,
+) {
+    Scaffold(floatingActionButton = { MainScreenFab(navigateToNewTransfer) }) { contentPadding ->
+        Text(
+            text = "Sent screen",
+            modifier = Modifier.padding(contentPadding),
+        )
+    }
+}
 
-    Text("Sent screen $navType")
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun SentScreenPreview() {
+    SwissTransferTheme {
+        SentScreen(
+            navigateToDetails = {},
+            navigateToNewTransfer = {},
+        )
+    }
 }

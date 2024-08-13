@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
@@ -42,6 +43,7 @@ fun MainNavHost(
         composable<SentDestination> {
             SentScreen(
                 navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
+                navigateToNewTransfer = { navController.navigate(NewTransferNavigation.ImportFilesDestination) },
             )
         }
         composable<ReceivedDestination> {
