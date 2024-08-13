@@ -28,19 +28,20 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaul
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
+import com.infomaniak.swisstransfer.ui.theme.LocalCustomTypography
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.theme.Typography
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+
+val LocalNavType = staticCompositionLocalOf { NavigationSuiteType.None }
 
 @Composable
 fun MainScaffold(
@@ -50,23 +51,11 @@ fun MainScaffold(
     content: @Composable () -> Unit = {},
 ) {
 
-    val showNavigation by remember(currentDestination) {
-        derivedStateOf {
-            NavigationItem.entries.any { it.destination == currentDestination }
-        }
-    }
+    val navType by rememberNavType(currentDestination, windowAdaptiveInfo)
 
-    val navType by remember(showNavigation, windowAdaptiveInfo) {
-        derivedStateOf {
-            if (showNavigation) {
-                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
-            } else {
-                NavigationSuiteType.None
-            }
-        }
+    CompositionLocalProvider(LocalNavType provides navType) {
+        MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
     }
-
-    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
 }
 
 @Composable
@@ -120,6 +109,29 @@ private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationI
 private fun NavigationLabel(isNavigationBar: Boolean, navigationItem: NavigationItem) {
     if (isNavigationBar) {
         Text(stringResource(navigationItem.label))
+    }
+}
+
+@Composable
+private fun rememberNavType(
+    currentDestination: MainNavigation,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
+): State<NavigationSuiteType> {
+
+    val showNavigation by remember(currentDestination) {
+        derivedStateOf {
+            NavigationItem.entries.any { it.destination == currentDestination }
+        }
+    }
+
+    return remember(showNavigation, windowAdaptiveInfo) {
+        derivedStateOf {
+            if (showNavigation) {
+                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
+            } else {
+                NavigationSuiteType.None
+            }
+        }
     }
 }
 
