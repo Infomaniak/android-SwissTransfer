@@ -20,8 +20,11 @@ package com.infomaniak.swisstransfer.ui.screen.main.sent
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 
 @Composable
 fun SentScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    Text("Sent screen")
+    val navType = LocalNavType.current
+
+    Text("Sent screen $navType")
 }
