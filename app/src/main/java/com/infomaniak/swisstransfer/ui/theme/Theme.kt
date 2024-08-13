@@ -19,51 +19,25 @@
 package com.infomaniak.swisstransfer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme = darkColorScheme(
-    primary = dark_primary,
-    onPrimary = dark_onPrimary,
-    secondaryContainer = dark_secondaryContainer,
-    onSecondaryContainer = dark_onSecondaryContainer,
-    tertiary = dark_tertiary,
-    onTertiary = dark_onTertiary,
-    background = dark_background,
-    surface = dark_surface,
-    onSurface = dark_onSurface,
-    onSurfaceVariant = dark_onSurfaceVariant,
-    surfaceContainerHighest = dark_surfaceContainerHighest,
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = light_primary,
-    onPrimary = light_onPrimary,
-    secondaryContainer = light_secondaryContainer,
-    onSecondaryContainer = light_onSecondaryContainer,
-    tertiary = light_tertiary,
-    onTertiary = light_onTertiary,
-    background = light_background,
-    surface = light_surface,
-    onSurface = light_onSurface,
-    onSurfaceVariant = light_onSurfaceVariant,
-    surfaceContainerHighest = light_surfaceContainerHighest,
-)
-
 val LocalCustomTypography = staticCompositionLocalOf { Typography }
-val LocalCustomColors: ProvidableCompositionLocal<CustomColors> = staticCompositionLocalOf { CustomColors() }
+val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }
 
 @Composable
 fun SwissTransferTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val customColors = if (darkTheme) DarkColors else LightColors
+    val customColors = if (darkTheme) CustomDarkColorScheme else CustomLightColorScheme
     CompositionLocalProvider(
         LocalCustomTypography provides Typography,
         LocalTextStyle provides Typography.bodyRegular,
-        LocalCustomColors provides customColors,
+        LocalCustomColorScheme provides customColors,
     ) {
         MaterialTheme(
             colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
@@ -77,16 +51,16 @@ object SwissTransferTheme {
     val typography: CustomTypography
         @Composable
         get() = LocalCustomTypography.current
-    val colors: CustomColors
+    val colors: CustomColorScheme
         @Composable
-        get() = LocalCustomColors.current
+        get() = LocalCustomColorScheme.current
     val materialColors: ColorScheme
         @Composable
         get() = MaterialTheme.colorScheme
 }
 
 @Immutable
-data class CustomColors(
+data class CustomColorScheme(
     val primaryTextColor: Color = Color.Unspecified,
     val secondaryTextColor: Color = Color.Unspecified,
     val navigationItemBackground: Color = Color.Unspecified,

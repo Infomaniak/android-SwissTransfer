@@ -18,6 +18,7 @@
 
 package com.infomaniak.swisstransfer.ui.theme
 
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
 
 // Palette
@@ -36,21 +37,22 @@ private const val specific2 = 0xFF334117
 private const val specific3 = 0xFF503E0F
 private const val specific4 = 0xFFEAC35D
 
-// Roles
-val dark_primary = Color(green_main)
-val dark_onPrimary = Color(dark1)
-val dark_secondaryContainer = Color(dark3)
-val dark_onSecondaryContainer = Color(green_main)
-val dark_tertiary = Color(green_dark)
-val dark_onTertiary = Color(green_main)
+val DarkColorScheme = darkColorScheme(
+    primary = Color(green_main),
+    onPrimary = Color(dark1),
+    secondaryContainer = Color(dark3),
+    onSecondaryContainer = Color(green_main),
+    tertiary = Color(green_dark),
+    onTertiary = Color(green_main),
 
-val dark_background = Color(dark1)
-val dark_surface = dark_background
-val dark_onSurface = Color(green_main)
-val dark_onSurfaceVariant = Color(rabbit)
-val dark_surfaceContainerHighest = Color(dark2)
+    background = Color(dark1),
+    surface = Color(dark1), // Same value as background
+    onSurface = Color(green_main),
+    onSurfaceVariant = Color(rabbit),
+    surfaceContainerHighest = Color(dark2),
+)
 
-val DarkColors = CustomColors(
+val CustomDarkColorScheme = CustomColorScheme(
     primaryTextColor = Color(rabbit),
     secondaryTextColor = Color(shark),
     navigationItemBackground = Color(dark2),
