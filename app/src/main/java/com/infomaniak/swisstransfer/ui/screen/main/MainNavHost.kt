@@ -18,17 +18,19 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import android.content.Intent
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
-import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
@@ -39,11 +41,13 @@ fun MainNavHost(
     navController: NavHostController,
     windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
+    val context = LocalContext.current
+
     NavHost(navController, MainNavigation.startDestination, modifier = Modifier.safeDrawingPadding()) {
         composable<SentDestination> {
             SentScreen(
                 navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
-                navigateToNewTransfer = { navController.navigate(NewTransferNavigation.ImportFilesDestination) },
+                navigateToNewTransfer = { context.startActivity(Intent(context, NewTransferActivity::class.java)) },
             )
         }
         composable<ReceivedDestination> {
