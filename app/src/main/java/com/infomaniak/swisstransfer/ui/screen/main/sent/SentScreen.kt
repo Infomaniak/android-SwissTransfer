@@ -26,9 +26,11 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.MainScreenFab
 import com.infomaniak.swisstransfer.ui.components.MainScreenFabType
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
@@ -42,10 +44,18 @@ fun SentScreen(
     navigateToDetails: (transferId: Int) -> Unit,
 ) {
     val viewmodel = viewModel<SentViewModel>()
-    if (viewmodel.transfers.isNotEmpty()) {
-        TransferScreen(navType = LocalNavType.current)
-    } else {
+    SentScreen(
+        isEmpty = viewmodel.transfers.isEmpty(),
+        navType = LocalNavType.current,
+    )
+}
+
+@Composable
+private fun SentScreen(isEmpty: Boolean, navType: NavigationSuiteType) {
+    if (isEmpty) {
         EmptyScreen()
+    } else {
+        TransferScreen(navType)
     }
 }
 
@@ -59,7 +69,7 @@ fun EmptyScreen() {
         val maxWidth = 300.dp
         Text(
             modifier = Modifier.widthIn(max = maxWidth),
-            text = "Notre histoire commence ici",
+            text = stringResource(id = R.string.sentEmptyTitle),
             style = SwissTransferTheme.typography.specificMedium32,
             textAlign = TextAlign.Center,
         )
@@ -67,7 +77,7 @@ fun EmptyScreen() {
             modifier = Modifier
                 .widthIn(max = maxWidth)
                 .padding(top = Margin.Medium),
-            text = "Fait ton premier transfert !",
+            text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular
         )
         MainScreenFab(
@@ -97,9 +107,12 @@ private fun TransferScreen(
 @Composable
 private fun SentScreenMobilePreview() {
     SwissTransferTheme {
-        TransferScreen(
-            NavigationSuiteType.NavigationBar,
-        )
+        Surface {
+            SentScreen(
+                isEmpty = true,
+                navType = NavigationSuiteType.NavigationBar,
+            )
+        }
     }
 }
 
@@ -107,19 +120,11 @@ private fun SentScreenMobilePreview() {
 @Composable
 private fun SentScreenTabletPreview() {
     SwissTransferTheme {
-        TransferScreen(
-            NavigationSuiteType.NavigationRail,
-        )
-    }
-}
-
-@PreviewMobile
-@PreviewTablet
-@Composable
-private fun SentScreenPreview() {
-    SwissTransferTheme {
         Surface {
-            SentScreen({})
+            SentScreen(
+                isEmpty = true,
+                navType = NavigationSuiteType.NavigationRail,
+            )
         }
     }
 }

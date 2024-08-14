@@ -16,7 +16,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
+    <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
+    <string name="firstTransferDescription">Fais ton premier transfert !</string>
     <string name="receivedTitle">Recu</string>
+    <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
     <string name="settingsTitle">Paramètres</string>
 </resources>
