@@ -18,15 +18,21 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.ui.components.MainScreenFab
 import com.infomaniak.swisstransfer.ui.components.MainScreenFabType
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -35,7 +41,40 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 fun SentScreen(
     navigateToDetails: (transferId: Int) -> Unit,
 ) {
-    TransferScreen(navType = LocalNavType.current)
+    val viewmodel = viewModel<SentViewModel>()
+    if (viewmodel.transfers.isNotEmpty()) {
+        TransferScreen(navType = LocalNavType.current)
+    } else {
+        EmptyScreen()
+    }
+}
+
+@Composable
+fun EmptyScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        val maxWidth = 300.dp
+        Text(
+            modifier = Modifier.widthIn(max = maxWidth),
+            text = "Notre histoire commence ici",
+            style = SwissTransferTheme.typography.specificMedium32,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            modifier = Modifier
+                .widthIn(max = maxWidth)
+                .padding(top = Margin.Medium),
+            text = "Fait ton premier transfert !",
+            style = SwissTransferTheme.typography.bodyRegular
+        )
+        MainScreenFab(
+            modifier = Modifier.padding(top = Margin.ExtraLarge),
+            mainScreenFabType = MainScreenFabType.EMPTY_STATE,
+        )
+    }
 }
 
 @Composable
@@ -71,5 +110,16 @@ private fun SentScreenTabletPreview() {
         TransferScreen(
             NavigationSuiteType.NavigationRail,
         )
+    }
+}
+
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun SentScreenPreview() {
+    SwissTransferTheme {
+        Surface {
+            SentScreen({})
+        }
     }
 }
