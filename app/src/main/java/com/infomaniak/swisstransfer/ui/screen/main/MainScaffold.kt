@@ -18,26 +18,18 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.adaptive.navigationsuite.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
-import com.infomaniak.swisstransfer.ui.theme.LocalCustomTypography
+import com.infomaniak.swisstransfer.ui.screen.main.components.AppNavigationSuiteScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.theme.Typography
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
@@ -65,50 +57,17 @@ private fun MainScaffold(
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val isNavigationBar = navType == NavigationSuiteType.NavigationBar
-
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            NavigationItem.entries.forEach { navigationItem ->
-                item(
-                    icon = { NavigationIcon(isNavigationBar, navigationItem) },
-                    label = { NavigationLabel(isNavigationBar, navigationItem) },
-                    selected = currentDestination == navigationItem.destination,
-                    onClick = { navigateToSelectedItem(navigationItem.destination) }
-                )
-            }
-        },
-        navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationBarContainerColor = SwissTransferTheme.colors.navigationItemBackground,
-            navigationRailContainerColor = SwissTransferTheme.colors.navigationItemBackground,
-            navigationDrawerContainerColor = SwissTransferTheme.colors.navigationItemBackground,
-        ),
-        layoutType = navType,
-        content = {
-            if (navType == NavigationSuiteType.None) {
-                content()
-            } else {
-                Column {
-                    Box(modifier = Modifier.weight(1f)) {
-                        content()
-                    }
-                    HorizontalDivider(color = SwissTransferTheme.colors.divider)
+    AppNavigationSuiteScaffold(navType, currentDestination, navigateToSelectedItem) {
+        if (navType == NavigationSuiteType.None) {
+            content()
+        } else {
+            Column {
+                Box(modifier = Modifier.weight(1f)) {
+                    content()
                 }
+                HorizontalDivider(color = SwissTransferTheme.colors.divider)
             }
-        },
-    )
-}
-
-@Composable
-private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationItem) {
-    val contentDescription = if (isNavigationBar) null else stringResource(navigationItem.label)
-    Icon(navigationItem.icon, contentDescription)
-}
-
-@Composable
-private fun NavigationLabel(isNavigationBar: Boolean, navigationItem: NavigationItem) {
-    if (isNavigationBar) {
-        Text(stringResource(navigationItem.label))
+        }
     }
 }
 
