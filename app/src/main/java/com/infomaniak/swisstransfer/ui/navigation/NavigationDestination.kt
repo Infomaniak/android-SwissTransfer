@@ -28,6 +28,8 @@ import kotlin.reflect.KClass
  */
 @Serializable
 sealed class MainNavigation : NavigationDestination() {
+    var enableTransition = true
+
     @Serializable
     data object SentDestination : MainNavigation()
     @Serializable

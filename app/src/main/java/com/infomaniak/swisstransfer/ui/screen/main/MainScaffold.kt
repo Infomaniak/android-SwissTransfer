@@ -97,6 +97,7 @@ private fun rememberNavType(
 }
 
 private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
+    destination.enableTransition = false
     navigate(destination) {
         // Pop up to the start destination of the graph to avoid building up a large stack of destinations
         // on the back stack as users select items
