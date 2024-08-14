@@ -62,12 +62,10 @@ fun AppNavigationSuiteScaffold(
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val isNavigationBar = layoutType == NavigationSuiteType.NavigationBar
-
     Surface(color = SwissTransferTheme.materialColors.background) {
         NavigationSuiteScaffoldLayout(
             navigationSuite = {
-                if (isNavigationBar) {
+                if (layoutType == NavigationSuiteType.NavigationBar) {
                     AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                 } else {
                     AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)

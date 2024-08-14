@@ -18,7 +18,6 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
