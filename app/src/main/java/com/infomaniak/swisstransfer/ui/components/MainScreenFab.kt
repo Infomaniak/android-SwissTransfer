@@ -18,13 +18,41 @@
 
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import android.content.Intent
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.runtime.Composable
-import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.NewTransferActivity
 
 @Composable
-fun MainScreenFab(navType: NavigationSuiteType, navigateToNewTransfer: () -> Unit) {
-    if (navType == NavigationSuiteType.NavigationBar) {
-        SwissTransferFab(onClick = navigateToNewTransfer)
+fun MainScreenFab(
+    modifier: Modifier = Modifier,
+    mainScreenFabType: MainScreenFabType
+) {
+    val context = LocalContext.current
+    SwissTransferFab(
+        modifier = modifier,
+        fabType = mainScreenFabType.fabType,
+        elevation = mainScreenFabType.elevation(),
+        onClick = { context.startActivity(Intent(context, NewTransferActivity::class.java)) },
+    )
+}
+
+enum class MainScreenFabType(val fabType: FabType, private val defaultElevation: Dp?) {
+    BOTTOM_BAR(FabType.NORMAL, null),
+    EMPTY_STATE(FabType.BIG, null),
+    NAVIGATION_RAIL(FabType.NORMAL, 0.dp);
+
+    @Composable
+    fun elevation(): FloatingActionButtonElevation {
+        return if (defaultElevation != null) {
+            FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)
+        } else {
+            FloatingActionButtonDefaults.elevation()
+        }
     }
 }

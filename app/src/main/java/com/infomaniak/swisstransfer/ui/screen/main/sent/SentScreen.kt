@@ -25,6 +25,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.components.MainScreenFab
+import com.infomaniak.swisstransfer.ui.components.MainScreenFabType
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
@@ -33,17 +34,19 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun SentScreen(
     navigateToDetails: (transferId: Int) -> Unit,
-    navigateToNewTransfer: () -> Unit,
 ) {
-    TransferScreen(navType = LocalNavType.current, navigateToNewTransfer)
+    TransferScreen(navType = LocalNavType.current)
 }
 
 @Composable
 private fun TransferScreen(
     navType: NavigationSuiteType,
-    navigateToNewTransfer: () -> Unit,
 ) {
-    Scaffold(floatingActionButton = { MainScreenFab(navType, navigateToNewTransfer) }) { contentPadding ->
+    Scaffold(
+        floatingActionButton = {
+            if (navType == NavigationSuiteType.NavigationBar) MainScreenFab(mainScreenFabType = MainScreenFabType.BOTTOM_BAR)
+        }
+    ) { contentPadding ->
         Text(
             text = "Sent screen",
             modifier = Modifier.padding(contentPadding),
@@ -57,7 +60,6 @@ private fun SentScreenMobilePreview() {
     SwissTransferTheme {
         TransferScreen(
             NavigationSuiteType.NavigationBar,
-            navigateToNewTransfer = {},
         )
     }
 }
@@ -68,7 +70,6 @@ private fun SentScreenTabletPreview() {
     SwissTransferTheme {
         TransferScreen(
             NavigationSuiteType.NavigationRail,
-            navigateToNewTransfer = {},
         )
     }
 }

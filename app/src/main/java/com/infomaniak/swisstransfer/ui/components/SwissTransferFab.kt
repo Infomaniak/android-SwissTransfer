@@ -22,30 +22,33 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun SwissTransferFab(modifier: Modifier = Modifier, fabType: FabType = FabType.NORMAL, onClick: () -> Unit) {
+fun SwissTransferFab(
+    modifier: Modifier = Modifier,
+    fabType: FabType = FabType.NORMAL,
+    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
+    onClick: () -> Unit,
+) {
     FloatingActionButton(
-        modifier = modifier.let {
-            if (fabType == FabType.BIG) it.size(80.dp) else it
-        },
+        modifier = modifier.let { if (fabType == FabType.BIG) it.size(80.dp) else it },
         onClick = onClick,
         containerColor = SwissTransferTheme.materialColors.primary,
-        contentColor = SwissTransferTheme.materialColors.onPrimary,
         shape = fabType.shape,
+        elevation = elevation,
     ) {
-        Icon(imageVector = AppIcons.Add, contentDescription = stringResource(id = R.string.sentTitle))
+        Icon(imageVector = AppIcons.Add, contentDescription = "TODO")
     }
 }
 
@@ -53,6 +56,7 @@ enum class FabType(val shape: CornerBasedShape) {
     NORMAL(Shapes.medium),
     BIG(Shapes.large),
 }
+
 
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
