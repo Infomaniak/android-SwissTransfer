@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
@@ -32,29 +34,50 @@ import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
+/**
+ * Layout for a [NavigationSuiteScaffold]'s content. This function wraps the [content] and places
+ * the [NavigationSuite] component according to the given [layoutType].
+ *
+ * @param layoutType The current [NavigationSuiteType]. It determines whether
+ * the app will use a bottom navigation bar ([NavigationSuiteType.NavigationBar])
+ * or a navigation rail ([NavigationSuiteType.NavigationRail]).
+ *
+ * @param navigationItems The navigation items to be displayed.
+ *
+ * @param currentDestination The current selected item in the navigation suite. It represents
+ * the active navigation item that the user is currently on, which will be highlighted or selected
+ * in the navigation UI.
+ *
+ * @param navigateToSelectedItem A lambda function that handles the navigation logic when a user
+ * selects a different item in the navigation suite. It receives the selected [MainNavigation]
+ * item and performs the necessary navigation.
+ *
+ * @param content The content of your screen
+ */
 @Composable
 fun AppNavigationSuiteScaffold(
-    navType: NavigationSuiteType,
+    layoutType: NavigationSuiteType,
+    navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val isNavigationBar = navType == NavigationSuiteType.NavigationBar
+    val isNavigationBar = layoutType == NavigationSuiteType.NavigationBar
 
     Surface(color = SwissTransferTheme.materialColors.background) {
         NavigationSuiteScaffoldLayout(
             navigationSuite = {
                 if (isNavigationBar) {
-                    AppNavigationBar(currentDestination, navigateToSelectedItem)
+                    AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                 } else {
-                    AppNavigationRail(currentDestination, navigateToSelectedItem)
+                    AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
                 }
             },
-            layoutType = navType,
+            layoutType = layoutType,
         ) {
             Box(
                 Modifier.consumeWindowInsets(
-                    when (navType) {
+                    when (layoutType) {
                         NavigationSuiteType.NavigationBar ->
                             NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
                         NavigationSuiteType.NavigationRail ->
@@ -70,21 +93,29 @@ fun AppNavigationSuiteScaffold(
 }
 
 @Composable
-private fun AppNavigationBar(currentDestination: MainNavigation, navigateToSelectedItem: (MainNavigation) -> Unit) {
+private fun AppNavigationBar(
+    navigationItems: List<NavigationItem>,
+    currentDestination: MainNavigation,
+    onClick: (MainNavigation) -> Unit,
+) {
     NavigationBar(containerColor = SwissTransferTheme.colors.navigationItemBackground) {
-        com.infomaniak.swisstransfer.ui.navigation.NavigationItem.entries.forEach { navigationItem ->
+        navigationItems.forEach { navigationItem ->
             NavigationBarItem(
                 icon = { NavigationIcon(true, navigationItem) },
                 label = { NavigationLabel(navigationItem) },
                 selected = currentDestination == navigationItem.destination,
-                onClick = { navigateToSelectedItem(navigationItem.destination) },
+                onClick = { onClick(navigationItem.destination) },
             )
         }
     }
 }
 
 @Composable
-private fun AppNavigationRail(currentDestination: MainNavigation, navigateToSelectedItem: (MainNavigation) -> Unit) {
+private fun AppNavigationRail(
+    navigationItems: List<NavigationItem>,
+    currentDestination: MainNavigation,
+    onClick: (MainNavigation) -> Unit,
+) {
     NavigationRail(
         header = {
             FloatingActionButton(onClick = {}, modifier = Modifier.padding(bottom = Margin.Large)) {
@@ -93,12 +124,12 @@ private fun AppNavigationRail(currentDestination: MainNavigation, navigateToSele
         },
         containerColor = SwissTransferTheme.colors.navigationItemBackground
     ) {
-        com.infomaniak.swisstransfer.ui.navigation.NavigationItem.entries.forEach { navigationItem ->
+        navigationItems.forEach { navigationItem ->
             NavigationRailItem(
                 icon = { NavigationIcon(false, navigationItem) },
                 label = {},
                 selected = currentDestination == navigationItem.destination,
-                onClick = { navigateToSelectedItem(navigationItem.destination) },
+                onClick = { onClick(navigationItem.destination) },
             )
         }
     }
