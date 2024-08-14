@@ -44,7 +44,9 @@ fun MainNavHost(
     currentDestination: MainNavigation,
 ) {
     NavHost(
-        navController, MainNavigation.startDestination, modifier = Modifier.safeDrawingPadding(),
+        navController = navController,
+        startDestination = MainNavigation.startDestination,
+        modifier = Modifier.safeDrawingPadding(),
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
