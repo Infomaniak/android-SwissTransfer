@@ -18,4 +18,6 @@
 
 package com.infomaniak.swisstransfer.ui.icons
 
-object AppIcons
+object AppIcons {
+    object Illu
+}

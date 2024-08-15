@@ -19,7 +19,10 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -29,10 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -44,7 +49,7 @@ fun SwissTransferFab(
     onClick: () -> Unit,
 ) {
     FloatingActionButton(
-        modifier = modifier.let { if (fabType == FabType.BIG) it.size(80.dp) else it },
+        modifier = modifier.let { fabType.customSize?.let { size -> it.size(size) } ?: it },
         onClick = onClick,
         containerColor = SwissTransferTheme.materialColors.primary,
         shape = fabType.shape,
@@ -57,26 +62,21 @@ fun SwissTransferFab(
     }
 }
 
-enum class FabType(val shape: CornerBasedShape) {
-    NORMAL(Shapes.medium),
-    BIG(Shapes.large),
+enum class FabType(val shape: CornerBasedShape, val customSize: Dp?) {
+    NORMAL(Shapes.medium, null),
+    BIG(Shapes.large, 80.dp),
 }
 
 
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(name = "Light mode")
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun SwissTransferFabPreview() {
     SwissTransferTheme {
-        SwissTransferFab(onClick = {})
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
-@Composable
-private fun SwissTransferFabBigPreview() {
-    SwissTransferTheme {
-        SwissTransferFab(fabType = FabType.BIG, onClick = {})
+        Row {
+            SwissTransferFab(onClick = {})
+            Spacer(modifier = Modifier.width(Margin.Large))
+            SwissTransferFab(fabType = FabType.BIG, onClick = {})
+        }
     }
 }
