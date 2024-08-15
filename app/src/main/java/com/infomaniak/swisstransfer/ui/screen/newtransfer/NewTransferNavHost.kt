@@ -34,9 +34,9 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressS
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
 
 @Composable
-fun NewTransferNavHost(navController: NavHostController, modifier: Modifier) {
+fun NewTransferNavHost(navController: NavHostController) {
 
-    NavHost(navController, NewTransferNavigation.startDestination, modifier = modifier.safeDrawingPadding()) {
+    NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
             ImportFilesScreen()
         }
