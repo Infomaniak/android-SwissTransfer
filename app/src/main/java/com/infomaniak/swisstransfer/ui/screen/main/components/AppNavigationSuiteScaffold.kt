@@ -65,10 +65,14 @@ fun AppNavigationSuiteScaffold(
     Surface(color = SwissTransferTheme.materialColors.background) {
         NavigationSuiteScaffoldLayout(
             navigationSuite = {
-                if (layoutType == NavigationSuiteType.NavigationBar) {
-                    AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
-                } else {
-                    AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
+                when (layoutType) {
+                    NavigationSuiteType.None -> Unit
+                    NavigationSuiteType.NavigationBar -> {
+                        AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
+                    }
+                    else -> {
+                        AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
+                    }
                 }
             },
             layoutType = layoutType,

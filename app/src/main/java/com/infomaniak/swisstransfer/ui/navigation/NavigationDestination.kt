@@ -22,6 +22,7 @@ import android.os.Bundle
 import androidx.navigation.NavBackStackEntry
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 
 /**
  * Sealed class representing the navigation arguments for the main navigation flow.
@@ -96,8 +97,7 @@ sealed class NavigationDestination {
         }
 
         private fun <T : NavigationDestination> createInstance(kClass: KClass<T>, bundle: Bundle?): T? {
-            val primaryConstructor = kClass.constructors.firstOrNull()
-            return primaryConstructor?.let {
+            return kClass.primaryConstructor?.let {
                 val args = it.parameters.associateWith { parameter ->
                     bundle?.get(parameter.name)
                 }
