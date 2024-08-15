@@ -27,8 +27,10 @@ import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.theme.Shapes
@@ -48,7 +50,10 @@ fun SwissTransferFab(
         shape = fabType.shape,
         elevation = elevation,
     ) {
-        Icon(imageVector = AppIcons.Add, contentDescription = "TODO")
+        Icon(
+            imageVector = AppIcons.Add,
+            contentDescription = stringResource(id = R.string.contentDescriptionCreateNewTransferButton),
+        )
     }
 }
 
