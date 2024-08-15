@@ -18,6 +18,10 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -37,8 +41,15 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 fun MainNavHost(
     navController: NavHostController,
     windowAdaptiveInfo: WindowAdaptiveInfo,
+    currentDestination: MainNavigation,
 ) {
-    NavHost(navController, MainNavigation.startDestination, modifier = Modifier.safeDrawingPadding()) {
+    NavHost(
+        navController = navController,
+        startDestination = MainNavigation.startDestination,
+        modifier = Modifier.safeDrawingPadding(),
+        enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
+        exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
+    ) {
         composable<SentDestination> {
             SentScreen(
                 navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },

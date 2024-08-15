@@ -45,7 +45,7 @@ fun MainScreen() {
     }
 
     MainScaffold(navController, currentDestination, windowAdaptiveInfo) {
-        MainNavHost(navController, windowAdaptiveInfo)
+        MainNavHost(navController, windowAdaptiveInfo, currentDestination)
     }
 }
 
