@@ -40,32 +40,28 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen() {
-    Scaffold(
+    BottomStickyButtonScaffold(
         topBar = { SwissTransferTobAppBar() },
-    ) { contentPaddings ->
-        BottomStickyButtonScaffold(
-            modifier = Modifier.padding(contentPaddings),
-            topButton = { modifier ->
-                LargeButton(
-                    modifier = modifier,
-                    titleRes = R.string.appName,
-                    imageVector = AppIcons.Add,
-                    style = ButtonType.TERTIARY,
-                    onClick = {},
-                )
-            },
-            bottomButton = { modifier ->
-                LargeButton(
-                    modifier = modifier,
-                    titleRes = R.string.appName,
-                    style = ButtonType.PRIMARY,
-                    onClick = {},
-                )
-            },
-        ) {
-            Column {
-                Text("ImportFilesScreen")
-            }
+        topButton = { modifier ->
+            LargeButton(
+                modifier = modifier,
+                titleRes = R.string.appName,
+                imageVector = AppIcons.Add,
+                style = ButtonType.TERTIARY,
+                onClick = {},
+            )
+        },
+        bottomButton = { modifier ->
+            LargeButton(
+                modifier = modifier,
+                titleRes = R.string.appName,
+                style = ButtonType.PRIMARY,
+                onClick = {},
+            )
+        },
+    ) {
+        Column {
+            Text("ImportFilesScreen")
         }
     }
 }
