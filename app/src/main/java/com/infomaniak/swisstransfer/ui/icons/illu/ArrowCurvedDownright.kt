@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.AppIcons.previewSize
 
 val AppIcons.Illu.ArrowCurvedDownright: ImageVector
     get() {
@@ -83,7 +84,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.ArrowCurvedDownright,
             contentDescription = null,
-            modifier = Modifier.size(250.dp)
+            modifier = Modifier.size(previewSize)
         )
     }
 }
