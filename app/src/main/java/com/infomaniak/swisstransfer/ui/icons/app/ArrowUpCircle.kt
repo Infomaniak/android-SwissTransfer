@@ -93,7 +93,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.ArrowUpCircle,
             contentDescription = null,
-            modifier = Modifier.size(250.dp)
+            modifier = Modifier.size(AppIcons.previewSize)
         )
     }
 }

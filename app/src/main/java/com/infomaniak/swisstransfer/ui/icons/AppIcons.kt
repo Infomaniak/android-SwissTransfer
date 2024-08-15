@@ -18,6 +18,10 @@
 
 package com.infomaniak.swisstransfer.ui.icons
 
+import androidx.compose.ui.unit.dp
+
 object AppIcons {
     object Illu
+
+    val previewSize = 250.dp
 }
