@@ -65,4 +65,5 @@ data class CustomColorScheme(
     val secondaryTextColor: Color = Color.Unspecified,
     val navigationItemBackground: Color = Color.Unspecified,
     val divider: Color = Color.Unspecified,
+    val tertiaryButtonBackground: Color = Color.Unspecified,
 )

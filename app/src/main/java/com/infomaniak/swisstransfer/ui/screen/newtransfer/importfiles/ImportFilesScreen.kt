@@ -18,10 +18,106 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.compose.material3.Text
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.Shapes
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen() {
-    Text("ImportFilesScreen")
+    Scaffold(
+        topBar = { SwissTransferTobAppBar() },
+    ) { contentPaddings ->
+        BottomStickyButtonScaffold(
+            modifier = Modifier.padding(contentPaddings),
+            topButton = { modifier ->
+                LargeButton(
+                    modifier = modifier,
+                    titleRes = R.string.appName,
+                    imageVector = AppIcons.Add,
+                    style = ButtonType.TERTIARY,
+                    onClick = {},
+                )
+            },
+            bottomButton = { modifier ->
+                LargeButton(
+                    modifier = modifier,
+                    titleRes = R.string.appName,
+                    style = ButtonType.PRIMARY,
+                    onClick = {},
+                )
+            },
+        ) {
+            Column {
+                Text("ImportFilesScreen")
+            }
+        }
+    }
+}
+
+@Composable
+private fun LargeButton(
+    modifier: Modifier = Modifier,
+    @StringRes titleRes: Int,
+    style: ButtonType,
+    onClick: () -> Unit,
+    imageVector: ImageVector? = null,
+) {
+    Button(
+        modifier = modifier.height(56.dp),
+        colors = style.buttonColors(),
+        shape = Shapes.medium,
+        onClick = onClick,
+    ) {
+        imageVector?.let {
+            Icon(modifier = Modifier.size(Margin.Medium), imageVector = it, contentDescription = null)
+            Spacer(modifier = Modifier.width(Margin.Small))
+        }
+        Text(text = stringResource(id = titleRes))
+    }
+}
+
+enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
+    PRIMARY({
+        ButtonDefaults.buttonColors(
+            containerColor = SwissTransferTheme.materialColors.primary,
+            contentColor = SwissTransferTheme.materialColors.onPrimary,
+        )
+    }),
+    SECONDARY({
+        ButtonDefaults.buttonColors(
+            containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
+            contentColor = SwissTransferTheme.materialColors.primary,
+        )
+    }),
+    TERTIARY({
+        ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = SwissTransferTheme.materialColors.primary,
+        )
+    }),
+}
+
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun ImportFilesScreenPreview() {
+    SwissTransferTheme {
+        ImportFilesScreen()
+    }
 }

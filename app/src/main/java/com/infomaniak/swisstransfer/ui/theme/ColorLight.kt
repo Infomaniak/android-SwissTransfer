@@ -32,6 +32,7 @@ private const val elephant = 0xFF666666
 private const val shark = 0xFF9F9F9F
 private const val mouse = 0xFFE0E0E0
 private const val polar_bear = 0xFFF5F5F5
+private const val rabbit = 0xFFF1F1F1
 
 private const val specific1 = 0xFFD8F0E3
 private const val specific2 = 0xFFCCDBDE
@@ -62,4 +63,5 @@ val CustomLightColorScheme = CustomColorScheme(
     secondaryTextColor = Color(elephant),
     navigationItemBackground = LightColorScheme.background,
     divider = Color(mouse),
+    tertiaryButtonBackground = Color(rabbit),
 )
