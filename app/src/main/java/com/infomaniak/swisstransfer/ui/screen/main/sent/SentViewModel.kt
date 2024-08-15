@@ -19,7 +19,11 @@
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 
-class SentViewModel: ViewModel() {
-    val transfers = emptyList<Any>()
+class SentViewModel : ViewModel() {
+    val transfers = flow<List<Any>> { emit(emptyList()) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }

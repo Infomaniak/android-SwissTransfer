@@ -24,11 +24,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
@@ -42,17 +44,20 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun SentScreen(
     navigateToDetails: (transferId: Int) -> Unit,
+    sentViewModel: SentViewModel = viewModel<SentViewModel>(),
 ) {
-    val viewmodel = viewModel<SentViewModel>()
+    val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
     SentScreen(
-        isEmpty = viewmodel.transfers.isEmpty(),
+        transfers = transfers,
         navType = LocalNavType.current,
     )
 }
 
 @Composable
-private fun SentScreen(isEmpty: Boolean, navType: NavigationSuiteType) {
-    if (isEmpty) {
+private fun SentScreen(transfers: List<Any>?, navType: NavigationSuiteType) {
+    if (transfers == null) return
+
+    if (transfers.isEmpty()) {
         EmptyScreen()
     } else {
         TransferScreen(navType)
@@ -108,7 +113,7 @@ private fun SentScreenMobilePreview() {
     SwissTransferTheme {
         Surface {
             SentScreen(
-                isEmpty = true,
+                transfers = emptyList(),
                 navType = NavigationSuiteType.NavigationBar,
             )
         }
@@ -121,7 +126,7 @@ private fun SentScreenTabletPreview() {
     SwissTransferTheme {
         Surface {
             SentScreen(
-                isEmpty = true,
+                transfers = emptyList(),
                 navType = NavigationSuiteType.NavigationRail,
             )
         }
