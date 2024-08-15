@@ -31,9 +31,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 fun NewTransferScreen() {
     val navController = rememberNavController()
 
-    Scaffold { paddingValues ->
-        NewTransferNavHost(navController, modifier = Modifier.padding(paddingValues))
-    }
+    NewTransferNavHost(navController)
 }
 
 @PreviewMobile
