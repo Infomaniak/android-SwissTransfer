@@ -19,6 +19,7 @@
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,11 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
+import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.illu.ArrowCurvedDownright
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -84,10 +88,29 @@ fun EmptyScreen() {
             text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular
         )
-        NewTransferFab(
-            modifier = Modifier.padding(top = Margin.ExtraLarge),
-            newTransferFabType = NewTransferFabType.EMPTY_STATE,
-        )
+        Spacer(modifier = Modifier.height(Margin.Medium))
+        ConstraintLayout {
+            val (icon, fab) = createRefs()
+
+            Icon(
+                modifier = Modifier
+                    .constrainAs(icon) {
+                        top.linkTo(parent.top)
+                        end.linkTo(fab.start, margin = Margin.Small)
+                    },
+                imageVector = AppIcons.Illu.ArrowCurvedDownright,
+                contentDescription = null,
+            )
+            NewTransferFab(
+                modifier = Modifier
+                    .constrainAs(fab) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top, Margin.Large)
+                    },
+                newTransferFabType = NewTransferFabType.EMPTY_STATE,
+            )
+        }
     }
 }
 
@@ -109,7 +132,7 @@ private fun TransferScreen(
 
 @PreviewMobile
 @Composable
-private fun SentScreenMobilePreview() {
+private fun SentScreenAMobilePreview() {
     SwissTransferTheme {
         Surface {
             SentScreen(
