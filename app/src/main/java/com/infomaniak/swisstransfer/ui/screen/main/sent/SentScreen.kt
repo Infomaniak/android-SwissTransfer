@@ -73,10 +73,9 @@ fun EmptyScreen() {
             style = SwissTransferTheme.typography.specificMedium32,
             textAlign = TextAlign.Center,
         )
+        Spacer(modifier = Modifier.height(Margin.Medium))
         Text(
-            modifier = Modifier
-                .widthIn(max = maxWidth)
-                .padding(top = Margin.Medium),
+            modifier = Modifier.widthIn(max = maxWidth),
             text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular
         )

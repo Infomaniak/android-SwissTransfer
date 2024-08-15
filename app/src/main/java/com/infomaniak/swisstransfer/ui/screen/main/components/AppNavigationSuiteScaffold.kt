@@ -117,7 +117,7 @@ private fun AppNavigationRail(
     NavigationRail(
         header = {
             NewTransferFab(
-                modifier = Modifier.padding(vertical = Margin.Large),
+                modifier = Modifier.padding(vertical = Margin.Medium),
                 newTransferFabType = NewTransferFabType.NAVIGATION_RAIL,
             )
         },
