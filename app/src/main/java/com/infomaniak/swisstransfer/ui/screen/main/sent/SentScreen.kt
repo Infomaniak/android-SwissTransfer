@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.MainScreenFab
-import com.infomaniak.swisstransfer.ui.components.MainScreenFabType
+import com.infomaniak.swisstransfer.ui.components.NewTransferFab
+import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -80,9 +80,9 @@ fun EmptyScreen() {
             text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular
         )
-        MainScreenFab(
+        NewTransferFab(
             modifier = Modifier.padding(top = Margin.ExtraLarge),
-            mainScreenFabType = MainScreenFabType.EMPTY_STATE,
+            newTransferFabType = NewTransferFabType.EMPTY_STATE,
         )
     }
 }
@@ -93,7 +93,7 @@ private fun TransferScreen(
 ) {
     Scaffold(
         floatingActionButton = {
-            if (navType == NavigationSuiteType.NavigationBar) MainScreenFab(mainScreenFabType = MainScreenFabType.BOTTOM_BAR)
+            if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
         }
     ) { contentPadding ->
         Text(

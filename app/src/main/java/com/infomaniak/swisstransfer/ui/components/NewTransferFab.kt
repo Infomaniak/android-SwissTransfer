@@ -29,20 +29,20 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 
 @Composable
-fun MainScreenFab(
+fun NewTransferFab(
     modifier: Modifier = Modifier,
-    mainScreenFabType: MainScreenFabType
+    newTransferFabType: NewTransferFabType
 ) {
     val context = LocalContext.current
     SwissTransferFab(
         modifier = modifier,
-        fabType = mainScreenFabType.fabType,
-        elevation = mainScreenFabType.elevation(),
+        fabType = newTransferFabType.fabType,
+        elevation = newTransferFabType.elevation(),
         onClick = { context.startActivity(Intent(context, NewTransferActivity::class.java)) },
     )
 }
 
-enum class MainScreenFabType(val fabType: FabType, private val defaultElevation: Dp?) {
+enum class NewTransferFabType(val fabType: FabType, private val defaultElevation: Dp?) {
     BOTTOM_BAR(FabType.NORMAL, null),
     EMPTY_STATE(FabType.BIG, null),
     NAVIGATION_RAIL(FabType.NORMAL, 0.dp);

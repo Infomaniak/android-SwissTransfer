@@ -27,8 +27,8 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.swisstransfer.ui.components.MainScreenFab
-import com.infomaniak.swisstransfer.ui.components.MainScreenFabType
+import com.infomaniak.swisstransfer.ui.components.NewTransferFab
+import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -116,9 +116,9 @@ private fun AppNavigationRail(
 ) {
     NavigationRail(
         header = {
-            MainScreenFab(
+            NewTransferFab(
                 modifier = Modifier.padding(vertical = Margin.Large),
-                mainScreenFabType = MainScreenFabType.NAVIGATION_RAIL,
+                newTransferFabType = NewTransferFabType.NAVIGATION_RAIL,
             )
         },
         containerColor = SwissTransferTheme.colors.navigationItemBackground
