@@ -18,7 +18,6 @@
 
 package com.infomaniak.swisstransfer.ui.components
 
-import android.content.Intent
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
+import com.infomaniak.swisstransfer.ui.utils.launchActivity
 
 @Composable
 fun NewTransferFab(
@@ -38,7 +38,7 @@ fun NewTransferFab(
         modifier = modifier,
         fabType = newTransferFabType.fabType,
         elevation = newTransferFabType.elevation(),
-        onClick = { context.startActivity(Intent(context, NewTransferActivity::class.java)) },
+        onClick = { context.launchActivity(NewTransferActivity::class) },
     )
 }
 
