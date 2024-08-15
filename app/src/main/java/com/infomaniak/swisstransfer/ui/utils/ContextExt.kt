@@ -16,16 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui.theme
+package com.infomaniak.swisstransfer.ui.utils
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.unit.dp
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import kotlin.reflect.KClass
 
-val Shapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(50),
-)
+
+fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
+    startActivity(Intent(this, kClass.java), options)
+}

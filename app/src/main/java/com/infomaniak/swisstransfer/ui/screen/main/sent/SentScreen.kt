@@ -18,13 +18,117 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.NewTransferFab
+import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SentScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    val navType = LocalNavType.current
+fun SentScreen(
+    navigateToDetails: (transferId: Int) -> Unit,
+    sentViewModel: SentViewModel = viewModel<SentViewModel>(),
+) {
+    val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
+    SentScreen(
+        transfers = transfers,
+        navType = LocalNavType.current,
+    )
+}
 
-    Text("Sent screen $navType")
+@Composable
+private fun SentScreen(transfers: List<Any>?, navType: NavigationSuiteType) {
+    if (transfers == null) return
+
+    if (transfers.isEmpty()) {
+        EmptyScreen()
+    } else {
+        TransferScreen(navType)
+    }
+}
+
+@Composable
+fun EmptyScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        val maxWidth = 300.dp
+        Text(
+            modifier = Modifier.widthIn(max = maxWidth),
+            text = stringResource(id = R.string.sentEmptyTitle),
+            style = SwissTransferTheme.typography.specificMedium32,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(Margin.Medium))
+        Text(
+            modifier = Modifier.widthIn(max = maxWidth),
+            text = stringResource(id = R.string.firstTransferDescription),
+            style = SwissTransferTheme.typography.bodyRegular
+        )
+        NewTransferFab(
+            modifier = Modifier.padding(top = Margin.ExtraLarge),
+            newTransferFabType = NewTransferFabType.EMPTY_STATE,
+        )
+    }
+}
+
+@Composable
+private fun TransferScreen(
+    navType: NavigationSuiteType,
+) {
+    Scaffold(
+        floatingActionButton = {
+            if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
+        }
+    ) { contentPadding ->
+        Text(
+            text = "Sent screen",
+            modifier = Modifier.padding(contentPadding),
+        )
+    }
+}
+
+@PreviewMobile
+@Composable
+private fun SentScreenMobilePreview() {
+    SwissTransferTheme {
+        Surface {
+            SentScreen(
+                transfers = emptyList(),
+                navType = NavigationSuiteType.NavigationBar,
+            )
+        }
+    }
+}
+
+@PreviewTablet
+@Composable
+private fun SentScreenTabletPreview() {
+    SwissTransferTheme {
+        Surface {
+            SentScreen(
+                transfers = emptyList(),
+                navType = NavigationSuiteType.NavigationRail,
+            )
+        }
+    }
 }

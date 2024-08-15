@@ -19,8 +19,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -29,6 +27,8 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.swisstransfer.ui.components.NewTransferFab
+import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -120,9 +120,10 @@ private fun AppNavigationRail(
 ) {
     NavigationRail(
         header = {
-            FloatingActionButton(onClick = {}, modifier = Modifier.padding(bottom = Margin.Large)) {
-                Icon(Icons.Default.Add, contentDescription = null)
-            }
+            NewTransferFab(
+                modifier = Modifier.padding(vertical = Margin.Medium),
+                newTransferFabType = NewTransferFabType.NAVIGATION_RAIL,
+            )
         },
         containerColor = SwissTransferTheme.colors.navigationItemBackground
     ) {

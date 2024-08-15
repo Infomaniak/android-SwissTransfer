@@ -18,10 +18,55 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.ui.components.NewTransferFab
+import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
+import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    Text("Received screen")
+    ReceivedScreen(navType = LocalNavType.current)
+}
+
+@Composable
+private fun ReceivedScreen(navType: NavigationSuiteType) {
+    Scaffold(
+        floatingActionButton = {
+            if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
+        }
+    ) { contentPadding ->
+        Text(
+            text = "Received screen",
+            modifier = Modifier.padding(contentPadding),
+        )
+    }
+}
+
+@PreviewMobile
+@Composable
+private fun ReceivedScreenMobilePreview() {
+    SwissTransferTheme {
+        Surface {
+            ReceivedScreen(navType = NavigationSuiteType.NavigationBar)
+        }
+    }
+}
+
+@PreviewTablet
+@Composable
+private fun ReceivedScreenTabletPreview() {
+    SwissTransferTheme {
+        Surface {
+            ReceivedScreen(navType = NavigationSuiteType.NavigationRail)
+        }
+    }
 }
