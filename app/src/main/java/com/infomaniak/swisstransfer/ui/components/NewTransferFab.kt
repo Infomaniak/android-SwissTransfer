@@ -50,7 +50,7 @@ enum class NewTransferFabType(val fabType: FabType, private val defaultElevation
     @Composable
     fun elevation(): FloatingActionButtonElevation {
         return if (defaultElevation != null) {
-            FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp)
+            FloatingActionButtonDefaults.elevation(defaultElevation)
         } else {
             FloatingActionButtonDefaults.elevation()
         }
