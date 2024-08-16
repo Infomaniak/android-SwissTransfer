@@ -75,6 +75,7 @@ private fun LargeButton(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
     style: ButtonType,
+    enabled: Boolean = true,
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
@@ -82,6 +83,7 @@ private fun LargeButton(
         modifier = modifier.height(56.dp),
         colors = style.buttonColors(),
         shape = Shapes.medium,
+        enabled = enabled,
         onClick = onClick,
     ) {
         imageVector?.let {
