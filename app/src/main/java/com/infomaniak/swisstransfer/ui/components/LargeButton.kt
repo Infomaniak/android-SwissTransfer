@@ -80,6 +80,12 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
             contentColor = SwissTransferTheme.materialColors.primary,
         )
     }),
+    ERROR({
+        ButtonDefaults.buttonColors(
+            containerColor = SwissTransferTheme.materialColors.error,
+            contentColor = SwissTransferTheme.materialColors.onError,
+        )
+    }),
 }
 
 @Preview(name = "Light")

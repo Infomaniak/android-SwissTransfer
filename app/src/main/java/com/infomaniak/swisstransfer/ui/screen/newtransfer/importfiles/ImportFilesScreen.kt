@@ -18,22 +18,35 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
-import com.infomaniak.swisstransfer.ui.components.ButtonType
-import com.infomaniak.swisstransfer.ui.components.LargeButton
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.icons.illu.ArrowCurvedDownright
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen() {
+    var showImportChoiceBottomSheet by remember { mutableStateOf(false) }
+
     BottomStickyButtonScaffold(
         topBar = { SwissTransferTobAppBar() },
         topButton = { modifier ->
@@ -42,7 +55,7 @@ fun ImportFilesScreen() {
                 titleRes = R.string.buttonAddFiles,
                 imageVector = AppIcons.Add,
                 style = ButtonType.TERTIARY,
-                onClick = { /*TODO*/ },
+                onClick = { showImportChoiceBottomSheet = true },
             )
         },
         bottomButton = { modifier ->
@@ -54,7 +67,151 @@ fun ImportFilesScreen() {
         },
     ) {
         Column {
-            Text("ImportFilesScreen")
+            ImportChoiceBottomSheet(
+                showImportChoiceBottomSheet = { showImportChoiceBottomSheet },
+                onDismissRequest = { showImportChoiceBottomSheet = false },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ImportChoiceBottomSheet(
+    showImportChoiceBottomSheet: () -> Boolean,
+    onDismissRequest: () -> Unit,
+) {
+    if (showImportChoiceBottomSheet()) {
+        SwissTransferBottomSheet(
+            onDismissRequest = onDismissRequest,
+            imageVector = AppIcons.Illu.ArrowCurvedDownright,
+            titleRes = R.string.appName,
+            descriptionRes = R.string.sentEmptyTitle,
+            content = {
+                Surface(
+                    modifier = Modifier.size(200.dp),
+                    color = Color.Gray,
+                ) {}
+            },
+            topButton = {
+                LargeButton(
+                    modifier = it,
+                    titleRes = R.string.appName,
+                    style = ButtonType.ERROR,
+                    onClick = { /*TODO*/ },
+                )
+            },
+            bottomButton = {
+                LargeButton(
+                    modifier = it,
+                    titleRes = R.string.appName,
+                    style = ButtonType.TERTIARY,
+                    onClick = { /*TODO*/ },
+                )
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SwissTransferBottomSheet(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    imageVector: ImageVector? = null,
+    @StringRes titleRes: Int,
+    @StringRes descriptionRes: Int? = null,
+    content: @Composable (() -> Unit)? = null,
+    topButton: @Composable ((Modifier) -> Unit)? = null,
+    bottomButton: @Composable ((Modifier) -> Unit)? = null,
+) {
+    ModalBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+    ) {
+        BottomSheetContent(
+            imageVector = imageVector,
+            titleRes = titleRes,
+            descriptionRes = descriptionRes,
+            content = content,
+            topButton = topButton,
+            bottomButton = bottomButton,
+        )
+    }
+}
+
+@Composable
+private fun BottomSheetContent(
+    imageVector: ImageVector?,
+    titleRes: Int,
+    descriptionRes: Int?,
+    content: @Composable (() -> Unit)?,
+    topButton: @Composable ((Modifier) -> Unit)? = null,
+    bottomButton: @Composable ((Modifier) -> Unit)? = null,
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        imageVector?.let {
+            Icon(imageVector = imageVector, contentDescription = null)
+            Spacer(modifier = Modifier.height(Margin.Large))
+        }
+
+        Text(
+            text = stringResource(titleRes),
+            style = SwissTransferTheme.typography.bodyMedium,
+            color = SwissTransferTheme.colors.primaryTextColor,
+        )
+        Spacer(modifier = Modifier.height(Margin.Large))
+
+        descriptionRes?.let {
+            Text(
+                text = stringResource(it),
+                style = SwissTransferTheme.typography.bodyRegular,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+            )
+            Spacer(modifier = Modifier.height(Margin.Large))
+        }
+
+        content?.let {
+            it()
+            Spacer(modifier = Modifier.height(Margin.Large))
+        }
+
+        DoubleButtonCombo(topButton = topButton, bottomButton = bottomButton)
+    }
+}
+
+@Preview(widthDp = 400)
+@Preview(widthDp = 400, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun BottomSheetDefaultsPreview() {
+    SwissTransferTheme {
+        Surface {
+            BottomSheetContent(
+                imageVector = AppIcons.Illu.ArrowCurvedDownright,
+                titleRes = R.string.appName,
+                descriptionRes = R.string.sentEmptyTitle,
+                content = {
+                    Surface(
+                        modifier = Modifier.size(200.dp),
+                        color = Color.Gray,
+                    ) {}
+                },
+                topButton = {
+                    LargeButton(
+                        modifier = it,
+                        titleRes = R.string.appName,
+                        style = ButtonType.ERROR,
+                        onClick = { /*TODO*/ },
+                    )
+                },
+                bottomButton = {
+                    LargeButton(
+                        modifier = it,
+                        titleRes = R.string.appName,
+                        style = ButtonType.TERTIARY,
+                        onClick = { /*TODO*/ },
+                    )
+                },
+            )
         }
     }
 }
