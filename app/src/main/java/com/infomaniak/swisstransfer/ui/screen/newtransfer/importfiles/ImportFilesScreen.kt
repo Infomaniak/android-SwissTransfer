@@ -18,10 +18,52 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen() {
-    Text("ImportFilesScreen")
+    BottomStickyButtonScaffold(
+        topBar = { SwissTransferTobAppBar() },
+        topButton = { modifier ->
+            LargeButton(
+                modifier = modifier,
+                titleRes = R.string.buttonAddFiles,
+                imageVector = AppIcons.Add,
+                style = ButtonType.TERTIARY,
+                onClick = { /*TODO*/ },
+            )
+        },
+        bottomButton = { modifier ->
+            LargeButton(
+                modifier = modifier,
+                titleRes = R.string.buttonNext,
+                onClick = { /*TODO*/ },
+            )
+        },
+    ) {
+        Column {
+            Text("ImportFilesScreen")
+        }
+    }
+}
+
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun ImportFilesScreenPreview() {
+    SwissTransferTheme {
+        ImportFilesScreen()
+    }
 }

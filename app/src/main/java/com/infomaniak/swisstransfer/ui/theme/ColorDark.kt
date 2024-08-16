@@ -57,4 +57,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     secondaryTextColor = Color(shark),
     navigationItemBackground = Color(dark2),
     divider = Color(dark3),
+    tertiaryButtonBackground = Color(dark2),
 )

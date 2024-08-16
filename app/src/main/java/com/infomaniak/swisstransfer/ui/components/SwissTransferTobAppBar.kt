@@ -16,24 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui
+package com.infomaniak.swisstransfer.ui.components
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-class NewTransferActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SwissTransferTheme {
-                NewTransferScreen()
-            }
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun SwissTransferTobAppBar() {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = SwissTransferTheme.materialColors.tertiary,
+            titleContentColor = Color.White, // TODO
+        ),
+        title = {
+            Text("Title")
         }
-    }
+    )
 }
