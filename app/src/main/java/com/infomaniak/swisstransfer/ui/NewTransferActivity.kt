@@ -23,6 +23,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 class NewTransferActivity : ComponentActivity() {
 
@@ -30,7 +31,9 @@ class NewTransferActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NewTransferScreen()
+            SwissTransferTheme {
+                NewTransferScreen()
+            }
         }
     }
 }
