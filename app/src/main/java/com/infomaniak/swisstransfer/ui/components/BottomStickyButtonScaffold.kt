@@ -27,8 +27,8 @@ import androidx.compose.ui.Modifier
 fun BottomStickyButtonScaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
-    topButton: @Composable (Modifier) -> Unit,
-    bottomButton: @Composable (Modifier) -> Unit,
+    topButton: @Composable ((Modifier) -> Unit)? = null,
+    bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
     Scaffold(topBar = topBar) { contentPaddings ->

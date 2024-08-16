@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -81,31 +82,21 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
     }),
 }
 
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun LargeButtonPreview() {
     SwissTransferTheme {
-        Column {
-            LargeButton(
-                titleRes = R.string.appName,
-                imageVector = AppIcons.Add,
-                onClick = {},
-            )
-            Spacer(modifier = Modifier.height(Margin.Small))
-            LargeButton(
-                titleRes = R.string.appName,
-                imageVector = AppIcons.Add,
-                style = ButtonType.SECONDARY,
-                onClick = {},
-            )
-            Spacer(modifier = Modifier.height(Margin.Small))
-            LargeButton(
-                titleRes = R.string.appName,
-                imageVector = AppIcons.Add,
-                style = ButtonType.TERTIARY,
-                onClick = {},
-            )
+        Column(modifier = Modifier.background(SwissTransferTheme.materialColors.background)) {
+            ButtonType.entries.forEach {
+                LargeButton(
+                    titleRes = R.string.appName,
+                    style = it,
+                    imageVector = AppIcons.Add,
+                    onClick = {},
+                )
+                Spacer(modifier = Modifier.height(Margin.Small))
+            }
         }
     }
 }
