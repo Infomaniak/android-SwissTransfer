@@ -29,7 +29,7 @@ fun BottomStickyButtonScaffold(
     topBar: @Composable () -> Unit,
     topButton: @Composable (Modifier) -> Unit,
     bottomButton: @Composable (Modifier) -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Scaffold(topBar = topBar) { contentPaddings ->
         Column(
@@ -37,9 +37,7 @@ fun BottomStickyButtonScaffold(
                 .fillMaxWidth()
                 .padding(contentPaddings)
         ) {
-            Box(modifier = Modifier.weight(1f)) {
-                content()
-            }
+            Box(modifier = Modifier.weight(1f), content = content)
             DoubleButtonCombo(topButton, bottomButton)
         }
     }

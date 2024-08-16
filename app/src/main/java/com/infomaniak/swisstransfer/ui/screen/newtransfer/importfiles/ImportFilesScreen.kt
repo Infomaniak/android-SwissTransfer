@@ -49,7 +49,6 @@ fun ImportFilesScreen() {
             LargeButton(
                 modifier = modifier,
                 titleRes = R.string.buttonNext,
-                style = ButtonType.PRIMARY,
                 onClick = { /*TODO*/ },
             )
         },

@@ -25,6 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.Margin
 
+private val WIDTH_LIMIT = 800.dp
+private val WIDTH_THRESHOLD = 500.dp
+
 @Composable
 fun ColumnScope.DoubleButtonCombo(
     topButton: @Composable (Modifier) -> Unit,
@@ -32,45 +35,52 @@ fun ColumnScope.DoubleButtonCombo(
 ) {
     BoxWithConstraints(
         modifier = Modifier
-            .widthIn(max = 800.dp)
+            .widthIn(max = WIDTH_LIMIT)
             .align(Alignment.CenterHorizontally),
     ) {
-        if (maxWidth < 500.dp) {
-            Column(Modifier.fillMaxWidth()) {
-                topButton(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Margin.Medium)
-                )
-
-                Spacer(modifier = Modifier.height(Margin.Medium))
-
-                bottomButton(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Large)
-                )
-            }
+        if (maxWidth < WIDTH_THRESHOLD) {
+            VerticallyStackedButtons(topButton, bottomButton)
         } else {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Margin.Large),
-                horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                topButton(
-                    Modifier
-                        .weight(1f)
-                        .padding(start = Margin.Medium)
-                )
-
-                bottomButton(
-                    Modifier
-                        .weight(1f)
-                        .padding(end = Margin.Medium)
-                )
-            }
+            HorizontallyStackedButtons(topButton, bottomButton)
         }
+    }
+}
+
+@Composable
+private fun VerticallyStackedButtons(
+    topButton: @Composable (Modifier) -> Unit,
+    bottomButton: @Composable (Modifier) -> Unit
+) {
+    Column(Modifier.fillMaxWidth()) {
+        topButton(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Margin.Medium)
+        )
+
+        Spacer(modifier = Modifier.height(Margin.Medium))
+
+        bottomButton(
+            Modifier
+                .fillMaxWidth()
+                .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Large)
+        )
+    }
+}
+
+@Composable
+private fun HorizontallyStackedButtons(
+    topButton: @Composable (Modifier) -> Unit,
+    bottomButton: @Composable (Modifier) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
+        horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        topButton(Modifier.weight(1f))
+        bottomButton(Modifier.weight(1f))
     }
 }
