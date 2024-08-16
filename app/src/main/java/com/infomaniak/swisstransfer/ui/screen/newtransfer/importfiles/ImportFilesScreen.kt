@@ -39,7 +39,7 @@ fun ImportFilesScreen() {
         topButton = { modifier ->
             LargeButton(
                 modifier = modifier,
-                titleRes = R.string.appName,
+                titleRes = R.string.buttonAddFiles,
                 imageVector = AppIcons.Add,
                 style = ButtonType.TERTIARY,
                 onClick = { /*TODO*/ },
@@ -48,7 +48,7 @@ fun ImportFilesScreen() {
         bottomButton = { modifier ->
             LargeButton(
                 modifier = modifier,
-                titleRes = R.string.appName,
+                titleRes = R.string.buttonNext,
                 style = ButtonType.PRIMARY,
                 onClick = { /*TODO*/ },
             )
