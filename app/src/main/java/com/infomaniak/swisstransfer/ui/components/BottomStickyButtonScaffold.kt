@@ -21,10 +21,7 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.theme.Margin
 
 @Composable
 fun BottomStickyButtonScaffold(
@@ -44,56 +41,6 @@ fun BottomStickyButtonScaffold(
                 content()
             }
             DoubleButtonCombo(topButton, bottomButton)
-        }
-    }
-}
-
-@Composable
-private fun ColumnScope.DoubleButtonCombo(
-    topButton: @Composable (Modifier) -> Unit,
-    bottomButton: @Composable (Modifier) -> Unit
-) {
-    BoxWithConstraints(
-        modifier = Modifier
-            .widthIn(max = 800.dp)
-            .align(Alignment.CenterHorizontally),
-    ) {
-        if (maxWidth < 500.dp) {
-            Column(Modifier.fillMaxWidth()) {
-                topButton(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Margin.Medium)
-                )
-
-                Spacer(modifier = Modifier.height(Margin.Medium))
-
-                bottomButton(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Large)
-                )
-            }
-        } else {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = Margin.Large),
-                horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                topButton(
-                    Modifier
-                        .weight(1f)
-                        .padding(start = Margin.Medium)
-                )
-
-                bottomButton(
-                    Modifier
-                        .weight(1f)
-                        .padding(end = Margin.Medium)
-                )
-            }
         }
     }
 }
