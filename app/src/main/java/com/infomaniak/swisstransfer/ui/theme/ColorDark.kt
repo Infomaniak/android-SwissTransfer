@@ -37,6 +37,9 @@ private const val specific2 = 0xFF334117
 private const val specific3 = 0xFF503E0F
 private const val specific4 = 0xFFEAC35D
 
+// Extra palette
+private const val error = 0xFFFC8878
+
 val DarkColorScheme = darkColorScheme(
     primary = Color(green_main),
     onPrimary = Color(dark1),
@@ -49,7 +52,11 @@ val DarkColorScheme = darkColorScheme(
     surface = Color(dark1), // Same value as background
     onSurface = Color(green_main),
     onSurfaceVariant = Color(rabbit),
+    surfaceContainerLow = Color(dark2), // Used for bottom sheet backgrounds
     surfaceContainerHighest = Color(dark2),
+
+    error = Color(error),
+    // onError: uses default  values
 )
 
 val CustomDarkColorScheme = CustomColorScheme(

@@ -43,6 +43,8 @@ private const val specific4 = 0xFFCF9E1B
 private const val on_primary = 0xFFF7FCFA
 private const val white = 0xFFFFFFFF
 
+private const val error = 0xFFF44336
+
 val LightColorScheme = lightColorScheme(
     primary = Color(green_main),
     onPrimary = Color(on_primary),
@@ -55,7 +57,11 @@ val LightColorScheme = lightColorScheme(
     surface = Color(white), // Same value as background
     onSurface = Color(green_main),
     onSurfaceVariant = Color(green_dark),
+    surfaceContainerLow = Color(white), // Same value as background. Used for bottom sheet backgrounds
     surfaceContainerHighest = Color(polar_bear),
+
+    error = Color(error),
+    // onError: uses default values
 )
 
 val CustomLightColorScheme = CustomColorScheme(
