@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen() {
-    var showImportChoiceBottomSheet by remember { mutableStateOf(false) }
+    var showUploadSourceChoiceBottomSheet by remember { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
         topBar = { SwissTransferTobAppBar() },
@@ -48,7 +48,7 @@ fun ImportFilesScreen() {
                 titleRes = R.string.buttonAddFiles,
                 imageVector = AppIcons.Add,
                 style = ButtonType.TERTIARY,
-                onClick = { showImportChoiceBottomSheet = true },
+                onClick = { showUploadSourceChoiceBottomSheet = true },
             )
         },
         bottomButton = { modifier ->
@@ -60,20 +60,20 @@ fun ImportFilesScreen() {
         },
     ) {
         Column {
-            ImportChoiceBottomSheet(
-                showImportChoiceBottomSheet = { showImportChoiceBottomSheet },
-                onDismissRequest = { showImportChoiceBottomSheet = false },
+            UploadSourceChoiceBottomSheet(
+                showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet },
+                onDismissRequest = { showUploadSourceChoiceBottomSheet = false },
             )
         }
     }
 }
 
 @Composable
-private fun ImportChoiceBottomSheet(
-    showImportChoiceBottomSheet: () -> Boolean,
+private fun UploadSourceChoiceBottomSheet(
+    showUploadSourceChoiceBottomSheet: () -> Boolean,
     onDismissRequest: () -> Unit,
 ) {
-    if (showImportChoiceBottomSheet()) {
+    if (showUploadSourceChoiceBottomSheet()) {
         SwissTransferBottomSheet(
             onDismissRequest = onDismissRequest,
             titleRes = R.string.transferUploadSourceChoiceTitle,
@@ -105,7 +105,7 @@ private fun ImportFilesScreenPreview() {
 private fun ImportChoiceBottomSheetPreview() {
     SwissTransferTheme {
         Surface {
-            ImportChoiceBottomSheet({ true }, {})
+            UploadSourceChoiceBottomSheet({ true }, {})
         }
     }
 }
