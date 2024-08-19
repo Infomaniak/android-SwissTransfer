@@ -27,4 +27,8 @@
     <string name="sentEmptyTitle">Our story begins here</string>
     <string name="sentTitle">Sent</string>
     <string name="settingsTitle">Settings</string>
+    <string name="transferUploadSourceChoiceCamera">Camera</string>
+    <string name="transferUploadSourceChoiceFiles">Browse files</string>
+    <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
+    <string name="transferUploadSourceChoiceTitle">Upload from</string>
 </resources>

@@ -34,7 +34,6 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Camera
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -69,7 +68,7 @@ fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick:
 private fun ChoiceItemPreview() {
     SwissTransferTheme {
         Surface {
-            BottomSheetItem(AppIcons.Camera, R.string.appName) {}
+            BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) {}
         }
     }
 }

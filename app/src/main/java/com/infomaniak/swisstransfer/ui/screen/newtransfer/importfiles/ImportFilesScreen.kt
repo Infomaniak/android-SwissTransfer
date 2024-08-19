@@ -76,14 +76,14 @@ private fun ImportChoiceBottomSheet(
     if (showImportChoiceBottomSheet()) {
         SwissTransferBottomSheet(
             onDismissRequest = onDismissRequest,
-            titleRes = R.string.appName,
+            titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
-                    BottomSheetItem(AppIcons.Camera, R.string.appName) { /*TODO*/ }
+                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /*TODO*/ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium), color = SwissTransferTheme.colors.divider)
-                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.appName) { /*TODO*/ }
+                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) { /*TODO*/ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium), color = SwissTransferTheme.colors.divider)
-                    BottomSheetItem(AppIcons.Folder, R.string.appName) { /*TODO*/ }
+                    BottomSheetItem(AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /*TODO*/ }
                 }
             },
         )
