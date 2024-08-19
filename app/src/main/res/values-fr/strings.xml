@@ -23,9 +23,21 @@
     <string name="receivedTitle">Recu</string>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
+    <string name="settingsCategoryAbout">A propos</string>
+    <string name="settingsCategoryDefaultSettings">Paramètres par défaut</string>
+    <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsOptionDiscoverInfomaniak">Découvrir Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Limite de téléchargements</string>
+    <string name="settingsOptionEmailLanguage">Langue de l’e-mail</string>
+    <string name="settingsOptionGiveFeedback">Donne ton avis</string>
+    <string name="settingsOptionNotifications">Notifications</string>
+    <string name="settingsOptionShareIdeas">Partage tes idées</string>
+    <string name="settingsOptionTheme">Thème</string>
+    <string name="settingsOptionValidityPeriod">Durée de validité</string>
     <string name="settingsTitle">Paramètres</string>
     <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
     <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>
     <string name="transferUploadSourceChoiceTitle">Télécharger à partir de</string>
+    <string name="version">Version</string>
 </resources>

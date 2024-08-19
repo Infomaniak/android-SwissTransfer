@@ -29,11 +29,13 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
-import com.infomaniak.swisstransfer.ui.icons.app.Folder
+import com.infomaniak.swisstransfer.ui.icons.app.Bell
+import com.infomaniak.swisstransfer.ui.icons.app.SpeechBubble
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
@@ -70,21 +72,28 @@ private fun SettingsScreen(onItemClick: (Any) -> Unit) {
     Column {
         Text(
             modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
-            text = "Settings",
+            text = stringResource(R.string.settingsTitle),
             style = SwissTransferTheme.typography.h1,
         )
 
-        SettingTitle(R.string.appName)
-        SettingItem(R.string.appName, AppIcons.Add, "Light", EndIconType.CHEVRON) {}
-        SettingItem(R.string.appName, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
-        SettingItem(R.string.appName, description = "1.1.2") {}
-        SettingItem(R.string.appName) {}
+        SettingTitle(R.string.settingsCategoryGeneral)
+        SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", EndIconType.CHEVRON) {}
+        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = EndIconType.CHEVRON) {}
 
         SettingDivider()
 
-        SettingTitle(R.string.appName)
-        SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
-        SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingTitle(R.string.settingsCategoryDefaultSettings)
+        SettingItem(R.string.settingsOptionValidityPeriod, AppIcons.Add, "TODO", endIcon = EndIconType.CHEVRON) {}
+        SettingItem(R.string.settingsOptionDownloadLimit, AppIcons.Add, "TODO", endIcon = EndIconType.CHEVRON) {}
+        SettingItem(R.string.settingsOptionEmailLanguage, AppIcons.SpeechBubble, "TODO", endIcon = EndIconType.CHEVRON) {}
+
+        SettingDivider()
+
+        SettingTitle(R.string.settingsCategoryAbout)
+        SettingItem(R.string.settingsOptionDiscoverInfomaniak, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.settingsOptionShareIdeas, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.settingsOptionGiveFeedback, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.version, description = "0.0.1") {}
     }
 }
 
