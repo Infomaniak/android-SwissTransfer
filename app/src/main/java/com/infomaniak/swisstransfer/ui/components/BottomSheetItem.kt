@@ -39,7 +39,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick: () -> Unit) {
     Button(
-        colors = ButtonDefaults.textButtonColors(),
+        colors = ButtonDefaults.textButtonColors(contentColor = SwissTransferTheme.colors.primaryTextColor),
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth(),
@@ -60,7 +60,6 @@ fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick:
             Spacer(modifier = Modifier.width(Margin.Large))
             Text(
                 text = stringResource(id = titleRes),
-                color = SwissTransferTheme.colors.primaryTextColor,
                 style = SwissTransferTheme.typography.bodyRegular,
             )
         }
