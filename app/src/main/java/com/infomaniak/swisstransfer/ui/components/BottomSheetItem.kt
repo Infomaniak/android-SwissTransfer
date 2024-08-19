@@ -51,7 +51,12 @@ fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick:
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(imageVector = imageVector, contentDescription = null, tint = SwissTransferTheme.materialColors.primary)
+            Icon(
+                modifier = Modifier.size(Margin.Large),
+                imageVector = imageVector,
+                contentDescription = null,
+                tint = SwissTransferTheme.materialColors.primary
+            )
             Spacer(modifier = Modifier.width(Margin.Large))
             Text(
                 text = stringResource(id = titleRes),
