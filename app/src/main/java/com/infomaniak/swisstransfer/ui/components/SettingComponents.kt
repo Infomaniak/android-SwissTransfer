@@ -59,42 +59,60 @@ fun SettingItem(
     icon: ImageVector? = null,
     description: String? = null,
     endIcon: EndIconType? = null,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
 ) {
-    SharpRippleButton(
+    val modifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = 56.dp)
+
+    onClick?.let {
+        SharpRippleButton(
+            modifier = modifier,
+            onClick = it,
+        ) {
+            SettingsItemContent(icon, titleRes, description, endIcon)
+        }
+    } ?: run {
+        Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
+            SettingsItemContent(icon, titleRes, description, endIcon)
+        }
+    }
+}
+
+@Composable
+private fun SettingsItemContent(
+    icon: ImageVector?,
+    titleRes: Int,
+    description: String?,
+    endIcon: EndIconType?
+) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 56.dp),
-        onClick = onClick
+            .padding(horizontal = horizontalMargin, vertical = verticalMargin),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = horizontalMargin, vertical = verticalMargin),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            icon?.let {
-                Icon(imageVector = it, contentDescription = null, tint = SwissTransferTheme.materialColors.primary)
-                Spacer(modifier = Modifier.width(Margin.Medium))
+        icon?.let {
+            Icon(imageVector = it, contentDescription = null, tint = SwissTransferTheme.materialColors.primary)
+            Spacer(modifier = Modifier.width(Margin.Medium))
+        }
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyRegular)
+
+            description?.let {
+                Text(
+                    text = it,
+                    style = SwissTransferTheme.typography.bodySmallRegular,
+                    color = SwissTransferTheme.colors.tertiaryTextColor,
+                )
             }
 
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyRegular)
+        }
 
-                description?.let {
-                    Text(
-                        text = it,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                        color = SwissTransferTheme.colors.tertiaryTextColor,
-                    )
-                }
-
-            }
-
-            endIcon?.let {
-                Icon(imageVector = it.icon, contentDescription = null, tint = SwissTransferTheme.colors.iconColor)
-            }
+        endIcon?.let {
+            Icon(imageVector = it.icon, contentDescription = null, tint = SwissTransferTheme.colors.iconColor)
         }
     }
 }
@@ -119,6 +137,7 @@ private fun SettingItemPreview() {
                 SettingTitle(R.string.appName)
                 SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
                 SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, description = "0.0.1", onClick = null)
             }
         }
     }

@@ -20,6 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,7 +71,7 @@ fun SettingsScreenWrapper(
 
 @Composable
 private fun SettingsScreen(onItemClick: (Any) -> Unit) {
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Text(
             modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
             text = stringResource(R.string.settingsTitle),
@@ -93,7 +95,7 @@ private fun SettingsScreen(onItemClick: (Any) -> Unit) {
         SettingItem(R.string.settingsOptionDiscoverInfomaniak, endIcon = EndIconType.OPEN_OUTSIDE) {}
         SettingItem(R.string.settingsOptionShareIdeas, endIcon = EndIconType.OPEN_OUTSIDE) {}
         SettingItem(R.string.settingsOptionGiveFeedback, endIcon = EndIconType.OPEN_OUTSIDE) {}
-        SettingItem(R.string.version, description = "0.0.1") {}
+        SettingItem(R.string.version, description = "0.0.1", onClick = null)
     }
 }
 
