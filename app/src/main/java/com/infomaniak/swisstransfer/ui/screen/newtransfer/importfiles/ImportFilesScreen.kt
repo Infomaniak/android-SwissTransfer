@@ -19,17 +19,19 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
-import com.infomaniak.swisstransfer.ui.icons.illu.ArrowCurvedDownright
+import com.infomaniak.swisstransfer.ui.icons.app.Camera
+import com.infomaniak.swisstransfer.ui.icons.app.Folder
+import com.infomaniak.swisstransfer.ui.icons.app.PolaroidLandscape
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -74,30 +76,15 @@ private fun ImportChoiceBottomSheet(
     if (showImportChoiceBottomSheet()) {
         SwissTransferBottomSheet(
             onDismissRequest = onDismissRequest,
-            imageVector = AppIcons.Illu.ArrowCurvedDownright,
             titleRes = R.string.appName,
-            descriptionRes = R.string.sentEmptyTitle,
             content = {
-                Surface(
-                    modifier = Modifier.size(200.dp),
-                    color = Color.Gray,
-                ) {}
-            },
-            topButton = {
-                LargeButton(
-                    modifier = it,
-                    titleRes = R.string.appName,
-                    style = ButtonType.ERROR,
-                    onClick = { /*TODO*/ },
-                )
-            },
-            bottomButton = {
-                LargeButton(
-                    modifier = it,
-                    titleRes = R.string.appName,
-                    style = ButtonType.TERTIARY,
-                    onClick = { /*TODO*/ },
-                )
+                Column {
+                    BottomSheetItem(AppIcons.Camera, R.string.appName) { /*TODO*/ }
+                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium), color = SwissTransferTheme.colors.divider)
+                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.appName) { /*TODO*/ }
+                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium), color = SwissTransferTheme.colors.divider)
+                    BottomSheetItem(AppIcons.Folder, R.string.appName) { /*TODO*/ }
+                }
             },
         )
     }

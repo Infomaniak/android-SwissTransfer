@@ -131,7 +131,7 @@ private fun BottomSheetDefaultsPreview() {
                         modifier = it,
                         titleRes = R.string.appName,
                         style = ButtonType.ERROR,
-                        onClick = { /*TODO*/ },
+                        onClick = {},
                     )
                 },
                 bottomButton = {
@@ -139,7 +139,7 @@ private fun BottomSheetDefaultsPreview() {
                         modifier = it,
                         titleRes = R.string.appName,
                         style = ButtonType.TERTIARY,
-                        onClick = { /*TODO*/ },
+                        onClick = {},
                     )
                 },
             )
