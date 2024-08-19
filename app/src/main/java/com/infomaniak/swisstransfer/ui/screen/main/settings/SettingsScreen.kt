@@ -80,7 +80,7 @@ private fun SettingsScreen(onItemClick: (Any) -> Unit) {
 
         SettingTitle(R.string.settingsCategoryGeneral)
         SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", EndIconType.CHEVRON) {}
-        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = EndIconType.CHEVRON) {}
+        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = EndIconType.OPEN_OUTSIDE) {}
 
         SettingDivider()
 
