@@ -67,7 +67,7 @@ private fun MainScaffold(
                 Box(modifier = Modifier.weight(1f)) {
                     content()
                 }
-                HorizontalDivider(color = SwissTransferTheme.colors.divider)
+                HorizontalDivider()
             }
         }
     }

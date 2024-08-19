@@ -84,9 +84,9 @@ private fun UploadSourceChoiceBottomSheet(
             content = {
                 Column {
                     BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /*TODO*/ }
-                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium), color = SwissTransferTheme.colors.divider)
+                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) { /*TODO*/ }
-                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium), color = SwissTransferTheme.colors.divider)
+                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /*TODO*/ }
                 }
             },

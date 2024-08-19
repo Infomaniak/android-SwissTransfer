@@ -60,6 +60,8 @@ val LightColorScheme = lightColorScheme(
     surfaceContainerLow = Color(white), // Same value as background. Used for bottom sheet backgrounds
     surfaceContainerHighest = Color(polar_bear),
 
+    outlineVariant = Color(mouse), // Used for divider's color
+
     error = Color(error),
     // onError: uses default values
 )
@@ -68,6 +70,5 @@ val CustomLightColorScheme = CustomColorScheme(
     primaryTextColor = Color(orca),
     secondaryTextColor = Color(elephant),
     navigationItemBackground = LightColorScheme.background,
-    divider = Color(mouse),
     tertiaryButtonBackground = Color(rabbit),
 )

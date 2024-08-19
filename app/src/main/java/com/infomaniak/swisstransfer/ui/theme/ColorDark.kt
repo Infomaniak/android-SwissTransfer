@@ -55,6 +55,8 @@ val DarkColorScheme = darkColorScheme(
     surfaceContainerLow = Color(dark2), // Used for bottom sheet backgrounds
     surfaceContainerHighest = Color(dark2),
 
+    outlineVariant = Color(dark3), // Used for divider's color
+
     error = Color(error),
     // onError: uses default  values
 )
@@ -63,6 +65,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     primaryTextColor = Color(rabbit),
     secondaryTextColor = Color(shark),
     navigationItemBackground = Color(dark2),
-    divider = Color(dark3),
     tertiaryButtonBackground = Color(dark2),
 )
