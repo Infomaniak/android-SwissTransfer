@@ -61,7 +61,7 @@ fun ImportFilesScreen() {
     ) {
         Column {
             UploadSourceChoiceBottomSheet(
-                showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet },
+                isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
                 onDismissRequest = { showUploadSourceChoiceBottomSheet = false },
             )
         }
@@ -70,10 +70,10 @@ fun ImportFilesScreen() {
 
 @Composable
 private fun UploadSourceChoiceBottomSheet(
-    showUploadSourceChoiceBottomSheet: () -> Boolean,
+    isBottomSheetVisible: () -> Boolean,
     onDismissRequest: () -> Unit,
 ) {
-    if (showUploadSourceChoiceBottomSheet()) {
+    if (isBottomSheetVisible()) {
         SwissTransferBottomSheet(
             onDismissRequest = onDismissRequest,
             titleRes = R.string.transferUploadSourceChoiceTitle,
