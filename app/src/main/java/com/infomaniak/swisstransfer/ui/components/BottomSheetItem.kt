@@ -36,12 +36,14 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
+private val BOTTOM_SHEET_ITEM_HEIGHT = 56.dp
+
 @Composable
 fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick: () -> Unit) {
     Button(
         colors = ButtonDefaults.textButtonColors(contentColor = SwissTransferTheme.colors.primaryTextColor),
         modifier = Modifier
-            .height(56.dp)
+            .height(BOTTOM_SHEET_ITEM_HEIGHT)
             .fillMaxWidth(),
         shape = CustomShapes.None,
         onClick = onClick,
