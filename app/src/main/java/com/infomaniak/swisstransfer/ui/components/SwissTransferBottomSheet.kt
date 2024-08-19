@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -119,9 +120,10 @@ private fun BottomSheetDefaultsPreview() {
                 titleRes = R.string.appName,
                 descriptionRes = R.string.sentEmptyTitle,
                 content = {
-                    Surface(
-                        modifier = Modifier.size(200.dp),
-                        color = Color.Gray,
+                    Box(
+                        modifier = Modifier
+                            .size(200.dp)
+                            .background(Color.Gray),
                     ) {}
                 },
                 topButton = {
