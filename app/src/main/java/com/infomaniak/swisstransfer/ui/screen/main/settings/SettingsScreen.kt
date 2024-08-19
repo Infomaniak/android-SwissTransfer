@@ -79,13 +79,16 @@ private fun SettingsScreen(onItemClick: (Any) -> Unit) {
         )
 
         SettingTitle(R.string.settingsCategoryGeneral)
+        // TODO: Use correct icon
         SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", EndIconType.CHEVRON) {}
         SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = EndIconType.OPEN_OUTSIDE) {}
 
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryDefaultSettings)
+        // TODO: Use correct icon
         SettingItem(R.string.settingsOptionValidityPeriod, AppIcons.Add, "TODO", endIcon = EndIconType.CHEVRON) {}
+        // TODO: Use correct icon
         SettingItem(R.string.settingsOptionDownloadLimit, AppIcons.Add, "TODO", endIcon = EndIconType.CHEVRON) {}
         SettingItem(R.string.settingsOptionEmailLanguage, AppIcons.SpeechBubble, "TODO", endIcon = EndIconType.CHEVRON) {}
 
