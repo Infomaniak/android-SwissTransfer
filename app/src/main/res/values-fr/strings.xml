@@ -24,4 +24,8 @@
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
     <string name="settingsTitle">Paramètres</string>
+    <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
+    <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
+    <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>
+    <string name="transferUploadSourceChoiceTitle">Télécharger à partir de</string>
 </resources>

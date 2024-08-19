@@ -37,6 +37,8 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
+private val LARGE_BUTTON_HEIGHT = 56.dp
+
 @Composable
 fun LargeButton(
     modifier: Modifier = Modifier,
@@ -47,7 +49,7 @@ fun LargeButton(
     imageVector: ImageVector? = null,
 ) {
     Button(
-        modifier = modifier.height(56.dp),
+        modifier = modifier.height(LARGE_BUTTON_HEIGHT),
         colors = style.buttonColors(),
         shape = Shapes.medium,
         enabled = enabled,
