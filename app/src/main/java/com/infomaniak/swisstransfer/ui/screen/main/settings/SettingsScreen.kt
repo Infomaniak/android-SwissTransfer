@@ -18,6 +18,8 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,11 +28,16 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.runtime.Composable
-import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
+import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.icons.app.Folder
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
-
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -60,7 +67,25 @@ fun SettingsScreenWrapper(
 
 @Composable
 private fun SettingsScreen(onItemClick: (Any) -> Unit) {
-    Text("Settings screen")
+    Column {
+        Text(
+            modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
+            text = "Settings",
+            style = SwissTransferTheme.typography.h1,
+        )
+
+        SettingTitle(R.string.appName)
+        SettingItem(R.string.appName, AppIcons.Add, "Light", EndIconType.CHEVRON) {}
+        SettingItem(R.string.appName, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.appName, description = "1.1.2") {}
+        SettingItem(R.string.appName) {}
+
+        SettingDivider()
+
+        SettingTitle(R.string.appName)
+        SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
+    }
 }
 
 @PreviewMobile

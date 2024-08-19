@@ -21,7 +21,9 @@ package com.infomaniak.swisstransfer.ui.components
 import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Camera
-import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -40,16 +41,16 @@ private val BOTTOM_SHEET_ITEM_HEIGHT = 56.dp
 
 @Composable
 fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick: () -> Unit) {
-    Button(
-        colors = ButtonDefaults.textButtonColors(contentColor = SwissTransferTheme.colors.primaryTextColor),
+    SharpRippleButton(
         modifier = Modifier
             .height(BOTTOM_SHEET_ITEM_HEIGHT)
             .fillMaxWidth(),
-        shape = CustomShapes.None,
         onClick = onClick,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Margin.Large),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
