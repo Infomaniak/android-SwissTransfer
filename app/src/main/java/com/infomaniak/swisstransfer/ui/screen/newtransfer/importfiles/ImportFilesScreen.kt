@@ -22,7 +22,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -38,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen() {
-    var showUploadSourceChoiceBottomSheet by remember { mutableStateOf(false) }
+    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
         topBar = { SwissTransferTobAppBar() },
