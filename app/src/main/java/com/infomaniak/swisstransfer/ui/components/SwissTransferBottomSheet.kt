@@ -20,10 +20,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -74,7 +71,11 @@ private fun BottomSheetContent(
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         imageVector?.let {
             Icon(imageVector = imageVector, contentDescription = null)
             Spacer(modifier = Modifier.height(Margin.Large))
@@ -104,8 +105,8 @@ private fun BottomSheetContent(
         DoubleButtonCombo(topButton = topButton, bottomButton = bottomButton)
     }
 }
-@Preview(widthDp = 400)
-@Preview(widthDp = 400, uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun BottomSheetDefaultsPreview() {
     SwissTransferTheme {
