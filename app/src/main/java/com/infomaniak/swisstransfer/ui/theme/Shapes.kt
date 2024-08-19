@@ -27,4 +27,5 @@ val Shapes = Shapes(
     small = RoundedCornerShape(8.dp),
     medium = RoundedCornerShape(16.dp),
     large = RoundedCornerShape(24.dp),
+    // extraLarge: uses default values, for the bottom sheet corners
 )
