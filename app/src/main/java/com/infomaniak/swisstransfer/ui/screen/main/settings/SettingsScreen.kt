@@ -18,7 +18,9 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +32,7 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
@@ -61,7 +64,9 @@ fun SettingsScreenWrapper(
         detailPane = {
             // Show the detail pane content if selected item is available
             if (currentDestination?.content == null) {
-                Text("Empty state")
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
+                }
             } else {
                 Text("Show selected item")
             }
