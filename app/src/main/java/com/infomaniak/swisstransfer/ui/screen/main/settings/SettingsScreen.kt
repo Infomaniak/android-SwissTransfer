@@ -32,6 +32,10 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -68,23 +72,21 @@ fun SettingsScreenWrapper(
             )
         },
         detailPane = {
-            // Show the detail pane content if selected item is available
-            val destination = currentDestination?.content
-            if (destination == null) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
-                }
-            } else {
-                when (destination) {
-                    THEME -> SettingsThemeScreen()
-                    NOTIFICATIONS -> {}
-                    VALIDITY_PERIOD -> {}
-                    DOWNLOAD_LIMIT -> {}
-                    EMAIL_LANGUAGE -> {}
-                    DISCOVER_INFOMANIAK -> {}
-                    SHARE_IDEAS -> {}
-                    GIVE_FEEDBACK -> {}
-                }
+            var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+
+            val destination = currentDestination?.content ?: lastSelectedScreen
+            currentDestination?.content?.let { lastSelectedScreen = it }
+
+            when (destination) {
+                THEME -> SettingsThemeScreen()
+                NOTIFICATIONS -> {}
+                VALIDITY_PERIOD -> {}
+                DOWNLOAD_LIMIT -> {}
+                EMAIL_LANGUAGE -> {}
+                DISCOVER_INFOMANIAK -> {}
+                SHARE_IDEAS -> {}
+                GIVE_FEEDBACK -> {}
+                null -> NoSelectionEmptyState()
             }
         }
     )
@@ -128,6 +130,14 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
         SettingItem(R.string.settingsOptionShareIdeas, endIcon = OPEN_OUTSIDE) { onItemClick(SHARE_IDEAS) }
         SettingItem(R.string.settingsOptionGiveFeedback, endIcon = OPEN_OUTSIDE) { onItemClick(GIVE_FEEDBACK) }
         SettingItem(R.string.version, description = "0.0.1", onClick = null)
+    }
+}
+
+// Show the detail pane content if selected item is available
+@Composable
+private fun NoSelectionEmptyState() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
     }
 }
 
