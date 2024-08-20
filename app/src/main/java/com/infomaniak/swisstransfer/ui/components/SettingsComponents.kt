@@ -37,18 +37,16 @@ import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.icons.app.ChevronRightSmall
 import com.infomaniak.swisstransfer.ui.icons.app.Folder
 import com.infomaniak.swisstransfer.ui.icons.app.OpenOutside
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-
 private val ITEM_MIN_HEIGHT = 56.dp
-private val HORIZONTAL_MARGIN = Margin.Medium
-private val VERTICAL_MARGIN = 12.dp
 
 @Composable
 fun SettingTitle(@StringRes titleRes: Int) {
     Text(
-        modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN, vertical = VERTICAL_MARGIN),
+        modifier = Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
         text = stringResource(id = titleRes),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
@@ -91,7 +89,7 @@ private fun SettingItemContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = HORIZONTAL_MARGIN, vertical = VERTICAL_MARGIN),
+            .padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -121,7 +119,12 @@ private fun SettingItemContent(
 
 @Composable
 fun SettingDivider() {
-    HorizontalDivider(modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN, vertical = VERTICAL_MARGIN))
+    HorizontalDivider(
+        modifier = Modifier.padding(
+            horizontal = Dimens.SettingHorizontalMargin,
+            vertical = Dimens.SettingVerticalMargin
+        )
+    )
 }
 
 @Preview
