@@ -18,6 +18,7 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -43,14 +44,15 @@ fun SettingsThemeScreen() {
         SettingTitle(titleRes = R.string.appName)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+        Log.e("vincent", "SettingsThemeScreen: selectedItem=${ThemeOption.entries[selectedItem]}")
         MutuallyExclusiveOptions(ThemeOption.entries, selectedItem, setSelectedItem)
     }
 }
 
 enum class ThemeOption(override val title: Int, override val icon: ImageVector) : SettingOption {
-    SYSTEM(R.string.appName, AppIcons.Add),
-    LIGHT(R.string.appName, AppIcons.Add),
-    DARK(R.string.appName, AppIcons.Add),
+    SYSTEM(R.string.appName, AppIcons.BlackAndWhiteCircle),
+    LIGHT(R.string.appName, AppIcons.WhiteCircle),
+    DARK(R.string.appName, AppIcons.BlackCircle),
 }
 
 @PreviewMobile

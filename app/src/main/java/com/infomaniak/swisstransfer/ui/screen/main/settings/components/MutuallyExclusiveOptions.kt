@@ -23,6 +23,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -67,7 +68,7 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
             verticalAlignment = Alignment.CenterVertically,
         ) {
             item.icon?.let {
-                Icon(imageVector = it, contentDescription = null)
+                Image(imageVector = it, contentDescription = null)
                 Spacer(modifier = Modifier.width(Margin.Medium))
             }
 
