@@ -28,8 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.MutuallyExclusiveOptions
-import com.infomaniak.swisstransfer.ui.components.SettingOption
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
