@@ -41,6 +41,10 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.icons.app.Bell
 import com.infomaniak.swisstransfer.ui.icons.app.SpeechBubble
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile

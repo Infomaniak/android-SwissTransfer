@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui.screen.main.settings
+package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
