@@ -40,13 +40,15 @@ import com.infomaniak.swisstransfer.ui.icons.app.OpenOutside
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-private val horizontalMargin = Margin.Medium
-private val verticalMargin = 12.dp
+
+private val ITEM_MIN_HEIGHT = 56.dp
+private val HORIZONTAL_MARGIN = Margin.Medium
+private val VERTICAL_MARGIN = 12.dp
 
 @Composable
 fun SettingTitle(@StringRes titleRes: Int) {
     Text(
-        modifier = Modifier.padding(horizontal = horizontalMargin, vertical = verticalMargin),
+        modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN, vertical = VERTICAL_MARGIN),
         text = stringResource(id = titleRes),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
@@ -63,7 +65,7 @@ fun SettingItem(
 ) {
     val modifier = Modifier
         .fillMaxWidth()
-        .heightIn(min = 56.dp)
+        .heightIn(min = ITEM_MIN_HEIGHT)
 
     onClick?.let {
         SharpRippleButton(
@@ -89,7 +91,7 @@ private fun SettingItemContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = horizontalMargin, vertical = verticalMargin),
+            .padding(horizontal = HORIZONTAL_MARGIN, vertical = VERTICAL_MARGIN),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -119,7 +121,7 @@ private fun SettingItemContent(
 
 @Composable
 fun SettingDivider() {
-    HorizontalDivider(modifier = Modifier.padding(horizontal = horizontalMargin, vertical = verticalMargin))
+    HorizontalDivider(modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN, vertical = VERTICAL_MARGIN))
 }
 
 @Preview
