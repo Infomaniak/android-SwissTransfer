@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,16 +41,6 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 private val ITEM_MIN_HEIGHT = 56.dp
-
-@Composable
-fun SettingTitle(@StringRes titleRes: Int) {
-    Text(
-        modifier = Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
-        text = stringResource(id = titleRes),
-        style = SwissTransferTheme.typography.bodySmallRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
-}
 
 @Composable
 fun SettingItem(
@@ -115,16 +104,6 @@ private fun SettingItemContent(
             Icon(imageVector = it.icon, contentDescription = null, tint = SwissTransferTheme.colors.iconColor)
         }
     }
-}
-
-@Composable
-fun SettingDivider() {
-    HorizontalDivider(
-        modifier = Modifier.padding(
-            horizontal = Dimens.SettingHorizontalMargin,
-            vertical = Dimens.SettingVerticalMargin
-        )
-    )
 }
 
 @Preview
