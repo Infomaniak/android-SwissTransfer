@@ -18,9 +18,7 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,7 +36,7 @@ fun NewTransferNavHost(navController: NavHostController) {
 
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
-            ImportFilesScreen()
+            ImportFilesScreen(navigateToTransferTypeScreen = { navController.navigate(TransferTypeDestination) })
         }
         composable<TransferTypeDestination> {
             TransferTypeScreen()
