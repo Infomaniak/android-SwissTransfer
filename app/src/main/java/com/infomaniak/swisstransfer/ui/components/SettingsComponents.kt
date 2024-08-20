@@ -70,17 +70,17 @@ fun SettingItem(
             modifier = modifier,
             onClick = it,
         ) {
-            SettingsItemContent(icon, titleRes, description, endIcon)
+            SettingItemContent(icon, titleRes, description, endIcon)
         }
     } ?: run {
         Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
-            SettingsItemContent(icon, titleRes, description, endIcon)
+            SettingItemContent(icon, titleRes, description, endIcon)
         }
     }
 }
 
 @Composable
-private fun SettingsItemContent(
+private fun SettingItemContent(
     icon: ImageVector?,
     titleRes: Int,
     description: String?,
