@@ -36,12 +36,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.icons.app.Bell
 import com.infomaniak.swisstransfer.ui.icons.app.SpeechBubble
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
@@ -55,7 +57,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 fun SettingsScreenWrapper(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    TwoPaneScaffold<Any>( // TODO: Replace Any with item type
+    TwoPaneScaffold<SettingsOptionScreens>(
         windowAdaptiveInfo,
         listPane = {
             SettingsScreen(
@@ -67,19 +69,29 @@ fun SettingsScreenWrapper(
         },
         detailPane = {
             // Show the detail pane content if selected item is available
-            if (currentDestination?.content == null) {
+            val destination = currentDestination?.content
+            if (destination == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
                 }
             } else {
-                Text("Show selected item")
+                when (destination) {
+                    THEME -> SettingsThemeScreen()
+                    NOTIFICATIONS -> {}
+                    VALIDITY_PERIOD -> {}
+                    DOWNLOAD_LIMIT -> {}
+                    EMAIL_LANGUAGE -> {}
+                    DISCOVER_INFOMANIAK -> {}
+                    SHARE_IDEAS -> {}
+                    GIVE_FEEDBACK -> {}
+                }
             }
         }
     )
 }
 
 @Composable
-private fun SettingsScreen(onItemClick: (Any) -> Unit) {
+private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Text(
             modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
@@ -89,26 +101,40 @@ private fun SettingsScreen(onItemClick: (Any) -> Unit) {
 
         SettingTitle(R.string.settingsCategoryGeneral)
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", EndIconType.CHEVRON) {}
-        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
+        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = OPEN_OUTSIDE) {
+            onItemClick(NOTIFICATIONS)
+        }
 
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryDefaultSettings)
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionValidityPeriod, AppIcons.Add, "TODO", endIcon = EndIconType.CHEVRON) {}
+        SettingItem(R.string.settingsOptionValidityPeriod, AppIcons.Add, "TODO", endIcon = CHEVRON) {
+            onItemClick(VALIDITY_PERIOD)
+        }
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionDownloadLimit, AppIcons.Add, "TODO", endIcon = EndIconType.CHEVRON) {}
-        SettingItem(R.string.settingsOptionEmailLanguage, AppIcons.SpeechBubble, "TODO", endIcon = EndIconType.CHEVRON) {}
+        SettingItem(R.string.settingsOptionDownloadLimit, AppIcons.Add, "TODO", endIcon = CHEVRON) {
+            onItemClick(DOWNLOAD_LIMIT)
+        }
+        SettingItem(R.string.settingsOptionEmailLanguage, AppIcons.SpeechBubble, "TODO", endIcon = CHEVRON) {
+            onItemClick(EMAIL_LANGUAGE)
+        }
 
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(R.string.settingsOptionDiscoverInfomaniak, endIcon = EndIconType.OPEN_OUTSIDE) {}
-        SettingItem(R.string.settingsOptionShareIdeas, endIcon = EndIconType.OPEN_OUTSIDE) {}
-        SettingItem(R.string.settingsOptionGiveFeedback, endIcon = EndIconType.OPEN_OUTSIDE) {}
+        SettingItem(R.string.settingsOptionDiscoverInfomaniak, endIcon = OPEN_OUTSIDE) { onItemClick(DISCOVER_INFOMANIAK) }
+        SettingItem(R.string.settingsOptionShareIdeas, endIcon = OPEN_OUTSIDE) { onItemClick(SHARE_IDEAS) }
+        SettingItem(R.string.settingsOptionGiveFeedback, endIcon = OPEN_OUTSIDE) { onItemClick(GIVE_FEEDBACK) }
         SettingItem(R.string.version, description = "0.0.1", onClick = null)
     }
+}
+
+enum class SettingsOptionScreens {
+    THEME, NOTIFICATIONS,
+    VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
+    DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
 }
 
 @PreviewMobile
