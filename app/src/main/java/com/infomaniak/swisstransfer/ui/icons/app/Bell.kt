@@ -19,10 +19,10 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Bell: ImageVector
     get() {
-        if (_notificationBelle != null) {
-            return _notificationBelle!!
+        if (_notificationBell != null) {
+            return _notificationBell!!
         }
-        _notificationBelle = Builder(
+        _notificationBell = Builder(
             name = "Bell",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
@@ -53,10 +53,10 @@ val AppIcons.Bell: ImageVector
                 arcTo(7.5f, 7.5f, 0.0f, false, true, 12.0f, 4.0f)
             }
         }.build()
-        return _notificationBelle!!
+        return _notificationBell!!
     }
 
-private var _notificationBelle: ImageVector? = null
+private var _notificationBell: ImageVector? = null
 
 @Preview
 @Composable
