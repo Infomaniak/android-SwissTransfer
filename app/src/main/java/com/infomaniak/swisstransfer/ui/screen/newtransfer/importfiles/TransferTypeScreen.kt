@@ -18,6 +18,7 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -54,7 +55,7 @@ fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = Margin.Large, horizontal = Margin.Medium),
-                text = stringResource(R.string.appName),
+                text = stringResource(R.string.transferTypeTitle),
                 style = SwissTransferTheme.typography.h1,
                 textAlign = TextAlign.Center,
             )
@@ -65,31 +66,31 @@ fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit) {
 }
 
 enum class TransferType(
-    val label: String,
+    @StringRes val titleRes: Int,
     val background: @Composable () -> Color,
     val foreground: @Composable () -> Color,
     val icon: ImageVector,
 ) {
     LINK(
-        "Lien",
+        R.string.transferTypeLink,
         { SwissTransferTheme.colors.transferTypeLinkContainer },
         { SwissTransferTheme.colors.transferTypeLinkOnContainer },
         AppIcons.Illu.ChainTilted
     ),
     EMAIL(
-        "Mail",
+        R.string.transferTypeEmail,
         { SwissTransferTheme.colors.transferTypeEmailContainer },
         { SwissTransferTheme.colors.transferTypeEmailOnContainer },
         AppIcons.Illu.EnvelopeTilted
     ),
     QR_CODE(
-        "QR Code",
+        R.string.transferTypeQrCode,
         { SwissTransferTheme.colors.transferTypeQrContainer },
         { SwissTransferTheme.colors.transferTypeQrOnContainer },
         AppIcons.Illu.QrCodeTilted
     ),
     PROXIMITY(
-        "A proximité",
+        R.string.transferTypeProximity,
         { SwissTransferTheme.colors.transferTypeProximityContainer },
         { SwissTransferTheme.colors.transferTypeProximityOnContainer },
         AppIcons.Illu.WaveSignalTilted

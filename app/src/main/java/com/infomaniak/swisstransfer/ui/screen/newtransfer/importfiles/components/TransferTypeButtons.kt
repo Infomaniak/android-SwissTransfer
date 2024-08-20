@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,10 +50,10 @@ fun TransferTypeButtons(items: List<TransferType>, navigateToTransfer: (Transfer
         verticalArrangement = Arrangement.spacedBy(SPACE_AROUND_BUTTONS),
         horizontalArrangement = Arrangement.spacedBy(SPACE_AROUND_BUTTONS),
     ) {
-        items(items = items, key = { it.label }) { item ->
+        items(items = items, key = { it.titleRes }) { item ->
             TransferTypeButton(
                 modifier = Modifier.aspectRatio(0.87f),
-                label = item.label,
+                label = stringResource(item.titleRes),
                 background = item.background(),
                 foreground = item.foreground(),
                 icon = item.icon,
