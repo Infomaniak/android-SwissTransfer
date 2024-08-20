@@ -16,28 +16,28 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-    <string name="buttonAddFiles">Add files</string>
-    <string name="buttonNext">Next</string>
-    <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
-    <string name="firstTransferDescription">Make your first transfer!</string>
-    <string name="receivedTitle">Received</string>
-    <string name="sentEmptyTitle">Our story begins here</string>
-    <string name="sentTitle">Sent</string>
-    <string name="settingsCategoryAbout">About</string>
-    <string name="settingsCategoryDefaultSettings">Default settings</string>
-    <string name="settingsCategoryGeneral">Général</string>
-    <string name="settingsOptionDiscoverInfomaniak">Discover Infomaniak</string>
-    <string name="settingsOptionDownloadLimit">Download limit</string>
-    <string name="settingsOptionEmailLanguage">Email language</string>
-    <string name="settingsOptionGiveFeedback">Give your opinion</string>
-    <string name="settingsOptionNotifications">Notifications</string>
-    <string name="settingsOptionShareIdeas">Share your ideas</string>
-    <string name="settingsOptionTheme">Theme</string>
-    <string name="settingsOptionValidityPeriod">Validity period</string>
-    <string name="settingsTitle">Settings</string>
-    <string name="transferUploadSourceChoiceCamera">Camera</string>
-    <string name="transferUploadSourceChoiceFiles">Browse files</string>
-    <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
-    <string name="transferUploadSourceChoiceTitle">Upload from</string>
-    <string name="version">Version</string>
+    <string name="buttonAddFiles">Aggiunta di file</string>
+    <string name="buttonNext">Avanti</string>
+    <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
+    <string name="firstTransferDescription">Effettuate il vostro primo trasferimento!</string>
+    <string name="receivedTitle">Ricevuto</string>
+    <string name="sentEmptyTitle">La nostra storia inizia qui</string>
+    <string name="sentTitle">Inviato a</string>
+    <string name="settingsCategoryAbout">Chi siamo</string>
+    <string name="settingsCategoryDefaultSettings">Impostazioni predefinite</string>
+    <string name="settingsCategoryGeneral">Generale</string>
+    <string name="settingsOptionDiscoverInfomaniak">Scoprire Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Limite di download</string>
+    <string name="settingsOptionEmailLanguage">Lingua della posta elettronica</string>
+    <string name="settingsOptionGiveFeedback">Dite la vostra</string>
+    <string name="settingsOptionNotifications">Notifiche</string>
+    <string name="settingsOptionShareIdeas">Condividete le vostre idee</string>
+    <string name="settingsOptionTheme">Tema</string>
+    <string name="settingsOptionValidityPeriod">Periodo di validità</string>
+    <string name="settingsTitle">Parametri</string>
+    <string name="transferUploadSourceChoiceCamera">Macchina fotografica</string>
+    <string name="transferUploadSourceChoiceFiles">Sfogliare i file</string>
+    <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>
+    <string name="transferUploadSourceChoiceTitle">Scarica da</string>
+    <string name="version">Versione</string>
 </resources>
