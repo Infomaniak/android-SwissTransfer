@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui.components
+package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.icons.app.ChevronRightSmall
