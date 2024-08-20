@@ -63,6 +63,8 @@ object SwissTransferTheme {
 data class CustomColorScheme(
     val primaryTextColor: Color = Color.Unspecified,
     val secondaryTextColor: Color = Color.Unspecified,
+    val tertiaryTextColor: Color = Color.Unspecified,
+    val iconColor: Color = Color.Unspecified,
     val navigationItemBackground: Color = Color.Unspecified,
     val tertiaryButtonBackground: Color = Color.Unspecified,
 )
