@@ -18,19 +18,24 @@
 
 package com.infomaniak.swisstransfer.ui.components
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.icons.app.Checkmark
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -80,4 +85,22 @@ interface SettingOption {
     @get:StringRes
     val title: Int
     val icon: ImageVector?
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun SettingOptionItemPreview() {
+    SwissTransferTheme {
+        Surface {
+            Column {
+                val item = object : SettingOption {
+                    override val title: Int = R.string.appName
+                    override val icon: ImageVector = AppIcons.Add
+                }
+                SettingOptionItem(item, true) {}
+                SettingOptionItem(item, false) {}
+            }
+        }
+    }
 }

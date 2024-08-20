@@ -38,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 fun SettingsThemeScreen() {
     Column {
         SettingTitle(titleRes = R.string.appName)
+
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
         MutuallyExclusiveOptions(ThemeOption.entries, selectedItem, setSelectedItem)
     }
