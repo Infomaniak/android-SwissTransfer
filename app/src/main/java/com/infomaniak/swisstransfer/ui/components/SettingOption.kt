@@ -20,6 +20,9 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -69,8 +72,12 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
 
             Text(text = stringResource(id = item.title), Modifier.weight(1f))
 
-            if (isSelected) {
-                Spacer(modifier = Modifier.width(Margin.Medium))
+            if (isSelected) Spacer(modifier = Modifier.width(Margin.Medium))
+            AnimatedVisibility(
+                visible = isSelected,
+                enter = scaleIn(),
+                exit = scaleOut(),
+            ) {
                 Icon(
                     imageVector = AppIcons.Checkmark,
                     contentDescription = null,
