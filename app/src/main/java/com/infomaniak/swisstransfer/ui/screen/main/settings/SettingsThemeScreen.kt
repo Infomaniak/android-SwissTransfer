@@ -21,6 +21,8 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.MutuallyExclusiveOptions
@@ -36,7 +38,8 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 fun SettingsThemeScreen() {
     Column {
         SettingTitle(titleRes = R.string.appName)
-        MutuallyExclusiveOptions(ThemeOption.entries)
+        val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+        MutuallyExclusiveOptions(ThemeOption.entries, selectedItem, setSelectedItem)
     }
 }
 

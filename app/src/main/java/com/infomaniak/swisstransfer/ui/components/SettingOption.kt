@@ -26,10 +26,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,13 +36,11 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun MutuallyExclusiveOptions(items: List<SettingOption>) {
-    var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-
+fun MutuallyExclusiveOptions(items: List<SettingOption>, selectedItem: Int, setSelectedItem: (Int) -> Unit) {
     Column(Modifier.selectableGroup()) {
         items.forEachIndexed { index, item ->
             if (index > 0) HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-            SettingOptionItem(item, isSelected = selectedItem == index) { selectedItem = index }
+            SettingOptionItem(item, isSelected = selectedItem == index) { setSelectedItem(index) }
         }
     }
 }
