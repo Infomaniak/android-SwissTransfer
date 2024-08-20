@@ -19,10 +19,13 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.MutuallyExclusiveOptions
@@ -36,7 +39,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun SettingsThemeScreen() {
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         SettingTitle(titleRes = R.string.appName)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
