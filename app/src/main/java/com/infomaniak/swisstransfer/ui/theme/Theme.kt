@@ -68,4 +68,12 @@ data class CustomColorScheme(
     val navigationItemBackground: Color = Color.Unspecified,
     val tertiaryButtonBackground: Color = Color.Unspecified,
     val selectedSettingItem: Color = Color.Unspecified,
+    val transferTypeLinkContainer: Color = Color.Unspecified,
+    val transferTypeLinkOnContainer: Color = Color.Unspecified,
+    val transferTypeEmailContainer: Color = Color.Unspecified,
+    val transferTypeEmailOnContainer: Color = Color.Unspecified,
+    val transferTypeQrContainer: Color = Color.Unspecified,
+    val transferTypeQrOnContainer: Color = Color.Unspecified,
+    val transferTypeProximityContainer: Color = Color.Unspecified,
+    val transferTypeProximityOnContainer: Color = Color.Unspecified,
 )

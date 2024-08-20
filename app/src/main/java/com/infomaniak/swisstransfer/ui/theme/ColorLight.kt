@@ -74,4 +74,12 @@ val CustomLightColorScheme = CustomColorScheme(
     navigationItemBackground = LightColorScheme.background,
     tertiaryButtonBackground = Color(rabbit),
     selectedSettingItem = Color(rabbit),
+    transferTypeLinkContainer = Color(specific1),
+    transferTypeLinkOnContainer = Color(green_main),
+    transferTypeEmailContainer = Color(specific2),
+    transferTypeEmailOnContainer = Color(green_dark),
+    transferTypeQrContainer = Color(green_secondary),
+    transferTypeQrOnContainer = Color(green_main),
+    transferTypeProximityContainer = Color(specific3),
+    transferTypeProximityOnContainer = Color(specific4),
 )
