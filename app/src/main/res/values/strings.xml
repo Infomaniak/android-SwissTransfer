@@ -32,6 +32,7 @@
     <string name="settingsCategoryAbout">About</string>
     <string name="settingsCategoryDefaultSettings">Default settings</string>
     <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsNotificationsTitle">Select a preference</string>
     <string name="settingsOptionDiscoverInfomaniak">Discover Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Download limit</string>
     <string name="settingsOptionEmailLanguage">Email language</string>
@@ -39,9 +40,9 @@
     <string name="settingsOptionNotifications">Notifications</string>
     <string name="settingsOptionShareIdeas">Share your ideas</string>
     <string name="settingsOptionTheme">Theme</string>
-    <string name="settingsOptionThemeDark">Sombre</string>
-    <string name="settingsOptionThemeLight">Clair</string>
-    <string name="settingsOptionThemeSystem">Système</string>
+    <string name="settingsOptionThemeDark">Dark</string>
+    <string name="settingsOptionThemeLight">Light</string>
+    <string name="settingsOptionThemeSystem">System</string>
     <string name="settingsOptionValidityPeriod">Validity period</string>
     <string name="settingsThemeTitle">Select a theme</string>
     <string name="settingsTitle">Settings</string>

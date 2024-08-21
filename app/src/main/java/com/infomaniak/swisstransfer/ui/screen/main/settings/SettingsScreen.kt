@@ -80,7 +80,7 @@ fun SettingsScreenWrapper(
             when (destination) {
                 THEME -> SettingsThemeScreen()
                 NOTIFICATIONS -> {}
-                VALIDITY_PERIOD -> {}
+                VALIDITY_PERIOD -> SettingsValidityPeriodScreen()
                 DOWNLOAD_LIMIT -> {}
                 EMAIL_LANGUAGE -> {}
                 DISCOVER_INFOMANIAK -> {}

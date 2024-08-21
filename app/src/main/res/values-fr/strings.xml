@@ -29,6 +29,7 @@
     <string name="settingsCategoryAbout">A propos</string>
     <string name="settingsCategoryDefaultSettings">Paramètres par défaut</string>
     <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsNotificationsTitle">Sélectionne une préférence</string>
     <string name="settingsOptionDiscoverInfomaniak">Découvrir Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite de téléchargements</string>
     <string name="settingsOptionEmailLanguage">Langue de l’e-mail</string>

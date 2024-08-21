@@ -19,7 +19,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -72,7 +71,7 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
                 Spacer(modifier = Modifier.width(Margin.Medium))
             }
 
-            Text(text = stringResource(id = item.title), Modifier.weight(1f))
+            Text(text = item.title.invoke(), Modifier.weight(1f))
 
             if (isSelected) Spacer(modifier = Modifier.width(Margin.Medium))
             AnimatedVisibility(
@@ -91,8 +90,7 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
 }
 
 interface SettingOption {
-    @get:StringRes
-    val title: Int
+    val title: @Composable () -> String
     val icon: ImageVector?
 }
 
@@ -104,7 +102,7 @@ private fun SettingOptionItemPreview() {
         Surface {
             Column {
                 val item = object : SettingOption {
-                    override val title: Int = R.string.appName
+                    override val title: @Composable () -> String = { stringResource(R.string.appName) }
                     override val icon: ImageVector = AppIcons.Add
                 }
                 SettingOptionItem(item, true) {}
