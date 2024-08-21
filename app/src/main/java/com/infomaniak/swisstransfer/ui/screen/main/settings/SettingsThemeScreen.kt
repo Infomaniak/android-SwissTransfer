@@ -31,6 +31,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
+import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
+import com.infomaniak.swisstransfer.ui.icons.app.WhiteCircle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.MutuallyExclusiveOptions
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
