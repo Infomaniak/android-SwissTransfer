@@ -68,7 +68,7 @@ fun SettingsScreenWrapper(
                     // Navigate to the detail pane with the passed item
                     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
                 },
-                getSelectedMenu = { currentDestination?.content },
+                getSelectedSetting = { currentDestination?.content },
             )
         },
         detailPane = {
@@ -93,8 +93,8 @@ fun SettingsScreenWrapper(
 }
 
 @Composable
-private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedMenu: () -> SettingsOptionScreens?) {
-    val selectedMenu = getSelectedMenu()
+private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
+    val selectedSetting = getSelectedSetting()
 
     Column(
         modifier = Modifier
@@ -110,7 +110,7 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingTitle(R.string.settingsCategoryGeneral)
         SettingItem(
             titleRes = R.string.settingsOptionTheme,
-            isSelected = { selectedMenu == THEME },
+            isSelected = { selectedSetting == THEME },
             icon = AppIcons.PaintbrushPalette,
             description = "TODO",
             CHEVRON
@@ -119,7 +119,7 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         }
         SettingItem(
             titleRes = R.string.settingsOptionNotifications,
-            isSelected = { selectedMenu == NOTIFICATIONS },
+            isSelected = { selectedSetting == NOTIFICATIONS },
             icon = AppIcons.Bell,
             description = "TODO",
             endIcon = OPEN_OUTSIDE,
@@ -132,7 +132,7 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingTitle(R.string.settingsCategoryDefaultSettings)
         SettingItem(
             titleRes = R.string.settingsOptionValidityPeriod,
-            isSelected = { selectedMenu == VALIDITY_PERIOD },
+            isSelected = { selectedSetting == VALIDITY_PERIOD },
             icon = AppIcons.FileBadgeArrowDown,
             description = "TODO",
             endIcon = CHEVRON,
@@ -141,7 +141,7 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         }
         SettingItem(
             titleRes = R.string.settingsOptionDownloadLimit,
-            isSelected = { selectedMenu == DOWNLOAD_LIMIT },
+            isSelected = { selectedSetting == DOWNLOAD_LIMIT },
             icon = AppIcons.Clock,
             description = "TODO",
             endIcon = CHEVRON,
@@ -150,7 +150,7 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         }
         SettingItem(
             titleRes = R.string.settingsOptionEmailLanguage,
-            isSelected = { selectedMenu == EMAIL_LANGUAGE },
+            isSelected = { selectedSetting == EMAIL_LANGUAGE },
             icon = AppIcons.SpeechBubble,
             description = "TODO",
             endIcon = CHEVRON,
@@ -161,13 +161,13 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(R.string.settingsOptionDiscoverInfomaniak, { selectedMenu == DISCOVER_INFOMANIAK }, endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionDiscoverInfomaniak, { selectedSetting == DISCOVER_INFOMANIAK }, endIcon = OPEN_OUTSIDE) {
             onItemClick(DISCOVER_INFOMANIAK)
         }
-        SettingItem(R.string.settingsOptionShareIdeas, { selectedMenu == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionShareIdeas, { selectedSetting == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
             onItemClick(SHARE_IDEAS)
         }
-        SettingItem(R.string.settingsOptionGiveFeedback, { selectedMenu == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionGiveFeedback, { selectedSetting == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
             onItemClick(GIVE_FEEDBACK)
         }
         SettingItem(R.string.version, isSelected = { false }, description = "0.0.1", onClick = null)
