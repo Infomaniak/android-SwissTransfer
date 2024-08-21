@@ -38,6 +38,11 @@
     <string name="settingsOptionTheme">Theme</string>
     <string name="settingsOptionValidityPeriod">Validity period</string>
     <string name="settingsTitle">Settings</string>
+    <string name="settingsValidityPeriodTitle">Set a default validity period for your transfers</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
     <string name="transferUploadSourceChoiceCamera">Camera</string>
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
