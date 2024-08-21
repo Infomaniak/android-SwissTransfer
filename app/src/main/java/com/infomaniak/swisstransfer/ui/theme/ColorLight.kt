@@ -73,4 +73,5 @@ val CustomLightColorScheme = CustomColorScheme(
     iconColor = Color(elephant),
     navigationItemBackground = LightColorScheme.background,
     tertiaryButtonBackground = Color(rabbit),
+    selectedSettingItem = Color(rabbit),
 )

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -42,9 +43,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.Add
-import com.infomaniak.swisstransfer.ui.icons.app.Bell
-import com.infomaniak.swisstransfer.ui.icons.app.SpeechBubble
+import com.infomaniak.swisstransfer.ui.icons.app.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
@@ -69,6 +68,7 @@ fun SettingsScreenWrapper(
                     // Navigate to the detail pane with the passed item
                     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
                 },
+                getSelectedMenu = { currentDestination?.content },
             )
         },
         detailPane = {
@@ -93,8 +93,14 @@ fun SettingsScreenWrapper(
 }
 
 @Composable
-private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedMenu: () -> SettingsOptionScreens?) {
+    val selectedMenu = getSelectedMenu()
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .selectableGroup(),
+    ) {
         Text(
             modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
             text = stringResource(R.string.settingsTitle),
@@ -102,34 +108,69 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
         )
 
         SettingTitle(R.string.settingsCategoryGeneral)
-        // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
-        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = OPEN_OUTSIDE) {
+        SettingItem(
+            titleRes = R.string.settingsOptionTheme,
+            isSelected = { selectedMenu == THEME },
+            icon = AppIcons.PaintbrushPalette,
+            description = "TODO",
+            CHEVRON
+        ) {
+            onItemClick(THEME)
+        }
+        SettingItem(
+            titleRes = R.string.settingsOptionNotifications,
+            isSelected = { selectedMenu == NOTIFICATIONS },
+            icon = AppIcons.Bell,
+            description = "TODO",
+            endIcon = OPEN_OUTSIDE,
+        ) {
             onItemClick(NOTIFICATIONS)
         }
 
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryDefaultSettings)
-        // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionValidityPeriod, AppIcons.Add, "TODO", endIcon = CHEVRON) {
+        SettingItem(
+            titleRes = R.string.settingsOptionValidityPeriod,
+            isSelected = { selectedMenu == VALIDITY_PERIOD },
+            icon = AppIcons.FileBadgeArrowDown,
+            description = "TODO",
+            endIcon = CHEVRON,
+        ) {
             onItemClick(VALIDITY_PERIOD)
         }
-        // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionDownloadLimit, AppIcons.Add, "TODO", endIcon = CHEVRON) {
+        SettingItem(
+            titleRes = R.string.settingsOptionDownloadLimit,
+            isSelected = { selectedMenu == DOWNLOAD_LIMIT },
+            icon = AppIcons.Clock,
+            description = "TODO",
+            endIcon = CHEVRON,
+        ) {
             onItemClick(DOWNLOAD_LIMIT)
         }
-        SettingItem(R.string.settingsOptionEmailLanguage, AppIcons.SpeechBubble, "TODO", endIcon = CHEVRON) {
+        SettingItem(
+            titleRes = R.string.settingsOptionEmailLanguage,
+            isSelected = { selectedMenu == EMAIL_LANGUAGE },
+            icon = AppIcons.SpeechBubble,
+            description = "TODO",
+            endIcon = CHEVRON,
+        ) {
             onItemClick(EMAIL_LANGUAGE)
         }
 
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(R.string.settingsOptionDiscoverInfomaniak, endIcon = OPEN_OUTSIDE) { onItemClick(DISCOVER_INFOMANIAK) }
-        SettingItem(R.string.settingsOptionShareIdeas, endIcon = OPEN_OUTSIDE) { onItemClick(SHARE_IDEAS) }
-        SettingItem(R.string.settingsOptionGiveFeedback, endIcon = OPEN_OUTSIDE) { onItemClick(GIVE_FEEDBACK) }
-        SettingItem(R.string.version, description = "0.0.1", onClick = null)
+        SettingItem(R.string.settingsOptionDiscoverInfomaniak, { selectedMenu == DISCOVER_INFOMANIAK }, endIcon = OPEN_OUTSIDE) {
+            onItemClick(DISCOVER_INFOMANIAK)
+        }
+        SettingItem(R.string.settingsOptionShareIdeas, { selectedMenu == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
+            onItemClick(SHARE_IDEAS)
+        }
+        SettingItem(R.string.settingsOptionGiveFeedback, { selectedMenu == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
+            onItemClick(GIVE_FEEDBACK)
+        }
+        SettingItem(R.string.version, isSelected = { false }, description = "0.0.1", onClick = null)
     }
 }
 

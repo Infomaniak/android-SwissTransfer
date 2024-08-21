@@ -74,4 +74,5 @@ data class CustomColorScheme(
     val iconColor: Color = Color.Unspecified,
     val navigationItemBackground: Color = Color.Unspecified,
     val tertiaryButtonBackground: Color = Color.Unspecified,
+    val selectedSettingItem: Color = Color.Unspecified,
 )
