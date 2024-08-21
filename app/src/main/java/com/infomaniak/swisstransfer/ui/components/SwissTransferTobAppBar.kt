@@ -54,19 +54,23 @@ fun SwissTransferTobAppBar(@StringRes titleRes: Int, navigationMenu: TopAppBarMe
 @Composable
 private fun MenuButton(navigationMenu: TopAppBarMenu) {
     IconButton(onClick = navigationMenu.onClick) {
-        Icon(imageVector = navigationMenu.icon, contentDescription = navigationMenu.contentDescription)
+        Icon(imageVector = navigationMenu.icon, contentDescription = stringResource(navigationMenu.contentDescription))
     }
 }
 
 @Immutable
 data class TopAppBarMenu(
     val icon: ImageVector,
-    val contentDescription: String?,
+    @StringRes val contentDescription: Int,
     val onClick: () -> Unit,
 ) {
     companion object {
-        val backButton: (onClick: () -> Unit) -> TopAppBarMenu = { TopAppBarMenu(AppIcons.ArrowLeft, null, it) }
-        val closeButton: (onClick: () -> Unit) -> TopAppBarMenu = { TopAppBarMenu(AppIcons.Cross, null, it) }
+        val backButton: (onClick: () -> Unit) -> TopAppBarMenu = {
+            TopAppBarMenu(AppIcons.ArrowLeft, R.string.contentDescriptionButtonBack, it)
+        }
+        val closeButton: (onClick: () -> Unit) -> TopAppBarMenu = {
+            TopAppBarMenu(AppIcons.Cross, R.string.contentDescriptionButtonClose, it)
+        }
     }
 }
 
@@ -78,7 +82,7 @@ private fun SwissTransferTobAppBarPreview() {
         SwissTransferTobAppBar(
             R.string.appName,
             TopAppBarMenu.backButton {},
-            TopAppBarMenu(AppIcons.Add, null, {}),
+            TopAppBarMenu(AppIcons.Add, R.string.appName) {},
             TopAppBarMenu.closeButton {}
         )
     }

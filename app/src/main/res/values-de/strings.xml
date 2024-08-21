@@ -18,6 +18,8 @@
 <resources>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
     <string name="buttonNext">Weiter zu</string>
+    <string name="contentDescriptionButtonBack">Zurück</string>
+    <string name="contentDescriptionButtonClose">Schliessen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
