@@ -50,7 +50,7 @@ fun SwissTransferTheme(
 @Composable
 fun isDarkTheme(): Boolean {
     // rememberMutableStateOf
-    // TODO checker dans realm. Si system, isSystemDark, sinon,
+    // TODO check in realm. If system, isSystemDark, otherwise,
     return isSystemInDarkTheme()
 }
 
