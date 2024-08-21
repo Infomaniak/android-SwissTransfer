@@ -42,7 +42,7 @@
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">Vicino</string>
     <string name="transferTypeQrCode">Codice QR</string>
-    <string name="transferTypeTitle">Inviate i vostri file tramite</string>
+    <string name="transferTypeScreenTitle">Trasferimento</string>
     <string name="transferUploadSourceChoiceCamera">Macchina fotografica</string>
     <string name="transferUploadSourceChoiceFiles">Sfogliare i file</string>
     <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>

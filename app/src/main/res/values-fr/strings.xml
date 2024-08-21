@@ -42,6 +42,7 @@
     <string name="transferTypeLink">Lien</string>
     <string name="transferTypeProximity">A proximité</string>
     <string name="transferTypeQrCode">QR Code</string>
+    <string name="transferTypeScreenTitle">Transfert</string>
     <string name="transferTypeTitle">Envoie tes fichiers par</string>
     <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>

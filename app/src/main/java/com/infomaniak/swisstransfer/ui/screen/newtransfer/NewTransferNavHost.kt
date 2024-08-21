@@ -39,7 +39,7 @@ fun NewTransferNavHost(navController: NavHostController) {
             ImportFilesScreen(navigateToTransferTypeScreen = { navController.navigate(TransferTypeDestination) })
         }
         composable<TransferTypeDestination> {
-            TransferTypeScreen(navigateToTransfer = { /*TODO*/ })
+            TransferTypeScreen(navigateToTransfer = { /*TODO*/ }, popBack = { navController.navigateUp() })
         }
         composable<TransferOptionsDestination> {
             TransferOptionsScreen()
