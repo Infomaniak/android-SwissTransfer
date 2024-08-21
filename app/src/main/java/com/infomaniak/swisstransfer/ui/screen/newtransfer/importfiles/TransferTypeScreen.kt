@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.illu.ChainTilted
 import com.infomaniak.swisstransfer.ui.icons.illu.EnvelopeTilted
@@ -44,8 +45,14 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit) {
-    Scaffold(topBar = { SwissTransferTobAppBar() }) { contentPaddings ->
+fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -> Unit) {
+    Scaffold(topBar = {
+        SwissTransferTobAppBar(
+            titleRes = R.string.transferTypeScreenTitle,
+            navigationMenu = TopAppBarButton.backButton(popBack),
+            TopAppBarButton.closeButton { /*TODO*/ }
+        )
+    }) { contentPaddings ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,6 +109,6 @@ enum class TransferType(
 @Composable
 private fun TransferTypeScreenPreview() {
     SwissTransferTheme {
-        TransferTypeScreen {}
+        TransferTypeScreen({}) {}
     }
 }

@@ -21,8 +21,11 @@
 
     <string name="buttonAddFiles">Add files</string>
     <string name="buttonNext">Next</string>
+    <string name="contentDescriptionButtonBack">Back</string>
+    <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="firstTransferDescription">Make your first transfer!</string>
+    <string name="importFilesScreenTitle">Files to transfer</string>
     <string name="receivedTitle">Received</string>
     <string name="sentEmptyTitle">Our story begins here</string>
     <string name="sentTitle">Sent</string>
@@ -42,6 +45,7 @@
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">Proximity</string>
     <string name="transferTypeQrCode">QR Code</string>
+    <string name="transferTypeScreenTitle">Transfer</string>
     <string name="transferTypeTitle">Send your files by</string>
     <string name="transferUploadSourceChoiceCamera">Camera</string>
     <string name="transferUploadSourceChoiceFiles">Browse files</string>

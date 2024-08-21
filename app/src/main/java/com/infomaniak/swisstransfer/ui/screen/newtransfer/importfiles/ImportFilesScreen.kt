@@ -45,7 +45,13 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
-        topBar = { SwissTransferTobAppBar() },
+        topBar = {
+            SwissTransferTobAppBar(
+                titleRes = R.string.importFilesScreenTitle,
+                navigationMenu = null,
+                TopAppBarButton.closeButton { /*TODO*/ }
+            )
+        },
         topButton = { modifier ->
             LargeButton(
                 modifier = modifier,

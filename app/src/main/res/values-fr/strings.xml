@@ -18,8 +18,11 @@
 <resources>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
     <string name="buttonNext">Suivant</string>
+    <string name="contentDescriptionButtonBack">Retour</string>
+    <string name="contentDescriptionButtonClose">Fermer</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
+    <string name="importFilesScreenTitle">Fichiers à transférer</string>
     <string name="receivedTitle">Recu</string>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
@@ -39,6 +42,7 @@
     <string name="transferTypeLink">Lien</string>
     <string name="transferTypeProximity">A proximité</string>
     <string name="transferTypeQrCode">QR Code</string>
+    <string name="transferTypeScreenTitle">Transfert</string>
     <string name="transferTypeTitle">Envoie tes fichiers par</string>
     <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
