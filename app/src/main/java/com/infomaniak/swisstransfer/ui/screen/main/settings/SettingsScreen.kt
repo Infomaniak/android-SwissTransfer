@@ -32,6 +32,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,8 +40,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.extensions.goToPlayStore
+import com.infomaniak.swisstransfer.extensions.openAppNotificationSettings
+import com.infomaniak.swisstransfer.extensions.openUrl
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.*
@@ -62,34 +67,54 @@ fun SettingsScreenWrapper(
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
         windowAdaptiveInfo,
-        listPane = {
-            SettingsScreen(
-                onItemClick = { item ->
-                    // Navigate to the detail pane with the passed item
-                    navigateTo(ListDetailPaneScaffoldRole.Detail, item)
-                },
-                getSelectedSetting = { currentDestination?.content },
-            )
-        },
-        detailPane = {
-            var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
-
-            val destination = currentDestination?.content ?: lastSelectedScreen
-            currentDestination?.content?.let { lastSelectedScreen = it }
-
-            when (destination) {
-                THEME -> SettingsThemeScreen()
-                NOTIFICATIONS -> {}
-                VALIDITY_PERIOD -> SettingsValidityPeriodScreen()
-                DOWNLOAD_LIMIT -> {}
-                EMAIL_LANGUAGE -> {}
-                DISCOVER_INFOMANIAK -> {}
-                SHARE_IDEAS -> {}
-                GIVE_FEEDBACK -> {}
-                null -> NoSelectionEmptyState()
-            }
-        }
+        listPane = { ListPane(this) },
+        detailPane = { DetailPane(this) }
     )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
+    val context = LocalContext.current
+    val aboutURL = stringResource(R.string.urlAbout)
+    val userReportURL = stringResource(R.string.urlUserReportAndroid)
+
+    SettingsScreen(
+        onItemClick = { item ->
+            when (item) {
+                NOTIFICATIONS -> context.openAppNotificationSettings()
+                DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
+                SHARE_IDEAS -> context.openUrl(userReportURL)
+                GIVE_FEEDBACK -> context.goToPlayStore()
+                else -> {
+                    // Navigate to the detail pane with the passed item
+                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                }
+            }
+        },
+        getSelectedSetting = { navigator.currentDestination?.content },
+    )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
+    var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+
+    val destination = navigator.currentDestination?.content ?: lastSelectedScreen
+    navigator.currentDestination?.content?.let { lastSelectedScreen = it }
+
+    when (destination) {
+        THEME -> SettingsThemeScreen()
+        VALIDITY_PERIOD -> SettingsValidityPeriodScreen()
+        DOWNLOAD_LIMIT -> Unit
+        EMAIL_LANGUAGE -> Unit
+        NOTIFICATIONS,
+        DISCOVER_INFOMANIAK,
+        SHARE_IDEAS,
+        GIVE_FEEDBACK -> Unit
+        null -> NoSelectionEmptyState()
+    }
 }
 
 @Composable
@@ -161,7 +186,11 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(R.string.settingsOptionDiscoverInfomaniak, { selectedSetting == DISCOVER_INFOMANIAK }, endIcon = OPEN_OUTSIDE) {
+        SettingItem(
+            R.string.settingsOptionDiscoverInfomaniak,
+            { selectedSetting == DISCOVER_INFOMANIAK },
+            endIcon = OPEN_OUTSIDE
+        ) {
             onItemClick(DISCOVER_INFOMANIAK)
         }
         SettingItem(R.string.settingsOptionShareIdeas, { selectedSetting == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {

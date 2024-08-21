@@ -58,5 +58,7 @@
     <string name="transferUploadSourceChoiceFiles">Sfogliare i file</string>
     <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>
     <string name="transferUploadSourceChoiceTitle">Scarica da</string>
+    <string name="urlAbout">https://www.infomaniak.com/it/about</string>
+    <string name="urlUserReportAndroid">https://feedback.userreport.com/c85aa792-0f76-4923-8fe2-fae976cac9c2/#ideas/popular</string>
     <string name="version">Versione</string>
 </resources>
