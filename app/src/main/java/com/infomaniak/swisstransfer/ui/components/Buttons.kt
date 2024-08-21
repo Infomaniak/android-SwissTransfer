@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
@@ -36,8 +36,6 @@ import com.infomaniak.swisstransfer.ui.icons.app.Add
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-
-private val LARGE_BUTTON_HEIGHT = 56.dp
 
 @Composable
 fun LargeButton(
@@ -48,8 +46,33 @@ fun LargeButton(
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
+    CoreButton(modifier, ButtonSize.LARGE, style, enabled, onClick, imageVector, titleRes)
+}
+
+@Composable
+fun SmallButton(
+    modifier: Modifier = Modifier,
+    @StringRes titleRes: Int,
+    style: ButtonType = ButtonType.PRIMARY,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    imageVector: ImageVector? = null,
+) {
+    CoreButton(modifier, ButtonSize.SMALL, style, enabled, onClick, imageVector, titleRes)
+}
+
+@Composable
+private fun CoreButton(
+    modifier: Modifier,
+    buttonSize: ButtonSize,
+    style: ButtonType,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    imageVector: ImageVector?,
+    titleRes: Int
+) {
     Button(
-        modifier = modifier.height(LARGE_BUTTON_HEIGHT),
+        modifier = modifier.height(buttonSize.height),
         colors = style.buttonColors(),
         shape = Shapes.medium,
         enabled = enabled,
@@ -90,20 +113,25 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
     }),
 }
 
+private enum class ButtonSize(val height: Dp) {
+    LARGE(56.dp), SMALL(40.dp)
+}
+
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun LargeButtonPreview() {
     SwissTransferTheme {
-        Column(modifier = Modifier.background(SwissTransferTheme.materialColors.background)) {
-            ButtonType.entries.forEach {
-                LargeButton(
-                    titleRes = R.string.appName,
-                    style = it,
-                    imageVector = AppIcons.Add,
-                    onClick = {},
-                )
-                Spacer(modifier = Modifier.height(Margin.Small))
+        Surface {
+            Column {
+                ButtonType.entries.forEach {
+                    Row {
+                        LargeButton(titleRes = R.string.appName, style = it, imageVector = AppIcons.Add, onClick = {})
+                        Spacer(modifier = Modifier.width(Margin.Small))
+                        SmallButton(titleRes = R.string.appName, style = it, imageVector = AppIcons.Add, onClick = {})
+                    }
+                    Spacer(modifier = Modifier.height(Margin.Medium))
+                }
             }
         }
     }
