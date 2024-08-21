@@ -27,8 +27,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,10 +51,7 @@ fun TransferTypeButtons(items: List<TransferType>, navigateToTransfer: (Transfer
         items(items = items, key = { it.titleRes }) { item ->
             TransferTypeButton(
                 modifier = Modifier.aspectRatio(0.87f),
-                label = stringResource(item.titleRes),
-                background = item.background(),
-                foreground = item.foreground(),
-                icon = item.icon,
+                item = item,
                 onClick = { navigateToTransfer(item) }
             )
         }
@@ -64,18 +59,11 @@ fun TransferTypeButtons(items: List<TransferType>, navigateToTransfer: (Transfer
 }
 
 @Composable
-private fun TransferTypeButton(
-    modifier: Modifier = Modifier,
-    label: String,
-    background: Color,
-    foreground: Color,
-    icon: ImageVector,
-    onClick: () -> Unit,
-) {
+private fun TransferTypeButton(modifier: Modifier = Modifier, item: TransferType, onClick: () -> Unit) {
     Button(
         contentPadding = PaddingValues(0.dp),
         modifier = modifier.fillMaxSize(),
-        colors = ButtonDefaults.buttonColors(containerColor = background, contentColor = foreground),
+        colors = ButtonDefaults.buttonColors(containerColor = item.background(), contentColor = item.foreground()),
         shape = ShapeDefaults.Medium,
         onClick = onClick,
     ) {
@@ -84,7 +72,7 @@ private fun TransferTypeButton(
                 modifier = Modifier
                     .fillMaxHeight(0.80f)
                     .align(Alignment.BottomCenter),
-                text = label,
+                text = stringResource(id = item.titleRes),
                 textAlign = TextAlign.Center,
                 style = SwissTransferTheme.typography.bodyMedium,
             )
@@ -93,12 +81,33 @@ private fun TransferTypeButton(
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
                     .align(Alignment.BottomCenter),
-                imageVector = icon,
+                imageVector = item.icon,
                 contentDescription = null,
             )
         }
     }
 }
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun TransferTypeButtonPreview() {
+    SwissTransferTheme {
+        Surface {
+            Column {
+                TransferType.entries.forEach { entry ->
+                    TransferTypeButton(
+                        modifier = Modifier
+                            .size(160.dp, 200.dp)
+                            .padding(20.dp),
+                        item = entry,
+                    ) {}
+                }
+            }
+        }
+    }
+}
+
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
