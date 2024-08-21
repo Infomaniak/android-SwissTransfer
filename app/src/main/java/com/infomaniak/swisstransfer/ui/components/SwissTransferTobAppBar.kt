@@ -35,7 +35,11 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SwissTransferTobAppBar(@StringRes titleRes: Int, navigationMenu: TopAppBarMenu? = null, vararg actionMenus: TopAppBarMenu) {
+fun SwissTransferTobAppBar(
+    @StringRes titleRes: Int,
+    navigationMenu: TopAppBarButton? = null,
+    vararg actionMenus: TopAppBarButton
+) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
@@ -52,24 +56,24 @@ fun SwissTransferTobAppBar(@StringRes titleRes: Int, navigationMenu: TopAppBarMe
 }
 
 @Composable
-private fun MenuButton(navigationMenu: TopAppBarMenu) {
+private fun MenuButton(navigationMenu: TopAppBarButton) {
     IconButton(onClick = navigationMenu.onClick) {
         Icon(imageVector = navigationMenu.icon, contentDescription = stringResource(navigationMenu.contentDescription))
     }
 }
 
 @Immutable
-data class TopAppBarMenu(
+data class TopAppBarButton(
     val icon: ImageVector,
     @StringRes val contentDescription: Int,
     val onClick: () -> Unit,
 ) {
     companion object {
-        val backButton: (onClick: () -> Unit) -> TopAppBarMenu = {
-            TopAppBarMenu(AppIcons.ArrowLeft, R.string.contentDescriptionButtonBack, it)
+        val backButton: (onClick: () -> Unit) -> TopAppBarButton = {
+            TopAppBarButton(AppIcons.ArrowLeft, R.string.contentDescriptionButtonBack, it)
         }
-        val closeButton: (onClick: () -> Unit) -> TopAppBarMenu = {
-            TopAppBarMenu(AppIcons.Cross, R.string.contentDescriptionButtonClose, it)
+        val closeButton: (onClick: () -> Unit) -> TopAppBarButton = {
+            TopAppBarButton(AppIcons.Cross, R.string.contentDescriptionButtonClose, it)
         }
     }
 }
@@ -80,10 +84,10 @@ data class TopAppBarMenu(
 private fun SwissTransferTobAppBarPreview() {
     SwissTransferTheme {
         SwissTransferTobAppBar(
-            R.string.appName,
-            TopAppBarMenu.backButton {},
-            TopAppBarMenu(AppIcons.Add, R.string.appName) {},
-            TopAppBarMenu.closeButton {}
+            titleRes = R.string.appName,
+            navigationMenu = TopAppBarButton.backButton {},
+            TopAppBarButton(AppIcons.Add, R.string.appName) {},
+            TopAppBarButton.closeButton {}
         )
     }
 }

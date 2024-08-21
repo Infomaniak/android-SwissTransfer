@@ -49,7 +49,7 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
             SwissTransferTobAppBar(
                 titleRes = R.string.importFilesScreenTitle,
                 navigationMenu = null,
-                TopAppBarMenu.closeButton { /*TODO*/ }
+                TopAppBarButton.closeButton { /*TODO*/ }
             )
         },
         topButton = { modifier ->
