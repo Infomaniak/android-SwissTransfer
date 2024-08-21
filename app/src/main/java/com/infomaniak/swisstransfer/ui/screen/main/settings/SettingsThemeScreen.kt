@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.Add
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.MutuallyExclusiveOptions
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -43,7 +43,7 @@ fun SettingsThemeScreen() {
         SettingTitle(titleRes = R.string.appName)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        MutuallyExclusiveOptions(ThemeOption.entries, selectedItem, setSelectedItem)
+        SingleSelectOptions(ThemeOption.entries, selectedItem, setSelectedItem)
     }
 }
 
