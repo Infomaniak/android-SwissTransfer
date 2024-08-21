@@ -43,9 +43,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.Add
-import com.infomaniak.swisstransfer.ui.icons.app.Bell
-import com.infomaniak.swisstransfer.ui.icons.app.SpeechBubble
+import com.infomaniak.swisstransfer.ui.icons.app.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
@@ -110,8 +108,15 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         )
 
         SettingTitle(R.string.settingsCategoryGeneral)
-        // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionTheme, { selectedMenu == THEME }, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
+        SettingItem(
+            titleRes = R.string.settingsOptionTheme,
+            isSelected = { selectedMenu == THEME },
+            icon = AppIcons.PaintbrushPalette,
+            description = "TODO",
+            CHEVRON
+        ) {
+            onItemClick(THEME)
+        }
         SettingItem(
             titleRes = R.string.settingsOptionNotifications,
             isSelected = { selectedMenu == NOTIFICATIONS },
@@ -125,21 +130,19 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryDefaultSettings)
-        // TODO: Use correct icon
         SettingItem(
             titleRes = R.string.settingsOptionValidityPeriod,
             isSelected = { selectedMenu == VALIDITY_PERIOD },
-            icon = AppIcons.Add,
+            icon = AppIcons.FileBadgeArrowDown,
             description = "TODO",
             endIcon = CHEVRON,
         ) {
             onItemClick(VALIDITY_PERIOD)
         }
-        // TODO: Use correct icon
         SettingItem(
             titleRes = R.string.settingsOptionDownloadLimit,
             isSelected = { selectedMenu == DOWNLOAD_LIMIT },
-            icon = AppIcons.Add,
+            icon = AppIcons.Clock,
             description = "TODO",
             endIcon = CHEVRON,
         ) {
