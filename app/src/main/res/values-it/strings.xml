@@ -19,16 +19,8 @@
     <string name="buttonAddFiles">Aggiunta di file</string>
     <string name="buttonNext">Avanti</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
-    <string name="downloadedTransferLabel">Trasferimento scaricato : %d/%d</string>
-    <string name="expiresIn">Scade tra %d giorni</string>
     <string name="firstTransferDescription">Effettuate il vostro primo trasferimento!</string>
-    <string name="fromHeader">Da :</string>
-    <string name="messageHeader">Messaggio:</string>
     <string name="receivedTitle">Ricevuto</string>
-    <plurals name="recipientHeader">
-        <item quantity="one">A:</item>
-        <item quantity="other">A :</item>
-    </plurals>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
     <string name="sentTitle">Inviato a</string>
     <string name="settingsCategoryAbout">Chi siamo</string>
@@ -47,13 +39,6 @@
     <string name="settingsOptionValidityPeriod">Periodo di validità</string>
     <string name="settingsThemeTitle">Selezionare un tema</string>
     <string name="settingsTitle">Parametri</string>
-    <string name="sharedFilesTitle">File condivisi</string>
-    <string name="transferContentHeader">Contenuto del trasferimento :</string>
-    <string name="transferTypeEmail">Email</string>
-    <string name="transferTypeLink">Link</string>
-    <string name="transferTypeProximity">Vicino</string>
-    <string name="transferTypeQrCode">Codice QR</string>
-    <string name="transferTypeTitle">Inviate i vostri file tramite</string>
     <string name="transferUploadSourceChoiceCamera">Macchina fotografica</string>
     <string name="transferUploadSourceChoiceFiles">Sfogliare i file</string>
     <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>

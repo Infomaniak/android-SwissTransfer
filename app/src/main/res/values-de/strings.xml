@@ -19,16 +19,8 @@
     <string name="buttonAddFiles">Dateien hinzufügen</string>
     <string name="buttonNext">Weiter zu</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
-    <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
-    <string name="expiresIn">Verfällt in %d Tagen</string>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
-    <string name="fromHeader">Von:</string>
-    <string name="messageHeader">Nachricht :</string>
     <string name="receivedTitle">Empfangen</string>
-    <plurals name="recipientHeader">
-        <item quantity="one">Empfänger :</item>
-        <item quantity="other">Adressaten:</item>
-    </plurals>
     <string name="sentEmptyTitle">Unsere Geschichte beginnt hier</string>
     <string name="sentTitle">Gesendet</string>
     <string name="settingsCategoryAbout">Über</string>
@@ -47,13 +39,6 @@
     <string name="settingsOptionValidityPeriod">Dauer der Gültigkeit</string>
     <string name="settingsThemeTitle">Wähle ein Thema aus</string>
     <string name="settingsTitle">Einstellungen</string>
-    <string name="sharedFilesTitle">Geteilte Dateien</string>
-    <string name="transferContentHeader">Inhalt der Übertragung :</string>
-    <string name="transferTypeEmail">E-Mail</string>
-    <string name="transferTypeLink">Link</string>
-    <string name="transferTypeProximity">In der Nähe</string>
-    <string name="transferTypeQrCode">QR-Code</string>
-    <string name="transferTypeTitle">Schicke deine Dateien per</string>
     <string name="transferUploadSourceChoiceCamera">Kamera</string>
     <string name="transferUploadSourceChoiceFiles">Dateien durchsuchen</string>
     <string name="transferUploadSourceChoiceGallery">Foto- und Videogalerie</string>
