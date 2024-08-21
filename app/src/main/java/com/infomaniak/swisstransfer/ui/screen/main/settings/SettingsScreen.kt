@@ -111,12 +111,12 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
 
         SettingTitle(R.string.settingsCategoryGeneral)
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionTheme, selectedMenu == THEME, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
+        SettingItem(R.string.settingsOptionTheme, { selectedMenu == THEME }, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
         SettingItem(
-            R.string.settingsOptionNotifications,
-            selectedMenu == NOTIFICATIONS,
-            AppIcons.Bell,
-            "TODO",
+            titleRes = R.string.settingsOptionNotifications,
+            isSelected = { selectedMenu == NOTIFICATIONS },
+            icon = AppIcons.Bell,
+            description = "TODO",
             endIcon = OPEN_OUTSIDE,
         ) {
             onItemClick(NOTIFICATIONS)
@@ -127,29 +127,29 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingTitle(R.string.settingsCategoryDefaultSettings)
         // TODO: Use correct icon
         SettingItem(
-            R.string.settingsOptionValidityPeriod,
-            selectedMenu == VALIDITY_PERIOD,
-            AppIcons.Add,
-            "TODO",
+            titleRes = R.string.settingsOptionValidityPeriod,
+            isSelected = { selectedMenu == VALIDITY_PERIOD },
+            icon = AppIcons.Add,
+            description = "TODO",
             endIcon = CHEVRON,
         ) {
             onItemClick(VALIDITY_PERIOD)
         }
         // TODO: Use correct icon
         SettingItem(
-            R.string.settingsOptionDownloadLimit,
-            selectedMenu == DOWNLOAD_LIMIT,
-            AppIcons.Add,
-            "TODO",
+            titleRes = R.string.settingsOptionDownloadLimit,
+            isSelected = { selectedMenu == DOWNLOAD_LIMIT },
+            icon = AppIcons.Add,
+            description = "TODO",
             endIcon = CHEVRON,
         ) {
             onItemClick(DOWNLOAD_LIMIT)
         }
         SettingItem(
-            R.string.settingsOptionEmailLanguage,
-            selectedMenu == EMAIL_LANGUAGE,
-            AppIcons.SpeechBubble,
-            "TODO",
+            titleRes = R.string.settingsOptionEmailLanguage,
+            isSelected = { selectedMenu == EMAIL_LANGUAGE },
+            icon = AppIcons.SpeechBubble,
+            description = "TODO",
             endIcon = CHEVRON,
         ) {
             onItemClick(EMAIL_LANGUAGE)
@@ -158,16 +158,16 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(R.string.settingsOptionDiscoverInfomaniak, selectedMenu == DISCOVER_INFOMANIAK, endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionDiscoverInfomaniak, { selectedMenu == DISCOVER_INFOMANIAK }, endIcon = OPEN_OUTSIDE) {
             onItemClick(DISCOVER_INFOMANIAK)
         }
-        SettingItem(R.string.settingsOptionShareIdeas, selectedMenu == SHARE_IDEAS, endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionShareIdeas, { selectedMenu == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
             onItemClick(SHARE_IDEAS)
         }
-        SettingItem(R.string.settingsOptionGiveFeedback, selectedMenu == GIVE_FEEDBACK, endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionGiveFeedback, { selectedMenu == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
             onItemClick(GIVE_FEEDBACK)
         }
-        SettingItem(R.string.version, isSelected = false, description = "0.0.1", onClick = null)
+        SettingItem(R.string.version, isSelected = { false }, description = "0.0.1", onClick = null)
     }
 }
 

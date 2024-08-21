@@ -32,11 +32,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SharpRippleButton(
     modifier: Modifier = Modifier,
-    isSelected: Boolean = false,
+    isSelected: () -> Boolean = { false },
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = if (isSelected) {
+    val colors = if (isSelected()) {
         ButtonDefaults.textButtonColors(
             contentColor = SwissTransferTheme.colors.primaryTextColor,
             containerColor = SwissTransferTheme.colors.selectedSettingItem,
@@ -46,7 +46,7 @@ fun SharpRippleButton(
     }
     Button(
         modifier = modifier.selectable(
-            selected = isSelected,
+            selected = isSelected(),
             onClick = onClick,
         ),
         colors = colors,
