@@ -29,9 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.MutuallyExclusiveOptions
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -42,7 +42,7 @@ fun SettingsValidityPeriodScreen() {
         SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        MutuallyExclusiveOptions(ValidityPeriod.entries, selectedItem, setSelectedItem)
+        SingleSelectOptions(ValidityPeriod.entries, { selectedItem }, setSelectedItem)
     }
 }
 
