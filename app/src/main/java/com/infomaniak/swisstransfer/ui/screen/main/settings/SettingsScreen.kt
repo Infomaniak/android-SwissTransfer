@@ -18,6 +18,12 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,6 +71,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 fun SettingsScreenWrapper(
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
+    val context = LocalContext.current
+    val aboutURL = stringResource(R.string.urlAbout)
+    val userReportURL = stringResource(R.string.urlUserReportAndroid)
     TwoPaneScaffold<SettingsOptionScreens>(
         windowAdaptiveInfo,
         listPane = { ListPane(this) },
