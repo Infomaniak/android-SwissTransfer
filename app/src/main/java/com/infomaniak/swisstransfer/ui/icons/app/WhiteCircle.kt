@@ -56,7 +56,9 @@ private var _whiteCircle: ImageVector? = null
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.WhiteCircle, contentDescription = null, modifier = Modifier.size(AppIcons.previewSize)
+            imageVector = AppIcons.WhiteCircle,
+            contentDescription = null,
+            modifier = Modifier.size(AppIcons.previewSize)
         )
     }
 }
