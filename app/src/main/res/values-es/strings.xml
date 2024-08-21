@@ -33,9 +33,9 @@
     <string name="settingsOptionNotifications">Notificaciones</string>
     <string name="settingsOptionShareIdeas">Comparte tus ideas</string>
     <string name="settingsOptionTheme">Tema</string>
-    <string name="settingsOptionThemeDark">Sombre</string>
-    <string name="settingsOptionThemeLight">Clair</string>
-    <string name="settingsOptionThemeSystem">Système</string>
+    <string name="settingsOptionThemeDark">Oscuro</string>
+    <string name="settingsOptionThemeLight">Luz</string>
+    <string name="settingsOptionThemeSystem">Sistema</string>
     <string name="settingsOptionValidityPeriod">Periodo de validez</string>
     <string name="settingsThemeTitle">Seleccione un tema</string>
     <string name="settingsTitle">Parámetros</string>
