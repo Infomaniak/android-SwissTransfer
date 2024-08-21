@@ -18,28 +18,56 @@
 
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.annotation.StringRes
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.icons.app.ArrowLeft
+import com.infomaniak.swisstransfer.ui.icons.app.Cross
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SwissTransferTobAppBar() {
+fun SwissTransferTobAppBar(@StringRes titleRes: Int, navigationMenu: TopAppBarMenu? = null, vararg actionMenus: TopAppBarMenu) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
-            titleContentColor = Color.White, // TODO
+            titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
+            actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
+            navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor
         ),
-        title = {
-            Text("Title")
+        title = { Text(stringResource(id = titleRes)) },
+        navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
+        actions = {
+            actionMenus.forEach { actionMenu -> MenuButton(actionMenu) }
         }
     )
+}
+
+@Composable
+private fun MenuButton(navigationMenu: TopAppBarMenu) {
+    IconButton(onClick = navigationMenu.onClick) {
+        Icon(imageVector = navigationMenu.icon, contentDescription = navigationMenu.contentDescription)
+    }
+}
+
+@Immutable
+data class TopAppBarMenu(
+    val icon: ImageVector,
+    val contentDescription: String?,
+    val onClick: () -> Unit,
+) {
+    companion object {
+        val backButton: (onClick: () -> Unit) -> TopAppBarMenu = { TopAppBarMenu(AppIcons.ArrowLeft, null, it) }
+        val closeButton: (onClick: () -> Unit) -> TopAppBarMenu = { TopAppBarMenu(AppIcons.Cross, null, it) }
+    }
 }
 
 @PreviewMobile
@@ -47,6 +75,11 @@ fun SwissTransferTobAppBar() {
 @Composable
 private fun SwissTransferTobAppBarPreview() {
     SwissTransferTheme {
-        SwissTransferTobAppBar()
+        SwissTransferTobAppBar(
+            R.string.appName,
+            TopAppBarMenu.backButton {},
+            TopAppBarMenu(AppIcons.Add, null, {}),
+            TopAppBarMenu.closeButton {}
+        )
     }
 }

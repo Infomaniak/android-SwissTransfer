@@ -20,6 +20,7 @@
     <string name="buttonNext">Suivant</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
+    <string name="importFilesScreenTitle">Fichiers à transférer</string>
     <string name="receivedTitle">Recu</string>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
