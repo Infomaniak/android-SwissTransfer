@@ -28,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
@@ -43,6 +44,43 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+
+private fun openUrl(context: Context, url: String) {
+    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+}
+
+private fun goToPlayStore(context: Context) {
+    try {
+        context.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${context.packageName}"))
+        )
+    } catch (_: ActivityNotFoundException) {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+            )
+        )
+    }
+}
+
+fun openAppNotificationSettings(context: Context) {
+    val packageName = context.packageName
+    val appUid = context.applicationInfo.uid
+    Intent().apply {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            }
+            else -> {
+                action = "Settings.ACTION_APP_NOTIFICATION_SETTINGS"
+                putExtra("app_package", packageName)
+                putExtra("app_uid", appUid)
+            }
+        }
+    }.also { context.startActivity(it) }
+}
 
 @Composable
 fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
