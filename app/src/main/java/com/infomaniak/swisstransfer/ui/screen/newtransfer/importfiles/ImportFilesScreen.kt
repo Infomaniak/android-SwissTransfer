@@ -59,7 +59,7 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
             LargeButton(
                 modifier = modifier,
                 titleRes = R.string.buttonNext,
-                onClick = { /*TODO*/ },
+                onClick = { navigateToTransferTypeScreen() },
             )
         },
     ) {
@@ -67,7 +67,6 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
                 onDismissRequest = { showUploadSourceChoiceBottomSheet = false },
-                onCameraClicked = { navigateToTransferTypeScreen() }
             )
         }
     }
@@ -77,7 +76,6 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
 private fun UploadSourceChoiceBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onDismissRequest: () -> Unit,
-    onCameraClicked: () -> Unit,
 ) {
     if (isBottomSheetVisible()) {
         SwissTransferBottomSheet(
@@ -85,7 +83,7 @@ private fun UploadSourceChoiceBottomSheet(
             titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
-                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera, onClick = onCameraClicked)
+                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /*TODO*/ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) { /*TODO*/ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
@@ -111,7 +109,7 @@ private fun ImportFilesScreenPreview() {
 private fun ImportChoiceBottomSheetPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSourceChoiceBottomSheet({ true }, {}, {})
+            UploadSourceChoiceBottomSheet({ true }, {})
         }
     }
 }
