@@ -18,8 +18,10 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,6 +48,7 @@ private val ITEM_MIN_HEIGHT = 56.dp
 @Composable
 fun SettingItem(
     @StringRes titleRes: Int,
+    isSelected: Boolean,
     icon: ImageVector? = null,
     description: String? = null,
     endIcon: EndIconType? = null,
@@ -58,6 +61,7 @@ fun SettingItem(
     onClick?.let {
         SharpRippleButton(
             modifier = modifier,
+            isSelected = isSelected,
             onClick = it,
         ) {
             SettingItemContent(icon, titleRes, description, endIcon)
@@ -107,22 +111,23 @@ private fun SettingItemContent(
     }
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun SettingItemPreview() {
     SwissTransferTheme {
         Surface {
-            Column {
+            Column(modifier = Modifier.selectableGroup()) {
                 SettingTitle(R.string.appName)
-                SettingItem(R.string.appName, AppIcons.Add, "Clair", EndIconType.CHEVRON) {}
-                SettingItem(R.string.appName, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
-                SettingItem(R.string.appName, description = "1.1.2") {}
-                SettingItem(R.string.appName) {}
+                SettingItem(R.string.appName, true, AppIcons.Add, "Clair", EndIconType.CHEVRON) {}
+                SettingItem(R.string.appName, false, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, false, description = "1.1.2") {}
+                SettingItem(R.string.appName, false) {}
                 SettingDivider()
                 SettingTitle(R.string.appName)
-                SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
-                SettingItem(R.string.appName, endIcon = EndIconType.OPEN_OUTSIDE) {}
-                SettingItem(R.string.appName, description = "0.0.1", onClick = null)
+                SettingItem(R.string.appName, false, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, false, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, false, description = "0.0.1", onClick = null)
             }
         }
     }

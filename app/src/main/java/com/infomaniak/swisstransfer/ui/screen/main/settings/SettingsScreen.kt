@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -69,6 +70,7 @@ fun SettingsScreenWrapper(
                     // Navigate to the detail pane with the passed item
                     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
                 },
+                getSelectedMenu = { currentDestination?.content },
             )
         },
         detailPane = {
@@ -93,8 +95,14 @@ fun SettingsScreenWrapper(
 }
 
 @Composable
-private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedMenu: () -> SettingsOptionScreens?) {
+    val selectedMenu = getSelectedMenu()
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .selectableGroup(),
+    ) {
         Text(
             modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
             text = stringResource(R.string.settingsTitle),
@@ -103,8 +111,14 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
 
         SettingTitle(R.string.settingsCategoryGeneral)
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionTheme, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
-        SettingItem(R.string.settingsOptionNotifications, AppIcons.Bell, "TODO", endIcon = OPEN_OUTSIDE) {
+        SettingItem(R.string.settingsOptionTheme, selectedMenu == THEME, AppIcons.Add, "TODO", CHEVRON) { onItemClick(THEME) }
+        SettingItem(
+            R.string.settingsOptionNotifications,
+            selectedMenu == NOTIFICATIONS,
+            AppIcons.Bell,
+            "TODO",
+            endIcon = OPEN_OUTSIDE,
+        ) {
             onItemClick(NOTIFICATIONS)
         }
 
@@ -112,24 +126,48 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit) {
 
         SettingTitle(R.string.settingsCategoryDefaultSettings)
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionValidityPeriod, AppIcons.Add, "TODO", endIcon = CHEVRON) {
+        SettingItem(
+            R.string.settingsOptionValidityPeriod,
+            selectedMenu == VALIDITY_PERIOD,
+            AppIcons.Add,
+            "TODO",
+            endIcon = CHEVRON,
+        ) {
             onItemClick(VALIDITY_PERIOD)
         }
         // TODO: Use correct icon
-        SettingItem(R.string.settingsOptionDownloadLimit, AppIcons.Add, "TODO", endIcon = CHEVRON) {
+        SettingItem(
+            R.string.settingsOptionDownloadLimit,
+            selectedMenu == DOWNLOAD_LIMIT,
+            AppIcons.Add,
+            "TODO",
+            endIcon = CHEVRON,
+        ) {
             onItemClick(DOWNLOAD_LIMIT)
         }
-        SettingItem(R.string.settingsOptionEmailLanguage, AppIcons.SpeechBubble, "TODO", endIcon = CHEVRON) {
+        SettingItem(
+            R.string.settingsOptionEmailLanguage,
+            selectedMenu == EMAIL_LANGUAGE,
+            AppIcons.SpeechBubble,
+            "TODO",
+            endIcon = CHEVRON,
+        ) {
             onItemClick(EMAIL_LANGUAGE)
         }
 
         SettingDivider()
 
         SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(R.string.settingsOptionDiscoverInfomaniak, endIcon = OPEN_OUTSIDE) { onItemClick(DISCOVER_INFOMANIAK) }
-        SettingItem(R.string.settingsOptionShareIdeas, endIcon = OPEN_OUTSIDE) { onItemClick(SHARE_IDEAS) }
-        SettingItem(R.string.settingsOptionGiveFeedback, endIcon = OPEN_OUTSIDE) { onItemClick(GIVE_FEEDBACK) }
-        SettingItem(R.string.version, description = "0.0.1", onClick = null)
+        SettingItem(R.string.settingsOptionDiscoverInfomaniak, selectedMenu == DISCOVER_INFOMANIAK, endIcon = OPEN_OUTSIDE) {
+            onItemClick(DISCOVER_INFOMANIAK)
+        }
+        SettingItem(R.string.settingsOptionShareIdeas, selectedMenu == SHARE_IDEAS, endIcon = OPEN_OUTSIDE) {
+            onItemClick(SHARE_IDEAS)
+        }
+        SettingItem(R.string.settingsOptionGiveFeedback, selectedMenu == GIVE_FEEDBACK, endIcon = OPEN_OUTSIDE) {
+            onItemClick(GIVE_FEEDBACK)
+        }
+        SettingItem(R.string.version, isSelected = false, description = "0.0.1", onClick = null)
     }
 }
 

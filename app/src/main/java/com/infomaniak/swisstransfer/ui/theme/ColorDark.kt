@@ -69,4 +69,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     iconColor = Color(shark),
     navigationItemBackground = Color(dark2),
     tertiaryButtonBackground = Color(dark2),
+    selectedSettingItem = Color(dark2),
 )

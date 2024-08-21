@@ -57,7 +57,7 @@ fun SingleSelectOptions(items: List<SettingOption>, selectedItem: () -> Int, set
 @Composable
 private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick: () -> Unit) {
     SharpRippleButton(
-        modifier = Modifier.selectable(selected = isSelected, onClick = {}), // onClick left empty because handled by button
+        modifier = Modifier.selectable(selected = isSelected, onClick = onClick),
         onClick = onClick
     ) {
         Row(
