@@ -18,14 +18,14 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
@@ -42,10 +42,15 @@ fun SettingTitle(@StringRes titleRes: Int) {
     )
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun SettingTitlePreview() {
-    Box(Modifier.background(color = Color.White)) {
-        SettingTitle(titleRes = R.string.appName)
+    SwissTransferTheme {
+        Surface {
+            Box {
+                SettingTitle(titleRes = R.string.appName)
+            }
+        }
     }
 }
