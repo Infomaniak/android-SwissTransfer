@@ -46,11 +46,11 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun MutuallyExclusiveOptions(items: List<SettingOption>, selectedItem: Int, setSelectedItem: (Int) -> Unit) {
+fun SingleSelectOptions(items: List<SettingOption>, selectedItem: () -> Int, setSelectedItem: (Int) -> Unit) {
     Column(Modifier.selectableGroup()) {
         items.forEachIndexed { index, item ->
             if (index > 0) HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-            SettingOptionItem(item, isSelected = selectedItem == index) { setSelectedItem(index) }
+            SettingOptionItem(item, isSelected = selectedItem() == index) { setSelectedItem(index) }
         }
     }
 }
