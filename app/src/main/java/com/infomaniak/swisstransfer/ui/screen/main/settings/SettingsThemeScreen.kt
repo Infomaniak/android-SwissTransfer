@@ -34,7 +34,6 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
 import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
 import com.infomaniak.swisstransfer.ui.icons.app.WhiteCircle
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.MutuallyExclusiveOptions
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
