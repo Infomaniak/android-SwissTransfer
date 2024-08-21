@@ -43,6 +43,11 @@
     <string name="settingsOptionValidityPeriod">Periodo de validez</string>
     <string name="settingsThemeTitle">Seleccione un tema</string>
     <string name="settingsTitle">Parámetros</string>
+    <string name="settingsValidityPeriodTitle">Establezca un periodo de validez por defecto para sus transferencias</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">día %d</item>
+        <item quantity="other">%d días</item>
+    </plurals>
     <string name="transferTypeEmail">Correo electrónico</string>
     <string name="transferTypeLink">Enlace</string>
     <string name="transferTypeProximity">Proximidad</string>

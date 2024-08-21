@@ -46,6 +46,11 @@
     <string name="settingsOptionValidityPeriod">Validity period</string>
     <string name="settingsThemeTitle">Select a theme</string>
     <string name="settingsTitle">Settings</string>
+    <string name="settingsValidityPeriodTitle">Set a default validity period for your transfers</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">Proximity</string>
