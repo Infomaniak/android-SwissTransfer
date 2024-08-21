@@ -36,6 +36,7 @@ private const val specific1 = 0xFF124426
 private const val specific2 = 0xFF334117
 private const val specific3 = 0xFF503E0F
 private const val specific4 = 0xFFEAC35D
+private const val specific5 = 0xFF49DEFD
 
 // Extra palette
 private const val error = 0xFFFC8878
@@ -70,4 +71,12 @@ val CustomDarkColorScheme = CustomColorScheme(
     navigationItemBackground = Color(dark2),
     tertiaryButtonBackground = Color(dark2),
     selectedSettingItem = Color(dark2),
+    transferTypeLinkContainer = Color(specific1),
+    transferTypeLinkOnContainer = Color(green_main),
+    transferTypeEmailContainer = Color(green_dark),
+    transferTypeEmailOnContainer = Color(specific5),
+    transferTypeQrContainer = Color(specific2),
+    transferTypeQrOnContainer = Color(green_main),
+    transferTypeProximityContainer = Color(specific3),
+    transferTypeProximityOnContainer = Color(specific4),
 )

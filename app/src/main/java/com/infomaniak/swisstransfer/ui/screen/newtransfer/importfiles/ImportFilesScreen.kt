@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun ImportFilesScreen() {
+fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
@@ -59,7 +59,7 @@ fun ImportFilesScreen() {
             LargeButton(
                 modifier = modifier,
                 titleRes = R.string.buttonNext,
-                onClick = { /*TODO*/ },
+                onClick = { navigateToTransferTypeScreen() },
             )
         },
     ) {
@@ -99,7 +99,7 @@ private fun UploadSourceChoiceBottomSheet(
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
-        ImportFilesScreen()
+        ImportFilesScreen {}
     }
 }
 

@@ -38,6 +38,11 @@
     <string name="settingsOptionTheme">Theme</string>
     <string name="settingsOptionValidityPeriod">Validity period</string>
     <string name="settingsTitle">Settings</string>
+    <string name="transferTypeEmail">Email</string>
+    <string name="transferTypeLink">Link</string>
+    <string name="transferTypeProximity">Proximity</string>
+    <string name="transferTypeQrCode">QR Code</string>
+    <string name="transferTypeTitle">Send your files by</string>
     <string name="transferUploadSourceChoiceCamera">Camera</string>
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>

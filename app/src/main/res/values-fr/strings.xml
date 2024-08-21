@@ -35,6 +35,11 @@
     <string name="settingsOptionTheme">Thème</string>
     <string name="settingsOptionValidityPeriod">Durée de validité</string>
     <string name="settingsTitle">Paramètres</string>
+    <string name="transferTypeEmail">E-mail</string>
+    <string name="transferTypeLink">Lien</string>
+    <string name="transferTypeProximity">A proximité</string>
+    <string name="transferTypeQrCode">QR Code</string>
+    <string name="transferTypeTitle">Envoie tes fichiers par</string>
     <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
     <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>
