@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -29,10 +30,26 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun SharpRippleButton(modifier: Modifier = Modifier, onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+fun SharpRippleButton(
+    modifier: Modifier = Modifier,
+    isSelected: () -> Boolean = { false },
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit,
+) {
+    val colors = if (isSelected()) {
+        ButtonDefaults.textButtonColors(
+            contentColor = SwissTransferTheme.colors.primaryTextColor,
+            containerColor = SwissTransferTheme.colors.selectedSettingItem,
+        )
+    } else {
+        ButtonDefaults.textButtonColors(contentColor = SwissTransferTheme.colors.primaryTextColor)
+    }
     Button(
-        modifier = modifier,
-        colors = ButtonDefaults.textButtonColors(contentColor = SwissTransferTheme.colors.primaryTextColor),
+        modifier = modifier.selectable(
+            selected = isSelected(),
+            onClick = onClick,
+        ),
+        colors = colors,
         shape = CustomShapes.None,
         onClick = onClick,
         content = content,
