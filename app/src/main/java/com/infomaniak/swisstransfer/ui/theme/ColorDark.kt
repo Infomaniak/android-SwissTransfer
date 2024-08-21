@@ -39,8 +39,10 @@ private const val specific4 = 0xFFEAC35D
 private const val specific5 = 0xFF49DEFD
 
 // Extra palette
-private const val error = 0xFFFC8878
 private const val elephant = 0xFF666666
+private const val white = 0xFFFFFFFF
+
+private const val error = 0xFFFC8878
 
 val DarkColorScheme = darkColorScheme(
     primary = Color(green_main),
@@ -67,6 +69,7 @@ val CustomDarkColorScheme = CustomColorScheme(
     primaryTextColor = Color(rabbit),
     secondaryTextColor = Color(shark),
     tertiaryTextColor = Color(elephant),
+    toolbarTextColor = Color(white),
     iconColor = Color(shark),
     navigationItemBackground = Color(dark2),
     tertiaryButtonBackground = Color(dark2),

@@ -70,6 +70,7 @@ val CustomLightColorScheme = CustomColorScheme(
     primaryTextColor = Color(orca),
     secondaryTextColor = Color(elephant),
     tertiaryTextColor = Color(shark),
+    toolbarTextColor = Color(white),
     iconColor = Color(elephant),
     navigationItemBackground = LightColorScheme.background,
     tertiaryButtonBackground = Color(rabbit),
