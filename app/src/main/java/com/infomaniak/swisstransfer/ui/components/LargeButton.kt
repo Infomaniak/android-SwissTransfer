@@ -59,7 +59,7 @@ fun LargeButton(
             Icon(modifier = Modifier.size(Margin.Medium), imageVector = it, contentDescription = null)
             Spacer(modifier = Modifier.width(Margin.Small))
         }
-        Text(text = stringResource(id = titleRes))
+        Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyMedium)
     }
 }
 
