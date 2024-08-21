@@ -19,8 +19,16 @@
     <string name="buttonAddFiles">Ajouter des fichiers</string>
     <string name="buttonNext">Suivant</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
+    <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
+    <string name="expiresIn">Expire dans %d jours</string>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
+    <string name="fromHeader">De :</string>
+    <string name="messageHeader">Message :</string>
     <string name="receivedTitle">Recu</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Destinataire :</item>
+        <item quantity="other">Destinataires :</item>
+    </plurals>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
     <string name="settingsCategoryAbout">A propos</string>
@@ -33,8 +41,19 @@
     <string name="settingsOptionNotifications">Notifications</string>
     <string name="settingsOptionShareIdeas">Partage tes idées</string>
     <string name="settingsOptionTheme">Thème</string>
+    <string name="settingsOptionThemeDark">Sombre</string>
+    <string name="settingsOptionThemeLight">Clair</string>
+    <string name="settingsOptionThemeSystem">Système</string>
     <string name="settingsOptionValidityPeriod">Durée de validité</string>
+    <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
+    <string name="sharedFilesTitle">Fichiers partagés</string>
+    <string name="transferContentHeader">Contenu du transfert :</string>
+    <string name="transferTypeEmail">E-mail</string>
+    <string name="transferTypeLink">Lien</string>
+    <string name="transferTypeProximity">A proximité</string>
+    <string name="transferTypeQrCode">QR Code</string>
+    <string name="transferTypeTitle">Envoie tes fichiers par</string>
     <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
     <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>
