@@ -18,18 +18,20 @@
 
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTobAppBar() {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
             titleContentColor = Color.White, // TODO
@@ -38,4 +40,13 @@ fun SwissTransferTobAppBar() {
             Text("Title")
         }
     )
+}
+
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun SwissTransferTobAppBarPreview() {
+    SwissTransferTheme {
+        SwissTransferTobAppBar()
+    }
 }
