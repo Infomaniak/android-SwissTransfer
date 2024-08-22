@@ -30,7 +30,7 @@ val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = stat
 
 @Composable
 fun SwissTransferTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     val customColors = if (darkTheme) CustomDarkColorScheme else CustomLightColorScheme
@@ -45,6 +45,13 @@ fun SwissTransferTheme(
             content = content
         )
     }
+}
+
+@Composable
+fun isDarkTheme(): Boolean {
+    // rememberMutableStateOf
+    // TODO check in realm. If system, isSystemDark, otherwise,
+    return isSystemInDarkTheme()
 }
 
 object SwissTransferTheme {

@@ -31,7 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.Add
+import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
+import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
+import com.infomaniak.swisstransfer.ui.icons.app.WhiteCircle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -42,7 +44,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun SettingsThemeScreen() {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SettingTitle(titleRes = R.string.appName)
+        SettingTitle(titleRes = R.string.settingsThemeTitle)
 
         var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
         SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
@@ -50,9 +52,9 @@ fun SettingsThemeScreen() {
 }
 
 enum class ThemeOption(override val title: Int, override val icon: ImageVector) : SettingOption {
-    SYSTEM(R.string.appName, AppIcons.Add),
-    LIGHT(R.string.appName, AppIcons.Add),
-    DARK(R.string.appName, AppIcons.Add),
+    SYSTEM(R.string.settingsOptionThemeSystem, AppIcons.BlackAndWhiteCircle),
+    LIGHT(R.string.settingsOptionThemeLight, AppIcons.WhiteCircle),
+    DARK(R.string.settingsOptionThemeDark, AppIcons.BlackCircle),
 }
 
 @PreviewMobile

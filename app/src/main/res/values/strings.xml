@@ -39,7 +39,11 @@
     <string name="settingsOptionNotifications">Notifications</string>
     <string name="settingsOptionShareIdeas">Share your ideas</string>
     <string name="settingsOptionTheme">Theme</string>
+    <string name="settingsOptionThemeDark">Sombre</string>
+    <string name="settingsOptionThemeLight">Clair</string>
+    <string name="settingsOptionThemeSystem">Système</string>
     <string name="settingsOptionValidityPeriod">Validity period</string>
+    <string name="settingsThemeTitle">Select a theme</string>
     <string name="settingsTitle">Settings</string>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>

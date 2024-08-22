@@ -36,7 +36,11 @@
     <string name="settingsOptionNotifications">Notifications</string>
     <string name="settingsOptionShareIdeas">Partage tes idées</string>
     <string name="settingsOptionTheme">Thème</string>
+    <string name="settingsOptionThemeDark">Sombre</string>
+    <string name="settingsOptionThemeLight">Clair</string>
+    <string name="settingsOptionThemeSystem">Système</string>
     <string name="settingsOptionValidityPeriod">Durée de validité</string>
+    <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Lien</string>
