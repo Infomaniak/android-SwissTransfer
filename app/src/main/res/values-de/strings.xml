@@ -29,8 +29,7 @@
     <string name="settingsCategoryAbout">Über</string>
     <string name="settingsCategoryDefaultSettings">Standardeinstellungen</string>
     <string name="settingsCategoryGeneral">General</string>
-    <string name="settingsNotificationsTitle">Wähle Sie eine Präferenz</string>
-    <string name="settingsOptionDiscoverInfomaniak">Entdecken Sie Infomaniak</string>
+    <string name="settingsDownloadsLimitTitle">Lege ein Standardlimit für deine Uploads fest</string>
     <string name="settingsEmailLanguageTitle">Legt eine Standardsprache für Ihre Weiterleitungen per E-Mail fest</string>
     <string name="settingsEmailLanguageValueEnglish">Englisch</string>
     <string name="settingsEmailLanguageValueFrench">Deutsch</string>

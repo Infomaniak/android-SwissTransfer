@@ -116,7 +116,7 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScree
     when (destination) {
         THEME -> SettingsThemeScreen()
         VALIDITY_PERIOD -> SettingsValidityPeriodScreen()
-        DOWNLOAD_LIMIT -> Unit
+        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen()
         EMAIL_LANGUAGE -> SettingsEmailLanguageScreen()
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
