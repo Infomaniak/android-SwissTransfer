@@ -36,6 +36,7 @@
     <string name="settingsEmailLanguageValueGerman">Tedesco</string>
     <string name="settingsEmailLanguageValueItalian">Italiano</string>
     <string name="settingsEmailLanguageValueSpanish">Spagnolo</string>
+    <string name="settingsNotificationsTitle">Seleziona una preferenza</string>
     <string name="settingsOptionDiscoverInfomaniak">Scoprire Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite di download</string>
     <string name="settingsOptionEmailLanguage">Lingua della posta elettronica</string>
