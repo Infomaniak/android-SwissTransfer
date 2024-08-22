@@ -23,18 +23,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
-import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
-import com.infomaniak.swisstransfer.ui.icons.app.WhiteCircle
+import com.infomaniak.swisstransfer.ui.icons.illu.EnglishFlag
+import com.infomaniak.swisstransfer.ui.icons.illu.FrenchFlag
+import com.infomaniak.swisstransfer.ui.icons.illu.GermanFlag
+import com.infomaniak.swisstransfer.ui.icons.illu.ItalianFlag
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -43,23 +42,25 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsThemeScreen() {
+fun SettingsEmailLanguageScreen() {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SettingTitle(titleRes = R.string.settingsThemeTitle)
+        SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
-        var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+        val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+        SingleSelectOptions(EmailLanguage.entries, { selectedItem }, setSelectedItem)
     }
 }
 
-enum class ThemeOption(
+enum class EmailLanguage(
     override val title: @Composable () -> String,
-    override val imageVector: ImageVector,
+    override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null
 ) : SettingOption {
-    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.BlackAndWhiteCircle),
-    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.WhiteCircle),
-    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.BlackCircle),
+    ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVector = AppIcons.EnglishFlag),
+    FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVector = AppIcons.FrenchFlag),
+    GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVector = AppIcons.GermanFlag),
+    ITALIAN({ stringResource(R.string.settingsEmailLanguageValueItalian) }, imageVector = AppIcons.ItalianFlag),
+    SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es),
 }
 
 @PreviewMobile
@@ -68,7 +69,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen()
+            SettingsEmailLanguageScreen()
         }
     }
 }

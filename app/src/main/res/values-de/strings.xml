@@ -31,6 +31,12 @@
     <string name="settingsCategoryGeneral">General</string>
     <string name="settingsNotificationsTitle">Wähle Sie eine Präferenz</string>
     <string name="settingsOptionDiscoverInfomaniak">Entdecken Sie Infomaniak</string>
+    <string name="settingsEmailLanguageTitle">Legt eine Standardsprache für Ihre Weiterleitungen per E-Mail fest</string>
+    <string name="settingsEmailLanguageValueEnglish">Englisch</string>
+    <string name="settingsEmailLanguageValueFrench">Deutsch</string>
+    <string name="settingsEmailLanguageValueGerman">Deutsch</string>
+    <string name="settingsEmailLanguageValueItalian">Italienisch</string>
+    <string name="settingsEmailLanguageValueSpanish">Spanisch</string>
     <string name="settingsOptionDownloadLimit">Limit für Downloads</string>
     <string name="settingsOptionEmailLanguage">Sprache der E-Mail</string>
     <string name="settingsOptionGiveFeedback">Gib deine Meinung ab</string>
