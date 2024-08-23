@@ -32,8 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
@@ -48,7 +48,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun SentScreen(
     navigateToDetails: (transferId: Int) -> Unit,
-    sentViewModel: SentViewModel = viewModel<SentViewModel>(),
+    sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
     SentScreen(

@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.hilt)
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
@@ -52,6 +54,10 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
     implementation(kotlin("reflect"))
 
@@ -75,6 +81,11 @@ dependencies {
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Others
     implementation(libs.kotlinx.serialization)

@@ -16,26 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.infomaniak.swisstransfer.ui
+package com.infomaniak.swisstransfer.di
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import dagger.hilt.android.AndroidEntryPoint
+object ApplicationModule {
 
-@AndroidEntryPoint
-class NewTransferActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SwissTransferTheme {
-                NewTransferScreen()
-            }
-        }
-    }
+//    @Provides
+//    @Singleton
+//    fun providesSwissTransferInjection() {
+//        // TODO: Implement this method
+//    }
 }
