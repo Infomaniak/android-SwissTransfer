@@ -18,14 +18,11 @@
 
 package com.infomaniak.swisstransfer.di
 
-import dagger.Provides
-import javax.inject.Singleton
-
 object ApplicationModule {
 
-    @Provides
-    @Singleton
-    fun providesSwissTransferInjection() {
-        // TODO: Implement this method
-    }
+//    @Provides
+//    @Singleton
+//    fun providesSwissTransferInjection() {
+//        // TODO: Implement this method
+//    }
 }
