@@ -47,6 +47,7 @@
     <string name="transferTypeProximity">Vicino</string>
     <string name="transferTypeQrCode">Codice QR</string>
     <string name="transferTypeScreenTitle">Trasferimento</string>
+    <string name="transferTypeTitle">Invia i vostri file tramite</string>
     <string name="transferUploadSourceChoiceCamera">Macchina fotografica</string>
     <string name="transferUploadSourceChoiceFiles">Sfogliare i file</string>
     <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>
