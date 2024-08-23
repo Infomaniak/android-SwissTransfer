@@ -37,8 +37,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsEmailLanguageScreen() {
+fun SettingsEmailLanguageScreen(navigateBack: () -> Unit) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        SwissTransferTobAppBar(R.string.settingsOptionEmailLanguage, navigationMenu = TopAppBarButton.backButton(navigateBack))
+
         SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
@@ -64,7 +66,7 @@ enum class EmailLanguage(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsEmailLanguageScreen()
+            SettingsEmailLanguageScreen{}
         }
     }
 }

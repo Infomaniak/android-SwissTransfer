@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -37,8 +39,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsValidityPeriodScreen() {
+fun SettingsValidityPeriodScreen(navigateBack: () -> Unit) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        SwissTransferTobAppBar(R.string.settingsOptionValidityPeriod, navigationMenu = TopAppBarButton.backButton(navigateBack))
+
         SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
@@ -63,7 +67,7 @@ enum class ValidityPeriod(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsValidityPeriodScreen()
+            SettingsValidityPeriodScreen{}
         }
     }
 }

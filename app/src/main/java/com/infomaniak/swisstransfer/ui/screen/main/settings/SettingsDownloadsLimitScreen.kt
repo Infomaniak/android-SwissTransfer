@@ -28,6 +28,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -36,8 +38,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsDownloadsLimitScreen() {
+fun SettingsDownloadsLimitScreen(navigateBack: () -> Unit) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        SwissTransferTobAppBar(R.string.settingsOptionDownloadLimit, navigationMenu = TopAppBarButton.backButton(navigateBack))
+
         SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
 
         val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
@@ -62,7 +66,7 @@ enum class DownloadsLimit(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsDownloadsLimitScreen()
+            SettingsDownloadsLimitScreen{}
         }
     }
 }

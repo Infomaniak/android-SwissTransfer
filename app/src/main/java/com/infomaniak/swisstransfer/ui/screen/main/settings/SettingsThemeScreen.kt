@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
 import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
@@ -43,8 +45,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsThemeScreen() {
+fun SettingsThemeScreen(navigateBack: () -> Unit) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = TopAppBarButton.backButton(navigateBack))
+
         SettingTitle(titleRes = R.string.settingsThemeTitle)
 
         var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
@@ -68,7 +72,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen()
+            SettingsThemeScreen {}
         }
     }
 }

@@ -48,10 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.extensions.goToPlayStore
 import com.infomaniak.swisstransfer.extensions.openAppNotificationSettings
 import com.infomaniak.swisstransfer.extensions.openUrl
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.*
@@ -69,7 +71,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SettingsScreenWrapper(
+    navController: NavHostController? = null,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+    isBarNavigation: Boolean = false
 ) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
@@ -135,6 +139,9 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
             .verticalScroll(rememberScrollState())
             .selectableGroup(),
     ) {
+
+        BrandTobAppBar()
+
         Text(
             modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
             text = stringResource(R.string.settingsTitle),
