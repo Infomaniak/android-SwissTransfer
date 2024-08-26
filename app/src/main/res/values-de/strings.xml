@@ -29,6 +29,7 @@
     <string name="settingsCategoryAbout">Über</string>
     <string name="settingsCategoryDefaultSettings">Standardeinstellungen</string>
     <string name="settingsCategoryGeneral">General</string>
+    <string name="settingsNotificationsTitle">Wähle Sie eine Präferenz</string>
     <string name="settingsOptionDiscoverInfomaniak">Entdecken Sie Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limit für Downloads</string>
     <string name="settingsOptionEmailLanguage">Sprache der E-Mail</string>
@@ -42,6 +43,11 @@
     <string name="settingsOptionValidityPeriod">Dauer der Gültigkeit</string>
     <string name="settingsThemeTitle">Wähle ein Thema aus</string>
     <string name="settingsTitle">Einstellungen</string>
+    <string name="settingsValidityPeriodTitle">Legen Sie eine Standardgültigkeitsdauer für Ihre Überweisungen fest</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
     <string name="transferTypeEmail">E-Mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">In der Nähe</string>

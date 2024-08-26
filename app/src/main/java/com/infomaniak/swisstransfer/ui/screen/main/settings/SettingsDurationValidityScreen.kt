@@ -23,18 +23,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
-import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
-import com.infomaniak.swisstransfer.ui.icons.app.WhiteCircle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -43,19 +37,23 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsThemeScreen() {
+fun SettingsValidityPeriodScreen() {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SettingTitle(titleRes = R.string.settingsThemeTitle)
+        SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
-        var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+        val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+        SingleSelectOptions(ValidityPeriod.entries, { selectedItem }, setSelectedItem)
     }
 }
 
-enum class ThemeOption(override val title: @Composable () -> String, override val icon: ImageVector) : SettingOption {
-    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.BlackAndWhiteCircle),
-    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.WhiteCircle),
-    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.BlackCircle),
+enum class ValidityPeriod(
+    override val title: @Composable () -> String,
+    override val icon: ImageVector? = null
+) : SettingOption {
+    THIRTY({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 30, 30) }),
+    FIFTEEN({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 15, 15) }),
+    SEVEN({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 7, 7) }),
+    ONE({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 1, 1) }),
 }
 
 @PreviewMobile
@@ -64,7 +62,7 @@ enum class ThemeOption(override val title: @Composable () -> String, override va
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen()
+            SettingsValidityPeriodScreen()
         }
     }
 }

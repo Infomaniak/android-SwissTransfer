@@ -29,6 +29,7 @@
     <string name="settingsCategoryAbout">A propos</string>
     <string name="settingsCategoryDefaultSettings">Paramètres par défaut</string>
     <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsNotificationsTitle">Sélectionne une préférence</string>
     <string name="settingsOptionDiscoverInfomaniak">Découvrir Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite de téléchargements</string>
     <string name="settingsOptionEmailLanguage">Langue de l’e-mail</string>
@@ -42,6 +43,11 @@
     <string name="settingsOptionValidityPeriod">Durée de validité</string>
     <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
+    <string name="settingsValidityPeriodTitle">Défini une durée de validité par défaut pour tes transferts</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Lien</string>
     <string name="transferTypeProximity">A proximité</string>
