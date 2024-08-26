@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     kotlin("plugin.serialization") version libs.versions.kotlin
-    id("org.sonarqube") version "5.1.0.4882" // Replace with latest scanner version number
 }
 
 val sharedMinSdk: Int by rootProject.extra
@@ -51,12 +50,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    sonarqube {
-        properties {
-            property("sonar.sources", "src/main/java/com/infomaniak/swisstransfer")
-            property("sonar.exclusions", "src/main/java/com/infomaniak/swisstransfer/ui/icons/**")
         }
     }
 }
