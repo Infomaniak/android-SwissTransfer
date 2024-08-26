@@ -83,6 +83,11 @@ dependencies {
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
 
+    //SwissTransfer Libraries
+    implementation("com.github.infomaniak.multiplatform_swisstransfer:STCore:0.0.4-vte")
+    implementation("com.github.infomaniak.multiplatform_swisstransfer:STCommon:0.0.4-vte")
+    implementation("com.github.infomaniak.multiplatform_swisstransfer:STDatabase:0.0.4-vte")
+
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)

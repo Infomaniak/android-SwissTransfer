@@ -15,34 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.lifecycle.lifecycleScope
+package com.infomaniak.swisstransfer.ui.screen.main.settings
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
-import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import dagger.hilt.android.AndroidEntryPoint
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.swisstransfer.di.IoDispatcher
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val swissTransferInjection: SwissTransferInjection,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) : ViewModel() {
+    private val appSettingsManager
+        inline get() = swissTransferInjection.appSettingsManager
 
-    @Inject
-    lateinit var swissTransferInjection: SwissTransferInjection
+    val appSettingsFlow = appSettingsManager.appSettings
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lifecycleScope.launch { swissTransferInjection.loadDefaultAccount() }
-        enableEdgeToEdge()
-        setContent {
-            SwissTransferTheme {
-                MainScreen()
-            }
-        }
+    fun setTheme(theme: Theme) = viewModelScope.launch(ioDispatcher) {
+        appSettingsManager.setTheme(theme)
     }
 }

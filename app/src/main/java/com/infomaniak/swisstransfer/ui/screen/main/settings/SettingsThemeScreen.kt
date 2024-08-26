@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
@@ -78,7 +79,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen {}
+            SettingsThemeScreen(Theme.SYSTEM, {}, {})
         }
     }
 }
