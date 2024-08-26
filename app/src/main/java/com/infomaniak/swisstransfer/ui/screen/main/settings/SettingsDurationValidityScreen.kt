@@ -39,9 +39,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsValidityPeriodScreen(navigateBack: () -> Unit) {
+fun SettingsValidityPeriodScreen(navigateBack: (() -> Unit)?) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SwissTransferTobAppBar(R.string.settingsOptionValidityPeriod, navigationMenu = TopAppBarButton.backButton(navigateBack))
+        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
+        SwissTransferTobAppBar(R.string.settingsOptionValidityPeriod, navigationMenu = canDisplayBackButton)
 
         SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
@@ -67,7 +68,7 @@ enum class ValidityPeriod(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsValidityPeriodScreen{}
+            SettingsValidityPeriodScreen {}
         }
     }
 }

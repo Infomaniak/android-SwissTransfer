@@ -37,9 +37,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsEmailLanguageScreen(navigateBack: () -> Unit) {
+fun SettingsEmailLanguageScreen(navigateBack: (() -> Unit)?) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SwissTransferTobAppBar(R.string.settingsOptionEmailLanguage, navigationMenu = TopAppBarButton.backButton(navigateBack))
+        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
+        SwissTransferTobAppBar(R.string.settingsOptionEmailLanguage, navigationMenu = canDisplayBackButton)
 
         SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
@@ -66,7 +67,7 @@ enum class EmailLanguage(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsEmailLanguageScreen{}
+            SettingsEmailLanguageScreen {}
         }
     }
 }

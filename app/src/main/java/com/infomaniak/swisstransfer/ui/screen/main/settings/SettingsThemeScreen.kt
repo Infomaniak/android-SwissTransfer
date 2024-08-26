@@ -45,9 +45,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsThemeScreen(navigateBack: () -> Unit) {
+fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = TopAppBarButton.backButton(navigateBack))
+        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
+        SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
 
         SettingTitle(titleRes = R.string.settingsThemeTitle)
 

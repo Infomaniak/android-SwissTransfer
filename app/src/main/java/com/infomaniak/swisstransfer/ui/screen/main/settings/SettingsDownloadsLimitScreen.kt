@@ -38,9 +38,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsDownloadsLimitScreen(navigateBack: () -> Unit) {
+fun SettingsDownloadsLimitScreen(navigateBack: (() -> Unit)?) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SwissTransferTobAppBar(R.string.settingsOptionDownloadLimit, navigationMenu = TopAppBarButton.backButton(navigateBack))
+        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
+        SwissTransferTobAppBar(R.string.settingsOptionDownloadLimit, navigationMenu = canDisplayBackButton)
 
         SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
 
@@ -66,7 +67,7 @@ enum class DownloadsLimit(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsDownloadsLimitScreen{}
+            SettingsDownloadsLimitScreen {}
         }
     }
 }
