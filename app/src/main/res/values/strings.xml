@@ -61,5 +61,7 @@
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
     <string name="transferUploadSourceChoiceTitle">Upload from</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReportAndroid">https://feedback.userreport.com/f12466ad-db5b-4f5c-b24c-a54b0a5117ca/#ideas/popular</string>
     <string name="version">Version</string>
 </resources>
