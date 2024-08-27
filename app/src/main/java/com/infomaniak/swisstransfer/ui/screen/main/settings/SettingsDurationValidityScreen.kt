@@ -48,7 +48,8 @@ fun SettingsValidityPeriodScreen() {
 
 enum class ValidityPeriod(
     override val title: @Composable () -> String,
-    override val icon: ImageVector? = null
+    override val imageVector: ImageVector? = null,
+    override val imageVectorResId: Int? = null,
 ) : SettingOption {
     THIRTY({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 30, 30) }),
     FIFTEEN({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 15, 15) }),

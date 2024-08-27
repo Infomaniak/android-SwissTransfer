@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
@@ -91,7 +92,11 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
 
 interface SettingOption {
     val title: @Composable () -> String
+    val imageVector: ImageVector?
+    val imageVectorResId: Int?
+
     val icon: ImageVector?
+        @Composable get() = imageVector ?: imageVectorResId?.let { ImageVector.vectorResource(it) }
 }
 
 @Preview(name = "Light")
@@ -103,7 +108,8 @@ private fun SettingOptionItemPreview() {
             Column {
                 val item = object : SettingOption {
                     override val title: @Composable () -> String = { stringResource(R.string.appName) }
-                    override val icon: ImageVector = AppIcons.Add
+                    override val imageVector: ImageVector = AppIcons.Add
+                    override val imageVectorResId = null
                 }
                 SettingOptionItem(item, true) {}
                 SettingOptionItem(item, false) {}

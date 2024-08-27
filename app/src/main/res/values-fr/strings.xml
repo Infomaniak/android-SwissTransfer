@@ -29,6 +29,12 @@
     <string name="settingsCategoryAbout">A propos</string>
     <string name="settingsCategoryDefaultSettings">Paramètres par défaut</string>
     <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsEmailLanguageTitle">Défini une langue par défaut pour vos transferts par e-mail</string>
+    <string name="settingsEmailLanguageValueEnglish">Anglais</string>
+    <string name="settingsEmailLanguageValueFrench">Francais</string>
+    <string name="settingsEmailLanguageValueGerman">Allemand</string>
+    <string name="settingsEmailLanguageValueItalian">Italien</string>
+    <string name="settingsEmailLanguageValueSpanish">Espagnol</string>
     <string name="settingsNotificationsTitle">Sélectionne une préférence</string>
     <string name="settingsOptionDiscoverInfomaniak">Découvrir Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite de téléchargements</string>

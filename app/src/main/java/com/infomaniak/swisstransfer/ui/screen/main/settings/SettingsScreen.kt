@@ -108,7 +108,7 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScree
         THEME -> SettingsThemeScreen()
         VALIDITY_PERIOD -> SettingsValidityPeriodScreen()
         DOWNLOAD_LIMIT -> Unit
-        EMAIL_LANGUAGE -> Unit
+        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen()
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
