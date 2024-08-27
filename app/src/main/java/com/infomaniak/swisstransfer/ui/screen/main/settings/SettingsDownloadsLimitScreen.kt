@@ -37,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTi
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun SettingsDownloadsLimitScreen(navigateBack: (() -> Unit)?) {
@@ -70,7 +69,6 @@ enum class DownloadsLimit(
 }
 
 @PreviewMobile
-@PreviewTablet
 @Composable
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
