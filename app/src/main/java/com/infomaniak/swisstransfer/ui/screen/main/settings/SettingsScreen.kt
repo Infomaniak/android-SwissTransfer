@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
@@ -128,7 +129,7 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
             SettingItem(R.string.settingsOptionGiveFeedback, { selectedSetting == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
                 onItemClick(GIVE_FEEDBACK)
             }
-            SettingItem(R.string.version, isSelected = { false }, description = "0.0.1", onClick = null)
+            SettingItem(R.string.version, isSelected = { false }, description = BuildConfig.VERSION_NAME, onClick = null)
         }
     }
 }

@@ -60,7 +60,7 @@ fun AppNavigationSuiteScaffold(
     navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    content: @Composable (Boolean) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     Surface(color = SwissTransferTheme.materialColors.background) {
         NavigationSuiteScaffoldLayout(
@@ -88,7 +88,7 @@ fun AppNavigationSuiteScaffold(
                     }
                 )
             ) {
-                content(layoutType == NavigationSuiteType.NavigationBar)
+                content()
             }
         }
     }
