@@ -3,6 +3,7 @@ package com.infomaniak.swisstransfer.ui.icons.illu
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.translationMatrix
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.ItalianFlag: ImageVector
@@ -55,9 +57,9 @@ val AppIcons.ItalianFlag: ImageVector
                     moveTo(0.0f, 4.333f)
                     curveTo(0.0f, 3.597f, 0.597f, 3.0f, 1.333f, 3.0f)
                     horizontalLineTo(8.0f)
-                    verticalLineToRelative(18.667f)
+                    verticalLineToRelative(18.0f)
                     horizontalLineTo(1.333f)
-                    arcTo(1.333f, 1.333f, 0.0f, false, true, 0.0f, 20.333f)
+                    arcTo(1.333f, 1.333f, 0.0f, false, true, 0.0f, 19.6f)
                     close()
                 }
                 path(
@@ -67,7 +69,7 @@ val AppIcons.ItalianFlag: ImageVector
                 ) {
                     moveTo(8.0f, 3.0f)
                     horizontalLineToRelative(8.0f)
-                    verticalLineToRelative(18.667f)
+                    verticalLineToRelative(18.0f)
                     horizontalLineTo(8.0f)
                     close()
                 }
@@ -83,6 +85,10 @@ private var _italianFlag: ImageVector? = null
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = AppIcons.ItalianFlag, contentDescription = "")
+        Image(
+            imageVector = AppIcons.ItalianFlag,
+            contentDescription = "",
+            modifier = Modifier.size(AppIcons.previewSize)
+        )
     }
 }

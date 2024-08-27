@@ -3,6 +3,7 @@ package com.infomaniak.swisstransfer.ui.icons.illu
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
+import androidx.compose.ui.graphics.vector.PathData
 import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +32,18 @@ val AppIcons.EnglishFlag: ImageVector
             viewportWidth = 24.0f,
             viewportHeight = 24.0f
         ).apply {
-            group {
+            group(clipPathData = PathData {
+                moveTo(1.333f, 3.0f)
+                horizontalLineToRelative(21.334f)
+                arcTo(1.333f, 1.333f, 0.0f, false, true, 24.0f, 4.333f)
+                verticalLineToRelative(16.65f)
+                arcToRelative(1.333f, 1.333f, 0.0f, false, true, -1.333f, 1.333f)
+                horizontalLineTo(1.333f)
+                arcTo(1.333f, 1.333f, 0.0f, false, true, 0.0f, 20.334f)
+                verticalLineTo(4.333f)
+                arcTo(1.333f, 1.333f, 0.0f, false, true, 1.333f, 3.0f)
+                close()
+            }) {
                 path(
                     fill = SolidColor(Color(0xFF0B5394)), stroke = null, strokeLineWidth =
                     0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
@@ -39,10 +52,10 @@ val AppIcons.EnglishFlag: ImageVector
                     moveTo(1.333f, 3.0f)
                     horizontalLineToRelative(21.334f)
                     arcTo(1.333f, 1.333f, 0.0f, false, true, 24.0f, 4.333f)
-                    verticalLineToRelative(15.334f)
-                    arcTo(1.333f, 1.333f, 0.0f, false, true, 22.667f, 21.0f)
+                    verticalLineToRelative(16.65f)
+                    arcToRelative(1.333f, 1.333f, 0.0f, false, true, -1.333f, 1.333f)
                     horizontalLineTo(1.333f)
-                    arcTo(1.333f, 1.333f, 0.0f, false, true, 0.0f, 19.667f)
+                    arcTo(1.333f, 1.333f, 0.0f, false, true, 0.0f, 20.334f)
                     verticalLineTo(4.333f)
                     arcTo(1.333f, 1.333f, 0.0f, false, true, 1.333f, 3.0f)
                     close()
@@ -153,7 +166,7 @@ val AppIcons.EnglishFlag: ImageVector
                 ) {
                     moveTo(9.333f, 3.0f)
                     horizontalLineToRelative(5.333f)
-                    verticalLineToRelative(18.667f)
+                    verticalLineToRelative(19.3f)
                     horizontalLineTo(9.333f)
                     close()
                 }
@@ -164,7 +177,7 @@ val AppIcons.EnglishFlag: ImageVector
                 ) {
                     moveTo(10.667f, 3.0f)
                     horizontalLineToRelative(2.667f)
-                    verticalLineToRelative(18.667f)
+                    verticalLineToRelative(19.3f)
                     horizontalLineToRelative(-2.667f)
                     close()
                 }
@@ -191,6 +204,10 @@ private var _englishFlag: ImageVector? = null
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = AppIcons.EnglishFlag, contentDescription = "")
+        Image(
+            imageVector = AppIcons.EnglishFlag,
+            contentDescription = "",
+            modifier = Modifier.size(AppIcons.previewSize)
+        )
     }
 }

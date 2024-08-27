@@ -3,6 +3,7 @@ package com.infomaniak.swisstransfer.ui.icons.illu
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,6 +82,10 @@ private var _germanFlag: ImageVector? = null
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = AppIcons.GermanFlag, contentDescription = "")
+        Image(
+            imageVector = AppIcons.GermanFlag,
+            contentDescription = "",
+            modifier = Modifier.size(AppIcons.previewSize)
+        )
     }
 }
