@@ -29,11 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.illu.EnglishFlag
-import com.infomaniak.swisstransfer.ui.icons.illu.FrenchFlag
-import com.infomaniak.swisstransfer.ui.icons.illu.GermanFlag
-import com.infomaniak.swisstransfer.ui.icons.illu.ItalianFlag
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -56,10 +51,10 @@ enum class EmailLanguage(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null
 ) : SettingOption {
-    ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVector = AppIcons.EnglishFlag),
-    FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVector = AppIcons.FrenchFlag),
-    GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVector = AppIcons.GermanFlag),
-    ITALIAN({ stringResource(R.string.settingsEmailLanguageValueItalian) }, imageVector = AppIcons.ItalianFlag),
+    ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVectorResId = R.drawable.flag_gb),
+    FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVectorResId = R.drawable.flag_fr),
+    GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVectorResId = R.drawable.flag_ge),
+    ITALIAN({ stringResource(R.string.settingsEmailLanguageValueItalian) }, imageVectorResId = R.drawable.flag_it),
     SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es),
 }
 
