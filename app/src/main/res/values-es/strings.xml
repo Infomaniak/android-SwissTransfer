@@ -29,6 +29,7 @@
     <string name="settingsCategoryAbout">Quiénes somos</string>
     <string name="settingsCategoryDefaultSettings">Ajustes por defecto</string>
     <string name="settingsCategoryGeneral">General</string>
+    <string name="settingsDownloadsLimitTitle">Establece un límite de descarga por defecto para tus transferencias</string>
     <string name="settingsEmailLanguageTitle">Establecer un idioma por defecto para las transferencias de correo electrónico</string>
     <string name="settingsEmailLanguageValueEnglish">Inglés</string>
     <string name="settingsEmailLanguageValueFrench">Francés</string>

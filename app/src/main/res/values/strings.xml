@@ -32,6 +32,7 @@
     <string name="settingsCategoryAbout">About</string>
     <string name="settingsCategoryDefaultSettings">Default settings</string>
     <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsDownloadsLimitTitle">Set a default download limit for your transfers</string>
     <string name="settingsEmailLanguageTitle">Set a default language for your email transfers</string>
     <string name="settingsEmailLanguageValueEnglish">English</string>
     <string name="settingsEmailLanguageValueFrench">French</string>
