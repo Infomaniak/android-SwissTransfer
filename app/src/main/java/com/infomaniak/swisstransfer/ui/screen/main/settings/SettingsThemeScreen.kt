@@ -19,8 +19,10 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
 import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
@@ -40,15 +44,23 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTi
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SettingsThemeScreen() {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SettingTitle(titleRes = R.string.settingsThemeTitle)
+fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
+    Scaffold(topBar = {
+        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
+        SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
+    }) { paddingsValue ->
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(paddingsValue)
+        ) {
+            SettingTitle(titleRes = R.string.settingsThemeTitle)
 
-        var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+            var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+        }
     }
 }
 
@@ -63,12 +75,11 @@ enum class ThemeOption(
 }
 
 @PreviewMobile
-@PreviewTablet
 @Composable
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen()
+            SettingsThemeScreen {}
         }
     }
 }

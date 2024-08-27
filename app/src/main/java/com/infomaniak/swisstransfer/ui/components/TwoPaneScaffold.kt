@@ -28,6 +28,7 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowHeightSizeClass
 
 /**
@@ -58,7 +59,10 @@ fun <T> TwoPaneScaffold(
         else -> paneScaffoldDirective.maxHorizontalPartitions
     }
     val navigator = rememberListDetailPaneScaffoldNavigator<T>(
-        scaffoldDirective = paneScaffoldDirective.copy(maxHorizontalPartitions)
+        scaffoldDirective = paneScaffoldDirective.copy(
+            maxHorizontalPartitions = maxHorizontalPartitions,
+            horizontalPartitionSpacerSize = 0.dp
+        )
     )
 
     BackHandler(navigator.canNavigateBack()) {
