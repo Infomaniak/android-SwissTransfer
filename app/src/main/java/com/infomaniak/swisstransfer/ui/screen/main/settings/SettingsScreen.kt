@@ -117,11 +117,14 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScree
     val destination = navigator.currentDestination?.content ?: lastSelectedScreen
     navigator.currentDestination?.content?.let { lastSelectedScreen = it }
 
+    val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
+    val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+
     when (destination) {
-        THEME -> SettingsThemeScreen()
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen()
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen()
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen()
+        THEME -> SettingsThemeScreen(navigateBack)
+        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack)
+        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack)
+        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack)
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
