@@ -18,33 +18,20 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.extensions.goToPlayStore
-import com.infomaniak.swisstransfer.extensions.openAppNotificationSettings
-import com.infomaniak.swisstransfer.extensions.openUrl
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
-import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import com.infomaniak.swisstransfer.ui.icons.app.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
@@ -56,78 +43,17 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-fun SettingsScreenWrapper(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()) {
-    TwoPaneScaffold<SettingsOptionScreens>(
-        windowAdaptiveInfo,
-        listPane = { ListPane(this) },
-        detailPane = { DetailPane(this) }
-    )
-}
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
-    val context = LocalContext.current
-    val aboutURL = stringResource(R.string.urlAbout)
-    val userReportURL = stringResource(R.string.urlUserReportAndroid)
-
-    SettingsScreen(
-        onItemClick = { item ->
-            when (item) {
-                NOTIFICATIONS -> context.openAppNotificationSettings()
-                DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
-                SHARE_IDEAS -> context.openUrl(userReportURL)
-                GIVE_FEEDBACK -> context.goToPlayStore()
-                else -> {
-                    // Navigate to the detail pane with the passed item
-                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
-                }
-            }
-        },
-        getSelectedSetting = { navigator.currentDestination?.content },
-    )
-}
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
-    var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
-
-    val destination = navigator.currentDestination?.content ?: lastSelectedScreen
-    navigator.currentDestination?.content?.let { lastSelectedScreen = it }
-
-    val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
-    val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
-
-    when (destination) {
-        THEME -> SettingsThemeScreen(navigateBack)
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack)
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack)
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack)
-        NOTIFICATIONS,
-        DISCOVER_INFOMANIAK,
-        SHARE_IDEAS,
-        GIVE_FEEDBACK -> Unit
-        null -> NoSelectionEmptyState()
-    }
-}
 
 @Composable
-private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
+fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
     val selectedSetting = getSelectedSetting()
 
-
-    Column {
-        BrandTobAppBar()
-
+    Scaffold(topBar = { BrandTobAppBar() }) { paddingsValue ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .selectableGroup(),
+                .selectableGroup()
+                .padding(paddingsValue),
         ) {
             Text(
                 modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
@@ -207,14 +133,6 @@ private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSele
     }
 }
 
-// Show the detail pane content if selected item is available
-@Composable
-private fun NoSelectionEmptyState() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
-    }
-}
-
 enum class SettingsOptionScreens {
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
@@ -222,12 +140,11 @@ enum class SettingsOptionScreens {
 }
 
 @PreviewMobile
-@PreviewTablet
 @Composable
 private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreenWrapper()
+            SettingsScreen(onItemClick = {}, getSelectedSetting = { null })
         }
     }
 }

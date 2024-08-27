@@ -19,8 +19,10 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -40,11 +42,13 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun SettingsEmailLanguageScreen(navigateBack: (() -> Unit)?) {
-    Column {
+    Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionEmailLanguage, navigationMenu = canDisplayBackButton)
-
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    }) { paddingsValue ->
+        Column(modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(paddingsValue)) {
             SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
             val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
