@@ -46,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
+fun SettingsThemeScreen(theme: Theme, navigateBack: (() -> Unit)?, onThemeUpdate: (Theme) -> Unit) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
@@ -58,8 +58,12 @@ fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
         ) {
             SettingTitle(titleRes = R.string.settingsThemeTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+            var selectedItem by rememberSaveable { mutableIntStateOf(theme.indexOf()) }
+            SingleSelectOptions(ThemeOption.entries, { selectedItem }, {
+                selectedItem = it
+                val selectedTheme = Theme.entries[it]
+                onThemeUpdate(selectedTheme)
+            })
         }
     }
 }

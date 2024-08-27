@@ -36,6 +36,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
@@ -44,17 +48,21 @@ import com.infomaniak.swisstransfer.ui.utils.*
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SettingsScreenWrapper(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()) {
+fun SettingsScreenWrapper(
+    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
+) {
+    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     TwoPaneScaffold<SettingsOptionScreens>(
         windowAdaptiveInfo = windowAdaptiveInfo,
-        listPane = { ListPane(this) },
-        detailPane = { DetailPane(this) },
+        listPane = { ListPane(this, appSettings) },
+        detailPane = { DetailPane(settingsViewModel, this, appSettings) },
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
+private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings?) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
     val userReportURL = stringResource(R.string.urlUserReportAndroid)
@@ -73,12 +81,17 @@ private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens
             }
         },
         getSelectedSetting = { navigator.currentDestination?.content },
+        appSettings
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
+private fun DetailPane(
+    settingsViewModel: SettingsViewModel,
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    appSettings: AppSettings?
+) {
     var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
 
     val destination = navigator.currentDestination?.content ?: lastSelectedScreen
@@ -88,7 +101,9 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScree
     val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
 
     when (destination) {
-        THEME -> SettingsThemeScreen(navigateBack)
+        THEME -> SettingsThemeScreen(appSettings?.theme ?: Theme.SYSTEM, navigateBack) {
+            settingsViewModel.setTheme(it)
+        }
         VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack)
         DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack)
         EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack)

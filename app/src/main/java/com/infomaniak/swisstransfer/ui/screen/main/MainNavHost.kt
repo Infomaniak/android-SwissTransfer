@@ -58,7 +58,7 @@ fun MainNavHost(
             TransferDetailsScreen(transferId = transferDetails.transferId)
         }
         composable<SettingsDestination> {
-            SettingsScreenWrapper(navController, windowAdaptiveInfo, isBarNavigation)
+            SettingsScreenWrapper(windowAdaptiveInfo)
         }
     }
 }
