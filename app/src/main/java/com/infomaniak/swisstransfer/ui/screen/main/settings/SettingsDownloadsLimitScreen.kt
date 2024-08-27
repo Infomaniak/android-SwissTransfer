@@ -39,14 +39,16 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun SettingsDownloadsLimitScreen(navigateBack: (() -> Unit)?) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    Column {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionDownloadLimit, navigationMenu = canDisplayBackButton)
 
-        SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
 
-        val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        SingleSelectOptions(DownloadsLimit.entries, { selectedItem }, setSelectedItem)
+            val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+            SingleSelectOptions(DownloadsLimit.entries, { selectedItem }, setSelectedItem)
+        }
     }
 }
 

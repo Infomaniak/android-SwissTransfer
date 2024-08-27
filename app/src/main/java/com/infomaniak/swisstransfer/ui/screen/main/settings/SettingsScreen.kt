@@ -18,16 +18,7 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.provider.Settings
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
@@ -48,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.extensions.goToPlayStore
 import com.infomaniak.swisstransfer.extensions.openAppNotificationSettings
@@ -70,14 +60,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SettingsScreenWrapper(
-    navController: NavHostController? = null,
-    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
-    isBarNavigation: Boolean = false
-) {
-    val context = LocalContext.current
-    val aboutURL = stringResource(R.string.urlAbout)
-    val userReportURL = stringResource(R.string.urlUserReportAndroid)
+fun SettingsScreenWrapper(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()) {
     TwoPaneScaffold<SettingsOptionScreens>(
         windowAdaptiveInfo,
         listPane = { ListPane(this) },
@@ -137,88 +120,90 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScree
 private fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
     val selectedSetting = getSelectedSetting()
 
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .selectableGroup(),
-    ) {
 
+    Column {
         BrandTobAppBar()
 
-        Text(
-            modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
-            text = stringResource(R.string.settingsTitle),
-            style = SwissTransferTheme.typography.h1,
-        )
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .selectableGroup(),
+        ) {
+            Text(
+                modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
+                text = stringResource(R.string.settingsTitle),
+                style = SwissTransferTheme.typography.h1,
+            )
 
-        SettingTitle(R.string.settingsCategoryGeneral)
-        SettingItem(
-            titleRes = R.string.settingsOptionTheme,
-            isSelected = { selectedSetting == THEME },
-            icon = AppIcons.PaintbrushPalette,
-            description = "TODO",
-            CHEVRON
-        ) {
-            onItemClick(THEME)
-        }
-        SettingItem(
-            titleRes = R.string.settingsOptionNotifications,
-            isSelected = { selectedSetting == NOTIFICATIONS },
-            icon = AppIcons.Bell,
-            description = "TODO",
-            endIcon = OPEN_OUTSIDE,
-        ) {
-            onItemClick(NOTIFICATIONS)
-        }
+            SettingTitle(R.string.settingsCategoryGeneral)
+            SettingItem(
+                titleRes = R.string.settingsOptionTheme,
+                isSelected = { selectedSetting == THEME },
+                icon = AppIcons.PaintbrushPalette,
+                description = "TODO",
+                CHEVRON
+            ) {
+                onItemClick(THEME)
+            }
+            SettingItem(
+                titleRes = R.string.settingsOptionNotifications,
+                isSelected = { selectedSetting == NOTIFICATIONS },
+                icon = AppIcons.Bell,
+                description = "TODO",
+                endIcon = OPEN_OUTSIDE,
+            ) {
+                onItemClick(NOTIFICATIONS)
+            }
 
-        SettingDivider()
+            SettingDivider()
 
-        SettingTitle(R.string.settingsCategoryDefaultSettings)
-        SettingItem(
-            titleRes = R.string.settingsOptionValidityPeriod,
-            isSelected = { selectedSetting == VALIDITY_PERIOD },
-            icon = AppIcons.FileBadgeArrowDown,
-            description = "TODO",
-            endIcon = CHEVRON,
-        ) {
-            onItemClick(VALIDITY_PERIOD)
-        }
-        SettingItem(
-            titleRes = R.string.settingsOptionDownloadLimit,
-            isSelected = { selectedSetting == DOWNLOAD_LIMIT },
-            icon = AppIcons.Clock,
-            description = "TODO",
-            endIcon = CHEVRON,
-        ) {
-            onItemClick(DOWNLOAD_LIMIT)
-        }
-        SettingItem(
-            titleRes = R.string.settingsOptionEmailLanguage,
-            isSelected = { selectedSetting == EMAIL_LANGUAGE },
-            icon = AppIcons.SpeechBubble,
-            description = "TODO",
-            endIcon = CHEVRON,
-        ) {
-            onItemClick(EMAIL_LANGUAGE)
-        }
+            SettingTitle(R.string.settingsCategoryDefaultSettings)
+            SettingItem(
+                titleRes = R.string.settingsOptionValidityPeriod,
+                isSelected = { selectedSetting == VALIDITY_PERIOD },
+                icon = AppIcons.FileBadgeArrowDown,
+                description = "TODO",
+                endIcon = CHEVRON,
+            ) {
+                onItemClick(VALIDITY_PERIOD)
+            }
+            SettingItem(
+                titleRes = R.string.settingsOptionDownloadLimit,
+                isSelected = { selectedSetting == DOWNLOAD_LIMIT },
+                icon = AppIcons.Clock,
+                description = "TODO",
+                endIcon = CHEVRON,
+            ) {
+                onItemClick(DOWNLOAD_LIMIT)
+            }
+            SettingItem(
+                titleRes = R.string.settingsOptionEmailLanguage,
+                isSelected = { selectedSetting == EMAIL_LANGUAGE },
+                icon = AppIcons.SpeechBubble,
+                description = "TODO",
+                endIcon = CHEVRON,
+            ) {
+                onItemClick(EMAIL_LANGUAGE)
+            }
 
-        SettingDivider()
+            SettingDivider()
 
-        SettingTitle(R.string.settingsCategoryAbout)
-        SettingItem(
-            R.string.settingsOptionDiscoverInfomaniak,
-            { selectedSetting == DISCOVER_INFOMANIAK },
-            endIcon = OPEN_OUTSIDE
-        ) {
-            onItemClick(DISCOVER_INFOMANIAK)
+            SettingTitle(R.string.settingsCategoryAbout)
+            SettingItem(
+                R.string.settingsOptionDiscoverInfomaniak,
+                { selectedSetting == DISCOVER_INFOMANIAK },
+                endIcon = OPEN_OUTSIDE
+            ) {
+                onItemClick(DISCOVER_INFOMANIAK)
+            }
+            SettingItem(R.string.settingsOptionShareIdeas, { selectedSetting == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
+                onItemClick(SHARE_IDEAS)
+            }
+            SettingItem(R.string.settingsOptionGiveFeedback, { selectedSetting == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
+                onItemClick(GIVE_FEEDBACK)
+            }
+            SettingItem(R.string.version, isSelected = { false }, description = "0.0.1", onClick = null)
         }
-        SettingItem(R.string.settingsOptionShareIdeas, { selectedSetting == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
-            onItemClick(SHARE_IDEAS)
-        }
-        SettingItem(R.string.settingsOptionGiveFeedback, { selectedSetting == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
-            onItemClick(GIVE_FEEDBACK)
-        }
-        SettingItem(R.string.version, isSelected = { false }, description = "0.0.1", onClick = null)
     }
 }
 

@@ -40,7 +40,6 @@ fun MainNavHost(
     navController: NavHostController,
     windowAdaptiveInfo: WindowAdaptiveInfo,
     currentDestination: MainNavigation,
-    isBarNavigation: Boolean
 ) {
     NavHost(
         navController = navController,
@@ -65,7 +64,7 @@ fun MainNavHost(
             )
         }
         composable<SettingsDestination> {
-            SettingsScreenWrapper(navController, windowAdaptiveInfo, isBarNavigation)
+            SettingsScreenWrapper(windowAdaptiveInfo)
         }
     }
 }

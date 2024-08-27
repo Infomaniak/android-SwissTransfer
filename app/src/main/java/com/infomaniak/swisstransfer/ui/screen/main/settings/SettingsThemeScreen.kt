@@ -46,14 +46,17 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    Column {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
 
-        SettingTitle(titleRes = R.string.settingsThemeTitle)
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-        var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+            SettingTitle(titleRes = R.string.settingsThemeTitle)
+
+            var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+        }
     }
 }
 

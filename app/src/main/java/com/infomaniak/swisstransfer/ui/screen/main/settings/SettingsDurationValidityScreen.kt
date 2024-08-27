@@ -40,14 +40,17 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun SettingsValidityPeriodScreen(navigateBack: (() -> Unit)?) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    Column {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionValidityPeriod, navigationMenu = canDisplayBackButton)
 
-        SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-        val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-        SingleSelectOptions(ValidityPeriod.entries, { selectedItem }, setSelectedItem)
+            SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
+
+            val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
+            SingleSelectOptions(ValidityPeriod.entries, { selectedItem }, setSelectedItem)
+        }
     }
 }
 
