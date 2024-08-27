@@ -24,11 +24,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
@@ -39,7 +42,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsEmailLanguageScreen(navigateBack: (() -> Unit)?) {
+fun SettingsEmailLanguageScreen(
+    emailLanguage: EmailLanguage,
+    navigateBack: (() -> Unit)?,
+    onEmailLanguageChange: (EmailLanguage) -> Unit
+) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionEmailLanguage, navigationMenu = canDisplayBackButton)
@@ -51,13 +58,17 @@ fun SettingsEmailLanguageScreen(navigateBack: (() -> Unit)?) {
         ) {
             SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
-            val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-            SingleSelectOptions(EmailLanguage.entries, { selectedItem }, setSelectedItem)
+            var selectedItem by rememberSaveable { mutableIntStateOf(EmailLanguage.entries.indexOf(emailLanguage)) }
+            SingleSelectOptions(EmailLanguageOption.entries, { selectedItem }, {
+                selectedItem = it
+                val selectedEmailLanguage = EmailLanguage.entries[it]
+                onEmailLanguageChange(selectedEmailLanguage)
+            })
         }
     }
 }
 
-enum class EmailLanguage(
+enum class EmailLanguageOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
@@ -74,7 +85,7 @@ enum class EmailLanguage(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsEmailLanguageScreen {}
+            SettingsEmailLanguageScreen(emailLanguage = EmailLanguage.FRENCH, navigateBack = {}, onEmailLanguageChange = {})
         }
     }
 }

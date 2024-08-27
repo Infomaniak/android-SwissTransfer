@@ -39,7 +39,6 @@ fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
     windowAdaptiveInfo: WindowAdaptiveInfo,
-    isBarNavigation: Boolean,
 ) {
     NavHost(
         navController = navController,

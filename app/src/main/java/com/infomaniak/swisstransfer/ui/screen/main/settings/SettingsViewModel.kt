@@ -21,7 +21,10 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -40,5 +43,17 @@ class SettingsViewModel @Inject constructor(
 
     fun setTheme(theme: Theme) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setTheme(theme)
+    }
+
+    fun setValidityPeriod(validityPeriod: ValidityPeriod) = viewModelScope.launch(ioDispatcher) {
+        appSettingsManager.setValidityPeriod(validityPeriod)
+    }
+
+    fun setDownloadLimit(downloadLimit: DownloadLimit) = viewModelScope.launch(ioDispatcher) {
+        appSettingsManager.setDownloadLimit(downloadLimit)
+    }
+
+    fun setEmailLanguage(emailLanguage: EmailLanguage) = viewModelScope.launch(ioDispatcher) {
+        appSettingsManager.setEmailLanguage(emailLanguage)
     }
 }

@@ -24,10 +24,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
@@ -38,7 +41,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsDownloadsLimitScreen(navigateBack: (() -> Unit)?) {
+fun SettingsDownloadsLimitScreen(
+    downloadLimit: DownloadLimit,
+    navigateBack: (() -> Unit)?,
+    onDownloadLimitChange: (DownloadLimit) -> Unit
+) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionDownloadLimit, navigationMenu = canDisplayBackButton)
@@ -50,13 +57,17 @@ fun SettingsDownloadsLimitScreen(navigateBack: (() -> Unit)?) {
         ) {
             SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
 
-            val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-            SingleSelectOptions(DownloadsLimit.entries, { selectedItem }, setSelectedItem)
+            var selectedItem by rememberSaveable { mutableIntStateOf(DownloadLimit.entries.indexOf(downloadLimit)) }
+            SingleSelectOptions(DownloadsLimitOption.entries, { selectedItem }, {
+                selectedItem = it
+                val selectedDownloadLimit = DownloadLimit.entries[it]
+                onDownloadLimitChange(selectedDownloadLimit)
+            })
         }
     }
 }
 
-enum class DownloadsLimit(
+enum class DownloadsLimitOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
@@ -72,7 +83,11 @@ enum class DownloadsLimit(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsDownloadsLimitScreen {}
+            SettingsDownloadsLimitScreen(
+                downloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
+                navigateBack = {},
+                onDownloadLimitChange = {}
+            )
         }
     }
 }

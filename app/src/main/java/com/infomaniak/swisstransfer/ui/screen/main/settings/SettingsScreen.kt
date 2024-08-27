@@ -31,8 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
-import com.infomaniak.multiplatform_swisstransfer.database.models.setting.Language
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
@@ -74,10 +76,9 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionTheme,
                 isSelected = { selectedSetting == THEME },
                 icon = AppIcons.PaintbrushPalette,
-                description = (appSettings?.theme ?: Theme.SYSTEM).getString(),
+                description = appSettings?.theme?.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(THEME) },
-            )
             SettingItem(
                 titleRes = R.string.settingsOptionNotifications,
                 isSelected = { selectedSetting == NOTIFICATIONS },
@@ -92,8 +93,8 @@ fun SettingsScreen(
             SettingItem(
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
-                icon = AppIcons.ArrowDownFile,
-                description = "TODO",
+                icon = AppIcons.FileBadgeArrowDown,
+                description = appSettings?.validityPeriod?.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },
             )
@@ -101,7 +102,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionDownloadLimit,
                 isSelected = { selectedSetting == DOWNLOAD_LIMIT },
                 icon = AppIcons.Clock,
-                description = "TODO",
+                description = appSettings?.downloadLimit?.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DOWNLOAD_LIMIT) },
             )
@@ -109,7 +110,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionEmailLanguage,
                 isSelected = { selectedSetting == EMAIL_LANGUAGE },
                 icon = AppIcons.SpeechBubble,
-                description = "TODO",
+                description = appSettings?.emailLanguage?.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(EMAIL_LANGUAGE) },
             )
@@ -145,27 +146,36 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun Theme.getString(): String {
+private fun Theme?.getString(): String {
     return when (this) {
         Theme.SYSTEM -> stringResource(R.string.settingsOptionThemeSystem)
         Theme.DARK -> stringResource(R.string.settingsOptionThemeDark)
         Theme.LIGHT -> stringResource(R.string.settingsOptionThemeLight)
+        else -> ""
     }
 }
 
 @Composable
-private fun getValidityPeriodString(validityPeriod: Int): String {
-    return pluralStringResource(R.plurals.settingsValidityPeriodValue, validityPeriod, validityPeriod)
+private fun ValidityPeriod?.getString(): String {
+    return if (this == null) {
+        ""
+    } else {
+        pluralStringResource(R.plurals.settingsValidityPeriodValue, value, value)
+    }
 }
 
 @Composable
-private fun Language.getEmailLanguageString(): String {
+private fun DownloadLimit?.getString() = if (this == null) "" else value.toString()
+
+@Composable
+private fun EmailLanguage?.getString(): String {
     return when (this) {
-        Language.ENGLISH -> stringResource(R.string.settingsEmailLanguageValueEnglish)
-        Language.FRENCH -> stringResource(R.string.settingsEmailLanguageValueFrench)
-        Language.GERMAN -> stringResource(R.string.settingsEmailLanguageValueGerman)
-        Language.ITALIAN -> stringResource(R.string.settingsEmailLanguageValueItalian)
-        Language.SPANISH -> stringResource(R.string.settingsEmailLanguageValueSpanish)
+        EmailLanguage.ENGLISH -> stringResource(R.string.settingsEmailLanguageValueEnglish)
+        EmailLanguage.FRENCH -> stringResource(R.string.settingsEmailLanguageValueFrench)
+        EmailLanguage.GERMAN -> stringResource(R.string.settingsEmailLanguageValueGerman)
+        EmailLanguage.ITALIAN -> stringResource(R.string.settingsEmailLanguageValueItalian)
+        EmailLanguage.SPANISH -> stringResource(R.string.settingsEmailLanguageValueSpanish)
+        else -> ""
     }
 }
 

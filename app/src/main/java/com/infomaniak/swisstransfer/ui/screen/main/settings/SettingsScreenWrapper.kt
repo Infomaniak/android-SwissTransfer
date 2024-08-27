@@ -39,7 +39,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
@@ -101,12 +104,29 @@ private fun DetailPane(
     val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
 
     when (destination) {
-        THEME -> SettingsThemeScreen(appSettings?.theme ?: Theme.SYSTEM, navigateBack) {
-            settingsViewModel.setTheme(it)
+        THEME -> {
+            SettingsThemeScreen(appSettings?.theme ?: Theme.SYSTEM, navigateBack) {
+                settingsViewModel.setTheme(it)
+            }
         }
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack)
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack)
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack)
+        VALIDITY_PERIOD -> {
+            val validityPeriod = appSettings?.validityPeriod ?: ValidityPeriod.THIRTY
+            SettingsValidityPeriodScreen(validityPeriod, navigateBack) {
+                settingsViewModel.setValidityPeriod(it)
+            }
+        }
+        DOWNLOAD_LIMIT -> {
+            val downloadLimit = appSettings?.downloadLimit ?: DownloadLimit.TWOHUNDREDFIFTY
+            SettingsDownloadsLimitScreen(downloadLimit, navigateBack) {
+                settingsViewModel.setDownloadLimit(it)
+            }
+        }
+        EMAIL_LANGUAGE -> {
+            val emailLanguage = appSettings?.emailLanguage ?: EmailLanguage.FRENCH
+            SettingsEmailLanguageScreen(emailLanguage, navigateBack) {
+                settingsViewModel.setEmailLanguage(it)
+            }
+        }
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
