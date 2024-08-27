@@ -41,7 +41,7 @@ fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
     windowAdaptiveInfo: WindowAdaptiveInfo,
-    content: @Composable (Boolean) -> Unit = {},
+    content: @Composable () -> Unit = {},
 ) {
     val navType by rememberNavType(currentDestination, windowAdaptiveInfo)
 
@@ -55,15 +55,15 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    content: @Composable (Boolean) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
         if (navType == NavigationSuiteType.None) {
-            content(it)
+            content()
         } else {
             Column {
                 Box(modifier = Modifier.weight(1.0f)) {
-                    content(it)
+                    content()
                 }
                 HorizontalDivider()
             }

@@ -43,8 +43,8 @@ fun MainScreen() {
         }
     }
 
-    MainScaffold(navController, currentDestination, windowAdaptiveInfo) { isBarNavigation ->
-        MainNavHost(navController, currentDestination, windowAdaptiveInfo, isBarNavigation)
+    MainScaffold(navController, currentDestination, windowAdaptiveInfo) {
+        MainNavHost(navController, currentDestination, windowAdaptiveInfo)
     }
 }
 
