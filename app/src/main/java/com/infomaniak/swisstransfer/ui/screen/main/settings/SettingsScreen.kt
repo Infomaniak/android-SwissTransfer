@@ -160,12 +160,13 @@ private fun ValidityPeriod?.getString(): String {
     return if (this == null) {
         ""
     } else {
-        pluralStringResource(R.plurals.settingsValidityPeriodValue, value, value)
+        val validityPeriodValue = value.toInt()
+        pluralStringResource(R.plurals.settingsValidityPeriodValue, validityPeriodValue, validityPeriodValue)
     }
 }
 
 @Composable
-private fun DownloadLimit?.getString() = if (this == null) "" else value.toString()
+private fun DownloadLimit?.getString() = if (this == null) "" else value
 
 @Composable
 private fun EmailLanguage?.getString(): String {
