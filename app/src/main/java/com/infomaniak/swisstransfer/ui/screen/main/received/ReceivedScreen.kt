@@ -17,36 +17,97 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
+import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    ReceivedScreen(navType = LocalNavType.current)
+    SwissTransferTheme {
+        ReceivedScreen(navType = LocalNavType.current)
+    }
 }
 
 @Composable
 private fun ReceivedScreen(navType: NavigationSuiteType) {
     Scaffold(
+        topBar = { BrandTobAppBar() },
         floatingActionButton = {
             if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
         },
     ) { contentPadding ->
-        Text(
-            text = "Received screen",
-            modifier = Modifier.padding(contentPadding),
-        )
+
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(imageVector = AppIllus.MascotSearching, contentDescription = "")
+
+                Text(
+                    text = LocalContext.current.getString(R.string.no_transfer_received_title),
+                    style = SwissTransferTheme.typography.specificMedium22,
+                    modifier = Modifier.padding(PaddingValues(top = Margin.XLarge))
+                )
+
+                Text(
+                    text = LocalContext.current.getString(R.string.no_transfer_received_description),
+                    textAlign = TextAlign.Center,
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    modifier = Modifier
+                        .widthIn(max = 200.dp)
+                        .padding(PaddingValues(top = Margin.Medium)),
+                )
+            }
+
+            if (navType == NavigationSuiteType.NavigationBar) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .wrapContentSize()
+                        .padding(PaddingValues(bottom = Margin.XLarge, end = 90.dp)),
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    Text(
+                        text = LocalContext.current.getString(R.string.firstTransferDescription),
+                        style = SwissTransferTheme.typography.bodyRegular,
+                        modifier = Modifier.padding(PaddingValues(top = Margin.XLarge)),
+                    )
+
+                    Icon(
+                        imageVector = AppIllus.ArrowDownRightCurved,
+                        contentDescription = "",
+                        modifier = Modifier.rotate(-30.0f),
+                    )
+                }
+            }
+        }
     }
 }
 

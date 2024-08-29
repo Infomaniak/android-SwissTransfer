@@ -23,6 +23,8 @@
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
     <string name="firstTransferDescription">Effettuate il vostro primo trasferimento!</string>
     <string name="importFilesScreenTitle">File da trasferire</string>
+    <string name="no_transfer_received_description">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
+    <string name="no_transfer_received_title">Nessun trasferimento ricevuto</string>
     <string name="receivedTitle">Ricevuto</string>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
     <string name="sentTitle">Inviato a</string>
