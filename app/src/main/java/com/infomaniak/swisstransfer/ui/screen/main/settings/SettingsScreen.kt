@@ -166,7 +166,7 @@ private fun ValidityPeriod?.getString(): String {
 }
 
 @Composable
-private fun DownloadLimit?.getString() = if (this == null) "" else value
+private fun DownloadLimit?.getString() = this?.value ?: ""
 
 @Composable
 private fun EmailLanguage?.getString(): String {

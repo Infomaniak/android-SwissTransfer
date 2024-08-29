@@ -58,7 +58,7 @@ fun SettingsThemeScreen(theme: Theme, navigateBack: (() -> Unit)?, onThemeUpdate
         ) {
             SettingTitle(titleRes = R.string.settingsThemeTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(theme.indexOf()) }
+            var selectedItem by rememberSaveable { mutableIntStateOf(Theme.entries.indexOf(theme)) }
             SingleSelectOptions(ThemeOption.entries, { selectedItem }, {
                 selectedItem = it
                 val selectedTheme = Theme.entries[it]
