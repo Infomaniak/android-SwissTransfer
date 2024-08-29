@@ -14,7 +14,7 @@ lifecycleRuntimeKtx = "2.8.4"
 material3Beta = "1.3.0-rc01"
 navigation = "2.8.0-rc01"
 serialization = "1.7.1"
-database = "a5b5f3e8e6"
+swisstransfer = "0.1.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -22,7 +22,8 @@ androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", v
 androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptiveLayout" }
 androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptiveLayout" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
-swisstransfer-database = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STDatabase", version.ref = "database" }
+swisstransfer-database = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STDatabase", version.ref = "swisstransfer" }
+swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
