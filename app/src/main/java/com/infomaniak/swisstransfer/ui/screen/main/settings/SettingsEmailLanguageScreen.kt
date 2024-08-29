@@ -85,7 +85,11 @@ enum class EmailLanguageOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsEmailLanguageScreen(emailLanguage = EmailLanguage.FRENCH, navigateBack = {}, onEmailLanguageChange = {})
+            SettingsEmailLanguageScreen(
+                emailLanguage = EmailLanguage.FRENCH,
+                navigateBack = {},
+                onEmailLanguageChange = {}
+            )
         }
     }
 }

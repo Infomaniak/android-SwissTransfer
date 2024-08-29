@@ -84,7 +84,10 @@ enum class ValidityPeriodOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsValidityPeriodScreen(navigateBack = {}, onValidityPeriodChange = {})
+            SettingsValidityPeriodScreen(
+                navigateBack = {},
+                onValidityPeriodChange = {}
+            )
         }
     }
 }

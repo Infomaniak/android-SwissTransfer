@@ -157,12 +157,9 @@ private fun Theme?.getString(): String {
 
 @Composable
 private fun ValidityPeriod?.getString(): String {
-    return if (this == null) {
-        ""
-    } else {
-        val validityPeriodValue = value.toInt()
-        pluralStringResource(R.plurals.settingsValidityPeriodValue, validityPeriodValue, validityPeriodValue)
-    }
+    return this?.value?.toInt()?.let {
+        pluralStringResource(R.plurals.settingsValidityPeriodValue, it, it)
+    } ?: ""
 }
 
 @Composable
