@@ -54,7 +54,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 fun SettingsScreen(
     onItemClick: (SettingsOptionScreens) -> Unit,
     getSelectedSetting: () -> SettingsOptionScreens?,
-    appSettings: AppSettings? = null,
+    appSettings: AppSettings,
 ) {
     val selectedSetting = getSelectedSetting()
 
@@ -76,7 +76,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionTheme,
                 isSelected = { selectedSetting == THEME },
                 icon = AppIcons.PaintbrushPalette,
-                description = appSettings?.theme?.getString(),
+                description = appSettings.theme.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(THEME) },
             SettingItem(
@@ -94,7 +94,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
                 icon = AppIcons.FileBadgeArrowDown,
-                description = appSettings?.validityPeriod?.getString(),
+                description = appSettings.validityPeriod.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },
             )
@@ -102,7 +102,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionDownloadLimit,
                 isSelected = { selectedSetting == DOWNLOAD_LIMIT },
                 icon = AppIcons.Clock,
-                description = appSettings?.downloadLimit?.getString(),
+                description = appSettings.downloadLimit.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DOWNLOAD_LIMIT) },
             )
@@ -110,7 +110,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionEmailLanguage,
                 isSelected = { selectedSetting == EMAIL_LANGUAGE },
                 icon = AppIcons.SpeechBubble,
-                description = appSettings?.emailLanguage?.getString(),
+                description = appSettings.emailLanguage.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(EMAIL_LANGUAGE) },
             )
@@ -183,12 +183,19 @@ enum class SettingsOptionScreens {
     DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
 }
 
+private class DummyAppSettings(
+    override var theme: Theme = Theme.SYSTEM,
+    override var downloadLimit: DownloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
+    override var emailLanguage: EmailLanguage = EmailLanguage.FRENCH,
+    override var validityPeriod: ValidityPeriod = ValidityPeriod.THIRTY,
+) : AppSettings
+
 @PreviewMobile
 @Composable
 private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreen(onItemClick = {}, getSelectedSetting = { null })
+            SettingsScreen(onItemClick = {}, getSelectedSetting = { null }, DummyAppSettings())
         }
     }
 }

@@ -22,6 +22,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -31,4 +33,10 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun providesSwissTransferInjection() = SwissTransferInjection()
+
+    @Provides
+    @Singleton
+    fun providesGlobalCoroutineScope(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): CoroutineScope {
+        return CoroutineScope(defaultDispatcher)
+    }
 }

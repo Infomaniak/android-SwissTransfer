@@ -23,16 +23,22 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application(), DefaultLifecycleObserver {
+class MainApplication : Application() {
 
     @Inject
     lateinit var swissTransferInjection: SwissTransferInjection
 
-    override fun onStart(owner: LifecycleOwner) {
-        owner.lifecycleScope.launch { swissTransferInjection.loadDefaultAccount() }
+    @Inject
+    lateinit var globalCoroutineScope: CoroutineScope
+
+    override fun onCreate() {
+        super.onCreate()
+        globalCoroutineScope.launch { swissTransferInjection.loadDefaultAccount() }
     }
 }
