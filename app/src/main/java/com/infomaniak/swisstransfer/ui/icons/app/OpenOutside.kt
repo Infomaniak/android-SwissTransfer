@@ -68,7 +68,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.OpenOutside,
             contentDescription = null,
-        modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize)
         )
     }
 }
