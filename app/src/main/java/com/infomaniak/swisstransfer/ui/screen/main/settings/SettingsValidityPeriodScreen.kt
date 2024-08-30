@@ -43,7 +43,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
 fun SettingsValidityPeriodScreen(
-    validityPeriod: ValidityPeriod? = ValidityPeriod.THIRTY,
+    validityPeriod: ValidityPeriod,
     navigateBack: (() -> Unit)?,
     onValidityPeriodChange: (ValidityPeriod) -> Unit
 ) {
@@ -58,10 +58,10 @@ fun SettingsValidityPeriodScreen(
         ) {
             SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(ValidityPeriod.entries.indexOf(validityPeriod)) }
-            SingleSelectOptions(ValidityPeriodOption.entries, { selectedItem }, {
-                selectedItem = it
-                val selectedValidityPeriod = ValidityPeriod.entries[it]
+            var selectedItem by rememberSaveable { mutableIntStateOf(validityPeriod.ordinal) }
+            SingleSelectOptions(ValidityPeriodOption.entries, { selectedItem }, { position ->
+                selectedItem = position
+                val selectedValidityPeriod = ValidityPeriod.entries[position]
                 onValidityPeriodChange(selectedValidityPeriod)
             })
         }
@@ -85,6 +85,7 @@ private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
             SettingsValidityPeriodScreen(
+                validityPeriod = ValidityPeriod.THIRTY,
                 navigateBack = {},
                 onValidityPeriodChange = {}
             )

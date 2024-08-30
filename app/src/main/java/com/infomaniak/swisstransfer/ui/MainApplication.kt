@@ -18,8 +18,21 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.app.Application
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application() {
+class MainApplication : Application(), DefaultLifecycleObserver {
+
+    @Inject
+    lateinit var swissTransferInjection: SwissTransferInjection
+
+    override fun onStart(owner: LifecycleOwner) {
+        owner.lifecycleScope.launch { swissTransferInjection.loadDefaultAccount() }
+    }
 }

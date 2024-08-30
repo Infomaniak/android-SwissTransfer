@@ -21,23 +21,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.lifecycle.lifecycleScope
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var swissTransferInjection: SwissTransferInjection
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch { swissTransferInjection.loadDefaultAccount() }
         enableEdgeToEdge()
         setContent {
             SwissTransferTheme {

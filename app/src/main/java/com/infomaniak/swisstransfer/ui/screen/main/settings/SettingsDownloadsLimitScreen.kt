@@ -57,10 +57,10 @@ fun SettingsDownloadsLimitScreen(
         ) {
             SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(DownloadLimit.entries.indexOf(downloadLimit)) }
-            SingleSelectOptions(DownloadsLimitOption.entries, { selectedItem }, {
-                selectedItem = it
-                val selectedDownloadLimit = DownloadLimit.entries[it]
+            var selectedItem by rememberSaveable { mutableIntStateOf(downloadLimit.ordinal) }
+            SingleSelectOptions(DownloadsLimitOption.entries, { selectedItem }, { position ->
+                selectedItem = position
+                val selectedDownloadLimit = DownloadLimit.entries[position]
                 onDownloadLimitChange(selectedDownloadLimit)
             })
         }

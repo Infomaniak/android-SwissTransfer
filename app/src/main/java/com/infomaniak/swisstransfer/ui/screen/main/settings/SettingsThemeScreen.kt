@@ -46,7 +46,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsThemeScreen(theme: Theme, navigateBack: (() -> Unit)?, onThemeUpdate: (Theme) -> Unit) {
+fun SettingsThemeScreen(
+    theme: Theme,
+    navigateBack: (() -> Unit)?,
+    onThemeUpdate: (Theme) -> Unit
+) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
@@ -58,10 +62,10 @@ fun SettingsThemeScreen(theme: Theme, navigateBack: (() -> Unit)?, onThemeUpdate
         ) {
             SettingTitle(titleRes = R.string.settingsThemeTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(Theme.entries.indexOf(theme)) }
-            SingleSelectOptions(ThemeOption.entries, { selectedItem }, {
-                selectedItem = it
-                val selectedTheme = Theme.entries[it]
+            var selectedItem by rememberSaveable { mutableIntStateOf(theme.ordinal) }
+            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { position ->
+                selectedItem = position
+                val selectedTheme = Theme.entries[position]
                 onThemeUpdate(selectedTheme)
             })
         }

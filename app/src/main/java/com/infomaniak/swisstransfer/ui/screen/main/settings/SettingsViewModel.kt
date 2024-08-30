@@ -36,8 +36,7 @@ class SettingsViewModel @Inject constructor(
     private val swissTransferInjection: SwissTransferInjection,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val appSettingsManager
-        inline get() = swissTransferInjection.appSettingsManager
+    private val appSettingsManager inline get() = swissTransferInjection.appSettingsManager
 
     val appSettingsFlow = appSettingsManager.appSettings
 

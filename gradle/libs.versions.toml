@@ -22,7 +22,6 @@ androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", v
 androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptiveLayout" }
 androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptiveLayout" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
-swisstransfer-database = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STDatabase", version.ref = "swisstransfer" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }

@@ -39,10 +39,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
-import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
-import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
-import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
@@ -56,100 +52,100 @@ fun SettingsScreenWrapper(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-    TwoPaneScaffold<SettingsOptionScreens>(
-        windowAdaptiveInfo = windowAdaptiveInfo,
-        listPane = { ListPane(this, appSettings) },
-        detailPane = { DetailPane(settingsViewModel, this, appSettings) },
-    )
-}
+    appSettings?.let { safeAppSettings ->
+        TwoPaneScaffold<SettingsOptionScreens>(
+            windowAdaptiveInfo = windowAdaptiveInfo,
+            listPane = { ListPane(this, safeAppSettings) },
+            detailPane = { DetailPane(settingsViewModel, this, safeAppSettings) },
+    }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings?) {
-    val context = LocalContext.current
-    val aboutURL = stringResource(R.string.urlAbout)
-    val userReportURL = stringResource(R.string.urlUserReportAndroid)
+    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+    @Composable
+    private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings) {
+        val context = LocalContext.current
+        val aboutURL = stringResource(R.string.urlAbout)
+        val userReportURL = stringResource(R.string.urlUserReportAndroid)
 
-    SettingsScreen(
-        onItemClick = { item ->
-            when (item) {
-                NOTIFICATIONS -> context.openAppNotificationSettings()
-                DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
-                SHARE_IDEAS -> context.openUrl(userReportURL)
-                GIVE_FEEDBACK -> context.goToPlayStore()
-                else -> {
-                    // Navigate to the detail pane with the passed item
-                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+        SettingsScreen(
+            onItemClick = { item ->
+                when (item) {
+                    NOTIFICATIONS -> context.openAppNotificationSettings()
+                    DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
+                    SHARE_IDEAS -> context.openUrl(userReportURL)
+                    GIVE_FEEDBACK -> context.goToPlayStore()
+                    else -> {
+                        // Navigate to the detail pane with the passed item
+                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                    }
+                }
+            },
+            getSelectedSetting = { navigator.currentDestination?.content },
+            appSettings
+        )
+    }
+
+    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+    @Composable
+    private fun DetailPane(
+        settingsViewModel: SettingsViewModel,
+        navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+        appSettings: AppSettings
+    ) {
+        var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+
+        val destination = navigator.currentDestination?.content ?: lastSelectedScreen
+        navigator.currentDestination?.content?.let { lastSelectedScreen = it }
+
+        val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
+        val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+
+        when (destination) {
+            THEME -> {
+                SettingsThemeScreen(appSettings.theme, navigateBack) {
+                    settingsViewModel.setTheme(it)
                 }
             }
-        },
-        getSelectedSetting = { navigator.currentDestination?.content },
-        appSettings
-    )
-}
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun DetailPane(
-    settingsViewModel: SettingsViewModel,
-    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-    appSettings: AppSettings?
-) {
-    var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
-
-    val destination = navigator.currentDestination?.content ?: lastSelectedScreen
-    navigator.currentDestination?.content?.let { lastSelectedScreen = it }
-
-    val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
-    val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
-
-    when (destination) {
-        THEME -> {
-            SettingsThemeScreen(appSettings?.theme ?: Theme.SYSTEM, navigateBack) {
-                settingsViewModel.setTheme(it)
+            VALIDITY_PERIOD -> {
+                val validityPeriod = appSettings.validityPeriod
+                SettingsValidityPeriodScreen(validityPeriod, navigateBack) {
+                    settingsViewModel.setValidityPeriod(it)
+                }
             }
-        }
-        VALIDITY_PERIOD -> {
-            val validityPeriod = appSettings?.validityPeriod ?: ValidityPeriod.THIRTY
-            SettingsValidityPeriodScreen(validityPeriod, navigateBack) {
-                settingsViewModel.setValidityPeriod(it)
+            DOWNLOAD_LIMIT -> {
+                val downloadLimit = appSettings.downloadLimit
+                SettingsDownloadsLimitScreen(downloadLimit, navigateBack) {
+                    settingsViewModel.setDownloadLimit(it)
+                }
             }
-        }
-        DOWNLOAD_LIMIT -> {
-            val downloadLimit = appSettings?.downloadLimit ?: DownloadLimit.TWOHUNDREDFIFTY
-            SettingsDownloadsLimitScreen(downloadLimit, navigateBack) {
-                settingsViewModel.setDownloadLimit(it)
+            EMAIL_LANGUAGE -> {
+                val emailLanguage = appSettings.emailLanguage
+                SettingsEmailLanguageScreen(emailLanguage, navigateBack) {
+                    settingsViewModel.setEmailLanguage(it)
+                }
             }
-        }
-        EMAIL_LANGUAGE -> {
-            val emailLanguage = appSettings?.emailLanguage ?: EmailLanguage.FRENCH
-            SettingsEmailLanguageScreen(emailLanguage, navigateBack) {
-                settingsViewModel.setEmailLanguage(it)
-            }
-        }
-        NOTIFICATIONS,
-        DISCOVER_INFOMANIAK,
-        SHARE_IDEAS,
-        GIVE_FEEDBACK -> Unit
-        null -> NoSelectionEmptyState()
-    }
-}
-
-// Show the detail pane content if selected item is available
-@Composable
-private fun NoSelectionEmptyState() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
-    }
-}
-
-@PreviewMobile
-@PreviewTablet
-@Composable
-private fun SettingsScreenWrapperPreview() {
-    SwissTransferTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreenWrapper()
+            NOTIFICATIONS,
+            DISCOVER_INFOMANIAK,
+            SHARE_IDEAS,
+            GIVE_FEEDBACK -> Unit
+            null -> NoSelectionEmptyState()
         }
     }
-}
+
+    // Show the detail pane content if selected item is available
+    @Composable
+    private fun NoSelectionEmptyState() {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
+        }
+    }
+
+    @PreviewMobile
+    @PreviewTablet
+    @Composable
+    private fun SettingsScreenWrapperPreview() {
+        SwissTransferTheme {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                SettingsScreenWrapper()
+            }
+        }
+    }

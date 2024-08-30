@@ -58,10 +58,10 @@ fun SettingsEmailLanguageScreen(
         ) {
             SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(EmailLanguage.entries.indexOf(emailLanguage)) }
-            SingleSelectOptions(EmailLanguageOption.entries, { selectedItem }, {
-                selectedItem = it
-                val selectedEmailLanguage = EmailLanguage.entries[it]
+            var selectedItem by rememberSaveable { mutableIntStateOf(emailLanguage.ordinal) }
+            SingleSelectOptions(EmailLanguageOption.entries, { selectedItem }, { position ->
+                selectedItem = position
+                val selectedEmailLanguage = EmailLanguage.entries[position]
                 onEmailLanguageChange(selectedEmailLanguage)
             })
         }

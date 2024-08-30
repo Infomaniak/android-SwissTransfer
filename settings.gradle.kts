@@ -17,7 +17,9 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         google()
-        mavenLocal()
+        if (gradle.startParameter.taskNames.any { it.contains("Debug") }) {
+            mavenLocal()
+        }
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
