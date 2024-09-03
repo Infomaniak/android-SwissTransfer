@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.ArrowCurvedDownright
+import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -97,7 +97,7 @@ fun EmptyScreen() {
                         top.linkTo(parent.top)
                         end.linkTo(fab.start, Margin.Small)
                     },
-                imageVector = AppIllus.ArrowCurvedDownright,
+                imageVector = AppIllus.ArrowDownRightCurved,
                 contentDescription = null,
             )
             NewTransferFab(

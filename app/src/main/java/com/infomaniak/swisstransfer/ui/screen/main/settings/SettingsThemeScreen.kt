@@ -35,9 +35,9 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.BlackAndWhiteCircle
-import com.infomaniak.swisstransfer.ui.images.icons.BlackCircle
-import com.infomaniak.swisstransfer.ui.images.icons.WhiteCircle
+import com.infomaniak.swisstransfer.ui.images.icons.CircleBlack
+import com.infomaniak.swisstransfer.ui.images.icons.CircleBlackAndWhite
+import com.infomaniak.swisstransfer.ui.images.icons.CircleWhite
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
@@ -68,9 +68,9 @@ enum class ThemeOption(
     override val imageVector: ImageVector,
     override val imageVectorResId: Int? = null,
 ) : SettingOption {
-    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.BlackAndWhiteCircle),
-    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.WhiteCircle),
-    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.BlackCircle),
+    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.CircleBlackAndWhite),
+    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.CircleWhite),
+    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.CircleBlack),
 }
 
 @PreviewMobile

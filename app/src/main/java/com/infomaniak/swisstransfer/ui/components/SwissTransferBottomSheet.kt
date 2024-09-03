@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.ArrowCurvedDownright
+import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -115,7 +115,7 @@ private fun BottomSheetDefaultsPreview() {
     SwissTransferTheme {
         Surface {
             BottomSheetContent(
-                imageVector = AppIllus.ArrowCurvedDownright,
+                imageVector = AppIllus.ArrowDownRightCurved,
                 titleRes = R.string.appName,
                 descriptionRes = R.string.sentEmptyTitle,
                 content = {

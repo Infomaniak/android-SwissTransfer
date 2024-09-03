@@ -85,7 +85,7 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
             SettingItem(
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
-                icon = AppIcons.FileBadgeArrowDown,
+                icon = AppIcons.ArrowDownFile,
                 description = "TODO",
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },

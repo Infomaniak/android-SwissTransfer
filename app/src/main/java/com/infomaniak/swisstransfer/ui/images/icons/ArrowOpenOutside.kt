@@ -19,13 +19,13 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppIcons.OpenOutside: ImageVector
+val AppIcons.ArrowOpenOutside: ImageVector
     get() {
 
-        if (_openOutside != null) return _openOutside!!
+        if (_arrowOpenOutside != null) return _arrowOpenOutside!!
 
-        _openOutside = Builder(
-            name = "OpenOutside",
+        _arrowOpenOutside = Builder(
+            name = "ArrowOpenOutside",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 16.0f,
@@ -58,17 +58,17 @@ val AppIcons.OpenOutside: ImageVector
             }
         }.build()
 
-        return _openOutside!!
+        return _arrowOpenOutside!!
     }
 
-private var _openOutside: ImageVector? = null
+private var _arrowOpenOutside: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.OpenOutside,
+            imageVector = AppIcons.ArrowOpenOutside,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize),
         )
