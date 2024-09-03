@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
@@ -66,7 +65,6 @@ enum class FabType(val shape: CornerBasedShape, val customSize: Dp?) {
     NORMAL(Shapes.medium, null),
     BIG(Shapes.large, 80.dp),
 }
-
 
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
