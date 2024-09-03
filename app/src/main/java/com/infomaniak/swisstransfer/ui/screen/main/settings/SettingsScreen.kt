@@ -52,9 +52,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
 fun SettingsScreen(
+    appSettings: AppSettings,
     onItemClick: (SettingsOptionScreens) -> Unit,
     getSelectedSetting: () -> SettingsOptionScreens?,
-    appSettings: AppSettings,
 ) {
     val selectedSetting = getSelectedSetting()
 
@@ -195,7 +195,7 @@ private class DummyAppSettings(
 private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreen(onItemClick = {}, getSelectedSetting = { null }, DummyAppSettings())
+            SettingsScreen(appSettings = DummyAppSettings(), onItemClick = {}, getSelectedSetting = { null })
         }
     }
 }

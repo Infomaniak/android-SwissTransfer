@@ -56,31 +56,7 @@ fun SettingsScreenWrapper(
         TwoPaneScaffold<SettingsOptionScreens>(
             windowAdaptiveInfo = windowAdaptiveInfo,
             listPane = { ListPane(this, safeAppSettings) },
-            detailPane = { DetailPane(settingsViewModel, this, safeAppSettings) },
-    }
-
-    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-    @Composable
-    private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings) {
-        val context = LocalContext.current
-        val aboutURL = stringResource(R.string.urlAbout)
-        val userReportURL = stringResource(R.string.urlUserReportAndroid)
-
-        SettingsScreen(
-            onItemClick = { item ->
-                when (item) {
-                    NOTIFICATIONS -> context.openAppNotificationSettings()
-                    DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
-                    SHARE_IDEAS -> context.openUrl(userReportURL)
-                    GIVE_FEEDBACK -> context.goToPlayStore()
-                    else -> {
-                        // Navigate to the detail pane with the passed item
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
-                    }
-                }
-            },
-            getSelectedSetting = { navigator.currentDestination?.content },
-            appSettings
+            detailPane = { DetailPane(safeAppSettings, settingsViewModel, navigator = this) },
         )
     }
 
@@ -93,23 +69,43 @@ fun SettingsScreenWrapper(
     ) {
         var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
 
-        val destination = navigator.currentDestination?.content ?: lastSelectedScreen
-        navigator.currentDestination?.content?.let { lastSelectedScreen = it }
-
-        val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
-        val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
-
-        when (destination) {
-            THEME -> {
-                SettingsThemeScreen(appSettings.theme, navigateBack) {
-                    settingsViewModel.setTheme(it)
+    SettingsScreen(
+        appSettings,
+        onItemClick = { item ->
+            when (item) {
+                NOTIFICATIONS -> context.openAppNotificationSettings()
+                DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
+                SHARE_IDEAS -> context.openUrl(userReportURL)
+                GIVE_FEEDBACK -> context.goToPlayStore()
+                else -> {
+                    // Navigate to the detail pane with the passed item
+                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
                 }
             }
-            VALIDITY_PERIOD -> {
-                val validityPeriod = appSettings.validityPeriod
-                SettingsValidityPeriodScreen(validityPeriod, navigateBack) {
-                    settingsViewModel.setValidityPeriod(it)
-                }
+        },
+        getSelectedSetting = { navigator.currentDestination?.content },
+    )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun DetailPane(
+    appSettings: AppSettings,
+    settingsViewModel: SettingsViewModel,
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+) {
+    var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+
+    val destination = navigator.currentDestination?.content ?: lastSelectedScreen
+    navigator.currentDestination?.content?.let { lastSelectedScreen = it }
+
+    val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
+    val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+
+    when (destination) {
+        THEME -> {
+            SettingsThemeScreen(appSettings.theme, navigateBack) {
+                settingsViewModel.setTheme(it)
             }
             DOWNLOAD_LIMIT -> {
                 val downloadLimit = appSettings.downloadLimit
