@@ -1,4 +1,4 @@
-package com.infomaniak.swisstransfer.ui.icons.illu
+package com.infomaniak.swisstransfer.ui.images.illus
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -15,9 +15,10 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 
-val AppIcons.Illu.LogoInfomaniak: ImageVector
+val AppIllus.LogoInfomaniak: ImageVector
     get() {
 
         if (_logoInfomaniak != null) return _logoInfomaniak!!
@@ -268,9 +269,9 @@ private var _logoInfomaniak: ImageVector? = null
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.Illu.LogoInfomaniak,
+            imageVector = AppIllus.LogoInfomaniak,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize),
+            modifier = Modifier.size(AppImages.previewSize),
         )
     }
 }

@@ -32,8 +32,8 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.*
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE

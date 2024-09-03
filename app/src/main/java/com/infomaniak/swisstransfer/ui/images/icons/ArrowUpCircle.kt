@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.icons.app
+package com.infomaniak.swisstransfer.ui.images.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -34,7 +34,8 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 
 val AppIcons.ArrowUpCircle: ImageVector
     get() {
@@ -93,7 +94,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.ArrowUpCircle,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize),
+            modifier = Modifier.size(AppImages.previewSize),
         )
     }
 }

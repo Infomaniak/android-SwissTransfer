@@ -34,10 +34,10 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.BlackAndWhiteCircle
-import com.infomaniak.swisstransfer.ui.icons.app.BlackCircle
-import com.infomaniak.swisstransfer.ui.icons.app.WhiteCircle
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.BlackAndWhiteCircle
+import com.infomaniak.swisstransfer.ui.images.icons.BlackCircle
+import com.infomaniak.swisstransfer.ui.images.icons.WhiteCircle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions

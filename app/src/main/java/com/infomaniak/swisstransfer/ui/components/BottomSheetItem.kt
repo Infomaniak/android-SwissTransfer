@@ -31,8 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.Camera
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.Camera
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 

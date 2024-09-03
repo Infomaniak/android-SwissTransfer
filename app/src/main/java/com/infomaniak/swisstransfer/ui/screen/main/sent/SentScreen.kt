@@ -36,8 +36,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.illu.ArrowCurvedDownright
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.ArrowCurvedDownright
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -97,7 +97,7 @@ fun EmptyScreen() {
                         top.linkTo(parent.top)
                         end.linkTo(fab.start, Margin.Small)
                     },
-                imageVector = AppIcons.Illu.ArrowCurvedDownright,
+                imageVector = AppIllus.ArrowCurvedDownright,
                 contentDescription = null,
             )
             NewTransferFab(

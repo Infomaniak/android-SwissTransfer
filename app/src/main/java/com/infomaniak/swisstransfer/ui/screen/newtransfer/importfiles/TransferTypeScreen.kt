@@ -32,11 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.illu.ChainTilted
-import com.infomaniak.swisstransfer.ui.icons.illu.EnvelopeTilted
-import com.infomaniak.swisstransfer.ui.icons.illu.QrCodeTilted
-import com.infomaniak.swisstransfer.ui.icons.illu.WaveSignalTilted
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.ChainTilted
+import com.infomaniak.swisstransfer.ui.images.illus.EnvelopeTilted
+import com.infomaniak.swisstransfer.ui.images.illus.QrCodeTilted
+import com.infomaniak.swisstransfer.ui.images.illus.WaveSignalTilted
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -81,25 +81,25 @@ enum class TransferType(
         R.string.transferTypeLink,
         { SwissTransferTheme.colors.transferTypeLinkContainer },
         { SwissTransferTheme.colors.transferTypeLinkOnContainer },
-        AppIcons.Illu.ChainTilted
+        AppIllus.ChainTilted
     ),
     EMAIL(
         R.string.transferTypeEmail,
         { SwissTransferTheme.colors.transferTypeEmailContainer },
         { SwissTransferTheme.colors.transferTypeEmailOnContainer },
-        AppIcons.Illu.EnvelopeTilted
+        AppIllus.EnvelopeTilted
     ),
     QR_CODE(
         R.string.transferTypeQrCode,
         { SwissTransferTheme.colors.transferTypeQrContainer },
         { SwissTransferTheme.colors.transferTypeQrOnContainer },
-        AppIcons.Illu.QrCodeTilted
+        AppIllus.QrCodeTilted
     ),
     PROXIMITY(
         R.string.transferTypeProximity,
         { SwissTransferTheme.colors.transferTypeProximityContainer },
         { SwissTransferTheme.colors.transferTypeProximityOnContainer },
-        AppIcons.Illu.WaveSignalTilted
+        AppIllus.WaveSignalTilted
     ),
 }
 
