@@ -37,8 +37,8 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    windowAdaptiveInfo: WindowAdaptiveInfo,
     currentDestination: MainNavigation,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     NavHost(
         navController = navController,
