@@ -87,7 +87,7 @@ private fun SettingsThemeScreenPreview() {
             SettingsValidityPeriodScreen(
                 validityPeriod = ValidityPeriod.THIRTY,
                 navigateBack = {},
-                onValidityPeriodChange = {}
+                onValidityPeriodChange = {},
             )
         }
     }
