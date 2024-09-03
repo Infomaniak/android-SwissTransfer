@@ -45,7 +45,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 fun SettingsValidityPeriodScreen(
     validityPeriod: ValidityPeriod,
     navigateBack: (() -> Unit)?,
-    onValidityPeriodChange: (ValidityPeriod) -> Unit
+    onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
