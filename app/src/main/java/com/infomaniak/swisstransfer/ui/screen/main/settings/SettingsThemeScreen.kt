@@ -49,7 +49,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 fun SettingsThemeScreen(
     theme: Theme,
     navigateBack: (() -> Unit)?,
-    onThemeUpdate: (Theme) -> Unit
+    onThemeUpdate: (Theme) -> Unit,
 ) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
@@ -87,7 +87,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen(Theme.SYSTEM, {}, {})
+            SettingsThemeScreen(theme = Theme.SYSTEM, navigateBack = {}, onThemeUpdate = {})
         }
     }
 }

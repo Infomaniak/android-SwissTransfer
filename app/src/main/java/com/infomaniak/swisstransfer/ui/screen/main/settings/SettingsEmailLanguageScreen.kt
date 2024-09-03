@@ -45,7 +45,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 fun SettingsEmailLanguageScreen(
     emailLanguage: EmailLanguage,
     navigateBack: (() -> Unit)?,
-    onEmailLanguageChange: (EmailLanguage) -> Unit
+    onEmailLanguageChange: (EmailLanguage) -> Unit,
 ) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
@@ -88,7 +88,7 @@ private fun SettingsThemeScreenPreview() {
             SettingsEmailLanguageScreen(
                 emailLanguage = EmailLanguage.FRENCH,
                 navigateBack = {},
-                onEmailLanguageChange = {}
+                onEmailLanguageChange = {},
             )
         }
     }

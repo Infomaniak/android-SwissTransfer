@@ -59,15 +59,14 @@ fun SettingsScreenWrapper(
             detailPane = { DetailPane(safeAppSettings, settingsViewModel, navigator = this) },
         )
     }
+}
 
-    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-    @Composable
-    private fun DetailPane(
-        settingsViewModel: SettingsViewModel,
-        navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-        appSettings: AppSettings
-    ) {
-        var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings) {
+    val context = LocalContext.current
+    val aboutURL = stringResource(R.string.urlAbout)
+    val userReportURL = stringResource(R.string.urlUserReportAndroid)
 
     SettingsScreen(
         appSettings,
@@ -103,45 +102,49 @@ private fun DetailPane(
     val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
 
     when (destination) {
-        THEME -> {
-            SettingsThemeScreen(appSettings.theme, navigateBack) {
-                settingsViewModel.setTheme(it)
-            }
-            DOWNLOAD_LIMIT -> {
-                val downloadLimit = appSettings.downloadLimit
-                SettingsDownloadsLimitScreen(downloadLimit, navigateBack) {
-                    settingsViewModel.setDownloadLimit(it)
-                }
-            }
-            EMAIL_LANGUAGE -> {
-                val emailLanguage = appSettings.emailLanguage
-                SettingsEmailLanguageScreen(emailLanguage, navigateBack) {
-                    settingsViewModel.setEmailLanguage(it)
-                }
-            }
-            NOTIFICATIONS,
-            DISCOVER_INFOMANIAK,
-            SHARE_IDEAS,
-            GIVE_FEEDBACK -> Unit
-            null -> NoSelectionEmptyState()
-        }
+        THEME -> SettingsThemeScreen(
+            theme = appSettings.theme,
+            navigateBack = navigateBack,
+            onThemeUpdate = settingsViewModel::setTheme,
+        )
+        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
+            validityPeriod = appSettings.validityPeriod,
+            navigateBack = navigateBack,
+            onValidityPeriodChange = settingsViewModel::setValidityPeriod,
+        )
+        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
+            downloadLimit = appSettings.downloadLimit,
+            navigateBack = navigateBack,
+            onDownloadLimitChange = settingsViewModel::setDownloadLimit,
+        )
+        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
+            emailLanguage = appSettings.emailLanguage,
+            navigateBack = navigateBack,
+            onEmailLanguageChange = settingsViewModel::setEmailLanguage,
+        )
+        NOTIFICATIONS,
+        DISCOVER_INFOMANIAK,
+        SHARE_IDEAS,
+        GIVE_FEEDBACK -> Unit
+        null -> NoSelectionEmptyState()
     }
+}
 
-    // Show the detail pane content if selected item is available
-    @Composable
-    private fun NoSelectionEmptyState() {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
-        }
+// Show the detail pane content if selected item is available
+@Composable
+private fun NoSelectionEmptyState() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
     }
+}
 
-    @PreviewMobile
-    @PreviewTablet
-    @Composable
-    private fun SettingsScreenWrapperPreview() {
-        SwissTransferTheme {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                SettingsScreenWrapper()
-            }
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun SettingsScreenWrapperPreview() {
+    SwissTransferTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            SettingsScreenWrapper()
         }
     }
+}

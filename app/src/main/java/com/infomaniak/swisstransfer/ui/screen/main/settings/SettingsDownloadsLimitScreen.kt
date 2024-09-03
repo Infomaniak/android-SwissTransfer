@@ -86,7 +86,7 @@ private fun SettingsThemeScreenPreview() {
             SettingsDownloadsLimitScreen(
                 downloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
                 navigateBack = {},
-                onDownloadLimitChange = {}
+                onDownloadLimitChange = {},
             )
         }
     }

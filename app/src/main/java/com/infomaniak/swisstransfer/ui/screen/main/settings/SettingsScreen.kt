@@ -79,6 +79,7 @@ fun SettingsScreen(
                 description = appSettings.theme.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(THEME) },
+            )
             SettingItem(
                 titleRes = R.string.settingsOptionNotifications,
                 isSelected = { selectedSetting == NOTIFICATIONS },
@@ -93,7 +94,7 @@ fun SettingsScreen(
             SettingItem(
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
-                icon = AppIcons.FileBadgeArrowDown,
+                icon = AppIcons.ArrowDownFile,
                 description = appSettings.validityPeriod.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },
