@@ -135,5 +135,5 @@ data class CustomTypography(
     val specificMedium32: TextStyle,
     val specificMedium22: TextStyle,
     val specificLight22: TextStyle,
-    val specificLight18: TextStyle
+    val specificLight18: TextStyle,
 )

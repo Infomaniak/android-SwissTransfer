@@ -58,7 +58,7 @@ fun SingleSelectOptions(items: List<SettingOption>, selectedItem: () -> Int, set
 private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick: () -> Unit) {
     SharpRippleButton(
         modifier = Modifier.selectable(selected = isSelected, onClick = onClick),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Row(
             Modifier
@@ -71,7 +71,7 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
                 Spacer(modifier = Modifier.width(Margin.Medium))
             }
 
-            Text(text = item.title(), Modifier.weight(1f))
+            Text(text = item.title(), Modifier.weight(1.0f))
 
             if (isSelected) Spacer(modifier = Modifier.width(Margin.Medium))
             AnimatedVisibility(
@@ -110,8 +110,8 @@ private fun SettingOptionItemPreview() {
                     override val imageVector: ImageVector = AppIcons.Add
                     override val imageVectorResId = null
                 }
-                SettingOptionItem(item, true) {}
-                SettingOptionItem(item, false) {}
+                SettingOptionItem(item = item, isSelected = true) {}
+                SettingOptionItem(item = item, isSelected = false) {}
             }
         }
     }

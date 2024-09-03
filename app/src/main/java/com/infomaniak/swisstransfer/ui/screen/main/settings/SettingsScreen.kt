@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
 fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
+
     val selectedSetting = getSelectedSetting()
 
     Scaffold(topBar = { BrandTobAppBar() }) { paddingsValue ->
@@ -67,20 +68,17 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
                 isSelected = { selectedSetting == THEME },
                 icon = AppIcons.PaintbrushPalette,
                 description = "TODO",
-                CHEVRON
-            ) {
-                onItemClick(THEME)
-            }
+                endIcon = CHEVRON,
+                onClick = { onItemClick(THEME) },
+            )
             SettingItem(
                 titleRes = R.string.settingsOptionNotifications,
                 isSelected = { selectedSetting == NOTIFICATIONS },
                 icon = AppIcons.Bell,
                 description = "TODO",
                 endIcon = OPEN_OUTSIDE,
-            ) {
-                onItemClick(NOTIFICATIONS)
-            }
-
+                onClick = { onItemClick(NOTIFICATIONS) },
+            )
             SettingDivider()
 
             SettingTitle(R.string.settingsCategoryDefaultSettings)
@@ -90,45 +88,51 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
                 icon = AppIcons.FileBadgeArrowDown,
                 description = "TODO",
                 endIcon = CHEVRON,
-            ) {
-                onItemClick(VALIDITY_PERIOD)
-            }
+                onClick = { onItemClick(VALIDITY_PERIOD) },
+            )
             SettingItem(
                 titleRes = R.string.settingsOptionDownloadLimit,
                 isSelected = { selectedSetting == DOWNLOAD_LIMIT },
                 icon = AppIcons.Clock,
                 description = "TODO",
                 endIcon = CHEVRON,
-            ) {
-                onItemClick(DOWNLOAD_LIMIT)
-            }
+                onClick = { onItemClick(DOWNLOAD_LIMIT) },
+            )
             SettingItem(
                 titleRes = R.string.settingsOptionEmailLanguage,
                 isSelected = { selectedSetting == EMAIL_LANGUAGE },
                 icon = AppIcons.SpeechBubble,
                 description = "TODO",
                 endIcon = CHEVRON,
-            ) {
-                onItemClick(EMAIL_LANGUAGE)
-            }
-
+                onClick = { onItemClick(EMAIL_LANGUAGE) },
+            )
             SettingDivider()
 
             SettingTitle(R.string.settingsCategoryAbout)
             SettingItem(
-                R.string.settingsOptionDiscoverInfomaniak,
-                { selectedSetting == DISCOVER_INFOMANIAK },
-                endIcon = OPEN_OUTSIDE
-            ) {
-                onItemClick(DISCOVER_INFOMANIAK)
-            }
-            SettingItem(R.string.settingsOptionShareIdeas, { selectedSetting == SHARE_IDEAS }, endIcon = OPEN_OUTSIDE) {
-                onItemClick(SHARE_IDEAS)
-            }
-            SettingItem(R.string.settingsOptionGiveFeedback, { selectedSetting == GIVE_FEEDBACK }, endIcon = OPEN_OUTSIDE) {
-                onItemClick(GIVE_FEEDBACK)
-            }
-            SettingItem(R.string.version, isSelected = { false }, description = BuildConfig.VERSION_NAME, onClick = null)
+                titleRes = R.string.settingsOptionDiscoverInfomaniak,
+                isSelected = { selectedSetting == DISCOVER_INFOMANIAK },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(DISCOVER_INFOMANIAK) },
+            )
+            SettingItem(
+                titleRes = R.string.settingsOptionShareIdeas,
+                isSelected = { selectedSetting == SHARE_IDEAS },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(SHARE_IDEAS) },
+            )
+            SettingItem(
+                titleRes = R.string.settingsOptionGiveFeedback,
+                isSelected = { selectedSetting == GIVE_FEEDBACK },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(GIVE_FEEDBACK) },
+            )
+            SettingItem(
+                titleRes = R.string.version,
+                isSelected = { false },
+                description = BuildConfig.VERSION_NAME,
+                onClick = null,
+            )
         }
     }
 }

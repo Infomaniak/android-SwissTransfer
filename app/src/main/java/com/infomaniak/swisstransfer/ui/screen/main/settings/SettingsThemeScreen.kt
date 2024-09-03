@@ -53,7 +53,7 @@ fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingsValue)
+                .padding(paddingsValue),
         ) {
             SettingTitle(titleRes = R.string.settingsThemeTitle)
 
@@ -66,7 +66,7 @@ fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
 enum class ThemeOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector,
-    override val imageVectorResId: Int? = null
+    override val imageVectorResId: Int? = null,
 ) : SettingOption {
     SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.BlackAndWhiteCircle),
     LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.WhiteCircle),

@@ -41,7 +41,7 @@ fun SwissTransferTheme(
         MaterialTheme(
             colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
-            content = content
+            content = content,
         )
     }
 }

@@ -46,9 +46,9 @@ import com.infomaniak.swisstransfer.ui.utils.*
 @Composable
 fun SettingsScreenWrapper(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        windowAdaptiveInfo,
+        windowAdaptiveInfo = windowAdaptiveInfo,
         listPane = { ListPane(this) },
-        detailPane = { DetailPane(this) }
+        detailPane = { DetailPane(this) },
     )
 }
 

@@ -85,8 +85,8 @@ private fun HorizontallyStackedButtons(
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        topButton(Modifier.weight(1f))
-        bottomButton(Modifier.weight(1f))
+        topButton(Modifier.weight(1.0f))
+        bottomButton(Modifier.weight(1.0f))
     }
 }
 
