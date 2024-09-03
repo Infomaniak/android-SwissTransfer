@@ -94,8 +94,8 @@ fun EmptyScreen() {
             Icon(
                 modifier = Modifier
                     .constrainAs(icon) {
-                        top.linkTo(anchor = parent.top)
-                        end.linkTo(anchor = fab.start, margin = Margin.Small)
+                        top.linkTo(parent.top)
+                        end.linkTo(fab.start, Margin.Small)
                     },
                 imageVector = AppIcons.Illu.ArrowCurvedDownright,
                 contentDescription = null,
@@ -103,9 +103,9 @@ fun EmptyScreen() {
             NewTransferFab(
                 modifier = Modifier
                     .constrainAs(fab) {
-                        start.linkTo(anchor = parent.start)
-                        end.linkTo(anchor = parent.end)
-                        top.linkTo(anchor = parent.top, margin = Margin.Large)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top, Margin.Large)
                     },
                 newTransferFabType = NewTransferFabType.EMPTY_STATE,
             )
