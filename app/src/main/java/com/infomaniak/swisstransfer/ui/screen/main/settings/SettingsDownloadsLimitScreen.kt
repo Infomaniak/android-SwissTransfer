@@ -46,7 +46,7 @@ fun SettingsDownloadsLimitScreen(navigateBack: (() -> Unit)?) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingsValue)
+                .padding(paddingsValue),
         ) {
             SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
 
@@ -61,8 +61,8 @@ enum class DownloadsLimit(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
 ) : SettingOption {
-    TWOHUNDREDFIFTY({ "250" }),
-    ONEHUNDRED({ "100" }),
+    TWO_HUNDRED_FIFTY({ "250" }),
+    ONE_HUNDRED({ "100" }),
     TWENTY({ "20" }),
     ONE({ "1" }),
 }

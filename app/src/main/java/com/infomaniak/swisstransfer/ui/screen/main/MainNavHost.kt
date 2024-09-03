@@ -47,20 +47,14 @@ fun MainNavHost(
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
         composable<SentDestination> {
-            SentScreen(
-                navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
-            )
+            SentScreen(navigateToDetails = { navController.navigate(::TransferDetailsDestination) })
         }
         composable<ReceivedDestination> {
-            ReceivedScreen(
-                navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) },
-            )
+            ReceivedScreen(navigateToDetails = { navController.navigate(::TransferDetailsDestination) })
         }
         composable<TransferDetailsDestination> {
             val transferDetails: TransferDetailsDestination = it.toRoute()
-            TransferDetailsScreen(
-                transferId = transferDetails.transferId,
-            )
+            TransferDetailsScreen(transferId = transferDetails.transferId)
         }
         composable<SettingsDestination> {
             SettingsScreenWrapper(windowAdaptiveInfo)

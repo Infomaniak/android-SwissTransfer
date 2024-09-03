@@ -60,27 +60,17 @@ fun <T> TwoPaneScaffold(
     val navigator = rememberListDetailPaneScaffoldNavigator<T>(
         scaffoldDirective = paneScaffoldDirective.copy(
             maxHorizontalPartitions = maxHorizontalPartitions,
-            horizontalPartitionSpacerSize = 0.dp
-        )
+            horizontalPartitionSpacerSize = 0.dp,
+        ),
     )
 
-    BackHandler(navigator.canNavigateBack()) {
-        navigator.navigateBack()
-    }
+    BackHandler(navigator.canNavigateBack()) { navigator.navigateBack() }
 
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
-        listPane = {
-            AnimatedPane {
-                navigator.listPane()
-            }
-        },
-        detailPane = {
-            AnimatedPane {
-                navigator.detailPane()
-            }
-        },
+        listPane = { AnimatedPane { navigator.listPane() } },
+        detailPane = { AnimatedPane { navigator.detailPane() } },
         modifier = modifier,
     )
 }

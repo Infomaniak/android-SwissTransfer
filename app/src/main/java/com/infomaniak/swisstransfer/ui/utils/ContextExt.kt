@@ -37,16 +37,9 @@ fun Context.openUrl(url: String) {
 
 fun Context.goToPlayStore() {
     try {
-        startActivity(
-            Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${packageName}"))
-        )
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${packageName}")))
     } catch (_: ActivityNotFoundException) {
-        startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://play.google.com/store/apps/details?id=${packageName}")
-            )
-        )
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${packageName}")))
     }
 }
 

@@ -77,7 +77,7 @@ private fun SettingItemContent(
     icon: ImageVector?,
     titleRes: Int,
     description: String?,
-    endIcon: EndIconType?
+    endIcon: EndIconType?,
 ) {
     Row(
         modifier = Modifier
@@ -91,7 +91,7 @@ private fun SettingItemContent(
             Spacer(modifier = Modifier.width(Margin.Medium))
         }
 
-        Column(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier.weight(1.0f)) {
             Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyRegular)
 
             description?.let {
@@ -101,7 +101,6 @@ private fun SettingItemContent(
                     color = SwissTransferTheme.colors.tertiaryTextColor,
                 )
             }
-
         }
 
         endIcon?.let {
@@ -118,15 +117,15 @@ private fun SettingItemPreview() {
         Surface {
             Column(modifier = Modifier.selectableGroup()) {
                 SettingTitle(R.string.appName)
-                SettingItem(R.string.appName, { true }, AppIcons.Add, "Clair", EndIconType.CHEVRON) {}
-                SettingItem(R.string.appName, { false }, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
-                SettingItem(R.string.appName, { false }, description = "1.1.2") {}
-                SettingItem(R.string.appName, { false }) {}
+                SettingItem(R.string.appName, isSelected = { true }, AppIcons.Add, "Clair", EndIconType.CHEVRON) {}
+                SettingItem(R.string.appName, isSelected = { false }, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, isSelected = { false }, description = "1.1.2") {}
+                SettingItem(R.string.appName, isSelected = { false }) {}
                 SettingDivider()
                 SettingTitle(R.string.appName)
-                SettingItem(R.string.appName, { false }, endIcon = EndIconType.OPEN_OUTSIDE) {}
-                SettingItem(R.string.appName, { false }, endIcon = EndIconType.OPEN_OUTSIDE) {}
-                SettingItem(R.string.appName, { false }, description = "0.0.1", onClick = null)
+                SettingItem(R.string.appName, isSelected = { false }, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, isSelected = { false }, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, isSelected = { false }, description = "0.0.1", onClick = null)
             }
         }
     }

@@ -48,7 +48,7 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
             SwissTransferTobAppBar(
                 titleRes = R.string.importFilesScreenTitle,
                 navigationMenu = null,
-                TopAppBarButton.closeButton { /*TODO*/ }
+                TopAppBarButton.closeButton { /* TODO */ },
             )
         },
         topButton = { modifier ->
@@ -88,11 +88,11 @@ private fun UploadSourceChoiceBottomSheet(
             titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
-                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /*TODO*/ }
+                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /* TODO */ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) { /*TODO*/ }
+                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) { /* TODO */ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /*TODO*/ }
+                    BottomSheetItem(AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /* TODO */ }
                 }
             },
         )
@@ -114,7 +114,7 @@ private fun ImportFilesScreenPreview() {
 private fun ImportChoiceBottomSheetPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSourceChoiceBottomSheet({ true }, {})
+            UploadSourceChoiceBottomSheet(isBottomSheetVisible = { true }, onDismissRequest = {})
         }
     }
 }

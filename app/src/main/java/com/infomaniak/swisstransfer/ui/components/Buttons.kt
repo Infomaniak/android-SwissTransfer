@@ -68,7 +68,7 @@ private fun CoreButton(
     enabled: Boolean,
     onClick: () -> Unit,
     imageVector: ImageVector?,
-    titleRes: Int
+    titleRes: Int,
 ) {
     Button(
         modifier = modifier.height(buttonSize.height),
@@ -113,7 +113,8 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
 }
 
 private enum class ButtonSize(val height: Dp) {
-    LARGE(56.dp), SMALL(40.dp)
+    LARGE(56.dp),
+    SMALL(40.dp),
 }
 
 @Preview(name = "Light")

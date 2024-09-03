@@ -50,6 +50,7 @@ sealed class MainNavigation : NavigationDestination() {
  */
 @Serializable
 sealed class NewTransferNavigation : NavigationDestination() {
+
     @Serializable
     data object ImportFilesDestination : NewTransferNavigation()
     @Serializable
@@ -82,6 +83,7 @@ sealed class NavigationDestination {
         }
 
         fun <T : NavigationDestination> toDestination(kClass: KClass<T>, backStackEntry: NavBackStackEntry?): T? {
+
             fun kClassFromRoute(route: String) = kClass.sealedSubclasses.firstOrNull {
                 route.contains(it.qualifiedName.toString())
             }
@@ -97,9 +99,7 @@ sealed class NavigationDestination {
 
         private fun <T : NavigationDestination> createInstance(kClass: KClass<T>, bundle: Bundle?): T? {
             return kClass.primaryConstructor?.let {
-                val args = it.parameters.associateWith { parameter ->
-                    bundle?.get(parameter.name)
-                }
+                val args = it.parameters.associateWith { parameter -> bundle?.get(parameter.name) }
                 it.callBy(args)
             } ?: kClass.objectInstance
         }

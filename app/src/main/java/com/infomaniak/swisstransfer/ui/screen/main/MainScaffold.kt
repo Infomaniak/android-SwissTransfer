@@ -43,7 +43,6 @@ fun MainScaffold(
     windowAdaptiveInfo: WindowAdaptiveInfo,
     content: @Composable () -> Unit = {},
 ) {
-
     val navType by rememberNavType(currentDestination, windowAdaptiveInfo)
 
     CompositionLocalProvider(LocalNavType provides navType) {
@@ -63,7 +62,7 @@ private fun MainScaffold(
             content()
         } else {
             Column {
-                Box(modifier = Modifier.weight(1f)) {
+                Box(modifier = Modifier.weight(1.0f)) {
                     content()
                 }
                 HorizontalDivider()

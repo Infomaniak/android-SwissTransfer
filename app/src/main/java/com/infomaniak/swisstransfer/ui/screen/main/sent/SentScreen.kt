@@ -85,7 +85,7 @@ fun EmptyScreen() {
         Text(
             modifier = Modifier.widthIn(max = maxWidth),
             text = stringResource(id = R.string.firstTransferDescription),
-            style = SwissTransferTheme.typography.bodyRegular
+            style = SwissTransferTheme.typography.bodyRegular,
         )
         Spacer(modifier = Modifier.height(Margin.Medium))
         ConstraintLayout {
@@ -94,8 +94,8 @@ fun EmptyScreen() {
             Icon(
                 modifier = Modifier
                     .constrainAs(icon) {
-                        top.linkTo(parent.top)
-                        end.linkTo(fab.start, margin = Margin.Small)
+                        top.linkTo(anchor = parent.top)
+                        end.linkTo(anchor = fab.start, margin = Margin.Small)
                     },
                 imageVector = AppIcons.Illu.ArrowCurvedDownright,
                 contentDescription = null,
@@ -103,9 +103,9 @@ fun EmptyScreen() {
             NewTransferFab(
                 modifier = Modifier
                     .constrainAs(fab) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top, Margin.Large)
+                        start.linkTo(anchor = parent.start)
+                        end.linkTo(anchor = parent.end)
+                        top.linkTo(anchor = parent.top, margin = Margin.Large)
                     },
                 newTransferFabType = NewTransferFabType.EMPTY_STATE,
             )

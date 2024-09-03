@@ -51,7 +51,7 @@ fun TransferTypeButtons(items: List<TransferType>, navigateToTransfer: (Transfer
             TransferTypeButton(
                 modifier = Modifier.aspectRatio(0.87f),
                 item = item,
-                onClick = { navigateToTransfer(item) }
+                onClick = { navigateToTransfer(item) },
             )
         }
     }

@@ -49,7 +49,7 @@ fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -
         SwissTransferTobAppBar(
             titleRes = R.string.transferTypeScreenTitle,
             navigationMenu = TopAppBarButton.backButton(popBack),
-            TopAppBarButton.closeButton { /*TODO*/ }
+            TopAppBarButton.closeButton { /* TODO */ }
         )
     }) { contentPaddings ->
         Column(
