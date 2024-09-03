@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.PaintbrushPalette: ImageVector
     get() {
-        if (_paintbrushPalette != null) {
-            return _paintbrushPalette!!
-        }
+
+        if (_paintbrushPalette != null) return _paintbrushPalette!!
+
         _paintbrushPalette = Builder(
             name = "PaintbrushPalette",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             group {
                 path(
@@ -38,7 +38,7 @@ val AppIcons.PaintbrushPalette: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(10.644f, 17.865f)
                     curveToRelative(1.589f, -1.9f, 0.1f, -4.338f, 1.513f, -5.981f)
@@ -52,7 +52,7 @@ val AppIcons.PaintbrushPalette: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(16.62f, 12.277f)
                     lineToRelative(6.232f, -8.253f)
@@ -66,7 +66,7 @@ val AppIcons.PaintbrushPalette: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(13.5f, 5.225f)
                     horizontalLineTo(3.75f)
@@ -79,6 +79,7 @@ val AppIcons.PaintbrushPalette: ImageVector
                 }
             }
         }.build()
+
         return _paintbrushPalette!!
     }
 
@@ -91,7 +92,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.PaintbrushPalette,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

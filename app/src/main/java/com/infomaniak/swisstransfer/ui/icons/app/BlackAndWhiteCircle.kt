@@ -21,15 +21,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.BlackAndWhiteCircle: ImageVector
     get() {
-        if (_blackAndWhiteCircle != null) {
-            return _blackAndWhiteCircle!!
-        }
+
+        if (_blackAndWhiteCircle != null) return _blackAndWhiteCircle!!
+
         _blackAndWhiteCircle = Builder(
             name = "BlackAndWhiteCircle",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF000000)),
@@ -38,7 +38,7 @@ val AppIcons.BlackAndWhiteCircle: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(12.0f, 0.0f)
                 arcToRelative(12.0f, 12.0f, 0.0f, false, true, 12.0f, 12.0f)
@@ -62,7 +62,7 @@ val AppIcons.BlackAndWhiteCircle: ImageVector
                     strokeLineCap = Butt,
                     strokeLineJoin = Miter,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(-4.5f, 27.5f)
                     lineTo(27.0f, -2.5f)
@@ -76,7 +76,7 @@ val AppIcons.BlackAndWhiteCircle: ImageVector
                     strokeLineCap = Butt,
                     strokeLineJoin = Miter,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(12.0f, 0.15f)
                     arcTo(11.85f, 11.85f, 0.0f, false, true, 23.85f, 12.0f)
@@ -87,6 +87,7 @@ val AppIcons.BlackAndWhiteCircle: ImageVector
                 }
             }
         }.build()
+
         return _blackAndWhiteCircle!!
     }
 
@@ -99,7 +100,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.BlackAndWhiteCircle,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

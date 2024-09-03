@@ -20,15 +20,14 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.Add: ImageVector
     get() {
-        if (_add != null) {
-            return _add!!
-        }
+        if (_add != null) return _add!!
+
         _add = Builder(
             name = "Add",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             group {
                 path(
@@ -38,7 +37,7 @@ val AppIcons.Add: ImageVector
                     strokeLineCap = Round,
                     strokeLineJoin = StrokeJoin.Round,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(1.5f, 12.0f)
                     horizontalLineToRelative(21.0f)
@@ -47,6 +46,7 @@ val AppIcons.Add: ImageVector
                 }
             }
         }.build()
+
         return _add!!
     }
 
@@ -59,7 +59,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Add,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

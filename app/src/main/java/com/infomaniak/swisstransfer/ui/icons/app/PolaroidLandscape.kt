@@ -20,15 +20,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.PolaroidLandscape: ImageVector
     get() {
-        if (_polaroidLandscape != null) {
-            return _polaroidLandscape!!
-        }
+
+        if (_polaroidLandscape != null) return _polaroidLandscape!!
+
         _polaroidLandscape = Builder(
             name = "PolaroidLandscape",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             group {
                 path(
@@ -38,7 +38,7 @@ val AppIcons.PolaroidLandscape: ImageVector
                     strokeLineCap = Butt,
                     strokeLineJoin = Miter,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(21.75f, 0.75f)
                     horizontalLineTo(2.25f)
@@ -58,7 +58,7 @@ val AppIcons.PolaroidLandscape: ImageVector
                     strokeLineCap = Butt,
                     strokeLineJoin = Miter,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(5.25f, 17.25f)
                     lineToRelative(3.462f, -4.616f)
@@ -76,6 +76,7 @@ val AppIcons.PolaroidLandscape: ImageVector
                 }
             }
         }.build()
+
         return _polaroidLandscape!!
     }
 
@@ -88,7 +89,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.PolaroidLandscape,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

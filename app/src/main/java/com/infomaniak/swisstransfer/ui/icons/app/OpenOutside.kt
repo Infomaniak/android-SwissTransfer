@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.OpenOutside: ImageVector
     get() {
-        if (_openOutside != null) {
-            return _openOutside!!
-        }
+
+        if (_openOutside != null) return _openOutside!!
+
         _openOutside = Builder(
             name = "OpenOutside",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 16.0f,
-            viewportHeight = 16.0f
+            viewportHeight = 16.0f,
         ).apply {
             group {
                 path(
@@ -38,7 +38,7 @@ val AppIcons.OpenOutside: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(15.0f, 5.2f)
                     verticalLineTo(1.0f)
@@ -56,6 +56,7 @@ val AppIcons.OpenOutside: ImageVector
                 }
             }
         }.build()
+
         return _openOutside!!
     }
 
@@ -68,7 +69,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.OpenOutside,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

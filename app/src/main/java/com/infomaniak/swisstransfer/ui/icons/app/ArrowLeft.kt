@@ -19,15 +19,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.ArrowLeft: ImageVector
     get() {
-        if (_arrowLeft != null) {
-            return _arrowLeft!!
-        }
+
+        if (_arrowLeft != null) return _arrowLeft!!
+
         _arrowLeft = Builder(
             name = "ArrowLeft",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.ArrowLeft: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(23.25f, 12.0f)
                 horizontalLineTo(0.75f)
@@ -45,6 +45,7 @@ val AppIcons.ArrowLeft: ImageVector
                 lineToRelative(10.5f, 10.5f)
             }
         }.build()
+
         return _arrowLeft!!
     }
 
@@ -57,7 +58,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.ArrowLeft,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

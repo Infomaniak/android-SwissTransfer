@@ -19,15 +19,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.Folder: ImageVector
     get() {
-        if (_folder != null) {
-            return _folder!!
-        }
+
+        if (_folder != null) return _folder!!
+
         _folder = Builder(
             name = "Folder",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Folder: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(23.25f, 6.75f)
                 arcToRelative(1.5f, 1.5f, 0.0f, false, false, -1.5f, -1.5f)
@@ -52,6 +52,7 @@ val AppIcons.Folder: ImageVector
                 close()
             }
         }.build()
+
         return _folder!!
     }
 
@@ -64,7 +65,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Folder,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

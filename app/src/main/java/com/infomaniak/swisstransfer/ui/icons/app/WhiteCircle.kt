@@ -19,15 +19,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.WhiteCircle: ImageVector
     get() {
-        if (_whiteCircle != null) {
-            return _whiteCircle!!
-        }
+
+        if (_whiteCircle != null) return _whiteCircle!!
+
         _whiteCircle = Builder(
             name = "WhiteCircle",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFF5F5F5)),
@@ -36,7 +36,7 @@ val AppIcons.WhiteCircle: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(12.0f, 0.15f)
                 arcTo(11.85f, 11.85f, 0.0f, false, true, 23.85f, 12.0f)
@@ -46,6 +46,7 @@ val AppIcons.WhiteCircle: ImageVector
                 close()
             }
         }.build()
+
         return _whiteCircle!!
     }
 
@@ -58,7 +59,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.WhiteCircle,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }
