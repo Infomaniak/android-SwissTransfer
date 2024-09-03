@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
@@ -27,7 +26,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import kotlin.reflect.KClass
-
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
     startActivity(Intent(this, kClass.java), options)

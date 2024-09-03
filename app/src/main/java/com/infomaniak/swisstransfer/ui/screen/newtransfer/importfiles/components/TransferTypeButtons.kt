@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import android.content.res.Configuration
@@ -107,7 +106,6 @@ private fun TransferTypeButtonPreview() {
         }
     }
 }
-
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)

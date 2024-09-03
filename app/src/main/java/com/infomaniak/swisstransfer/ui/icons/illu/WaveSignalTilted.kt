@@ -17,7 +17,6 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-
 val AppIcons.Illu.WaveSignalTilted: ImageVector
     get() {
         if (_waveSignalTilted != null) {
