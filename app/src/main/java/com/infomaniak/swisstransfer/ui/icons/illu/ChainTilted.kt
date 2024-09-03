@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Illu.ChainTilted: ImageVector
     get() {
-        if (_chainTilted != null) {
-            return _chainTilted!!
-        }
+
+        if (_chainTilted != null) return _chainTilted!!
+
         _chainTilted = Builder(
             name = "ChainTilted",
             defaultWidth = 120.0.dp,
             defaultHeight = 80.0.dp,
             viewportWidth = 120.0f,
-            viewportHeight = 80.0f
+            viewportHeight = 80.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Illu.ChainTilted: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(47.17f, 75.82f)
                 lineToRelative(-4.56f, 4.56f)
@@ -51,7 +51,7 @@ val AppIcons.Illu.ChainTilted: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(73.88f, 12.5f)
                 lineToRelative(3.67f, -3.67f)
@@ -60,6 +60,7 @@ val AppIcons.Illu.ChainTilted: ImageVector
                 arcToRelative(22.03f, 22.03f, 0.0f, false, true, -33.41f, -28.52f)
             }
         }.build()
+
         return _chainTilted!!
     }
 
@@ -72,7 +73,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.ChainTilted,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

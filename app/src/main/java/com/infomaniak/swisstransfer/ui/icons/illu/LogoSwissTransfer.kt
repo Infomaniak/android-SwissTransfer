@@ -20,15 +20,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.Illu.LogoSwissTransfer: ImageVector
     get() {
-        if (_logoSwissTransfer != null) {
-            return _logoSwissTransfer!!
-        }
+
+        if (_logoSwissTransfer != null) return _logoSwissTransfer!!
+
         _logoSwissTransfer = Builder(
             name = "LogoSwissTransfer",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
@@ -37,7 +37,7 @@ val AppIcons.Illu.LogoSwissTransfer: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(0.0f, 4.0f)
                 arcToRelative(4.0f, 4.0f, 0.0f, false, true, 4.0f, -4.0f)
@@ -58,7 +58,7 @@ val AppIcons.Illu.LogoSwissTransfer: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = EvenOdd
+                pathFillType = EvenOdd,
             ) {
                 moveTo(8.783f, 4.797f)
                 arcToRelative(0.803f, 0.803f, 0.0f, false, true, 1.04f, -0.761f)
@@ -79,7 +79,7 @@ val AppIcons.Illu.LogoSwissTransfer: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = EvenOdd
+                pathFillType = EvenOdd,
             ) {
                 moveTo(6.772f, 6.31f)
                 arcToRelative(0.803f, 0.803f, 0.0f, false, true, 1.041f, -0.761f)
@@ -98,7 +98,7 @@ val AppIcons.Illu.LogoSwissTransfer: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = EvenOdd
+                pathFillType = EvenOdd,
             ) {
                 moveTo(4.762f, 7.823f)
                 arcToRelative(0.803f, 0.803f, 0.0f, false, true, 1.04f, -0.761f)
@@ -117,7 +117,7 @@ val AppIcons.Illu.LogoSwissTransfer: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = EvenOdd
+                pathFillType = EvenOdd,
             ) {
                 moveTo(11.131f, 10.806f)
                 arcToRelative(0.7f, 0.7f, 0.0f, false, true, 0.179f, 0.232f)
@@ -138,6 +138,7 @@ val AppIcons.Illu.LogoSwissTransfer: ImageVector
                 curveToRelative(0.118f, -0.182f, 0.39f, -0.18f, 0.607f, 0.004f)
             }
         }.build()
+
         return _logoSwissTransfer!!
     }
 
@@ -150,7 +151,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.LogoSwissTransfer,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

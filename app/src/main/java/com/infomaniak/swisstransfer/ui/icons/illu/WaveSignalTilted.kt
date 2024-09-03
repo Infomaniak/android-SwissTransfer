@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Illu.WaveSignalTilted: ImageVector
     get() {
-        if (_waveSignalTilted != null) {
-            return _waveSignalTilted!!
-        }
+
+        if (_waveSignalTilted != null) return _waveSignalTilted!!
+
         _waveSignalTilted = Builder(
             name = "WaveSignalTilted",
             defaultWidth = 120.0.dp,
             defaultHeight = 80.0.dp,
             viewportWidth = 120.0f,
-            viewportHeight = 80.0f
+            viewportHeight = 80.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Illu.WaveSignalTilted: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(93.93f, 50.48f)
                 arcToRelative(32.97f, 32.97f, 0.0f, false, false, -40.38f, 23.31f)
@@ -46,6 +46,7 @@ val AppIcons.Illu.WaveSignalTilted: ImageVector
                 arcToRelative(72.53f, 72.53f, 0.0f, false, false, -85.65f, 49.45f)
             }
         }.build()
+
         return _waveSignalTilted!!
     }
 
@@ -58,7 +59,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.WaveSignalTilted,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }
