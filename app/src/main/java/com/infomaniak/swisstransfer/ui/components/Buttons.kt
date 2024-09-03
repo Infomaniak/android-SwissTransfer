@@ -38,37 +38,37 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun LargeButton(
-    modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
+    modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
     enabled: Boolean = true,
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
-    CoreButton(modifier, ButtonSize.LARGE, style, enabled, onClick, imageVector, titleRes)
+    CoreButton(titleRes, modifier, ButtonSize.LARGE, style, enabled, onClick, imageVector)
 }
 
 @Composable
 fun SmallButton(
-    modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
+    modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
     enabled: Boolean = true,
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
-    CoreButton(modifier, ButtonSize.SMALL, style, enabled, onClick, imageVector, titleRes)
+    CoreButton(titleRes, modifier, ButtonSize.SMALL, style, enabled, onClick, imageVector)
 }
 
 @Composable
 private fun CoreButton(
+    @StringRes titleRes: Int,
     modifier: Modifier,
     buttonSize: ButtonSize,
     style: ButtonType,
     enabled: Boolean,
     onClick: () -> Unit,
     imageVector: ImageVector?,
-    titleRes: Int,
 ) {
     Button(
         modifier = modifier.height(buttonSize.height),
