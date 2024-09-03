@@ -34,7 +34,7 @@ fun BottomStickyButtonScaffold(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(contentPaddings)
+                .padding(contentPaddings),
         ) {
             Box(modifier = Modifier.weight(1.0f), content = content)
             DoubleButtonCombo(topButton, bottomButton)

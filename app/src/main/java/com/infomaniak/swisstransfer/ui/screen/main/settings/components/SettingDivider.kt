@@ -28,7 +28,7 @@ fun SettingDivider() {
     HorizontalDivider(
         modifier = Modifier.padding(
             horizontal = Dimens.SettingHorizontalMargin,
-            vertical = Dimens.SettingVerticalMargin
-        )
+            vertical = Dimens.SettingVerticalMargin,
+        ),
     )
 }

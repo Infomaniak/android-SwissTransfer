@@ -77,15 +77,15 @@ fun AppNavigationSuiteScaffold(
             layoutType = layoutType,
         ) {
             Box(
-                Modifier.consumeWindowInsets(
+                modifier = Modifier.consumeWindowInsets(
                     when (layoutType) {
                         NavigationSuiteType.NavigationBar ->
                             NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
                         NavigationSuiteType.NavigationRail ->
                             NavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
                         else -> WindowInsets(0, 0, 0, 0)
-                    }
-                )
+                    },
+                ),
             ) {
                 content()
             }
@@ -124,7 +124,7 @@ private fun AppNavigationRail(
                 newTransferFabType = NewTransferFabType.NAVIGATION_RAIL,
             )
         },
-        containerColor = SwissTransferTheme.colors.navigationItemBackground
+        containerColor = SwissTransferTheme.colors.navigationItemBackground,
     ) {
         navigationItems.forEach { navigationItem ->
             NavigationRailItem(

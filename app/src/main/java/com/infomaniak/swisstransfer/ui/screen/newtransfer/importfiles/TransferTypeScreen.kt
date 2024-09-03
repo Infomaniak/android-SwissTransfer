@@ -49,13 +49,13 @@ fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -
         SwissTransferTobAppBar(
             titleRes = R.string.transferTypeScreenTitle,
             navigationMenu = TopAppBarButton.backButton(popBack),
-            TopAppBarButton.closeButton { /* TODO */ }
+            TopAppBarButton.closeButton { /* TODO */ },
         )
     }) { contentPaddings ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(contentPaddings)
+                .padding(contentPaddings),
         ) {
             Text(
                 modifier = Modifier
@@ -78,28 +78,28 @@ enum class TransferType(
     val icon: ImageVector,
 ) {
     LINK(
-        R.string.transferTypeLink,
-        { SwissTransferTheme.colors.transferTypeLinkContainer },
-        { SwissTransferTheme.colors.transferTypeLinkOnContainer },
-        AppIllus.ChainTilted
+        titleRes = R.string.transferTypeLink,
+        background = { SwissTransferTheme.colors.transferTypeLinkContainer },
+        foreground = { SwissTransferTheme.colors.transferTypeLinkOnContainer },
+        icon = AppIllus.ChainTilted,
     ),
     EMAIL(
-        R.string.transferTypeEmail,
-        { SwissTransferTheme.colors.transferTypeEmailContainer },
-        { SwissTransferTheme.colors.transferTypeEmailOnContainer },
-        AppIllus.EnvelopeTilted
+        titleRes = R.string.transferTypeEmail,
+        background = { SwissTransferTheme.colors.transferTypeEmailContainer },
+        foreground = { SwissTransferTheme.colors.transferTypeEmailOnContainer },
+        icon = AppIllus.EnvelopeTilted,
     ),
     QR_CODE(
-        R.string.transferTypeQrCode,
-        { SwissTransferTheme.colors.transferTypeQrContainer },
-        { SwissTransferTheme.colors.transferTypeQrOnContainer },
-        AppIllus.QrCodeTilted
+        titleRes = R.string.transferTypeQrCode,
+        background = { SwissTransferTheme.colors.transferTypeQrContainer },
+        foreground = { SwissTransferTheme.colors.transferTypeQrOnContainer },
+        icon = AppIllus.QrCodeTilted,
     ),
     PROXIMITY(
-        R.string.transferTypeProximity,
-        { SwissTransferTheme.colors.transferTypeProximityContainer },
-        { SwissTransferTheme.colors.transferTypeProximityOnContainer },
-        AppIllus.WaveSignalTilted
+        titleRes = R.string.transferTypeProximity,
+        background = { SwissTransferTheme.colors.transferTypeProximityContainer },
+        foreground = { SwissTransferTheme.colors.transferTypeProximityOnContainer },
+        icon = AppIllus.WaveSignalTilted,
     ),
 }
 

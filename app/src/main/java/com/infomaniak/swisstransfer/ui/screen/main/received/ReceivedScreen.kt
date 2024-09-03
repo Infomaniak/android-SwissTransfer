@@ -41,7 +41,7 @@ private fun ReceivedScreen(navType: NavigationSuiteType) {
     Scaffold(
         floatingActionButton = {
             if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
-        }
+        },
     ) { contentPadding ->
         Text(
             text = "Received screen",

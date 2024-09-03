@@ -47,7 +47,7 @@ fun SettingsEmailLanguageScreen(navigateBack: (() -> Unit)?) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingsValue)
+                .padding(paddingsValue),
         ) {
             SettingTitle(titleRes = R.string.settingsEmailLanguageTitle)
 
@@ -60,7 +60,7 @@ fun SettingsEmailLanguageScreen(navigateBack: (() -> Unit)?) {
 enum class EmailLanguage(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
-    override val imageVectorResId: Int? = null
+    override val imageVectorResId: Int? = null,
 ) : SettingOption {
     ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVectorResId = R.drawable.flag_gb),
     FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVectorResId = R.drawable.flag_fr),

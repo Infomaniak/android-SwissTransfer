@@ -47,7 +47,7 @@ fun SettingsValidityPeriodScreen(navigateBack: (() -> Unit)?) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(paddingsValue)
+                .padding(paddingsValue),
         ) {
             SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
