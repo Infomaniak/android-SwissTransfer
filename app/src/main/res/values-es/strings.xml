@@ -23,6 +23,8 @@
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <string name="firstTransferDescription">Realice su primera transferencia</string>
     <string name="importFilesScreenTitle">Archivos para transferir</string>
+    <string name="no_transfer_received_description">Aquí aparecerán todas las transferencias recibidas en los últimos 30 días.</string>
+    <string name="no_transfer_received_title">No se han recibido transferencias</string>
     <string name="receivedTitle">Recibido</string>
     <string name="sentEmptyTitle">Nuestra historia comienza aquí</string>
     <string name="sentTitle">Enviado a</string>

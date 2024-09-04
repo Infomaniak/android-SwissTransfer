@@ -26,6 +26,8 @@
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="firstTransferDescription">Make your first transfer!</string>
     <string name="importFilesScreenTitle">Files to transfer</string>
+    <string name="no_transfer_received_description">All transfers you receive over the last 30 days will appear here.</string>
+    <string name="no_transfer_received_title">No transfers received</string>
     <string name="receivedTitle">Received</string>
     <string name="sentEmptyTitle">Our story begins here</string>
     <string name="sentTitle">Sent</string>
