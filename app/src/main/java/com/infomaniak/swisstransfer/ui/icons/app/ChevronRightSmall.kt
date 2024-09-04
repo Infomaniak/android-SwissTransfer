@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.ChevronRightSmall: ImageVector
     get() {
-        if (_chevronRightSmall != null) {
-            return _chevronRightSmall!!
-        }
+
+        if (_chevronRightSmall != null) return _chevronRightSmall!!
+
         _chevronRightSmall = Builder(
             name = "ChevronRightSmall",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 16.0f,
-            viewportHeight = 16.0f
+            viewportHeight = 16.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.ChevronRightSmall: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(4.0f, 1.0f)
                 lineToRelative(7.338f, 6.67f)
@@ -45,6 +45,7 @@ val AppIcons.ChevronRightSmall: ImageVector
                 lineTo(4.0f, 15.0f)
             }
         }.build()
+
         return _chevronRightSmall!!
     }
 
@@ -57,7 +58,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.ChevronRightSmall,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

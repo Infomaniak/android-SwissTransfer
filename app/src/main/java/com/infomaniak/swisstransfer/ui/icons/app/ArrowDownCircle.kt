@@ -38,15 +38,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.ArrowDownCircle: ImageVector
     get() {
-        if (_arrowDownCircle != null) {
-            return _arrowDownCircle!!
-        }
+
+        if (_arrowDownCircle != null) return _arrowDownCircle!!
+
         _arrowDownCircle = Builder(
             name = "ArrowDownCircle",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = null,
@@ -55,7 +55,7 @@ val AppIcons.ArrowDownCircle: ImageVector
                 strokeLineCap = StrokeCap.Round,
                 strokeLineJoin = Round,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(12.0f, 16.5f)
                 verticalLineToRelative(-9.0f)
@@ -70,7 +70,7 @@ val AppIcons.ArrowDownCircle: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(12.0f, 22.5f)
                 curveToRelative(5.799f, 0.0f, 10.5f, -4.701f, 10.5f, -10.5f)
@@ -80,6 +80,7 @@ val AppIcons.ArrowDownCircle: ImageVector
                 close()
             }
         }.build()
+
         return _arrowDownCircle!!
     }
 
@@ -92,7 +93,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.ArrowDownCircle,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

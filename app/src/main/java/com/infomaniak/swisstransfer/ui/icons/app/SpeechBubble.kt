@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.SpeechBubble: ImageVector
     get() {
-        if (_speechBubble != null) {
-            return _speechBubble!!
-        }
+
+        if (_speechBubble != null) return _speechBubble!!
+
         _speechBubble = Builder(
             name = "SpeechBubble",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             group {
                 path(
@@ -38,7 +38,7 @@ val AppIcons.SpeechBubble: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(21.75f, 18.75f)
                     horizontalLineToRelative(-10.5f)
@@ -59,6 +59,7 @@ val AppIcons.SpeechBubble: ImageVector
                 }
             }
         }.build()
+
         return _speechBubble!!
     }
 
@@ -71,7 +72,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.SpeechBubble,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

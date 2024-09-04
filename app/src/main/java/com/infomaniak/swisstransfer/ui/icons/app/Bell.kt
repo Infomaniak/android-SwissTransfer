@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Bell: ImageVector
     get() {
-        if (_notificationBell != null) {
-            return _notificationBell!!
-        }
+
+        if (_notificationBell != null) return _notificationBell!!
+
         _notificationBell = Builder(
             name = "Bell",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Bell: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(9.0f, 20.0f)
                 curveToRelative(0.19f, 0.866f, 0.585f, 1.626f, 1.126f, 2.167f)
@@ -53,6 +53,7 @@ val AppIcons.Bell: ImageVector
                 arcTo(7.5f, 7.5f, 0.0f, false, true, 12.0f, 4.0f)
             }
         }.build()
+
         return _notificationBell!!
     }
 
@@ -65,7 +66,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Bell,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

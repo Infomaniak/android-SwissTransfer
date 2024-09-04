@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Illu.QrCodeTilted: ImageVector
     get() {
-        if (_qrCodeTilted != null) {
-            return _qrCodeTilted!!
-        }
+
+        if (_qrCodeTilted != null) return _qrCodeTilted!!
+
         _qrCodeTilted = Builder(
             name = "QrCodeTilted",
             defaultWidth = 120.0.dp,
             defaultHeight = 80.0.dp,
             viewportWidth = 120.0f,
-            viewportHeight = 80.0f
+            viewportHeight = 80.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Illu.QrCodeTilted: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(15.56f, 56.33f)
                 lineTo(29.99f, 48.0f)
@@ -65,6 +65,7 @@ val AppIcons.Illu.QrCodeTilted: ImageVector
                 lineToRelative(14.43f, -8.33f)
             }
         }.build()
+
         return _qrCodeTilted!!
     }
 
@@ -77,7 +78,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.QrCodeTilted,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

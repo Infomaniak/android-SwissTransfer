@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Illu.EnvelopeTilted: ImageVector
     get() {
-        if (_envelopeTilted != null) {
-            return _envelopeTilted!!
-        }
+
+        if (_envelopeTilted != null) return _envelopeTilted!!
+
         _envelopeTilted = Builder(
             name = "EnvelopeTilted",
             defaultWidth = 120.0.dp,
             defaultHeight = 80.0.dp,
             viewportWidth = 120.0f,
-            viewportHeight = 80.0f
+            viewportHeight = 80.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Illu.EnvelopeTilted: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(85.95f, 4.79f)
                 lineTo(63.9f, 63.07f)
@@ -49,7 +49,7 @@ val AppIcons.Illu.EnvelopeTilted: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(80.94f, 5.11f)
                 lineTo(5.18f, 48.85f)
@@ -62,6 +62,7 @@ val AppIcons.Illu.EnvelopeTilted: ImageVector
                 curveToRelative(-1.85f, -3.21f, -5.9f, -4.34f, -9.03f, -2.53f)
             }
         }.build()
+
         return _envelopeTilted!!
     }
 
@@ -74,7 +75,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.EnvelopeTilted,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

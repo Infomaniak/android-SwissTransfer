@@ -38,15 +38,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons.previewSize
 
 val AppIcons.Illu.ArrowCurvedDownright: ImageVector
     get() {
-        if (_arrowcurveddownright != null) {
-            return _arrowcurveddownright!!
-        }
+
+        if (_arrowcurveddownright != null) return _arrowcurveddownright!!
+
         _arrowcurveddownright = Builder(
             name = "Arrowcurveddownright",
             defaultWidth = 37.0.dp,
             defaultHeight = 45.0.dp,
             viewportWidth = 37.0f,
-            viewportHeight = 45.0f
+            viewportHeight = 45.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF1A1A1A)),
@@ -55,7 +55,7 @@ val AppIcons.Illu.ArrowCurvedDownright: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(34.0f, 44.81f)
                 reflectiveCurveToRelative(1.352f, -0.094f, 2.001f, -0.31f)
@@ -71,6 +71,7 @@ val AppIcons.Illu.ArrowCurvedDownright: ImageVector
                 curveToRelative(4.04f, 0.0f, 6.982f, -0.005f, 11.022f, -0.005f)
             }
         }.build()
+
         return _arrowcurveddownright!!
     }
 
@@ -83,7 +84,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.ArrowCurvedDownright,
             contentDescription = null,
-            modifier = Modifier.size(previewSize)
+            modifier = Modifier.size(previewSize),
         )
     }
 }

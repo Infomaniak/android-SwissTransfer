@@ -19,15 +19,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.Camera: ImageVector
     get() {
-        if (_camera != null) {
-            return _camera!!
-        }
+
+        if (_camera != null) return _camera!!
+
         _camera = Builder(
             name = "Camera",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,7 +36,7 @@ val AppIcons.Camera: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(2.698f, 7.115f)
                 lineToRelative(0.027f, -0.98f)
@@ -52,7 +52,7 @@ val AppIcons.Camera: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(19.96f, 7.115f)
                 arcToRelative(0.98f, 0.98f, 0.0f, false, true, -0.886f, -0.565f)
@@ -77,7 +77,7 @@ val AppIcons.Camera: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(14.448f, 18.865f)
                 arcToRelative(5.386f, 5.386f, 0.0f, true, false, 0.0f, -10.771f)
@@ -91,7 +91,7 @@ val AppIcons.Camera: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(14.448f, 16.417f)
                 arcToRelative(2.937f, 2.937f, 0.0f, true, false, 0.0f, -5.875f)
@@ -103,6 +103,7 @@ val AppIcons.Camera: ImageVector
                 close()
             }
         }.build()
+
         return _camera!!
     }
 
@@ -115,7 +116,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Camera,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.FileBadgeArrowDown: ImageVector
     get() {
-        if (_fileBadgeArrowDown != null) {
-            return _fileBadgeArrowDown!!
-        }
+
+        if (_fileBadgeArrowDown != null) return _fileBadgeArrowDown!!
+
         _fileBadgeArrowDown = Builder(
             name = "FileBadgeArrowDown",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
-            viewportHeight = 24.0f
+            viewportHeight = 24.0f,
         ).apply {
             group {
                 path(
@@ -38,7 +38,7 @@ val AppIcons.FileBadgeArrowDown: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(11.25f, 17.25f)
                     arcToRelative(6.0f, 6.0f, 0.0f, true, false, 12.0f, 0.0f)
@@ -57,7 +57,7 @@ val AppIcons.FileBadgeArrowDown: ImageVector
                     strokeLineCap = strokeCapRound,
                     strokeLineJoin = strokeJoinRound,
                     strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
+                    pathFillType = NonZero,
                 ) {
                     moveTo(8.25f, 20.25f)
                     horizontalLineToRelative(-6.0f)
@@ -72,6 +72,7 @@ val AppIcons.FileBadgeArrowDown: ImageVector
                 }
             }
         }.build()
+
         return _fileBadgeArrowDown!!
     }
 
@@ -84,7 +85,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.FileBadgeArrowDown,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

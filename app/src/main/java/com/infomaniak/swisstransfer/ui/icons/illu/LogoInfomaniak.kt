@@ -19,15 +19,15 @@ import com.infomaniak.swisstransfer.ui.icons.AppIcons
 
 val AppIcons.Illu.LogoInfomaniak: ImageVector
     get() {
-        if (_logoInfomaniak != null) {
-            return _logoInfomaniak!!
-        }
+
+        if (_logoInfomaniak != null) return _logoInfomaniak!!
+
         _logoInfomaniak = Builder(
             name = "LogoInfomaniak",
             defaultWidth = 128.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 128.0f,
-            viewportHeight = 16.0f
+            viewportHeight = 16.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
@@ -36,7 +36,7 @@ val AppIcons.Illu.LogoInfomaniak: ImageVector
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(0.0f, 0.26f)
                 horizontalLineToRelative(4.34f)
@@ -257,6 +257,7 @@ val AppIcons.Illu.LogoInfomaniak: ImageVector
                 close()
             }
         }.build()
+
         return _logoInfomaniak!!
     }
 
@@ -269,7 +270,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Illu.LogoInfomaniak,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }

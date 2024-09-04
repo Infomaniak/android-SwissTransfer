@@ -19,15 +19,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.Checkmark: ImageVector
     get() {
-        if (_checkmark != null) {
-            return _checkmark!!
-        }
+
+        if (_checkmark != null) return _checkmark!!
+
         _checkmark = Builder(
             name = "Checkmark",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 16.0f,
-            viewportHeight = 16.0f
+            viewportHeight = 16.0f,
         ).apply {
             path(
                 fill = null,
@@ -36,13 +36,14 @@ val AppIcons.Checkmark: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(15.0f, 3.0f)
                 lineTo(5.593f, 13.419f)
                 lineTo(1.0f, 9.085f)
             }
         }.build()
+
         return _checkmark!!
     }
 
@@ -55,7 +56,7 @@ private fun Preview() {
         Image(
             imageVector = AppIcons.Checkmark,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize)
+            modifier = Modifier.size(AppIcons.previewSize),
         )
     }
 }
