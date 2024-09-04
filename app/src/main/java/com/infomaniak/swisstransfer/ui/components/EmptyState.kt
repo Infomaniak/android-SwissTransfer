@@ -58,6 +58,7 @@ fun EmptyState(
             text = context.getString(description),
             textAlign = TextAlign.Center,
             style = SwissTransferTheme.typography.bodyRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
             modifier = Modifier
                 .widthIn(max = Dimens.DescriptionWidth)
                 .padding(PaddingValues(top = Margin.Medium)),

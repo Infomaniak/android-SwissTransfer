@@ -57,6 +57,7 @@ fun SentEmptyScreen() {
             modifier = Modifier.widthIn(max = maxWidth),
             text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
         )
         Spacer(modifier = Modifier.height(Margin.Medium))
         ConstraintLayout {
