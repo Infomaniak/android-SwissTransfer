@@ -46,7 +46,7 @@ fun EmptyState(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(imageVector = icon, contentDescription = "")
+        Image(imageVector = icon, contentDescription = null)
 
         Text(
             text = context.getString(title),
