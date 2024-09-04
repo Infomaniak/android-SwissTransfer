@@ -18,13 +18,13 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 
-val AppIcons.BlackCircle: ImageVector
+val AppIcons.CircleBlack: ImageVector
     get() {
 
-        if (_blackCircle != null) return _blackCircle!!
+        if (_circleBlack != null) return _circleBlack!!
 
-        _blackCircle = Builder(
-            name = "BlackCircle",
+        _circleBlack = Builder(
+            name = "CircleBlack",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -49,17 +49,17 @@ val AppIcons.BlackCircle: ImageVector
         }
             .build()
 
-        return _blackCircle!!
+        return _circleBlack!!
     }
 
-private var _blackCircle: ImageVector? = null
+private var _circleBlack: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.BlackCircle,
+            imageVector = AppIcons.CircleBlack,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize),
         )

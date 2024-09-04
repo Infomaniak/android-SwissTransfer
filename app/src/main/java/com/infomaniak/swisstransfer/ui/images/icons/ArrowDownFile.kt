@@ -19,13 +19,13 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppIcons.FileBadgeArrowDown: ImageVector
+val AppIcons.ArrowDownFile: ImageVector
     get() {
 
-        if (_fileBadgeArrowDown != null) return _fileBadgeArrowDown!!
+        if (_arrowDownFile != null) return _arrowDownFile!!
 
-        _fileBadgeArrowDown = Builder(
-            name = "FileBadgeArrowDown",
+        _arrowDownFile = Builder(
+            name = "ArrowDownFile",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -74,17 +74,17 @@ val AppIcons.FileBadgeArrowDown: ImageVector
             }
         }.build()
 
-        return _fileBadgeArrowDown!!
+        return _arrowDownFile!!
     }
 
-private var _fileBadgeArrowDown: ImageVector? = null
+private var _arrowDownFile: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.FileBadgeArrowDown,
+            imageVector = AppIcons.ArrowDownFile,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize),
         )

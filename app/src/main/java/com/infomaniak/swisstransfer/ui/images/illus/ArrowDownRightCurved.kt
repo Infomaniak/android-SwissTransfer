@@ -36,13 +36,13 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.AppImages.previewSize
 
-val AppIllus.ArrowCurvedDownright: ImageVector
+val AppIllus.ArrowDownRightCurved: ImageVector
     get() {
 
-        if (_arrowcurveddownright != null) return _arrowcurveddownright!!
+        if (_arrowDownRightCurved != null) return _arrowDownRightCurved!!
 
-        _arrowcurveddownright = Builder(
-            name = "Arrowcurveddownright",
+        _arrowDownRightCurved = Builder(
+            name = "ArrowDownRightCurved",
             defaultWidth = 37.0.dp,
             defaultHeight = 45.0.dp,
             viewportWidth = 37.0f,
@@ -72,17 +72,17 @@ val AppIllus.ArrowCurvedDownright: ImageVector
             }
         }.build()
 
-        return _arrowcurveddownright!!
+        return _arrowDownRightCurved!!
     }
 
-private var _arrowcurveddownright: ImageVector? = null
+private var _arrowDownRightCurved: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.background(Color.White)) {
         Image(
-            imageVector = AppIllus.ArrowCurvedDownright,
+            imageVector = AppIllus.ArrowDownRightCurved,
             contentDescription = null,
             modifier = Modifier.size(previewSize),
         )
