@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.received
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
@@ -28,7 +27,6 @@ import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
-import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
@@ -37,24 +35,22 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
     SwissTransferTheme {
-        ReceivedScreen(navType = LocalNavType.current)
+        ReceivedScreen()
     }
 }
 
 @Composable
-private fun ReceivedScreen(navType: NavigationSuiteType) {
+private fun ReceivedScreen() {
     Scaffold(
         topBar = { BrandTobAppBar() },
         floatingActionButton = { ReceivedEmptyFab() },
     ) { contentPadding ->
-
         EmptyState(
             icon = AppIllus.MascotSearching,
             title = R.string.no_transfer_received_title,
             description = R.string.no_transfer_received_description,
             modifier = Modifier.padding(contentPadding),
         )
-
     }
 }
 
@@ -63,7 +59,7 @@ private fun ReceivedScreen(navType: NavigationSuiteType) {
 private fun ReceivedScreenMobilePreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen(navType = NavigationSuiteType.NavigationBar)
+            ReceivedScreen()
         }
     }
 }
@@ -73,7 +69,7 @@ private fun ReceivedScreenMobilePreview() {
 private fun ReceivedScreenTabletPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen(navType = NavigationSuiteType.NavigationRail)
+            ReceivedScreen()
         }
     }
 }
