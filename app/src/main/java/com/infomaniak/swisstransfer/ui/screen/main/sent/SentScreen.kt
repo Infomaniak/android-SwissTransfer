@@ -17,29 +17,19 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -61,60 +51,14 @@ private fun SentScreen(transfers: List<Any>?, navType: NavigationSuiteType) {
     if (transfers == null) return
 
     if (transfers.isEmpty()) {
-        EmptyScreen()
+        SentEmptyScreen()
     } else {
-        TransferScreen(navType)
+        SentListScreen(navType)
     }
 }
 
 @Composable
-fun EmptyScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        val maxWidth = 300.dp
-        Text(
-            modifier = Modifier.widthIn(max = maxWidth),
-            text = stringResource(id = R.string.sentEmptyTitle),
-            style = SwissTransferTheme.typography.specificMedium32,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(Margin.Medium))
-        Text(
-            modifier = Modifier.widthIn(max = maxWidth),
-            text = stringResource(id = R.string.firstTransferDescription),
-            style = SwissTransferTheme.typography.bodyRegular,
-        )
-        Spacer(modifier = Modifier.height(Margin.Medium))
-        ConstraintLayout {
-            val (icon, fab) = createRefs()
-
-            Icon(
-                modifier = Modifier
-                    .constrainAs(icon) {
-                        top.linkTo(parent.top)
-                        end.linkTo(fab.start, Margin.Small)
-                    },
-                imageVector = AppIllus.ArrowDownRightCurved,
-                contentDescription = null,
-            )
-            NewTransferFab(
-                modifier = Modifier
-                    .constrainAs(fab) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top, Margin.Large)
-                    },
-                newTransferFabType = NewTransferFabType.EMPTY_STATE,
-            )
-        }
-    }
-}
-
-@Composable
-private fun TransferScreen(
+private fun SentListScreen(
     navType: NavigationSuiteType,
 ) {
     Scaffold(
@@ -131,7 +75,7 @@ private fun TransferScreen(
 
 @PreviewMobile
 @Composable
-private fun SentScreenAMobilePreview() {
+private fun SentScreenMobilePreview() {
     SwissTransferTheme {
         Surface {
             SentScreen(

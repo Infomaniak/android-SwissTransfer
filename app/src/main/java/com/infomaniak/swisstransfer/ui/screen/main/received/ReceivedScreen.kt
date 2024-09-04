@@ -17,26 +17,24 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
+import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
+import com.infomaniak.swisstransfer.ui.images.illus.ArrowRightCurved
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -56,58 +54,47 @@ private fun ReceivedScreen(navType: NavigationSuiteType) {
     Scaffold(
         topBar = { BrandTobAppBar() },
         floatingActionButton = {
-            if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
+            ConstraintLayout {
+                val (text, icon, fab) = createRefs()
+
+                Text(
+                    text = LocalContext.current.getString(R.string.firstTransferDescription),
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = Modifier
+                        .padding(PaddingValues(top = Margin.XLarge))
+                        .constrainAs(text) {
+                            bottom.linkTo(icon.top, Margin.Small)
+                            end.linkTo(icon.end, Margin.Small)
+                        },
+                )
+
+                Icon(
+                    modifier = Modifier
+                        .constrainAs(icon) {
+                            top.linkTo(fab.top)
+                            bottom.linkTo(fab.bottom, Margin.Small)
+                            end.linkTo(fab.start, Margin.Medium)
+                        },
+                    imageVector = AppIllus.ArrowRightCurved,
+                    contentDescription = null,
+                )
+
+                NewTransferFab(
+                    modifier = Modifier.constrainAs(fab) { },
+                    newTransferFabType = NewTransferFabType.BOTTOM_BAR,
+                )
+            }
         },
     ) { contentPadding ->
 
-        Box {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(imageVector = AppIllus.MascotSearching, contentDescription = "")
+        EmptyState(
+            icon = AppIllus.MascotSearching,
+            title = R.string.no_transfer_received_title,
+            description = R.string.no_transfer_received_description,
+            modifier = Modifier.padding(contentPadding),
+        )
 
-                Text(
-                    text = LocalContext.current.getString(R.string.no_transfer_received_title),
-                    style = SwissTransferTheme.typography.specificMedium22,
-                    modifier = Modifier.padding(PaddingValues(top = Margin.XLarge))
-                )
-
-                Text(
-                    text = LocalContext.current.getString(R.string.no_transfer_received_description),
-                    textAlign = TextAlign.Center,
-                    style = SwissTransferTheme.typography.bodyRegular,
-                    modifier = Modifier
-                        .widthIn(max = 200.dp)
-                        .padding(PaddingValues(top = Margin.Medium)),
-                )
-            }
-
-            if (navType == NavigationSuiteType.NavigationBar) {
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .wrapContentSize()
-                        .padding(PaddingValues(bottom = Margin.XLarge, end = 90.dp)),
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    Text(
-                        text = LocalContext.current.getString(R.string.firstTransferDescription),
-                        style = SwissTransferTheme.typography.bodyRegular,
-                        modifier = Modifier.padding(PaddingValues(top = Margin.XLarge)),
-                    )
-
-                    Icon(
-                        imageVector = AppIllus.ArrowDownRightCurved,
-                        contentDescription = "",
-                        modifier = Modifier.rotate(-30.0f),
-                    )
-                }
-            }
-        }
     }
 }
 
