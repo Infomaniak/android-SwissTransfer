@@ -44,13 +44,11 @@ fun SwissTransferTobAppBar(
             containerColor = SwissTransferTheme.materialColors.tertiary,
             titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
             actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
-            navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor
+            navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
         ),
         title = { Text(stringResource(id = titleRes)) },
         navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
-        actions = {
-            actionMenus.forEach { actionMenu -> MenuButton(actionMenu) }
-        }
+        actions = { actionMenus.forEach { actionMenu -> MenuButton(actionMenu) } },
     )
 }
 
@@ -86,7 +84,7 @@ private fun SwissTransferTobAppBarPreview() {
             titleRes = R.string.appName,
             navigationMenu = TopAppBarButton.backButton {},
             TopAppBarButton(AppIcons.Add, R.string.appName) {},
-            TopAppBarButton.closeButton {}
+            TopAppBarButton.closeButton {},
         )
     }
 }

@@ -120,7 +120,7 @@ private fun TransferScreen(
     Scaffold(
         floatingActionButton = {
             if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
-        }
+        },
     ) { contentPadding ->
         Text(
             text = "Sent screen",

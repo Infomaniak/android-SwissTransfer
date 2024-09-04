@@ -77,7 +77,7 @@ private fun BottomSheetContent(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         imageVector?.let {
             Icon(imageVector = imageVector, contentDescription = null)

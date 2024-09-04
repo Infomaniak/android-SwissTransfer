@@ -60,7 +60,7 @@ private fun VerticallyStackedButtons(
         topButton(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Margin.Medium)
+                .padding(horizontal = Margin.Medium),
         )
 
         Spacer(modifier = Modifier.height(Margin.Medium))
@@ -68,7 +68,7 @@ private fun VerticallyStackedButtons(
         bottomButton(
             Modifier
                 .fillMaxWidth()
-                .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Large)
+                .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Large),
         )
     }
 }

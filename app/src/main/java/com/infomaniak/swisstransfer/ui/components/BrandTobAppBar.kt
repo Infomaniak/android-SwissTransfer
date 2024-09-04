@@ -54,7 +54,7 @@ fun BrandTobAppBar() {
                 Spacer(modifier = Modifier.width(Margin.Small))
                 Text(text = stringResource(id = R.string.appName), color = SwissTransferTheme.colors.toolbarTextColor)
             }
-        }
+        },
     )
 }
 
