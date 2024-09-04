@@ -28,7 +28,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
@@ -45,8 +51,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSetting: () -> SettingsOptionScreens?) {
-
+fun SettingsScreen(
+    appSettings: AppSettings,
+    onItemClick: (SettingsOptionScreens) -> Unit,
+    getSelectedSetting: () -> SettingsOptionScreens?,
+) {
     val selectedSetting = getSelectedSetting()
 
     Scaffold(topBar = { BrandTobAppBar() }) { paddingsValue ->
@@ -67,7 +76,7 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
                 titleRes = R.string.settingsOptionTheme,
                 isSelected = { selectedSetting == THEME },
                 icon = AppIcons.PaintbrushPalette,
-                description = "TODO",
+                description = appSettings.theme.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(THEME) },
             )
@@ -86,7 +95,7 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
                 icon = AppIcons.ArrowDownFile,
-                description = "TODO",
+                description = appSettings.validityPeriod.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },
             )
@@ -94,7 +103,7 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
                 titleRes = R.string.settingsOptionDownloadLimit,
                 isSelected = { selectedSetting == DOWNLOAD_LIMIT },
                 icon = AppIcons.Clock,
-                description = "TODO",
+                description = appSettings.downloadLimit.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DOWNLOAD_LIMIT) },
             )
@@ -102,7 +111,7 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
                 titleRes = R.string.settingsOptionEmailLanguage,
                 isSelected = { selectedSetting == EMAIL_LANGUAGE },
                 icon = AppIcons.SpeechBubble,
-                description = "TODO",
+                description = appSettings.emailLanguage.getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(EMAIL_LANGUAGE) },
             )
@@ -137,18 +146,57 @@ fun SettingsScreen(onItemClick: (SettingsOptionScreens) -> Unit, getSelectedSett
     }
 }
 
+@Composable
+private fun Theme?.getString(): String {
+    return when (this) {
+        Theme.SYSTEM -> stringResource(R.string.settingsOptionThemeSystem)
+        Theme.DARK -> stringResource(R.string.settingsOptionThemeDark)
+        Theme.LIGHT -> stringResource(R.string.settingsOptionThemeLight)
+        else -> ""
+    }
+}
+
+@Composable
+private fun ValidityPeriod?.getString(): String {
+    return this?.value?.toInt()?.let {
+        pluralStringResource(R.plurals.settingsValidityPeriodValue, it, it)
+    } ?: ""
+}
+
+@Composable
+private fun DownloadLimit?.getString() = this?.value ?: ""
+
+@Composable
+private fun EmailLanguage?.getString(): String {
+    return when (this) {
+        EmailLanguage.ENGLISH -> stringResource(R.string.settingsEmailLanguageValueEnglish)
+        EmailLanguage.FRENCH -> stringResource(R.string.settingsEmailLanguageValueFrench)
+        EmailLanguage.GERMAN -> stringResource(R.string.settingsEmailLanguageValueGerman)
+        EmailLanguage.ITALIAN -> stringResource(R.string.settingsEmailLanguageValueItalian)
+        EmailLanguage.SPANISH -> stringResource(R.string.settingsEmailLanguageValueSpanish)
+        else -> ""
+    }
+}
+
 enum class SettingsOptionScreens {
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
 }
 
+private class DummyAppSettings(
+    override var theme: Theme = Theme.SYSTEM,
+    override var downloadLimit: DownloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
+    override var emailLanguage: EmailLanguage = EmailLanguage.FRENCH,
+    override var validityPeriod: ValidityPeriod = ValidityPeriod.THIRTY,
+) : AppSettings
+
 @PreviewMobile
 @Composable
 private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreen(onItemClick = {}, getSelectedSetting = { null })
+            SettingsScreen(appSettings = DummyAppSettings(), onItemClick = {}, getSelectedSetting = { null })
         }
     }
 }

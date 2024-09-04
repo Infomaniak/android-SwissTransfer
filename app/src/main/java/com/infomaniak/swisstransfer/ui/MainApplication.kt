@@ -18,8 +18,23 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.app.Application
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltAndroidApp
 class MainApplication : Application() {
+
+    @Inject
+    lateinit var swissTransferInjection: SwissTransferInjection
+
+    @Inject
+    lateinit var globalCoroutineScope: CoroutineScope
+
+    override fun onCreate() {
+        super.onCreate()
+        globalCoroutineScope.launch { swissTransferInjection.loadDefaultAccount() }
+    }
 }

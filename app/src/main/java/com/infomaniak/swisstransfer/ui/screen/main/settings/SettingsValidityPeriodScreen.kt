@@ -24,11 +24,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
@@ -39,7 +42,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsValidityPeriodScreen(navigateBack: (() -> Unit)?) {
+fun SettingsValidityPeriodScreen(
+    validityPeriod: ValidityPeriod,
+    navigateBack: (() -> Unit)?,
+    onValidityPeriodChange: (ValidityPeriod) -> Unit,
+) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionValidityPeriod, navigationMenu = canDisplayBackButton)
@@ -51,13 +58,17 @@ fun SettingsValidityPeriodScreen(navigateBack: (() -> Unit)?) {
         ) {
             SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
 
-            val (selectedItem, setSelectedItem) = rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-            SingleSelectOptions(ValidityPeriod.entries, { selectedItem }, setSelectedItem)
+            var selectedItem by rememberSaveable { mutableIntStateOf(validityPeriod.ordinal) }
+            SingleSelectOptions(ValidityPeriodOption.entries, { selectedItem }, { position ->
+                selectedItem = position
+                val selectedValidityPeriod = ValidityPeriod.entries[position]
+                onValidityPeriodChange(selectedValidityPeriod)
+            })
         }
     }
 }
 
-enum class ValidityPeriod(
+enum class ValidityPeriodOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
@@ -73,7 +84,11 @@ enum class ValidityPeriod(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsValidityPeriodScreen {}
+            SettingsValidityPeriodScreen(
+                validityPeriod = ValidityPeriod.THIRTY,
+                navigateBack = {},
+                onValidityPeriodChange = {},
+            )
         }
     }
 }

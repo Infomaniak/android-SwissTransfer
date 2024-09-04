@@ -36,6 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
@@ -44,22 +47,29 @@ import com.infomaniak.swisstransfer.ui.utils.*
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SettingsScreenWrapper(windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()) {
-    TwoPaneScaffold<SettingsOptionScreens>(
-        windowAdaptiveInfo = windowAdaptiveInfo,
-        listPane = { ListPane(this) },
-        detailPane = { DetailPane(this) },
-    )
+fun SettingsScreenWrapper(
+    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
+) {
+    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+    appSettings?.let { safeAppSettings ->
+        TwoPaneScaffold<SettingsOptionScreens>(
+            windowAdaptiveInfo = windowAdaptiveInfo,
+            listPane = { ListPane(this, safeAppSettings) },
+            detailPane = { DetailPane(safeAppSettings, settingsViewModel, navigator = this) },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
+private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
     val userReportURL = stringResource(R.string.urlUserReportAndroid)
 
     SettingsScreen(
+        appSettings,
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
@@ -78,7 +88,11 @@ private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>) {
+private fun DetailPane(
+    appSettings: AppSettings,
+    settingsViewModel: SettingsViewModel,
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+) {
     var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
 
     val destination = navigator.currentDestination?.content ?: lastSelectedScreen
@@ -88,10 +102,26 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScree
     val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
 
     when (destination) {
-        THEME -> SettingsThemeScreen(navigateBack)
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack)
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack)
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack)
+        THEME -> SettingsThemeScreen(
+            theme = appSettings.theme,
+            navigateBack = navigateBack,
+            onThemeUpdate = settingsViewModel::setTheme,
+        )
+        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
+            validityPeriod = appSettings.validityPeriod,
+            navigateBack = navigateBack,
+            onValidityPeriodChange = settingsViewModel::setValidityPeriod,
+        )
+        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
+            downloadLimit = appSettings.downloadLimit,
+            navigateBack = navigateBack,
+            onDownloadLimitChange = settingsViewModel::setDownloadLimit,
+        )
+        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
+            emailLanguage = appSettings.emailLanguage,
+            navigateBack = navigateBack,
+            onEmailLanguageChange = settingsViewModel::setEmailLanguage,
+        )
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,

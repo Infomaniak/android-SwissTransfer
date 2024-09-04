@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
@@ -45,7 +46,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
 @Composable
-fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
+fun SettingsThemeScreen(
+    theme: Theme,
+    navigateBack: (() -> Unit)?,
+    onThemeUpdate: (Theme) -> Unit,
+) {
     Scaffold(topBar = {
         val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
         SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
@@ -57,8 +62,12 @@ fun SettingsThemeScreen(navigateBack: (() -> Unit)?) {
         ) {
             SettingTitle(titleRes = R.string.settingsThemeTitle)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(0) } // TODO: Use DataStore or Realm
-            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { selectedItem = it })
+            var selectedItem by rememberSaveable { mutableIntStateOf(theme.ordinal) }
+            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { position ->
+                selectedItem = position
+                val selectedTheme = Theme.entries[position]
+                onThemeUpdate(selectedTheme)
+            })
         }
     }
 }
@@ -78,7 +87,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen {}
+            SettingsThemeScreen(theme = Theme.SYSTEM, navigateBack = {}, onThemeUpdate = {})
         }
     }
 }

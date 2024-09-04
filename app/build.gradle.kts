@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
 
+    implementation(libs.swisstransfer.core)
+
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
