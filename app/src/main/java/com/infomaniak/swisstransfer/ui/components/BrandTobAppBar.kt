@@ -28,9 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.illu.LogoInfomaniak
-import com.infomaniak.swisstransfer.ui.icons.illu.LogoSwissTransfer
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.LogoInfomaniak
+import com.infomaniak.swisstransfer.ui.images.illus.LogoSwissTransfer
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
@@ -46,11 +46,11 @@ fun BrandTobAppBar() {
         ),
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(imageVector = AppIcons.Illu.LogoInfomaniak, contentDescription = null)
+                Image(imageVector = AppIllus.LogoInfomaniak, contentDescription = null)
                 Spacer(modifier = Modifier.width(Margin.Medium))
                 VerticalDivider(modifier = Modifier.height(Margin.Large), color = SwissTransferTheme.colors.toolbarTextColor)
                 Spacer(modifier = Modifier.width(Margin.Medium))
-                Image(imageVector = AppIcons.Illu.LogoSwissTransfer, contentDescription = null)
+                Image(imageVector = AppIllus.LogoSwissTransfer, contentDescription = null)
                 Spacer(modifier = Modifier.width(Margin.Small))
                 Text(text = stringResource(id = R.string.appName), color = SwissTransferTheme.colors.toolbarTextColor)
             }

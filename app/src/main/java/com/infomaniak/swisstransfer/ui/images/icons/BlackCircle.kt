@@ -1,4 +1,4 @@
-package com.infomaniak.swisstransfer.ui.icons.app
+package com.infomaniak.swisstransfer.ui.images.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -15,22 +15,23 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 
-val AppIcons.WhiteCircle: ImageVector
+val AppIcons.BlackCircle: ImageVector
     get() {
 
-        if (_whiteCircle != null) return _whiteCircle!!
+        if (_blackCircle != null) return _blackCircle!!
 
-        _whiteCircle = Builder(
-            name = "WhiteCircle",
+        _blackCircle = Builder(
+            name = "BlackCircle",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
             viewportHeight = 24.0f,
         ).apply {
             path(
-                fill = SolidColor(Color(0xFFF5F5F5)),
+                fill = SolidColor(Color(0xFF000000)),
                 stroke = SolidColor(Color(0xFF000000)),
                 strokeLineWidth = 0.3f,
                 strokeLineCap = Butt,
@@ -45,21 +46,22 @@ val AppIcons.WhiteCircle: ImageVector
                 arcTo(11.85f, 11.85f, 0.0f, false, true, 12.0f, 0.15f)
                 close()
             }
-        }.build()
+        }
+            .build()
 
-        return _whiteCircle!!
+        return _blackCircle!!
     }
 
-private var _whiteCircle: ImageVector? = null
+private var _blackCircle: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.WhiteCircle,
+            imageVector = AppIcons.BlackCircle,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize),
+            modifier = Modifier.size(AppImages.previewSize),
         )
     }
 }

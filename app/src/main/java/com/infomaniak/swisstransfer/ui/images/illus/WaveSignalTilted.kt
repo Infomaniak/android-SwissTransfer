@@ -1,4 +1,4 @@
-package com.infomaniak.swisstransfer.ui.icons.illu
+package com.infomaniak.swisstransfer.ui.images.illus
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,11 +13,12 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppIcons.Illu.WaveSignalTilted: ImageVector
+val AppIllus.WaveSignalTilted: ImageVector
     get() {
 
         if (_waveSignalTilted != null) return _waveSignalTilted!!
@@ -57,9 +58,9 @@ private var _waveSignalTilted: ImageVector? = null
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.Illu.WaveSignalTilted,
+            imageVector = AppIllus.WaveSignalTilted,
             contentDescription = null,
-            modifier = Modifier.size(AppIcons.previewSize),
+            modifier = Modifier.size(AppImages.previewSize),
         )
     }
 }

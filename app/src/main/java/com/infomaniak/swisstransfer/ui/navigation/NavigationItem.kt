@@ -22,10 +22,10 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.NavigationRail
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.icons.AppIcons
-import com.infomaniak.swisstransfer.ui.icons.app.ArrowDownCircle
-import com.infomaniak.swisstransfer.ui.icons.app.ArrowUpCircle
-import com.infomaniak.swisstransfer.ui.icons.app.Settings
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownCircle
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowUpCircle
+import com.infomaniak.swisstransfer.ui.images.icons.Settings
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 
 /**

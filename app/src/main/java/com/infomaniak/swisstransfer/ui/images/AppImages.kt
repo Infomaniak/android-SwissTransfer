@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.icons
+package com.infomaniak.swisstransfer.ui.images
 
 import androidx.compose.ui.unit.dp
 
-object AppIcons {
-    object Illu
+object AppImages {
+    object AppIcons
+    object AppIllus
 
     val previewSize = 250.dp
 }
