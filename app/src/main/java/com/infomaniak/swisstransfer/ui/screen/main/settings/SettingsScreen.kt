@@ -37,7 +37,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
@@ -58,7 +57,7 @@ fun SettingsScreen(
 ) {
     val selectedSetting = getSelectedSetting()
 
-    Scaffold(topBar = { BrandTobAppBar() }) { paddingsValue ->
+    Scaffold { paddingsValue ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())

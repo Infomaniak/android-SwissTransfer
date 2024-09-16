@@ -21,6 +21,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +35,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SwissTransferTheme {
-                MainScreen()
+                Column {
+                    BrandTobAppBar()
+                    MainScreen()
+                }
             }
         }
     }
