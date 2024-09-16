@@ -38,9 +38,7 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember(navBackStackEntry) {
-        derivedStateOf {
-            navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination
-        }
+        derivedStateOf { navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination }
     }
 
     MainScaffold(navController, currentDestination, windowAdaptiveInfo) {

@@ -62,9 +62,7 @@ private fun MainScaffold(
             content()
         } else {
             Column {
-                Box(modifier = Modifier.weight(1.0f)) {
-                    content()
-                }
+                Box(modifier = Modifier.weight(1.0f)) { content() }
                 HorizontalDivider()
             }
         }
@@ -111,7 +109,7 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
 
 @PreviewMobile
 @Composable
-private fun NavigationPreviewMobile() {
+private fun NavigationMobilePreview() {
     SwissTransferTheme {
         MainScaffold(
             currentDestination = MainNavigation.SentDestination,
@@ -124,7 +122,7 @@ private fun NavigationPreviewMobile() {
 
 @PreviewTablet
 @Composable
-private fun NavigationPreviewTablet() {
+private fun NavigationTabletPreview() {
     SwissTransferTheme {
         MainScaffold(
             currentDestination = MainNavigation.SentDestination,
