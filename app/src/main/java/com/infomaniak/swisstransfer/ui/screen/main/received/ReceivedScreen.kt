@@ -34,9 +34,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    SwissTransferTheme {
-        ReceivedScreen()
-    }
+    ReceivedScreen()
 }
 
 @Composable
