@@ -18,23 +18,15 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
-import com.infomaniak.swisstransfer.ui.images.icons.Camera
-import com.infomaniak.swisstransfer.ui.images.icons.Folder
-import com.infomaniak.swisstransfer.ui.images.icons.PolaroidLandscape
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -77,44 +69,11 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
     }
 }
 
-@Composable
-private fun UploadSourceChoiceBottomSheet(
-    isBottomSheetVisible: () -> Boolean,
-    onDismissRequest: () -> Unit,
-) {
-    if (isBottomSheetVisible()) {
-        SwissTransferBottomSheet(
-            onDismissRequest = onDismissRequest,
-            titleRes = R.string.transferUploadSourceChoiceTitle,
-            content = {
-                Column {
-                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /* TODO */ }
-                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) { /* TODO */ }
-                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /* TODO */ }
-                }
-            },
-        )
-    }
-}
-
 @PreviewMobile
 @PreviewTablet
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
         ImportFilesScreen {}
-    }
-}
-
-@PreviewMobile
-@PreviewTablet
-@Composable
-private fun ImportChoiceBottomSheetPreview() {
-    SwissTransferTheme {
-        Surface {
-            UploadSourceChoiceBottomSheet(isBottomSheetVisible = { true }, onDismissRequest = {})
-        }
     }
 }
