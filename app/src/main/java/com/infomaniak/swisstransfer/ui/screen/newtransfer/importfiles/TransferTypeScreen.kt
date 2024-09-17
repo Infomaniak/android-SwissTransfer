@@ -44,12 +44,12 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -> Unit) {
+fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -> Unit, closeActivity: () -> Unit) {
     Scaffold(topBar = {
         SwissTransferTobAppBar(
             titleRes = R.string.transferTypeScreenTitle,
             navigationMenu = TopAppBarButton.backButton(popBack),
-            TopAppBarButton.closeButton { /* TODO */ },
+            TopAppBarButton.closeButton { closeActivity() },
         )
     }) { contentPaddings ->
         Column(
@@ -108,6 +108,6 @@ enum class TransferType(
 @Composable
 private fun TransferTypeScreenPreview() {
     SwissTransferTheme {
-        TransferTypeScreen({}) {}
+        TransferTypeScreen({}, {}, {})
     }
 }

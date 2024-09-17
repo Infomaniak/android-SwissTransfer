@@ -32,7 +32,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
+fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: () -> Unit) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
@@ -40,7 +40,7 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
             SwissTransferTobAppBar(
                 titleRes = R.string.importFilesScreenTitle,
                 navigationMenu = null,
-                TopAppBarButton.closeButton { /* TODO */ },
+                TopAppBarButton.closeButton { closeActivity() },
             )
         },
         topButton = { modifier ->
@@ -74,6 +74,6 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit) {
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
-        ImportFilesScreen {}
+        ImportFilesScreen({}, {})
     }
 }

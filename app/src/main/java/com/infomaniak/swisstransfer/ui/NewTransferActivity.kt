@@ -33,7 +33,7 @@ class NewTransferActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SwissTransferTheme {
-                NewTransferScreen()
+                NewTransferScreen(closeActivity = { finish() })
             }
         }
     }
