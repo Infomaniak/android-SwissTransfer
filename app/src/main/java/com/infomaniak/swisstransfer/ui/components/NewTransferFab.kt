@@ -42,6 +42,7 @@ fun NewTransferFab(
 }
 
 enum class NewTransferFabType(val fabType: FabType, private val defaultElevation: Dp?) {
+
     BOTTOM_BAR(FabType.NORMAL, null),
     EMPTY_STATE(FabType.BIG, null),
     NAVIGATION_RAIL(FabType.NORMAL, 0.dp);

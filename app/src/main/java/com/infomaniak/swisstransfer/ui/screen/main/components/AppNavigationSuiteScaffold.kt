@@ -79,10 +79,8 @@ fun AppNavigationSuiteScaffold(
             Box(
                 modifier = Modifier.consumeWindowInsets(
                     when (layoutType) {
-                        NavigationSuiteType.NavigationBar ->
-                            NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
-                        NavigationSuiteType.NavigationRail ->
-                            NavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
+                        NavigationSuiteType.NavigationBar -> NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
+                        NavigationSuiteType.NavigationRail -> NavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
                         else -> WindowInsets(0, 0, 0, 0)
                     },
                 ),
