@@ -34,19 +34,14 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
-    ReceivedScreen()
-}
-
-@Composable
-private fun ReceivedScreen() {
     Scaffold(
         topBar = { BrandTobAppBar() },
         floatingActionButton = { ReceivedEmptyFab() },
     ) { contentPadding ->
         EmptyState(
             icon = AppIllus.MascotSearching,
-            title = R.string.no_transfer_received_title,
-            description = R.string.no_transfer_received_description,
+            title = R.string.noTransferReceivedTitle,
+            description = R.string.noTransferReceivedDescription,
             modifier = Modifier.padding(contentPadding),
         )
     }
@@ -57,7 +52,7 @@ private fun ReceivedScreen() {
 private fun ReceivedScreenMobilePreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen()
+            ReceivedScreen {}
         }
     }
 }
@@ -67,7 +62,7 @@ private fun ReceivedScreenMobilePreview() {
 private fun ReceivedScreenTabletPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen()
+            ReceivedScreen {}
         }
     }
 }
