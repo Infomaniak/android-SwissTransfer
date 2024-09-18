@@ -17,62 +17,42 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.ui.components.NewTransferFab
+import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SentScreen(
-    navigateToDetails: (transferId: Int) -> Unit,
-    sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
+fun SentListScreen(
+    navType: NavigationSuiteType,
 ) {
-    val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
-    SentScreen(
-        transfers = transfers,
-        navType = LocalNavType.current,
-    )
-}
-
-@Composable
-private fun SentScreen(transfers: List<Any>?, navType: NavigationSuiteType) {
-    if (transfers == null) return
-
-    if (transfers.isEmpty()) {
-        SentEmptyScreen()
-    } else {
-        SentListScreen(navType)
+    Scaffold(
+        floatingActionButton = {
+            if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
+        },
+    ) { contentPadding ->
+        Text(
+            text = "Sent screen",
+            modifier = Modifier.padding(contentPadding),
+        )
     }
 }
 
 @PreviewMobile
-@Composable
-private fun SentScreenMobilePreview() {
-    SwissTransferTheme {
-        Surface {
-            SentScreen(
-                transfers = emptyList(),
-                navType = NavigationSuiteType.NavigationBar,
-            )
-        }
-    }
-}
-
 @PreviewTablet
 @Composable
-private fun SentScreenTabletPreview() {
+private fun SentListScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SentScreen(
-                transfers = emptyList(),
-                navType = NavigationSuiteType.NavigationRail,
-            )
+            SentListScreen(navType = NavigationSuiteType.NavigationRail)
         }
     }
 }
