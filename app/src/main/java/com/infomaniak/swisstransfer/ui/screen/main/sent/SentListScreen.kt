@@ -17,42 +17,35 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.infomaniak.swisstransfer.ui.components.NewTransferFab
-import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import java.util.UUID
 
 @Composable
 fun SentListScreen(
-    navType: NavigationSuiteType,
+    modifier: Modifier = Modifier,
+    transfers: List<Any>,
 ) {
-    Scaffold(
-        floatingActionButton = {
-            if (navType == NavigationSuiteType.NavigationBar) NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
-        },
-    ) { contentPadding ->
-        Text(
-            text = "Sent screen",
-            modifier = Modifier.padding(contentPadding),
-        )
+    LazyColumn(modifier) {
+        items(items = transfers, key = { UUID.randomUUID() }) {
+            Text(text = "Sent screen")
+        }
     }
 }
-
 @PreviewMobile
 @PreviewTablet
 @Composable
 private fun SentListScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SentListScreen(navType = NavigationSuiteType.NavigationRail)
+            SentListScreen(transfers = listOf(Any()))
         }
     }
 }

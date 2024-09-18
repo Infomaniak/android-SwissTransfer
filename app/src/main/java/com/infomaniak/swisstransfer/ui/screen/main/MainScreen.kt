@@ -26,6 +26,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
+import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet

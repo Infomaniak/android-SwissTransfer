@@ -15,26 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui
+package com.infomaniak.swisstransfer.ui.screen.main.components
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.runtime.Composable
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SwissTransferTheme {
-                MainScreen()
-            }
-        }
+@Composable
+fun BrandTobAppBarScaffold(
+    floatingActionButton: @Composable () -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        topBar = { if (LocalNavType.current == NavigationSuiteType.NavigationBar) BrandTobAppBar() },
+        floatingActionButton = floatingActionButton,
+    ) { contentPadding ->
+        content(contentPadding)
     }
 }

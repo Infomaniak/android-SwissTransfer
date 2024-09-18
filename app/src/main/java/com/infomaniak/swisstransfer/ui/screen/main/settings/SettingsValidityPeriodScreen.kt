@@ -40,7 +40,7 @@ fun SettingsValidityPeriodScreen(
         enumEntries = ValidityPeriodOption.entries,
         selectedSettingOptionPosition = validityPeriod.ordinal,
         setSelectedSettingOptionPosition = { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
     )
 }
 

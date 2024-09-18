@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main
+package com.infomaniak.swisstransfer.ui.screen.main.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +27,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
-import com.infomaniak.swisstransfer.ui.screen.main.components.AppNavigationSuiteScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -57,13 +57,16 @@ private fun MainScaffold(
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
-        if (navType == NavigationSuiteType.None) {
-            content()
-        } else {
-            Column {
-                Box(modifier = Modifier.weight(1.0f)) { content() }
-                HorizontalDivider()
+    Column {
+        if (navType == NavigationSuiteType.NavigationRail) BrandTobAppBar()
+        AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
+            if (navType == NavigationSuiteType.None) {
+                content()
+            } else {
+                Column {
+                    Box(modifier = Modifier.weight(1.0f)) { content() }
+                    HorizontalDivider()
+                }
             }
         }
     }

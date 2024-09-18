@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.sent
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,52 +39,48 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun SentEmptyScreen() {
-    Scaffold { contentPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            val maxWidth = Dimens.DescriptionWidth
-            Text(
-                modifier = Modifier.widthIn(max = maxWidth),
-                text = stringResource(id = R.string.sentEmptyTitle),
-                style = SwissTransferTheme.typography.specificMedium32,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(modifier = Modifier.height(Margin.Medium))
-            Text(
-                modifier = Modifier.widthIn(max = maxWidth),
-                text = stringResource(id = R.string.firstTransferDescription),
-                style = SwissTransferTheme.typography.bodyRegular,
-                color = SwissTransferTheme.colors.secondaryTextColor,
-            )
-            Spacer(modifier = Modifier.height(Margin.Medium))
-            ConstraintLayout {
-                val (icon, fab) = createRefs()
+fun SentEmptyScreen(modifier: Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        val maxWidth = Dimens.DescriptionWidth
+        Text(
+            modifier = Modifier.widthIn(max = maxWidth),
+            text = stringResource(id = R.string.sentEmptyTitle),
+            style = SwissTransferTheme.typography.specificMedium32,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(Margin.Medium))
+        Text(
+            modifier = Modifier.widthIn(max = maxWidth),
+            text = stringResource(id = R.string.firstTransferDescription),
+            style = SwissTransferTheme.typography.bodyRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+        )
+        Spacer(modifier = Modifier.height(Margin.Medium))
+        ConstraintLayout {
+            val (icon, fab) = createRefs()
 
-                Icon(
-                    modifier = Modifier
-                        .constrainAs(icon) {
-                            top.linkTo(parent.top)
-                            end.linkTo(fab.start, Margin.Small)
-                        },
-                    imageVector = AppIllus.ArrowDownRightCurved,
-                    contentDescription = null,
-                )
-                NewTransferFab(
-                    modifier = Modifier
-                        .constrainAs(fab) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top, Margin.Large)
-                        },
-                    newTransferFabType = NewTransferFabType.EMPTY_STATE,
-                )
-            }
+            Icon(
+                modifier = Modifier
+                    .constrainAs(icon) {
+                        top.linkTo(parent.top)
+                        end.linkTo(fab.start, Margin.Small)
+                    },
+                imageVector = AppIllus.ArrowDownRightCurved,
+                contentDescription = null,
+            )
+            NewTransferFab(
+                modifier = Modifier
+                    .constrainAs(fab) {
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top, Margin.Large)
+                    },
+                newTransferFabType = NewTransferFabType.EMPTY_STATE,
+            )
         }
     }
 }
@@ -96,7 +91,7 @@ fun SentEmptyScreen() {
 private fun SentEmptyScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SentEmptyScreen()
+            SentEmptyScreen(modifier = Modifier)
         }
     }
 }

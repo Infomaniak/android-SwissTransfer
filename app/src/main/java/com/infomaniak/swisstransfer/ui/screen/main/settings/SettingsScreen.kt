@@ -23,7 +23,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
+import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
@@ -57,7 +57,7 @@ fun SettingsScreen(
 ) {
     val selectedSetting = getSelectedSetting()
 
-    Scaffold { paddingsValue ->
+    BrandTobAppBarScaffold { paddingsValue ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
