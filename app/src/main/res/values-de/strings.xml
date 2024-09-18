@@ -23,6 +23,8 @@
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
+    <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
+    <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
     <string name="noTransferReceivedDescription">Alle Überweisungen, die du in den letzten 30 Tagen erhältst, werden hier angezeigt.</string>
     <string name="noTransferReceivedTitle">Keine Überweisungen erhalten</string>
     <string name="receivedTitle">Empfangen</string>
