@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +25,9 @@ import androidx.compose.runtime.setValue
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.Add
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -59,14 +60,18 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: (
                 onClick = { navigateToTransferTypeScreen() },
             )
         },
-    ) {
-        Column {
+        content = {
+            EmptyState(
+                icon = AppIllus.MascotWithMagnifyingGlass,
+                title = R.string.noFileTitle,
+                description = R.string.noFileDescription,
+            )
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
                 onDismissRequest = { showUploadSourceChoiceBottomSheet = false },
             )
-        }
-    }
+        },
+    )
 }
 
 @PreviewMobile

@@ -26,6 +26,8 @@
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="firstTransferDescription">Make your first transfer!</string>
     <string name="importFilesScreenTitle">Files to transfer</string>
+    <string name="noFileDescription">Add up to 50 GB of files</string>
+    <string name="noFileTitle">No file, no transfer!</string>
     <string name="noTransferReceivedDescription">All transfers you receive over the last 30 days will appear here.</string>
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="receivedTitle">Received</string>
