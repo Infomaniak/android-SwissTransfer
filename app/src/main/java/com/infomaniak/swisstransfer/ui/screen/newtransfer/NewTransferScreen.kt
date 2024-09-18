@@ -24,10 +24,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun NewTransferScreen() {
+fun NewTransferScreen(closeActivity: () -> Unit) {
     val navController = rememberNavController()
-
-    NewTransferNavHost(navController)
+    NewTransferNavHost(navController, closeActivity)
 }
 
 @PreviewMobile
@@ -35,6 +34,6 @@ fun NewTransferScreen() {
 @Composable
 private fun NewTransferPreview() {
     SwissTransferTheme {
-        NewTransferScreen()
+        NewTransferScreen {}
     }
 }
