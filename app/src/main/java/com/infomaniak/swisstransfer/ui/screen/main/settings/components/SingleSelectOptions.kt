@@ -69,6 +69,9 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
             item.icon?.let {
                 Image(imageVector = it, contentDescription = null)
                 Spacer(modifier = Modifier.width(Margin.Medium))
+            } ?: run {
+                // Make sure the items with no icons have the same height as the ones with icons
+                Spacer(modifier = Modifier.height(Margin.Large))
             }
 
             Text(text = item.title(), Modifier.weight(1.0f), style = SwissTransferTheme.typography.bodyRegular)
@@ -105,13 +108,19 @@ private fun SettingOptionItemPreview() {
     SwissTransferTheme {
         Surface {
             Column {
-                val item = object : SettingOption {
+                val iconItem = object : SettingOption {
                     override val title: @Composable () -> String = { stringResource(R.string.appName) }
                     override val imageVector: ImageVector = AppIcons.Add
                     override val imageVectorResId = null
                 }
-                SettingOptionItem(item = item, isSelected = true) {}
-                SettingOptionItem(item = item, isSelected = false) {}
+                val textItem = object : SettingOption {
+                    override val title: @Composable () -> String = { stringResource(R.string.appName) }
+                    override val imageVector = null
+                    override val imageVectorResId = null
+                }
+                SettingOptionItem(item = iconItem, isSelected = true) {}
+                SettingOptionItem(item = iconItem, isSelected = false) {}
+                SettingOptionItem(item = textItem, isSelected = false) {}
             }
         }
     }
