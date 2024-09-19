@@ -71,7 +71,7 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
                 Spacer(modifier = Modifier.width(Margin.Medium))
             }
 
-            Text(text = item.title(), Modifier.weight(1.0f))
+            Text(text = item.title(), Modifier.weight(1.0f), style = SwissTransferTheme.typography.bodyRegular)
 
             if (isSelected) Spacer(modifier = Modifier.width(Margin.Medium))
             AnimatedVisibility(
