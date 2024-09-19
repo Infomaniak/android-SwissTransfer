@@ -17,26 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
@@ -46,25 +33,14 @@ fun SettingsDownloadsLimitScreen(
     navigateBack: (() -> Unit)?,
     onDownloadLimitChange: (DownloadLimit) -> Unit,
 ) {
-    Scaffold(topBar = {
-        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
-        SwissTransferTobAppBar(R.string.settingsOptionDownloadLimit, navigationMenu = canDisplayBackButton)
-    }) { paddingsValue ->
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(paddingsValue),
-        ) {
-            SettingTitle(titleRes = R.string.settingsDownloadsLimitTitle)
-
-            var selectedItem by rememberSaveable { mutableIntStateOf(downloadLimit.ordinal) }
-            SingleSelectOptions(DownloadLimitOption.entries, { selectedItem }, { position ->
-                selectedItem = position
-                val selectedDownloadLimit = DownloadLimit.entries[position]
-                onDownloadLimitChange(selectedDownloadLimit)
-            })
-        }
-    }
+    OptionScaffold(
+        R.string.settingsOptionDownloadLimit,
+        R.string.settingsDownloadsLimitTitle,
+        DownloadLimitOption.entries,
+        { downloadLimit.ordinal },
+        { position -> onDownloadLimitChange(DownloadLimit.entries[position]) },
+        navigateBack
+    )
 }
 
 enum class DownloadLimitOption(

@@ -17,31 +17,18 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.CircleBlack
 import com.infomaniak.swisstransfer.ui.images.icons.CircleBlackAndWhite
 import com.infomaniak.swisstransfer.ui.images.icons.CircleWhite
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
@@ -51,25 +38,14 @@ fun SettingsThemeScreen(
     navigateBack: (() -> Unit)?,
     onThemeUpdate: (Theme) -> Unit,
 ) {
-    Scaffold(topBar = {
-        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
-        SwissTransferTobAppBar(R.string.settingsOptionTheme, navigationMenu = canDisplayBackButton)
-    }) { paddingsValue ->
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(paddingsValue),
-        ) {
-            SettingTitle(titleRes = R.string.settingsThemeTitle)
-
-            var selectedItem by rememberSaveable { mutableIntStateOf(theme.ordinal) }
-            SingleSelectOptions(ThemeOption.entries, { selectedItem }, { position ->
-                selectedItem = position
-                val selectedTheme = Theme.entries[position]
-                onThemeUpdate(selectedTheme)
-            })
-        }
-    }
+    OptionScaffold(
+        R.string.settingsOptionTheme,
+        R.string.settingsThemeTitle,
+        ThemeOption.entries,
+        { theme.ordinal },
+        { position -> onThemeUpdate(Theme.entries[position]) },
+        navigateBack
+    )
 }
 
 enum class ThemeOption(
