@@ -41,6 +41,7 @@ private const val specific4 = 0xFFCF9E1B
 // Extra palette
 private const val on_primary = 0xFFF7FCFA
 private const val white = 0xFFFFFFFF
+private const val black_translucent = 0x80000000
 
 private const val error = 0xFFF44336
 
@@ -75,6 +76,7 @@ val CustomLightColorScheme = CustomColorScheme(
     navigationItemBackground = LightColorScheme.background,
     tertiaryButtonBackground = Color(rabbit),
     selectedSettingItem = Color(rabbit),
+    imageTileRemoveButtonBackground = Color(black_translucent),
     transferTypeLinkContainer = Color(specific1),
     transferTypeLinkOnContainer = Color(green_main),
     transferTypeEmailContainer = Color(specific2),

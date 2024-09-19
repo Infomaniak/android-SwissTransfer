@@ -86,6 +86,8 @@ dependencies {
 
     implementation(libs.swisstransfer.core)
 
+    implementation(libs.coil.compose)
+
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
