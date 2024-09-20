@@ -2,6 +2,7 @@
 activityCompose = "1.9.2"
 adaptiveLayout = "1.0.0"
 agp = "8.6.1"
+composeAlpha = "1.8.0-alpha02"
 composeBom = "2024.09.02"
 constraintlayoutCompose = "1.0.1"
 coreKtx = "1.13.1"
@@ -24,6 +25,7 @@ androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constr
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material3-adaptative-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
