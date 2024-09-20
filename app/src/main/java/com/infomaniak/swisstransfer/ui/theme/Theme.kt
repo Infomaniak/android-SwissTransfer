@@ -25,10 +25,6 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 
 val LocalCustomTypography = staticCompositionLocalOf { Typography }
 val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }
@@ -36,11 +32,10 @@ val LocalWindowAdaptiveInfo = staticCompositionLocalOf<WindowAdaptiveInfo> { err
 
 @Composable
 fun SwissTransferTheme(
-    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
-    darkTheme: Boolean = isDarkTheme(settingsViewModel),
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val customColors = if (darkTheme) CustomDarkColorScheme else CustomLightColorScheme
+    val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
     CompositionLocalProvider(
         LocalCustomTypography provides Typography,
         LocalTextStyle provides Typography.bodyRegular,
@@ -48,19 +43,11 @@ fun SwissTransferTheme(
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
     ) {
         MaterialTheme(
-            colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+            colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
             content = content,
         )
     }
-}
-
-@Composable
-fun isDarkTheme(settingsViewModel: SettingsViewModel): Boolean {
-    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-    return appSettings?.let {
-        if (it.theme == Theme.SYSTEM) isSystemInDarkTheme() else it.theme == Theme.DARK
-    } ?: isSystemInDarkTheme()
 }
 
 object SwissTransferTheme {

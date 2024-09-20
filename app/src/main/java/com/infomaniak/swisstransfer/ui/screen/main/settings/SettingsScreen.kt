@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -51,7 +50,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun SettingsScreen(
-    appSettings: AppSettings,
+    theme: GetSetCallbacks<Theme>,
+    validityPeriod: GetSetCallbacks<ValidityPeriod>,
+    downloadLimit: GetSetCallbacks<DownloadLimit>,
+    emailLanguage: GetSetCallbacks<EmailLanguage>,
     onItemClick: (SettingsOptionScreens) -> Unit,
     getSelectedSetting: () -> SettingsOptionScreens?,
 ) {
@@ -74,7 +76,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionTheme,
                 isSelected = { selectedSetting == THEME },
                 icon = AppIcons.PaintbrushPalette,
-                description = appSettings.theme.getString(),
+                description = theme.get().getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(THEME) },
             )
@@ -93,7 +95,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
                 icon = AppIcons.ArrowDownFile,
-                description = appSettings.validityPeriod.getString(),
+                description = validityPeriod.get().getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },
             )
@@ -101,7 +103,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionDownloadLimit,
                 isSelected = { selectedSetting == DOWNLOAD_LIMIT },
                 icon = AppIcons.Clock,
-                description = appSettings.downloadLimit.getString(),
+                description = downloadLimit.get().getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DOWNLOAD_LIMIT) },
             )
@@ -109,7 +111,7 @@ fun SettingsScreen(
                 titleRes = R.string.settingsOptionEmailLanguage,
                 isSelected = { selectedSetting == EMAIL_LANGUAGE },
                 icon = AppIcons.SpeechBubble,
-                description = appSettings.emailLanguage.getString(),
+                description = emailLanguage.get().getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(EMAIL_LANGUAGE) },
             )
@@ -182,19 +184,19 @@ enum class SettingsOptionScreens {
     DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
 }
 
-private class DummyAppSettings(
-    override var theme: Theme = Theme.SYSTEM,
-    override var downloadLimit: DownloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
-    override var emailLanguage: EmailLanguage = EmailLanguage.FRENCH,
-    override var validityPeriod: ValidityPeriod = ValidityPeriod.THIRTY,
-) : AppSettings
-
 @PreviewSmallWindow
 @Composable
 private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreen(appSettings = DummyAppSettings(), onItemClick = {}, getSelectedSetting = { null })
+            SettingsScreen(
+                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
+                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWOHUNDREDFIFTY }, set = {}),
+                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
+                onItemClick = {},
+                getSelectedSetting = { null },
+            )
         }
     }
 }
