@@ -35,12 +35,12 @@ fun SettingsValidityPeriodScreen(
     onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
     OptionScaffold(
-        R.string.settingsOptionValidityPeriod,
-        R.string.settingsValidityPeriodTitle,
-        ValidityPeriodOption.entries,
-        { validityPeriod.ordinal },
-        { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
-        navigateBack
+        topAppBarTitleRes = R.string.settingsOptionValidityPeriod,
+        optionTitleRes = R.string.settingsValidityPeriodTitle,
+        enumEntries = ValidityPeriodOption.entries,
+        selectedSettingOptionPosition = validityPeriod.ordinal,
+        setSelectedSettingOptionPosition = { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
+        navigateBack = navigateBack
     )
 }
 

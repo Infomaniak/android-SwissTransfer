@@ -39,12 +39,12 @@ fun SettingsThemeScreen(
     onThemeUpdate: (Theme) -> Unit,
 ) {
     OptionScaffold(
-        R.string.settingsOptionTheme,
-        R.string.settingsThemeTitle,
-        ThemeOption.entries,
-        { theme.ordinal },
-        { position -> onThemeUpdate(Theme.entries[position]) },
-        navigateBack
+        topAppBarTitleRes = R.string.settingsOptionTheme,
+        optionTitleRes = R.string.settingsThemeTitle,
+        enumEntries = ThemeOption.entries,
+        selectedSettingOptionPosition = theme.ordinal,
+        setSelectedSettingOptionPosition = { position -> onThemeUpdate(Theme.entries[position]) },
+        navigateBack = navigateBack
     )
 }
 

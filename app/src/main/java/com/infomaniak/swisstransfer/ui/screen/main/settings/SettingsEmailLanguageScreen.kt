@@ -35,12 +35,12 @@ fun SettingsEmailLanguageScreen(
     onEmailLanguageChange: (EmailLanguage) -> Unit,
 ) {
     OptionScaffold(
-        R.string.settingsOptionEmailLanguage,
-        R.string.settingsEmailLanguageTitle,
-        EmailLanguageOption.entries,
-        { emailLanguage.ordinal },
-        { position -> onEmailLanguageChange(EmailLanguage.entries[position]) },
-        navigateBack
+        topAppBarTitleRes = R.string.settingsOptionEmailLanguage,
+        optionTitleRes = R.string.settingsEmailLanguageTitle,
+        enumEntries = EmailLanguageOption.entries,
+        selectedSettingOptionPosition = emailLanguage.ordinal,
+        setSelectedSettingOptionPosition = { position -> onEmailLanguageChange(EmailLanguage.entries[position]) },
+        navigateBack = navigateBack
     )
 }
 

@@ -74,9 +74,7 @@ private fun OptionTitlePreview() {
 private fun SettingTitlePreview() {
     SwissTransferTheme {
         Surface {
-            Box {
-                SettingTitle(titleRes = R.string.appName)
-            }
+            SettingTitle(titleRes = R.string.appName)
         }
     }
 }

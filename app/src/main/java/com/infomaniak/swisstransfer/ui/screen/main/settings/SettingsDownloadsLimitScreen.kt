@@ -34,12 +34,12 @@ fun SettingsDownloadsLimitScreen(
     onDownloadLimitChange: (DownloadLimit) -> Unit,
 ) {
     OptionScaffold(
-        R.string.settingsOptionDownloadLimit,
-        R.string.settingsDownloadsLimitTitle,
-        DownloadLimitOption.entries,
-        { downloadLimit.ordinal },
-        { position -> onDownloadLimitChange(DownloadLimit.entries[position]) },
-        navigateBack
+        topAppBarTitleRes = R.string.settingsOptionDownloadLimit,
+        optionTitleRes = R.string.settingsDownloadsLimitTitle,
+        enumEntries = DownloadLimitOption.entries,
+        selectedSettingOptionPosition = downloadLimit.ordinal,
+        setSelectedSettingOptionPosition = { position -> onDownloadLimitChange(DownloadLimit.entries[position]) },
+        navigateBack = navigateBack
     )
 }
 

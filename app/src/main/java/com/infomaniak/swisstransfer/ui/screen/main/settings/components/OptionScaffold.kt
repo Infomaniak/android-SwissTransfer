@@ -37,7 +37,7 @@ fun OptionScaffold(
     @StringRes topAppBarTitleRes: Int,
     @StringRes optionTitleRes: Int,
     enumEntries: List<SettingOption>,
-    getSelectedSettingOptionPosition: () -> Int,
+    selectedSettingOptionPosition: Int,
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)? = null,
 ) {
@@ -52,7 +52,7 @@ fun OptionScaffold(
         ) {
             OptionTitle(titleRes = optionTitleRes)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(getSelectedSettingOptionPosition()) }
+            var selectedItem by rememberSaveable { mutableIntStateOf(selectedSettingOptionPosition) }
             SingleSelectOptions(enumEntries, { selectedItem }, { position ->
                 selectedItem = position
                 setSelectedSettingOptionPosition(position)
