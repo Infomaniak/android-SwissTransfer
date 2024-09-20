@@ -27,7 +27,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -41,12 +40,13 @@ fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
     windowAdaptiveInfo: WindowAdaptiveInfo,
+    tabletTopBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     val navType by rememberNavType(currentDestination, windowAdaptiveInfo)
 
     CompositionLocalProvider(LocalNavType provides navType) {
-        MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
+        MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, tabletTopBar, content)
     }
 }
 
@@ -55,10 +55,11 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
+    tabletTopBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Column {
-        if (navType == NavigationSuiteType.NavigationRail) BrandTobAppBar()
+        if (navType == NavigationSuiteType.NavigationRail) tabletTopBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
             if (navType == NavigationSuiteType.None) {
                 content()
@@ -118,6 +119,7 @@ private fun NavigationMobilePreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
+            tabletTopBar = {},
             content = {},
         )
     }
@@ -131,6 +133,7 @@ private fun NavigationTabletPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
+            tabletTopBar = {},
             content = {},
         )
     }
