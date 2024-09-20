@@ -25,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -38,9 +38,6 @@ fun EmptyState(
     @StringRes description: Int,
     modifier: Modifier = Modifier,
 ) {
-
-    val context = LocalContext.current
-
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -49,13 +46,13 @@ fun EmptyState(
         Image(imageVector = icon, contentDescription = null)
 
         Text(
-            text = context.getString(title),
+            text = stringResource(title),
             style = SwissTransferTheme.typography.specificMedium22,
             modifier = Modifier.padding(PaddingValues(top = Margin.XLarge)),
         )
 
         Text(
-            text = context.getString(description),
+            text = stringResource(description),
             textAlign = TextAlign.Center,
             style = SwissTransferTheme.typography.bodyRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,

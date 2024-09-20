@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.infomaniak.swisstransfer.R
@@ -42,7 +43,7 @@ fun ReceivedEmptyFab() {
         val (text, icon, fab) = createRefs()
 
         Text(
-            text = LocalContext.current.getString(R.string.firstTransferDescription),
+            text = stringResource(R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,
             modifier = Modifier
