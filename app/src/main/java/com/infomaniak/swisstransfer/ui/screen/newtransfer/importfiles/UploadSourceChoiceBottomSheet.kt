@@ -46,14 +46,23 @@ fun UploadSourceChoiceBottomSheet(
             titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
-                    BottomSheetItem(AppImages.AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /* TODO */ }
+                    BottomSheetItem(
+                        imageVector = AppImages.AppIcons.Camera,
+                        titleRes = R.string.transferUploadSourceChoiceCamera,
+                        onClick = { /* TODO */ },
+                    )
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(
-                        AppImages.AppIcons.PolaroidLandscape,
-                        R.string.transferUploadSourceChoiceGallery
-                    ) { /* TODO */ }
+                        imageVector = AppImages.AppIcons.PolaroidLandscape,
+                        titleRes = R.string.transferUploadSourceChoiceGallery,
+                        onClick = { /* TODO */ },
+                    )
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppImages.AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /* TODO */ }
+                    BottomSheetItem(
+                        imageVector = AppImages.AppIcons.Folder,
+                        titleRes = R.string.transferUploadSourceChoiceFiles,
+                        onClick = { /* TODO */ },
+                    )
                 }
             },
         )

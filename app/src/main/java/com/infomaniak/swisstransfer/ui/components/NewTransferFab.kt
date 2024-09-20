@@ -33,6 +33,7 @@ fun NewTransferFab(
     newTransferFabType: NewTransferFabType
 ) {
     val context = LocalContext.current
+
     SwissTransferFab(
         modifier = modifier,
         fabType = newTransferFabType.fabType,
