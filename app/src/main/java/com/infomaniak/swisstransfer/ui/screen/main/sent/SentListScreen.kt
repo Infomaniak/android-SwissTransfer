@@ -17,24 +17,34 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.components.ImageTile
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import java.util.UUID
 
 @Composable
 fun SentListScreen(transfers: List<Any>) {
-    LazyColumn {
-        items(items = transfers, key = { UUID.randomUUID() }) {
-            Text(text = "Sent screen")
+    LazyVerticalGrid(
+        modifier = Modifier.padding(Margin.Medium),
+        columns = GridCells.Adaptive(150.dp),
+        verticalArrangement = Arrangement.spacedBy(Margin.Medium),
+        horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
+    ) {
+        items(3) {
+            ImageTile("Time-Clock-Circle--Streamline-Ultimate.svg (1).svg", "1.4 MB", true, true, { true }, {}, {})
         }
     }
 }
+
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable

@@ -27,5 +27,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SentViewModel @Inject constructor() : ViewModel() {
-    val transfers = flow<List<Any>> { emit(emptyList()) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val transfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }
