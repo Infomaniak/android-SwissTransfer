@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -25,7 +26,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -59,6 +59,7 @@ fun ImageTile(
         modifier = Modifier
             .fillMaxSize()
             .aspectRatio(164 / 152f),
+        colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = Shapes.small,
         border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant)
     ) {
@@ -66,13 +67,13 @@ fun ImageTile(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
+                .background(SwissTransferTheme.materialColors.surfaceContainerHighest)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data("https://fastly.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY")
                     .crossfade(true)
                     .build(),
-                placeholder = ColorPainter(Color.Gray),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
