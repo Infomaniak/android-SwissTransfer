@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
 
 @Composable
 fun OptionScaffold(
@@ -42,8 +44,12 @@ fun OptionScaffold(
     navigateBack: (() -> Unit)? = null,
 ) {
     Scaffold(topBar = {
-        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
-        SwissTransferTobAppBar(topAppBarTitleRes, navigationMenu = canDisplayBackButton)
+        val backNavigationMenu = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
+            TopAppBarButton.backButton(navigateBack ?: {})
+        } else {
+            null
+        }
+        SwissTransferTobAppBar(topAppBarTitleRes, navigationMenu = backNavigationMenu)
     }) { paddingsValue ->
         Column(
             modifier = Modifier
