@@ -44,12 +44,12 @@ fun OptionScaffold(
     navigateBack: (() -> Unit)? = null,
 ) {
     Scaffold(topBar = {
-        val canDisplayBackButton = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
+        val backNavigationMenu = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
             TopAppBarButton.backButton(navigateBack ?: {})
         } else {
             null
         }
-        SwissTransferTobAppBar(topAppBarTitleRes, navigationMenu = canDisplayBackButton)
+        SwissTransferTobAppBar(topAppBarTitleRes, navigationMenu = backNavigationMenu)
     }) { paddingsValue ->
         Column(
             modifier = Modifier
