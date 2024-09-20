@@ -30,7 +30,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
-import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -69,7 +69,7 @@ fun SentEmptyScreen() {
                         top.linkTo(parent.top)
                         end.linkTo(fab.start, Margin.Small)
                     },
-                imageVector = AppImages.AppIllus.ArrowDownRightCurved,
+                imageVector = AppIllus.ArrowDownRightCurved,
                 contentDescription = null,
             )
             NewTransferFab(
