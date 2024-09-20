@@ -17,27 +17,14 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 
@@ -47,25 +34,14 @@ fun SettingsValidityPeriodScreen(
     navigateBack: (() -> Unit)?,
     onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
-    Scaffold(topBar = {
-        val canDisplayBackButton = navigateBack?.let { TopAppBarButton.backButton(navigateBack) }
-        SwissTransferTobAppBar(R.string.settingsOptionValidityPeriod, navigationMenu = canDisplayBackButton)
-    }) { paddingsValue ->
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(paddingsValue),
-        ) {
-            SettingTitle(titleRes = R.string.settingsValidityPeriodTitle)
-
-            var selectedItem by rememberSaveable { mutableIntStateOf(validityPeriod.ordinal) }
-            SingleSelectOptions(ValidityPeriodOption.entries, { selectedItem }, { position ->
-                selectedItem = position
-                val selectedValidityPeriod = ValidityPeriod.entries[position]
-                onValidityPeriodChange(selectedValidityPeriod)
-            })
-        }
-    }
+    OptionScaffold(
+        topAppBarTitleRes = R.string.settingsOptionValidityPeriod,
+        optionTitleRes = R.string.settingsValidityPeriodTitle,
+        enumEntries = ValidityPeriodOption.entries,
+        selectedSettingOptionPosition = validityPeriod.ordinal,
+        setSelectedSettingOptionPosition = { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
+        navigateBack = navigateBack
+    )
 }
 
 enum class ValidityPeriodOption(

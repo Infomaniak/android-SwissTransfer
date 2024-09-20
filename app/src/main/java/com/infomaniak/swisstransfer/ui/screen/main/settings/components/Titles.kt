@@ -29,12 +29,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Dimens
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SettingTitle(@StringRes titleRes: Int) {
+    UnpaddedTitle(
+        Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
+        titleRes
+    )
+}
+
+@Composable
+fun OptionTitle(@StringRes titleRes: Int) {
+    UnpaddedTitle(Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Margin.Large), titleRes)
+}
+
+@Composable
+private fun UnpaddedTitle(modifier: Modifier, titleRes: Int) {
     Text(
-        modifier = Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
+        modifier = modifier,
         text = stringResource(id = titleRes),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
@@ -44,12 +58,23 @@ fun SettingTitle(@StringRes titleRes: Int) {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SettingTitlePreview() {
+private fun OptionTitlePreview() {
     SwissTransferTheme {
         Surface {
             Box {
-                SettingTitle(titleRes = R.string.appName)
+                OptionTitle(titleRes = R.string.appName)
             }
+        }
+    }
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun SettingTitlePreview() {
+    SwissTransferTheme {
+        Surface {
+            SettingTitle(titleRes = R.string.appName)
         }
     }
 }
