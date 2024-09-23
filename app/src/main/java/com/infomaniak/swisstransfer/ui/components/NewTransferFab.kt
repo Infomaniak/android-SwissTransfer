@@ -20,31 +20,24 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.UploadSourceChoiceBottomSheet
+import com.infomaniak.swisstransfer.ui.NewTransferActivity
+import com.infomaniak.swisstransfer.ui.utils.launchActivity
 
 @Composable
 fun NewTransferFab(
     modifier: Modifier = Modifier,
     newTransferFabType: NewTransferFabType
 ) {
-    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(false) }
-
+    val context = LocalContext.current
     SwissTransferFab(
         modifier = modifier,
         fabType = newTransferFabType.fabType,
         elevation = newTransferFabType.elevation(),
-        onClick = { showUploadSourceChoiceBottomSheet = true },
-    )
-    UploadSourceChoiceBottomSheet(
-        isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
-        onDismissRequest = { showUploadSourceChoiceBottomSheet = false },
+        onClick = { context.launchActivity(NewTransferActivity::class) },
     )
 }
 

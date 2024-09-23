@@ -23,12 +23,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.components.BottomSheetItem
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.Camera
 import com.infomaniak.swisstransfer.ui.images.icons.Folder
 import com.infomaniak.swisstransfer.ui.images.icons.PolaroidLandscape
@@ -36,40 +34,26 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
-import com.infomaniak.swisstransfer.ui.utils.launchActivity
 
 @Composable
 fun UploadSourceChoiceBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onDismissRequest: () -> Unit,
 ) {
-    val context = LocalContext.current
-
     if (isBottomSheetVisible()) {
         SwissTransferBottomSheet(
             onDismissRequest = onDismissRequest,
             titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
-                    BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) {
-
-                        // TODO: Remove this, it's only here to be able to navigate to the
-                        //  NewTransferActivity, since we don't have the FilePicker for now.
-                        context.launchActivity(NewTransferActivity::class)
-
-                        /* TODO */
-                        onDismissRequest()
-                    }
+                    BottomSheetItem(AppImages.AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /* TODO */ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppIcons.PolaroidLandscape, R.string.transferUploadSourceChoiceGallery) {
-                        /* TODO */
-                        onDismissRequest()
-                    }
+                    BottomSheetItem(
+                        AppImages.AppIcons.PolaroidLandscape,
+                        R.string.transferUploadSourceChoiceGallery
+                    ) { /* TODO */ }
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) {
-                        /* TODO */
-                        onDismissRequest()
-                    }
+                    BottomSheetItem(AppImages.AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /* TODO */ }
                 }
             },
         )
