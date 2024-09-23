@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: () -> Unit) {
-    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
 
     BottomStickyButtonScaffold(
         topBar = {
