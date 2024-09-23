@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomSheetItem
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
-import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Camera
 import com.infomaniak.swisstransfer.ui.images.icons.Folder
 import com.infomaniak.swisstransfer.ui.images.icons.PolaroidLandscape
@@ -46,14 +46,23 @@ fun UploadSourceChoiceBottomSheet(
             titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
-                    BottomSheetItem(AppImages.AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) { /* TODO */ }
+                    BottomSheetItem(
+                        imageVector = AppIcons.Camera,
+                        titleRes = R.string.transferUploadSourceChoiceCamera,
+                        onClick = { /* TODO */ },
+                    )
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(
-                        AppImages.AppIcons.PolaroidLandscape,
-                        R.string.transferUploadSourceChoiceGallery
-                    ) { /* TODO */ }
+                        imageVector = AppIcons.PolaroidLandscape,
+                        titleRes = R.string.transferUploadSourceChoiceGallery,
+                        onClick = { /* TODO */ },
+                    )
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(AppImages.AppIcons.Folder, R.string.transferUploadSourceChoiceFiles) { /* TODO */ }
+                    BottomSheetItem(
+                        imageVector = AppIcons.Folder,
+                        titleRes = R.string.transferUploadSourceChoiceFiles,
+                        onClick = { /* TODO */ },
+                    )
                 }
             },
         )
