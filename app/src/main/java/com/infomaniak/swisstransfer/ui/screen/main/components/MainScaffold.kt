@@ -41,13 +41,13 @@ fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
     windowAdaptiveInfo: WindowAdaptiveInfo,
-    tabletTopBar: @Composable () -> Unit = {},
+    tabletTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     val navType by rememberNavType(currentDestination, windowAdaptiveInfo)
 
     CompositionLocalProvider(LocalNavType provides navType) {
-        MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, tabletTopBar, content)
+        MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, tabletTopAppBar, content)
     }
 }
 
@@ -56,11 +56,11 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    tabletTopBar: @Composable () -> Unit,
+    tabletTopAppBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Column {
-        if (navType == NavigationSuiteType.NavigationRail) tabletTopBar()
+        if (navType == NavigationSuiteType.NavigationRail) tabletTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
             if (navType == NavigationSuiteType.None) {
                 content()
@@ -120,7 +120,7 @@ private fun NavigationMobilePreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            tabletTopBar = { BrandTobAppBar() },
+            tabletTopAppBar = { BrandTobAppBar() },
             content = {},
         )
     }
@@ -134,7 +134,7 @@ private fun NavigationTabletPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            tabletTopBar = { BrandTobAppBar() },
+            tabletTopAppBar = { BrandTobAppBar() },
             content = {},
         )
     }

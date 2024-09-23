@@ -47,7 +47,7 @@ fun MainScreen() {
         navController = navController,
         currentDestination = currentDestination,
         windowAdaptiveInfo = windowAdaptiveInfo,
-        tabletTopBar = { BrandTobAppBar() },
+        tabletTopAppBar = { BrandTobAppBar() },
         content = { MainNavHost(navController, currentDestination, windowAdaptiveInfo) },
     )
 }
