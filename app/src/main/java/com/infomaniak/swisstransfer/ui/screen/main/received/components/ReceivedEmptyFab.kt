@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -38,32 +37,34 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ReceivedEmptyFab() {
+fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
     ConstraintLayout {
         val (text, icon, fab) = createRefs()
 
-        Text(
-            text = stringResource(R.string.firstTransferDescription),
-            style = SwissTransferTheme.typography.bodyRegular,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            modifier = Modifier
-                .padding(PaddingValues(top = Margin.XLarge))
-                .constrainAs(text) {
-                    bottom.linkTo(icon.top, Margin.Small)
-                    end.linkTo(icon.end, Margin.Small)
-                },
-        )
+        if (isMessageVisible()) {
+            Text(
+                text = stringResource(R.string.firstTransferDescription),
+                style = SwissTransferTheme.typography.bodyRegular,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                modifier = Modifier
+                    .padding(PaddingValues(top = Margin.XLarge))
+                    .constrainAs(text) {
+                        bottom.linkTo(icon.top, Margin.Small)
+                        end.linkTo(icon.end, Margin.Small)
+                    },
+            )
 
-        Icon(
-            modifier = Modifier
-                .constrainAs(icon) {
-                    top.linkTo(fab.top)
-                    bottom.linkTo(fab.bottom, Margin.Small)
-                    end.linkTo(fab.start, Margin.Medium)
-                },
-            imageVector = AppIllus.ArrowRightCurved,
-            contentDescription = null,
-        )
+            Icon(
+                modifier = Modifier
+                    .constrainAs(icon) {
+                        top.linkTo(fab.top)
+                        bottom.linkTo(fab.bottom, Margin.Small)
+                        end.linkTo(fab.start, Margin.Medium)
+                    },
+                imageVector = AppIllus.ArrowRightCurved,
+                contentDescription = null,
+            )
+        }
 
         NewTransferFab(
             modifier = Modifier.constrainAs(fab) { },
@@ -79,7 +80,7 @@ private fun ReceivedEmptyFabPreview() {
     SwissTransferTheme {
         Surface {
             Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom) {
-                ReceivedEmptyFab()
+                ReceivedEmptyFab(isMessageVisible = { true })
             }
         }
     }

@@ -21,22 +21,39 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
+import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
-fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
+fun ReceivedScreen(
+    navigateToDetails: (transferId: Int) -> Unit,
+    sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
+) {
+    val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
+    val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
+
+    ReceivedScreen { areTransfersEmpty }
+}
+
+@Composable
+private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
     Scaffold(
         topBar = { BrandTobAppBar() },
-        floatingActionButton = { ReceivedEmptyFab() },
+        floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) { contentPadding ->
         EmptyState(
             icon = AppIllus.MascotSearching,
@@ -52,7 +69,7 @@ fun ReceivedScreen(navigateToDetails: (transferId: Int) -> Unit) {
 private fun ReceivedScreenMobilePreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen {}
+            ReceivedScreen(areTransfersEmpty = { true })
         }
     }
 }
@@ -62,7 +79,7 @@ private fun ReceivedScreenMobilePreview() {
 private fun ReceivedScreenTabletPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen {}
+            ReceivedScreen(areTransfersEmpty = { true })
         }
     }
 }
