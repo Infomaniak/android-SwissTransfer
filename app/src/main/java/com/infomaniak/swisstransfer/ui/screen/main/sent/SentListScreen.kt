@@ -45,7 +45,7 @@ fun SentListScreen(
 private fun SentListScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SentListScreen(transfers = listOf(Any()))
+            SentListScreen(transfers = listOf(Unit))
         }
     }
 }
