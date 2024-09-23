@@ -27,6 +27,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -119,7 +120,7 @@ private fun NavigationMobilePreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            tabletTopBar = {},
+            tabletTopBar = { BrandTobAppBar() },
             content = {},
         )
     }
@@ -133,7 +134,7 @@ private fun NavigationTabletPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            tabletTopBar = {},
+            tabletTopBar = { BrandTobAppBar() },
             content = {},
         )
     }
