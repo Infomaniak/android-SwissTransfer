@@ -41,6 +41,13 @@ fun SentScreen(
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
     val navType = LocalNavType.current
 
+    SentScreen(navType, transfers)
+}
+
+@Composable
+private fun SentScreen(navType: NavigationSuiteType, transfers: List<Any>?) {
+    if (transfers == null) return
+
     BrandTobAppBarScaffold(
         floatingActionButton = {
             if (navType == NavigationSuiteType.NavigationBar && !transfers.isNullOrEmpty()) {
@@ -48,31 +55,24 @@ fun SentScreen(
             }
         },
     ) { contentPadding ->
-        SentScreen(
-            modifier = Modifier.padding(contentPadding),
-            transfers = transfers,
-        )
+        val modifier = Modifier.padding(contentPadding)
+        if (transfers.isEmpty()) {
+            SentEmptyScreen(modifier)
+        } else {
+            SentListScreen(modifier, transfers)
+        }
     }
-}
 
-@Composable
-private fun SentScreen(modifier: Modifier, transfers: List<Any>?) {
-    if (transfers == null) return
-
-    if (transfers.isEmpty()) {
-        SentEmptyScreen(modifier)
-    } else {
-        SentListScreen(modifier, transfers)
-    }
 }
 
 @PreviewMobile
 @Composable
 private fun SentScreenMobilePreview() {
+    val navType = LocalNavType.current
     SwissTransferTheme {
         Surface {
             SentScreen(
-                modifier = Modifier,
+                navType = navType,
                 transfers = emptyList(),
             )
         }
@@ -82,10 +82,11 @@ private fun SentScreenMobilePreview() {
 @PreviewTablet
 @Composable
 private fun SentScreenTabletPreview() {
+    val navType = LocalNavType.current
     SwissTransferTheme {
         Surface {
             SentScreen(
-                modifier = Modifier,
+                navType = navType,
                 transfers = emptyList(),
             )
         }
