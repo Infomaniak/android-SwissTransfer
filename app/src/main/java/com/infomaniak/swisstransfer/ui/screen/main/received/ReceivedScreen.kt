@@ -69,7 +69,7 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
 private fun ReceivedScreenMobilePreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen { true }
+            ReceivedScreen(areTransfersEmpty = { true })
         }
     }
 }
@@ -79,7 +79,7 @@ private fun ReceivedScreenMobilePreview() {
 private fun ReceivedScreenTabletPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen { true }
+            ReceivedScreen(areTransfersEmpty = { true })
         }
     }
 }

@@ -80,7 +80,7 @@ private fun ReceivedEmptyFabPreview() {
     SwissTransferTheme {
         Surface {
             Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom) {
-                ReceivedEmptyFab { true }
+                ReceivedEmptyFab(isMessageVisible = { true })
             }
         }
     }
