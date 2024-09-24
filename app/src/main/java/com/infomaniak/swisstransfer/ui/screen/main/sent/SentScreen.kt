@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
-import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
@@ -48,7 +48,7 @@ private fun SentScreen(transfers: List<Any>?) {
     if (transfers == null) return
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
-    BrandTobAppBarScaffold(
+    BrandTopAppBarScaffold(
         floatingActionButton = {
             if (windowAdaptiveInfo.isWindowSmall() && transfers.isNotEmpty()) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)

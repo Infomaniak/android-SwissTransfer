@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
-import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
@@ -57,7 +57,7 @@ fun SettingsScreen(
 ) {
     val selectedSetting = getSelectedSetting()
 
-    BrandTobAppBarScaffold { paddingsValue ->
+    BrandTopAppBarScaffold { paddingsValue ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())

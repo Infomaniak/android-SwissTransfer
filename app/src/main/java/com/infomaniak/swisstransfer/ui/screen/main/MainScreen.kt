@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
@@ -44,7 +44,7 @@ fun MainScreen() {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        largeWindowTopAppBar = { BrandTobAppBar() },
+        largeWindowTopAppBar = { BrandTopAppBar() },
         content = { MainNavHost(navController, currentDestination) },
     )
 }

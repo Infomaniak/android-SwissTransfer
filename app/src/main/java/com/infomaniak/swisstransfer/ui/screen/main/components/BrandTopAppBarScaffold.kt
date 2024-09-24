@@ -19,15 +19,15 @@ package com.infomaniak.swisstransfer.ui.screen.main.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 
 @Composable
-fun BrandTobAppBarScaffold(
+fun BrandTopAppBarScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = { BrandTobAppBar() },
+        smallWindowTopAppBar = { BrandTopAppBar() },
         floatingActionButton = floatingActionButton,
         content = content,
     )
