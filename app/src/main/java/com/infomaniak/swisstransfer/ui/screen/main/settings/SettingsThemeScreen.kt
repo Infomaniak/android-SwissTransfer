@@ -30,7 +30,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.CircleWhite
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun SettingsThemeScreen(
@@ -58,7 +58,7 @@ enum class ThemeOption(
     DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.CircleBlack),
 }
 
-@PreviewMobile
+@PreviewSmallWindow
 @Composable
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {

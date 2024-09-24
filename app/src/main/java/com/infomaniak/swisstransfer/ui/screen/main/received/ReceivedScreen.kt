@@ -34,8 +34,8 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaf
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun ReceivedScreen(
@@ -62,19 +62,10 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
     }
 }
 
-@PreviewMobile
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
-private fun ReceivedScreenMobilePreview() {
-    SwissTransferTheme {
-        Surface {
-            ReceivedScreen(areTransfersEmpty = { true })
-        }
-    }
-}
-
-@PreviewTablet
-@Composable
-private fun ReceivedScreenTabletPreview() {
+private fun ReceivedScreenPreview() {
     SwissTransferTheme {
         Surface {
             ReceivedScreen(areTransfersEmpty = { true })

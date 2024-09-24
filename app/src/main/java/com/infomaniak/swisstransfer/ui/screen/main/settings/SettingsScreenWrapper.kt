@@ -136,8 +136,8 @@ private fun NoSelectionEmptyState() {
     }
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun SettingsScreenWrapperPreview() {
     SwissTransferTheme {

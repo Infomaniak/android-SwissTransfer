@@ -47,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingIt
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun SettingsScreen(
@@ -190,7 +190,7 @@ private class DummyAppSettings(
     override var validityPeriod: ValidityPeriod = ValidityPeriod.THIRTY,
 ) : AppSettings
 
-@PreviewMobile
+@PreviewSmallWindow
 @Composable
 private fun SettingsScreenPreview() {
     SwissTransferTheme {

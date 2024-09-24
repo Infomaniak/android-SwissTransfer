@@ -20,8 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun NewTransferScreen(closeActivity: () -> Unit) {
@@ -29,8 +29,8 @@ fun NewTransferScreen(closeActivity: () -> Unit) {
     NewTransferNavHost(navController, closeActivity)
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun NewTransferPreview() {
     SwissTransferTheme {

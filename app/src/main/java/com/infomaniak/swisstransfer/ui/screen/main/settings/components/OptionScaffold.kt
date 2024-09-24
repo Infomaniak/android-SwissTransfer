@@ -31,11 +31,11 @@ import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.screen.main.components.PhoneTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun OptionScaffold(
@@ -46,8 +46,8 @@ fun OptionScaffold(
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)?,
 ) {
-    PhoneTopAppBarScaffold(
-        phoneTopAppBar = { SwissTransferTobAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
+    SmallWindowTopAppBarScaffold(
+        smallWindowTopAppBar = { SwissTransferTobAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
     ) { paddingsValue ->
         Column(
             modifier = Modifier
@@ -69,8 +69,8 @@ fun OptionScaffold(
     }
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun OptionScaffoldPreview() {
     SwissTransferTheme {

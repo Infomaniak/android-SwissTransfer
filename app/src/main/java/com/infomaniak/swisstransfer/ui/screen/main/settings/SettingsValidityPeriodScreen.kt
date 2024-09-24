@@ -26,7 +26,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun SettingsValidityPeriodScreen(
@@ -55,7 +55,7 @@ enum class ValidityPeriodOption(
     ONE({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 1, 1) }),
 }
 
-@PreviewMobile
+@PreviewSmallWindow
 @Composable
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {

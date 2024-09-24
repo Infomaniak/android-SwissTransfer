@@ -28,8 +28,8 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun MainScreen() {
@@ -44,13 +44,13 @@ fun MainScreen() {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        tabletTopAppBar = { BrandTobAppBar() },
+        largeWindowTopAppBar = { BrandTobAppBar() },
         content = { MainNavHost(navController, currentDestination) },
     )
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun MainScreenPreview() {
     SwissTransferTheme {
