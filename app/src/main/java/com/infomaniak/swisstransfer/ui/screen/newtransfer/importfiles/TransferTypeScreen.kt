@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.ChainTilted
@@ -47,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -> Unit, closeActivity: () -> Unit) {
     Scaffold(
         topBar = {
-            SwissTransferTobAppBar(
+            SwissTransferTopAppBar(
                 titleRes = R.string.transferTypeScreenTitle,
                 navigationMenu = TopAppBarButton.backButton(popBack),
                 TopAppBarButton.closeButton { closeActivity() },
