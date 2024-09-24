@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,9 +29,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.components.LocalNavType
+import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun OptionScaffold(
@@ -43,7 +48,7 @@ fun OptionScaffold(
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)? = null,
 ) {
-    Scaffold(
+    SmallWindowTopAppBarScaffold(
         topBar = {
             val navigationMenu = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
                 TopAppBarButton.backButton(navigateBack ?: {})
@@ -70,5 +75,21 @@ fun OptionScaffold(
                 },
             )
         }
+    }
+}
+
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun OptionScaffoldPreview() {
+    SwissTransferTheme {
+        OptionScaffold(
+            topAppBarTitleRes = R.string.settingsOptionTheme,
+            optionTitleRes = R.string.settingsThemeTitle,
+            enumEntries = ThemeOption.entries,
+            selectedSettingOptionPosition = 0,
+            setSelectedSettingOptionPosition = { },
+            navigateBack = { },
+        )
     }
 }
