@@ -23,13 +23,13 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 
 @Composable
-fun SmallWindowTopAppBarScaffold(
-    topBar: @Composable () -> Unit = {},
+fun PhoneTopAppBarScaffold(
+    phoneTopAppBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
-        topBar = { if (LocalNavType.current == NavigationSuiteType.NavigationBar) topBar() },
+        topBar = { if (LocalNavType.current == NavigationSuiteType.NavigationBar) phoneTopAppBar() },
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
         content(contentPadding)

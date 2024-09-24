@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.components.LocalNavType
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.PhoneTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
@@ -48,8 +48,8 @@ fun OptionScaffold(
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)? = null,
 ) {
-    SmallWindowTopAppBarScaffold(
-        topBar = {
+    PhoneTopAppBarScaffold(
+        phoneTopAppBar = {
             val navigationMenu = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
                 TopAppBarButton.backButton(navigateBack ?: {})
             } else {

@@ -50,7 +50,7 @@ private fun SentScreen(navType: NavigationSuiteType, transfers: List<Any>?) {
 
     BrandTobAppBarScaffold(
         floatingActionButton = {
-            if (navType == NavigationSuiteType.NavigationBar && !transfers.isNullOrEmpty()) {
+            if (navType == NavigationSuiteType.NavigationBar && transfers.isNotEmpty()) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
             }
         },

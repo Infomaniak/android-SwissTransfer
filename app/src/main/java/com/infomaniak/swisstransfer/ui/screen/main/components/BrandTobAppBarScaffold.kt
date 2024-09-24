@@ -26,8 +26,8 @@ fun BrandTobAppBarScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    SmallWindowTopAppBarScaffold(
-        topBar = { BrandTobAppBar() },
+    PhoneTopAppBarScaffold(
+        phoneTopAppBar = { BrandTobAppBar() },
         floatingActionButton = floatingActionButton,
         content = content,
     )
