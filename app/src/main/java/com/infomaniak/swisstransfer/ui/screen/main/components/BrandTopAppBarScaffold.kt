@@ -24,7 +24,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 @Composable
 fun BrandTopAppBarScaffold(
     floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = { BrandTopAppBar() },

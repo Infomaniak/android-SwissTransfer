@@ -17,12 +17,10 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
@@ -54,12 +52,11 @@ private fun SentScreen(transfers: List<Any>?) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
             }
         },
-    ) { contentPadding ->
-        val modifier = Modifier.padding(contentPadding)
+    ) {
         if (transfers.isEmpty()) {
-            SentEmptyScreen(modifier)
+            SentEmptyScreen()
         } else {
-            SentListScreen(modifier, transfers)
+            SentListScreen(transfers)
         }
     }
 

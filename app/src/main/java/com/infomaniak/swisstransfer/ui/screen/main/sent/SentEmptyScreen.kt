@@ -39,9 +39,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun SentEmptyScreen(modifier: Modifier) {
+fun SentEmptyScreen() {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -91,7 +91,7 @@ fun SentEmptyScreen(modifier: Modifier) {
 private fun SentEmptyScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SentEmptyScreen(modifier = Modifier)
+            SentEmptyScreen()
         }
     }
 }

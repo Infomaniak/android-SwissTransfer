@@ -22,18 +22,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 import java.util.UUID
 
 @Composable
-fun SentListScreen(
-    modifier: Modifier = Modifier,
-    transfers: List<Any>,
-) {
-    LazyColumn(modifier) {
+fun SentListScreen(transfers: List<Any>) {
+    LazyColumn {
         items(items = transfers, key = { UUID.randomUUID() }) {
             Text(text = "Sent screen")
         }
