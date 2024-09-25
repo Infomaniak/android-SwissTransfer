@@ -24,8 +24,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
+import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
@@ -41,9 +43,13 @@ fun MainScreen() {
         derivedStateOf { navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination }
     }
 
-    MainScaffold(navController, currentDestination, windowAdaptiveInfo) {
-        MainNavHost(navController, currentDestination, windowAdaptiveInfo)
-    }
+    MainScaffold(
+        navController = navController,
+        currentDestination = currentDestination,
+        windowAdaptiveInfo = windowAdaptiveInfo,
+        tabletTopAppBar = { BrandTobAppBar() },
+        content = { MainNavHost(navController, currentDestination, windowAdaptiveInfo) },
+    )
 }
 
 @PreviewMobile

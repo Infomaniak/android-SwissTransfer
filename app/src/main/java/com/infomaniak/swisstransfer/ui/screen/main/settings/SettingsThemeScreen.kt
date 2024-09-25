@@ -44,7 +44,7 @@ fun SettingsThemeScreen(
         enumEntries = ThemeOption.entries,
         selectedSettingOptionPosition = theme.ordinal,
         setSelectedSettingOptionPosition = { position -> onThemeUpdate(Theme.entries[position]) },
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
     )
 }
 

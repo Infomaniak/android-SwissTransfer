@@ -22,17 +22,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.screen.main.LocalNavType
+import com.infomaniak.swisstransfer.ui.screen.main.components.PhoneTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
+import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun OptionScaffold(
@@ -41,16 +44,11 @@ fun OptionScaffold(
     enumEntries: List<SettingOption>,
     selectedSettingOptionPosition: Int,
     setSelectedSettingOptionPosition: (Int) -> Unit,
-    navigateBack: (() -> Unit)? = null,
+    navigateBack: (() -> Unit)?,
 ) {
-    Scaffold(topBar = {
-        val backNavigationMenu = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
-            TopAppBarButton.backButton(navigateBack ?: {})
-        } else {
-            null
-        }
-        SwissTransferTobAppBar(topAppBarTitleRes, navigationMenu = backNavigationMenu)
-    }) { paddingsValue ->
+    PhoneTopAppBarScaffold(
+        phoneTopAppBar = { SwissTransferTobAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
+    ) { paddingsValue ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -59,10 +57,30 @@ fun OptionScaffold(
             OptionTitle(titleRes = optionTitleRes)
 
             var selectedItem by rememberSaveable { mutableIntStateOf(selectedSettingOptionPosition) }
-            SingleSelectOptions(enumEntries, { selectedItem }, { position ->
-                selectedItem = position
-                setSelectedSettingOptionPosition(position)
-            })
+            SingleSelectOptions(
+                items = enumEntries,
+                selectedItem = { selectedItem },
+                setSelectedItem = { position ->
+                    selectedItem = position
+                    setSelectedSettingOptionPosition(position)
+                },
+            )
         }
+    }
+}
+
+@PreviewMobile
+@PreviewTablet
+@Composable
+private fun OptionScaffoldPreview() {
+    SwissTransferTheme {
+        OptionScaffold(
+            topAppBarTitleRes = R.string.settingsOptionTheme,
+            optionTitleRes = R.string.settingsThemeTitle,
+            enumEntries = ThemeOption.entries,
+            selectedSettingOptionPosition = 0,
+            setSelectedSettingOptionPosition = {},
+            navigateBack = {},
+        )
     }
 }

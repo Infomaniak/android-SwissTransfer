@@ -40,7 +40,7 @@ fun SettingsEmailLanguageScreen(
         enumEntries = EmailLanguageOption.entries,
         selectedSettingOptionPosition = emailLanguage.ordinal,
         setSelectedSettingOptionPosition = { position -> onEmailLanguageChange(EmailLanguage.entries[position]) },
-        navigateBack = navigateBack
+        navigateBack = navigateBack,
     )
 }
 

@@ -45,13 +45,15 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 
 @Composable
 fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -> Unit, closeActivity: () -> Unit) {
-    Scaffold(topBar = {
-        SwissTransferTobAppBar(
-            titleRes = R.string.transferTypeScreenTitle,
-            navigationMenu = TopAppBarButton.backButton(popBack),
-            TopAppBarButton.closeButton { closeActivity() },
-        )
-    }) { contentPaddings ->
+    Scaffold(
+        topBar = {
+            SwissTransferTobAppBar(
+                titleRes = R.string.transferTypeScreenTitle,
+                navigationMenu = TopAppBarButton.backButton(popBack),
+                TopAppBarButton.closeButton { closeActivity() },
+            )
+        },
+    ) { contentPaddings ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
