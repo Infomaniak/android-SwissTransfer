@@ -34,6 +34,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainScaffold(
@@ -54,10 +55,12 @@ private fun MainScaffold(
     tabletTopAppBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
     Column {
-        if (navType == NavigationSuiteType.NavigationRail) tabletTopAppBar()
+        if (windowAdaptiveInfo.isWindowLarge()) tabletTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
-            if (navType == NavigationSuiteType.NavigationBar) {
+            if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
                     HorizontalDivider()
