@@ -17,9 +17,12 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
@@ -28,7 +31,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun SmallWindowTopAppBarScaffold(
     smallWindowTopAppBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
@@ -36,11 +39,9 @@ fun SmallWindowTopAppBarScaffold(
         topBar = { if (windowAdaptiveInfo.isWindowSmall()) smallWindowTopAppBar() },
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
-        val paddingValues = if (windowAdaptiveInfo.isWindowSmall()) {
-            contentPadding
-        } else {
-            PaddingValues(all = 0.dp)
+        val paddingValues = if (windowAdaptiveInfo.isWindowSmall()) contentPadding else PaddingValues(all = 0.dp)
+        Box(modifier = Modifier.padding(paddingValues)) {
+            content()
         }
-        content(paddingValues)
     }
 }

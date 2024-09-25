@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -48,12 +47,8 @@ fun OptionScaffold(
 ) {
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = { SwissTransferTopAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
-    ) { paddingsValue ->
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(paddingsValue),
-        ) {
+    ) {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             OptionTitle(titleRes = optionTitleRes)
 
             var selectedItem by rememberSaveable { mutableIntStateOf(selectedSettingOptionPosition) }

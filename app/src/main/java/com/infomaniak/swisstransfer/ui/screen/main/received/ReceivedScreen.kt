@@ -52,12 +52,11 @@ fun ReceivedScreen(
 private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
-    ) { contentPadding ->
+    ) {
         EmptyState(
             icon = AppIllus.MascotSearching,
             title = R.string.noTransferReceivedTitle,
             description = R.string.noTransferReceivedDescription,
-            modifier = Modifier.padding(contentPadding),
         )
     }
 }

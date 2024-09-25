@@ -57,12 +57,11 @@ fun SettingsScreen(
 ) {
     val selectedSetting = getSelectedSetting()
 
-    BrandTopAppBarScaffold { paddingsValue ->
+    BrandTopAppBarScaffold {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .selectableGroup()
-                .padding(paddingsValue),
+                .selectableGroup(),
         ) {
             Text(
                 modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
