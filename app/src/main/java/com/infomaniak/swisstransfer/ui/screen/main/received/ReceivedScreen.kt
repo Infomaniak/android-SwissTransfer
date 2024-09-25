@@ -30,7 +30,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
-import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -50,7 +50,7 @@ fun ReceivedScreen(
 
 @Composable
 private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
-    BrandTobAppBarScaffold(
+    BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) { contentPadding ->
         EmptyState(

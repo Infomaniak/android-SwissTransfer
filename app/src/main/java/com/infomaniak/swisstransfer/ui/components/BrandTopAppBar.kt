@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun BrandTobAppBar() {
+fun BrandTopAppBar() {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
@@ -61,8 +61,8 @@ fun BrandTobAppBar() {
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun BrandTobAppBarPreview() {
+private fun BrandTopAppBarPreview() {
     SwissTransferTheme {
-        BrandTobAppBar()
+        BrandTopAppBar()
     }
 }
