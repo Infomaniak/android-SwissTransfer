@@ -48,13 +48,11 @@ import com.infomaniak.swisstransfer.ui.utils.*
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SettingsScreenWrapper(
-    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     appSettings?.let { safeAppSettings ->
         TwoPaneScaffold<SettingsOptionScreens>(
-            windowAdaptiveInfo = windowAdaptiveInfo,
             listPane = { ListPane(this, safeAppSettings) },
             detailPane = { DetailPane(safeAppSettings, settingsViewModel, navigator = this) },
         )

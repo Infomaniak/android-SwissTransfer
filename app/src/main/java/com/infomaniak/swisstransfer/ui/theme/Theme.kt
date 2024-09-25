@@ -21,11 +21,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 
 val LocalCustomTypography = staticCompositionLocalOf { Typography }
 val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }
+val LocalWindowAdaptiveInfo = staticCompositionLocalOf<WindowAdaptiveInfo> { error("No WindowAdaptiveInfo provided") }
 
 @Composable
 fun SwissTransferTheme(
@@ -37,6 +40,7 @@ fun SwissTransferTheme(
         LocalCustomTypography provides Typography,
         LocalTextStyle provides Typography.bodyRegular,
         LocalCustomColorScheme provides customColors,
+        LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
     ) {
         MaterialTheme(
             colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
