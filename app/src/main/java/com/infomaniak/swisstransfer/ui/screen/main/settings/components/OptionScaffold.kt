@@ -79,8 +79,8 @@ private fun OptionScaffoldPreview() {
             optionTitleRes = R.string.settingsThemeTitle,
             enumEntries = ThemeOption.entries,
             selectedSettingOptionPosition = 0,
-            setSelectedSettingOptionPosition = { },
-            navigateBack = { },
+            setSelectedSettingOptionPosition = {},
+            navigateBack = {},
         )
     }
 }

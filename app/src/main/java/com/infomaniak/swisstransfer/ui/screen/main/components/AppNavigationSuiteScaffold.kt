@@ -128,6 +128,7 @@ private fun AppNavigationRail(
         navigationItems.forEach { navigationItem ->
             NavigationRailItem(
                 icon = { NavigationIcon(false, navigationItem) },
+                label = {}, // Don't remove this seemingly useless label, it changes the icons background.
                 selected = currentDestination == navigationItem.destination,
                 onClick = { onClick(navigationItem.destination) },
             )

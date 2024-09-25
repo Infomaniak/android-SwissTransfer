@@ -67,7 +67,7 @@ fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
         }
 
         NewTransferFab(
-            modifier = Modifier.constrainAs(fab) { },
+            modifier = Modifier.constrainAs(fab) {},
             newTransferFabType = NewTransferFabType.BOTTOM_BAR,
         )
     }
