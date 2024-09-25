@@ -28,7 +28,8 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.window.core.layout.WindowHeightSizeClass
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 
 /**
  * A composable function that sets up a List-Detail interface using a three-pane scaffold navigator.
@@ -47,16 +48,13 @@ import androidx.window.core.layout.WindowHeightSizeClass
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun <T> TwoPaneScaffold(
-    windowAdaptiveInfo: WindowAdaptiveInfo,
     listPane: @Composable ThreePaneScaffoldNavigator<T>.() -> Unit,
     detailPane: @Composable ThreePaneScaffoldNavigator<T>.() -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val paneScaffoldDirective = calculatePaneScaffoldDirective(windowAdaptiveInfo)
-    val maxHorizontalPartitions = when (windowAdaptiveInfo.windowSizeClass.windowHeightSizeClass) {
-        WindowHeightSizeClass.COMPACT -> 1
-        else -> paneScaffoldDirective.maxHorizontalPartitions
-    }
+    val maxHorizontalPartitions = if (windowAdaptiveInfo.isWindowLarge()) 2 else 1
     val navigator = rememberListDetailPaneScaffoldNavigator<T>(
         scaffoldDirective = paneScaffoldDirective.copy(
             maxHorizontalPartitions = maxHorizontalPartitions,

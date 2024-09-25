@@ -19,9 +19,10 @@ package com.infomaniak.swisstransfer.ui.screen.main.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun PhoneTopAppBarScaffold(
@@ -29,11 +30,13 @@ fun PhoneTopAppBarScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
     Scaffold(
-        topBar = { if (LocalNavType.current == NavigationSuiteType.NavigationBar) phoneTopAppBar() },
+        topBar = { if (windowAdaptiveInfo.isWindowSmall()) phoneTopAppBar() },
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
-        val paddingValues = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
+        val paddingValues = if (windowAdaptiveInfo.isWindowSmall()) {
             contentPadding
         } else {
             PaddingValues(all = 0.dp)

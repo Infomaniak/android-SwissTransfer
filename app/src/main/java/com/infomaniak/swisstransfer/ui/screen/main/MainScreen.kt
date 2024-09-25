@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -35,7 +34,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -46,9 +44,8 @@ fun MainScreen() {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        windowAdaptiveInfo = windowAdaptiveInfo,
         tabletTopAppBar = { BrandTobAppBar() },
-        content = { MainNavHost(navController, currentDestination, windowAdaptiveInfo) },
+        content = { MainNavHost(navController, currentDestination) },
     )
 }
 

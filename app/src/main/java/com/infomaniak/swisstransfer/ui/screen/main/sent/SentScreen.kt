@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.sent
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,10 +28,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.components.LocalNavType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun SentScreen(
@@ -39,18 +39,18 @@ fun SentScreen(
     sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
-    val navType = LocalNavType.current
-
-    SentScreen(navType, transfers)
+    SentScreen(transfers)
 }
 
 @Composable
-private fun SentScreen(navType: NavigationSuiteType, transfers: List<Any>?) {
+private fun SentScreen(transfers: List<Any>?) {
+
     if (transfers == null) return
+    val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     BrandTobAppBarScaffold(
         floatingActionButton = {
-            if (navType == NavigationSuiteType.NavigationBar && transfers.isNotEmpty()) {
+            if (windowAdaptiveInfo.isWindowSmall() && transfers.isNotEmpty()) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
             }
         },
@@ -68,13 +68,9 @@ private fun SentScreen(navType: NavigationSuiteType, transfers: List<Any>?) {
 @PreviewMobile
 @Composable
 private fun SentScreenMobilePreview() {
-    val navType = LocalNavType.current
     SwissTransferTheme {
         Surface {
-            SentScreen(
-                navType = navType,
-                transfers = emptyList(),
-            )
+            SentScreen(transfers = emptyList())
         }
     }
 }
@@ -82,13 +78,9 @@ private fun SentScreenMobilePreview() {
 @PreviewTablet
 @Composable
 private fun SentScreenTabletPreview() {
-    val navType = LocalNavType.current
     SwissTransferTheme {
         Surface {
-            SentScreen(
-                navType = navType,
-                transfers = emptyList(),
-            )
+            SentScreen(transfers = emptyList())
         }
     }
 }

@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -30,25 +29,22 @@ import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.ui.components.BrandTobAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
 import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
-
-val LocalNavType = staticCompositionLocalOf { NavigationSuiteType.None }
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    windowAdaptiveInfo: WindowAdaptiveInfo,
     tabletTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
-    val navType by rememberNavType(currentDestination, windowAdaptiveInfo)
-
-    CompositionLocalProvider(LocalNavType provides navType) {
-        MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, tabletTopAppBar, content)
-    }
+    val navType by rememberNavType(currentDestination)
+    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, tabletTopAppBar, content)
 }
 
 @Composable
@@ -59,10 +55,12 @@ private fun MainScaffold(
     tabletTopAppBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
     Column {
-        if (navType == NavigationSuiteType.NavigationRail) tabletTopAppBar()
+        if (windowAdaptiveInfo.isWindowLarge()) tabletTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
-            if (navType == NavigationSuiteType.NavigationBar) {
+            if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
                     HorizontalDivider()
@@ -77,7 +75,7 @@ private fun MainScaffold(
 @Composable
 private fun rememberNavType(
     currentDestination: MainNavigation,
-    windowAdaptiveInfo: WindowAdaptiveInfo,
+    windowAdaptiveInfo: WindowAdaptiveInfo = LocalWindowAdaptiveInfo.current,
 ): State<NavigationSuiteType> {
 
     val showNavigation by remember(currentDestination) {
@@ -89,12 +87,16 @@ private fun rememberNavType(
     return remember(showNavigation, windowAdaptiveInfo) {
         derivedStateOf {
             if (showNavigation) {
-                NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
+                calculateFromAdaptiveInfo(windowAdaptiveInfo)
             } else {
                 NavigationSuiteType.None
             }
         }
     }
+}
+
+private fun calculateFromAdaptiveInfo(windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
+    return if (windowAdaptiveInfo.isWindowLarge()) NavigationSuiteType.NavigationRail else NavigationSuiteType.NavigationBar
 }
 
 private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
