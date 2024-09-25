@@ -25,15 +25,15 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
-fun PhoneTopAppBarScaffold(
-    phoneTopAppBar: @Composable () -> Unit = {},
+fun SmallWindowTopAppBarScaffold(
+    smallWindowTopAppBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     Scaffold(
-        topBar = { if (windowAdaptiveInfo.isWindowSmall()) phoneTopAppBar() },
+        topBar = { if (windowAdaptiveInfo.isWindowSmall()) smallWindowTopAppBar() },
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
         val paddingValues = if (windowAdaptiveInfo.isWindowSmall()) {

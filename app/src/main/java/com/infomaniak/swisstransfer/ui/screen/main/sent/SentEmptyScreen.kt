@@ -35,8 +35,8 @@ import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun SentEmptyScreen(modifier: Modifier) {
@@ -85,8 +85,8 @@ fun SentEmptyScreen(modifier: Modifier) {
     }
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun SentEmptyScreenPreview() {
     SwissTransferTheme {

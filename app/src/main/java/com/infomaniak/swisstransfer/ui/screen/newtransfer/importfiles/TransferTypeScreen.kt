@@ -40,8 +40,8 @@ import com.infomaniak.swisstransfer.ui.images.illus.WaveSignalTilted
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -> Unit, closeActivity: () -> Unit) {
@@ -105,8 +105,8 @@ enum class TransferType(
     ),
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun TransferTypeScreenPreview() {
     SwissTransferTheme {

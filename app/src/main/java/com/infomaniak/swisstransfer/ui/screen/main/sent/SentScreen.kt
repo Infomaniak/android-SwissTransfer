@@ -29,8 +29,8 @@ import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTobAppBarScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
@@ -65,19 +65,10 @@ private fun SentScreen(transfers: List<Any>?) {
 
 }
 
-@PreviewMobile
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
-private fun SentScreenMobilePreview() {
-    SwissTransferTheme {
-        Surface {
-            SentScreen(transfers = emptyList())
-        }
-    }
-}
-
-@PreviewTablet
-@Composable
-private fun SentScreenTabletPreview() {
+private fun SentScreenPreview() {
     SwissTransferTheme {
         Surface {
             SentScreen(transfers = emptyList())

@@ -33,8 +33,8 @@ import com.infomaniak.swisstransfer.ui.images.illus.LogoInfomaniak
 import com.infomaniak.swisstransfer.ui.images.illus.LogoSwissTransfer
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,8 +58,8 @@ fun BrandTobAppBar() {
     )
 }
 
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun BrandTobAppBarPreview() {
     SwissTransferTheme {

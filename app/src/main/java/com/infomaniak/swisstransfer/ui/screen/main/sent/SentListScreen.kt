@@ -24,8 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewMobile
-import com.infomaniak.swisstransfer.ui.utils.PreviewTablet
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 import java.util.UUID
 
 @Composable
@@ -39,8 +39,8 @@ fun SentListScreen(
         }
     }
 }
-@PreviewMobile
-@PreviewTablet
+@PreviewSmallWindow
+@PreviewLargeWindow
 @Composable
 private fun SentListScreenPreview() {
     SwissTransferTheme {

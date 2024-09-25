@@ -20,50 +20,50 @@ package com.infomaniak.swisstransfer.ui.utils
 import android.content.res.Configuration
 import androidx.compose.ui.tooling.preview.Preview
 
-// Mobile
+// Small window (ex: phone)
 @Preview(
-    name = "(1) Mobile portrait light",
-    group = "Mobile",
+    name = "(1) Small window portrait light",
+    group = "SmallWindow",
 )
 @Preview(
-    name = "(2) Mobile portrait dark",
-    group = "Mobile",
+    name = "(2) Small window portrait dark",
+    group = "SmallWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
 )
 @Preview(
-    name = "(3) Mobile landscape light",
-    group = "Mobile",
+    name = "(3) Small window landscape light",
+    group = "SmallWindow",
     device = "spec:parent=pixel_5,orientation=landscape",
 )
 @Preview(
-    name = "(4) Mobile landscape dark",
-    group = "Mobile",
+    name = "(4) Small window landscape dark",
+    group = "SmallWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
     device = "spec:parent=pixel_5,orientation=landscape",
 )
-annotation class PreviewMobile
+annotation class PreviewSmallWindow
 
-// Tablet
+// Large window (ex: tablet)
 @Preview(
-    name = "(1) Tablet portrait light",
-    group = "Tablet",
+    name = "(1) Large window portrait light",
+    group = "LargeWindow",
     device = "spec:width=1280dp,height=800dp,dpi=240,orientation=portrait",
 )
 @Preview(
-    name = "(2) Tablet portrait dark",
-    group = "Tablet",
+    name = "(2) Large window portrait dark",
+    group = "LargeWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
     device = "spec:width=1280dp,height=800dp,dpi=240,orientation=portrait",
 )
 @Preview(
-    name = "(3) Tablet landscape light",
-    group = "Tablet",
+    name = "(3) Large window landscape light",
+    group = "LargeWindow",
     device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
 )
 @Preview(
-    name = "(4) Tablet landscape dark",
-    group = "Tablet",
+    name = "(4) Large window landscape dark",
+    group = "LargeWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
     device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
 )
-annotation class PreviewTablet
+annotation class PreviewLargeWindow
