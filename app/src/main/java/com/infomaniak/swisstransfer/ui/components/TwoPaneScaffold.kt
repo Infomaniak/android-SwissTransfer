@@ -18,10 +18,14 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldValue
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
@@ -69,8 +73,24 @@ fun <T> TwoPaneScaffold(
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
-        listPane = { AnimatedPane { navigator.listPane() } },
-        detailPane = { AnimatedPane { navigator.detailPane() } },
+        listPane = {
+            scaffoldStateTransition.AnimatedVisibility(
+                visible = { value: ThreePaneScaffoldValue -> value[role] != PaneAdaptedValue.Hidden },
+                enter = slideInHorizontally(),
+                exit = slideOutHorizontally(),
+            ) {
+                navigator.listPane()
+            }
+        },
+        detailPane = {
+            scaffoldStateTransition.AnimatedVisibility(
+                visible = { value: ThreePaneScaffoldValue -> value[role] != PaneAdaptedValue.Hidden },
+                enter = slideInHorizontally(initialOffsetX = {it / 2}),
+                exit = slideOutHorizontally(targetOffsetX = {it / 2}),
+            ) {
+                navigator.detailPane()
+            }
+        },
         modifier = modifier,
     )
 }
