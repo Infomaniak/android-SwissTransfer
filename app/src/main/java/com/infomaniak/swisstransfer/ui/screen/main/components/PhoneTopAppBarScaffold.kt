@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun PhoneTopAppBarScaffold(
@@ -32,6 +33,11 @@ fun PhoneTopAppBarScaffold(
         topBar = { if (LocalNavType.current == NavigationSuiteType.NavigationBar) phoneTopAppBar() },
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
-        content(contentPadding)
+        val paddingValues = if (LocalNavType.current == NavigationSuiteType.NavigationBar) {
+            contentPadding
+        } else {
+            PaddingValues(all = 0.dp)
+        }
+        content(paddingValues)
     }
 }

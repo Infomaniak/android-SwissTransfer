@@ -67,7 +67,7 @@ private fun MainScaffold(
             } else {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
-                    HorizontalDivider()
+                    if (navType == NavigationSuiteType.NavigationBar) HorizontalDivider()
                 }
             }
         }

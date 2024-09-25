@@ -123,11 +123,11 @@ private fun AppNavigationRail(
             )
         },
         containerColor = SwissTransferTheme.colors.navigationItemBackground,
+        windowInsets = WindowInsets(left = 0, top = 0, right = 0, bottom = 0),
     ) {
         navigationItems.forEach { navigationItem ->
             NavigationRailItem(
                 icon = { NavigationIcon(false, navigationItem) },
-                label = {},
                 selected = currentDestination == navigationItem.destination,
                 onClick = { onClick(navigationItem.destination) },
             )
