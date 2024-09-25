@@ -29,7 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTobAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
@@ -47,7 +47,7 @@ fun OptionScaffold(
     navigateBack: (() -> Unit)?,
 ) {
     SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = { SwissTransferTobAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
+        smallWindowTopAppBar = { SwissTransferTopAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
     ) { paddingsValue ->
         Column(
             modifier = Modifier

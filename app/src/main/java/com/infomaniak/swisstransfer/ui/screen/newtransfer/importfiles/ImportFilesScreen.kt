@@ -34,12 +34,13 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: () -> Unit) {
+
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
     var isNextButtonEnabled by rememberSaveable { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
         topBar = {
-            SwissTransferTobAppBar(
+            SwissTransferTopAppBar(
                 titleRes = R.string.importFilesScreenTitle,
                 navigationMenu = null,
                 TopAppBarButton.closeButton { closeActivity() },

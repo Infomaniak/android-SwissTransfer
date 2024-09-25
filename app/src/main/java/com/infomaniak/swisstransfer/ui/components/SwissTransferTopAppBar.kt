@@ -34,10 +34,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SwissTransferTobAppBar(
+fun SwissTransferTopAppBar(
     @StringRes titleRes: Int,
     navigationMenu: TopAppBarButton? = null,
-    vararg actionMenus: TopAppBarButton
+    vararg actionMenus: TopAppBarButton,
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -78,9 +78,9 @@ data class TopAppBarButton(
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun SwissTransferTobAppBarPreview() {
+private fun SwissTransferTopAppBarPreview() {
     SwissTransferTheme {
-        SwissTransferTobAppBar(
+        SwissTransferTopAppBar(
             titleRes = R.string.appName,
             navigationMenu = TopAppBarButton.backButton {},
             TopAppBarButton(AppIcons.Add, R.string.appName) {},
