@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
@@ -24,9 +26,8 @@ import androidx.window.core.layout.WindowWidthSizeClass
 /**
  * Determines if the current window is classified as a large window suitable for tablet devices.
  *
- * A window is considered large if its width size class is [WindowWidthSizeClass.EXPANDED]
- * and its height size class is not [WindowHeightSizeClass.COMPACT]. This function can be used
- * to adapt the UI layout for larger screens, ensuring a better user experience on tablet devices.
+ * This is typically used to adapt the UI, such as displaying a list-detail layout or using a [NavigationRail]
+ * vs a [NavigationBar] for navigation.
  *
  * @return `true` if the window is large (tablet), `false` otherwise.
  */
@@ -37,9 +38,8 @@ fun WindowAdaptiveInfo.isWindowLarge(): Boolean = with(windowSizeClass) {
 /**
  * Determines if the current window is classified as a small window suitable for mobile devices.
  *
- * A window is considered small if its width size class is not [WindowWidthSizeClass.EXPANDED]
- * or its height size class is [WindowHeightSizeClass.COMPACT]. This function can be used
- * to adapt the UI layout for smaller screens, ensuring a better user experience on mobile devices.
+ * This is typically used to adapt the UI, such as displaying a list-detail layout or using a [NavigationRail]
+ * vs a [NavigationBar] for navigation.
  *
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
