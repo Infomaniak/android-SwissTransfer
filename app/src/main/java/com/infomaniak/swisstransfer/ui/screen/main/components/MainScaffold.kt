@@ -62,13 +62,13 @@ private fun MainScaffold(
     Column {
         if (navType == NavigationSuiteType.NavigationRail) tabletTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
-            if (navType == NavigationSuiteType.None) {
-                content()
-            } else {
+            if (navType == NavigationSuiteType.NavigationBar) {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
-                    if (navType == NavigationSuiteType.NavigationBar) HorizontalDivider()
+                    HorizontalDivider()
                 }
+            } else {
+                content()
             }
         }
     }
