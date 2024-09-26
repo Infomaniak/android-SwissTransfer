@@ -60,31 +60,23 @@ fun SettingsScreenWrapper(
         val emailLanguage =
             GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
 
-        SettingsScreenWrapper(windowAdaptiveInfo, theme, validityPeriod, downloadLimit, emailLanguage)
+        SettingsScreenWrapper(theme, validityPeriod, downloadLimit, emailLanguage)
     }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SettingsScreenWrapper(
-    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
     theme: GetSetCallbacks<Theme>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        windowAdaptiveInfo = windowAdaptiveInfo,
         listPane = { ListPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
         detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
-
-@Immutable
-class GetSetCallbacks<T>(
-    val get: () -> T,
-    val set: (T) -> Unit,
-)
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable

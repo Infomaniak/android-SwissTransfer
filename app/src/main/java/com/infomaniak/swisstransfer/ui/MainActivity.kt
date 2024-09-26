@@ -21,11 +21,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -37,11 +36,14 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val settingsViewModel: SettingsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SwissTransferTheme(isDarkTheme = isDarkTheme()) {
+            val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+            SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                 MainScreen()
             }
         }
@@ -49,11 +51,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun isDarkTheme(): Boolean {
+fun isDarkTheme(getTheme: () -> Theme?): Boolean {
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
-    return appSettings?.let {
-        if (it.theme == Theme.SYSTEM) isSystemInDarkTheme() else it.theme == Theme.DARK
+    return getTheme()?.let {
+        if (it == Theme.SYSTEM) isSystemInDarkTheme() else it== Theme.DARK
     } ?: isSystemInDarkTheme()
 }
