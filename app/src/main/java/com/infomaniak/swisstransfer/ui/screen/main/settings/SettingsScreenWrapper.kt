@@ -27,47 +27,75 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.*
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SettingsScreenWrapper(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
     appSettings?.let { safeAppSettings ->
-        TwoPaneScaffold<SettingsOptionScreens>(
-            listPane = { ListPane(this, safeAppSettings) },
-            detailPane = { DetailPane(safeAppSettings, settingsViewModel, navigator = this) },
-        )
+        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
+        val validityPeriod =
+            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { settingsViewModel.setValidityPeriod(it) })
+        val downloadLimit =
+            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { settingsViewModel.setDownloadLimit(it) })
+        val emailLanguage =
+            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
+
+        SettingsScreenWrapper(theme, validityPeriod, downloadLimit, emailLanguage)
     }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>, appSettings: AppSettings) {
+fun SettingsScreenWrapper(
+    theme: GetSetCallbacks<Theme>,
+    validityPeriod: GetSetCallbacks<ValidityPeriod>,
+    downloadLimit: GetSetCallbacks<DownloadLimit>,
+    emailLanguage: GetSetCallbacks<EmailLanguage>,
+) {
+    TwoPaneScaffold<SettingsOptionScreens>(
+        listPane = { ListPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+    )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun ListPane(
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    theme: GetSetCallbacks<Theme>,
+    validityPeriod: GetSetCallbacks<ValidityPeriod>,
+    downloadLimit: GetSetCallbacks<DownloadLimit>,
+    emailLanguage: GetSetCallbacks<EmailLanguage>,
+) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
     val userReportURL = stringResource(R.string.urlUserReportAndroid)
 
     SettingsScreen(
-        appSettings,
+        theme,
+        validityPeriod,
+        downloadLimit,
+        emailLanguage,
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
@@ -87,9 +115,11 @@ private fun ListPane(navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun DetailPane(
-    appSettings: AppSettings,
-    settingsViewModel: SettingsViewModel,
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    theme: GetSetCallbacks<Theme>,
+    validityPeriod: GetSetCallbacks<ValidityPeriod>,
+    downloadLimit: GetSetCallbacks<DownloadLimit>,
+    emailLanguage: GetSetCallbacks<EmailLanguage>,
 ) {
     var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
 
@@ -101,24 +131,24 @@ private fun DetailPane(
 
     when (destination) {
         THEME -> SettingsThemeScreen(
-            theme = appSettings.theme,
+            theme = theme.get(),
             navigateBack = navigateBack,
-            onThemeUpdate = settingsViewModel::setTheme,
+            onThemeUpdate = { theme.set(it) },
         )
         VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
-            validityPeriod = appSettings.validityPeriod,
+            validityPeriod = validityPeriod.get(),
             navigateBack = navigateBack,
-            onValidityPeriodChange = settingsViewModel::setValidityPeriod,
+            onValidityPeriodChange = { validityPeriod.set(it) },
         )
         DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
-            downloadLimit = appSettings.downloadLimit,
+            downloadLimit = downloadLimit.get(),
             navigateBack = navigateBack,
-            onDownloadLimitChange = settingsViewModel::setDownloadLimit,
+            onDownloadLimitChange = { downloadLimit.set(it) },
         )
         EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
-            emailLanguage = appSettings.emailLanguage,
+            emailLanguage = emailLanguage.get(),
             navigateBack = navigateBack,
-            onEmailLanguageChange = settingsViewModel::setEmailLanguage,
+            onEmailLanguageChange = { emailLanguage.set(it) },
         )
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
@@ -142,7 +172,12 @@ private fun NoSelectionEmptyState() {
 private fun SettingsScreenWrapperPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreenWrapper()
+            SettingsScreenWrapper(
+                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
+                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWOHUNDREDFIFTY }, set = {}),
+                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
+            )
         }
     }
 }

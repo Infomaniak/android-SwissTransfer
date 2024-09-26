@@ -32,10 +32,10 @@ val LocalWindowAdaptiveInfo = staticCompositionLocalOf<WindowAdaptiveInfo> { err
 
 @Composable
 fun SwissTransferTheme(
-    darkTheme: Boolean = isDarkTheme(),
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val customColors = if (darkTheme) CustomDarkColorScheme else CustomLightColorScheme
+    val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
     CompositionLocalProvider(
         LocalCustomTypography provides Typography,
         LocalTextStyle provides Typography.bodyRegular,
@@ -43,18 +43,11 @@ fun SwissTransferTheme(
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
     ) {
         MaterialTheme(
-            colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+            colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
             content = content,
         )
     }
-}
-
-@Composable
-fun isDarkTheme(): Boolean {
-    // rememberMutableStateOf
-    // TODO check in realm. If system, isSystemDark, otherwise,
-    return isSystemInDarkTheme()
 }
 
 object SwissTransferTheme {
