@@ -88,7 +88,7 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
         return getColumnIndex(column).takeIf { it != -1 }
     }
 
-    fun setFiles(uris: List<Uri>) {
-        _fileUris.value = uris
+    fun addFiles(uris: List<Uri>) {
+        _fileUris.value += uris
     }
 }

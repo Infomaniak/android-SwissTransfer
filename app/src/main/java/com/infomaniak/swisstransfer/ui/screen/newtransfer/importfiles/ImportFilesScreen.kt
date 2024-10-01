@@ -44,13 +44,13 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
 ) {
     val transferFiles by newTransferViewModel.transferFiles.collectAsState()
-    ImportFilesScreen({ transferFiles }, newTransferViewModel::setFiles, closeActivity, navigateToTransferTypeScreen)
+    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, closeActivity, navigateToTransferTypeScreen)
 }
 
 @Composable
 private fun ImportFilesScreen(
     transferFiles: () -> List<NewTransferViewModel.TransferFile>,
-    setFiles: (List<Uri>) -> Unit,
+    addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     navigateToTransferTypeScreen: () -> Unit
 ) {
@@ -60,7 +60,7 @@ private fun ImportFilesScreen(
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
     ) { uris: List<Uri> ->
-        setFiles(uris)
+        addFiles(uris)
     }
 
     BottomStickyButtonScaffold(
