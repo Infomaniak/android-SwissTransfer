@@ -20,38 +20,47 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: () -> Unit) {
+fun ImportFilesScreen(
+    newTransferViewModel: NewTransferViewModel = viewModel(),
+    navigateToTransferTypeScreen: () -> Unit,
+    closeActivity: () -> Unit,
+) {
+    val transferFiles by newTransferViewModel.transferFiles.collectAsState()
+    ImportFilesScreen({ transferFiles }, newTransferViewModel::setFiles, closeActivity, navigateToTransferTypeScreen)
+}
 
+@Composable
+private fun ImportFilesScreen(
+    transferFiles: () -> List<NewTransferViewModel.TransferFile>,
+    setFiles: (List<Uri>) -> Unit,
+    closeActivity: () -> Unit,
+    navigateToTransferTypeScreen: () -> Unit
+) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-
-    var fileNames by rememberSaveable { mutableStateOf(listOf<String>()) }
-    val isNextButtonEnabled by remember { derivedStateOf { fileNames.isNotEmpty() } }
+    val isNextButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
     ) { uris: List<Uri> ->
-        fileNames = uris.map { uri ->
-            uri.lastPathSegment?.split("/")?.last() ?: "Unknown file"
-        }
+        setFiles(uris)
     }
 
     BottomStickyButtonScaffold(
@@ -80,10 +89,10 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: (
             )
         },
         content = {
-            if (fileNames.isNotEmpty()) {
+            if (transferFiles().isNotEmpty()) {
                 LazyColumn {
-                    items(fileNames) { fileName ->
-                        Text(text = fileName, modifier = Modifier.padding(8.dp))
+                    items(items = transferFiles(), key = { it.uri }) { file ->
+                        Text(text = "${file.metadata.fileName} - ${file.metadata.size}")
                     }
                 }
             } else {
@@ -108,6 +117,6 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: (
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
-        ImportFilesScreen({}, {})
+        ImportFilesScreen({ emptyList() }, {}, navigateToTransferTypeScreen = {}, closeActivity = {})
     }
 }
