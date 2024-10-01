@@ -17,11 +17,17 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -36,7 +42,17 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: () -> Unit) {
 
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    var isNextButtonEnabled by rememberSaveable { mutableStateOf(false) }
+
+    var fileNames by rememberSaveable { mutableStateOf(listOf<String>()) }
+    val isNextButtonEnabled by remember { derivedStateOf { fileNames.isNotEmpty() } }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments()
+    ) { uris: List<Uri> ->
+        fileNames = uris.map { uri ->
+            uri.lastPathSegment?.split("/")?.last() ?: "Unknown file"
+        }
+    }
 
     BottomStickyButtonScaffold(
         topBar = {
@@ -52,10 +68,7 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: (
                 titleRes = R.string.buttonAddFiles,
                 imageVector = AppIcons.Add,
                 style = ButtonType.TERTIARY,
-                onClick = {
-                    showUploadSourceChoiceBottomSheet = true
-                    isNextButtonEnabled = true // TODO: Move this where it should be
-                },
+                onClick = { showUploadSourceChoiceBottomSheet = true },
             )
         },
         bottomButton = { modifier ->
@@ -67,14 +80,24 @@ fun ImportFilesScreen(navigateToTransferTypeScreen: () -> Unit, closeActivity: (
             )
         },
         content = {
-            EmptyState(
-                icon = AppIllus.MascotWithMagnifyingGlass,
-                title = R.string.noFileTitle,
-                description = R.string.noFileDescription,
-            )
+            if (fileNames.isNotEmpty()) {
+                LazyColumn {
+                    items(fileNames) { fileName ->
+                        Text(text = fileName, modifier = Modifier.padding(8.dp))
+                    }
+                }
+            } else {
+                EmptyState(
+                    icon = AppIllus.MascotWithMagnifyingGlass,
+                    title = R.string.noFileTitle,
+                    description = R.string.noFileDescription,
+                )
+            }
+
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
-                onDismissRequest = { showUploadSourceChoiceBottomSheet = false },
+                onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
+                closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )
         },
     )

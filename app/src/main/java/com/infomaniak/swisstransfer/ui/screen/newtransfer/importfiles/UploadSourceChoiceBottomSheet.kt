@@ -38,30 +38,40 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 @Composable
 fun UploadSourceChoiceBottomSheet(
     isBottomSheetVisible: () -> Boolean,
-    onDismissRequest: () -> Unit,
+    onFilePickerClicked: () -> Unit,
+    closeBottomSheet: () -> Unit,
 ) {
     if (isBottomSheetVisible()) {
         SwissTransferBottomSheet(
-            onDismissRequest = onDismissRequest,
+            onDismissRequest = closeBottomSheet,
             titleRes = R.string.transferUploadSourceChoiceTitle,
             content = {
                 Column {
                     BottomSheetItem(
                         imageVector = AppIcons.Camera,
                         titleRes = R.string.transferUploadSourceChoiceCamera,
-                        onClick = { /* TODO */ },
+                        onClick = {
+                            closeBottomSheet()
+                            /* TODO */
+                        },
                     )
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(
                         imageVector = AppIcons.PolaroidLandscape,
                         titleRes = R.string.transferUploadSourceChoiceGallery,
-                        onClick = { /* TODO */ },
+                        onClick = {
+                            closeBottomSheet()
+                            /* TODO */
+                        },
                     )
                     HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
                     BottomSheetItem(
                         imageVector = AppIcons.Folder,
                         titleRes = R.string.transferUploadSourceChoiceFiles,
-                        onClick = { /* TODO */ },
+                        onClick = {
+                            closeBottomSheet()
+                            onFilePickerClicked()
+                        },
                     )
                 }
             },
@@ -75,7 +85,11 @@ fun UploadSourceChoiceBottomSheet(
 private fun UploadSourceChoiceBottomSheetPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSourceChoiceBottomSheet(isBottomSheetVisible = { true }, onDismissRequest = {})
+            UploadSourceChoiceBottomSheet(
+                isBottomSheetVisible = { true },
+                onFilePickerClicked = {},
+                closeBottomSheet = {}
+            )
         }
     }
 }
