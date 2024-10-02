@@ -81,7 +81,8 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
             }
         } ?: false
 
-        return if (isSuccess) TransferFile(TransferFile.Metadata(fileName!!, fileSize!!), uri) else TransferFile(null, uri)
+        val metadata = if (isSuccess) TransferFile.Metadata(customFileName, fileSize!!) else null
+        return TransferFile(metadata, uri)
     }
 
     private fun Cursor.getColumnIndexOrNull(column: String): Int? {
