@@ -26,6 +26,7 @@ import android.provider.OpenableColumns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.FileNameUtils.postfixExistingFileNames
 import kotlinx.coroutines.flow.*
 
 class NewTransferViewModel(application: Application) : AndroidViewModel(application) {
@@ -43,6 +44,18 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
+        )
+
+    private val alreadyUsedFileNames: StateFlow<Set<String>> = transferFiles
+        .map { files ->
+            buildSet {
+                files.forEach { add(it.metadata.fileName) }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptySet(),
         )
 
     val failedTransferFileCount: StateFlow<Int> = _transferFiles.map { files -> files.count { !it.isSuccessfullyImported } }
@@ -80,6 +93,8 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
                 return@use false
             }
         } ?: false
+
+        val customFileName = postfixExistingFileNames(fileName!!, alreadyUsedFileNames.value)
 
         val metadata = if (isSuccess) TransferFile.Metadata(customFileName, fileSize!!) else null
         return TransferFile(metadata, uri)
