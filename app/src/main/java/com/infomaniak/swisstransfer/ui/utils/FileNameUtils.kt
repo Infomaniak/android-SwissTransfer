@@ -18,45 +18,54 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 object FileNameUtils {
-    private val ALREADY_POSTFIXED_REGEX = Regex("""(.*\()(\d)(\))$""")
-
     fun postfixExistingFileNames(wholeFileName: String, existingFileNames: Set<String>): String {
         return if (wholeFileName in existingFileNames) {
-            val (name, ext) = splitNameAndExtension(wholeFileName)
+            val postfixedFileName = PostfixedFileName.fromFileName(wholeFileName)
 
-            var (nameStart, namePostfixNumber, nameEnd) = ALREADY_POSTFIXED_REGEX.find(name)?.let {
-                Triple(it.groupValues[1], (it.groupValues[2]).toInt(), it.groupValues[3])
-            } ?: Triple("$name(", 0, ")")
-
-            fun incrementFileNamePostfix() = incrementFileNamePostfix(nameStart, namePostfixNumber, nameEnd, ext)
-
-            var newName = incrementFileNamePostfix()
-            while (newName in existingFileNames) {
-                namePostfixNumber += 1
-                newName = incrementFileNamePostfix()
+            while (postfixedFileName.assembleFileName() in existingFileNames) {
+                postfixedFileName.incrementPostfix()
             }
 
-            newName
+            postfixedFileName.assembleFileName()
         } else {
             wholeFileName
         }
     }
 
-    private fun incrementFileNamePostfix(
-        nameStart: String,
-        previousPostfixNumber: Int,
-        nameEnd: String,
-        ext: String,
-    ) = "$nameStart${(previousPostfixNumber + 1)}$nameEnd$ext"
+    private data class PostfixedFileName(
+        val start: String,
+        var postfixNumber: Int,
+        val end: String,
+        val extension: String,
+    ) {
+        fun incrementPostfix() {
+            postfixNumber += 1
+        }
 
-    private fun splitNameAndExtension(fileName: String): Pair<String, String> {
-        val dotIndex = fileName.lastIndexOf('.')
+        fun assembleFileName(): String = "$start$postfixNumber$end$extension"
 
-        // If there's no dot or it's the first/last character, return the whole name and an empty extension
-        return if (dotIndex == -1 || dotIndex == 0 || dotIndex == fileName.length - 1) {
-            fileName to ""
-        } else {
-            fileName.substring(0, dotIndex) to fileName.substring(dotIndex)
+        companion object {
+            fun fromFileName(wholeFileName: String): PostfixedFileName {
+                val (name, ext) = splitNameAndExtension(wholeFileName)
+
+                return PostfixedFileName(
+                    start = "$name(",
+                    postfixNumber = 1,
+                    end = ")",
+                    extension = ext,
+                )
+            }
+
+            private fun splitNameAndExtension(fileName: String): Pair<String, String> {
+                val dotIndex = fileName.lastIndexOf('.')
+
+                // If there's no dot or it's the first/last character, return the whole name and an empty extension
+                return if (dotIndex == -1 || dotIndex == 0 || dotIndex == fileName.length - 1) {
+                    fileName to ""
+                } else {
+                    fileName.substring(0, dotIndex) to fileName.substring(dotIndex)
+                }
+            }
         }
     }
 }
