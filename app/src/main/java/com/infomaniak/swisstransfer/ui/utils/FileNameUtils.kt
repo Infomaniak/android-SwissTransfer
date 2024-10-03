@@ -18,35 +18,36 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 object FileNameUtils {
-    fun postfixExistingFileNames(wholeFileName: String, existingFileNames: Set<String>): String {
-        return if (wholeFileName in existingFileNames) {
-            val postfixedFileName = PostfixedFileName.fromFileName(wholeFileName)
 
-            while (postfixedFileName.assembleFileName() in existingFileNames) {
+    fun postfixExistingFileNames(fileName: String, existingFileNames: Set<String>): String {
+        return if (fileName in existingFileNames) {
+            val postfixedFileName = PostfixedFileName.fromFileName(fileName)
+
+            while (postfixedFileName.fullName() in existingFileNames) {
                 postfixedFileName.incrementPostfix()
             }
 
-            postfixedFileName.assembleFileName()
+            postfixedFileName.fullName()
         } else {
-            wholeFileName
+            fileName
         }
     }
 
     private data class PostfixedFileName(
-        val start: String,
-        var postfixNumber: Int,
-        val end: String,
-        val extension: String,
+        private val start: String,
+        private var postfixNumber: Int,
+        private val end: String,
+        private val extension: String,
     ) {
         fun incrementPostfix() {
             postfixNumber += 1
         }
 
-        fun assembleFileName(): String = "$start$postfixNumber$end$extension"
+        fun fullName(): String = "$start$postfixNumber$end$extension"
 
         companion object {
-            fun fromFileName(wholeFileName: String): PostfixedFileName {
-                val (name, ext) = splitNameAndExtension(wholeFileName)
+            fun fromFileName(fileName: String): PostfixedFileName {
+                val (name, ext) = splitNameAndExtension(fileName)
 
                 return PostfixedFileName(
                     start = "$name(",
@@ -60,7 +61,7 @@ object FileNameUtils {
                 val dotIndex = fileName.lastIndexOf('.')
 
                 // If there's no dot or it's the first/last character, return the whole name and an empty extension
-                return if (dotIndex == -1 || dotIndex == 0 || dotIndex == fileName.length - 1) {
+                return if (dotIndex == -1) {
                     fileName to ""
                 } else {
                     fileName.substring(0, dotIndex) to fileName.substring(dotIndex)

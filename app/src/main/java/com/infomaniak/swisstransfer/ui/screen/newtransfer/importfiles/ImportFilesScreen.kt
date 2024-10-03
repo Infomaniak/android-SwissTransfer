@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -33,6 +34,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFile
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
@@ -43,16 +45,16 @@ fun ImportFilesScreen(
     navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
-    val transferFiles by newTransferViewModel.successfulTransferFiles.collectAsState()
-    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, closeActivity, navigateToTransferTypeScreen)
+    val transferFiles by newTransferViewModel.transferFiles.collectAsStateWithLifecycle()
+    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, navigateToTransferTypeScreen, closeActivity)
 }
 
 @Composable
 private fun ImportFilesScreen(
-    transferFiles: () -> List<NewTransferViewModel.TransferFile>,
+    transferFiles: () -> List<TransferFile>,
     addFiles: (List<Uri>) -> Unit,
+    navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
-    navigateToTransferTypeScreen: () -> Unit
 ) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
     val isNextButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
@@ -89,18 +91,18 @@ private fun ImportFilesScreen(
             )
         },
         content = {
-            if (transferFiles().isNotEmpty()) {
-                LazyColumn {
-                    items(items = transferFiles(), key = { it.metadata.fileName }) { file ->
-                        Text(text = "${file.metadata.fileName} - ${file.metadata.size}")
-                    }
-                }
-            } else {
+            if (transferFiles().isEmpty()) {
                 EmptyState(
                     icon = AppIllus.MascotWithMagnifyingGlass,
                     title = R.string.noFileTitle,
                     description = R.string.noFileDescription,
                 )
+            } else {
+                LazyColumn {
+                    items(items = transferFiles(), key = { it.fileName }) { file ->
+                        Text(text = "${file.fileName} - ${file.size}")
+                    }
+                }
             }
 
             UploadSourceChoiceBottomSheet(

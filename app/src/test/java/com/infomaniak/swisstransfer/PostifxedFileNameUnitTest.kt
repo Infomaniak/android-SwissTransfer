@@ -84,6 +84,6 @@ class PostifxedFileNameUnitTest {
 
     companion object {
         // Used for tests that require to check existing filenames among multiple edge case already existing filenames
-        val alreadyUsedFileNames = setOf("test.txt", "test(1).txt", "test(2).txt", "hello.txt")
+        private val alreadyUsedFileNames = setOf("test.txt", "test(1).txt", "test(2).txt", "hello.txt")
     }
 }
