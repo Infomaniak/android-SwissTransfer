@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Infomaniak SwissTransfer - Android
   ~ Copyright (C) 2024 Infomaniak Network SA
   ~
@@ -17,12 +17,11 @@
   -->
 <resources>
 
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/Theme.AndroidSwissTransfer</item>
+    <style name="Theme.App.Starting32" parent="Theme.App.Starting31">
+        <!-- Not a magic value: "The maximum animation duration should be limited below 1000ms." -->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
     </style>
 
-    <style name="Theme.AppStarting" parent="Theme.App.Starting" />
-
-    <style name="Theme.AndroidSwissTransfer" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.AppStarting" parent="Theme.App.Starting32" />
 
 </resources>

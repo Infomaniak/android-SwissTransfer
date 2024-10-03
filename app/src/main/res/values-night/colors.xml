@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Infomaniak SwissTransfer - Android
   ~ Copyright (C) 2024 Infomaniak Network SA
   ~
@@ -16,13 +16,5 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/Theme.AndroidSwissTransfer</item>
-    </style>
-
-    <style name="Theme.AppStarting" parent="Theme.App.Starting" />
-
-    <style name="Theme.AndroidSwissTransfer" parent="android:Theme.Material.Light.NoActionBar" />
-
+    <color name="splashscreen_background_color">#004757</color>
 </resources>

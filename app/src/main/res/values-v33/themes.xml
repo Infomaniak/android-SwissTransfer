@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ Infomaniak SwissTransfer - Android
   ~ Copyright (C) 2024 Infomaniak Network SA
   ~
@@ -17,12 +17,10 @@
   -->
 <resources>
 
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/Theme.AndroidSwissTransfer</item>
+    <style name="Theme.App.Starting33" parent="Theme.App.Starting32">
+        <item name="android:windowSplashScreenBehavior">icon_preferred</item>
     </style>
 
-    <style name="Theme.AppStarting" parent="Theme.App.Starting" />
-
-    <style name="Theme.AndroidSwissTransfer" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.AppStarting" parent="Theme.App.Starting33" />
 
 </resources>
