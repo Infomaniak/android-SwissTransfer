@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
@@ -38,8 +39,11 @@ class LaunchActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        startTargetActivity()
-        finish()
+        // TODO: Remove this after SplashScreen tests.
+        findViewById<View>(android.R.id.content).viewTreeObserver.addOnPreDrawListener { false }
+
+        // startTargetActivity()
+        // finish()
     }
 
     private fun startTargetActivity() {
