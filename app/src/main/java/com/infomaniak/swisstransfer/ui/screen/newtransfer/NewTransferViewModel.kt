@@ -17,19 +17,20 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import android.app.Application
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.swisstransfer.ui.MainApplication
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFileUtils.getTransferFile
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NewTransferViewModel(application: Application) : AndroidViewModel(application) {
-    private val context get() = getApplication<MainApplication>() as Context
+@HiltViewModel
+class NewTransferViewModel @Inject constructor(@ApplicationContext private val appContext: Context) : ViewModel() {
 
     val transferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
     val failedTransferFileCount = MutableSharedFlow<Int>()
@@ -40,7 +41,7 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
 
             var failedFileCount = 0
             uris.forEach { uri ->
-                context.getTransferFile(uri, alreadyUsedFileNames)?.let { transferFile ->
+                appContext.getTransferFile(uri, alreadyUsedFileNames)?.let { transferFile ->
                     transferFiles.value += transferFile
                 } ?: run {
                     failedFileCount++

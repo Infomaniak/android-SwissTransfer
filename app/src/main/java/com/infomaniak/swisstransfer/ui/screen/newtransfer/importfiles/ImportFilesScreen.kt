@@ -25,8 +25,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun ImportFilesScreen(
-    newTransferViewModel: NewTransferViewModel = viewModel(),
+    newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
