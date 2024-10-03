@@ -29,7 +29,21 @@ import javax.inject.Singleton
 
 @Singleton
 class TransferFileUtils @Inject constructor(@ApplicationContext private val appContext: Context) {
-    fun getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): TransferFile? {
+    fun getTransferFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<TransferFile> {
+        val currentUsedFileNames = alreadyUsedFileNames.toMutableSet()
+        val transferFiles = mutableSetOf<TransferFile>()
+
+        uris.forEach { uri ->
+            getTransferFile(uri, currentUsedFileNames)?.let { transferFile ->
+                currentUsedFileNames += transferFile.fileName
+                transferFiles += transferFile
+            }
+        }
+
+        return transferFiles
+    }
+
+    private fun getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): TransferFile? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 

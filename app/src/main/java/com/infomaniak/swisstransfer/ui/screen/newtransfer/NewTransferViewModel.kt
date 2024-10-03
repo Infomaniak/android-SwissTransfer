@@ -36,16 +36,10 @@ class NewTransferViewModel @Inject constructor(private val transferFileUtils: Tr
         viewModelScope.launch {
             val alreadyUsedFileNames = buildSet { transferFiles.value.forEach { add(it.fileName) } }
 
-            var failedFileCount = 0
-            uris.forEach { uri ->
-                transferFileUtils.getTransferFile(uri, alreadyUsedFileNames)?.let { transferFile ->
-                    transferFiles.value += transferFile
-                } ?: run {
-                    failedFileCount++
-                }
-            }
+            val newTransferFiles = transferFileUtils.getTransferFiles(uris, alreadyUsedFileNames)
 
-            failedTransferFileCount.emit(failedFileCount)
+            transferFiles.value += newTransferFiles
+            failedTransferFileCount.emit(uris.count() - newTransferFiles.count())
         }
     }
 }
