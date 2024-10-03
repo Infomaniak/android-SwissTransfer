@@ -72,6 +72,16 @@ class PostifxedFileNameUnitTest {
         assertAlreadyExistingFileName(inputFileName = "file.abc.def.ghi", expectedFileName = "file.abc.def(1).ghi")
     }
 
+    @Test
+    fun unusedDotEndingFileName_isUnchanged() {
+        assertNewFileNameIsUnchanged(inputFileName = "file.")
+    }
+
+    @Test
+    fun usedDotEndingFileName_isPostfixed() {
+        assertAlreadyExistingFileName(inputFileName = "file.", expectedFileName = "file(1).")
+    }
+
     private fun assertAlreadyExistingFileName(inputFileName: String, expectedFileName: String) {
         val newName = postfixExistingFileNames(inputFileName, setOf(inputFileName))
         assertEquals(newName, expectedFileName)
