@@ -26,14 +26,12 @@ import android.provider.OpenableColumns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.ui.MainApplication
-import com.infomaniak.swisstransfer.ui.utils.FileNameUtils.postfixExistingFileNames
 import kotlinx.coroutines.flow.*
 
 class NewTransferViewModel(application: Application) : AndroidViewModel(application) {
     private val context get() = getApplication<MainApplication>() as Context
 
     private val _fileUris = MutableStateFlow<List<Uri>>(emptyList())
-    val fileUris: StateFlow<List<Uri>> = _fileUris
 
     private val _transferFiles: Flow<List<TransferFile>> = _fileUris
         .map { uris -> uris.map { getFileNameAndSize(it) } }
@@ -65,46 +63,41 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
             initialValue = 0
         )
 
-    data class TransferFile(private val _metadata: Metadata?, val uri: Uri) {
-        val isSuccessfullyImported = _metadata != null
-        val metadata = _metadata!!
-
-        data class Metadata(val fileName: String, val size: Long)
+    fun addFiles(uris: List<Uri>) {
+        _fileUris.value += uris
     }
 
-
     private fun getFileNameAndSize(uri: Uri): TransferFile {
-        var fileName: String? = null
-        var fileSize: Long? = null
-
         val contentResolver: ContentResolver = context.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
-        val isSuccess = cursor?.use {
+        return TransferFile(getFileMetadata(cursor), uri)
+    }
+
+    private fun getFileMetadata(cursor: Cursor?): TransferFile.Metadata? {
+        cursor?.use {
             if (it.moveToFirst()) {
-                val displayNameColumnIndex = it.getColumnIndexOrNull(OpenableColumns.DISPLAY_NAME) ?: return@use false
-                fileName = it.getString(displayNameColumnIndex)
+                val displayNameColumnIndex = it.getColumnIndexOrNull(OpenableColumns.DISPLAY_NAME) ?: return null
+                val fileName = it.getString(displayNameColumnIndex)
 
-                val fileSizeColumnIndex = it.getColumnIndexOrNull(OpenableColumns.SIZE) ?: return@use false
-                fileSize = it.getLong(fileSizeColumnIndex)
+                val fileSizeColumnIndex = it.getColumnIndexOrNull(OpenableColumns.SIZE) ?: return null
+                val fileSize = it.getLong(fileSizeColumnIndex)
 
-                return@use true
+                return TransferFile.Metadata(fileName, fileSize)
             } else {
-                return@use false
+                return null
             }
-        } ?: false
-
-        val customFileName = postfixExistingFileNames(fileName!!, alreadyUsedFileNames.value)
-
-        val metadata = if (isSuccess) TransferFile.Metadata(customFileName, fileSize!!) else null
-        return TransferFile(metadata, uri)
+        } ?: return null
     }
 
     private fun Cursor.getColumnIndexOrNull(column: String): Int? {
         return getColumnIndex(column).takeIf { it != -1 }
     }
 
-    fun addFiles(uris: List<Uri>) {
-        _fileUris.value += uris
+    data class TransferFile(private val _metadata: Metadata?, val uri: Uri) {
+        val isSuccessfullyImported = _metadata != null
+        val metadata = _metadata!!
+
+        data class Metadata(val fileName: String, val size: Long)
     }
 }
