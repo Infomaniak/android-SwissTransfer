@@ -18,46 +18,61 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
+import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.icons.Add
-import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.icons.AddThick
+import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFile
+import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
+private const val TOTAL_FILE_SIZE: Long = 50_000_000_000
+
 @Composable
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
-    navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
     val transferFiles by newTransferViewModel.transferFiles.collectAsStateWithLifecycle()
-    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, navigateToTransferTypeScreen, closeActivity)
+    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, closeActivity)
 }
 
 @Composable
 private fun ImportFilesScreen(
     transferFiles: () -> List<TransferFile>,
     addFiles: (List<Uri>) -> Unit,
-    navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val isNextButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
+    val fileCount by remember { derivedStateOf { transferFiles().count() } }
+    val totalFileSize by remember { derivedStateOf { transferFiles().sumOf { it.size } } }
+    val isSendButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -76,28 +91,49 @@ private fun ImportFilesScreen(
         topButton = { modifier ->
             LargeButton(
                 modifier = modifier,
-                titleRes = R.string.buttonAddFiles,
-                imageVector = AppIcons.Add,
-                style = ButtonType.TERTIARY,
-                onClick = { showUploadSourceChoiceBottomSheet = true },
-            )
-        },
-        bottomButton = { modifier ->
-            LargeButton(
-                modifier = modifier,
-                titleRes = R.string.buttonNext,
-                enabled = isNextButtonEnabled,
-                onClick = { navigateToTransferTypeScreen() },
+                titleRes = R.string.sentTitle, // TODO
+                style = ButtonType.PRIMARY,
+                enabled = isSendButtonEnabled, // TODO: Worth passing as lambda?
+                onClick = { /*TODO*/ },
             )
         },
         content = {
-            if (transferFiles().isEmpty()) {
-                EmptyState(
-                    icon = AppIllus.MascotWithMagnifyingGlass,
-                    title = R.string.noFileTitle,
-                    description = R.string.noFileDescription,
-                )
-            } else {
+            SwissTransferCard(Modifier.padding(Margin.Medium)) {
+                SharpRippleButton(onClick = { /*TODO*/ }) {
+                    Text(
+                        "${fileCount} files", // TODO
+                        modifier = Modifier.padding(start = Margin.Medium),
+                        color = SwissTransferTheme.colors.secondaryTextColor,
+                    )
+                    Text(
+                        "•",
+                        modifier = Modifier.padding(horizontal = Margin.Small),
+                        color = SwissTransferTheme.colors.secondaryTextColor
+                    )
+                    Text(
+                        "${formatSpaceLeft(totalFileSize)} left", // TODO
+                        color = SwissTransferTheme.colors.secondaryTextColor
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = AppImages.AppIcons.ChevronRightSmall,
+                        contentDescription = null,
+                        modifier = Modifier.padding(Margin.Medium),
+                        tint = SwissTransferTheme.colors.iconColor
+                    )
+                }
+
+                LazyRow(
+                    Modifier
+                        .padding(horizontal = Margin.Medium)
+                        .padding(bottom = Margin.Medium)
+                ) {
+                    item {
+                        AddNewFileButton { showUploadSourceChoiceBottomSheet = true }
+                    }
+                }
+
+
                 LazyColumn {
                     items(items = transferFiles(), key = { it.fileName }) { file ->
                         Text(text = "${file.fileName} - ${file.size}")
@@ -114,11 +150,44 @@ private fun ImportFilesScreen(
     )
 }
 
+@Composable
+private fun AddNewFileButton(onClick: () -> Unit) {
+    Button(
+        modifier = Modifier.size(80.dp),
+        shape = Shapes.medium,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = SwissTransferTheme.materialColors.surface,
+            contentColor = SwissTransferTheme.materialColors.primary,
+        ),
+        onClick = onClick,
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = AppImages.AppIcons.AddThick,
+            contentDescription = null,
+        )
+    }
+}
+
+@Composable
+private fun formatSpaceLeft(usedSpace: Long): String {
+    val spaceLeft = TOTAL_FILE_SIZE - usedSpace
+    return Formatter.formatShortFileSize(LocalContext.current, spaceLeft)
+}
+
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
-        ImportFilesScreen({ emptyList() }, {}, navigateToTransferTypeScreen = {}, closeActivity = {})
+        ImportFilesScreen({
+            listOf(
+                TransferFile(
+                    "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg",
+                    234567832,
+                    "https://fastly.picsum.photos/id/1/200/300.jpg".toUri()
+                )
+            )
+        }, {}, closeActivity = {})
     }
 }
