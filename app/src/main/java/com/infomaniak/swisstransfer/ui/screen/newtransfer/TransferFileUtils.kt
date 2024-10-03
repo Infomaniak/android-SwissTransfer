@@ -23,10 +23,14 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object TransferFileUtils {
-    fun Context.getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): TransferFile? {
-        val contentResolver: ContentResolver = contentResolver
+@Singleton
+class TransferFileUtils @Inject constructor(@ApplicationContext private val appContext: Context) {
+    fun getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): TransferFile? {
+        val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
