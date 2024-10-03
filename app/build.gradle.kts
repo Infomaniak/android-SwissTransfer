@@ -119,6 +119,7 @@ dependencies {
 
     // Others
     implementation(libs.kotlinx.serialization)
+    implementation(libs.androidx.core.splashscreen)
 
     // Test
     testImplementation(libs.junit)

@@ -7,6 +7,7 @@ composeAlpha = "1.8.0-alpha02"
 composeBom = "2024.09.02"
 constraintlayoutCompose = "1.0.1"
 coreKtx = "1.13.1"
+coreSplashscreen = "1.0.1"
 hilt = "2.52"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
@@ -27,6 +28,7 @@ androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:a
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
