@@ -26,45 +26,63 @@ import android.provider.OpenableColumns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.FileNameUtils.postfixExistingFileNames
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NewTransferViewModel(application: Application) : AndroidViewModel(application) {
     private val context get() = getApplication<MainApplication>() as Context
 
-    private val _fileUris = MutableStateFlow<List<Uri>>(emptyList())
+    // TODO: replay = 1 not needed for now because addFiles() cannot be called before we start listening to the sharedflow in the
+    //  viewmodel
+    private val addedFilesUri = MutableSharedFlow<List<Uri>>(replay = 1)
+    private val allTransferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
 
-    private val _transferFiles: Flow<List<TransferFile>> = _fileUris
-        .map { uris -> uris.map { getFileNameAndSize(it) } }
-
-    val transferFiles: StateFlow<List<TransferFile>> = _transferFiles
-        .map { files -> files.filter { file -> file.isSuccessfullyImported } }
+    val successfulTransferFiles: StateFlow<List<TransferFile>> = allTransferFiles
+        .mapLatest { files -> files.filter { file -> file.isSuccessfullyImported } }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
-    private val alreadyUsedFileNames: StateFlow<Set<String>> = transferFiles
-        .map { files ->
+    private val alreadyUsedFileNames: StateFlow<Set<String>> = successfulTransferFiles
+        .mapLatest { files ->
             buildSet {
                 files.forEach { add(it.metadata.fileName) }
             }
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.Eagerly,
             initialValue = emptySet(),
         )
 
-    val failedTransferFileCount: StateFlow<Int> = _transferFiles.map { files -> files.count { !it.isSuccessfullyImported } }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = 0
-        )
+    val failedTransferFileCount: StateFlow<Int> =
+        allTransferFiles.mapLatest { files -> files.count { !it.isSuccessfullyImported } }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily, // TODO: Decide of the SharingStarted strategy once this value is used
+                initialValue = 0
+            )
+
+    init {
+        viewModelScope.launch {
+            addedFilesUri.collect { uris ->
+                uris.forEach { uri ->
+                    val transferFile = getFileNameAndSize(uri)
+                    allTransferFiles.value += transferFile
+                }
+            }
+        }
+    }
 
     fun addFiles(uris: List<Uri>) {
-        _fileUris.value += uris
+        viewModelScope.launch {
+            addedFilesUri.emit(uris)
+        }
     }
 
     private fun getFileNameAndSize(uri: Uri): TransferFile {
@@ -83,7 +101,8 @@ class NewTransferViewModel(application: Application) : AndroidViewModel(applicat
                 val fileSizeColumnIndex = it.getColumnIndexOrNull(OpenableColumns.SIZE) ?: return null
                 val fileSize = it.getLong(fileSizeColumnIndex)
 
-                return TransferFile.Metadata(fileName, fileSize)
+                val customName = postfixExistingFileNames(fileName, alreadyUsedFileNames.value)
+                return TransferFile.Metadata(customName, fileSize)
             } else {
                 return null
             }

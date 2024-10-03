@@ -43,7 +43,7 @@ fun ImportFilesScreen(
     navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
-    val transferFiles by newTransferViewModel.transferFiles.collectAsState()
+    val transferFiles by newTransferViewModel.successfulTransferFiles.collectAsState()
     ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, closeActivity, navigateToTransferTypeScreen)
 }
 
@@ -91,7 +91,7 @@ private fun ImportFilesScreen(
         content = {
             if (transferFiles().isNotEmpty()) {
                 LazyColumn {
-                    items(items = transferFiles(), key = { it.uri }) { file ->
+                    items(items = transferFiles(), key = { it.metadata.fileName }) { file ->
                         Text(text = "${file.metadata.fileName} - ${file.metadata.size}")
                     }
                 }
