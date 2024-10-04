@@ -90,6 +90,7 @@ dependencies {
 
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
+    implementation(project(":FileTypes"))
     debugImplementation(libs.compose.ui.tooling)
 
     // Hilt

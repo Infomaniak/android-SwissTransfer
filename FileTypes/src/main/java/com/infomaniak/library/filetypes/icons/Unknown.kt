@@ -18,13 +18,13 @@ import com.infomaniak.library.filetypes.FileTypeIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-internal val FileTypeIcons.Text: ImageVector
+internal val FileTypeIcons.Unknown: ImageVector
     get() {
-        if (_text != null) {
-            return _text!!
+        if (_unknown != null) {
+            return _unknown!!
         }
-        _text = Builder(
-            name = "Text",
+        _unknown = Builder(
+            name = "Unknown",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -41,34 +41,28 @@ internal val FileTypeIcons.Text: ImageVector
                     pathFillType = NonZero
                 ) {
                     moveTo(22.5f, 21.757f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, 1.5f)
-                    horizontalLineTo(3.0f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, -1.5f)
+                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.503f, 1.5f)
+                    horizontalLineTo(3.003f)
+                    arcToRelative(1.505f, 1.505f, 0.0f, false, true, -1.503f, -1.5f)
                     verticalLineToRelative(-19.5f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.5f, -1.5f)
-                    horizontalLineToRelative(15.045f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.048f, 0.426f)
-                    lineToRelative(2.954f, 2.883f)
+                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.503f, -1.5f)
+                    horizontalLineToRelative(15.033f)
+                    curveToRelative(0.392f, 0.0f, 0.769f, 0.152f, 1.05f, 0.426f)
+                    lineToRelative(2.961f, 2.883f)
                     arcTo(1.5f, 1.5f, 0.0f, false, true, 22.5f, 5.14f)
                     close()
-                    moveTo(6.0f, 7.507f)
-                    horizontalLineToRelative(12.0f)
-                    moveToRelative(-12.0f, 4.5f)
-                    horizontalLineToRelative(12.0f)
-                    moveToRelative(-12.0f, 4.5f)
-                    horizontalLineToRelative(6.0f)
                 }
             }
         }.build()
-        return _text!!
+        return _unknown!!
     }
 
-private var _text: ImageVector? = null
+private var _unknown: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = FileTypeIcons.Text, contentDescription = null)
+        Image(imageVector = FileTypeIcons.Unknown, contentDescription = null)
     }
 }

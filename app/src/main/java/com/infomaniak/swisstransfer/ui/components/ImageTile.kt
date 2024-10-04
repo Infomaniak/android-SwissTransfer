@@ -17,7 +17,9 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -31,11 +33,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.infomaniak.library.filetypes.FileType
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.CrossThick
+import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -45,6 +50,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
 fun ImageTile(
+    uri: Uri,
     title: String,
     description: String,
     isRemoveButtonVisible: Boolean,
@@ -54,11 +60,84 @@ fun ImageTile(
     onRemove: (() -> Unit)? = null,
     onCheckedChange: ((Boolean) -> Unit)? = null,
 ) {
+    ImageTileContent(
+        data = {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(uri)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+        },
+        onClick = onClick,
+        isCheckboxVisible = isCheckboxVisible,
+        isChecked = isChecked,
+        onCheckedChange = onCheckedChange,
+        isRemoveButtonVisible = isRemoveButtonVisible,
+        onRemove = onRemove,
+        title = title,
+        description = description
+    )
+}
+
+
+@Composable
+fun ImageTile(
+    fileType: FileType,
+    title: String,
+    description: String,
+    isRemoveButtonVisible: Boolean,
+    isCheckboxVisible: Boolean,
+    isChecked: () -> Boolean = { false },
+    onClick: () -> Unit,
+    onRemove: (() -> Unit)? = null,
+    onCheckedChange: ((Boolean) -> Unit)? = null,
+) {
+    ImageTileContent(
+        data = {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                val surfaceColor = SwissTransferTheme.materialColors.surface
+                Canvas(modifier = Modifier.size(64.dp)) {
+                    drawCircle(color = surfaceColor)
+                }
+
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    imageVector = fileType.icon,
+                    contentDescription = null,
+                    tint = fileType.color(LocalIsDarkMode.current)
+                )
+            }
+        },
+        onClick = onClick,
+        isCheckboxVisible = isCheckboxVisible,
+        isChecked = isChecked,
+        onCheckedChange = onCheckedChange,
+        isRemoveButtonVisible = isRemoveButtonVisible,
+        onRemove = onRemove,
+        title = title,
+        description = description
+    )
+}
+
+@Composable
+private fun ImageTileContent(
+    data: @Composable () -> Unit,
+    onClick: () -> Unit,
+    isCheckboxVisible: Boolean,
+    isChecked: () -> Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    isRemoveButtonVisible: Boolean,
+    onRemove: (() -> Unit)?,
+    title: String,
+    description: String
+) {
     Card(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxSize()
-            .aspectRatio(164 / 152f),
+        modifier = Modifier.aspectRatio(164 / 152f),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = Shapes.small,
         border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant)
@@ -69,15 +148,7 @@ fun ImageTile(
                 .fillMaxWidth()
                 .background(SwissTransferTheme.materialColors.surfaceContainerHighest)
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://fastly.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY")
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
+            data()
 
             if (isCheckboxVisible) {
                 Checkbox(
@@ -138,11 +209,26 @@ private fun ImageTilePreview() {
             Column(
                 modifier = Modifier
                     .padding(24.dp)
-                    .size(164.dp)
+                    .width(164.dp)
             )
             {
                 var isChecked by remember { mutableStateOf(true) }
+
                 ImageTile(
+                    fileType = FileType.PDF,
+                    title = "How to not get fired.pdf",
+                    description = "1.4 Mo",
+                    isRemoveButtonVisible = true,
+                    isCheckboxVisible = true,
+                    isChecked = { isChecked },
+                    onClick = { isChecked = !isChecked },
+                    onRemove = {},
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ImageTile(
+                    uri = "https://fastly.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY".toUri(),
                     title = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg",
                     description = "1.4 Mo",
                     isRemoveButtonVisible = true,

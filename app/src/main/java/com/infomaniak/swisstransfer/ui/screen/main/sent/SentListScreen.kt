@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.infomaniak.swisstransfer.ui.components.ImageTile
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -40,7 +41,15 @@ fun SentListScreen(transfers: List<Any>) {
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
     ) {
         items(3) {
-            ImageTile("Time-Clock-Circle--Streamline-Ultimate.svg (1).svg", "1.4 MB", true, true, { true }, {}, {})
+            ImageTile(
+                uri = "https://fastly.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY".toUri(),
+                title = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg",
+                description = "1.4 MB",
+                isRemoveButtonVisible = true,
+                isCheckboxVisible = true,
+                isChecked = { true },
+                onClick = {},
+                onRemove = {})
         }
     }
 }

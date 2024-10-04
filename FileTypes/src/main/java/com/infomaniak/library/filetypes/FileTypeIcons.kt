@@ -17,4 +17,4 @@
  */
 package com.infomaniak.library.filetypes
 
-object FileTypeIcons
+internal object FileTypeIcons

@@ -1,20 +1,3 @@
-/*
- * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.infomaniak.library.filetypes.icons
 
 import androidx.compose.foundation.Image
@@ -35,13 +18,13 @@ import com.infomaniak.library.filetypes.FileTypeIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-internal val FileTypeIcons.Pdf: ImageVector
+internal val FileTypeIcons.Code: ImageVector
     get() {
-        if (_pdf != null) {
-            return _pdf!!
+        if (_code != null) {
+            return _code!!
         }
-        _pdf = Builder(
-            name = "Pdf",
+        _code = Builder(
+            name = "Code",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -57,16 +40,16 @@ internal val FileTypeIcons.Pdf: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(22.5f, 21.757f)
+                    moveTo(22.5f, 21.76f)
                     arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, 1.5f)
                     horizontalLineTo(3.0f)
                     arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, -1.5f)
-                    verticalLineToRelative(-19.5f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.5f, -1.5f)
-                    horizontalLineToRelative(15.0f)
-                    arcToRelative(1.48f, 1.48f, 0.0f, false, true, 1.05f, 0.43f)
-                    lineToRelative(3.0f, 2.88f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 0.45f, 1.07f)
+                    verticalLineTo(2.26f)
+                    arcTo(1.5f, 1.5f, 0.0f, false, true, 3.0f, 0.76f)
+                    horizontalLineToRelative(15.045f)
+                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.048f, 0.427f)
+                    lineToRelative(2.955f, 2.882f)
+                    arcTo(1.5f, 1.5f, 0.0f, false, true, 22.5f, 5.143f)
                     close()
                 }
                 path(
@@ -78,25 +61,24 @@ internal val FileTypeIcons.Pdf: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(5.62f, 4.259f)
-                    curveToRelative(-2.339f, 1.487f, 0.756f, 5.313f, 4.878f, 7.908f)
-                    curveToRelative(1.3f, 0.83f, 7.637f, 4.933f, 8.56f, 2.113f)
-                    curveToRelative(0.776f, -2.38f, -2.004f, -2.934f, -7.647f, -1.21f)
-                    curveToRelative(-7.06f, 2.153f, -7.343f, 6.43f, -5.245f, 6.892f)
-                    curveToRelative(2.79f, 0.625f, 3.325f, -5.498f, 3.472f, -6.687f)
-                    curveTo(10.1f, 8.946f, 8.169f, 2.669f, 5.62f, 4.259f)
+                    moveTo(14.25f, 8.257f)
+                    lineToRelative(3.75f, 3.75f)
+                    lineToRelative(-3.75f, 3.75f)
+                    moveToRelative(-4.5f, -7.5f)
+                    lineTo(6.0f, 12.007f)
+                    lineToRelative(3.75f, 3.75f)
                 }
             }
         }.build()
-        return _pdf!!
+        return _code!!
     }
 
-private var _pdf: ImageVector? = null
+private var _code: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = FileTypeIcons.Pdf, contentDescription = null)
+        Image(imageVector = FileTypeIcons.Code, contentDescription = null)
     }
 }

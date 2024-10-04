@@ -18,13 +18,13 @@ import com.infomaniak.library.filetypes.FileTypeIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-internal val FileTypeIcons.Text: ImageVector
+internal val FileTypeIcons.Calendar: ImageVector
     get() {
-        if (_text != null) {
-            return _text!!
+        if (_calendar != null) {
+            return _calendar!!
         }
-        _text = Builder(
-            name = "Text",
+        _calendar = Builder(
+            name = "Calendar",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -40,35 +40,33 @@ internal val FileTypeIcons.Text: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(22.5f, 21.757f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, 1.5f)
-                    horizontalLineTo(3.0f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, -1.5f)
-                    verticalLineToRelative(-19.5f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.5f, -1.5f)
-                    horizontalLineToRelative(15.045f)
-                    arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.048f, 0.426f)
-                    lineToRelative(2.954f, 2.883f)
-                    arcTo(1.5f, 1.5f, 0.0f, false, true, 22.5f, 5.14f)
-                    close()
-                    moveTo(6.0f, 7.507f)
-                    horizontalLineToRelative(12.0f)
-                    moveToRelative(-12.0f, 4.5f)
-                    horizontalLineToRelative(12.0f)
-                    moveToRelative(-12.0f, 4.5f)
-                    horizontalLineToRelative(6.0f)
+                    moveTo(22.044f, 2.913f)
+                    horizontalLineTo(1.957f)
+                    arcTo(0.957f, 0.957f, 0.0f, false, false, 1.0f, 3.87f)
+                    verticalLineToRelative(18.174f)
+                    curveTo(1.0f, 22.572f, 1.428f, 23.0f, 1.957f, 23.0f)
+                    horizontalLineToRelative(20.087f)
+                    arcTo(0.957f, 0.957f, 0.0f, false, false, 23.0f, 22.044f)
+                    verticalLineTo(3.87f)
+                    arcToRelative(0.956f, 0.956f, 0.0f, false, false, -0.956f, -0.957f)
+                    moveTo(5.783f, 1.0f)
+                    verticalLineToRelative(4.783f)
+                    moveTo(18.217f, 1.0f)
+                    verticalLineToRelative(4.783f)
+                    moveTo(1.0f, 7.696f)
+                    horizontalLineToRelative(22.0f)
                 }
             }
         }.build()
-        return _text!!
+        return _calendar!!
     }
 
-private var _text: ImageVector? = null
+private var _calendar: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
-        Image(imageVector = FileTypeIcons.Text, contentDescription = null)
+        Image(imageVector = FileTypeIcons.Calendar, contentDescription = null)
     }
 }
