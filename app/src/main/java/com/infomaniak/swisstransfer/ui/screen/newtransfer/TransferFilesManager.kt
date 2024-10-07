@@ -53,19 +53,17 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
         }
     }
 
-    private fun Cursor.getFileNameAndSize(): Pair<String, Long>? {
-        use {
-            if (it.moveToFirst()) {
-                val displayNameColumnIndex = it.getColumnIndexOrNull(OpenableColumns.DISPLAY_NAME) ?: return null
-                val fileName = it.getString(displayNameColumnIndex)
+    private fun Cursor.getFileNameAndSize(): Pair<String, Long>? = use {
+        if (it.moveToFirst()) {
+            val displayNameColumnIndex = it.getColumnIndexOrNull(OpenableColumns.DISPLAY_NAME) ?: return null
+            val fileName = it.getString(displayNameColumnIndex)
 
-                val fileSizeColumnIndex = it.getColumnIndexOrNull(OpenableColumns.SIZE) ?: return null
-                val fileSize = it.getLong(fileSizeColumnIndex)
+            val fileSizeColumnIndex = it.getColumnIndexOrNull(OpenableColumns.SIZE) ?: return null
+            val fileSize = it.getLong(fileSizeColumnIndex)
 
-                return fileName to fileSize
-            } else {
-                return null
-            }
+            fileName to fileSize
+        } else {
+            null
         }
     }
 
