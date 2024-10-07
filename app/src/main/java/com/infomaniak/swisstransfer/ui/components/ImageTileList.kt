@@ -15,24 +15,54 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.sent
+package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.infomaniak.swisstransfer.ui.components.FileUiItem
-import com.infomaniak.swisstransfer.ui.components.ImageTileList
+import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun SentListScreen(transfers: List<Any>) {
-    val transfers = listOf(object : FileUiItem {
+fun ImageTileList(
+    modifier: Modifier = Modifier,
+    files: List<FileUiItem>,
+    isRemoveButtonVisible: Boolean,
+    isCheckboxVisible: Boolean,
+    isUidChecked: (String) -> Boolean,
+    setUidCheckStatus: (String, Boolean) -> Unit,
+    onRemoveUid: (String) -> Unit,
+) {
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Adaptive(150.dp),
+        verticalArrangement = Arrangement.spacedBy(Margin.Medium),
+        horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
+    ) {
+        items(files, key = { it.uid }) { file ->
+            FileTile(
+                file = file,
+                isRemoveButtonVisible = isRemoveButtonVisible,
+                isCheckboxVisible = isCheckboxVisible,
+                isChecked = { isUidChecked(file.uid) },
+                onClick = { if (isCheckboxVisible) setUidCheckStatus(file.uid, !isUidChecked(file.uid)) },
+                onRemove = { onRemoveUid(file.uid) },
+            )
+        }
+    }
+}
+
+@PreviewSmallWindow
+@PreviewLargeWindow
+@Composable
+private fun ImageTileListPreview() {
+    val files = listOf(object : FileUiItem {
         override val fileName: String = "The 5-Step Guide to Not Breaking Your Code.txt"
         override val uid: String = fileName
         override val fileSizeInBytes: Long = 57689032
@@ -52,27 +82,14 @@ fun SentListScreen(transfers: List<Any>) {
         override val uri: String = ""
     })
 
-    // TODO: Use viewmodel
-    val selectedTransfers = remember { mutableStateMapOf<String, Boolean>() }
-
-    ImageTileList(
-        modifier = Modifier.padding(Margin.Medium),
-        files = transfers,
-        isRemoveButtonVisible = true,
-        isCheckboxVisible = true,
-        isUidChecked = { selectedTransfers[it] == true },
-        setUidCheckStatus = { uid, isChecked -> selectedTransfers[uid] = isChecked },
-        onRemoveUid = {},
-    )
-}
-
-@PreviewSmallWindow
-@PreviewLargeWindow
-@Composable
-private fun SentListScreenPreview() {
     SwissTransferTheme {
-        Surface {
-            SentListScreen(transfers = listOf(Unit))
-        }
+        ImageTileList(
+            files = files,
+            isRemoveButtonVisible = false,
+            isCheckboxVisible = true,
+            isUidChecked = { false },
+            setUidCheckStatus = { _, _ -> },
+            onRemoveUid = {},
+        )
     }
 }
