@@ -61,7 +61,7 @@ fun ImageTile(
     onCheckedChange: ((Boolean) -> Unit)? = null,
 ) {
     ImageTileContent(
-        data = {
+        content = {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(uri)
@@ -69,6 +69,9 @@ fun ImageTile(
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
+                onError = {
+                    FileIcon(FileType.IMAGE)
+                },
                 modifier = Modifier.fillMaxSize(),
             )
         },
@@ -97,21 +100,7 @@ fun ImageTile(
     onCheckedChange: ((Boolean) -> Unit)? = null,
 ) {
     ImageTileContent(
-        data = {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                val surfaceColor = SwissTransferTheme.materialColors.surface
-                Canvas(modifier = Modifier.size(64.dp)) {
-                    drawCircle(color = surfaceColor)
-                }
-
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    imageVector = fileType.icon,
-                    contentDescription = null,
-                    tint = fileType.color(LocalIsDarkMode.current)
-                )
-            }
-        },
+        content = { FileIcon(fileType) },
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
@@ -125,7 +114,7 @@ fun ImageTile(
 
 @Composable
 private fun ImageTileContent(
-    data: @Composable () -> Unit,
+    content: @Composable () -> Unit,
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
@@ -148,7 +137,7 @@ private fun ImageTileContent(
                 .fillMaxWidth()
                 .background(SwissTransferTheme.materialColors.surfaceContainerHighest)
         ) {
-            data()
+            content()
 
             if (isCheckboxVisible) {
                 Checkbox(
@@ -197,6 +186,23 @@ private fun ImageTileContent(
                 overflow = TextOverflow.MiddleEllipsis,
             )
         }
+    }
+}
+
+@Composable
+private fun FileIcon(fileType: FileType) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        val surfaceColor = SwissTransferTheme.materialColors.surface
+        Canvas(modifier = Modifier.size(64.dp)) {
+            drawCircle(color = surfaceColor)
+        }
+
+        Icon(
+            modifier = Modifier.size(32.dp),
+            imageVector = fileType.icon,
+            contentDescription = null,
+            tint = fileType.color(LocalIsDarkMode.current)
+        )
     }
 }
 

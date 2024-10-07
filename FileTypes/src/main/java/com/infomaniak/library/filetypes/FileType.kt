@@ -45,17 +45,19 @@ enum class FileType(val icon: ImageVector, private val colorLight: Color, privat
         return if (isDark) colorDark else colorLight
     }
 
-    fun guessFromFileName(fileName: String): FileType {
-        val extension = fileName.extractExtension()
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: return FileType.UNKNOWN
-        return FileTypeGuesser.getFileTypeFromMimeType(mimeType)
-    }
+    companion object {
+        fun guessFromFileName(fileName: String): FileType {
+            val extension = fileName.extractExtension()
+            val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: return FileType.UNKNOWN
+            return FileTypeGuesser.getFileTypeFromMimeType(mimeType)
+        }
 
-    private fun String.extractExtension(): String? {
-        val fileName = lastIndexOf('/').takeIf { it != -1 }?.let { fileNameStart ->
-            substring(fileNameStart + 1)
-        } ?: this
+        private fun String.extractExtension(): String? {
+            val fileName = lastIndexOf('/').takeIf { it != -1 }?.let { fileNameStart ->
+                substring(fileNameStart + 1)
+            } ?: this
 
-        return fileName.substringAfterLast(".").takeIf { it.isNotEmpty() }
+            return fileName.substringAfterLast(".").takeIf { it.isNotEmpty() }
+        }
     }
 }
