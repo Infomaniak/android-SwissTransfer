@@ -23,14 +23,19 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(private val transferFileUtils: TransferFileUtils) : ViewModel() {
 
-    val transferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
-    val failedTransferFileCount = MutableSharedFlow<Int>()
+    private val _transferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
+    val transferFiles: StateFlow<List<TransferFile>> = _transferFiles
+
+    private val _failedTransferFileCount = MutableSharedFlow<Int>()
+    val failedTransferFileCount: SharedFlow<Int> = _failedTransferFileCount
 
     fun addFiles(uris: List<Uri>) {
         viewModelScope.launch {
@@ -38,8 +43,8 @@ class NewTransferViewModel @Inject constructor(private val transferFileUtils: Tr
 
             val newTransferFiles = transferFileUtils.getTransferFiles(uris, alreadyUsedFileNames)
 
-            transferFiles.value += newTransferFiles
-            failedTransferFileCount.emit(uris.count() - newTransferFiles.count())
+            _transferFiles.value += newTransferFiles
+            _failedTransferFileCount.emit(uris.count() - newTransferFiles.count())
         }
     }
 }
