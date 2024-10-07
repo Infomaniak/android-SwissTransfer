@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewTransferViewModel @Inject constructor(private val transferFileUtils: TransferFileUtils) : ViewModel() {
+class NewTransferViewModel @Inject constructor(private val transferFilesManager: TransferFilesManager) : ViewModel() {
 
     private val _transferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
     val transferFiles: StateFlow<List<TransferFile>> = _transferFiles
@@ -41,7 +41,7 @@ class NewTransferViewModel @Inject constructor(private val transferFileUtils: Tr
         viewModelScope.launch {
             val alreadyUsedFileNames = buildSet { transferFiles.value.forEach { add(it.fileName) } }
 
-            val newTransferFiles = transferFileUtils.getTransferFiles(uris, alreadyUsedFileNames)
+            val newTransferFiles = transferFilesManager.getTransferFiles(uris, alreadyUsedFileNames)
 
             _transferFiles.value += newTransferFiles
             _failedTransferFileCount.emit(uris.count() - newTransferFiles.count())

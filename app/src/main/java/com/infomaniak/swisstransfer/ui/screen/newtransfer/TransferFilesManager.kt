@@ -28,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TransferFileUtils @Inject constructor(@ApplicationContext private val appContext: Context) {
+class TransferFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
     fun getTransferFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<TransferFile> {
         val currentUsedFileNames = alreadyUsedFileNames.toMutableSet()
         val transferFiles = mutableSetOf<TransferFile>()
