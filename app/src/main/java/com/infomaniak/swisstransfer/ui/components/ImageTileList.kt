@@ -30,7 +30,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun ImageTileList(
+fun ImageTileList( // TODO: Rename
     modifier: Modifier = Modifier,
     files: List<FileUiItem>,
     isRemoveButtonVisible: Boolean,

@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,4 +30,5 @@ import javax.inject.Inject
 @HiltViewModel
 class SentViewModel @Inject constructor() : ViewModel() {
     val transfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val selectedTransferIds: SnapshotStateMap<String, Boolean> = mutableStateMapOf<String, Boolean>()
 }

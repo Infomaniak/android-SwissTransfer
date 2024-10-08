@@ -20,8 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.sent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import com.infomaniak.swisstransfer.ui.components.ImageTileList
@@ -51,17 +49,13 @@ fun SentListScreen(transfers: List<Any>) {
         override val mimeType: String? = null
         override val uri: String = ""
     })
-
-    // TODO: Use viewmodel
-    val selectedTransfers = remember { mutableStateMapOf<String, Boolean>() }
-
     ImageTileList(
         modifier = Modifier.padding(Margin.Medium),
         files = transfers,
         isRemoveButtonVisible = true,
-        isCheckboxVisible = true,
-        isUidChecked = { selectedTransfers[it] == true },
-        setUidCheckStatus = { uid, isChecked -> selectedTransfers[uid] = isChecked },
+        isCheckboxVisible = false,
+        isUidChecked = { false },
+        setUidCheckStatus = { _, _ -> },
         onRemoveUid = {},
     )
 }
