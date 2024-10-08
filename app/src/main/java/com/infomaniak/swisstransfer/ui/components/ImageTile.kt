@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.net.Uri
+import android.text.format.Formatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,13 +48,21 @@ import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.fileType
+import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
+// TODO: Get the interface from the shared kmp code
+interface FileUiItem {
+    val uid: String
+    val fileName: String
+    val fileSizeInBytes: Long
+    val mimeType: String?
+    val uri: String
+}
 
 @Composable
 fun ImageTile(
-    uri: Uri,
-    title: String,
-    description: String,
+    file: FileUiItem,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean = { false },
@@ -62,18 +72,13 @@ fun ImageTile(
 ) {
     ImageTileContent(
         content = {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(uri)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                onError = {
-                    FileIcon(FileType.IMAGE)
-                },
-                modifier = Modifier.fillMaxSize(),
-            )
+            var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
+
+            if (displayPreview) {
+                FileImage(file.uri.toUri()) { displayPreview = false }
+            } else {
+                FileIcon(file.fileType)
+            }
         },
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
@@ -81,34 +86,8 @@ fun ImageTile(
         onCheckedChange = onCheckedChange,
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
-        title = title,
-        description = description
-    )
-}
-
-
-@Composable
-fun ImageTile(
-    fileType: FileType,
-    title: String,
-    description: String,
-    isRemoveButtonVisible: Boolean,
-    isCheckboxVisible: Boolean,
-    isChecked: () -> Boolean = { false },
-    onClick: () -> Unit,
-    onRemove: (() -> Unit)? = null,
-    onCheckedChange: ((Boolean) -> Unit)? = null,
-) {
-    ImageTileContent(
-        content = { FileIcon(fileType) },
-        onClick = onClick,
-        isCheckboxVisible = isCheckboxVisible,
-        isChecked = isChecked,
-        onCheckedChange = onCheckedChange,
-        isRemoveButtonVisible = isRemoveButtonVisible,
-        onRemove = onRemove,
-        title = title,
-        description = description
+        title = file.fileName,
+        description = Formatter.formatShortFileSize(LocalContext.current, file.fileSizeInBytes),
     )
 }
 
@@ -190,6 +169,20 @@ private fun ImageTileContent(
 }
 
 @Composable
+private fun FileImage(uri: Uri, onError: () -> Unit) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(uri)
+            .crossfade(true)
+            .build(),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        onError = { onError() },
+        modifier = Modifier.fillMaxSize(),
+    )
+}
+
+@Composable
 private fun FileIcon(fileType: FileType) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         val surfaceColor = SwissTransferTheme.materialColors.surface
@@ -220,10 +213,16 @@ private fun ImageTilePreview() {
             {
                 var isChecked by remember { mutableStateOf(true) }
 
+
+                val iconFile = object : FileUiItem {
+                    override val fileName: String = "How to not get fired.pdf"
+                    override val uid: String = fileName
+                    override val fileSizeInBytes: Long = 10302130
+                    override val mimeType: String? = null
+                    override val uri: String = ""
+                }
                 ImageTile(
-                    fileType = FileType.PDF,
-                    title = "How to not get fired.pdf",
-                    description = "1.4 Mo",
+                    iconFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
                     isChecked = { isChecked },
@@ -233,10 +232,15 @@ private fun ImageTilePreview() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                val imageFile = object : FileUiItem {
+                    override val fileName: String = "Time-Clock-Circle--Streamline-Ultimate.svg (1).png"
+                    override val uid: String = fileName
+                    override val fileSizeInBytes: Long = 456782
+                    override val mimeType: String? = null
+                    override val uri: String = "https://picsum.photos/200/300"
+                }
                 ImageTile(
-                    uri = "https://fastly.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY".toUri(),
-                    title = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg",
-                    description = "1.4 Mo",
+                    file = imageFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
                     isChecked = { isChecked },

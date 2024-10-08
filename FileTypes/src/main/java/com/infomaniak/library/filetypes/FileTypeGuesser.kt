@@ -17,7 +17,7 @@
  */
 package com.infomaniak.library.filetypes
 
-object FileTypeGuesser {
+internal object FileTypeGuesser {
     private val pdfMatches = mimeTypeSetOf(
         "application/pdf",
         "application/acrobat",

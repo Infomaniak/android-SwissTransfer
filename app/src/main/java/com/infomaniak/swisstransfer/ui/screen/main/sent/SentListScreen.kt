@@ -25,7 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import com.infomaniak.swisstransfer.ui.components.ImageTile
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -40,11 +40,17 @@ fun SentListScreen(transfers: List<Any>) {
         verticalArrangement = Arrangement.spacedBy(Margin.Medium),
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
     ) {
+        val imageFile = object : FileUiItem {
+            override val fileName: String = "Time-Clock-Circle--Streamline-Ultimate.svg (1).png"
+            override val uid: String = fileName
+            override val fileSizeInBytes: Long = 456782
+            override val mimeType: String? = null
+            override val uri: String = "httttttps://picsum.photos/200/300"
+        }
+
         items(3) {
             ImageTile(
-                uri = "https://fastly.picsum.photos/id/1/200/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY".toUri(),
-                title = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg",
-                description = "1.4 MB",
+                file = imageFile,
                 isRemoveButtonVisible = true,
                 isCheckboxVisible = true,
                 isChecked = { true },
