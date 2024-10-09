@@ -75,7 +75,7 @@ fun FileTile(
             var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
 
             if (displayPreview) {
-                FileImage(file.uri.toUri()) { displayPreview = false }
+                FileThumbnail(file.uri.toUri()) { displayPreview = false }
             } else {
                 FileIcon(file.fileType)
             }
@@ -169,7 +169,7 @@ private fun FileTileContent(
 }
 
 @Composable
-private fun FileImage(uri: Uri, onError: () -> Unit) {
+private fun FileThumbnail(uri: Uri, onError: () -> Unit) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(uri)
