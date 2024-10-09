@@ -45,7 +45,7 @@ fun SentListScreen(transfers: List<Any>) {
             override val uid: String = fileName
             override val fileSizeInBytes: Long = 456782
             override val mimeType: String? = null
-            override val uri: String = "httttttps://picsum.photos/200/300"
+            override val uri: String = "https://picsum.photos/200/300"
         }
 
         items(3) {

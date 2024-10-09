@@ -42,10 +42,7 @@ dependencies {
     implementation(libs.androidx.ui.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.ui.tooling.preview.android)
-    // implementation(libs.androidx.appcompat)
-    // implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.ui.tooling)
-    // androidTestImplementation(libs.androidx.espresso.core)
 }

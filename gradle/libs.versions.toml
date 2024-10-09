@@ -16,7 +16,9 @@ lifecycleRuntimeKtx = "2.8.6"
 navigation = "2.8.1"
 serialization = "1.7.1"
 swisstransfer = "0.1.1"
-uiAndroid = "1.7.2"
+
+# FileType module
+uiAndroid = "1.7.3"
 foundationAndroid = "1.7.3"
 uiToolingPreviewAndroid = "1.7.3"
 uiTooling = "1.7.3"
@@ -47,6 +49,8 @@ swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransf
 # Tests
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+# FileType module
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
@@ -58,4 +62,6 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+# FileType module
 android-library = { id = "com.android.library", version.ref = "agp" }

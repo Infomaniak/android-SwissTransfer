@@ -21,4 +21,5 @@ import com.infomaniak.library.filetypes.FileType
 import com.infomaniak.swisstransfer.ui.components.FileUiItem
 
 val FileUiItem.fileType: FileType get() = mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
+
 val FileUiItem.hasPreview: Boolean get() = fileType == FileType.IMAGE
