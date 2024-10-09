@@ -26,7 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.components.FileUiItem
-import com.infomaniak.swisstransfer.ui.components.ImageTile
+import com.infomaniak.swisstransfer.ui.components.FileTile
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
@@ -49,7 +49,7 @@ fun SentListScreen(transfers: List<Any>) {
         }
 
         items(3) {
-            ImageTile(
+            FileTile(
                 file = imageFile,
                 isRemoveButtonVisible = true,
                 isCheckboxVisible = true,

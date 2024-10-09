@@ -75,7 +75,7 @@ data class CustomColorScheme(
     val navigationItemBackground: Color = Color.Unspecified,
     val tertiaryButtonBackground: Color = Color.Unspecified,
     val selectedSettingItem: Color = Color.Unspecified,
-    val imageTileRemoveButtonBackground: Color = Color.Unspecified,
+    val fileTileRemoveButtonBackground: Color = Color.Unspecified,
     val transferTypeLinkContainer: Color = Color.Unspecified,
     val transferTypeLinkOnContainer: Color = Color.Unspecified,
     val transferTypeEmailContainer: Color = Color.Unspecified,

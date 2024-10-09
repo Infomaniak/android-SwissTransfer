@@ -61,7 +61,7 @@ interface FileUiItem {
 }
 
 @Composable
-fun ImageTile(
+fun FileTile(
     file: FileUiItem,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
@@ -70,7 +70,7 @@ fun ImageTile(
     onRemove: (() -> Unit)? = null,
     onCheckedChange: ((Boolean) -> Unit)? = null,
 ) {
-    ImageTileContent(
+    FileTileContent(
         content = {
             var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
 
@@ -92,7 +92,7 @@ fun ImageTile(
 }
 
 @Composable
-private fun ImageTileContent(
+private fun FileTileContent(
     content: @Composable () -> Unit,
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
@@ -136,7 +136,7 @@ private fun ImageTileContent(
                         .align(Alignment.TopEnd),
                     contentPadding = PaddingValues(0.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.imageTileRemoveButtonBackground),
+                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.fileTileRemoveButtonBackground),
                     onClick = onRemove ?: {},
                 ) {
                     Icon(
@@ -202,7 +202,7 @@ private fun FileIcon(fileType: FileType) {
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun ImageTilePreview() {
+private fun FileTilePreview() {
     SwissTransferTheme {
         Surface {
             Column(
@@ -221,7 +221,7 @@ private fun ImageTilePreview() {
                     override val mimeType: String? = null
                     override val uri: String = ""
                 }
-                ImageTile(
+                FileTile(
                     iconFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
@@ -239,7 +239,7 @@ private fun ImageTilePreview() {
                     override val mimeType: String? = null
                     override val uri: String = "https://picsum.photos/200/300"
                 }
-                ImageTile(
+                FileTile(
                     file = imageFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
