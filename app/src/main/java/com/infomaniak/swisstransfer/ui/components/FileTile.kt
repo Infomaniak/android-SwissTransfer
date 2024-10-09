@@ -68,7 +68,6 @@ fun FileTile(
     isChecked: () -> Boolean = { false },
     onClick: () -> Unit,
     onRemove: (() -> Unit)? = null,
-    onCheckedChange: ((Boolean) -> Unit)? = null,
 ) {
     FileTileContent(
         content = {
@@ -83,7 +82,6 @@ fun FileTile(
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
-        onCheckedChange = onCheckedChange,
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
         title = file.fileName,
@@ -97,7 +95,6 @@ private fun FileTileContent(
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
-    onCheckedChange: ((Boolean) -> Unit)?,
     isRemoveButtonVisible: Boolean,
     onRemove: (() -> Unit)?,
     title: String,
@@ -121,7 +118,7 @@ private fun FileTileContent(
             if (isCheckboxVisible) {
                 Checkbox(
                     checked = isChecked(),
-                    onCheckedChange = onCheckedChange,
+                    onCheckedChange = null,
                     Modifier
                         .align(Alignment.TopStart)
                         .padding(12.dp),
