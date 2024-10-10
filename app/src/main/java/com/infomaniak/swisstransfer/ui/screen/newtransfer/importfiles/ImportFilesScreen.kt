@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
+import android.os.Parcelable
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import kotlinx.parcelize.Parcelize
 
 private const val TOTAL_FILE_SIZE: Long = 50_000_000_000
 
@@ -55,12 +57,13 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
 ) {
     val files by newTransferViewModel.files.collectAsStateWithLifecycle()
-    ImportFilesScreen({ files }, newTransferViewModel::addFiles, closeActivity)
+    ImportFilesScreen({ files }, newTransferViewModel::removeFileByUid, newTransferViewModel::addFiles, closeActivity)
 }
 
 @Composable
 private fun ImportFilesScreen(
     files: () -> List<FileUiItem>,
+    removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
 ) {
@@ -119,19 +122,24 @@ private fun ImportFilesScreen(
                 }
 
                 LazyRow(
-                    Modifier.padding(bottom = Margin.Medium),
+                    Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(Margin.Medium),
                     horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
                 ) {
-                    item {
-                        AddNewFileButton { showUploadSourceChoiceBottomSheet = true }
+                    item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
+                        AddNewFileButton(Modifier.animateItem()) { showUploadSourceChoiceBottomSheet = true }
                     }
 
                     items(
                         items = files(),
-                        key = { it.uid },
+                        key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
                     ) { file ->
-                        SmallFileTile(file, SmallFileTileSize.LARGE) {/*TODO*/ }
+                        SmallFileTile(
+                            modifier = Modifier.animateItem(),
+                            file = file,
+                            smallFileTileSize = SmallFileTileSize.LARGE,
+                            onRemove = { removeFileByUid(file.uid) }
+                        )
                     }
                 }
             }
@@ -146,9 +154,9 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun AddNewFileButton(onClick: () -> Unit) {
+private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
-        modifier = Modifier.size(80.dp),
+        modifier = modifier.size(80.dp),
         shape = Shapes.medium,
         colors = ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.surface,
@@ -170,6 +178,16 @@ private fun formatSpaceLeft(usedSpace: Long): String {
     return Formatter.formatShortFileSize(LocalContext.current, spaceLeft)
 }
 
+@Parcelize
+private data class TransferLazyRowKey(
+    val type: Type,
+    val fileUid: String? = null
+) : Parcelable {
+    enum class Type {
+        ADD_BUTTON, FILE
+    }
+}
+
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
@@ -185,6 +203,6 @@ private fun ImportFilesScreenPreview() {
                     override val uri = "https://fastly.picsum.photos/id/1/200/300.jpg"
                 }
             )
-        }, {}, closeActivity = {})
+        }, {}, {}, closeActivity = {})
     }
 }
