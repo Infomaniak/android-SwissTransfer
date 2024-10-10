@@ -33,9 +33,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun SmallFileTile(file: FileUiItem, smallFileTileSize: SmallFileTileSize, onRemove: (() -> Unit)? = null) {
+fun SmallFileTile(modifier: Modifier = Modifier, file: FileUiItem, smallFileTileSize: SmallFileTileSize, onRemove: (() -> Unit)? = null) {
     Box(
-        Modifier
+        modifier
             .size(smallFileTileSize.size)
             .clip(smallFileTileSize.shape)
             .background(SwissTransferTheme.materialColors.surface),
@@ -65,28 +65,28 @@ private fun SmallFileTilePreview() {
         Surface(color = SwissTransferTheme.materialColors.surfaceContainerHighest) {
             Column(Modifier.padding(16.dp)) {
                 SmallFileTile(
-                    object : FileUiItem {
+                    file = object : FileUiItem {
                         override val fileName: String = "How to not get fired.pdf"
                         override val uid: String = fileName
                         override val fileSizeInBytes: Long = 10302130
                         override val mimeType: String? = null
                         override val uri: String = ""
                     },
-                    SmallFileTileSize.LARGE,
-                    {}
+                    smallFileTileSize = SmallFileTileSize.LARGE,
+                    onRemove = {}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SmallFileTile(
-                    object : FileUiItem {
+                    file = object : FileUiItem {
                         override val fileName: String = "How to not get fired.pdf"
                         override val uid: String = fileName
                         override val fileSizeInBytes: Long = 10302130
                         override val mimeType: String? = null
                         override val uri: String = ""
                     },
-                    SmallFileTileSize.SMALL,
+                    smallFileTileSize = SmallFileTileSize.SMALL,
                 )
             }
         }

@@ -48,4 +48,8 @@ class NewTransferViewModel @Inject constructor(private val transferFilesManager:
             _failedFileCount.emit(uris.count() - newFiles.count())
         }
     }
+
+    fun removeFileByUid(uid: String) {
+        _files.value = _files.value.filterNot { it.uid == uid }
+    }
 }
