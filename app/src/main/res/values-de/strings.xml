@@ -22,6 +22,10 @@
     <string name="contentDescriptionButtonClose">Schliessen</string>
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d Datei</item>
+        <item quantity="other">%d Dateien</item>
+    </plurals>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
@@ -59,6 +63,11 @@
     <plurals name="settingsValidityPeriodValue">
         <item quantity="one">%d Tag</item>
         <item quantity="other">%d Tage</item>
+    </plurals>
+    <string name="transferSendButton">Senden</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s übrig</item>
+        <item quantity="other">%s übrig</item>
     </plurals>
     <string name="transferTypeEmail">E-Mail</string>
     <string name="transferTypeLink">Link</string>

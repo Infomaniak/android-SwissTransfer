@@ -25,6 +25,10 @@
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonRemove">Remove file</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d file</item>
+        <item quantity="other">%d files</item>
+    </plurals>
     <string name="firstTransferDescription">Make your first transfer!</string>
     <string name="importFilesScreenTitle">Files to transfer</string>
     <string name="noFileDescription">Add up to 50 GB of files</string>
@@ -62,6 +66,11 @@
     <plurals name="settingsValidityPeriodValue">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
+    </plurals>
+    <string name="transferSendButton">Send</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s left</item>
+        <item quantity="other">%s left</item>
     </plurals>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
