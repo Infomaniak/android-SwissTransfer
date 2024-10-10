@@ -30,21 +30,21 @@ import javax.inject.Singleton
 
 @Singleton
 class TransferFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
-    fun getTransferFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<FileUiItem> {
+    fun getFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<FileUiItem> {
         val currentUsedFileNames = alreadyUsedFileNames.toMutableSet()
-        val transferFiles = mutableSetOf<FileUiItem>()
+        val files = mutableSetOf<FileUiItem>()
 
         uris.forEach { uri ->
-            getTransferFile(uri, currentUsedFileNames)?.let { transferFile ->
-                currentUsedFileNames += transferFile.fileName
-                transferFiles += transferFile
+            getFile(uri, currentUsedFileNames)?.let { file ->
+                currentUsedFileNames += file.fileName
+                files += file
             }
         }
 
-        return transferFiles
+        return files
     }
 
-    private fun getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): FileUiItem? {
+    private fun getFile(uri: Uri, alreadyUsedFileNames: Set<String>): FileUiItem? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
