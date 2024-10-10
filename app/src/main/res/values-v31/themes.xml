@@ -15,8 +15,14 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
-</adaptive-icon>
+<resources>
+
+    <style name="Theme.App.Starting31" parent="Theme.App.Starting">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splashscreen_icon_tmp</item>
+        <item name="windowSplashScreenBackground">@color/splashscreen_background_color</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/splashscreen_branding_image</item>
+    </style>
+
+    <style name="Theme.AppStarting" parent="Theme.App.Starting31" />
+
+</resources>
