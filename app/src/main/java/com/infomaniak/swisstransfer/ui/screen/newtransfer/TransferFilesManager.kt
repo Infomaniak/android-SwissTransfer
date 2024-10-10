@@ -22,6 +22,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -29,9 +30,9 @@ import javax.inject.Singleton
 
 @Singleton
 class TransferFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
-    fun getTransferFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<TransferFile> {
+    fun getTransferFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<FileUiItem> {
         val currentUsedFileNames = alreadyUsedFileNames.toMutableSet()
-        val transferFiles = mutableSetOf<TransferFile>()
+        val transferFiles = mutableSetOf<FileUiItem>()
 
         uris.forEach { uri ->
             getTransferFile(uri, currentUsedFileNames)?.let { transferFile ->
@@ -43,13 +44,19 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
         return transferFiles
     }
 
-    private fun getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): TransferFile? {
+    private fun getTransferFile(uri: Uri, alreadyUsedFileNames: Set<String>): FileUiItem? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
             val uniqueName = FileNameUtils.postfixExistingFileNames(name, alreadyUsedFileNames)
-            TransferFile(uniqueName, size, uri)
+            object: FileUiItem {
+                override val fileName: String = uniqueName
+                override val uid: String = fileName
+                override val fileSizeInBytes: Long = size
+                override val mimeType: String? = null
+                override val uri: String = uri.toString()
+            }
         }
     }
 

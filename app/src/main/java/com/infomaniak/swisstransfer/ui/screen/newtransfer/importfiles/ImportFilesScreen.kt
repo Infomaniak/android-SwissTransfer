@@ -21,10 +21,7 @@ import android.net.Uri
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -36,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
@@ -45,7 +41,6 @@ import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFile
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -65,13 +60,13 @@ fun ImportFilesScreen(
 
 @Composable
 private fun ImportFilesScreen(
-    transferFiles: () -> List<TransferFile>,
+    transferFiles: () -> List<FileUiItem>,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
 ) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
     val fileCount by remember { derivedStateOf { transferFiles().count() } }
-    val totalFileSize by remember { derivedStateOf { transferFiles().sumOf { it.size } } }
+    val totalFileSize by remember { derivedStateOf { transferFiles().sumOf { it.fileSizeInBytes } } }
     val isSendButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -124,19 +119,19 @@ private fun ImportFilesScreen(
                 }
 
                 LazyRow(
-                    Modifier
-                        .padding(horizontal = Margin.Medium)
-                        .padding(bottom = Margin.Medium)
+                    Modifier.padding(bottom = Margin.Medium),
+                    contentPadding = PaddingValues(Margin.Medium),
+                    horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
                 ) {
                     item {
                         AddNewFileButton { showUploadSourceChoiceBottomSheet = true }
                     }
-                }
 
-
-                LazyColumn {
-                    items(items = transferFiles(), key = { it.fileName }) { file ->
-                        Text(text = "${file.fileName} - ${file.size}")
+                    items(
+                        items = transferFiles(),
+                        key = { it.uid },
+                    ) { file ->
+                        SmallFileTile(file, SmallFileTileSize.LARGE) {/*TODO*/ }
                     }
                 }
             }
@@ -182,11 +177,13 @@ private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
         ImportFilesScreen({
             listOf(
-                TransferFile(
-                    "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg",
-                    234567832,
-                    "https://fastly.picsum.photos/id/1/200/300.jpg".toUri()
-                )
+                object : FileUiItem {
+                    override val uid = ""
+                    override val fileName = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg"
+                    override val fileSizeInBytes = 234567832L
+                    override val mimeType = null
+                    override val uri = "https://fastly.picsum.photos/id/1/200/300.jpg"
+                }
             )
         }, {}, closeActivity = {})
     }

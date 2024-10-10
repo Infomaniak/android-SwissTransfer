@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(private val transferFilesManager: TransferFilesManager) : ViewModel() {
 
-    private val _transferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
-    val transferFiles: StateFlow<List<TransferFile>> = _transferFiles
+    private val _transferFiles = MutableStateFlow<List<FileUiItem>>(emptyList())
+    val transferFiles: StateFlow<List<FileUiItem>> = _transferFiles
 
     private val _failedTransferFileCount = MutableSharedFlow<Int>()
     val failedTransferFileCount: SharedFlow<Int> = _failedTransferFileCount
