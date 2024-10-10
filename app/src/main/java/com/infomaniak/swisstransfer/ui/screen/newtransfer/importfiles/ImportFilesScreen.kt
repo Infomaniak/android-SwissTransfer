@@ -33,6 +33,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -89,7 +90,7 @@ private fun ImportFilesScreen(
         topButton = { modifier ->
             LargeButton(
                 modifier = modifier,
-                titleRes = R.string.sentTitle, // TODO
+                titleRes = R.string.transferSendButton,
                 style = ButtonType.PRIMARY,
                 enabled = isSendButtonEnabled, // TODO: Worth passing as lambda?
                 onClick = { /*TODO*/ },
@@ -99,18 +100,21 @@ private fun ImportFilesScreen(
             SwissTransferCard(Modifier.padding(Margin.Medium)) {
                 SharpRippleButton(onClick = { /*TODO*/ }) {
                     Text(
-                        "${fileCount} files", // TODO
+                        pluralStringResource(R.plurals.filesCount, fileCount, fileCount),
                         modifier = Modifier.padding(start = Margin.Medium),
                         color = SwissTransferTheme.colors.secondaryTextColor,
+                        style = SwissTransferTheme.typography.bodySmallRegular,
                     )
                     Text(
                         "•",
                         modifier = Modifier.padding(horizontal = Margin.Small),
-                        color = SwissTransferTheme.colors.secondaryTextColor
+                        color = SwissTransferTheme.colors.secondaryTextColor,
+                        style = SwissTransferTheme.typography.bodySmallRegular,
                     )
                     Text(
-                        "${formatSpaceLeft(totalFileSize)} left", // TODO
-                        color = SwissTransferTheme.colors.secondaryTextColor
+                        formatSpaceLeft(totalFileSize),
+                        color = SwissTransferTheme.colors.secondaryTextColor,
+                        style = SwissTransferTheme.typography.bodySmallRegular,
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
@@ -174,8 +178,10 @@ private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit)
 
 @Composable
 private fun formatSpaceLeft(usedSpace: Long): String {
-    val spaceLeft = TOTAL_FILE_SIZE - usedSpace
-    return Formatter.formatShortFileSize(LocalContext.current, spaceLeft)
+    val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
+    val formattedSpaceLeft = Formatter.formatShortFileSize(LocalContext.current, spaceLeft)
+    val quantity = 2
+    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSpaceLeft)
 }
 
 @Parcelize
