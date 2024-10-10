@@ -17,30 +17,22 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.net.Uri
 import android.text.format.Formatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import com.infomaniak.swisstransfer.ui.utils.fileType
-import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
 // TODO: Get the interface from the shared kmp code
 interface FileUiItem {
@@ -62,13 +54,11 @@ fun FileItem(
 ) {
     FileItemContent(
         content = {
-            var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
-
-            if (displayPreview) {
-                FileThumbnail(file.uri.toUri(), onError = { displayPreview = false })
-            } else {
-                FileIcon(file.fileType, color = SwissTransferTheme.materialColors.surface, circleSize = 64.dp)
-            }
+            FilePreview(
+                file = file,
+                circleColor = SwissTransferTheme.materialColors.surface,
+                circleSize = 64.dp,
+            )
         },
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
@@ -136,20 +126,6 @@ private fun FileItemContent(
             )
         }
     }
-}
-
-@Composable
-private fun FileThumbnail(uri: Uri, onError: () -> Unit) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(uri)
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        onError = { onError() },
-        modifier = Modifier.fillMaxSize(),
-    )
 }
 
 @PreviewSmallWindow

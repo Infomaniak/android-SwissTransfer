@@ -23,15 +23,54 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.infomaniak.library.filetypes.FileType
 import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
+import com.infomaniak.swisstransfer.ui.utils.fileType
+import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
 @Composable
-fun FileIcon(fileType: FileType, color: Color, circleSize: Dp) {
+fun FilePreview(
+    file: FileUiItem,
+    circleColor: Color,
+    circleSize: Dp
+) {
+    var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
+
+    if (displayPreview) {
+        FileThumbnail(file.uri, onError = { displayPreview = false })
+    } else {
+        FileIcon(file.fileType, circleColor, circleSize)
+    }
+}
+
+@Composable
+private fun FileThumbnail(uri: String, onError: () -> Unit) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(uri)
+            .crossfade(true)
+            .build(),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        onError = { onError() },
+        modifier = Modifier.fillMaxSize(),
+    )
+}
+
+@Composable
+private fun FileIcon(fileType: FileType, color: Color, circleSize: Dp) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.size(circleSize)) {
             drawCircle(color = color)

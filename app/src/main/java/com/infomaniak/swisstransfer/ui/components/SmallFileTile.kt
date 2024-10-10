@@ -21,55 +21,30 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import com.infomaniak.swisstransfer.ui.utils.fileType
-import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
 @Composable
 fun SmallFileTile(file: FileUiItem, smallFileTileSize: SmallFileTileSize, onRemove: (() -> Unit)? = null) {
-    var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
-
     Box(
         Modifier
             .size(smallFileTileSize.size)
             .clip(smallFileTileSize.shape)
             .background(SwissTransferTheme.materialColors.surface),
     ) {
-        if (displayPreview) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(file.uri)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                onError = { displayPreview = false },
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            FileIcon(
-                file.fileType,
-                color = SwissTransferTheme.materialColors.surfaceContainerHighest,
-                circleSize = smallFileTileSize.iconCircleSize(),
-            )
-        }
+        FilePreview(
+            file = file,
+            circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
+            circleSize = smallFileTileSize.iconCircleSize(),
+        )
 
         onRemove?.let { CrossCircleButton(onClick = it, size = 40.dp) }
     }
