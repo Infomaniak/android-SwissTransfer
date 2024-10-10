@@ -210,7 +210,6 @@ private fun FileTilePreview() {
             {
                 var isChecked by remember { mutableStateOf(true) }
 
-
                 val iconFile = object : FileUiItem {
                     override val fileName: String = "How to not get fired.pdf"
                     override val uid: String = fileName

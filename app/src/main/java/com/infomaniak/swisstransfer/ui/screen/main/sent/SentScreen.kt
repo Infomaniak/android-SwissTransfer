@@ -59,7 +59,6 @@ private fun SentScreen(transfers: List<Any>?) {
             SentListScreen(transfers)
         }
     }
-
 }
 
 @PreviewSmallWindow
