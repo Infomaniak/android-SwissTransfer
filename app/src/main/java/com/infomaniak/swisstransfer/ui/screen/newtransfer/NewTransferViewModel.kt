@@ -32,20 +32,20 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(private val transferFilesManager: TransferFilesManager) : ViewModel() {
 
-    private val _transferFiles = MutableStateFlow<List<FileUiItem>>(emptyList())
-    val transferFiles: StateFlow<List<FileUiItem>> = _transferFiles
+    private val _files = MutableStateFlow<List<FileUiItem>>(emptyList())
+    val files: StateFlow<List<FileUiItem>> = _files
 
-    private val _failedTransferFileCount = MutableSharedFlow<Int>()
-    val failedTransferFileCount: SharedFlow<Int> = _failedTransferFileCount
+    private val _failedFileCount = MutableSharedFlow<Int>()
+    val failedFileCount: SharedFlow<Int> = _failedFileCount
 
     fun addFiles(uris: List<Uri>) {
         viewModelScope.launch {
-            val alreadyUsedFileNames = buildSet { transferFiles.value.forEach { add(it.fileName) } }
+            val alreadyUsedFileNames = buildSet { files.value.forEach { add(it.fileName) } }
 
-            val newTransferFiles = transferFilesManager.getTransferFiles(uris, alreadyUsedFileNames)
+            val newFiles = transferFilesManager.getFiles(uris, alreadyUsedFileNames)
 
-            _transferFiles.value += newTransferFiles
-            _failedTransferFileCount.emit(uris.count() - newTransferFiles.count())
+            _files.value += newFiles
+            _failedFileCount.emit(uris.count() - newFiles.count())
         }
     }
 }

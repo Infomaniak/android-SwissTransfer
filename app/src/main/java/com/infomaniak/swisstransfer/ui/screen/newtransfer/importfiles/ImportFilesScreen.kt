@@ -54,20 +54,20 @@ fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
 ) {
-    val transferFiles by newTransferViewModel.transferFiles.collectAsStateWithLifecycle()
-    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, closeActivity)
+    val files by newTransferViewModel.files.collectAsStateWithLifecycle()
+    ImportFilesScreen({ files }, newTransferViewModel::addFiles, closeActivity)
 }
 
 @Composable
 private fun ImportFilesScreen(
-    transferFiles: () -> List<FileUiItem>,
+    files: () -> List<FileUiItem>,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
 ) {
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val fileCount by remember { derivedStateOf { transferFiles().count() } }
-    val totalFileSize by remember { derivedStateOf { transferFiles().sumOf { it.fileSizeInBytes } } }
-    val isSendButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
+    val fileCount by remember { derivedStateOf { files().count() } }
+    val totalFileSize by remember { derivedStateOf { files().sumOf { it.fileSizeInBytes } } }
+    val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -128,7 +128,7 @@ private fun ImportFilesScreen(
                     }
 
                     items(
-                        items = transferFiles(),
+                        items = files(),
                         key = { it.uid },
                     ) { file ->
                         SmallFileTile(file, SmallFileTileSize.LARGE) {/*TODO*/ }
