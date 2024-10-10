@@ -74,7 +74,7 @@ fun FileTile(
             var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
 
             if (displayPreview) {
-                FileThumbnail(file.uri.toUri()) { displayPreview = false }
+                FileThumbnail(file.uri.toUri(), onError = { displayPreview = false })
             } else {
                 FileIcon(file.fileType)
             }
