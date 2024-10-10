@@ -23,6 +23,7 @@
     <string name="buttonNext">Next</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
+    <string name="contentDescriptionButtonRemove">Remove file</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="firstTransferDescription">Make your first transfer!</string>
     <string name="importFilesScreenTitle">Files to transfer</string>

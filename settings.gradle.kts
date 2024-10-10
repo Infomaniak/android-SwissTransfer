@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "android-SwissTransfer"
 include(":app")
+include(":FileTypes")

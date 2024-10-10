@@ -20,6 +20,7 @@
     <string name="buttonNext">Avanti</string>
     <string name="contentDescriptionButtonBack">Indietro</string>
     <string name="contentDescriptionButtonClose">Chiudi</string>
+    <string name="contentDescriptionButtonRemove">Rimuovi il file</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
     <string name="firstTransferDescription">Effettua il tuo primo trasferimento!</string>
     <string name="importFilesScreenTitle">File da trasferire</string>
