@@ -18,39 +18,24 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.content.Context
-import android.icu.text.NumberFormat
 import android.net.Uri
-import android.os.Parcelable
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages
-import com.infomaniak.swisstransfer.ui.images.icons.AddThick
-import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import kotlinx.parcelize.Parcelize
 
 private const val TOTAL_FILE_SIZE: Long = 50_000_000_000
 
@@ -72,7 +57,6 @@ private fun ImportFilesScreen(
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val fileCount by remember { derivedStateOf { files().count() } }
     val formattedSizeWithUnits by remember {
         derivedStateOf {
             val totalFileSize = files().sumOf { it.fileSizeInBytes }
@@ -106,10 +90,10 @@ private fun ImportFilesScreen(
         },
         content = {
             SelectedFilesCard(
-                fileCount = { fileCount },
+                modifier = Modifier.padding(Margin.Medium),
+                files = files,
                 formattedSizeWithUnits = { formattedSizeWithUnits },
                 showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
-                files = files,
                 removeFileByUid = removeFileByUid,
             )
 
@@ -122,118 +106,9 @@ private fun ImportFilesScreen(
     )
 }
 
-@Composable
-private fun SelectedFilesCard(
-    fileCount: () -> Int,
-    formattedSizeWithUnits: () -> String,
-    showUploadSourceChoiceBottomSheet: () -> Unit,
-    files: () -> List<FileUiItem>,
-    removeFileByUid: (uid: String) -> Unit
-) {
-    SwissTransferCard(Modifier.padding(Margin.Medium)) {
-        SharpRippleButton(onClick = { /*TODO*/ }) {
-            val count = fileCount()
-            Text(
-                pluralStringResource(R.plurals.filesCount, count, count),
-                modifier = Modifier.padding(start = Margin.Medium),
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                style = SwissTransferTheme.typography.bodySmallRegular,
-            )
-            Text(
-                "•",
-                modifier = Modifier.padding(horizontal = Margin.Small),
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                style = SwissTransferTheme.typography.bodySmallRegular,
-            )
-            Text(
-                formatSpaceLeft(formattedSizeWithUnits),
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                style = SwissTransferTheme.typography.bodySmallRegular,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                imageVector = AppImages.AppIcons.ChevronRightSmall,
-                contentDescription = null,
-                modifier = Modifier.padding(Margin.Medium),
-                tint = SwissTransferTheme.colors.iconColor
-            )
-        }
-
-        LazyRow(
-            Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(Margin.Medium),
-            horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
-        ) {
-            item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
-                AddNewFileButton(Modifier.animateItem()) { showUploadSourceChoiceBottomSheet() }
-            }
-
-            items(
-                items = files(),
-                key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
-            ) { file ->
-                SmallFileTile(
-                    modifier = Modifier.animateItem(),
-                    file = file,
-                    smallFileTileSize = SmallFileTileSize.LARGE,
-                    onRemove = { removeFileByUid(file.uid) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Button(
-        modifier = modifier.size(80.dp),
-        shape = Shapes.medium,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = SwissTransferTheme.materialColors.surface,
-            contentColor = SwissTransferTheme.materialColors.primary,
-        ),
-        onClick = onClick,
-    ) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = AppImages.AppIcons.AddThick,
-            contentDescription = null,
-        )
-    }
-}
-
 private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String {
     val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
     return Formatter.formatShortFileSize(context, spaceLeft)
-}
-
-@Composable
-private fun formatSpaceLeft(formattedSizeWithUnits: () -> String): String {
-    val formattedSize = formattedSizeWithUnits()
-    val quantity = LocalContext.current.getQuantityFromFormattedSizeWithUnits(formattedSize)
-    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSize)
-}
-
-private fun Context.getQuantityFromFormattedSizeWithUnits(formattedSize: String): Int {
-    val sizeParts = formattedSize.split(' ', Typography.nbsp) // Space for languages such as EN and NBSP for languages such as FR
-
-    return if (sizeParts.size == 2) {
-        val local = resources.configuration.getLocales().get(0)
-        val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts[0])
-        parsedNumber?.toDouble()?.toInt() ?: 0
-    } else {
-        0
-    }
-}
-
-@Parcelize
-private data class TransferLazyRowKey(
-    val type: Type,
-    val fileUid: String? = null
-) : Parcelable {
-    enum class Type {
-        ADD_BUTTON, FILE
-    }
 }
 
 @PreviewSmallWindow
@@ -246,7 +121,7 @@ private fun ImportFilesScreenPreview() {
                 object : FileUiItem {
                     override val uid = ""
                     override val fileName = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg"
-                    override val fileSizeInBytes = 234567832L
+                    override val fileSizeInBytes = 2367832L
                     override val mimeType = null
                     override val uri = ""
                 }
