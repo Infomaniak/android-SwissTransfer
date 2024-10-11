@@ -105,56 +105,13 @@ private fun ImportFilesScreen(
             )
         },
         content = {
-            SwissTransferCard(Modifier.padding(Margin.Medium)) {
-                SharpRippleButton(onClick = { /*TODO*/ }) {
-                    Text(
-                        pluralStringResource(R.plurals.filesCount, fileCount, fileCount),
-                        modifier = Modifier.padding(start = Margin.Medium),
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                    )
-                    Text(
-                        "•",
-                        modifier = Modifier.padding(horizontal = Margin.Small),
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                    )
-                    Text(
-                        formatSpaceLeft(formattedSizeWithUnits),
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = AppImages.AppIcons.ChevronRightSmall,
-                        contentDescription = null,
-                        modifier = Modifier.padding(Margin.Medium),
-                        tint = SwissTransferTheme.colors.iconColor
-                    )
-                }
-
-                LazyRow(
-                    Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(Margin.Medium),
-                    horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
-                ) {
-                    item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
-                        AddNewFileButton(Modifier.animateItem()) { showUploadSourceChoiceBottomSheet = true }
-                    }
-
-                    items(
-                        items = files(),
-                        key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
-                    ) { file ->
-                        SmallFileTile(
-                            modifier = Modifier.animateItem(),
-                            file = file,
-                            smallFileTileSize = SmallFileTileSize.LARGE,
-                            onRemove = { removeFileByUid(file.uid) }
-                        )
-                    }
-                }
-            }
+            SelectedFilesCard(
+                fileCount = { fileCount },
+                formattedSizeWithUnits = { formattedSizeWithUnits },
+                showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
+                files = files,
+                removeFileByUid = removeFileByUid,
+            )
 
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
@@ -163,6 +120,67 @@ private fun ImportFilesScreen(
             )
         },
     )
+}
+
+@Composable
+private fun SelectedFilesCard(
+    fileCount: () -> Int,
+    formattedSizeWithUnits: () -> String,
+    showUploadSourceChoiceBottomSheet: () -> Unit,
+    files: () -> List<FileUiItem>,
+    removeFileByUid: (uid: String) -> Unit
+) {
+    SwissTransferCard(Modifier.padding(Margin.Medium)) {
+        SharpRippleButton(onClick = { /*TODO*/ }) {
+            val count = fileCount()
+            Text(
+                pluralStringResource(R.plurals.filesCount, count, count),
+                modifier = Modifier.padding(start = Margin.Medium),
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                style = SwissTransferTheme.typography.bodySmallRegular,
+            )
+            Text(
+                "•",
+                modifier = Modifier.padding(horizontal = Margin.Small),
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                style = SwissTransferTheme.typography.bodySmallRegular,
+            )
+            Text(
+                formatSpaceLeft(formattedSizeWithUnits),
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                style = SwissTransferTheme.typography.bodySmallRegular,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = AppImages.AppIcons.ChevronRightSmall,
+                contentDescription = null,
+                modifier = Modifier.padding(Margin.Medium),
+                tint = SwissTransferTheme.colors.iconColor
+            )
+        }
+
+        LazyRow(
+            Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(Margin.Medium),
+            horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
+        ) {
+            item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
+                AddNewFileButton(Modifier.animateItem()) { showUploadSourceChoiceBottomSheet() }
+            }
+
+            items(
+                items = files(),
+                key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
+            ) { file ->
+                SmallFileTile(
+                    modifier = Modifier.animateItem(),
+                    file = file,
+                    smallFileTileSize = SmallFileTileSize.LARGE,
+                    onRemove = { removeFileByUid(file.uid) }
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -190,17 +208,17 @@ private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String
 }
 
 @Composable
-private fun formatSpaceLeft(formattedSizeWithUnits: String): String {
-    val quantity = getQuantityFromFormattedSizeWithUnits(formattedSizeWithUnits)
-    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSizeWithUnits)
+private fun formatSpaceLeft(formattedSizeWithUnits: () -> String): String {
+    val formattedSize = formattedSizeWithUnits()
+    val quantity = LocalContext.current.getQuantityFromFormattedSizeWithUnits(formattedSize)
+    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSize)
 }
 
-@Composable
-private fun getQuantityFromFormattedSizeWithUnits(formattedSize: String): Int {
+private fun Context.getQuantityFromFormattedSizeWithUnits(formattedSize: String): Int {
     val sizeParts = formattedSize.split(' ', Typography.nbsp) // Space for languages such as EN and NBSP for languages such as FR
 
     return if (sizeParts.size == 2) {
-        val local = LocalContext.current.resources.configuration.getLocales().get(0)
+        val local = resources.configuration.getLocales().get(0)
         val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts[0])
         parsedNumber?.toDouble()?.toInt() ?: 0
     } else {
