@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import android.icu.text.NumberFormat
 import android.net.Uri
 import android.os.Parcelable
 import android.text.format.Formatter
@@ -180,8 +181,21 @@ private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit)
 private fun formatSpaceLeft(usedSpace: Long): String {
     val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
     val formattedSpaceLeft = Formatter.formatShortFileSize(LocalContext.current, spaceLeft)
-    val quantity = 2
+    val quantity = getQuantityFromFormattedSize(formattedSpaceLeft)
     return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSpaceLeft)
+}
+
+@Composable
+private fun getQuantityFromFormattedSize(formattedSize: String): Int {
+    val sizeParts = formattedSize.split(' ', Typography.nbsp) // Space for languages such as EN and NBSP for languages such as FR
+
+    return if (sizeParts.size == 2) {
+        val local = LocalContext.current.resources.configuration.getLocales().get(0)
+        val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts[0])
+        parsedNumber?.toDouble()?.toInt() ?: 0
+    } else {
+        0
+    }
 }
 
 @Parcelize
