@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import android.content.Context
 import android.icu.text.NumberFormat
 import android.net.Uri
 import android.os.Parcelable
@@ -69,9 +70,15 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
 ) {
+    val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
     val fileCount by remember { derivedStateOf { files().count() } }
-    val totalFileSize by remember { derivedStateOf { files().sumOf { it.fileSizeInBytes } } }
+    val formattedSizeWithUnits by remember {
+        derivedStateOf {
+            val totalFileSize = files().sumOf { it.fileSizeInBytes }
+            getFormattedSizeWithUnits(totalFileSize, context)
+        }
+    }
     val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -113,7 +120,7 @@ private fun ImportFilesScreen(
                         style = SwissTransferTheme.typography.bodySmallRegular,
                     )
                     Text(
-                        formatSpaceLeft(totalFileSize),
+                        formatSpaceLeft(formattedSizeWithUnits),
                         color = SwissTransferTheme.colors.secondaryTextColor,
                         style = SwissTransferTheme.typography.bodySmallRegular,
                     )
@@ -177,16 +184,19 @@ private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit)
     }
 }
 
-@Composable
-private fun formatSpaceLeft(usedSpace: Long): String {
+private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String {
     val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-    val formattedSpaceLeft = Formatter.formatShortFileSize(LocalContext.current, spaceLeft)
-    val quantity = getQuantityFromFormattedSize(formattedSpaceLeft)
-    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSpaceLeft)
+    return Formatter.formatShortFileSize(context, spaceLeft)
 }
 
 @Composable
-private fun getQuantityFromFormattedSize(formattedSize: String): Int {
+private fun formatSpaceLeft(formattedSizeWithUnits: String): String {
+    val quantity = getQuantityFromFormattedSizeWithUnits(formattedSizeWithUnits)
+    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSizeWithUnits)
+}
+
+@Composable
+private fun getQuantityFromFormattedSizeWithUnits(formattedSize: String): Int {
     val sizeParts = formattedSize.split(' ', Typography.nbsp) // Space for languages such as EN and NBSP for languages such as FR
 
     return if (sizeParts.size == 2) {
