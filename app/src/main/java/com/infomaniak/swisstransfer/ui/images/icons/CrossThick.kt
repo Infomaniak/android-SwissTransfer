@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,21 +29,19 @@ val AppImages.AppIcons.CrossThick: ImageVector
             viewportWidth = 16.0f,
             viewportHeight = 16.0f
         ).apply {
-            group {
-                path(
-                    fill = null,
-                    stroke = SolidColor(Color(0xFF9F9F9F)),
-                    strokeLineWidth = 2.0f,
-                    strokeLineCap = strokeCapRound,
-                    strokeLineJoin = strokeJoinRound,
-                    strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
-                ) {
-                    moveTo(1.0f, 15.0f)
-                    lineTo(15.0f, 1.0f)
-                    moveToRelative(0.0f, 14.0f)
-                    lineTo(1.0f, 1.0f)
-                }
+            path(
+                fill = null,
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 2.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
+                moveTo(1.0f, 15.0f)
+                lineTo(15.0f, 1.0f)
+                moveToRelative(0.0f, 14.0f)
+                lineTo(1.0f, 1.0f)
             }
         }.build()
         return _crossThick!!

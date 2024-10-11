@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,21 +30,19 @@ val AppIcons.AddThick: ImageVector
             viewportWidth = 16.0f,
             viewportHeight = 16.0f
         ).apply {
-            group {
-                path(
-                    fill = null,
-                    stroke = SolidColor(Color(0xFF9F9F9F)),
-                    strokeLineWidth = 2.0f,
-                    strokeLineCap = strokeCapRound,
-                    strokeLineJoin = strokeJoinRound,
-                    strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
-                ) {
-                    moveTo(1.0f, 8.0f)
-                    horizontalLineToRelative(14.0f)
-                    moveTo(8.0f, 1.0f)
-                    verticalLineToRelative(14.0f)
-                }
+            path(
+                fill = null,
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 2.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
+                moveTo(1.0f, 8.0f)
+                horizontalLineToRelative(14.0f)
+                moveTo(8.0f, 1.0f)
+                verticalLineToRelative(14.0f)
             }
         }.build()
         return _addThick!!

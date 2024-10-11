@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
@@ -24,16 +25,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun SmallFileTile(modifier: Modifier = Modifier, file: FileUiItem, smallFileTileSize: SmallFileTileSize, onRemove: (() -> Unit)? = null) {
+fun SmallFileTile(
+    modifier: Modifier = Modifier,
+    file: FileUiItem,
+    smallFileTileSize: SmallFileTileSize,
+    onRemove: (() -> Unit)? = null,
+) {
     Box(
         modifier
             .size(smallFileTileSize.size)
@@ -57,8 +62,8 @@ enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
     fun iconCircleSize(): Dp = 2f / 3 * size
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun SmallFileTilePreview() {
     SwissTransferTheme {

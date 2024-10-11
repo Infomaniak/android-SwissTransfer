@@ -220,7 +220,7 @@ private fun ImportFilesScreenPreview() {
                     override val fileName = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg"
                     override val fileSizeInBytes = 234567832L
                     override val mimeType = null
-                    override val uri = "https://fastly.picsum.photos/id/1/200/300.jpg"
+                    override val uri = ""
                 }
             )
         }, {}, {}, closeActivity = {})
