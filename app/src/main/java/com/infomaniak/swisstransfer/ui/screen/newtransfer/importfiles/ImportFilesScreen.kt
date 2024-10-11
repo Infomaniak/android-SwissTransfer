@@ -100,7 +100,7 @@ private fun ImportFilesScreen(
                 modifier = modifier,
                 titleRes = R.string.transferSendButton,
                 style = ButtonType.PRIMARY,
-                enabled = isSendButtonEnabled, // TODO: Worth passing as lambda?
+                enabled = { isSendButtonEnabled },
                 onClick = { /*TODO*/ },
             )
         },
