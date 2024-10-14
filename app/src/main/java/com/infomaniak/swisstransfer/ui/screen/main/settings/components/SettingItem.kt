@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Icon
@@ -51,6 +52,7 @@ fun SettingItem(
     icon: ImageVector? = null,
     description: String? = null,
     endIcon: EndIconType? = null,
+    shouldTintIcon: Boolean = true,
     onClick: (() -> Unit)?,
 ) {
     val modifier = Modifier
@@ -63,11 +65,11 @@ fun SettingItem(
             isSelected = isSelected,
             onClick = it,
         ) {
-            SettingItemContent(icon, titleRes, description, endIcon)
+            SettingItemContent(icon, titleRes, description, endIcon, shouldTintIcon)
         }
     } ?: run {
         Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
-            SettingItemContent(icon, titleRes, description, endIcon)
+            SettingItemContent(icon, titleRes, description, endIcon, shouldTintIcon)
         }
     }
 }
@@ -78,6 +80,7 @@ private fun SettingItemContent(
     titleRes: Int,
     description: String?,
     endIcon: EndIconType?,
+    shouldTintIcon: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -87,7 +90,11 @@ private fun SettingItemContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         icon?.let {
-            Icon(imageVector = it, contentDescription = null, tint = SwissTransferTheme.materialColors.primary)
+            if (shouldTintIcon) {
+                Icon(imageVector = it, contentDescription = null, tint = SwissTransferTheme.materialColors.primary)
+            } else {
+                Image(imageVector = it, contentDescription = null)
+            }
             Spacer(modifier = Modifier.width(Margin.Medium))
         }
 
