@@ -142,6 +142,15 @@ fun SettingsScreen(
                 description = BuildConfig.VERSION_NAME,
                 onClick = null,
             )
+            SettingDivider()
+
+            SettingTitle(R.string.settingsCategoryDataManagement)
+            SettingItem(
+                titleRes = R.string.settingsOptionDataManagement,
+                isSelected = { selectedSetting == DATA_MANAGEMENT },
+                endIcon = CHEVRON,
+                onClick = { onItemClick(DATA_MANAGEMENT) },
+            )
         }
     }
 }
@@ -182,6 +191,7 @@ enum class SettingsOptionScreens {
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
+    DATA_MANAGEMENT,
 }
 
 @PreviewAllWindows
