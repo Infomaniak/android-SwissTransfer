@@ -36,14 +36,14 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
-// TODO: Get the interface from the shared kmp code
-interface FileUiItem {
-    val uid: String
-    val fileName: String
-    val fileSizeInBytes: Long
-    val mimeType: String?
-    val uri: String
-}
+// TODO: Get the data class from the shared kmp code
+data class FileUiItem(
+    val uid: String,
+    val fileName: String,
+    val fileSizeInBytes: Long,
+    val mimeType: String?,
+    val uri: String,
+)
 
 @Composable
 fun FileItem(
