@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.FileItemList
-import com.infomaniak.swisstransfer.ui.components.FileUiItem
+import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
@@ -72,21 +72,21 @@ private fun ReceivedScreen(
             )
         } else {
             val files = listOf(
-                FileUiItem(
+                FileUi(
                     fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
                     uid = "The 5-Step Guide to Not Breaking Your Code.txt",
                     fileSizeInBytes = 57689032,
                     mimeType = null,
                     uri = "",
                 ),
-                FileUiItem(
+                FileUi(
                     fileName = "Introduction to Turning It Off and On Again.pptx",
                     uid = "Introduction to Turning It Off and On Again.pptx",
                     fileSizeInBytes = 89723143,
                     mimeType = null,
                     uri = "",
                 ),
-                FileUiItem(
+                FileUi(
                     fileName = "Learning to Copy and Paste: A Complete Guide.docx",
                     uid = "Learning to Copy and Paste: A Complete Guide.docx",
                     fileSizeInBytes = 237866728,
