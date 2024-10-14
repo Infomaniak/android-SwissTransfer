@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 // TODO: Get the data class from the shared kmp code
-data class FileUiItem(
+data class FileUi(
     val uid: String,
     val fileName: String,
     val fileSizeInBytes: Long,
@@ -47,7 +47,7 @@ data class FileUiItem(
 
 @Composable
 fun FileItem(
-    file: FileUiItem,
+    file: FileUi,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean = { false },
@@ -133,7 +133,7 @@ private fun FileItemContent(
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
+private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface {
             Column(

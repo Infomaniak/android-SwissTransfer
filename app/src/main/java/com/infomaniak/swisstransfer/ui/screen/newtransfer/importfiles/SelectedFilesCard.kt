@@ -52,7 +52,7 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun SelectedFilesCard(
     modifier: Modifier = Modifier,
-    files: () -> List<FileUiItem>,
+    files: () -> List<FileUi>,
     formattedSizeWithUnits: () -> String,
     showUploadSourceChoiceBottomSheet: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
@@ -163,7 +163,7 @@ private data class TransferLazyRowKey(
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SelectedFilesCardPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
+private fun SelectedFilesCardPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         SelectedFilesCard(
             modifier = Modifier.padding(Margin.Medium),

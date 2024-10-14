@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 @Composable
 fun FileItemList(
     modifier: Modifier = Modifier,
-    files: List<FileUiItem>,
+    files: List<FileUi>,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
     isUidChecked: (String) -> Boolean,
@@ -63,7 +63,7 @@ fun FileItemList(
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
+private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         FileItemList(
             files = files,

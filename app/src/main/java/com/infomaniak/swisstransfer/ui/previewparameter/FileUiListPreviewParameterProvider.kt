@@ -18,26 +18,26 @@
 package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.components.FileUiItem
+import com.infomaniak.swisstransfer.ui.components.FileUi
 
-class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUiItem>> {
-    override val values: Sequence<List<FileUiItem>> = sequenceOf(
+class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUi>> {
+    override val values: Sequence<List<FileUi>> = sequenceOf(
         listOf(
-            FileUiItem(
+            FileUi(
                 fileName = "How to not get fired.pdf",
                 uid = "How to not get fired.pdf",
                 fileSizeInBytes = 10302130,
                 mimeType = null,
                 uri = "",
             ),
-            FileUiItem(
+            FileUi(
                 fileName = "Opening images tutorial.png",
                 uid = "Opening images tutorial.png",
                 fileSizeInBytes = 456782,
                 mimeType = null,
                 uri = "https://picsum.photos/200/300",
             ),
-            FileUiItem(
+            FileUi(
                 fileName = "The 5 step guide to turning it off and on again.docx",
                 uid = "The 5 step guide to turning it off and on again.docx",
                 fileSizeInBytes = 89723143,
