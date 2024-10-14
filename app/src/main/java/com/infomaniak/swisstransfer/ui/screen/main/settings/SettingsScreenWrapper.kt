@@ -123,12 +123,16 @@ private fun DetailPane(
     emailLanguage: GetSetCallbacks<EmailLanguage>,
 ) {
     var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+    val context = LocalContext.current
 
     val destination = navigator.currentDestination?.content ?: lastSelectedScreen
     navigator.currentDestination?.content?.let { lastSelectedScreen = it }
 
     val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
     val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+
+    // TODO: Update this URL when we know what we want.
+    val sourceCodeURL = stringResource(R.string.urlSourceCode)
 
     when (destination) {
         THEME -> SettingsThemeScreen(
@@ -150,6 +154,10 @@ private fun DetailPane(
             emailLanguage = emailLanguage.get(),
             navigateBack = navigateBack,
             onEmailLanguageChange = { emailLanguage.set(it) },
+        )
+        DATA_MANAGEMENT -> SettingsDataManagementScreen(
+            navigateBack = navigateBack,
+            onViewSourceCodeClicked = { context.openUrl(sourceCodeURL) },
         )
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
