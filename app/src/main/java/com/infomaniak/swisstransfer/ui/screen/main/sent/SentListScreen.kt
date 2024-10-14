@@ -29,25 +29,29 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun SentListScreen(transfers: List<Any>) {
-    val transfers = listOf(object : FileUiItem {
-        override val fileName: String = "The 5-Step Guide to Not Breaking Your Code.txt"
-        override val uid: String = fileName
-        override val fileSizeInBytes: Long = 57689032
-        override val mimeType: String? = null
-        override val uri: String = ""
-    }, object : FileUiItem {
-        override val fileName: String = "Introduction to Turning It Off and On Again.pptx"
-        override val uid: String = fileName
-        override val fileSizeInBytes: Long = 89723143
-        override val mimeType: String? = null
-        override val uri: String = ""
-    }, object : FileUiItem {
-        override val fileName: String = "Learning to Copy and Paste: A Complete Guide.docx"
-        override val uid: String = fileName
-        override val fileSizeInBytes: Long = 237866728
-        override val mimeType: String? = null
-        override val uri: String = ""
-    })
+    val transfers = listOf(
+        FileUiItem(
+            fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
+            uid = "The 5-Step Guide to Not Breaking Your Code.txt",
+            fileSizeInBytes = 57689032,
+            mimeType = null,
+            uri = "",
+        ),
+        FileUiItem(
+            fileName = "Introduction to Turning It Off and On Again.pptx",
+            uid = "Introduction to Turning It Off and On Again.pptx",
+            fileSizeInBytes = 89723143,
+            mimeType = null,
+            uri = "",
+        ),
+        FileUiItem(
+            fileName = "Learning to Copy and Paste: A Complete Guide.docx",
+            uid = "Learning to Copy and Paste: A Complete Guide.docx",
+            fileSizeInBytes = 237866728,
+            mimeType = null,
+            uri = "",
+        ),
+    )
     FileItemList(
         modifier = Modifier.padding(Margin.Medium),
         files = transfers,

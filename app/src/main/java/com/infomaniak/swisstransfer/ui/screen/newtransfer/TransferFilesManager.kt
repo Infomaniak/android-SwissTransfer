@@ -50,13 +50,7 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
             val uniqueName = FileNameUtils.postfixExistingFileNames(name, alreadyUsedFileNames)
-            object: FileUiItem {
-                override val fileName: String = uniqueName
-                override val uid: String = fileName
-                override val fileSizeInBytes: Long = size
-                override val mimeType: String? = null
-                override val uri: String = uri.toString()
-            }
+            FileUiItem(fileName = uniqueName, uid = uniqueName, fileSizeInBytes = size, mimeType = null, uri = uri.toString())
         }
     }
 
