@@ -25,10 +25,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -109,18 +111,8 @@ private fun ImportFilesScreen(
 
 @PreviewAllWindows
 @Composable
-private fun ImportFilesScreenPreview() {
+private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
     SwissTransferTheme {
-        ImportFilesScreen({
-            listOf(
-                object : FileUiItem {
-                    override val uid = ""
-                    override val fileName = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg"
-                    override val fileSizeInBytes = 2367832L
-                    override val mimeType = null
-                    override val uri = ""
-                }
-            )
-        }, {}, {}, closeActivity = {})
+        ImportFilesScreen({ files }, {}, {}, closeActivity = {})
     }
 }
