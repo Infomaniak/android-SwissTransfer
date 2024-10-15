@@ -48,9 +48,9 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun SettingsDataManagementScreen(
+fun SettingsDataManagementMatomoScreen(
     navigateBack: (() -> Unit)?,
-    onItemClick: (SettingsOptionScreens) -> Unit,
+    // onItemClick: (SettingsOptionScreens) -> Unit,
 ) {
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
@@ -64,45 +64,11 @@ fun SettingsDataManagementScreen(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                imageVector = AppIllus.DataProtection, // TODO: Handle dark theme
-                contentDescription = null,
-                modifier = Modifier.padding(Margin.Medium),
-            )
             Text(
-                text = stringResource(R.string.settingsDataManagementDescription),
+                text = stringResource(R.string.matomo),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
-            )
-            SharpRippleButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onItemClick(DATA_MANAGEMENT_SOURCE_CODE) },
-            ) {
-                Text(
-                    text = stringResource(R.string.settingsDataManagementSourceCode),
-                    style = SwissTransferTheme.typography.bodyMedium,
-                    color = SwissTransferTheme.materialColors.primary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
-                )
-            }
-            SettingItem(
-                titleRes = R.string.matomo,
-                isSelected = { false },
-                icon = AppIcons.Matomo.image(),
-                endIcon = CHEVRON,
-                shouldTintIcon = false,
-                onClick = { onItemClick(DATA_MANAGEMENT_MATOMO) },
-            )
-            SettingItem(
-                titleRes = R.string.sentry,
-                isSelected = { false },
-                icon = AppIcons.Sentry.image(),
-                endIcon = CHEVRON,
-                shouldTintIcon = false,
-                onClick = { onItemClick(DATA_MANAGEMENT_SENTRY) },
             )
         }
     }

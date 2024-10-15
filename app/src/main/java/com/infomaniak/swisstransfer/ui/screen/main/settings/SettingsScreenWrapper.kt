@@ -157,12 +157,22 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT -> SettingsDataManagementScreen(
             navigateBack = navigateBack,
-            onViewSourceCodeClicked = { context.openUrl(sourceCodeURL) },
+            onItemClick = { item ->
+                if (item == DATA_MANAGEMENT_SOURCE_CODE) {
+                    context.openUrl(sourceCodeURL)
+                } else {
+                    // Navigate to the detail pane with the passed item
+                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                }
+            },
         )
+        DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+        DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
-        GIVE_FEEDBACK -> Unit
+        GIVE_FEEDBACK,
+        DATA_MANAGEMENT_SOURCE_CODE -> Unit
         null -> NoSelectionEmptyState()
     }
 }
