@@ -22,8 +22,11 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.net.toUri
+import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,6 +44,20 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
         }
 
         return files
+    }
+
+    fun getRestoredFileData(files: Array<File>): List<FileUi> {
+        return files.mapNotNull { file ->
+            val fileSizeInBytes = runCatching { file.length() }.getOrNull() ?: return@mapNotNull null
+
+            FileUi(
+                uid = file.name,
+                fileName = file.name,
+                fileSizeInBytes = fileSizeInBytes,
+                mimeType = null,
+                uri = file.toUri().toString(),
+            )
+        }
     }
 
     private fun getFile(uri: Uri, alreadyUsedFileNames: Set<String>): PickedFile? {

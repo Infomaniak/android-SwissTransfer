@@ -21,6 +21,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.ui.components.FileUi
@@ -43,6 +44,7 @@ import javax.inject.Inject
 class NewTransferViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val transferFilesManager: TransferFilesManager,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _files = MutableStateFlow<List<FileUi>>(emptyList())
@@ -55,9 +57,28 @@ class NewTransferViewModel @Inject constructor(
 
     private val filesMutationMutex = Mutex()
 
+    private val localCopyFolderFile by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
+    private val localCopyFolder get() = localCopyFolderFile.apply { if (!exists()) mkdirs() }
+
+    private var isFirstViewModelCreation: Boolean
+        get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
+        set(value) {
+            savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] = value
+        }
+
     init {
-        removeLocalCopyFolder() // Remove old imported files in case it would've crashed or similar to start with a clean slate
-        observeFilesToImport()
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isFirstViewModelCreation) {
+                isFirstViewModelCreation = false
+                // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required for
+                // already imported files restoration to not pick up old files in some extreme cases.
+                removeLocalCopyFolder()
+            } else {
+                restoreAlreadyImportedFiles()
+            }
+
+            observeFilesToImport()
+        }
     }
 
     fun addFiles(uris: List<Uri>) {
@@ -84,40 +105,53 @@ class NewTransferViewModel @Inject constructor(
         }
     }
 
-    private fun removeLocalCopyFolder() {
-        runCatching { appContext.createLocalCopyFolderFile().deleteRecursively() }
+    private suspend fun restoreAlreadyImportedFiles() {
+        if (!localCopyFolderFile.exists()) return
+
+        val alreadyCopiedFiles = localCopyFolderFile.listFiles() ?: return
+        val restoredFileData = transferFilesManager.getRestoredFileData(alreadyCopiedFiles)
+
+        if (alreadyCopiedFiles.size != restoredFileData.size) {
+            TODO() // TODO: Capture sentry message to handle the fact that restoring the already imported files failed
+        }
+
+        filesMutationMutex.withLock {
+            _files.value = restoredFileData
+        }
     }
 
-    private fun observeFilesToImport() {
-        viewModelScope.launch(Dispatchers.IO) {
-            for (fileToImport in filesToImport) {
-                Log.i(TAG, "Importing ${fileToImport.uri}")
-                val copiedFile = copyFileLocally(fileToImport.uri)
+    private fun removeLocalCopyFolder() {
+        if (localCopyFolderFile.exists()) runCatching { localCopyFolderFile.deleteRecursively() }
+    }
 
-                if (copiedFile == null) {
-                    reportFailedImportation(fileToImport)
-                    continue
-                }
+    private suspend fun observeFilesToImport() {
+        for (fileToImport in filesToImport) {
+            Log.i(TAG, "Importing ${fileToImport.uri}")
+            val copiedFile = copyFileLocally(fileToImport.uri, fileToImport.fileName)
 
-                Log.i(TAG, "Successfully imported ${fileToImport.uri}")
+            if (copiedFile == null) {
+                reportFailedImportation(fileToImport)
+                continue
+            }
 
-                filesMutationMutex.withLock {
-                    _files.value += FileUi(
-                        uid = fileToImport.fileName,
-                        fileName = fileToImport.fileName,
-                        fileSizeInBytes = fileToImport.fileSizeInBytes,
-                        mimeType = null,
-                        uri = copiedFile.toUri().toString(),
-                    )
-                }
+            Log.i(TAG, "Successfully imported ${fileToImport.uri}")
+
+            filesMutationMutex.withLock {
+                _files.value += FileUi(
+                    uid = fileToImport.fileName,
+                    fileName = fileToImport.fileName,
+                    fileSizeInBytes = fileToImport.fileSizeInBytes,
+                    mimeType = null,
+                    uri = copiedFile.toUri().toString(),
+                )
             }
         }
     }
 
-    private fun copyFileLocally(uri: Uri): File? {
-        val file = File(appContext.localCopyFolder, uri.hashCode().toString()).apply {
+    private fun copyFileLocally(uri: Uri, fileName: String): File? {
+        val file = File(localCopyFolder, fileName).apply {
             if (exists()) delete()
-            createNewFile()
+            runCatching { createNewFile() }.onFailure { return null }
 
             runCatching {
                 val inputStream = appContext.contentResolver.openInputStream(uri) ?: return null
@@ -143,8 +177,6 @@ class NewTransferViewModel @Inject constructor(
     companion object {
         private const val TAG = "File importation"
         const val LOCAL_COPY_FOLDER = "local_copy_folder"
-        inline val Context.localCopyFolder get() = createLocalCopyFolderFile().apply { if (!exists()) mkdirs() }
-
-        fun Context.createLocalCopyFolderFile() = File(cacheDir, LOCAL_COPY_FOLDER)
+        const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 }
