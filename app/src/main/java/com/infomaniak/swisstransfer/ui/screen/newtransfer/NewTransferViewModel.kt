@@ -17,39 +17,110 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
+import android.content.Context
 import android.net.Uri
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.ui.components.FileUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFilesManager.PickedFile
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class NewTransferViewModel @Inject constructor(private val transferFilesManager: TransferFilesManager) : ViewModel() {
+class NewTransferViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private val transferFilesManager: TransferFilesManager,
+) : ViewModel() {
 
     private val _files = MutableStateFlow<List<FileUi>>(emptyList())
     val files: StateFlow<List<FileUi>> = _files
 
-    private val _failedFileCount = MutableSharedFlow<Int>()
-    val failedFileCount: SharedFlow<Int> = _failedFileCount
+    private val _failedFiles = MutableSharedFlow<PickedFile>()
+    val failedFiles: SharedFlow<PickedFile> = _failedFiles
+
+    private val filesToImport: Channel<PickedFile> = Channel(capacity = Channel.UNLIMITED)
+
+    init {
+        observeFilesToImport()
+    }
 
     fun addFiles(uris: List<Uri>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val alreadyUsedFileNames = buildSet { files.value.forEach { add(it.fileName) } }
-
             val newFiles = transferFilesManager.getFiles(uris, alreadyUsedFileNames)
 
-            _files.value += newFiles
-            _failedFileCount.emit(uris.count() - newFiles.count())
+            newFiles.forEach(filesToImport::trySend)
         }
     }
 
     fun removeFileByUid(uid: String) {
         _files.value = _files.value.filterNot { it.uid == uid }
+    }
+
+    private fun observeFilesToImport() {
+        viewModelScope.launch(Dispatchers.IO) {
+            for (fileToImport in filesToImport) {
+                Log.i(TAG, "Importing ${fileToImport.uri}")
+                val copiedFile = copyFileLocally(fileToImport.uri)
+
+                if (copiedFile == null) {
+                    reportFailedImportation(fileToImport)
+                    continue
+                }
+
+                Log.i(TAG, "Successfully imported ${fileToImport.uri}")
+
+                _files.value += FileUi(
+                    uid = fileToImport.fileName,
+                    fileName = fileToImport.fileName,
+                    fileSizeInBytes = fileToImport.fileSizeInBytes,
+                    mimeType = null,
+                    uri = copiedFile.toUri().toString(),
+                )
+            }
+        }
+    }
+
+    private fun copyFileLocally(uri: Uri): File? {
+        val file = File(appContext.localCopyFolder, uri.hashCode().toString()).apply {
+            if (exists()) delete()
+            createNewFile()
+
+            runCatching {
+                val inputStream = appContext.contentResolver.openInputStream(uri) ?: return null
+
+                inputStream.use { inputStream ->
+                    outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+            }.onFailure {
+                return null
+            }
+        }
+
+        return file
+    }
+
+    private suspend fun reportFailedImportation(file: PickedFile) {
+        Log.w(TAG, "Failed importation of ${file.uri}");
+        _failedFiles.emit(file)
+    }
+
+    companion object {
+        private const val TAG = "File importation"
+        const val LOCAL_COPY_FOLDER = "local_copy_folder"
+        inline val Context.localCopyFolder get() = File(cacheDir, LOCAL_COPY_FOLDER).apply { if (!exists()) mkdirs() }
     }
 }
