@@ -95,7 +95,7 @@ fun SelectedFilesCard(
             }
 
             items(
-                items = files(),
+                items = files().asReversed(),
                 key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
             ) { file ->
                 SmallFileTile(
