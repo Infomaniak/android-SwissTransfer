@@ -18,13 +18,17 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,10 +43,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun SettingsDataManagementSentryScreen(
-    navigateBack: (() -> Unit)?,
-    // onItemClick: (SettingsOptionScreens) -> Unit,
-) {
+fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
+
+    // TODO: Use real value from Realm, and save it to Realm / anywhere else too.
+    var isSentryAuthorized by rememberSaveable { mutableStateOf(true) }
+
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
@@ -66,6 +71,23 @@ fun SettingsDataManagementSentryScreen(
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Margin.Medium),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.settingsAuthorizeTracking),
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.primaryTextColor,
+                )
+                Spacer(Modifier.weight(1.0f))
+                Switch(
+                    checked = isSentryAuthorized,
+                    onCheckedChange = { isSentryAuthorized = it },
+                )
+            }
         }
     }
 }
