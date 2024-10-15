@@ -86,7 +86,7 @@ class NewTransferViewModel @Inject constructor(
             val alreadyUsedFileNames = buildSet { files.value.forEach { add(it.fileName) } }
             val newFiles = transferFilesManager.getFiles(uris, alreadyUsedFileNames)
 
-            newFiles.forEach(filesToImport::trySend)
+            newFiles.forEach { filesToImport.send(it) }
         }
     }
 
