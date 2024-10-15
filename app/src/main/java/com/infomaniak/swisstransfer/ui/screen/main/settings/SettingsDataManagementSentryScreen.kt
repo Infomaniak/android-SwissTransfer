@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,19 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.icons.Matomo
-import com.infomaniak.swisstransfer.ui.images.icons.Sentry
-import com.infomaniak.swisstransfer.ui.images.illus.DataProtection
+import com.infomaniak.swisstransfer.ui.images.illus.Sentry
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
-import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
-import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
@@ -55,7 +46,7 @@ fun SettingsDataManagementSentryScreen(
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.settingsOptionDataManagement,
+                titleRes = R.string.sentry,
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
             )
         },
@@ -64,8 +55,13 @@ fun SettingsDataManagementSentryScreen(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Image(
+                imageVector = AppIllus.Sentry.image(),
+                contentDescription = null,
+                modifier = Modifier.padding(Margin.Medium),
+            )
             Text(
-                text = stringResource(R.string.sentry),
+                text = stringResource(R.string.settingsSentryDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -76,10 +72,10 @@ fun SettingsDataManagementSentryScreen(
 
 @PreviewSmallWindow
 @Composable
-private fun SettingsDataManagementScreenPreview() {
+private fun SettingsDataManagementSentryScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsDataManagementScreen({}, {})
+            SettingsDataManagementSentryScreen {}
         }
     }
 }
