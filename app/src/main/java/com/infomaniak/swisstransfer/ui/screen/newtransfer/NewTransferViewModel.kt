@@ -34,6 +34,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 import javax.inject.Inject
 
@@ -51,7 +53,10 @@ class NewTransferViewModel @Inject constructor(
 
     private val filesToImport: Channel<PickedFile> = Channel(capacity = Channel.UNLIMITED)
 
+    private val filesMutationMutex = Mutex()
+
     init {
+        removeLocalCopyFolder() // Remove old imported files in case it would've crashed or similar to start with a clean slate
         observeFilesToImport()
     }
 
@@ -65,7 +70,22 @@ class NewTransferViewModel @Inject constructor(
     }
 
     fun removeFileByUid(uid: String) {
-        _files.value = _files.value.filterNot { it.uid == uid }
+        viewModelScope.launch(Dispatchers.IO) {
+            filesMutationMutex.withLock {
+                val files = _files.value.toMutableList()
+
+                val index = files.indexOfFirst { it.uid == uid }.takeIf { it != -1 } ?: return@withLock
+                val fileToRemove = files.removeAt(index)
+
+                runCatching { File(fileToRemove.uri).delete() }
+
+                _files.value = files
+            }
+        }
+    }
+
+    private fun removeLocalCopyFolder() {
+        runCatching { appContext.createLocalCopyFolderFile().deleteRecursively() }
     }
 
     private fun observeFilesToImport() {
@@ -81,13 +101,15 @@ class NewTransferViewModel @Inject constructor(
 
                 Log.i(TAG, "Successfully imported ${fileToImport.uri}")
 
-                _files.value += FileUi(
-                    uid = fileToImport.fileName,
-                    fileName = fileToImport.fileName,
-                    fileSizeInBytes = fileToImport.fileSizeInBytes,
-                    mimeType = null,
-                    uri = copiedFile.toUri().toString(),
-                )
+                filesMutationMutex.withLock {
+                    _files.value += FileUi(
+                        uid = fileToImport.fileName,
+                        fileName = fileToImport.fileName,
+                        fileSizeInBytes = fileToImport.fileSizeInBytes,
+                        mimeType = null,
+                        uri = copiedFile.toUri().toString(),
+                    )
+                }
             }
         }
     }
@@ -121,6 +143,8 @@ class NewTransferViewModel @Inject constructor(
     companion object {
         private const val TAG = "File importation"
         const val LOCAL_COPY_FOLDER = "local_copy_folder"
-        inline val Context.localCopyFolder get() = File(cacheDir, LOCAL_COPY_FOLDER).apply { if (!exists()) mkdirs() }
+        inline val Context.localCopyFolder get() = createLocalCopyFolderFile().apply { if (!exists()) mkdirs() }
+
+        fun Context.createLocalCopyFolderFile() = File(cacheDir, LOCAL_COPY_FOLDER)
     }
 }
