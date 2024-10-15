@@ -35,9 +35,9 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.icons.Matomo
-import com.infomaniak.swisstransfer.ui.images.icons.Sentry
-import com.infomaniak.swisstransfer.ui.images.illus.DataProtection
+import com.infomaniak.swisstransfer.ui.images.icons.matomo.Matomo
+import com.infomaniak.swisstransfer.ui.images.icons.sentry.Sentry
+import com.infomaniak.swisstransfer.ui.images.illus.dataProtection.DataProtection
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
@@ -65,7 +65,7 @@ fun SettingsDataManagementScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                imageVector = AppIllus.DataProtection, // TODO: Handle dark theme
+                imageVector = AppIllus.DataProtection.image(),
                 contentDescription = null,
                 modifier = Modifier.padding(Margin.Medium),
             )
