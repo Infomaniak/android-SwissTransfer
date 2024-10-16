@@ -90,6 +90,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
+            // TODO: Animate
             LargeButton(
                 modifier = modifier,
                 titleRes = R.string.transferSendButton,
