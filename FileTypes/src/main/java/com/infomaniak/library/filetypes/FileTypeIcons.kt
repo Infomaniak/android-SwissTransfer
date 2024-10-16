@@ -17,4 +17,8 @@
  */
 package com.infomaniak.library.filetypes
 
-internal object FileTypeIcons
+import androidx.compose.ui.unit.dp
+
+internal object FileTypeIcons {
+    val previewSize = 250.dp
+}
