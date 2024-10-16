@@ -21,6 +21,7 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Chain
 import com.infomaniak.swisstransfer.ui.images.icons.Envelope
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -43,16 +45,21 @@ fun TransferTypeButtons(selectedTransferType: TransferType) {
 
     val selectedItem by rememberSaveable { mutableStateOf(selectedTransferType) }
 
-    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-        for (entry in TransferType.entries) {
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = Margin.Small),
+    ) {
+        for (transferTypeEntry in TransferType.entries) {
             TransferTypeButton(
-                transferType = entry,
-                isActive = { entry == selectedItem },
+                transferType = transferTypeEntry,
+                isActive = { transferTypeEntry == selectedItem },
             )
         }
     }
 }
 
+// TODO: onClick
 enum class TransferType(val buttonIcon: ImageVector, @StringRes val buttonText: Int, val onClick: () -> Unit = {}) {
     LINK(buttonIcon = AppIcons.Chain, buttonText = R.string.transferTypeLink),
     QR_CODE(buttonIcon = AppIcons.QrCode, buttonText = R.string.transferTypeQrCode),

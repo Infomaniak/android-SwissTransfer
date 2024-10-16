@@ -42,6 +42,7 @@ fun TransferTypeButton(
     } else {
         SwissTransferTheme.materialColors.outlineVariant to SwissTransferTheme.colors.secondaryTextColor
     }
+
     Button(
         modifier = Modifier
             .padding(Margin.XSmall)
@@ -54,7 +55,7 @@ fun TransferTypeButton(
     ) {
         Icon(modifier = Modifier.size(Margin.Medium), imageVector = transferType.buttonIcon, contentDescription = null)
         Spacer(modifier = Modifier.width(Margin.Small))
-        Text(text = stringResource(id = transferType.buttonText), style = SwissTransferTheme.typography.bodyRegular)
+        Text(text = stringResource(transferType.buttonText), style = SwissTransferTheme.typography.bodySmallRegular)
     }
 }
 
