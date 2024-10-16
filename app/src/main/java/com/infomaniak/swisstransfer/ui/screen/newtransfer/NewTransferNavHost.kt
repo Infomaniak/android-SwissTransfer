@@ -26,6 +26,7 @@ import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
 
@@ -48,7 +49,9 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadProgressScreen()
         }
         composable<UploadSuccessDestination> {
-            UploadSuccessScreen()
+            UploadSuccessScreen(
+                transferType = TransferType.MAIL, // TODO: Use correct TransferType instead of hard-coded value.
+            )
         }
     }
 }

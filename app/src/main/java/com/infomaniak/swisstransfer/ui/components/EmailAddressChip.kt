@@ -15,31 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
+package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun UploadSuccessScreen(transferType: TransferType) {
-    if (transferType == TransferType.MAIL) {
-        UploadSuccessEmailScreen()
-    } else {
-        // UploadSuccessQrScreen(transferType)
-    }
-}
-
-@PreviewSmallWindow
-@PreviewLargeWindow
-@Composable
-private fun UploadSuccessScreenPreview() {
-    SwissTransferTheme {
-        Surface {
-            UploadSuccessScreen(TransferType.MAIL)
-        }
+fun EmailAddressChip(text: String) {
+    Box(
+        modifier = Modifier
+            .clip(CustomShapes.Rounded)
+            .background(SwissTransferTheme.colors.emailAddressChipColor)
+            .padding(horizontal = Margin.Small),
+    ) {
+        Text(
+            color = SwissTransferTheme.colors.onEmailAddressChipColor,
+            text = text,
+        )
     }
 }

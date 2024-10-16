@@ -84,4 +84,6 @@ val CustomDarkColorScheme = CustomColorScheme(
     transferTypeQrOnContainer = Color(green_main),
     transferTypeProximityContainer = Color(specific3),
     transferTypeProximityOnContainer = Color(specific4),
+    emailAddressChipColor = Color(green_dark),
+    onEmailAddressChipColor = Color(green_main),
 )
