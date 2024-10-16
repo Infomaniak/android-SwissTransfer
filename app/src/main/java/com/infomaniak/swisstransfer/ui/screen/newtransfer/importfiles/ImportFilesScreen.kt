@@ -47,8 +47,10 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
 ) {
     val files by newTransferViewModel.files.collectAsStateWithLifecycle()
+    val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     ImportFilesScreen(
         files = { files },
+        filesToImportCount = { filesToImportCount },
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::addFiles,
         closeActivity = closeActivity,
@@ -59,6 +61,7 @@ fun ImportFilesScreen(
 @Composable
 private fun ImportFilesScreen(
     files: () -> List<FileUi>,
+    filesToImportCount: () -> Int,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -73,8 +76,7 @@ private fun ImportFilesScreen(
         val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
         getHumanReadableSize(context, spaceLeft)
     }
-
-    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
+    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() && filesToImportCount() == 0 } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -131,6 +133,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
     SwissTransferTheme {
         ImportFilesScreen(
             files = { files },
+            filesToImportCount = { 0 },
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},

@@ -53,7 +53,8 @@ class NewTransferViewModel @Inject constructor(
     private val _failedFiles = MutableSharedFlow<PickedFile>()
     val failedFiles: SharedFlow<PickedFile> = _failedFiles
 
-    private val filesToImport: Channel<PickedFile> = Channel(capacity = Channel.UNLIMITED)
+    private val filesToImport: CountChannel<PickedFile> = CountChannel()
+    val filesToImportCount: StateFlow<Int> = filesToImport.count
 
     private val filesMutationMutex = Mutex()
 
@@ -125,13 +126,13 @@ class NewTransferViewModel @Inject constructor(
     }
 
     private suspend fun observeFilesToImport() {
-        for (fileToImport in filesToImport) {
+        filesToImport.consume { fileToImport ->
             Log.i(TAG, "Importing ${fileToImport.uri}")
             val copiedFile = copyFileLocally(fileToImport.uri, fileToImport.fileName)
 
             if (copiedFile == null) {
                 reportFailedImportation(fileToImport)
-                continue
+                return@consume
             }
 
             Log.i(TAG, "Successfully imported ${fileToImport.uri}")
@@ -172,6 +173,27 @@ class NewTransferViewModel @Inject constructor(
     private suspend fun reportFailedImportation(file: PickedFile) {
         Log.w(TAG, "Failed importation of ${file.uri}");
         _failedFiles.emit(file)
+    }
+
+    private class CountChannel<T> {
+        private val channel = Channel<T>(capacity = Channel.UNLIMITED)
+
+        private val _count = MutableStateFlow(0)
+        val count: StateFlow<Int> = _count
+
+        private val countMutex = Mutex()
+
+        suspend fun send(element: T) {
+            countMutex.withLock { _count.value += 1 }
+            channel.send(element)
+        }
+
+        suspend fun consume(process: suspend (T) -> Unit) {
+            for (element in channel) {
+                process(element)
+                countMutex.withLock { _count.value -= 1 }
+            }
+        }
     }
 
     companion object {
