@@ -18,8 +18,13 @@
 package com.infomaniak.swisstransfer.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
 
 object CustomShapes {
     val None = RoundedCornerShape(0)
     val Rounded = RoundedCornerShape(50)
+    val extraSmall = RoundedCornerShape(4.dp)
+    val small = RoundedCornerShape(8.dp)
+    val medium = RoundedCornerShape(16.dp)
+    val large = RoundedCornerShape(24.dp)
 }

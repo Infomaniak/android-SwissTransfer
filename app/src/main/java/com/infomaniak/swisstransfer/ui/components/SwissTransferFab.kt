@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -62,8 +62,8 @@ fun SwissTransferFab(
 }
 
 enum class FabType(val shape: CornerBasedShape, val customSize: Dp?) {
-    NORMAL(Shapes.medium, null),
-    BIG(Shapes.large, 80.dp),
+    NORMAL(CustomShapes.medium, null),
+    BIG(CustomShapes.large, 80.dp),
 }
 
 @Preview(name = "Light mode")
