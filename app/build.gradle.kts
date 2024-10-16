@@ -28,6 +28,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "RECAPTCHA_API_SITE_KEY", "\"6LfaxOgpAAAAAI3Sj4rtB2oAFjkRJILiGEt-LUsc\"")
     }
 
     buildTypes {
@@ -116,6 +118,7 @@ dependencies {
     // Others
     implementation(libs.kotlinx.serialization)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.recaptcha)
 
     // Test
     testImplementation(libs.junit)
