@@ -29,6 +29,7 @@ private const val dark1 = 0xFF152123
 private const val dark2 = 0xFF2B383B
 private const val dark3 = 0xFF3C4F52
 private const val shark = 0xFF9F9F9F
+private const val polar_bear = 0xFFF5F5F5
 private const val rabbit = 0xFFF1F1F1
 
 private const val specific1 = 0xFF124426
@@ -86,4 +87,6 @@ val CustomDarkColorScheme = CustomColorScheme(
     transferTypeProximityOnContainer = Color(specific4),
     emailAddressChipColor = Color(green_dark),
     onEmailAddressChipColor = Color(green_main),
+    qrCodeBackground = Color(polar_bear),
+    qrCodeColor = Color(green_dark),
 )

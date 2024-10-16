@@ -29,7 +29,7 @@ fun UploadSuccessScreen(transferType: TransferType) {
     if (transferType == TransferType.MAIL) {
         UploadSuccessEmailScreen()
     } else {
-        // UploadSuccessQrScreen(transferType)
+        UploadSuccessQrScreen(transferType)
     }
 }
 

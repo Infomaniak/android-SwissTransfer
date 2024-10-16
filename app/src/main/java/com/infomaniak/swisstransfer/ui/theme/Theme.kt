@@ -83,6 +83,8 @@ data class CustomColorScheme(
     val transferTypeProximityOnContainer: Color = Color.Unspecified,
     val emailAddressChipColor: Color = Color.Unspecified,
     val onEmailAddressChipColor: Color = Color.Unspecified,
+    val qrCodeBackground: Color = Color.Unspecified,
+    val qrCodeColor: Color = Color.Unspecified,
 )
 
 private val Shapes = Shapes(
