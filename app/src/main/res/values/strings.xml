@@ -65,6 +65,7 @@
     <string name="settingsOptionEmailLanguage">Email language</string>
     <string name="settingsOptionGiveFeedback">Give your opinion</string>
     <string name="settingsOptionNotifications">Notifications</string>
+    <string name="settingsOptionPassword">Password</string>
     <string name="settingsOptionShareIdeas">Share your ideas</string>
     <string name="settingsOptionTheme">Theme</string>
     <string name="settingsOptionThemeDark">Dark</string>

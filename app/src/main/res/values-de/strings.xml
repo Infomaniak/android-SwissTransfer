@@ -60,6 +60,7 @@
     <string name="settingsOptionEmailLanguage">Sprache der E-Mail</string>
     <string name="settingsOptionGiveFeedback">Gib deine Meinung ab</string>
     <string name="settingsOptionNotifications">Benachrichtigungen</string>
+    <string name="settingsOptionPassword">Passwort</string>
     <string name="settingsOptionShareIdeas">Teile deine Ideen</string>
     <string name="settingsOptionTheme">Thema</string>
     <string name="settingsOptionThemeDark">Dunkel</string>
