@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.library.filetypes.FileTypeIcons
+import com.infomaniak.library.filetypes.FileTypeIcons.previewSize
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
@@ -124,7 +125,7 @@ private var _archive: ImageVector? = null
 @Preview
 @Composable
 private fun Preview() {
-    Box(modifier = Modifier.padding(12.dp)) {
+    Box(modifier = Modifier.padding(previewSize)) {
         Image(imageVector = FileTypeIcons.Archive, contentDescription = null)
     }
 }

@@ -46,7 +46,7 @@ fun FileTileList(
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
     ) {
         items(files, key = { it.uid }) { file ->
-            FileTile(
+            FileItem(
                 file = file,
                 isRemoveButtonVisible = isRemoveButtonVisible,
                 isCheckboxVisible = isCheckboxVisible,
