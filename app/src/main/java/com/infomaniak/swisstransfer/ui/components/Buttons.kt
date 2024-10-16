@@ -112,7 +112,7 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
     }),
 }
 
-private enum class ButtonSize(val height: Dp) {
+enum class ButtonSize(val height: Dp) {
     LARGE(56.dp),
     SMALL(40.dp),
 }

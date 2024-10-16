@@ -18,93 +18,46 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.*
+import androidx.annotation.StringRes
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferType
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.Chain
+import com.infomaniak.swisstransfer.ui.images.icons.Envelope
+import com.infomaniak.swisstransfer.ui.images.icons.QrCode
+import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-private val SPACE_AROUND_BUTTONS = 20.dp
-private val COLUMN_MIN_WIDTH = 150.dp
-
 @Composable
-fun TransferTypeButtons(items: List<TransferType>, navigateToTransfer: (TransferType) -> Unit) {
-    LazyVerticalGrid(
-        modifier = Modifier
-            .padding(horizontal = SPACE_AROUND_BUTTONS)
-            .wrapContentHeight(),
-        userScrollEnabled = false,
-        columns = GridCells.Adaptive(COLUMN_MIN_WIDTH),
-        verticalArrangement = Arrangement.spacedBy(SPACE_AROUND_BUTTONS),
-        horizontalArrangement = Arrangement.spacedBy(SPACE_AROUND_BUTTONS),
-    ) {
-        items(items = items, key = { it.titleRes }) { item ->
+fun TransferTypeButtons(selectedTransferType: TransferType) {
+
+    val selectedItem by rememberSaveable { mutableStateOf(selectedTransferType) }
+
+    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+        for (entry in TransferType.entries) {
             TransferTypeButton(
-                modifier = Modifier.aspectRatio(0.87f),
-                item = item,
-                onClick = { navigateToTransfer(item) },
+                transferType = entry,
+                isActive = { entry == selectedItem },
             )
         }
     }
 }
 
-@Composable
-private fun TransferTypeButton(modifier: Modifier = Modifier, item: TransferType, onClick: () -> Unit) {
-    Button(
-        contentPadding = PaddingValues(0.dp),
-        modifier = modifier.fillMaxSize(),
-        colors = ButtonDefaults.buttonColors(containerColor = item.background(), contentColor = item.foreground()),
-        shape = ShapeDefaults.Medium,
-        onClick = onClick,
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(
-                modifier = Modifier
-                    .fillMaxHeight(0.80f)
-                    .align(Alignment.BottomCenter),
-                text = stringResource(id = item.titleRes),
-                textAlign = TextAlign.Center,
-                style = SwissTransferTheme.typography.bodyMedium,
-            )
-
-            Icon(
-                modifier = Modifier
-                    .fillMaxWidth(0.75f)
-                    .align(Alignment.BottomCenter),
-                imageVector = item.icon,
-                contentDescription = null,
-            )
-        }
-    }
-}
-
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
-@Composable
-private fun TransferTypeButtonPreview() {
-    SwissTransferTheme {
-        Surface {
-            Column {
-                TransferType.entries.forEach { entry ->
-                    TransferTypeButton(
-                        modifier = Modifier
-                            .size(160.dp, 200.dp)
-                            .padding(20.dp),
-                        item = entry,
-                    ) {}
-                }
-            }
-        }
-    }
+enum class TransferType(val buttonIcon: ImageVector, @StringRes val buttonText: Int, val onClick: () -> Unit = {}) {
+    LINK(buttonIcon = AppIcons.Chain, buttonText = R.string.transferTypeLink),
+    QR_CODE(buttonIcon = AppIcons.QrCode, buttonText = R.string.transferTypeQrCode),
+    PROXIMITY(buttonIcon = AppIcons.WifiWave, buttonText = R.string.transferTypeProximity),
+    MAIL(buttonIcon = AppIcons.Envelope, buttonText = R.string.transferTypeEmail),
 }
 
 @Preview(name = "Light")
@@ -113,7 +66,7 @@ private fun TransferTypeButtonPreview() {
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferTypeButtons(TransferType.entries) {}
+            TransferTypeButtons(selectedTransferType = TransferType.QR_CODE)
         }
     }
 }

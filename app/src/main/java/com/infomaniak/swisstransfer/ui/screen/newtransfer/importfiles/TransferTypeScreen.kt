@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,18 +24,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.ChainTilted
-import com.infomaniak.swisstransfer.ui.images.illus.EnvelopeTilted
-import com.infomaniak.swisstransfer.ui.images.illus.QrCodeTilted
-import com.infomaniak.swisstransfer.ui.images.illus.WaveSignalTilted
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -68,41 +61,9 @@ fun TransferTypeScreen(navigateToTransfer: (TransferType) -> Unit, popBack: () -
                 textAlign = TextAlign.Center,
             )
 
-            TransferTypeButtons(TransferType.entries, navigateToTransfer)
+            TransferTypeButtons(TransferType.LINK)
         }
     }
-}
-
-enum class TransferType(
-    @StringRes val titleRes: Int,
-    val background: @Composable () -> Color,
-    val foreground: @Composable () -> Color,
-    val icon: ImageVector,
-) {
-    LINK(
-        titleRes = R.string.transferTypeLink,
-        background = { SwissTransferTheme.colors.transferTypeLinkContainer },
-        foreground = { SwissTransferTheme.colors.transferTypeLinkOnContainer },
-        icon = AppIllus.ChainTilted,
-    ),
-    EMAIL(
-        titleRes = R.string.transferTypeEmail,
-        background = { SwissTransferTheme.colors.transferTypeEmailContainer },
-        foreground = { SwissTransferTheme.colors.transferTypeEmailOnContainer },
-        icon = AppIllus.EnvelopeTilted,
-    ),
-    QR_CODE(
-        titleRes = R.string.transferTypeQrCode,
-        background = { SwissTransferTheme.colors.transferTypeQrContainer },
-        foreground = { SwissTransferTheme.colors.transferTypeQrOnContainer },
-        icon = AppIllus.QrCodeTilted,
-    ),
-    PROXIMITY(
-        titleRes = R.string.transferTypeProximity,
-        background = { SwissTransferTheme.colors.transferTypeProximityContainer },
-        foreground = { SwissTransferTheme.colors.transferTypeProximityOnContainer },
-        icon = AppIllus.WaveSignalTilted,
-    ),
 }
 
 @PreviewSmallWindow
