@@ -39,10 +39,10 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.ui.android)
-    implementation(libs.androidx.foundation.android)
-    implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(filetype.androidx.ui.android)
+    implementation(filetype.androidx.foundation.android)
+    implementation(filetype.androidx.ui.tooling.preview.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(filetype.androidx.ui.tooling)
 }
