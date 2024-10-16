@@ -1,0 +1,116 @@
+/*
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2024 Infomaniak Network SA
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessQr.UploadSuccessQr
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.theme.Dimens
+import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+
+@Composable
+fun UploadSuccessQrScreen(transferType: TransferType) {
+
+    val uploadSuccessTitle = if (transferType == TransferType.QR_CODE) {
+        R.string.uploadSuccessQrTitle
+    } else {
+        R.string.uploadSuccessLinkTitle
+    }
+
+    BottomStickyButtonScaffold(
+        topBar = { BrandTopAppBar() },
+        topButton = {
+            LargeButton(
+                modifier = it,
+                style = ButtonType.PRIMARY,
+                titleRes = R.string.buttonShare,
+                onClick = { /* TODO */ },
+            )
+        },
+        bottomButton = {
+            LargeButton(
+                modifier = it,
+                style = ButtonType.SECONDARY,
+                titleRes = R.string.buttonFinished,
+                onClick = { /* TODO */ },
+            )
+        },
+        content = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Image(
+                    imageVector = AppIllus.UploadSuccessQr.image(),
+                    contentDescription = null,
+                )
+                Text(
+                    text = stringResource(uploadSuccessTitle),
+                    style = SwissTransferTheme.typography.h1,
+                    color = SwissTransferTheme.colors.primaryTextColor,
+                    modifier = Modifier.padding(Margin.XLarge)
+                )
+                QrCode()
+                Text(
+                    text = stringResource(R.string.uploadSuccessLinkDescription),
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    textAlign = TextAlign.Center,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = Modifier
+                        .alpha(if (transferType == TransferType.QR_CODE) 0.0f else 1.0f)
+                        .padding(top = Margin.XXLarge, start = Margin.Medium, end = Margin.Medium)
+                        .widthIn(max = Dimens.DescriptionWidth),
+                )
+                // TODO: What do we want to do with this button placement?
+                LargeButton(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(Margin.Medium),
+                    style = ButtonType.SECONDARY,
+                    titleRes = R.string.buttonCopyLink,
+                    onClick = { /* TODO */ },
+                )
+            }
+        },
+    )
+}
+
+@PreviewSmallWindow
+@Composable
+private fun UploadSuccessQrScreenPreview() {
+    SwissTransferTheme {
+        Surface {
+            UploadSuccessQrScreen(transferType = TransferType.QR_CODE)
+        }
+    }
+}
