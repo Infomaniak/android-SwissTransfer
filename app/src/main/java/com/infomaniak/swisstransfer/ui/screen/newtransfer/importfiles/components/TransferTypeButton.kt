@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.components.ButtonSize
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun TransferTypeButton(
     transferType: TransferType,
     isActive: () -> Boolean,
+    onClick: () -> Unit,
 ) {
     val (borderColor, contentColor) = if (isActive()) {
         SwissTransferTheme.materialColors.primary to SwissTransferTheme.materialColors.primary
@@ -46,11 +47,11 @@ fun TransferTypeButton(
     Button(
         modifier = Modifier
             .padding(Margin.XSmall)
-            .height(ButtonSize.LARGE.height)
+            .height(Dimens.LargeButtonHeight)
             .border(width = 1.dp, color = borderColor, shape = Shapes.small),
         shape = Shapes.small,
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = contentColor),
-        onClick = transferType.onClick,
+        onClick = onClick,
         contentPadding = PaddingValues(Margin.Medium),
     ) {
         Icon(modifier = Modifier.size(Margin.Medium), imageVector = transferType.buttonIcon, contentDescription = null)
@@ -69,7 +70,8 @@ private fun TransferTypeButtonPreview() {
                 TransferType.entries.forEach { entry ->
                     TransferTypeButton(
                         transferType = entry,
-                        isActive = { entry.ordinal == 0 }
+                        isActive = { entry.ordinal == 0 },
+                        onClick = {},
                     )
                 }
             }

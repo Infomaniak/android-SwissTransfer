@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -112,8 +113,8 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
     }),
 }
 
-enum class ButtonSize(val height: Dp) {
-    LARGE(56.dp),
+private enum class ButtonSize(val height: Dp) {
+    LARGE(Dimens.LargeButtonHeight),
     SMALL(40.dp),
 }
 

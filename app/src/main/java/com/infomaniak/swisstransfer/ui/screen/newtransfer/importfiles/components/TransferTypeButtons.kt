@@ -41,9 +41,9 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferTypeButtons(selectedTransferType: TransferType) {
+fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (TransferType) -> Unit) {
 
-    val selectedItem by rememberSaveable { mutableStateOf(selectedTransferType) }
+    val selectedItem by rememberSaveable { mutableStateOf(initialSelectedTransferType) }
 
     Row(
         modifier = Modifier
@@ -54,13 +54,13 @@ fun TransferTypeButtons(selectedTransferType: TransferType) {
             TransferTypeButton(
                 transferType = transferTypeEntry,
                 isActive = { transferTypeEntry == selectedItem },
+                onClick = { onClick(transferTypeEntry) },
             )
         }
     }
 }
 
-// TODO: onClick
-enum class TransferType(val buttonIcon: ImageVector, @StringRes val buttonText: Int, val onClick: () -> Unit = {}) {
+enum class TransferType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
     LINK(buttonIcon = AppIcons.Chain, buttonText = R.string.transferTypeLink),
     QR_CODE(buttonIcon = AppIcons.QrCode, buttonText = R.string.transferTypeQrCode),
     PROXIMITY(buttonIcon = AppIcons.WifiWave, buttonText = R.string.transferTypeProximity),
@@ -73,7 +73,7 @@ enum class TransferType(val buttonIcon: ImageVector, @StringRes val buttonText: 
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferTypeButtons(selectedTransferType = TransferType.QR_CODE)
+            TransferTypeButtons(initialSelectedTransferType = TransferType.QR_CODE, onClick = {})
         }
     }
 }
