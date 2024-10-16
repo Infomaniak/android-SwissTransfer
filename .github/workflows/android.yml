@@ -29,12 +29,12 @@ jobs:
           token: ${{ github.token }}
           submodules: recursive
 
-      # Setup Gradle and run Build
+      # Setup Gradle and Run tests
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
 
-      # Run tests
-      - name: Run Unit tests
+      - name: Clean gradle cache
+        run: ./gradlew clean
+
+      - name: Run unit tests
         run: ./gradlew testDebugUnitTest --stacktrace

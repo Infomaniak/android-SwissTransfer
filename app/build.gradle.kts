@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.sentry)
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
@@ -63,6 +64,23 @@ kapt {
     correctErrorTypes = true
 }
 
+sentry {
+    // Enables or disables the automatic upload of mapping files during a build.
+    // If you disable this, you'll need to manually upload the mapping files with sentry-cli when you do a release.
+    // Default is enabled.
+    autoUploadProguardMapping = true
+
+    // Disables or enables the automatic configuration of Native Symbols for Sentry.
+    // This executes sentry-cli automatically so you don't need to do it manually.
+    // Default is disabled.
+    uploadNativeSymbols = true
+
+    // Does or doesn't include the source code of native code for Sentry.
+    // This executes sentry-cli with the --include-sources param. automatically so you don't need to do it manually.
+    // Default is disabled.
+    includeNativeSources = true
+}
+
 dependencies {
     implementation(project(":FileTypes"))
     implementation(kotlin("reflect"))
@@ -80,6 +98,7 @@ dependencies {
     implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.sentry.android)
 
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)

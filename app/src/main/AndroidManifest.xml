@@ -33,10 +33,24 @@
         android:theme="@style/Theme.AndroidSwissTransfer"
         android:usesCleartextTraffic="false"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="io.sentry.anr.enable"
+            android:value="true" />
+
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false" />
+
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://8fa636a7655a9ab4949a2e7fc22bdee3@sentry-mobile.infomaniak.com/18" />
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AndroidSwissTransfer">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
