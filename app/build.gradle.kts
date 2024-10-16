@@ -64,6 +64,7 @@ kapt {
 }
 
 dependencies {
+    implementation(project(":FileTypes"))
     implementation(kotlin("reflect"))
 
     implementation(libs.androidx.core.ktx)
@@ -90,7 +91,6 @@ dependencies {
 
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
-    implementation(project(":FileTypes"))
     debugImplementation(libs.compose.ui.tooling)
 
     // Hilt

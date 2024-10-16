@@ -17,12 +17,10 @@
  */
 package com.infomaniak.library.filetypes
 
-import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.library.filetypes.icons.*
-import org.jetbrains.annotations.TestOnly
 
 private val MEDIA_COLOR_LIGHT = Color(0xFF00BCD4)
 private val MEDIA_COLOR_DARK = Color(0xFF86DEEA)
@@ -49,7 +47,7 @@ enum class FileType(val icon: ImageVector, private val colorLight: Color, privat
 
     companion object {
         fun guessFromFileName(fileName: String): FileType {
-            val extension = fileName.extractExtension()
+            val extension = fileName.extractExtension() ?: return UNKNOWN
             val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: return UNKNOWN
             return guessFromMimeType(mimeType)
         }

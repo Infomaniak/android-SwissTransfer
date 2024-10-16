@@ -25,7 +25,7 @@ internal object FileTypeGuesser {
         "application/x-pdf",
     )
 
-    val calendarMatches = mimeTypeSetOf(
+    private val calendarMatches = mimeTypeSetOf(
         "application/ics",
         "text/calendar",
     )
@@ -133,7 +133,7 @@ internal object FileTypeGuesser {
 
     private fun mimeTypeSetOf(vararg mimeTypes: String) = MimeTypeSet(mimeTypes.toSet())
 
-    class MimeTypeSet(private val mimeTypes: Set<String>) : Set<String> by mimeTypes {
+    private class MimeTypeSet(private val mimeTypes: Set<String>) : Set<String> by mimeTypes {
         override fun contains(element: String): Boolean = mimeTypes.any { mimeType -> element.startsWith(mimeType) }
     }
 }
