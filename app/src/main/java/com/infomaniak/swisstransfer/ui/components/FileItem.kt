@@ -133,7 +133,7 @@ private fun FileItemContent(
                         .align(Alignment.TopEnd),
                     contentPadding = PaddingValues(0.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.fileTileRemoveButtonBackground),
+                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.fileItemRemoveButtonBackground),
                     onClick = onRemove ?: {},
                 ) {
                     Icon(
@@ -209,7 +209,6 @@ private fun FileItemPreview() {
             )
             {
                 var isChecked by remember { mutableStateOf(true) }
-
 
                 val iconFile = object : FileUiItem {
                     override val fileName: String = "How to not get fired.pdf"

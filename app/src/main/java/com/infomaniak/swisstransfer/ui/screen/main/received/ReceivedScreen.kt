@@ -28,11 +28,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
+import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
@@ -43,21 +46,61 @@ fun ReceivedScreen(
     sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
+    val isTransferChecked = sentViewModel.selectedTransferIds
     val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
 
-    ReceivedScreen { areTransfersEmpty }
+    ReceivedScreen(
+        isFileChecked = { uid -> isTransferChecked[uid] == true },
+        setFileCheckStatus = { uid, isChecked -> isTransferChecked[uid] = isChecked },
+        areTransfersEmpty = { areTransfersEmpty }
+    )
 }
 
 @Composable
-private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
+private fun ReceivedScreen(
+    isFileChecked: (String) -> Boolean,
+    setFileCheckStatus: (String, Boolean) -> Unit,
+    areTransfersEmpty: () -> Boolean
+) {
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) {
-        EmptyState(
-            icon = AppIllus.MascotSearching,
-            title = R.string.noTransferReceivedTitle,
-            description = R.string.noTransferReceivedDescription,
-        )
+        if (areTransfersEmpty()) {
+            EmptyState(
+                icon = AppIllus.MascotSearching,
+                title = R.string.noTransferReceivedTitle,
+                description = R.string.noTransferReceivedDescription,
+            )
+        } else {
+            val files = listOf(object : FileUiItem {
+                override val fileName: String = "The 5-Step Guide to Not Breaking Your Code.txt"
+                override val uid: String = fileName
+                override val fileSizeInBytes: Long = 57689032
+                override val mimeType: String? = null
+                override val uri: String = ""
+            }, object : FileUiItem {
+                override val fileName: String = "Introduction to Turning It Off and On Again.pptx"
+                override val uid: String = fileName
+                override val fileSizeInBytes: Long = 89723143
+                override val mimeType: String? = null
+                override val uri: String = ""
+            }, object : FileUiItem {
+                override val fileName: String = "Learning to Copy and Paste: A Complete Guide.docx"
+                override val uid: String = fileName
+                override val fileSizeInBytes: Long = 237866728
+                override val mimeType: String? = null
+                override val uri: String = ""
+            })
+            FileItemList(
+                modifier = Modifier.padding(Margin.Medium),
+                files = files,
+                isRemoveButtonVisible = false,
+                isCheckboxVisible = true,
+                isUidChecked = isFileChecked,
+                setUidCheckStatus = setFileCheckStatus,
+                onRemoveUid = {},
+            )
+        }
     }
 }
 
@@ -67,7 +110,7 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
 private fun ReceivedScreenPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen(areTransfersEmpty = { true })
+            ReceivedScreen(areTransfersEmpty = { true }, isFileChecked = { false }, setFileCheckStatus = { _, _ -> })
         }
     }
 }
