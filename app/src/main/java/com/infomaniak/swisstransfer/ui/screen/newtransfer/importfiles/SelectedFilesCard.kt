@@ -87,7 +87,7 @@ fun SelectedFilesCard(
 
         LazyRow(
             Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(Margin.Medium),
+            contentPadding = PaddingValues(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Medium),
             horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
         ) {
             item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
