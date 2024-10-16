@@ -29,11 +29,9 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFilesManager.P
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -48,7 +46,15 @@ class NewTransferViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _files = MutableStateFlow<List<FileUi>>(emptyList())
-    val files: StateFlow<List<FileUi>> = _files
+    private val files: StateFlow<List<FileUi>> = _files
+    @OptIn(FlowPreview::class)
+    val filesDebounced = files
+        .debounce(50)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList(),
+        )
 
     private val _failedFiles = MutableSharedFlow<PickedFile>()
     val failedFiles: SharedFlow<PickedFile> = _failedFiles
