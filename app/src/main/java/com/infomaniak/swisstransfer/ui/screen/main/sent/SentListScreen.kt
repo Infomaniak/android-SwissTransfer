@@ -22,8 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.components.FileUiItem
-import com.infomaniak.swisstransfer.ui.components.FileTileList
-import com.infomaniak.swisstransfer.ui.components.FileItem
+import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
@@ -50,7 +49,7 @@ fun SentListScreen(transfers: List<Any>) {
         override val mimeType: String? = null
         override val uri: String = ""
     })
-    FileTileList(
+    FileItemList(
         modifier = Modifier.padding(Margin.Medium),
         files = transfers,
         isRemoveButtonVisible = true,

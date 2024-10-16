@@ -30,7 +30,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 
 @Composable
-fun FileTileList(
+fun FileItemList(
     modifier: Modifier = Modifier,
     files: List<FileUiItem>,
     isRemoveButtonVisible: Boolean,
@@ -61,7 +61,7 @@ fun FileTileList(
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun FileTileListPreview() {
+private fun FileItemListPreview() {
     val files = listOf(object : FileUiItem {
         override val fileName: String = "The 5-Step Guide to Not Breaking Your Code.txt"
         override val uid: String = fileName
@@ -83,7 +83,7 @@ private fun FileTileListPreview() {
     })
 
     SwissTransferTheme {
-        FileTileList(
+        FileItemList(
             files = files,
             isRemoveButtonVisible = false,
             isCheckboxVisible = true,

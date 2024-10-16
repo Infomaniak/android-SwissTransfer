@@ -133,7 +133,7 @@ private fun FileItemContent(
                         .align(Alignment.TopEnd),
                     contentPadding = PaddingValues(0.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.fileTileRemoveButtonBackground),
+                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.fileItemRemoveButtonBackground),
                     onClick = onRemove ?: {},
                 ) {
                     Icon(

@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.FileUiItem
-import com.infomaniak.swisstransfer.ui.components.FileTileList
+import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
@@ -91,7 +91,7 @@ private fun ReceivedScreen(
                 override val mimeType: String? = null
                 override val uri: String = ""
             })
-            FileTileList(
+            FileItemList(
                 modifier = Modifier.padding(Margin.Medium),
                 files = files,
                 isRemoveButtonVisible = false,
