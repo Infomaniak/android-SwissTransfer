@@ -17,24 +17,49 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
+import com.infomaniak.swisstransfer.ui.components.FileItem
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import java.util.UUID
 
 @Composable
 fun SentListScreen(transfers: List<Any>) {
-    LazyColumn {
-        items(items = transfers, key = { UUID.randomUUID() }) {
-            Text(text = "Sent screen")
+    LazyVerticalGrid(
+        modifier = Modifier.padding(Margin.Medium),
+        columns = GridCells.Adaptive(150.dp),
+        verticalArrangement = Arrangement.spacedBy(Margin.Medium),
+        horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
+    ) {
+        val imageFile = object : FileUiItem {
+            override val fileName: String = "Time-Clock-Circle--Streamline-Ultimate.svg (1).png"
+            override val uid: String = fileName
+            override val fileSizeInBytes: Long = 456782
+            override val mimeType: String? = null
+            override val uri: String = "https://picsum.photos/200/300"
+        }
+
+        items(3) {
+            FileItem(
+                file = imageFile,
+                isRemoveButtonVisible = true,
+                isCheckboxVisible = true,
+                isChecked = { true },
+                onClick = {},
+                onRemove = {})
         }
     }
 }
+
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable

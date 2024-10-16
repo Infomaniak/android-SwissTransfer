@@ -64,6 +64,7 @@ kapt {
 }
 
 dependencies {
+    implementation(project(":FileTypes"))
     implementation(kotlin("reflect"))
 
     implementation(libs.androidx.core.ktx)
@@ -85,6 +86,8 @@ dependencies {
     implementation(libs.androidx.adaptive.navigation)
 
     implementation(libs.swisstransfer.core)
+
+    implementation(libs.coil.compose)
 
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)

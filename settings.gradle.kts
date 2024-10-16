@@ -21,7 +21,13 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
+    versionCatalogs {
+        create("filetype") {
+            from(files("FileTypes/gradle/filetype.versions.toml"))
+        }
+    }
 }
 
 rootProject.name = "android-SwissTransfer"
 include(":app")
+include(":FileTypes")

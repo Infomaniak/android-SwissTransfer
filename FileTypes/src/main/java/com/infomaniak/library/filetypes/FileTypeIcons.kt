@@ -15,17 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.sent
+package com.infomaniak.library.filetypes
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
+import androidx.compose.ui.unit.dp
 
-@HiltViewModel
-class SentViewModel @Inject constructor() : ViewModel() {
-    val transfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+internal object FileTypeIcons {
+    val previewSize = 250.dp
 }

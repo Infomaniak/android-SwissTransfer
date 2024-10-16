@@ -40,6 +40,7 @@ private const val specific5 = 0xFF49DEFD
 // Extra palette
 private const val elephant = 0xFF666666
 private const val white = 0xFFFFFFFF
+private const val black_translucent = 0x80000000
 
 private const val error = 0xFFFC8878
 
@@ -74,6 +75,7 @@ val CustomDarkColorScheme = CustomColorScheme(
     navigationItemBackground = Color(dark2),
     tertiaryButtonBackground = Color(dark2),
     selectedSettingItem = Color(dark2),
+    fileTileRemoveButtonBackground = Color(black_translucent),
     transferTypeLinkContainer = Color(specific1),
     transferTypeLinkOnContainer = Color(green_main),
     transferTypeEmailContainer = Color(green_dark),
