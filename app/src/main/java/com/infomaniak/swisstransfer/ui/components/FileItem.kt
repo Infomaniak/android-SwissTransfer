@@ -61,7 +61,7 @@ interface FileUiItem {
 }
 
 @Composable
-fun FileTile(
+fun FileItem(
     file: FileUiItem,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
@@ -69,7 +69,7 @@ fun FileTile(
     onClick: () -> Unit,
     onRemove: (() -> Unit)? = null,
 ) {
-    FileTileContent(
+    FileItemContent(
         content = {
             var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
 
@@ -90,7 +90,7 @@ fun FileTile(
 }
 
 @Composable
-private fun FileTileContent(
+private fun FileItemContent(
     content: @Composable () -> Unit,
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
@@ -199,7 +199,7 @@ private fun FileIcon(fileType: FileType) {
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun FileTilePreview() {
+private fun FileItemPreview() {
     SwissTransferTheme {
         Surface {
             Column(
@@ -218,7 +218,7 @@ private fun FileTilePreview() {
                     override val mimeType: String? = null
                     override val uri: String = ""
                 }
-                FileTile(
+                FileItem(
                     iconFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
@@ -236,7 +236,7 @@ private fun FileTilePreview() {
                     override val mimeType: String? = null
                     override val uri: String = "https://picsum.photos/200/300"
                 }
-                FileTile(
+                FileItem(
                     file = imageFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
