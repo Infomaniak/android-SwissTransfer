@@ -27,9 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -48,8 +48,8 @@ fun TransferTypeButton(
         modifier = Modifier
             .padding(Margin.XSmall)
             .height(Dimens.LargeButtonHeight)
-            .border(width = 1.dp, color = borderColor, shape = Shapes.small),
-        shape = Shapes.small,
+            .border(width = 1.dp, color = borderColor, shape = CustomShapes.small),
+        shape = CustomShapes.small,
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = contentColor),
         onClick = onClick,
         contentPadding = PaddingValues(Margin.Medium),
@@ -78,4 +78,3 @@ private fun TransferTypeButtonPreview() {
         }
     }
 }
-
