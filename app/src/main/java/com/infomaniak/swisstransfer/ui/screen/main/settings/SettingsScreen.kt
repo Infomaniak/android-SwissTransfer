@@ -83,9 +83,8 @@ fun SettingsScreen(
             )
             SettingItem(
                 titleRes = R.string.settingsOptionNotifications,
-                isSelected = { selectedSetting == NOTIFICATIONS },
+                isSelected = { false },
                 icon = AppIcons.Bell,
-                description = "TODO",
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(NOTIFICATIONS) },
             )

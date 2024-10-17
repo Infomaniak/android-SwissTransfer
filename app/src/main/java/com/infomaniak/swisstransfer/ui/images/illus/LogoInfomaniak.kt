@@ -33,18 +33,19 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 
-val AppImages.AppIllus.LogoInfomaniak: ImageVector
+val AppIllus.LogoInfomaniak: ImageVector
     get() {
-        if (_logoInfomaniak != null) {
-            return _logoInfomaniak!!
-        }
+
+        if (_logoInfomaniak != null) return _logoInfomaniak!!
+
         _logoInfomaniak = Builder(
             name = "LogoInfomaniak",
             defaultWidth = 128.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 128.0f,
-            viewportHeight = 16.0f
+            viewportHeight = 16.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
@@ -274,6 +275,7 @@ val AppImages.AppIllus.LogoInfomaniak: ImageVector
                 close()
             }
         }.build()
+
         return _logoInfomaniak!!
     }
 
@@ -284,9 +286,9 @@ private var _logoInfomaniak: ImageVector? = null
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppImages.AppIllus.LogoInfomaniak,
+            imageVector = AppIllus.LogoInfomaniak,
             contentDescription = null,
-            modifier = Modifier.size(AppImages.previewSize)
+            modifier = Modifier.size(AppImages.previewSize),
         )
     }
 }

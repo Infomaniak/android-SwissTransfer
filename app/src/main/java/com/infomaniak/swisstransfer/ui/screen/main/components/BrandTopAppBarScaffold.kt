@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 
