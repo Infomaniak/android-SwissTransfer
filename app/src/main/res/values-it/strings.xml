@@ -17,7 +17,10 @@
   -->
 <resources>
     <string name="buttonAddFiles">Aggiunta di file</string>
+    <string name="buttonCopyLink">Copia link</string>
+    <string name="buttonFinished">Finisci</string>
     <string name="buttonNext">Avanti</string>
+    <string name="buttonShare">Condividi</string>
     <string name="contentDescriptionButtonBack">Indietro</string>
     <string name="contentDescriptionButtonClose">Chiudi</string>
     <string name="contentDescriptionButtonRemove">Rimuovi il file</string>
@@ -35,9 +38,13 @@
     <string name="receivedTitle">Ricevuto</string>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
     <string name="sentTitle">Inviato a</string>
+    <string name="settingsAuthorizeTracking">Autorizza il tracciamento</string>
     <string name="settingsCategoryAbout">Chi siamo</string>
+    <string name="settingsCategoryDataManagement">Dati e privacy</string>
     <string name="settingsCategoryDefaultSettings">Impostazioni predefinite</string>
     <string name="settingsCategoryGeneral">Generale</string>
+    <string name="settingsDataManagementDescription">È possibile personalizzare i dati di utilizzo e operativi che Infomaniak recupera per correggere i bug e migliorare l’applicazione. Entrambi gli strumenti sono ospitati e gestiti esclusivamente da noi.\n\nInfomaniak rispetta la vostra privacy: il codice sorgente di questa applicazione può essere verificato, le informazioni raccolte sono anonime e i vostri dati personali rimangono strettamente confidenziali e non vengono mai condivisi con terze parti.</string>
+    <string name="settingsDataManagementSourceCode">Vedi il codice sorgente</string>
     <string name="settingsDownloadsLimitTitle">Impostare un limite di download predefinito per i trasferimenti</string>
     <string name="settingsEmailLanguageTitle">Impostare una lingua predefinita per i trasferimenti di e-mail</string>
     <string name="settingsEmailLanguageValueEnglish">Inglese</string>
@@ -45,7 +52,9 @@
     <string name="settingsEmailLanguageValueGerman">Tedesco</string>
     <string name="settingsEmailLanguageValueItalian">Italiano</string>
     <string name="settingsEmailLanguageValueSpanish">Spagnolo</string>
+    <string name="settingsMatomoDescription">Matomo è uno strumento di analisi ospitato e gestito esclusivamente da Infomaniak per capire come viene utilizzata l’applicazione.\n\nStudiando questi dati, il nostro team è in grado di migliorare continuamente l’interfaccia dell’applicazione.</string>
     <string name="settingsNotificationsTitle">Seleziona una preferenza</string>
+    <string name="settingsOptionDataManagement">Gestione dei dati</string>
     <string name="settingsOptionDiscoverInfomaniak">Scopri Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite di download</string>
     <string name="settingsOptionEmailLanguage">Lingua della posta elettronica</string>
@@ -57,6 +66,7 @@
     <string name="settingsOptionThemeLight">Chiaro</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
     <string name="settingsOptionValidityPeriod">Periodo di validità</string>
+    <string name="settingsSentryDescription">Sentry è uno strumento ospitato e gestito esclusivamente da Infomaniak per monitorare la stabilità dell’applicazione in tempo reale e segnalare automaticamente eventuali errori tecnici ai nostri sviluppatori.\n\nQuesti dati consentono al nostro team di correggere e ottimizzare rapidamente l’applicazione, migliorando l’esperienza dell’utente.</string>
     <string name="settingsThemeTitle">Seleziona un tema</string>
     <string name="settingsTitle">Parametri</string>
     <string name="settingsValidityPeriodTitle">Imposta un periodo di validità predefinito per i trasferimenti</string>
@@ -79,6 +89,11 @@
     <string name="transferUploadSourceChoiceFiles">Sfoglia i file</string>
     <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>
     <string name="transferUploadSourceChoiceTitle">Scarica da</string>
+    <string name="uploadSuccessEmailDescription">Il link per il download è stato inviato al seguente destinatario:</string>
+    <string name="uploadSuccessEmailTitle">E si parte!</string>
+    <string name="uploadSuccessLinkDescription">Scansiona questo codice QR intorno a voi per condividere i vostri file o copiate il link qui sotto.</string>
+    <string name="uploadSuccessLinkTitle">Il trasferimento è pronto!</string>
+    <string name="uploadSuccessQrTitle">Il codice QR è pronto!</string>
     <string name="urlAbout">https://www.infomaniak.com/it/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/c85aa792-0f76-4923-8fe2-fae976cac9c2/#ideas/popular</string>
     <string name="version">Versione</string>

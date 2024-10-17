@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.theme
+package com.infomaniak.swisstransfer.ui.images
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
 
-val Shapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(24.dp),
-    // extraLarge: uses default values, for the bottom sheet corners
-)
+interface ThemedImage {
+    val light: ImageVector
+    val dark: ImageVector
+
+    @Composable
+    fun image(): ImageVector = if (LocalIsDarkMode.current) dark else light
+}

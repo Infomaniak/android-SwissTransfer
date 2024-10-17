@@ -23,4 +23,5 @@ object Dimens {
     val SettingHorizontalMargin = Margin.Medium
     val SettingVerticalMargin = 12.dp
     val DescriptionWidth = 300.dp
+    val LargeButtonHeight = 56.dp
 }

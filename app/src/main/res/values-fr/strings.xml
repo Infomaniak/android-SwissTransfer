@@ -15,9 +15,12 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="buttonAddFiles">Ajouter des fichiers</string>
+    <string name="buttonCopyLink">Copier le lien</string>
+    <string name="buttonFinished">Terminer</string>
     <string name="buttonNext">Suivant</string>
+    <string name="buttonShare">Partager</string>
     <string name="contentDescriptionButtonBack">Retour</string>
     <string name="contentDescriptionButtonClose">Fermer</string>
     <string name="contentDescriptionButtonRemove">Supprimer le fichier</string>
@@ -35,9 +38,13 @@
     <string name="receivedTitle">Reçu</string>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentTitle">Envoyé</string>
+    <string name="settingsAuthorizeTracking">Autoriser le suivi</string>
     <string name="settingsCategoryAbout">A propos</string>
+    <string name="settingsCategoryDataManagement">Données &amp; Confidentialité</string>
     <string name="settingsCategoryDefaultSettings">Paramètres par défaut</string>
     <string name="settingsCategoryGeneral">Général</string>
+    <string name="settingsDataManagementDescription">Vous pouvez personnaliser les données d’utilisation et opérationnelles qui sont récupérées par Infomaniak pour corriger des bugs et faire évoluer l’application. Les deux outils utilisés sont hébergés et gérés exclusivement chez nous.\n\nInfomaniak respecte votre vie privée : le code source de cette application peut être vérifié, les informations récoltées sont anonymes et vos informations personnelles restent strictement confidentielles et ne sont jamais partagées avec des tiers.</string>
+    <string name="settingsDataManagementSourceCode">Voir le code source</string>
     <string name="settingsDownloadsLimitTitle">Défini une limite de téléchargements par défaut pour tes transferts</string>
     <string name="settingsEmailLanguageTitle">Défini une langue par défaut pour vos transferts par e-mail</string>
     <string name="settingsEmailLanguageValueEnglish">Anglais</string>
@@ -45,7 +52,9 @@
     <string name="settingsEmailLanguageValueGerman">Allemand</string>
     <string name="settingsEmailLanguageValueItalian">Italien</string>
     <string name="settingsEmailLanguageValueSpanish">Espagnol</string>
+    <string name="settingsMatomoDescription">Matomo est un outil d’analyse hébergé et géré exclusivement par Infomaniak pour comprendre comment l’application est utilisée.\n\nL’étude de ces données permet à notre équipe d’améliorer en continue l’interface de l’application.</string>
     <string name="settingsNotificationsTitle">Sélectionne une préférence</string>
+    <string name="settingsOptionDataManagement">Gestion des données</string>
     <string name="settingsOptionDiscoverInfomaniak">Découvre Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite de téléchargements</string>
     <string name="settingsOptionEmailLanguage">Langue de l’e-mail</string>
@@ -57,10 +66,11 @@
     <string name="settingsOptionThemeLight">Clair</string>
     <string name="settingsOptionThemeSystem">Système</string>
     <string name="settingsOptionValidityPeriod">Durée de validité</string>
+    <string name="settingsSentryDescription">Sentry est un outil hébergé et géré exclusivement par Infomaniak pour surveiller en temps réel la stabilité de l’application et signaler automatiquement d’éventuelles erreurs techniques à nos développeurs.\n\nCes données permettent à notre équipe de rapidement corriger et optimiser l’application, ce qui se traduit par une meilleure expérience d’utilisation pour vous.</string>
     <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
     <string name="settingsValidityPeriodTitle">Défini une durée de validité par défaut pour tes transferts</string>
-    <plurals name="settingsValidityPeriodValue">
+    <plurals name="settingsValidityPeriodValue" tools:ignore="MissingQuantity">
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
     </plurals>
@@ -79,6 +89,11 @@
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
     <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>
     <string name="transferUploadSourceChoiceTitle">Télécharger à partir de</string>
+    <string name="uploadSuccessEmailDescription">Le lien de téléchargement a bien été envoyé au destinataire suivant :</string>
+    <string name="uploadSuccessEmailTitle">Hop c’est envoyé !</string>
+    <string name="uploadSuccessLinkDescription">Fais scanner ce QR code autour de toi pour partager tes fichiers ou copie le lien ci-dessous.</string>
+    <string name="uploadSuccessLinkTitle">Ton transfert est prêt !</string>
+    <string name="uploadSuccessQrTitle">Ton QR code est prêt !</string>
     <string name="urlAbout">https://www.infomaniak.com/fr/a-propos</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
     <string name="version">Version</string>

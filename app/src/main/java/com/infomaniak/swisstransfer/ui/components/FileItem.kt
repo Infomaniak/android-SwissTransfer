@@ -28,8 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.infomaniak.library.filetypes.FileType
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.icons.CrossThick
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
@@ -85,7 +93,7 @@ private fun FileItemContent(
         onClick = onClick,
         modifier = Modifier.aspectRatio(164 / 152f),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
-        shape = Shapes.small,
+        shape = CustomShapes.small,
         border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant)
     ) {
         Box(

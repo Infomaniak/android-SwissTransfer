@@ -42,8 +42,8 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import kotlinx.parcelize.Parcelize
 
@@ -132,7 +132,7 @@ private fun Context.getQuantityFromFormattedSizeWithUnits(formattedSize: String)
 private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier.size(80.dp),
-        shape = Shapes.medium,
+        shape = CustomShapes.medium,
         colors = ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.surface,
             contentColor = SwissTransferTheme.materialColors.primary,

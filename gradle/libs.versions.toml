@@ -7,6 +7,7 @@ composeAlpha = "1.8.0-alpha02"
 composeBom = "2024.09.02"
 constraintlayoutCompose = "1.0.1"
 coreKtx = "1.13.1"
+coreSplashscreen = "1.0.1"
 hilt = "2.52"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
@@ -16,6 +17,8 @@ lifecycleRuntimeKtx = "2.8.6"
 navigation = "2.8.1"
 serialization = "1.7.1"
 swisstransfer = "0.1.1"
+sentry = "4.12.0"
+sentry-android = "7.15.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -25,6 +28,7 @@ androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:a
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
@@ -40,11 +44,13 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
+sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
 # Tests
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
+sentry = { id = "io.sentry.android.gradle", version.ref = "sentry" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

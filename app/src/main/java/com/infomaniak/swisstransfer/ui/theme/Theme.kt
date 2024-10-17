@@ -21,6 +21,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.*
@@ -84,4 +85,12 @@ data class CustomColorScheme(
     val transferTypeQrOnContainer: Color = Color.Unspecified,
     val transferTypeProximityContainer: Color = Color.Unspecified,
     val transferTypeProximityOnContainer: Color = Color.Unspecified,
+)
+
+private val Shapes = Shapes(
+    extraSmall = CustomShapes.extraSmall,
+    small = CustomShapes.small,
+    medium = CustomShapes.medium,
+    large = CustomShapes.large,
+    // extraLarge: uses default values, for the bottom sheet corners
 )

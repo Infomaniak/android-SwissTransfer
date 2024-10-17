@@ -30,15 +30,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
-import com.infomaniak.swisstransfer.ui.theme.Shapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SwissTransferCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = modifier,
-        shape = Shapes.medium,
+        shape = CustomShapes.medium,
         colors = CardDefaults.cardColors(contentColor = SwissTransferTheme.colors.secondaryTextColor),
         content = content,
     )

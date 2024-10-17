@@ -28,8 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import com.infomaniak.swisstransfer.ui.components.FileItemList
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
@@ -60,7 +60,7 @@ fun ReceivedScreen(
 private fun ReceivedScreen(
     isFileChecked: (String) -> Boolean,
     setFileCheckStatus: (String, Boolean) -> Unit,
-    areTransfersEmpty: () -> Boolean
+    areTransfersEmpty: () -> Boolean,
 ) {
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },

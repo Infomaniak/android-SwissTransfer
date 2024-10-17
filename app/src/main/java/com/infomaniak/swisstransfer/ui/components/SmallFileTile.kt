@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import com.infomaniak.swisstransfer.ui.theme.Shapes
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -56,8 +56,8 @@ fun SmallFileTile(
 }
 
 enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
-    SMALL(48.dp, Shapes.small),
-    LARGE(80.dp, Shapes.medium);
+    SMALL(48.dp, CustomShapes.small),
+    LARGE(80.dp, CustomShapes.medium);
 
     fun iconCircleSize(): Dp = 2f / 3 * size
 }

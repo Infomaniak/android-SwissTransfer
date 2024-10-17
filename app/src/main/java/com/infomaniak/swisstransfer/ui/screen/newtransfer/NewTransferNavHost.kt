@@ -25,7 +25,6 @@ import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferTypeScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
@@ -36,13 +35,6 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
             ImportFilesScreen(
-                closeActivity = closeActivity,
-            )
-        }
-        composable<TransferTypeDestination> {
-            TransferTypeScreen(
-                navigateToTransfer = { /* TODO */ },
-                popBack = { navController.navigateUp() },
                 closeActivity = closeActivity,
             )
         }
