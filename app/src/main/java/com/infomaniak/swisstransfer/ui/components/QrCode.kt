@@ -48,8 +48,8 @@ fun QrCode() {
         }
         logo {
             painter = centralIcon
-            size = 0.2f
-            padding = QrLogoPadding.Natural(size = 0.1f)
+            size = 0.25f // 25% : Icon size in fraction relative to the QR Code size.
+            padding = QrLogoPadding.Natural(size = 0.08f) // 8% : Padding size in fraction relative to the Icon size.
         }
     }
 
