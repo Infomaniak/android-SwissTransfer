@@ -176,7 +176,7 @@ private fun SettingsScreenWrapperPreview() {
             SettingsScreenWrapper(
                 theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
                 validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWOHUNDREDFIFTY }, set = {}),
+                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
             )
         }
