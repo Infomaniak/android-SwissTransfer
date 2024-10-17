@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.sentry)
+    id("kotlin-parcelize")
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 

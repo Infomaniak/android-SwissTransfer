@@ -42,7 +42,7 @@ fun LargeButton(
     @StringRes titleRes: Int,
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
-    enabled: Boolean = true,
+    enabled: () -> Boolean = { true },
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
@@ -54,7 +54,7 @@ fun SmallButton(
     @StringRes titleRes: Int,
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
-    enabled: Boolean = true,
+    enabled: () -> Boolean = { true },
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
@@ -67,7 +67,7 @@ private fun CoreButton(
     modifier: Modifier,
     buttonSize: ButtonSize,
     style: ButtonType,
-    enabled: Boolean,
+    enabled: () -> Boolean,
     onClick: () -> Unit,
     imageVector: ImageVector?,
 ) {
@@ -75,7 +75,7 @@ private fun CoreButton(
         modifier = modifier.height(buttonSize.height),
         colors = style.buttonColors(),
         shape = CustomShapes.medium,
-        enabled = enabled,
+        enabled = enabled(),
         onClick = onClick,
     ) {
         imageVector?.let {

@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.swisstransfer.ui.components.FileUiItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,20 +32,24 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(private val transferFilesManager: TransferFilesManager) : ViewModel() {
 
-    private val _transferFiles = MutableStateFlow<List<TransferFile>>(emptyList())
-    val transferFiles: StateFlow<List<TransferFile>> = _transferFiles
+    private val _files = MutableStateFlow<List<FileUiItem>>(emptyList())
+    val files: StateFlow<List<FileUiItem>> = _files
 
-    private val _failedTransferFileCount = MutableSharedFlow<Int>()
-    val failedTransferFileCount: SharedFlow<Int> = _failedTransferFileCount
+    private val _failedFileCount = MutableSharedFlow<Int>()
+    val failedFileCount: SharedFlow<Int> = _failedFileCount
 
     fun addFiles(uris: List<Uri>) {
         viewModelScope.launch {
-            val alreadyUsedFileNames = buildSet { transferFiles.value.forEach { add(it.fileName) } }
+            val alreadyUsedFileNames = buildSet { files.value.forEach { add(it.fileName) } }
 
-            val newTransferFiles = transferFilesManager.getTransferFiles(uris, alreadyUsedFileNames)
+            val newFiles = transferFilesManager.getFiles(uris, alreadyUsedFileNames)
 
-            _transferFiles.value += newTransferFiles
-            _failedTransferFileCount.emit(uris.count() - newTransferFiles.count())
+            _files.value += newFiles
+            _failedFileCount.emit(uris.count() - newFiles.count())
         }
+    }
+
+    fun removeFileByUid(uid: String) {
+        _files.value = _files.value.filterNot { it.uid == uid }
     }
 }

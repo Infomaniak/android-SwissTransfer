@@ -17,22 +17,15 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.net.Uri
 import android.text.format.Formatter
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -48,8 +41,6 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import com.infomaniak.swisstransfer.ui.utils.fileType
-import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
 // TODO: Get the interface from the shared kmp code
 interface FileUiItem {
@@ -71,13 +62,11 @@ fun FileItem(
 ) {
     FileItemContent(
         content = {
-            var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
-
-            if (displayPreview) {
-                FileThumbnail(file.uri.toUri(), onError = { displayPreview = false })
-            } else {
-                FileIcon(file.fileType)
-            }
+            FilePreview(
+                file = file,
+                circleColor = SwissTransferTheme.materialColors.surface,
+                circleSize = 64.dp,
+            )
         },
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
@@ -125,25 +114,7 @@ private fun FileItemContent(
                 )
             }
 
-            if (isRemoveButtonVisible) {
-                Button(
-                    modifier = Modifier
-                        .size(Margin.XXLarge)
-                        .padding(12.dp)
-                        .align(Alignment.TopEnd),
-                    contentPadding = PaddingValues(0.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = SwissTransferTheme.colors.fileItemRemoveButtonBackground),
-                    onClick = onRemove ?: {},
-                ) {
-                    Icon(
-                        modifier = Modifier.size(Margin.Small),
-                        imageVector = AppImages.AppIcons.CrossThick,
-                        contentDescription = stringResource(R.string.contentDescriptionButtonRemove),
-                        tint = Color.White
-                    )
-                }
-            }
+            if (isRemoveButtonVisible) CrossCircleButton(onClick = onRemove)
         }
 
         Column(Modifier.padding(Margin.Small)) {
@@ -162,37 +133,6 @@ private fun FileItemContent(
                 overflow = TextOverflow.MiddleEllipsis,
             )
         }
-    }
-}
-
-@Composable
-private fun FileThumbnail(uri: Uri, onError: () -> Unit) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(uri)
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        onError = { onError() },
-        modifier = Modifier.fillMaxSize(),
-    )
-}
-
-@Composable
-private fun FileIcon(fileType: FileType) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        val surfaceColor = SwissTransferTheme.materialColors.surface
-        Canvas(modifier = Modifier.size(64.dp)) {
-            drawCircle(color = surfaceColor)
-        }
-
-        Icon(
-            modifier = Modifier.size(32.dp),
-            imageVector = fileType.icon,
-            contentDescription = null,
-            tint = fileType.color(LocalIsDarkMode.current)
-        )
     }
 }
 
