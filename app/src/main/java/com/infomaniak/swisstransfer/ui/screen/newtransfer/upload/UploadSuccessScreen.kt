@@ -21,8 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSuccessScreen(transferType: TransferType) {
@@ -33,8 +32,7 @@ fun UploadSuccessScreen(transferType: TransferType) {
     }
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun UploadSuccessScreenPreview() {
     SwissTransferTheme {
