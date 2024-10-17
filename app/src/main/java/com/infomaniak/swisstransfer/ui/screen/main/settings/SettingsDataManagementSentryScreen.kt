@@ -40,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.sentry.Sentry
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
@@ -92,9 +92,9 @@ fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
     }
 }
 
-@PreviewSmallWindow
+@PreviewAllWindows
 @Composable
-private fun SettingsDataManagementSentryScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsDataManagementSentryScreen {}
