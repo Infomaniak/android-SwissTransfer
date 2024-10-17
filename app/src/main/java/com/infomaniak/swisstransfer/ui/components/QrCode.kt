@@ -18,34 +18,46 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.qrInfomaniak.QrInfomaniak
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import io.github.alexzhirkevich.qrose.options.QrBrush
+import io.github.alexzhirkevich.qrose.options.QrLogoPadding
+import io.github.alexzhirkevich.qrose.options.solid
+import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @Composable
-fun QrCode() { // TODO: Add parameter containing the QR code value, and use it.
-    Box(
-        modifier = Modifier
-            .size(180.dp)
-            .clip(CustomShapes.SMALL)
-            .background(SwissTransferTheme.colors.qrCodeBackground),
-        contentAlignment = Alignment.Center,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(160.dp)
-                .background(SwissTransferTheme.colors.qrCodeColor), // TODO: Use this color to tint the QR code.
-        )
+fun QrCode() {
+
+    val url = "https://chk.me/83azQOl" // TODO: Use correct URL instead of hard-coded value.
+    val centralIcon = rememberVectorPainter(AppIcons.QrInfomaniak.image())
+    val darkPixelsColor = QrBrush.solid(SwissTransferTheme.colors.qrCodeDarkPixels)
+    val lightPixelsColor = QrBrush.solid(SwissTransferTheme.colors.qrCodeLightPixels)
+    val painter = rememberQrCodePainter(url) {
+        colors {
+            dark = darkPixelsColor
+            light = lightPixelsColor
+        }
+        logo {
+            painter = centralIcon
+            size = 0.2f
+            padding = QrLogoPadding.Natural(size = 0.1f)
+        }
     }
+
+    Image(
+        modifier = Modifier.size(160.dp),
+        painter = painter,
+        contentDescription = null,
+    )
 }
 
 @Preview(name = "Light mode")
