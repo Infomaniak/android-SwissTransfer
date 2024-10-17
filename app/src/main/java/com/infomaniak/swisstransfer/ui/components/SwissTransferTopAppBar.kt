@@ -29,8 +29,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowLeft
 import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,8 +74,7 @@ data class TopAppBarButton(
     }
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun SwissTransferTopAppBarPreview() {
     SwissTransferTheme {

@@ -167,8 +167,7 @@ private fun NoSelectionEmptyState() {
     }
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun SettingsScreenWrapperPreview() {
     SwissTransferTheme {

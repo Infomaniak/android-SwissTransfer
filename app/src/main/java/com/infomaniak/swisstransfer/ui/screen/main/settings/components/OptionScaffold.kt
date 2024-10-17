@@ -33,8 +33,7 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun OptionScaffold(
@@ -64,8 +63,7 @@ fun OptionScaffold(
     }
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun OptionScaffoldPreview() {
     SwissTransferTheme {
