@@ -59,8 +59,9 @@ class NewTransferViewModel @Inject constructor(
     private val _failedFiles = MutableSharedFlow<PickedFile>()
     val failedFiles: SharedFlow<PickedFile> = _failedFiles
 
-    private val filesToImport: CountChannel<PickedFile> = CountChannel()
+    private val filesToImport: TransferCountChannel = TransferCountChannel()
     val filesToImportCount: StateFlow<Int> = filesToImport.count
+    val currentSessionTotalUploadedFiles: StateFlow<Int> = filesToImport.currentSessionTotalUploadedFiles
 
     private val filesMutationMutex = Mutex()
 
@@ -181,23 +182,34 @@ class NewTransferViewModel @Inject constructor(
         _failedFiles.emit(file)
     }
 
-    private class CountChannel<T> {
-        private val channel = Channel<T>(capacity = Channel.UNLIMITED)
+    private class TransferCountChannel {
+        private val channel = Channel<PickedFile>(capacity = Channel.UNLIMITED)
 
         private val _count = MutableStateFlow(0)
         val count: StateFlow<Int> = _count
 
+        // Session resets when reaching 0 files in the queue
+        private val _currentSessionTotalUploadedFiles = MutableStateFlow(0)
+        val currentSessionTotalUploadedFiles: StateFlow<Int> = _currentSessionTotalUploadedFiles
+
         private val countMutex = Mutex()
 
-        suspend fun send(element: T) {
-            countMutex.withLock { _count.value += 1 }
+        suspend fun send(element: PickedFile) {
+            countMutex.withLock {
+                _count.value += 1
+                _currentSessionTotalUploadedFiles.value += 1
+            }
             channel.send(element)
         }
 
-        suspend fun consume(process: suspend (T) -> Unit) {
+        suspend fun consume(process: suspend (PickedFile) -> Unit) {
             for (element in channel) {
                 process(element)
-                countMutex.withLock { _count.value -= 1 }
+                countMutex.withLock {
+                    val newValue = _count.value - 1
+                    _count.value = newValue
+                    if (newValue == 0) _currentSessionTotalUploadedFiles.value = 0
+                }
             }
         }
     }
