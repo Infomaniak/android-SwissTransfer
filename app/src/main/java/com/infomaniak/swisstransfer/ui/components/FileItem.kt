@@ -27,16 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.infomaniak.library.filetypes.FileType
-import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.images.AppImages
-import com.infomaniak.swisstransfer.ui.images.icons.CrossThick
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
-import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
@@ -139,7 +133,7 @@ private fun FileItemContent(
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun FileItemPreview() {
+private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
     SwissTransferTheme {
         Surface {
             Column(
@@ -150,13 +144,7 @@ private fun FileItemPreview() {
             {
                 var isChecked by remember { mutableStateOf(true) }
 
-                val iconFile = object : FileUiItem {
-                    override val fileName: String = "How to not get fired.pdf"
-                    override val uid: String = fileName
-                    override val fileSizeInBytes: Long = 10302130
-                    override val mimeType: String? = null
-                    override val uri: String = ""
-                }
+                val iconFile = files[0]
                 FileItem(
                     iconFile,
                     isRemoveButtonVisible = true,
@@ -168,13 +156,7 @@ private fun FileItemPreview() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                val imageFile = object : FileUiItem {
-                    override val fileName: String = "Time-Clock-Circle--Streamline-Ultimate.svg (1).png"
-                    override val uid: String = fileName
-                    override val fileSizeInBytes: Long = 456782
-                    override val mimeType: String? = null
-                    override val uri: String = "https://picsum.photos/200/300"
-                }
+                val imageFile = files[1]
                 FileItem(
                     file = imageFile,
                     isRemoveButtonVisible = true,
