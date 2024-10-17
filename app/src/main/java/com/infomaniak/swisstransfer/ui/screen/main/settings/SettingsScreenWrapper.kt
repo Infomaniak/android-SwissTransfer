@@ -123,12 +123,16 @@ private fun DetailPane(
     emailLanguage: GetSetCallbacks<EmailLanguage>,
 ) {
     var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
+    val context = LocalContext.current
 
     val destination = navigator.currentDestination?.content ?: lastSelectedScreen
     navigator.currentDestination?.content?.let { lastSelectedScreen = it }
 
     val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
     val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+
+    // TODO: Update this URL when we know what we want.
+    val sourceCodeURL = stringResource(R.string.urlSourceCode)
 
     when (destination) {
         THEME -> SettingsThemeScreen(
@@ -151,10 +155,24 @@ private fun DetailPane(
             navigateBack = navigateBack,
             onEmailLanguageChange = { emailLanguage.set(it) },
         )
+        DATA_MANAGEMENT -> SettingsDataManagementScreen(
+            navigateBack = navigateBack,
+            onItemClick = { item ->
+                if (item == DATA_MANAGEMENT_SOURCE_CODE) {
+                    context.openUrl(sourceCodeURL)
+                } else {
+                    // Navigate to the detail pane with the passed item
+                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                }
+            },
+        )
+        DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+        DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
-        GIVE_FEEDBACK -> Unit
+        GIVE_FEEDBACK,
+        DATA_MANAGEMENT_SOURCE_CODE -> Unit
         null -> NoSelectionEmptyState()
     }
 }
