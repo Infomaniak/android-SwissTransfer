@@ -85,7 +85,7 @@ private fun ImportFilesScreen(
             LargeButton(
                 modifier = modifier,
                 titleRes = R.string.buttonNext,
-                enabled = isNextButtonEnabled,
+                enabled = { isNextButtonEnabled },
                 onClick = { navigateToTransferTypeScreen() },
             )
         },
