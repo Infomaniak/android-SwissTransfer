@@ -17,7 +17,10 @@
   -->
 <resources>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
+    <string name="buttonCopyLink">Link kopieren</string>
+    <string name="buttonFinished">Beenden</string>
     <string name="buttonNext">Weiter zu</string>
+    <string name="buttonShare">Teilen</string>
     <string name="contentDescriptionButtonBack">Zurück</string>
     <string name="contentDescriptionButtonClose">Schliessen</string>
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
@@ -77,6 +80,11 @@
     <string name="transferUploadSourceChoiceFiles">Dateien durchsuchen</string>
     <string name="transferUploadSourceChoiceGallery">Foto- und Videogalerie</string>
     <string name="transferUploadSourceChoiceTitle">Herunterladen von</string>
+    <string name="uploadSuccessEmailDescription">Der Download-Link wurde erfolgreich an den folgenden Empfänger gesendet:</string>
+    <string name="uploadSuccessEmailTitle">Hoppla, das ist gesendet!</string>
+    <string name="uploadSuccessLinkDescription">Lass diesen QR-Code in deiner Umgebung scannen, um deine Dateien weiterzugeben, oder kopiere den untenstehenden Link.</string>
+    <string name="uploadSuccessLinkTitle">Deine Überweisung ist fertig!</string>
+    <string name="uploadSuccessQrTitle">Dein QR-Code ist fertig!</string>
     <string name="urlAbout">https://www.infomaniak.com/de/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/9abc7665-a78e-4fd2-aa41-a47a8b867fcd/#ideas/popular</string>
     <string name="version">Version</string>

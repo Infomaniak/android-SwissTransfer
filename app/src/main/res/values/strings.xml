@@ -22,7 +22,10 @@
     <string name="urlSourceCode" translatable="false">https://chk.me/83azQOl</string>
 
     <string name="buttonAddFiles">Add files</string>
+    <string name="buttonCopyLink">Copy link</string>
+    <string name="buttonFinished">Finish</string>
     <string name="buttonNext">Next</string>
+    <string name="buttonShare">Share</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonRemove">Remove file</string>
@@ -82,6 +85,11 @@
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
     <string name="transferUploadSourceChoiceTitle">Upload from</string>
+    <string name="uploadSuccessEmailDescription">The download link has been sent to the following recipient:</string>
+    <string name="uploadSuccessEmailTitle">It’s sent!</string>
+    <string name="uploadSuccessLinkDescription">Scan this QR code around you to share your files, or copy the link below.</string>
+    <string name="uploadSuccessLinkTitle">Your transfer is ready!</string>
+    <string name="uploadSuccessQrTitle">Your QR code is ready!</string>
     <string name="urlAbout">https://www.infomaniak.com/en/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/f12466ad-db5b-4f5c-b24c-a54b0a5117ca/#ideas/popular</string>
     <string name="version">Version</string>
