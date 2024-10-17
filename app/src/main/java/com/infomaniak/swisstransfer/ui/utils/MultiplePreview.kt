@@ -67,3 +67,8 @@ annotation class PreviewSmallWindow
     device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
 )
 annotation class PreviewLargeWindow
+
+// Small + Large
+@PreviewSmallWindow
+@PreviewLargeWindow
+annotation class PreviewAllWindows
