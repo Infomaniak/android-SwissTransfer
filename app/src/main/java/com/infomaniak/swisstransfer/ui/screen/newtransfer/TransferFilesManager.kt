@@ -22,17 +22,19 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.net.toUri
 import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TransferFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
-    fun getFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<FileUi> {
+    fun getFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<PickedFile> {
         val currentUsedFileNames = alreadyUsedFileNames.toMutableSet()
-        val files = mutableSetOf<FileUi>()
+        val files = mutableSetOf<PickedFile>()
 
         uris.forEach { uri ->
             getFile(uri, currentUsedFileNames)?.let { file ->
@@ -44,13 +46,27 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
         return files
     }
 
-    private fun getFile(uri: Uri, alreadyUsedFileNames: Set<String>): FileUi? {
+    fun getRestoredFileData(files: Array<File>): List<FileUi> {
+        return files.mapNotNull { file ->
+            val fileSizeInBytes = runCatching { file.length() }.getOrNull() ?: return@mapNotNull null
+
+            FileUi(
+                uid = file.name,
+                fileName = file.name,
+                fileSizeInBytes = fileSizeInBytes,
+                mimeType = null,
+                uri = file.toUri().toString(),
+            )
+        }
+    }
+
+    private fun getFile(uri: Uri, alreadyUsedFileNames: Set<String>): PickedFile? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
             val uniqueName = FileNameUtils.postfixExistingFileNames(name, alreadyUsedFileNames)
-            FileUi(fileName = uniqueName, uid = uniqueName, fileSizeInBytes = size, mimeType = null, uri = uri.toString())
+            PickedFile(uniqueName, size, uri)
         }
     }
 
@@ -71,4 +87,6 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
     private fun Cursor.getColumnIndexOrNull(column: String): Int? {
         return getColumnIndex(column).takeIf { it != -1 }
     }
+
+    data class PickedFile(val fileName: String, val fileSizeInBytes: Long, val uri: Uri)
 }

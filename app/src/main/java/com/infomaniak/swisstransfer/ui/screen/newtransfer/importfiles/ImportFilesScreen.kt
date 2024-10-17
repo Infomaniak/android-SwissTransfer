@@ -46,13 +46,21 @@ fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
 ) {
-    val files by newTransferViewModel.files.collectAsStateWithLifecycle()
-    ImportFilesScreen({ files }, newTransferViewModel::removeFileByUid, newTransferViewModel::addFiles, closeActivity)
+    val files by newTransferViewModel.filesDebounced.collectAsStateWithLifecycle()
+    val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
+    ImportFilesScreen(
+        files = { files },
+        filesToImportCount = { filesToImportCount },
+        removeFileByUid = newTransferViewModel::removeFileByUid,
+        addFiles = newTransferViewModel::addFiles,
+        closeActivity = closeActivity
+    )
 }
 
 @Composable
 private fun ImportFilesScreen(
     files: () -> List<FileUi>,
+    filesToImportCount: () -> Int,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -65,7 +73,7 @@ private fun ImportFilesScreen(
             getFormattedSizeWithUnits(totalFileSize, context)
         }
     }
-    val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() } }
+    val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() && filesToImportCount() == 0 } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -82,11 +90,12 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
+            // TODO: Animate
             LargeButton(
                 modifier = modifier,
                 titleRes = R.string.transferSendButton,
                 style = ButtonType.PRIMARY,
-                enabled = { isSendButtonEnabled },
+                showIndeterminateProgress = { !isSendButtonEnabled },
                 onClick = { /*TODO*/ },
             )
         },
@@ -118,6 +127,6 @@ private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String
 @Composable
 private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
-        ImportFilesScreen({ files }, {}, {}, closeActivity = {})
+        ImportFilesScreen({ files }, { 0 }, {}, {}, closeActivity = {})
     }
 }
