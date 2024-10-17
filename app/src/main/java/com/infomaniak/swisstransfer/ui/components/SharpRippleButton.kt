@@ -49,7 +49,7 @@ fun SharpRippleButton(
             onClick = onClick,
         ),
         colors = colors,
-        shape = CustomShapes.None,
+        shape = CustomShapes.none,
         onClick = onClick,
         content = content,
         contentPadding = PaddingValues(0.dp),
