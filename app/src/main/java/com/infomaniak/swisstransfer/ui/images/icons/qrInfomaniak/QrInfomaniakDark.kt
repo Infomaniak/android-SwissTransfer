@@ -43,10 +43,10 @@ val AppIcons.QrInfomaniakDark: ImageVector
 
         _qrInfomaniakDark = Builder(
             name = "QrInfomaniakDark",
-            defaultWidth = 42.0.dp,
-            defaultHeight = 45.0.dp,
-            viewportWidth = 42.0f,
-            viewportHeight = 45.0f,
+            defaultWidth = 41.0.dp,
+            defaultHeight = 44.0.dp,
+            viewportWidth = 41.0f,
+            viewportHeight = 44.0f,
         ).apply {
             path(
                 fill = SolidColor(Color(0xFFF1F1F1)),
@@ -57,15 +57,15 @@ val AppIcons.QrInfomaniakDark: ImageVector
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero,
             ) {
-                moveTo(37.12f, 1.0f)
-                horizontalLineTo(4.42f)
-                curveTo(2.163f, 1.0f, 0.333f, 2.873f, 0.333f, 5.294f)
-                verticalLineTo(40.353f)
-                curveTo(0.333f, 42.773f, 2.163f, 44.736f, 4.42f, 44.736f)
-                horizontalLineTo(37.12f)
-                curveTo(39.377f, 44.736f, 41.208f, 42.773f, 41.208f, 40.353f)
-                verticalLineTo(5.294f)
-                curveTo(41.208f, 2.873f, 39.377f, 1.0f, 37.12f, 1.0f)
+                moveTo(36.9f, 0.0f)
+                horizontalLineTo(4.1f)
+                curveTo(1.835f, 0.0f, -0.0f, 1.97f, -0.0f, 4.4f)
+                verticalLineTo(39.6f)
+                curveTo(-0.0f, 42.03f, 1.835f, 44.0f, 4.1f, 44.0f)
+                horizontalLineTo(36.9f)
+                curveTo(39.164f, 44.0f, 41.0f, 42.03f, 41.0f, 39.6f)
+                verticalLineTo(4.4f)
+                curveTo(41.0f, 1.97f, 39.164f, 0.0f, 36.9f, 0.0f)
                 close()
             }
             path(
@@ -77,19 +77,19 @@ val AppIcons.QrInfomaniakDark: ImageVector
                 strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd,
             ) {
-                moveTo(9.053f, 37.548f)
-                horizontalLineTo(17.555f)
-                verticalLineTo(31.588f)
-                lineTo(20.658f, 28.38f)
-                lineTo(25.076f, 37.548f)
-                horizontalLineTo(34.477f)
-                lineTo(26.186f, 22.704f)
-                lineTo(33.986f, 14.759f)
-                horizontalLineTo(23.768f)
-                lineTo(17.555f, 22.297f)
-                verticalLineTo(0.8f)
-                horizontalLineTo(9.053f)
-                verticalLineTo(37.548f)
+                moveTo(8.552f, 36.637f)
+                horizontalLineTo(17.054f)
+                verticalLineTo(30.677f)
+                lineTo(20.158f, 27.469f)
+                lineTo(24.575f, 36.637f)
+                horizontalLineTo(33.976f)
+                lineTo(25.685f, 21.793f)
+                lineTo(33.486f, 13.848f)
+                horizontalLineTo(23.267f)
+                lineTo(17.054f, 21.386f)
+                verticalLineTo(0.0f)
+                horizontalLineTo(8.552f)
+                verticalLineTo(36.637f)
                 close()
             }
         }.build()
