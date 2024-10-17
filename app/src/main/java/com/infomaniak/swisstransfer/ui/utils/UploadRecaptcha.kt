@@ -23,25 +23,51 @@ import com.google.android.recaptcha.Recaptcha
 import com.google.android.recaptcha.RecaptchaAction
 import com.google.android.recaptcha.RecaptchaClient
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.MainApplication
 import javax.inject.Inject
 
-class Recaptcha @Inject constructor(private val application: Application) {
+/**
+ * A class responsible for handling reCAPTCHA verification for uploads.
+ *
+ * This class uses the Google reCAPTCHA API to verify user actions and prevent abuse.
+ * It initializes a reCAPTCHA client and provides a method to fetch a reCAPTCHA code.
+ *
+ * @property application The application context.
+ */
+class UploadRecaptcha @Inject constructor(private val application: MainApplication) {
 
     private var client: RecaptchaClient? = null
 
+    /**
+     * Initializes the reCAPTCHA client.
+     *
+     * This method should be called before attempting to fetch a reCAPTCHA code.
+     * It fetches the reCAPTCHA client using the provided API site key.
+     * If an error occurs during initialization, it logs the error message.
+     * It MUST be called in the MainApplication.
+     */
     suspend fun initializeClient() {
         runCatching {
             client = Recaptcha.fetchClient(application, BuildConfig.RECAPTCHA_API_SITE_KEY)
         }.onFailure {
-            Log.e("Recaptcha", "Getting Recaptcha client failed with an exception: $it")
+            Log.e("Recaptcha", "Getting Recaptcha client failed with an exception", it)
         }
     }
 
+    /**
+     * Fetches a reCAPTCHA code.
+     *
+     * This method executes the reCAPTCHA challenge and retrieves the code.
+     * The code is then passed to the provided callback function.
+     *
+     * @param callback A function that receives the reCAPTCHA code as a string.
+     *                 The code may be null if an error occurred.
+     */
     suspend fun fetchCode(callback: (String?) -> Unit) {
         callback(client?.execute(RecaptchaAction.LOGIN)?.getOrNull())
     }
 
     companion object {
-        private const val TAG = "Recaptcha"
+        private const val TAG = "UploadRecaptcha"
     }
 }
