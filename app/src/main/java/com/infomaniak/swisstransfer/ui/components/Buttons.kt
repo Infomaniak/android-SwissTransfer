@@ -110,7 +110,7 @@ private fun CoreButton(
     onClick: () -> Unit,
     imageVector: ImageVector?,
 ) {
-    val isEnabled by remember { derivedStateOf { enabled() || showIndeterminateProgress() } }
+    val isEnabled by remember { derivedStateOf { enabled() && !showIndeterminateProgress() && progress == null } }
     val buttonColors = style.buttonColors()
 
     Button(
@@ -155,7 +155,7 @@ private fun ButtonTextContent(imageVector: ImageVector?, titleRes: Int, modifier
 
 @Composable
 private fun getProgressSpecs(buttonColors: ButtonColors): Pair<Color, Modifier> {
-    val progressColor = buttonColors.contentColor
+    val progressColor = buttonColors.disabledContentColor
     val progressModifier = Modifier
         .fillMaxHeight(0.8f)
         .aspectRatio(1f)
