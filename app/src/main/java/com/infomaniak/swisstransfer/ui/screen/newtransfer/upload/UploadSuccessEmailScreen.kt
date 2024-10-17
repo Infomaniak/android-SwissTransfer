@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessEmail.UploadSuc
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSuccessEmailScreen() {
@@ -80,7 +80,7 @@ fun UploadSuccessEmailScreen() {
     )
 }
 
-@PreviewSmallWindow
+@PreviewAllWindows
 @Composable
 private fun UploadSuccessEmailScreenPreview() {
     SwissTransferTheme {
