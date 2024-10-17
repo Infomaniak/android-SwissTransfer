@@ -36,8 +36,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFile
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun ImportFilesScreen(
@@ -114,11 +113,15 @@ private fun ImportFilesScreen(
     )
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
-        ImportFilesScreen({ emptyList() }, {}, navigateToTransferTypeScreen = {}, closeActivity = {})
+        ImportFilesScreen(
+            transferFiles = { emptyList() },
+            addFiles = {},
+            navigateToTransferTypeScreen = {},
+            closeActivity = {},
+        )
     }
 }
