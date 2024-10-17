@@ -52,7 +52,7 @@ fun ImportFilesScreen(
 
 @Composable
 private fun ImportFilesScreen(
-    files: () -> List<FileUiItem>,
+    files: () -> List<FileUi>,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -116,7 +116,7 @@ private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
+private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         ImportFilesScreen({ files }, {}, {}, closeActivity = {})
     }
