@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.utils.UploadRecaptcha
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
@@ -36,11 +37,17 @@ class MainApplication : Application() {
     lateinit var swissTransferInjection: SwissTransferInjection
 
     @Inject
+    lateinit var uploadRecaptcha: UploadRecaptcha
+
+    @Inject
     lateinit var globalCoroutineScope: CoroutineScope
 
     override fun onCreate() {
         super.onCreate()
-        globalCoroutineScope.launch { swissTransferInjection.accountManager.loadUser(userId = 0) }
+        globalCoroutineScope.launch {
+            swissTransferInjection.accountManager.loadUser(userId = 0)
+            uploadRecaptcha.initializeClient()
+        }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
             // Register the callback as an option

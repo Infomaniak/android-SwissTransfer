@@ -17,7 +17,9 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import android.app.Application
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +31,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApplicationModule {
+
+    @Provides
+    fun providesMainApplication(application: Application) = application as MainApplication
 
     @Provides
     @Singleton
