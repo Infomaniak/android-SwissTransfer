@@ -44,7 +44,7 @@ import com.infomaniak.swisstransfer.ui.utils.hasPreview
 fun FilePreview(
     file: FileUiItem,
     circleColor: Color,
-    circleSize: Dp
+    circleSize: Dp,
 ) {
     var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
 
@@ -80,7 +80,7 @@ private fun FileIcon(fileType: FileType, color: Color, circleSize: Dp) {
             modifier = Modifier.size(circleSize / 2),
             imageVector = fileType.icon,
             contentDescription = null,
-            tint = fileType.color(LocalIsDarkMode.current)
+            tint = fileType.color(LocalIsDarkMode.current),
         )
     }
 }

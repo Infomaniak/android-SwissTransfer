@@ -40,7 +40,7 @@ fun SwissTransferCard(modifier: Modifier = Modifier, content: @Composable Column
         modifier = modifier,
         shape = Shapes.medium,
         colors = CardDefaults.cardColors(contentColor = SwissTransferTheme.colors.secondaryTextColor),
-        content = content
+        content = content,
     )
 }
 

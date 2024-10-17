@@ -57,7 +57,7 @@ fun BoxScope.CrossCircleButton(onClick: (() -> Unit)?, size: Dp = 48.dp) {
                 modifier = Modifier.size(Margin.Small),
                 imageVector = AppImages.AppIcons.CrossThick,
                 contentDescription = stringResource(R.string.contentDescriptionButtonRemove),
-                tint = Color.White
+                tint = Color.White,
             )
         }
     }

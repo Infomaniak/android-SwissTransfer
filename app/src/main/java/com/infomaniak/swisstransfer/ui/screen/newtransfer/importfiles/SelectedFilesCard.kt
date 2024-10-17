@@ -53,7 +53,7 @@ fun SelectedFilesCard(
     files: () -> List<FileUiItem>,
     formattedSizeWithUnits: () -> String,
     showUploadSourceChoiceBottomSheet: () -> Unit,
-    removeFileByUid: (uid: String) -> Unit
+    removeFileByUid: (uid: String) -> Unit,
 ) {
     val fileCount by remember { derivedStateOf { files().count() } }
 
@@ -81,14 +81,14 @@ fun SelectedFilesCard(
                 imageVector = AppImages.AppIcons.ChevronRightSmall,
                 contentDescription = null,
                 modifier = Modifier.padding(Margin.Medium),
-                tint = SwissTransferTheme.colors.iconColor
+                tint = SwissTransferTheme.colors.iconColor,
             )
         }
 
         LazyRow(
             Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Medium),
-            horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
+            horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
         ) {
             item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
                 AddNewFileButton(Modifier.animateItem()) { showUploadSourceChoiceBottomSheet() }
@@ -102,7 +102,7 @@ fun SelectedFilesCard(
                     modifier = Modifier.animateItem(),
                     file = file,
                     smallFileTileSize = SmallFileTileSize.LARGE,
-                    onRemove = { removeFileByUid(file.uid) }
+                    onRemove = { removeFileByUid(file.uid) },
                 )
             }
         }
@@ -150,7 +150,7 @@ private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit)
 @Parcelize
 private data class TransferLazyRowKey(
     val type: Type,
-    val fileUid: String? = null
+    val fileUid: String? = null,
 ) : Parcelable {
     enum class Type {
         ADD_BUTTON, FILE
