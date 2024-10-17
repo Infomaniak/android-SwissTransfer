@@ -110,7 +110,7 @@ private fun CoreButton(
     onClick: () -> Unit,
     imageVector: ImageVector?,
 ) {
-    val isEnabled by remember { derivedStateOf { enabled() && !showIndeterminateProgress() && progress == null } }
+    val isEnabled by remember(progress) { derivedStateOf { enabled() && !showIndeterminateProgress() && progress == null } }
     val buttonColors = style.buttonColors()
 
     Button(
