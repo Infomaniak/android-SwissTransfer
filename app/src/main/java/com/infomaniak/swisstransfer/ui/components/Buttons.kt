@@ -123,15 +123,13 @@ private fun CoreButton(
         when {
             progress != null -> {
                 val (progressColor, progressModifier) = getProgressSpecs(buttonColors)
-                Box(contentAlignment = Alignment.Center) {
-                    ButtonTextContent(imageVector, titleRes, Modifier.alpha(0f))
+                KeepButtonSize(imageVector, titleRes) {
                     CircularProgressIndicator(modifier = progressModifier, color = progressColor, progress = progress)
                 }
             }
             showIndeterminateProgress() -> {
                 val (progressColor, progressModifier) = getProgressSpecs(buttonColors)
-                Box(contentAlignment = Alignment.Center) {
-                    ButtonTextContent(imageVector, titleRes, Modifier.alpha(0f))
+                KeepButtonSize(imageVector, titleRes) {
                     CircularProgressIndicator(modifier = progressModifier, color = progressColor)
                 }
             }
@@ -143,14 +141,22 @@ private fun CoreButton(
 }
 
 @Composable
-private fun ButtonTextContent(imageVector: ImageVector?, titleRes: Int, modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
-        imageVector?.let {
-            Icon(modifier = Modifier.size(Margin.Medium), imageVector = it, contentDescription = null)
-            Spacer(modifier = Modifier.width(Margin.Small))
+fun KeepButtonSize(imageVector: ImageVector?, titleRes: Int, content: @Composable () -> Unit) {
+    Box(contentAlignment = Alignment.Center) {
+        Row(modifier = Modifier.alpha(0f)) {
+            ButtonTextContent(imageVector, titleRes)
         }
-        Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyMedium)
+        content()
     }
+}
+
+@Composable
+private fun ButtonTextContent(imageVector: ImageVector?, titleRes: Int) {
+    imageVector?.let {
+        Icon(modifier = Modifier.size(Margin.Medium), imageVector = it, contentDescription = null)
+        Spacer(modifier = Modifier.width(Margin.Small))
+    }
+    Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyMedium)
 }
 
 @Composable
