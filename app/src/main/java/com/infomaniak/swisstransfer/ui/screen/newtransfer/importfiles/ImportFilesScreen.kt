@@ -95,7 +95,7 @@ private fun ImportFilesScreen(
                 modifier = modifier,
                 titleRes = R.string.transferSendButton,
                 style = ButtonType.PRIMARY,
-                enabled = { isSendButtonEnabled },
+                showIndeterminateProgress = { !isSendButtonEnabled },
                 onClick = { /*TODO*/ },
             )
         },
