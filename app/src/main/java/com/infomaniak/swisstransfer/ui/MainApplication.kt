@@ -40,7 +40,7 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        globalCoroutineScope.launch { swissTransferInjection.loadDefaultAccount() }
+        globalCoroutineScope.launch { swissTransferInjection.accountManager.loadUser(userId = 0) }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
             // Register the callback as an option

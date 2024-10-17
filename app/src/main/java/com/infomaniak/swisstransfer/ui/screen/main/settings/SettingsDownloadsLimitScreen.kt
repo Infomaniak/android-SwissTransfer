@@ -60,7 +60,7 @@ private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
             SettingsDownloadsLimitScreen(
-                downloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
+                downloadLimit = DownloadLimit.TWO_HUNDRED_FIFTY,
                 navigateBack = {},
                 onDownloadLimitChange = {},
             )
