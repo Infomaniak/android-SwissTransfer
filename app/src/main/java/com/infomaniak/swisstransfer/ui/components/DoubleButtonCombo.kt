@@ -25,9 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 private val WIDTH_LIMIT = 800.dp
 private val WIDTH_THRESHOLD = 500.dp
@@ -106,9 +104,7 @@ private fun SingleButton(button: @Composable (Modifier) -> Unit) {
     }
 }
 
-
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun DoubleButtonComboPreview() {
     SwissTransferTheme {
@@ -127,7 +123,7 @@ private fun DoubleButtonComboPreview() {
                         titleRes = R.string.appName,
                         onClick = {},
                     )
-                }
+                },
             )
             DoubleButtonCombo(
                 bottomButton = {
@@ -136,7 +132,7 @@ private fun DoubleButtonComboPreview() {
                         titleRes = R.string.appName,
                         onClick = {},
                     )
-                }
+                },
             )
         }
     }
