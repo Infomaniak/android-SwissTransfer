@@ -45,7 +45,7 @@ fun IllustratedMessageBlock(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(start = Margin.Medium, end = Margin.Medium),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -55,6 +55,7 @@ fun IllustratedMessageBlock(
 
         Text(
             text = stringResource(title),
+            textAlign = TextAlign.Center,
             style = SwissTransferTheme.typography.h1,
         )
 
