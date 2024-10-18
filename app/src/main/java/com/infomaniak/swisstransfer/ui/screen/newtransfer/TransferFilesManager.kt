@@ -26,20 +26,22 @@ import androidx.core.net.toUri
 import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TransferFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
-    fun getFiles(uris: List<Uri>, alreadyUsedFileNames: Set<String>): MutableSet<PickedFile> {
-        val currentUsedFileNames = alreadyUsedFileNames.toMutableSet()
-        val files = mutableSetOf<PickedFile>()
+    suspend fun getFiles(uris: List<Uri>, isAlreadyUsed: suspend (String) -> Boolean): Set<PickedFile> {
+        val currentUsedFileNames = mutableSetOf<String>()
 
-        uris.forEach { uri ->
-            getFile(uri, currentUsedFileNames)?.let { file ->
-                currentUsedFileNames += file.fileName
-                files += file
+        val files = buildSet {
+            uris.forEach { uri ->
+                getFile(uri, isAlreadyUsed = { isAlreadyUsed(it) || currentUsedFileNames.contains(it) })?.let { file ->
+                    currentUsedFileNames += file.fileName
+                    add(file)
+                }
             }
         }
 
@@ -62,12 +64,12 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
         }
     }
 
-    private fun getFile(uri: Uri, alreadyUsedFileNames: Set<String>): PickedFile? {
+    private suspend fun getFile(uri: Uri, isAlreadyUsed: suspend (String) -> Boolean): PickedFile? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
-            val uniqueName = FileNameUtils.postfixExistingFileNames(name, alreadyUsedFileNames)
+            val uniqueName = FileNameUtils.postfixExistingFileNames(name, isAlreadyUsed)
             PickedFile(uniqueName, size, uri)
         }
     }

@@ -19,11 +19,11 @@ package com.infomaniak.swisstransfer.ui.utils
 
 object FileNameUtils {
 
-    fun postfixExistingFileNames(fileName: String, existingFileNames: Set<String>): String {
-        return if (fileName in existingFileNames) {
+    suspend fun postfixExistingFileNames(fileName: String, isAlreadyUsed: suspend (String) -> Boolean): String {
+        return if (isAlreadyUsed(fileName)) {
             val postfixedFileName = PostfixedFileName.fromFileName(fileName)
 
-            while (postfixedFileName.fullName() in existingFileNames) {
+            while (isAlreadyUsed(postfixedFileName.fullName())) {
                 postfixedFileName.incrementPostfix()
             }
 

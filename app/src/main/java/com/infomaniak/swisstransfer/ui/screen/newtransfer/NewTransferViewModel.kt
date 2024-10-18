@@ -28,6 +28,8 @@ import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFilesManager.PickedFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
+import io.sentry.SentryLevel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
@@ -45,6 +47,11 @@ class NewTransferViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    // Importing a file locally can take up time. We can't base the list of already used names on _files because a new import with
+    // the same name could occur while the file is not finished importing yet.
+    // This list needs to mark a name a "taken" as soon as the file is queued to be imported and until the file is removed from
+    // the list of already imported files we listen to in the LazyRow.
+    private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
     private val _files = MutableStateFlow<List<FileUi>>(emptyList())
     private val files: StateFlow<List<FileUi>> = _files
     @OptIn(FlowPreview::class)
@@ -91,8 +98,9 @@ class NewTransferViewModel @Inject constructor(
 
     fun addFiles(uris: List<Uri>) {
         viewModelScope.launch(Dispatchers.IO) {
-            val alreadyUsedFileNames = buildSet { files.value.forEach { add(it.fileName) } }
-            val newFiles = transferFilesManager.getFiles(uris, alreadyUsedFileNames)
+            val newFiles = transferFilesManager.getFiles(uris, isAlreadyUsed = { alreadyUsedFileNames.contains(it) })
+
+            alreadyUsedFileNames.addAll(newFiles.map { it.fileName })
 
             newFiles.forEach { filesToImport.send(it) }
         }
@@ -100,15 +108,22 @@ class NewTransferViewModel @Inject constructor(
 
     fun removeFileByUid(uid: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            var fileName: String? = null
+
             filesMutationMutex.withLock {
                 val files = _files.value.toMutableList()
 
                 val index = files.indexOfFirst { it.uid == uid }.takeIf { it != -1 } ?: return@withLock
                 val fileToRemove = files.removeAt(index)
+                fileName = fileToRemove.fileName
 
                 runCatching { File(fileToRemove.uri).delete() }
 
                 _files.value = files
+            }
+
+            fileName?.let {
+                alreadyUsedFileNames.remove(it)
             }
         }
     }
@@ -126,9 +141,9 @@ class NewTransferViewModel @Inject constructor(
             }
         }
 
-        filesMutationMutex.withLock {
-            _files.value = restoredFileData
-        }
+        alreadyUsedFileNames.addAll(restoredFileData.map { it.fileName })
+
+        filesMutationMutex.withLock { _files.value += restoredFileData }
     }
 
     private fun removeLocalCopyFolder() {
@@ -215,6 +230,15 @@ class NewTransferViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    class AlreadyUsedFileNamesSet {
+        private val alreadyUsedFileNames = mutableSetOf<String>()
+        private val mutex = Mutex()
+
+        suspend fun contains(fileName: String): Boolean = mutex.withLock { alreadyUsedFileNames.contains(fileName) }
+        suspend fun addAll(filesNames: List<String>): Boolean = mutex.withLock { alreadyUsedFileNames.addAll(filesNames) }
+        suspend fun remove(filesName: String): Boolean = mutex.withLock { alreadyUsedFileNames.remove(filesName) }
     }
 
     companion object {
