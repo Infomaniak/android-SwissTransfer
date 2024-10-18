@@ -19,25 +19,54 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.theme.Dimens
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun EmptyState(
+fun IllustratedMessageBlock(
     icon: ImageVector,
     @StringRes title: Int,
     @StringRes description: Int,
     modifier: Modifier = Modifier,
 ) {
-    IllustratedMessageBlock(icon, title, description, modifier.fillMaxSize())
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(imageVector = icon, contentDescription = null)
+
+        Text(
+            text = stringResource(title),
+            style = SwissTransferTheme.typography.h1,
+            modifier = Modifier.padding(PaddingValues(top = Margin.XLarge)),
+        )
+
+        Text(
+            text = stringResource(description),
+            textAlign = TextAlign.Center,
+            style = SwissTransferTheme.typography.bodyRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+            modifier = Modifier
+                .widthIn(max = Dimens.DescriptionWidth)
+                .padding(PaddingValues(top = Margin.Medium)),
+        )
+    }
 }
 
 @Preview(name = "Light mode")
@@ -46,7 +75,7 @@ fun EmptyState(
 private fun SwissTransferFabPreview() {
     SwissTransferTheme {
         Surface {
-            EmptyState(
+            IllustratedMessageBlock(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
                 description = R.string.noTransferReceivedDescription,
