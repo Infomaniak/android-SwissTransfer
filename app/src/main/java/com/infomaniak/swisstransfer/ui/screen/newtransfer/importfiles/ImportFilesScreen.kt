@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import android.content.Context
 import android.net.Uri
-import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -35,6 +33,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.SelectedFilesCard
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
@@ -59,8 +58,9 @@ private fun ImportFilesScreen(
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
     val humanReadableSize by remember {
         derivedStateOf {
-            val totalFileSize = files().sumOf { it.fileSizeInBytes }
-            getHumanReadableSize(totalFileSize, context)
+            val usedSpace = files().sumOf { it.fileSizeInBytes }
+            val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
+            getHumanReadableSize(context, spaceLeft)
         }
     }
     val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() } }
@@ -104,11 +104,6 @@ private fun ImportFilesScreen(
             )
         },
     )
-}
-
-private fun getHumanReadableSize(usedSpace: Long, context: Context): String {
-    val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-    return Formatter.formatShortFileSize(context, spaceLeft)
 }
 
 @PreviewAllWindows

@@ -45,6 +45,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
 import kotlinx.parcelize.Parcelize
 
 @Composable
@@ -106,26 +107,6 @@ fun SelectedFilesCard(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun formatSpaceLeft(humanReadableSize: () -> String): String {
-    val formattedSize = humanReadableSize()
-    val quantity = LocalContext.current.getQuantityFromHumanReadableSize(formattedSize)
-    return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSize)
-}
-
-private fun Context.getQuantityFromHumanReadableSize(humanReadableSize: String): Int {
-    // Space character for languages such as EN and NBSP character for languages such as FR
-    val sizeParts = humanReadableSize.split(' ', Typography.nbsp)
-
-    return if (sizeParts.size == 2) {
-        val local = resources.configuration.getLocales().get(0)
-        val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts[0])
-        parsedNumber?.toDouble()?.toInt() ?: 0
-    } else {
-        0
     }
 }
 
