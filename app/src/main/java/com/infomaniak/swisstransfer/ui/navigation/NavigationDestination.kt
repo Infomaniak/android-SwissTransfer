@@ -59,6 +59,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object TransferOptionsDestination : NewTransferNavigation()
     @Serializable
     data object ValidateUserEmailDestination : NewTransferNavigation()
+
     @Serializable
     data object UploadProgressDestination : NewTransferNavigation()
     @Serializable
