@@ -43,7 +43,7 @@ object HumanReadableSizeUtils {
 
         return if (sizeParts.size == 2) {
             val local = resources.configuration.getLocales().get(0)
-            val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts[0])
+            val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts.first())
             parsedNumber?.toDouble()?.toInt() ?: 0
         } else {
             0
