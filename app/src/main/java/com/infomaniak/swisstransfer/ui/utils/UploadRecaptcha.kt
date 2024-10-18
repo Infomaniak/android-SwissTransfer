@@ -17,14 +17,17 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import android.app.Application
 import android.util.Log
 import com.google.android.recaptcha.Recaptcha
 import com.google.android.recaptcha.RecaptchaAction
 import com.google.android.recaptcha.RecaptchaClient
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.MainApplication
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * A class responsible for handling reCAPTCHA verification for uploads.
@@ -33,8 +36,13 @@ import javax.inject.Inject
  * It initializes a reCAPTCHA client and provides a method to fetch a reCAPTCHA code.
  *
  * @property application The application context.
+ * @property ioDispatcher The dispatcher to run the coroutine on.
  */
-class UploadRecaptcha @Inject constructor(private val application: MainApplication) {
+@Singleton
+class UploadRecaptcha @Inject constructor(
+    private val application: MainApplication,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) {
 
     private var client: RecaptchaClient? = null
 
@@ -46,11 +54,11 @@ class UploadRecaptcha @Inject constructor(private val application: MainApplicati
      * If an error occurs during initialization, it logs the error message.
      * It MUST be called in the MainApplication.
      */
-    suspend fun initializeClient() {
+    suspend fun initializeClient() = withContext(ioDispatcher) {
         runCatching {
             client = Recaptcha.fetchClient(application, BuildConfig.RECAPTCHA_API_SITE_KEY)
         }.onFailure {
-            Log.e("Recaptcha", "Getting Recaptcha client failed with an exception", it)
+            Log.e(TAG, "Getting Recaptcha client failed with an exception", it)
         }
     }
 
@@ -63,7 +71,7 @@ class UploadRecaptcha @Inject constructor(private val application: MainApplicati
      * @param callback A function that receives the reCAPTCHA code as a string.
      *                 The code may be null if an error occurred.
      */
-    suspend fun fetchCode(callback: (String?) -> Unit) {
+    suspend fun fetchCode(callback: (String?) -> Unit) = withContext(ioDispatcher) {
         callback(client?.execute(RecaptchaAction.LOGIN)?.getOrNull())
     }
 
