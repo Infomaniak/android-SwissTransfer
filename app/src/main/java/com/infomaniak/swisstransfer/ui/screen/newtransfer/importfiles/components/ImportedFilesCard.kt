@@ -30,12 +30,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -138,21 +140,11 @@ private data class TransferLazyRowKey(
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun ImportededFilesCardPreview() {
+private fun ImportededFilesCardPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
     SwissTransferTheme {
         ImportedFilesCard(
             modifier = Modifier.padding(Margin.Medium),
-            files = {
-                listOf(
-                    object : FileUiItem {
-                        override val uid = ""
-                        override val fileName = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg"
-                        override val fileSizeInBytes = 234567832L
-                        override val mimeType = null
-                        override val uri = ""
-                    }
-                )
-            },
+            files = { files },
             humanReadableSize = { "20 GB" },
             showUploadSourceChoiceBottomSheet = {},
             removeFileByUid = {}

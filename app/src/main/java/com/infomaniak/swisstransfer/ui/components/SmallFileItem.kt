@@ -26,9 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -65,18 +67,14 @@ enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SmallFileItemPreview() {
+private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
     SwissTransferTheme {
         Surface(color = SwissTransferTheme.materialColors.surfaceContainerHighest) {
             Column(Modifier.padding(16.dp)) {
+                val file = files.first()
+
                 SmallFileItem(
-                    file = object : FileUiItem {
-                        override val fileName: String = "How to not get fired.pdf"
-                        override val uid: String = fileName
-                        override val fileSizeInBytes: Long = 10302130
-                        override val mimeType: String? = null
-                        override val uri: String = ""
-                    },
+                    file = file,
                     smallFileTileSize = SmallFileTileSize.LARGE,
                     onRemove = {}
                 )
@@ -84,13 +82,7 @@ private fun SmallFileItemPreview() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SmallFileItem(
-                    file = object : FileUiItem {
-                        override val fileName: String = "How to not get fired.pdf"
-                        override val uid: String = fileName
-                        override val fileSizeInBytes: Long = 10302130
-                        override val mimeType: String? = null
-                        override val uri: String = ""
-                    },
+                    file = file,
                     smallFileTileSize = SmallFileTileSize.SMALL,
                 )
             }

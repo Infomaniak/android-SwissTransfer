@@ -23,7 +23,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -59,27 +61,7 @@ fun FileItemList(
 
 @PreviewAllWindows
 @Composable
-private fun FileItemListPreview() {
-    val files = listOf(object : FileUiItem {
-        override val fileName: String = "The 5-Step Guide to Not Breaking Your Code.txt"
-        override val uid: String = fileName
-        override val fileSizeInBytes: Long = 57689032
-        override val mimeType: String? = null
-        override val uri: String = ""
-    }, object : FileUiItem {
-        override val fileName: String = "Introduction to Turning It Off and On Again.pptx"
-        override val uid: String = fileName
-        override val fileSizeInBytes: Long = 89723143
-        override val mimeType: String? = null
-        override val uri: String = ""
-    }, object : FileUiItem {
-        override val fileName: String = "Learning to Copy and Paste: A Complete Guide.docx"
-        override val uid: String = fileName
-        override val fileSizeInBytes: Long = 237866728
-        override val mimeType: String? = null
-        override val uri: String = ""
-    })
-
+private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
     SwissTransferTheme {
         FileItemList(
             files = files,
