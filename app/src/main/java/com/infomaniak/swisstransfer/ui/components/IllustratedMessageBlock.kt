@@ -51,20 +51,21 @@ fun IllustratedMessageBlock(
     ) {
         Image(imageVector = icon, contentDescription = null)
 
+        Spacer(Modifier.height(Margin.XLarge))
+
         Text(
             text = stringResource(title),
             style = SwissTransferTheme.typography.h1,
-            modifier = Modifier.padding(PaddingValues(top = Margin.XLarge)),
         )
+
+        Spacer(Modifier.height(Margin.Medium))
 
         Text(
             text = stringResource(description),
             textAlign = TextAlign.Center,
             style = SwissTransferTheme.typography.bodyRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,
-            modifier = Modifier
-                .widthIn(max = Dimens.DescriptionWidth)
-                .padding(PaddingValues(top = Margin.Medium)),
+            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
         )
     }
 }

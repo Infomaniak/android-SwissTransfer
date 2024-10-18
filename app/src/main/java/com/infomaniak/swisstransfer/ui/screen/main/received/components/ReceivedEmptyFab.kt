@@ -18,7 +18,10 @@
 package com.infomaniak.swisstransfer.ui.screen.main.received.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,7 +50,7 @@ fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 modifier = Modifier
-                    .padding(PaddingValues(top = Margin.XLarge))
+                    .padding(top = Margin.XLarge)
                     .constrainAs(text) {
                         bottom.linkTo(icon.top, Margin.Small)
                         end.linkTo(icon.end, Margin.Small)
