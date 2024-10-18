@@ -79,9 +79,12 @@ private fun ImportFilesScreen(
         val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
         getHumanReadableSize(context, spaceLeft)
     }
-    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
-    val isImporting by remember { derivedStateOf { filesToImportCount() > 0 } }
-    val importProgress by remember { derivedStateOf { 1 - (filesToImportCount().toFloat() / currentSessionTotalUploadedFiles()) } }
+
+    val count = filesToImportCount()
+    val isImporting by remember(count) { derivedStateOf { count > 0 } }
+
+    val total = currentSessionTotalUploadedFiles()
+    val importProgress = remember(count, total) { 1 - (count.toFloat() / total) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
