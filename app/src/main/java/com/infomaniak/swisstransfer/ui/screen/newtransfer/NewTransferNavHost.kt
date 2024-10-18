@@ -50,7 +50,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         }
         composable<UploadSuccessDestination> {
             UploadSuccessScreen(
-                transferType = TransferType.LINK, // TODO: Use correct TransferType instead of hard-coded value.
+                transferType = TransferType.MAIL, // TODO: Use correct TransferType instead of hard-coded value.
             )
         }
     }

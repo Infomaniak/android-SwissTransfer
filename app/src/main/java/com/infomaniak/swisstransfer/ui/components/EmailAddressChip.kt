@@ -32,9 +32,9 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun EmailAddressChip(text: String) {
+fun EmailAddressChip(text: String, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(CustomShapes.Rounded)
             .background(SwissTransferTheme.colors.emailAddressChipColor)
             .padding(horizontal = Margin.Small),
