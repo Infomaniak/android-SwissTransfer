@@ -37,8 +37,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedE
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun ReceivedScreen(
@@ -104,8 +103,7 @@ private fun ReceivedScreen(
     }
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun ReceivedScreenPreview() {
     SwissTransferTheme {
