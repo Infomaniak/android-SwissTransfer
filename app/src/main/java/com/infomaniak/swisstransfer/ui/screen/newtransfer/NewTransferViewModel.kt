@@ -120,7 +120,10 @@ class NewTransferViewModel @Inject constructor(
         val restoredFileData = transferFilesManager.getRestoredFileData(alreadyCopiedFiles)
 
         if (alreadyCopiedFiles.size != restoredFileData.size) {
-            TODO() // TODO: Capture sentry message to handle the fact that restoring the already imported files failed
+            Sentry.withScope { scope ->
+                scope.level = SentryLevel.ERROR
+                Sentry.captureMessage("Failure of the restoration of the already imported files after a process kill")
+            }
         }
 
         filesMutationMutex.withLock {
