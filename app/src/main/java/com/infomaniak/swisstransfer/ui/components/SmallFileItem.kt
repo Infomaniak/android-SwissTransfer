@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SmallFileItem(
     modifier: Modifier = Modifier,
-    file: FileUiItem,
+    file: FileUi,
     smallFileTileSize: SmallFileTileSize,
     onRemove: (() -> Unit)? = null,
 ) {
@@ -67,7 +67,7 @@ enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUiItem>) {
+private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface(color = SwissTransferTheme.materialColors.surfaceContainerHighest) {
             Column(Modifier.padding(16.dp)) {

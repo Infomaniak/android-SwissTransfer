@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
 @Composable
 fun FilePreview(
-    file: FileUiItem,
+    file: FileUi,
     circleColor: Color,
     circleSize: Dp,
 ) {

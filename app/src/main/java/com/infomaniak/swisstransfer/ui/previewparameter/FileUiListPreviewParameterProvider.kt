@@ -18,32 +18,32 @@
 package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.components.FileUiItem
+import com.infomaniak.swisstransfer.ui.components.FileUi
 
-class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUiItem>> {
-    override val values: Sequence<List<FileUiItem>> = sequenceOf(
+class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUi>> {
+    override val values: Sequence<List<FileUi>> = sequenceOf(
         listOf(
-            object : FileUiItem { // Non-image file
-                override val fileName: String = "How to not get fired.pdf"
-                override val uid: String = fileName
-                override val fileSizeInBytes: Long = 10302130
-                override val mimeType: String? = null
-                override val uri: String = ""
-            },
-            object : FileUiItem { // Image file
-                override val fileName: String = "Opening images tutorial.png"
-                override val uid: String = fileName
-                override val fileSizeInBytes: Long = 456782
-                override val mimeType: String? = null
-                override val uri: String = "https://picsum.photos/200/300"
-            },
-            object : FileUiItem {
-                override val fileName: String = "The 5 step guide to turning it off and on again.docx"
-                override val uid: String = fileName
-                override val fileSizeInBytes: Long = 89723143
-                override val mimeType: String? = null
-                override val uri: String = ""
-            },
+            FileUi(
+                fileName = "How to not get fired.pdf",
+                uid = "How to not get fired.pdf",
+                fileSizeInBytes = 10302130,
+                mimeType = null,
+                uri = "",
+            ),
+            FileUi(
+                fileName = "Opening images tutorial.png",
+                uid = "Opening images tutorial.png",
+                fileSizeInBytes = 456782,
+                mimeType = null,
+                uri = "https://picsum.photos/200/300",
+            ),
+            FileUi(
+                fileName = "The 5 step guide to turning it off and on again.docx",
+                uid = "The 5 step guide to turning it off and on again.docx",
+                fileSizeInBytes = 89723143,
+                mimeType = null,
+                uri = "",
+            ),
         )
     )
 }

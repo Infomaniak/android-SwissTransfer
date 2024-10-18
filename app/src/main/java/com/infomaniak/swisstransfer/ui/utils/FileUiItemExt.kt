@@ -18,8 +18,8 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import com.infomaniak.library.filetypes.FileType
-import com.infomaniak.swisstransfer.ui.components.FileUiItem
+import com.infomaniak.swisstransfer.ui.components.FileUi
 
-val FileUiItem.fileType: FileType get() = mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
+val FileUi.fileType: FileType get() = mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
 
-val FileUiItem.hasPreview: Boolean get() = fileType == FileType.IMAGE
+val FileUi.hasPreview: Boolean get() = fileType == FileType.IMAGE
