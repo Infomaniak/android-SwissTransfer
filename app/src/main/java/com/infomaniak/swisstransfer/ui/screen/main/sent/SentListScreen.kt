@@ -29,29 +29,32 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun SentListScreen(transfers: List<Any>) {
+
+    // TODO: Remove this when `transfers` contains the real data.
     val transfers = listOf(
         FileUi(
             fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
             uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-            fileSizeInBytes = 57689032,
+            fileSizeInBytes = 57_689_032L,
             mimeType = null,
             uri = "",
         ),
         FileUi(
             fileName = "Introduction to Turning It Off and On Again.pptx",
             uid = "Introduction to Turning It Off and On Again.pptx",
-            fileSizeInBytes = 89723143,
+            fileSizeInBytes = 89_723_143L,
             mimeType = null,
             uri = "",
         ),
         FileUi(
             fileName = "Learning to Copy and Paste: A Complete Guide.docx",
             uid = "Learning to Copy and Paste: A Complete Guide.docx",
-            fileSizeInBytes = 237866728,
+            fileSizeInBytes = 237_866_728L,
             mimeType = null,
             uri = "",
         ),
     )
+
     FileItemList(
         modifier = Modifier.padding(Margin.Medium),
         files = transfers,

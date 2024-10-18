@@ -18,26 +18,34 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun EmptyState(
-    icon: ImageVector,
-    @StringRes title: Int,
-    @StringRes description: Int,
-    modifier: Modifier = Modifier,
-) {
-    IllustratedMessageBlock(icon, title, description, modifier.fillMaxSize())
+fun QrCode() { // TODO: Add parameter containing the QR code value, and use it.
+    Box(
+        modifier = Modifier
+            .size(180.dp)
+            .clip(CustomShapes.small)
+            .background(SwissTransferTheme.colors.qrCodeBackground),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(160.dp)
+                .background(SwissTransferTheme.colors.qrCodeColor), // TODO: Use this color to tint the QR code.
+        )
+    }
 }
 
 @Preview(name = "Light mode")
@@ -46,11 +54,7 @@ fun EmptyState(
 private fun SwissTransferFabPreview() {
     SwissTransferTheme {
         Surface {
-            EmptyState(
-                icon = AppIllus.MascotSearching,
-                title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
-            )
+            QrCode()
         }
     }
 }
