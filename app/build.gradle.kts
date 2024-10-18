@@ -103,6 +103,7 @@ dependencies {
     implementation(libs.swisstransfer.core)
 
     implementation(libs.coil.compose)
+    implementation(libs.qrose)
 
     // Compose preview tools
     implementation(libs.compose.ui.tooling.preview)
