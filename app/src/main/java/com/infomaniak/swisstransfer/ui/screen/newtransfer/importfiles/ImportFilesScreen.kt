@@ -56,14 +56,15 @@ private fun ImportFilesScreen(
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val humanReadableSize by remember {
-        derivedStateOf {
-            val usedSpace = files().sumOf { it.fileSizeInBytes }
-            val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-            getHumanReadableSize(context, spaceLeft)
-        }
+
+    val importedFiles = files()
+    val humanReadableSize = remember(importedFiles) {
+        val usedSpace = importedFiles.sumOf { it.fileSizeInBytes }
+        val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
+        getHumanReadableSize(context, spaceLeft)
     }
-    val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() } }
+
+    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
