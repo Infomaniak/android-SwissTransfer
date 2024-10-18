@@ -28,6 +28,7 @@
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
         <item quantity="other">%d fichiers</item>
+        <item quantity="many">% de fichiers</item>
     </plurals>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
     <string name="importFilesScreenTitle">Fichiers à transférer</string>
@@ -78,6 +79,7 @@
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s restant</item>
         <item quantity="other">%s restants</item>
+        <item quantity="many">%s restant</item>
     </plurals>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Lien</string>
