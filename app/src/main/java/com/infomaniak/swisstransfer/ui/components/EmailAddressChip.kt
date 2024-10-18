@@ -17,13 +17,16 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -40,5 +43,16 @@ fun EmailAddressChip(text: String) {
             color = SwissTransferTheme.colors.onEmailAddressChipColor,
             text = text,
         )
+    }
+}
+
+@Preview(name = "Light mode")
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun SwissTransferFabPreview() {
+    SwissTransferTheme {
+        Surface {
+            EmailAddressChip("test.test@ik.me")
+        }
     }
 }
