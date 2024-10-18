@@ -53,7 +53,7 @@ fun LargeButton(
     style: ButtonType = ButtonType.PRIMARY,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
-    determinateProgress: (() -> Float)? = null,
+    progress: (() -> Float)? = null,
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
@@ -64,7 +64,7 @@ fun LargeButton(
         style,
         enabled,
         showIndeterminateProgress,
-        determinateProgress,
+        progress,
         onClick,
         imageVector,
     )
@@ -81,7 +81,7 @@ fun SmallButton(
     style: ButtonType = ButtonType.PRIMARY,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
-    determinateProgress: (() -> Float)? = null,
+    progress: (() -> Float)? = null,
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
@@ -92,7 +92,7 @@ fun SmallButton(
         style,
         enabled,
         showIndeterminateProgress,
-        determinateProgress,
+        progress,
         onClick,
         imageVector,
     )
@@ -214,7 +214,7 @@ private fun LargeButtonPreview() {
                         LargeButton(
                             titleRes = R.string.appName,
                             style = it,
-                            determinateProgress = { 0.3f },
+                            progress = { 0.3f },
                             onClick = {},
                             imageVector = AppIcons.Add
                         )
@@ -226,7 +226,7 @@ private fun LargeButtonPreview() {
                         SmallButton(
                             titleRes = R.string.appName,
                             style = it,
-                            determinateProgress = { 0.3f },
+                            progress = { 0.3f },
                             imageVector = AppIcons.Add,
                             onClick = {}
                         )
