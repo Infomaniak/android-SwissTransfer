@@ -30,7 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.SelectedFilesCard
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
@@ -90,7 +90,7 @@ private fun ImportFilesScreen(
             )
         },
         content = {
-            SelectedFilesCard(
+            ImportedFilesCard(
                 modifier = Modifier.padding(Margin.Medium),
                 files = files,
                 humanReadableSize = { humanReadableSize },

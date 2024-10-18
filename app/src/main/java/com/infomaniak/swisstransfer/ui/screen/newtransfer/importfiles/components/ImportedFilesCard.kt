@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
-import android.content.Context
 import android.content.res.Configuration
-import android.icu.text.NumberFormat
 import android.os.Parcelable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,7 +31,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceL
 import kotlinx.parcelize.Parcelize
 
 @Composable
-fun SelectedFilesCard(
+fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUiItem>,
     humanReadableSize: () -> String,
@@ -143,9 +140,9 @@ private data class TransferLazyRowKey(
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SelectedFilesCardPreview() {
+private fun ImportededFilesCardPreview() {
     SwissTransferTheme {
-        SelectedFilesCard(
+        ImportedFilesCard(
             modifier = Modifier.padding(Margin.Medium),
             files = {
                 listOf(
