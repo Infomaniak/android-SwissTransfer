@@ -32,8 +32,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Folder
 import com.infomaniak.swisstransfer.ui.images.icons.PolaroidLandscape
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSourceChoiceBottomSheet(
@@ -79,8 +78,7 @@ fun UploadSourceChoiceBottomSheet(
     }
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun UploadSourceChoiceBottomSheetPreview() {
     SwissTransferTheme {
@@ -88,7 +86,7 @@ private fun UploadSourceChoiceBottomSheetPreview() {
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { true },
                 onFilePickerClicked = {},
-                closeBottomSheet = {}
+                closeBottomSheet = {},
             )
         }
     }

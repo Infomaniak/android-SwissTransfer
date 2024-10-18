@@ -47,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun SettingsScreen(
@@ -184,7 +184,7 @@ enum class SettingsOptionScreens {
     DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
 }
 
-@PreviewSmallWindow
+@PreviewAllWindows
 @Composable
 private fun SettingsScreenPreview() {
     SwissTransferTheme {
@@ -192,7 +192,7 @@ private fun SettingsScreenPreview() {
             SettingsScreen(
                 theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
                 validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWOHUNDREDFIFTY }, set = {}),
+                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                 onItemClick = {},
                 getSelectedSetting = { null },

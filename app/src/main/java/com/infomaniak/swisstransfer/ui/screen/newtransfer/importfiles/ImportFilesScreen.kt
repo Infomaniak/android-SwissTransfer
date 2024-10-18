@@ -34,8 +34,7 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
@@ -111,8 +110,7 @@ private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String
     return Formatter.formatShortFileSize(context, spaceLeft)
 }
 
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {

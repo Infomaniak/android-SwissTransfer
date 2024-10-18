@@ -25,7 +25,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun SettingsDownloadsLimitScreen(
@@ -54,13 +54,13 @@ enum class DownloadLimitOption(
     ONE({ "1" }),
 }
 
-@PreviewSmallWindow
+@PreviewAllWindows
 @Composable
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
             SettingsDownloadsLimitScreen(
-                downloadLimit = DownloadLimit.TWOHUNDREDFIFTY,
+                downloadLimit = DownloadLimit.TWO_HUNDRED_FIFTY,
                 navigateBack = {},
                 onDownloadLimitChange = {},
             )

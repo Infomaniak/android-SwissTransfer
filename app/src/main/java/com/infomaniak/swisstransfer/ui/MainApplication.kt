@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
@@ -40,7 +41,8 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        globalCoroutineScope.launch { swissTransferInjection.loadDefaultAccount() }
+
+        configureAccountUtils()
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
             // Register the callback as an option
@@ -49,5 +51,9 @@ class MainApplication : Application() {
                 if (BuildConfig.DEBUG) null else event
             }
         }
+    }
+
+    private fun configureAccountUtils() {
+        globalCoroutineScope.launch { AccountUtils.init(swissTransferInjection) }
     }
 }

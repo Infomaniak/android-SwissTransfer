@@ -22,7 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 private val WIDTH_LIMIT = 800.dp
 private val WIDTH_THRESHOLD = 500.dp
@@ -92,10 +95,45 @@ private fun HorizontallyStackedButtons(
 
 @Composable
 private fun SingleButton(button: @Composable (Modifier) -> Unit) {
-    button(
-        Modifier
-            .fillMaxWidth()
-            .widthIn(WIDTH_LIMIT / 2)
-            .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
-    )
+    Box(Modifier.widthIn(max = WIDTH_LIMIT / 2)) {
+        button(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
+        )
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun DoubleButtonComboPreview() {
+    SwissTransferTheme {
+        Column {
+            DoubleButtonCombo(
+                topButton = {
+                    LargeButton(
+                        modifier = it,
+                        titleRes = R.string.appName,
+                        onClick = {},
+                    )
+                },
+                bottomButton = {
+                    LargeButton(
+                        modifier = it,
+                        titleRes = R.string.appName,
+                        onClick = {},
+                    )
+                },
+            )
+            DoubleButtonCombo(
+                bottomButton = {
+                    LargeButton(
+                        modifier = it,
+                        titleRes = R.string.appName,
+                        onClick = {},
+                    )
+                },
+            )
+        }
+    }
 }

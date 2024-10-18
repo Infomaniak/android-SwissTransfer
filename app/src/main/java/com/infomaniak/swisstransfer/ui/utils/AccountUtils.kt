@@ -15,23 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.ui.utils
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.compose.rememberNavController
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 
-@Composable
-fun NewTransferScreen(closeActivity: () -> Unit) {
-    val navController = rememberNavController()
-    NewTransferNavHost(navController, closeActivity)
-}
+object AccountUtils {
 
-@PreviewAllWindows
-@Composable
-private fun NewTransferPreview() {
-    SwissTransferTheme {
-        NewTransferScreen {}
+    private const val DEFAULT_USER_ID = 0
+
+    suspend fun init(swissTransferInjection: SwissTransferInjection) {
+        swissTransferInjection.accountManager.loadUser(userId = DEFAULT_USER_ID)
     }
 }
