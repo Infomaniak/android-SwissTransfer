@@ -64,7 +64,7 @@ private fun ReceivedScreen(
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) {
-        if (areTransfersEmpty()) {
+        if (true || areTransfersEmpty()) { // TODO: Remove this `true || `, it's for testing only.
             EmptyState(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
