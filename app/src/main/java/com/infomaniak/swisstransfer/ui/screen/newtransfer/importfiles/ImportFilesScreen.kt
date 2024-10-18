@@ -57,10 +57,10 @@ private fun ImportFilesScreen(
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val formattedSizeWithUnits by remember {
+    val humanReadableSize by remember {
         derivedStateOf {
             val totalFileSize = files().sumOf { it.fileSizeInBytes }
-            getFormattedSizeWithUnits(totalFileSize, context)
+            getHumanReadableSize(totalFileSize, context)
         }
     }
     val isSendButtonEnabled by remember { derivedStateOf { files().isNotEmpty() } }
@@ -92,7 +92,7 @@ private fun ImportFilesScreen(
             SelectedFilesCard(
                 modifier = Modifier.padding(Margin.Medium),
                 files = files,
-                formattedSizeWithUnits = { formattedSizeWithUnits },
+                humanReadableSize = { humanReadableSize },
                 showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                 removeFileByUid = removeFileByUid,
             )
@@ -106,7 +106,7 @@ private fun ImportFilesScreen(
     )
 }
 
-private fun getFormattedSizeWithUnits(usedSpace: Long, context: Context): String {
+private fun getHumanReadableSize(usedSpace: Long, context: Context): String {
     val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
     return Formatter.formatShortFileSize(context, spaceLeft)
 }

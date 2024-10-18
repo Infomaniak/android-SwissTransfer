@@ -51,7 +51,7 @@ import kotlinx.parcelize.Parcelize
 fun SelectedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUiItem>,
-    formattedSizeWithUnits: () -> String,
+    humanReadableSize: () -> String,
     showUploadSourceChoiceBottomSheet: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
 ) {
@@ -72,7 +72,7 @@ fun SelectedFilesCard(
                 style = SwissTransferTheme.typography.bodySmallRegular,
             )
             Text(
-                formatSpaceLeft(formattedSizeWithUnits),
+                formatSpaceLeft(humanReadableSize),
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 style = SwissTransferTheme.typography.bodySmallRegular,
             )
@@ -110,14 +110,15 @@ fun SelectedFilesCard(
 }
 
 @Composable
-private fun formatSpaceLeft(formattedSizeWithUnits: () -> String): String {
-    val formattedSize = formattedSizeWithUnits()
-    val quantity = LocalContext.current.getQuantityFromFormattedSizeWithUnits(formattedSize)
+private fun formatSpaceLeft(humanReadableSize: () -> String): String {
+    val formattedSize = humanReadableSize()
+    val quantity = LocalContext.current.getQuantityFromHumanReadableSize(formattedSize)
     return pluralStringResource(R.plurals.transferSpaceLeft, quantity, formattedSize)
 }
 
-private fun Context.getQuantityFromFormattedSizeWithUnits(formattedSize: String): Int {
-    val sizeParts = formattedSize.split(' ', Typography.nbsp) // Space for languages such as EN and NBSP for languages such as FR
+private fun Context.getQuantityFromHumanReadableSize(humanReadableSize: String): Int {
+    // Space character for languages such as EN and NBSP character for languages such as FR
+    val sizeParts = humanReadableSize.split(' ', Typography.nbsp)
 
     return if (sizeParts.size == 2) {
         val local = resources.configuration.getLocales().get(0)
@@ -176,7 +177,7 @@ private fun SelectedFilesCardPreview() {
                     }
                 )
             },
-            formattedSizeWithUnits = { "20 GB" },
+            humanReadableSize = { "20 GB" },
             showUploadSourceChoiceBottomSheet = {},
             removeFileByUid = {}
         )
