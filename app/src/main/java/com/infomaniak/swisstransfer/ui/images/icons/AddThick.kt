@@ -14,18 +14,19 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppImages.AppIcons.CrossThick: ImageVector
+val AppIcons.AddThick: ImageVector
     get() {
-        if (_crossThick != null) {
-            return _crossThick!!
+        if (_addThick != null) {
+            return _addThick!!
         }
-        _crossThick = Builder(
-            name = "CrossThick",
-            defaultWidth = 16.0.dp,
-            defaultHeight = 16.0.dp,
+        _addThick = Builder(
+            name = "AddThick",
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
             viewportWidth = 16.0f,
             viewportHeight = 16.0f
         ).apply {
@@ -38,23 +39,23 @@ val AppImages.AppIcons.CrossThick: ImageVector
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(1.0f, 15.0f)
-                lineTo(15.0f, 1.0f)
-                moveToRelative(0.0f, 14.0f)
-                lineTo(1.0f, 1.0f)
+                moveTo(1.0f, 8.0f)
+                horizontalLineToRelative(14.0f)
+                moveTo(8.0f, 1.0f)
+                verticalLineToRelative(14.0f)
             }
         }.build()
-        return _crossThick!!
+        return _addThick!!
     }
 
-private var _crossThick: ImageVector? = null
+private var _addThick: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppImages.AppIcons.CrossThick,
+            imageVector = AppIcons.AddThick,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize)
         )

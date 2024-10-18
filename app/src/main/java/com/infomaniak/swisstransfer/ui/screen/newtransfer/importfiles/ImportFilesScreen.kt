@@ -20,43 +20,51 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.icons.Add
-import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferFile
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+
+private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
-    navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
-    val transferFiles by newTransferViewModel.transferFiles.collectAsStateWithLifecycle()
-    ImportFilesScreen({ transferFiles }, newTransferViewModel::addFiles, navigateToTransferTypeScreen, closeActivity)
+    val files by newTransferViewModel.files.collectAsStateWithLifecycle()
+    ImportFilesScreen({ files }, newTransferViewModel::removeFileByUid, newTransferViewModel::addFiles, closeActivity)
 }
 
 @Composable
 private fun ImportFilesScreen(
-    transferFiles: () -> List<TransferFile>,
+    files: () -> List<FileUiItem>,
+    removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
-    navigateToTransferTypeScreen: () -> Unit,
     closeActivity: () -> Unit,
 ) {
+    val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val isNextButtonEnabled by remember { derivedStateOf { transferFiles().isNotEmpty() } }
+
+    val importedFiles = files()
+    val humanReadableSize = remember(importedFiles) {
+        val usedSpace = importedFiles.sumOf { it.fileSizeInBytes }
+        val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
+        getHumanReadableSize(context, spaceLeft)
+    }
+
+    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -75,34 +83,20 @@ private fun ImportFilesScreen(
         topButton = { modifier ->
             LargeButton(
                 modifier = modifier,
-                titleRes = R.string.buttonAddFiles,
-                imageVector = AppIcons.Add,
-                style = ButtonType.TERTIARY,
-                onClick = { showUploadSourceChoiceBottomSheet = true },
-            )
-        },
-        bottomButton = { modifier ->
-            LargeButton(
-                modifier = modifier,
-                titleRes = R.string.buttonNext,
-                enabled = { isNextButtonEnabled },
-                onClick = { navigateToTransferTypeScreen() },
+                titleRes = R.string.transferSendButton,
+                style = ButtonType.PRIMARY,
+                enabled = { isSendButtonEnabled },
+                onClick = { /*TODO*/ },
             )
         },
         content = {
-            if (transferFiles().isEmpty()) {
-                EmptyState(
-                    icon = AppIllus.MascotWithMagnifyingGlass,
-                    title = R.string.noFileTitle,
-                    description = R.string.noFileDescription,
-                )
-            } else {
-                LazyColumn {
-                    items(items = transferFiles(), key = { it.fileName }) { file ->
-                        Text(text = "${file.fileName} - ${file.size}")
-                    }
-                }
-            }
+            ImportedFilesCard(
+                modifier = Modifier.padding(Margin.Medium),
+                files = files,
+                humanReadableSize = { humanReadableSize },
+                showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
+                removeFileByUid = removeFileByUid,
+            )
 
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
@@ -117,11 +111,16 @@ private fun ImportFilesScreen(
 @Composable
 private fun ImportFilesScreenPreview() {
     SwissTransferTheme {
-        ImportFilesScreen(
-            transferFiles = { emptyList() },
-            addFiles = {},
-            navigateToTransferTypeScreen = {},
-            closeActivity = {},
-        )
+        ImportFilesScreen({
+            listOf(
+                object : FileUiItem {
+                    override val uid = ""
+                    override val fileName = "Time-Clock-Circle--Streamline-Ultimate.svg (1).svg"
+                    override val fileSizeInBytes = 2367832L
+                    override val mimeType = null
+                    override val uri = ""
+                }
+            )
+        }, {}, {}, closeActivity = {})
     }
 }
