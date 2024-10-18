@@ -27,9 +27,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,7 +50,8 @@ fun ImportedFilesCard(
     showUploadSourceChoiceBottomSheet: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
 ) {
-    val fileCount by remember { derivedStateOf { files().count() } }
+    val importedFiles = files()
+    val fileCount = importedFiles.count()
 
     SwissTransferCard(modifier) {
         SharpRippleButton(onClick = { /*TODO*/ }) {
@@ -93,7 +91,7 @@ fun ImportedFilesCard(
             }
 
             items(
-                items = files().asReversed(),
+                items = importedFiles.asReversed(),
                 key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
             ) { file ->
                 SmallFileItem(
