@@ -71,7 +71,7 @@ private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::c
     SwissTransferTheme {
         Surface(color = SwissTransferTheme.materialColors.surfaceContainerHighest) {
             Column(Modifier.padding(16.dp)) {
-                val file = files[0]
+                val file = files.first()
 
                 SmallFileItem(
                     file = file,
