@@ -21,7 +21,6 @@ import android.app.Application
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
-import com.infomaniak.swisstransfer.ui.utils.Recaptcha
 import com.infomaniak.swisstransfer.ui.utils.UploadRecaptcha
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
@@ -48,7 +47,6 @@ class MainApplication : Application() {
         super.onCreate()
 
         globalCoroutineScope.launch {
-            swissTransferInjection.accountManager.loadUser(userId = 0)
             AccountUtils.init(swissTransferInjection)
             uploadRecaptcha.initializeClient()
         }
