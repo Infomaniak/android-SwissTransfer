@@ -70,37 +70,45 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
+
                 Image(
                     imageVector = AppIllus.UploadSuccessQr.image(),
                     contentDescription = null,
                 )
+
+                Spacer(Modifier.height(Margin.XLarge))
+
                 Text(
                     text = stringResource(uploadSuccessTitle),
                     style = SwissTransferTheme.typography.h1,
                     color = SwissTransferTheme.colors.primaryTextColor,
-                    modifier = Modifier.padding(Margin.XLarge)
                 )
+
+                Spacer(Modifier.height(Margin.XLarge))
+
                 QrCode()
-                Text(
-                    text = stringResource(R.string.uploadSuccessLinkDescription),
-                    style = SwissTransferTheme.typography.bodyRegular,
-                    textAlign = TextAlign.Center,
-                    color = SwissTransferTheme.colors.secondaryTextColor,
-                    modifier = Modifier
-                        .alpha(if (transferType == TransferType.QR_CODE) 0.0f else 1.0f)
-                        .padding(top = Margin.XXLarge, start = Margin.Medium, end = Margin.Medium)
-                        .widthIn(max = Dimens.DescriptionWidth),
-                )
-                // TODO: What do we want to do with this button placement?
-                LargeButton(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(Margin.Medium),
-                    style = ButtonType.SECONDARY,
-                    titleRes = R.string.buttonCopyLink,
-                    onClick = { /* TODO */ },
-                )
+
+                if (transferType != TransferType.QR_CODE) {
+                    Spacer(Modifier.height(Margin.XXLarge))
+                    Text(
+                        text = stringResource(R.string.uploadSuccessLinkDescription),
+                        style = SwissTransferTheme.typography.bodyRegular,
+                        textAlign = TextAlign.Center,
+                        color = SwissTransferTheme.colors.secondaryTextColor,
+                        modifier = Modifier
+                            .alpha(1.0f)
+                            .widthIn(max = Dimens.DescriptionWidth),
+                    )
+                }
             }
+
+            // TODO: What do we want to do with this button placement?
+            LargeButton(
+                modifier = Modifier.padding(Margin.Medium),
+                style = ButtonType.SECONDARY,
+                titleRes = R.string.buttonCopyLink,
+                onClick = { /* TODO */ },
+            )
         },
     )
 }
@@ -110,7 +118,7 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
 private fun UploadSuccessQrScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessQrScreen(transferType = TransferType.QR_CODE)
+            UploadSuccessQrScreen(transferType = TransferType.LINK)
         }
     }
 }

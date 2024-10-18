@@ -17,10 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,10 +54,9 @@ fun UploadSuccessEmailScreen() {
                     description = R.string.uploadSuccessEmailDescription,
                 )
 
-                EmailAddressChip(
-                    text = "test.test@ik.me", // TODO: Use correct email instead of hard-coded value.
-                    modifier = Modifier.padding(top = Margin.Medium),
-                )
+                Spacer(Modifier.height(Margin.Medium))
+
+                EmailAddressChip("test.test@ik.me") // TODO: Use correct email instead of hard-coded value.
             }
         },
     )
