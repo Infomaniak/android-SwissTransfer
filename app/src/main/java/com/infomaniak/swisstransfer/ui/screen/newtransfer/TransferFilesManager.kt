@@ -48,7 +48,9 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
 
     fun getRestoredFileData(files: Array<File>): List<FileUi> {
         return files.mapNotNull { file ->
-            val fileSizeInBytes = runCatching { file.length() }.getOrNull() ?: return@mapNotNull null
+            val fileSizeInBytes = runCatching { file.length() }
+                .onFailure { Sentry.addBreadcrumb("Caught an exception while restoring imported files: $it") }
+                .getOrNull() ?: return@mapNotNull null
 
             FileUi(
                 uid = file.name,
