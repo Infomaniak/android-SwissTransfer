@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun SmallFileTile(
+fun SmallFileItem(
     modifier: Modifier = Modifier,
     file: FileUiItem,
     smallFileTileSize: SmallFileTileSize,
@@ -65,11 +65,11 @@ enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SmallFileTilePreview() {
+private fun SmallFileItemPreview() {
     SwissTransferTheme {
         Surface(color = SwissTransferTheme.materialColors.surfaceContainerHighest) {
             Column(Modifier.padding(16.dp)) {
-                SmallFileTile(
+                SmallFileItem(
                     file = object : FileUiItem {
                         override val fileName: String = "How to not get fired.pdf"
                         override val uid: String = fileName
@@ -83,7 +83,7 @@ private fun SmallFileTilePreview() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SmallFileTile(
+                SmallFileItem(
                     file = object : FileUiItem {
                         override val fileName: String = "How to not get fired.pdf"
                         override val uid: String = fileName

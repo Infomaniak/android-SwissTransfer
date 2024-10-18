@@ -96,7 +96,7 @@ fun ImportedFilesCard(
                 items = files().asReversed(),
                 key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
             ) { file ->
-                SmallFileTile(
+                SmallFileItem(
                     modifier = Modifier.animateItem(),
                     file = file,
                     smallFileTileSize = SmallFileTileSize.LARGE,
