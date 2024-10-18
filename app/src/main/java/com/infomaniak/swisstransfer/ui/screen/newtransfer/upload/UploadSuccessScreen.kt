@@ -37,7 +37,7 @@ fun UploadSuccessScreen(transferType: TransferType) {
 private fun UploadSuccessScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessScreen(TransferType.MAIL)
+            UploadSuccessScreen(TransferType.QR_CODE)
         }
     }
 }
