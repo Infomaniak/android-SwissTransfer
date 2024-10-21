@@ -18,7 +18,6 @@ navigation = "2.8.1"
 serialization = "1.7.1"
 swisstransfer = "0.3.0"
 sentry = "4.12.0"
-sentry-android = "7.15.0"
 recaptcha = "18.6.1"
 
 [libraries]
@@ -45,7 +44,6 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
-sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
 recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }
 # Tests
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
