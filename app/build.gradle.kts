@@ -80,7 +80,7 @@ sentry {
 }
 
 dependencies {
-    implementation(project(":Core2:SentryLog"))
+    implementation(project(":Core2:Sentry"))
     implementation(project(":FileTypes"))
     implementation(kotlin("reflect"))
 

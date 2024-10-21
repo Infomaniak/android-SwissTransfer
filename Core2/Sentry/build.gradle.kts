@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.infomaniak.sentrylog"
+    namespace = "com.infomaniak.sentry"
     compileSdk = 34
 
     defaultConfig {
@@ -30,5 +30,5 @@ android {
 }
 
 dependencies {
-    implementation(sentrylog.sentry.android)
+    api(core2.sentry.android)
 }

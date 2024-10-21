@@ -22,7 +22,7 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
     }
     versionCatalogs {
-        create("sentrylog") { from(files("Core2/SentryLog/gradle/sentrylog.versions.toml")) }
+        create("core2") { from(files("Core2/gradle/core2.versions.toml")) }
         create("filetypes") { from(files("FileTypes/gradle/filetypes.versions.toml")) }
     }
 }
@@ -30,5 +30,5 @@ dependencyResolutionManagement {
 rootProject.name = "android-SwissTransfer"
 include(":app")
 include(":Core2")
-include(":Core2:SentryLog")
+include(":Core2:Sentry")
 include(":FileTypes")
