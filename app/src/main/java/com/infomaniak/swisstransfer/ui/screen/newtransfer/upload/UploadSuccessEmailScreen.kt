@@ -43,27 +43,30 @@ fun UploadSuccessEmailScreen() {
                 onClick = { /* TODO */ },
             )
         },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-
-                IllustratedMessageBlock(
-                    icon = AppIllus.UploadSuccessEmail.image(),
-                    title = R.string.uploadSuccessEmailTitle,
-                    description = R.string.uploadSuccessEmailDescription,
-                )
-
-                Spacer(Modifier.height(Margin.Medium))
-
-                EmailAddressChip("test.test@ik.me") // TODO: Use correct email instead of hard-coded value.
-            }
-        },
+        content = { Content() },
     )
+}
+
+@Composable
+private fun Content() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+
+        IllustratedMessageBlock(
+            icon = AppIllus.UploadSuccessEmail.image(),
+            title = R.string.uploadSuccessEmailTitle,
+            description = R.string.uploadSuccessEmailDescription,
+        )
+
+        Spacer(Modifier.height(Margin.Medium))
+
+        EmailAddressChip("test.test@ik.me") // TODO: Use correct email instead of hard-coded value.
+    }
 }
 
 @PreviewAllWindows

@@ -41,13 +41,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSuccessQrScreen(transferType: TransferType) {
-
-    val uploadSuccessTitle = if (transferType == TransferType.QR_CODE) {
-        R.string.uploadSuccessQrTitle
-    } else {
-        R.string.uploadSuccessLinkTitle
-    }
-
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         topButton = {
@@ -66,54 +59,64 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 onClick = { /* TODO */ },
             )
         },
-        content = {
-            Column(
+        content = { Content(transferType) },
+    )
+}
+
+@Composable
+private fun Content(transferType: TransferType) {
+
+    val uploadSuccessTitle = if (transferType == TransferType.QR_CODE) {
+        R.string.uploadSuccessQrTitle
+    } else {
+        R.string.uploadSuccessLinkTitle
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+
+        Image(
+            imageVector = AppIllus.UploadSuccessQr.image(),
+            contentDescription = null,
+        )
+
+        Spacer(Modifier.height(Margin.XLarge))
+
+        Text(
+            text = stringResource(uploadSuccessTitle),
+            style = SwissTransferTheme.typography.h1,
+            color = SwissTransferTheme.colors.primaryTextColor,
+        )
+
+        Spacer(Modifier.height(Margin.XLarge))
+
+        QrCode()
+
+        if (transferType != TransferType.QR_CODE) {
+            Spacer(Modifier.height(Margin.XXLarge))
+            Text(
+                text = stringResource(R.string.uploadSuccessLinkDescription),
+                style = SwissTransferTheme.typography.bodyRegular,
+                textAlign = TextAlign.Center,
+                color = SwissTransferTheme.colors.secondaryTextColor,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-
-                Image(
-                    imageVector = AppIllus.UploadSuccessQr.image(),
-                    contentDescription = null,
-                )
-
-                Spacer(Modifier.height(Margin.XLarge))
-
-                Text(
-                    text = stringResource(uploadSuccessTitle),
-                    style = SwissTransferTheme.typography.h1,
-                    color = SwissTransferTheme.colors.primaryTextColor,
-                )
-
-                Spacer(Modifier.height(Margin.XLarge))
-
-                QrCode()
-
-                if (transferType != TransferType.QR_CODE) {
-                    Spacer(Modifier.height(Margin.XXLarge))
-                    Text(
-                        text = stringResource(R.string.uploadSuccessLinkDescription),
-                        style = SwissTransferTheme.typography.bodyRegular,
-                        textAlign = TextAlign.Center,
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        modifier = Modifier
-                            .alpha(1.0f)
-                            .widthIn(max = Dimens.DescriptionWidth),
-                    )
-                }
-            }
-
-            // TODO: What do we want to do with this button placement?
-            LargeButton(
-                modifier = Modifier.padding(Margin.Medium),
-                style = ButtonType.SECONDARY,
-                titleRes = R.string.buttonCopyLink,
-                onClick = { /* TODO */ },
+                    .alpha(1.0f)
+                    .widthIn(max = Dimens.DescriptionWidth),
             )
-        },
+        }
+    }
+
+    // TODO: What do we want to do with this button placement?
+    LargeButton(
+        modifier = Modifier.padding(Margin.Medium),
+        style = ButtonType.SECONDARY,
+        titleRes = R.string.buttonCopyLink,
+        onClick = { /* TODO */ },
     )
 }
 

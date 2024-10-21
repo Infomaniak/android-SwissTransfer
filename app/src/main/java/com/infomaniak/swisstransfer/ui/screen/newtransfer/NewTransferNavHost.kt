@@ -49,9 +49,8 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadProgressScreen()
         }
         composable<UploadSuccessDestination> {
-            UploadSuccessScreen(
-                transferType = TransferType.MAIL, // TODO: Use correct TransferType instead of hard-coded value.
-            )
+            // TODO: Use correct TransferType instead of hard-coded value
+            UploadSuccessScreen(transferType = TransferType.MAIL)
         }
     }
 }
