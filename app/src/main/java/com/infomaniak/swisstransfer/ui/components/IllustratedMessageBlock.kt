@@ -45,7 +45,7 @@ fun IllustratedMessageBlock(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(start = Margin.Medium, end = Margin.Medium),
+        modifier = modifier.padding(horizontal = Margin.Medium),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
