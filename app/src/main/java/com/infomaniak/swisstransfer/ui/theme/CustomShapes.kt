@@ -21,10 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 
 object CustomShapes {
-    val none = RoundedCornerShape(0)
-    val rounded = RoundedCornerShape(50)
-    val extraSmall = RoundedCornerShape(4.dp)
-    val small = RoundedCornerShape(8.dp)
-    val medium = RoundedCornerShape(16.dp)
-    val large = RoundedCornerShape(24.dp)
+    val NONE = RoundedCornerShape(0)
+    val ROUNDED = RoundedCornerShape(50)
+    val EXTRA_SMALL = RoundedCornerShape(4.dp)
+    val SMALL = RoundedCornerShape(8.dp)
+    val MEDIUM = RoundedCornerShape(16.dp)
+    val LARGE = RoundedCornerShape(24.dp)
 }

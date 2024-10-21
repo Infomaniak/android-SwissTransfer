@@ -84,9 +84,9 @@ data class CustomColorScheme(
 )
 
 private val Shapes = Shapes(
-    extraSmall = CustomShapes.extraSmall,
-    small = CustomShapes.small,
-    medium = CustomShapes.medium,
-    large = CustomShapes.large,
+    extraSmall = CustomShapes.EXTRA_SMALL,
+    small = CustomShapes.SMALL,
+    medium = CustomShapes.MEDIUM,
+    large = CustomShapes.LARGE,
     // extraLarge: uses default values, for the bottom sheet corners
 )

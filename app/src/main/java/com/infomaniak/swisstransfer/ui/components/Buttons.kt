@@ -116,7 +116,7 @@ private fun CoreButton(
     Button(
         modifier = modifier.height(buttonSize.height),
         colors = buttonColors,
-        shape = CustomShapes.medium,
+        shape = CustomShapes.MEDIUM,
         enabled = isEnabled,
         onClick = onClick,
     ) {

@@ -62,8 +62,8 @@ fun SwissTransferFab(
 }
 
 enum class FabType(val shape: CornerBasedShape, val customSize: Dp?) {
-    NORMAL(CustomShapes.medium, null),
-    BIG(CustomShapes.large, 80.dp),
+    NORMAL(CustomShapes.MEDIUM, null),
+    BIG(CustomShapes.LARGE, 80.dp),
 }
 
 @Preview(name = "Light mode")

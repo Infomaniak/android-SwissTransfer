@@ -111,7 +111,7 @@ fun ImportedFilesCard(
 private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier.size(80.dp),
-        shape = CustomShapes.medium,
+        shape = CustomShapes.MEDIUM,
         colors = ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.surface,
             contentColor = SwissTransferTheme.materialColors.primary,

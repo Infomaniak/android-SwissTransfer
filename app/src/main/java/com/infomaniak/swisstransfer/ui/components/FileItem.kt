@@ -86,7 +86,7 @@ private fun FileItemContent(
         onClick = onClick,
         modifier = Modifier.aspectRatio(164 / 152f),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
-        shape = CustomShapes.small,
+        shape = CustomShapes.SMALL,
         border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant)
     ) {
         Box(
