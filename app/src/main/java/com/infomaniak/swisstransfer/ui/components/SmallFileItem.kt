@@ -58,8 +58,8 @@ fun SmallFileItem(
 }
 
 enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
-    SMALL(48.dp, CustomShapes.small),
-    LARGE(80.dp, CustomShapes.medium);
+    SMALL(48.dp, CustomShapes.SMALL),
+    LARGE(80.dp, CustomShapes.MEDIUM);
 
     fun iconCircleSize(): Dp = 2f / 3 * size
 }

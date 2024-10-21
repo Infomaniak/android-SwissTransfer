@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun SwissTransferCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = modifier,
-        shape = CustomShapes.medium,
+        shape = CustomShapes.MEDIUM,
         colors = CardDefaults.cardColors(contentColor = SwissTransferTheme.colors.secondaryTextColor),
         content = content,
     )

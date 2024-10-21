@@ -48,8 +48,8 @@ fun TransferTypeButton(
         modifier = Modifier
             .padding(Margin.XSmall)
             .height(Dimens.LargeButtonHeight)
-            .border(width = 1.dp, color = borderColor, shape = CustomShapes.small),
-        shape = CustomShapes.small,
+            .border(width = 1.dp, color = borderColor, shape = CustomShapes.SMALL),
+        shape = CustomShapes.SMALL,
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = contentColor),
         onClick = onClick,
         contentPadding = PaddingValues(Margin.Medium),
