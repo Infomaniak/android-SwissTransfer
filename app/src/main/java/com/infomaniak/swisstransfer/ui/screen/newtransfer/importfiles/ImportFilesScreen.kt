@@ -46,7 +46,7 @@ fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
 ) {
-    val files by newTransferViewModel.filesDebounced.collectAsStateWithLifecycle()
+    val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionTotalUploadedFiles by newTransferViewModel.currentSessionTotalUploadedFiles.collectAsStateWithLifecycle()
     ImportFilesScreen(

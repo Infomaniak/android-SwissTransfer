@@ -32,12 +32,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(
-    private val transferFilesManager: TransferFilesManager,
+    private val importationFilesManager: ImportationFilesManager,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     @OptIn(FlowPreview::class)
-    val filesDebounced = transferFilesManager.importedFiles
+    val importedFilesDebounced = importationFilesManager.importedFiles
         .debounce(50)
         .stateIn(
             scope = viewModelScope,
@@ -45,9 +45,9 @@ class NewTransferViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
-    val failedFiles = transferFilesManager.failedFiles
-    val filesToImportCount = transferFilesManager.filesToImportCount
-    val currentSessionTotalUploadedFiles = transferFilesManager.currentSessionTotalUploadedFiles
+    val failedFiles = importationFilesManager.failedFiles
+    val filesToImportCount = importationFilesManager.filesToImportCount
+    val currentSessionTotalUploadedFiles = importationFilesManager.currentSessionTotalUploadedFiles
 
     private var isFirstViewModelCreation: Boolean
         get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
@@ -61,24 +61,24 @@ class NewTransferViewModel @Inject constructor(
                 isFirstViewModelCreation = false
                 // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required for
                 // already imported files restoration to not pick up old files in some extreme cases.
-                transferFilesManager.removeLocalCopyFolder()
+                importationFilesManager.removeLocalCopyFolder()
             } else {
-                transferFilesManager.restoreAlreadyImportedFiles()
+                importationFilesManager.restoreAlreadyImportedFiles()
             }
 
-            transferFilesManager.copyPickedFilesToLocalStorage()
+            importationFilesManager.copyPickedFilesToLocalStorage()
         }
     }
 
     fun addFiles(uris: List<Uri>) {
         viewModelScope.launch(Dispatchers.IO) {
-            transferFilesManager.addFiles(uris)
+            importationFilesManager.addFiles(uris)
         }
     }
 
     fun removeFileByUid(uid: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            transferFilesManager.removeFileByUid(uid)
+            importationFilesManager.removeFileByUid(uid)
         }
     }
 
