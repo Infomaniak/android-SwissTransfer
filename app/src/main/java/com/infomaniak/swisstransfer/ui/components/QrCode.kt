@@ -36,7 +36,7 @@ fun QrCode() { // TODO: Add parameter containing the QR code value, and use it.
     Box(
         modifier = Modifier
             .size(180.dp)
-            .clip(CustomShapes.small)
+            .clip(CustomShapes.SMALL)
             .background(SwissTransferTheme.colors.qrCodeBackground),
         contentAlignment = Alignment.Center,
     ) {

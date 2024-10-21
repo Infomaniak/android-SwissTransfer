@@ -35,7 +35,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun EmailAddressChip(text: String) {
     Box(
         modifier = Modifier
-            .clip(CustomShapes.Rounded)
+            .clip(CustomShapes.ROUNDED)
             .background(SwissTransferTheme.colors.emailAddressChipColor)
             .padding(horizontal = Margin.Small),
     ) {
