@@ -39,7 +39,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TransferFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
+class ImportationFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
 
     private val filesToImport: TransferCountChannel = TransferCountChannel()
     val filesToImportCount: StateFlow<Int> = filesToImport.count
@@ -51,8 +51,8 @@ class TransferFilesManager @Inject constructor(@ApplicationContext private val a
     private val _failedFiles = MutableSharedFlow<PickedFile>()
     val failedFiles = _failedFiles.asSharedFlow()
 
-    // Importing a file locally can take up time. We can't base the list of already used names on _files because a new import with
-    // the same name could occur while the file is not finished importing yet.
+    // Importing a file locally can take up time. We can't base the list of already used names on _importedFiles's value because a
+    // new import with the same name could occur while the file is still importing. This would lead to a name collision.
     // This list needs to mark a name as "taken" as soon as the file is queued to be imported and until the file is removed from
     // the list of already imported files we listen to in the LazyRow.
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
