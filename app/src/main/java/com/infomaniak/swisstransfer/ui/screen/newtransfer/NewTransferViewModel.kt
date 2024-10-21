@@ -66,7 +66,7 @@ class NewTransferViewModel @Inject constructor(
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
 
-            importationFilesManager.copyPickedFilesToLocalStorage()
+            importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
         }
     }
 

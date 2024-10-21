@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui.utils
 
 object FileNameUtils {
 
-    suspend fun postfixExistingFileNames(fileName: String, isAlreadyUsed: suspend (String) -> Boolean): String {
+    fun postfixExistingFileNames(fileName: String, isAlreadyUsed: (String) -> Boolean): String {
         return if (isAlreadyUsed(fileName)) {
             val postfixedFileName = PostfixedFileName.fromFileName(fileName)
 

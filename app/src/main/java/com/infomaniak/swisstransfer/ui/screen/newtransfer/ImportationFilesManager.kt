@@ -61,11 +61,7 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     private fun getGetLocalCopyFolderOrCopy() = localCopyFolder.apply { if (!exists()) mkdirs() }
 
     suspend fun addFiles(uris: List<Uri>) {
-        val newFiles = getFiles(uris, isAlreadyUsed = { alreadyUsedFileNames.contains(it) })
-
-        alreadyUsedFileNames.addAll(newFiles.map { it.fileName })
-
-        newFiles.forEach { filesToImport.send(it) }
+        getFiles(uris).forEach { filesToImport.send(it) }
     }
 
     suspend fun removeFileByUid(uid: String) {
@@ -95,7 +91,7 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
         _importedFiles.addAll(restoredFileData)
     }
 
-    suspend fun copyPickedFilesToLocalStorage() {
+    suspend fun continuouslyCopyPickedFilesToLocalStorage() {
         filesToImport.consume { fileToImport ->
             Log.i(TAG, "Importing ${fileToImport.uri}")
             val copiedFile = copyFileLocally(fileToImport.uri, fileToImport.fileName)
@@ -135,27 +131,32 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
         }
     }
 
-    private suspend fun getFiles(uris: List<Uri>, isAlreadyUsed: suspend (String) -> Boolean): Set<PickedFile> {
-        val currentUsedFileNames = mutableSetOf<String>()
-
+    private suspend fun getFiles(uris: List<Uri>): Set<PickedFile> {
         val files = buildSet {
             uris.forEach { uri ->
-                getFile(uri, isAlreadyUsed = { isAlreadyUsed(it) || currentUsedFileNames.contains(it) })?.let { file ->
-                    currentUsedFileNames += file.fileName
-                    add(file)
-                }
+                getFile(uri)?.let(::add)
             }
         }
 
         return files
     }
 
-    private suspend fun getFile(uri: Uri, isAlreadyUsed: suspend (String) -> Boolean): PickedFile? {
+    private suspend fun getFile(uri: Uri): PickedFile? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
-            val uniqueName = FileNameUtils.postfixExistingFileNames(name, isAlreadyUsed)
+            val uniqueName: String
+
+            alreadyUsedFileNames.mutex.withLock {
+                uniqueName = FileNameUtils.postfixExistingFileNames(
+                    fileName = name,
+                    isAlreadyUsed = { alreadyUsedFileNames.contains(it) }
+                )
+
+                alreadyUsedFileNames.add(uniqueName)
+            }
+
             PickedFile(uniqueName, size, uri)
         }
     }
@@ -238,9 +239,12 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
 
     class AlreadyUsedFileNamesSet {
         private val alreadyUsedFileNames = mutableSetOf<String>()
-        private val mutex = Mutex()
+        val mutex = Mutex()
 
-        suspend fun contains(fileName: String): Boolean = mutex.withLock { alreadyUsedFileNames.contains(fileName) }
+        // No need for the mutex because this code is already called inside of the lock
+        fun contains(fileName: String): Boolean = alreadyUsedFileNames.contains(fileName)
+        fun add(fileName: String): Boolean = alreadyUsedFileNames.add(fileName)
+
         suspend fun addAll(filesNames: List<String>): Boolean = mutex.withLock { alreadyUsedFileNames.addAll(filesNames) }
         suspend fun remove(filesName: String): Boolean = mutex.withLock { alreadyUsedFileNames.remove(filesName) }
     }
