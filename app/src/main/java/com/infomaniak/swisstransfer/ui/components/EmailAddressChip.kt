@@ -18,32 +18,40 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ChipColors
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun EmailAddressChip(text: String) {
-    Box(
-        modifier = Modifier
-            .clip(CustomShapes.ROUNDED)
-            .background(SwissTransferTheme.colors.emailAddressChipColor)
-            .padding(horizontal = Margin.Small),
-    ) {
-        Text(
-            color = SwissTransferTheme.colors.onEmailAddressChipColor,
-            text = text,
-        )
-    }
+    SuggestionChip(
+        onClick = { },
+        label = {
+            Text(
+                text = text,
+                style = SwissTransferTheme.typography.bodyRegular,
+            )
+        },
+        enabled = false,
+        shape = CustomShapes.ROUNDED,
+        colors = ChipColors(
+            containerColor = Color.Unspecified,
+            disabledContainerColor = SwissTransferTheme.colors.emailAddressChipColor,
+            labelColor = Color.Unspecified,
+            disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor,
+            leadingIconContentColor = Color.Unspecified,
+            disabledLeadingIconContentColor = Color.Unspecified,
+            trailingIconContentColor = Color.Unspecified,
+            disabledTrailingIconContentColor = Color.Unspecified,
+        ),
+        border = null,
+    )
 }
 
 @Preview(name = "Light mode")

@@ -63,7 +63,7 @@ private fun Content() {
             description = R.string.uploadSuccessEmailDescription,
         )
 
-        Spacer(Modifier.height(Margin.Medium))
+        Spacer(Modifier.height(Margin.Small))
 
         EmailAddressChip("test.test@ik.me") // TODO: Use correct email instead of hard-coded value.
     }
