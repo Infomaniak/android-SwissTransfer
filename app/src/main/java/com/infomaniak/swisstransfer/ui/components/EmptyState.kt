@@ -19,10 +19,12 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,14 +41,17 @@ fun EmptyState(
     @StringRes description: Int,
     modifier: Modifier = Modifier,
 ) {
-    IllustratedMessageBlock(
-        icon = icon,
-        title = title,
-        description = description,
-        modifier = modifier
-            .padding(horizontal = Margin.Medium)
-            .fillMaxSize(),
-    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        IllustratedMessageBlock(
+            icon = icon,
+            title = title,
+            description = description,
+            modifier = modifier.padding(horizontal = Margin.Medium),
+        )
+    }
 }
 
 @Preview(name = "Light mode")
