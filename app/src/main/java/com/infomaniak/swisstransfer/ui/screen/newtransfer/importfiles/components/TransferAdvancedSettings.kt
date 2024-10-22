@@ -21,8 +21,10 @@ import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
@@ -32,15 +34,20 @@ import com.infomaniak.swisstransfer.ui.images.icons.Clock
 import com.infomaniak.swisstransfer.ui.images.icons.Password
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferAdvancedSettings(selectedValues: () -> List<@Composable () -> String>, onClick: () -> Unit) {
-    val values = selectedValues()
+fun TransferAdvancedSettings(initialSelectedOptionValues: () -> List<TransferAdvancedOptionsEnum>, onClick: () -> Unit) {
+    val selectedOptionValues by rememberSaveable { mutableStateOf(initialSelectedOptionValues) }
+
     SwissTransferCard {
         TransferAdvancedSettingType.entries.forEach { settingType ->
-            // TransferAdvancedSetting(settingType, values[settingType.ordinal], onClick)
+            val transferAdvancedOption = selectedOptionValues()[settingType.ordinal]
+            TransferAdvancedSetting(settingType, transferAdvancedOption.title, onClick)
         }
     }
 }
@@ -58,14 +65,14 @@ enum class TransferAdvancedSettingType(val buttonIcon: ImageVector, @StringRes v
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            val selectedValues = listOf(
-                ValidityPeriodOption.THIRTY.title,
-                DownloadLimitOption.TWO_HUNDRED_FIFTY.title,
-                { stringResource(R.string.settingsOptionNone) },
-                { stringResource(R.string.settingsEmailLanguageValueEnglish) },
+            val selectedOptionValues = listOf(
+                ValidityPeriodOption.THIRTY,
+                DownloadLimitOption.TWO_HUNDRED_FIFTY,
+                PasswordTransferOption.NONE,
+                EmailLanguageOption.FRENCH,
             )
 
-            TransferAdvancedSettings({ selectedValues }, onClick = {})
+            TransferAdvancedSettings({ selectedOptionValues }, onClick = {})
         }
     }
 }
