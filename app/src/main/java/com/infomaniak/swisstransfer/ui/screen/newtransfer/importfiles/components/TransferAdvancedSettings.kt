@@ -40,7 +40,7 @@ fun TransferAdvancedSettings(selectedValues: () -> List<@Composable () -> String
     val values = selectedValues()
     SwissTransferCard {
         TransferAdvancedSettingType.entries.forEach { settingType ->
-            TransferAdvancedSetting(settingType, values[settingType.ordinal], onClick)
+            // TransferAdvancedSetting(settingType, values[settingType.ordinal], onClick)
         }
     }
 }
