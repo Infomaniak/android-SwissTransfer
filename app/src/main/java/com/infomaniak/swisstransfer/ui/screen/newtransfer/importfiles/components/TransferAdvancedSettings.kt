@@ -19,11 +19,13 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.component
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
@@ -38,16 +40,15 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferAdvancedSettings(initialSelectedOptionValues: () -> List<TransferAdvancedOptionsEnum>, onClick: () -> Unit) {
-    val selectedOptionValues by rememberSaveable { mutableStateOf(initialSelectedOptionValues) }
-
-    SwissTransferCard {
+fun TransferAdvancedSettings(states: () -> List<TransferAdvancedOptionsEnum>, onClick: () -> Unit) {
+    SwissTransferCard(modifier = Modifier.padding(Margin.Medium)) {
         TransferAdvancedSettingType.entries.forEach { settingType ->
-            val transferAdvancedOption = selectedOptionValues()[settingType.ordinal]
-            TransferAdvancedSetting(settingType, transferAdvancedOption.title, onClick)
+            val title by remember { derivedStateOf { states()[settingType.ordinal] } }
+            TransferAdvancedSetting(settingType, { title }, onClick)
         }
     }
 }

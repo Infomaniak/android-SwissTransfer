@@ -23,13 +23,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -37,18 +38,23 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun TransferAdvancedSetting(
     settingType: TransferAdvancedSettingType,
-    selectedValue: @Composable () -> String,
+    selectedSetting: () -> TransferAdvancedOptionsEnum,
     onClick: () -> Unit,
 ) {
-    Row(Modifier.padding(Margin.Medium), verticalAlignment = Alignment.CenterVertically) {
+    SharpRippleButton(onClick = onClick, contentPadding = PaddingValues(horizontal = Margin.Large, vertical = Margin.Medium)) {
         Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = settingType.buttonIcon, contentDescription = null)
         Spacer(modifier = Modifier.width(Margin.Small))
         Text(text = stringResource(settingType.buttonText), style = SwissTransferTheme.typography.bodySmallMedium)
         Spacer(modifier = Modifier.weight(1.0f))
-        Text(text = selectedValue(), style = SwissTransferTheme.typography.bodySmallRegular)
+        SettingValue(selectedSetting)
         Spacer(modifier = Modifier.width(Margin.Small))
         Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = AppIcons.ChevronRightSmall, contentDescription = null)
     }
+}
+
+@Composable
+private fun SettingValue(selectedSetting: () -> TransferAdvancedOptionsEnum) {
+    Text(text = selectedSetting().title(), style = SwissTransferTheme.typography.bodySmallRegular)
 }
 
 @Preview(name = "Light")
@@ -58,9 +64,10 @@ private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
             TransferAdvancedSetting(
-                TransferAdvancedSettingType.VALIDITY_DURATION,
-                { ValidityPeriodOption.THIRTY.title() },
-                onClick = {})
+                settingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                selectedSetting = { ValidityPeriodOption.THIRTY },
+                onClick = {},
+            )
         }
     }
 }
