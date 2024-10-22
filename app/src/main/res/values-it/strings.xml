@@ -54,6 +54,7 @@
     <string name="settingsEmailLanguageValueSpanish">Spagnolo</string>
     <string name="settingsMatomoDescription">Matomo è uno strumento di analisi ospitato e gestito esclusivamente da Infomaniak per capire come viene utilizzata l’applicazione.\n\nStudiando questi dati, il nostro team è in grado di migliorare continuamente l’interfaccia dell’applicazione.</string>
     <string name="settingsNotificationsTitle">Seleziona una preferenza</string>
+    <string name="settingsOptionActivated">Attivato</string>
     <string name="settingsOptionDataManagement">Gestione dei dati</string>
     <string name="settingsOptionDiscoverInfomaniak">Scopri Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Limite di download</string>
