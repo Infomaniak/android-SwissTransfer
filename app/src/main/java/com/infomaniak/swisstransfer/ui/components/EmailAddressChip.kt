@@ -18,12 +18,11 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.material3.ChipColors
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -40,15 +39,9 @@ fun EmailAddressChip(text: String) {
         },
         enabled = false,
         shape = CustomShapes.ROUNDED,
-        colors = ChipColors(
-            containerColor = Color.Unspecified,
+        colors = SuggestionChipDefaults.suggestionChipColors(
             disabledContainerColor = SwissTransferTheme.colors.emailAddressChipColor,
-            labelColor = Color.Unspecified,
-            disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor,
-            leadingIconContentColor = Color.Unspecified,
-            disabledLeadingIconContentColor = Color.Unspecified,
-            trailingIconContentColor = Color.Unspecified,
-            disabledTrailingIconContentColor = Color.Unspecified,
+            disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor
         ),
         border = null,
     )
