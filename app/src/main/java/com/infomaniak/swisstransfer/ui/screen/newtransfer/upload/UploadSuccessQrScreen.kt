@@ -26,12 +26,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.icons.Copy
+import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessQr.UploadSuccessQr
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
@@ -48,6 +50,7 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 modifier = it,
                 style = ButtonType.PRIMARY,
                 titleRes = R.string.buttonShare,
+                imageVector = AppIcons.Share,
                 onClick = { /* TODO */ },
             )
         },
@@ -104,9 +107,7 @@ private fun Content(transferType: TransferType) {
                 style = SwissTransferTheme.typography.bodyRegular,
                 textAlign = TextAlign.Center,
                 color = SwissTransferTheme.colors.secondaryTextColor,
-                modifier = Modifier
-                    .alpha(1.0f)
-                    .widthIn(max = Dimens.DescriptionWidth),
+                modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
             )
         }
     }
@@ -116,6 +117,7 @@ private fun Content(transferType: TransferType) {
         modifier = Modifier.padding(Margin.Medium),
         style = ButtonType.SECONDARY,
         titleRes = R.string.buttonCopyLink,
+        imageVector = AppIcons.Copy,
         onClick = { /* TODO */ },
     )
 }
