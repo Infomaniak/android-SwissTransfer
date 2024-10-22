@@ -59,6 +59,7 @@
     <string name="settingsOptionDownloadLimit">Limite di download</string>
     <string name="settingsOptionEmailLanguage">Lingua della posta elettronica</string>
     <string name="settingsOptionGiveFeedback">Di’ la tua</string>
+    <string name="settingsOptionNone">Nessuno</string>
     <string name="settingsOptionNotifications">Notifiche</string>
     <string name="settingsOptionPassword">Password</string>
     <string name="settingsOptionShareIdeas">Condividi le tue idee</string>

@@ -64,6 +64,7 @@
     <string name="settingsOptionDownloadLimit">Download limit</string>
     <string name="settingsOptionEmailLanguage">Email language</string>
     <string name="settingsOptionGiveFeedback">Give your opinion</string>
+    <string name="settingsOptionNone">None</string>
     <string name="settingsOptionNotifications">Notifications</string>
     <string name="settingsOptionPassword">Password</string>
     <string name="settingsOptionShareIdeas">Share your ideas</string>

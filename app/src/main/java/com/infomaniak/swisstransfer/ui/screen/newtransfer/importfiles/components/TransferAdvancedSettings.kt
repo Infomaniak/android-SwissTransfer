@@ -22,18 +22,30 @@ import androidx.annotation.StringRes
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.*
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
+import com.infomaniak.swisstransfer.ui.images.icons.Clock
+import com.infomaniak.swisstransfer.ui.images.icons.Password
+import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferAdvancedSetting(onClick: () -> Unit) {
-
+fun TransferAdvancedSettings(selectedValues: () -> List<@Composable () -> String>, onClick: () -> Unit) {
+    val values = selectedValues()
+    SwissTransferCard {
+        TransferAdvancedSettingType.entries.forEach { settingType ->
+            TransferAdvancedSetting(settingType, values[settingType.ordinal], onClick)
+        }
+    }
 }
 
-enum class TransferAdvancedSetting(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
+enum class TransferAdvancedSettingType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
     VALIDITY_DURATION(buttonIcon = AppIcons.Clock, buttonText = R.string.settingsOptionValidityPeriod),
     DOWNLOAD_NUMBER_LIMIT(buttonIcon = AppIcons.ArrowDownFile, buttonText = R.string.settingsOptionDownloadLimit),
     PASSWORD(buttonIcon = AppIcons.Password, buttonText = R.string.settingsOptionPassword),
@@ -46,7 +58,14 @@ enum class TransferAdvancedSetting(val buttonIcon: ImageVector, @StringRes val b
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferAdvancedSetting(onClick = {})
+            val selectedValues = listOf(
+                ValidityPeriodOption.THIRTY.title,
+                DownloadLimitOption.TWO_HUNDRED_FIFTY.title,
+                { stringResource(R.string.settingsOptionNone) },
+                { stringResource(R.string.settingsEmailLanguageValueEnglish) },
+            )
+
+            TransferAdvancedSettings({ selectedValues }, onClick = {})
         }
     }
 }
