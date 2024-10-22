@@ -18,7 +18,10 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,19 +45,37 @@ fun TransferAdvancedSetting(
     onClick: () -> Unit,
 ) {
     SharpRippleButton(onClick = onClick, contentPadding = PaddingValues(horizontal = Margin.Large, vertical = Margin.Medium)) {
-        Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = settingType.buttonIcon, contentDescription = null)
+        Icon(
+            modifier = Modifier.size(Dimens.SmallIconSize),
+            imageVector = settingType.buttonIcon,
+            tint = SwissTransferTheme.materialColors.primary,
+            contentDescription = null,
+        )
         Spacer(modifier = Modifier.width(Margin.Small))
-        Text(text = stringResource(settingType.buttonText), style = SwissTransferTheme.typography.bodySmallMedium)
+        Text(
+            text = stringResource(settingType.buttonText),
+            color = SwissTransferTheme.materialColors.primary,
+            style = SwissTransferTheme.typography.bodySmallMedium,
+        )
         Spacer(modifier = Modifier.weight(1.0f))
         SettingValue(selectedSetting)
         Spacer(modifier = Modifier.width(Margin.Small))
-        Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = AppIcons.ChevronRightSmall, contentDescription = null)
+        Icon(
+            modifier = Modifier.size(Dimens.SmallIconSize),
+            imageVector = AppIcons.ChevronRightSmall,
+            tint = SwissTransferTheme.colors.iconColor,
+            contentDescription = null,
+        )
     }
 }
 
 @Composable
 private fun SettingValue(selectedSetting: () -> TransferAdvancedOptionsEnum) {
-    Text(text = selectedSetting().title(), style = SwissTransferTheme.typography.bodySmallRegular)
+    Text(
+        text = selectedSetting().title(),
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        color = SwissTransferTheme.colors.secondaryTextColor,
+    )
 }
 
 @Preview(name = "Light")
