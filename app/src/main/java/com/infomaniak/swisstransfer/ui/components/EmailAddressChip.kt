@@ -50,7 +50,7 @@ fun EmailAddressChip(text: String) {
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SwissTransferFabPreview() {
+private fun EmailAddressChipPreview() {
     SwissTransferTheme {
         Surface {
             EmailAddressChip("test.test@ik.me")

@@ -51,7 +51,7 @@ fun QrCode() { // TODO: Add parameter containing the QR code value, and use it.
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SwissTransferFabPreview() {
+private fun QrCodePreview() {
     SwissTransferTheme {
         Surface {
             QrCode()

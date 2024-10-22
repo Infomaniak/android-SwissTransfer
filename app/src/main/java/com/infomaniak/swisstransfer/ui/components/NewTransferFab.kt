@@ -69,7 +69,7 @@ enum class NewTransferFabType(val fabType: FabType, private val defaultElevation
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SwissTransferFabPreview() {
+private fun NewTransferFabPreview() {
     SwissTransferTheme {
         Surface {
             Row {
