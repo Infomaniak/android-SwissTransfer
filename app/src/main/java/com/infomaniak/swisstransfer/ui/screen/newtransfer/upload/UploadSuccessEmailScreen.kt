@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessEmailScreen() {
+fun UploadSuccessEmailScreen(email: String) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -43,12 +43,12 @@ fun UploadSuccessEmailScreen() {
                 onClick = { /* TODO */ },
             )
         },
-        content = { Content() },
+        content = { Content(email) },
     )
 }
 
 @Composable
-private fun Content() {
+private fun Content(email: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +66,7 @@ private fun Content() {
 
         Spacer(Modifier.height(Margin.Small))
 
-        EmailAddressChip("test.test@ik.me") // TODO: Use correct email instead of hard-coded value.
+        EmailAddressChip(text = email)
     }
 }
 
@@ -75,7 +75,7 @@ private fun Content() {
 private fun UploadSuccessEmailScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessEmailScreen()
+            UploadSuccessEmailScreen("test.test@ik.me")
         }
     }
 }
