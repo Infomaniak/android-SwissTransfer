@@ -48,10 +48,10 @@ enum class DownloadLimitOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
 ) : SettingOption {
-    TWO_HUNDRED_FIFTY({ "250" }),
-    ONE_HUNDRED({ "100" }),
-    TWENTY({ "20" }),
-    ONE({ "1" }),
+    TWO_HUNDRED_FIFTY({ DownloadLimit.TWO_HUNDRED_FIFTY.value }),
+    ONE_HUNDRED({ DownloadLimit.ONE_HUNDRED.value }),
+    TWENTY({ DownloadLimit.TWENTY.value }),
+    ONE({ DownloadLimit.ONE.value }),
 }
 
 @PreviewAllWindows
