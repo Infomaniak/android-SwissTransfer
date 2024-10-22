@@ -45,7 +45,7 @@ fun IllustratedMessageBlock(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = Margin.Medium),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -74,7 +74,7 @@ fun IllustratedMessageBlock(
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun SwissTransferFabPreview() {
+private fun IllustratedMessageBlockPreview() {
     SwissTransferTheme {
         Surface {
             IllustratedMessageBlock(

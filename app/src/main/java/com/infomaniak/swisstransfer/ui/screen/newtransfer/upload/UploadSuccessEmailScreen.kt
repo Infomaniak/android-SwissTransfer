@@ -61,6 +61,7 @@ private fun Content() {
             icon = AppIllus.UploadSuccessEmail.image(),
             title = R.string.uploadSuccessEmailTitle,
             description = R.string.uploadSuccessEmailDescription,
+            modifier = Modifier.padding(horizontal = Margin.Medium),
         )
 
         Spacer(Modifier.height(Margin.Small))
