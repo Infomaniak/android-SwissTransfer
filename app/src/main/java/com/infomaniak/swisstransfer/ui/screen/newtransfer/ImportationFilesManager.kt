@@ -61,7 +61,7 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     private fun getGetLocalCopyFolderOrCopy() = localCopyFolder.apply { if (!exists()) mkdirs() }
 
     suspend fun addFiles(uris: List<Uri>) {
-        getFiles(uris).forEach { filesToImport.send(it) }
+        uris.extractPickedFiles().forEach { filesToImport.send(it) }
     }
 
     suspend fun removeFileByUid(uid: String) {
@@ -131,17 +131,17 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
         }
     }
 
-    private suspend fun getFiles(uris: List<Uri>): Set<PickedFile> {
+    private suspend fun List<Uri>.extractPickedFiles(): Set<PickedFile> {
         val files = buildSet {
-            uris.forEach { uri ->
-                getFile(uri)?.let(::add)
+            this@extractPickedFiles.forEach { uri ->
+                extractPickedFile(uri)?.let(::add)
             }
         }
 
         return files
     }
 
-    private suspend fun getFile(uri: Uri): PickedFile? {
+    private suspend fun extractPickedFile(uri: Uri): PickedFile? {
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
