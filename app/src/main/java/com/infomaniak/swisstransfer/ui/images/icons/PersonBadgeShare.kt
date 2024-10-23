@@ -21,22 +21,25 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppIcons.Share: ImageVector
+val AppIcons.PersonBadgeShare: ImageVector
     get() {
 
-        if (_share != null) return _share!!
+        if (_personBadgeShare != null) return _personBadgeShare!!
 
-        _share = Builder(
-            name = "Share",
+        _personBadgeShare = Builder(
+            name = "PersonBadgeShare",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
             viewportHeight = 24.0f,
         ).apply {
             path(
-                fill = SolidColor(Color(0xFF9f9f9f)), stroke = SolidColor(Color(0x00000000)),
-                strokeLineWidth = 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f, pathFillType = EvenOdd
+                fill = SolidColor(Color(0xFF9f9f9f)),
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = EvenOdd,
             ) {
                 moveTo(19.644f, 16.175f)
                 curveTo(19.673f, 16.206f, 19.702f, 16.237f, 19.732f, 16.268f)
@@ -72,9 +75,12 @@ val AppIcons.Share: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF9f9f9f)),
-                strokeLineWidth = 1.5f, strokeLineCap = strokeCapRound, strokeLineJoin =
-                strokeJoinRound, strokeLineMiter = 4.0f, pathFillType = NonZero
+                stroke = SolidColor(Color(0xFF9f9f9f)),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
                 moveTo(9.983f, 19.75f)
                 lineTo(0.75f, 19.75f)
@@ -94,17 +100,17 @@ val AppIcons.Share: ImageVector
             }
         }.build()
 
-        return _share!!
+        return _personBadgeShare!!
     }
 
-private var _share: ImageVector? = null
+private var _personBadgeShare: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.Share,
+            imageVector = AppIcons.PersonBadgeShare,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize),
         )

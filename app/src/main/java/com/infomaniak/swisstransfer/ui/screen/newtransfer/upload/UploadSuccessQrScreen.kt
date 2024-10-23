@@ -32,8 +32,8 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.icons.Copy
-import com.infomaniak.swisstransfer.ui.images.icons.Share
+import com.infomaniak.swisstransfer.ui.images.icons.DocumentOnDocument
+import com.infomaniak.swisstransfer.ui.images.icons.PersonBadgeShare
 import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessQr.UploadSuccessQr
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
@@ -50,7 +50,7 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 modifier = it,
                 style = ButtonType.PRIMARY,
                 titleRes = R.string.buttonShare,
-                imageVector = AppIcons.Share,
+                imageVector = AppIcons.PersonBadgeShare,
                 onClick = { /* TODO */ },
             )
         },
@@ -117,7 +117,7 @@ private fun Content(transferType: TransferType) {
         modifier = Modifier.padding(Margin.Medium),
         style = ButtonType.SECONDARY,
         titleRes = R.string.buttonCopyLink,
-        imageVector = AppIcons.Copy,
+        imageVector = AppIcons.DocumentOnDocument,
         onClick = { /* TODO */ },
     )
 }

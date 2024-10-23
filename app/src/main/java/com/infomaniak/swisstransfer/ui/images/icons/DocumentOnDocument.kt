@@ -18,22 +18,25 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppIcons.Copy: ImageVector
+val AppIcons.DocumentOnDocument: ImageVector
     get() {
 
-        if (_copy != null) return _copy!!
+        if (_documentOnDocument != null) return _documentOnDocument!!
 
-        _copy = Builder(
-            name = "Copy",
+        _documentOnDocument = Builder(
+            name = "DocumentOnDocument",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
             viewportHeight = 24.0f,
         ).apply {
             path(
-                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF9f9f9f)),
-                strokeLineWidth = 1.5f, strokeLineCap = strokeCapRound, strokeLineJoin =
-                strokeJoinRound, strokeLineMiter = 4.0f, pathFillType = NonZero
+                stroke = SolidColor(Color(0xFF9f9f9f)),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
                 moveTo(7.5f, 6.75f)
                 lineTo(7.5f, 2.25f)
@@ -49,9 +52,12 @@ val AppIcons.Copy: ImageVector
                 lineTo(16.5f, 17.25f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF9f9f9f)),
-                strokeLineWidth = 1.5f, strokeLineCap = strokeCapRound, strokeLineJoin =
-                strokeJoinRound, strokeLineMiter = 4.0f, pathFillType = NonZero
+                stroke = SolidColor(Color(0xFF9f9f9f)),
+                strokeLineWidth = 1.5f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
                 moveTo(16.5f, 21.75f)
                 curveTo(16.5f, 22.148f, 16.342f, 22.529f, 16.061f, 22.811f)
@@ -71,17 +77,17 @@ val AppIcons.Copy: ImageVector
             }
         }.build()
 
-        return _copy!!
+        return _documentOnDocument!!
     }
 
-private var _copy: ImageVector? = null
+private var _documentOnDocument: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.Copy,
+            imageVector = AppIcons.DocumentOnDocument,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize),
         )
