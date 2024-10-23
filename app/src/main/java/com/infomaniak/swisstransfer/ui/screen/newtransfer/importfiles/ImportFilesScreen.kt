@@ -46,7 +46,13 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
 ) {
     val files by newTransferViewModel.files.collectAsStateWithLifecycle()
-    ImportFilesScreen({ files }, newTransferViewModel::removeFileByUid, newTransferViewModel::addFiles, closeActivity)
+    ImportFilesScreen(
+        files = { files },
+        removeFileByUid = newTransferViewModel::removeFileByUid,
+        addFiles = newTransferViewModel::addFiles,
+        closeActivity = closeActivity,
+        initialShowUploadSourceChoiceBottomSheet = true,
+    )
 }
 
 @Composable
@@ -55,9 +61,10 @@ private fun ImportFilesScreen(
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
+    initialShowUploadSourceChoiceBottomSheet: Boolean,
 ) {
     val context = LocalContext.current
-    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(true) }
+    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
@@ -113,6 +120,12 @@ private fun ImportFilesScreen(
 @Composable
 private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
-        ImportFilesScreen({ files }, {}, {}, closeActivity = {})
+        ImportFilesScreen(
+            files = { files },
+            removeFileByUid = {},
+            addFiles = {},
+            closeActivity = {},
+            initialShowUploadSourceChoiceBottomSheet = false,
+        )
     }
 }
