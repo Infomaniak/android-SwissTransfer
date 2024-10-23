@@ -84,13 +84,18 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
+    <string name="textFieldOptional">(Optional)</string>
+    <string name="transferMessagePlaceholder">A message to pass on?</string>
+    <string name="transferRecipientAddressPlaceholder">Send the files to</string>
     <string name="snackbarLinkCopiedToClipboard">Link copied to clipboard</string>
     <string name="startActivityCantHandleAction">No application has been found to handle this action</string>
     <string name="transferSendButton">Send</string>
+    <string name="transferSenderAddressPlaceholder">Your email address</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s left</item>
         <item quantity="other">%s left</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Title your transfer</string>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">Proximity</string>
