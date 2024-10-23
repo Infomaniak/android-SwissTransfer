@@ -59,8 +59,8 @@ class NewTransferViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (isFirstViewModelCreation) {
                 isFirstViewModelCreation = false
-                // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required for
-                // already imported files restoration to not pick up old files in some extreme cases.
+                // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required
+                // for already imported files restoration to not pick up old files in some extreme cases.
                 importationFilesManager.removeLocalCopyFolder()
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
