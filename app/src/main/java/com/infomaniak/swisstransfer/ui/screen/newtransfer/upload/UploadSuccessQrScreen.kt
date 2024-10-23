@@ -26,7 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -41,8 +43,9 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+// TODO: Use correct URL instead of hard-coded transferLink value
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferType) {
+fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String = "https://chk.me/83azQOl") {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         topButton = {
@@ -62,12 +65,15 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 onClick = { /* TODO */ },
             )
         },
-        content = { Content(transferType) },
+        content = { Content(transferType, transferLink) },
     )
 }
 
 @Composable
-private fun Content(transferType: TransferType) {
+private fun Content(transferType: TransferType, transferLink: String) {
+
+    val clipboardManager = LocalClipboardManager.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +98,7 @@ private fun Content(transferType: TransferType) {
 
         Spacer(Modifier.height(Margin.Huge))
 
-        QrCode()
+        QrCode(transferLink)
 
         transferType.descriptionRes?.let { descriptionRes ->
             Spacer(Modifier.height(Margin.Huge))
@@ -112,7 +118,7 @@ private fun Content(transferType: TransferType) {
         style = ButtonType.SECONDARY,
         titleRes = R.string.buttonCopyLink,
         imageVector = AppIcons.DocumentOnDocument,
-        onClick = { /* TODO */ },
+        onClick = { clipboardManager.setText(AnnotatedString(transferLink)) },
     )
 }
 
