@@ -49,10 +49,16 @@ enum class ValidityPeriodOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
 ) : SettingOption {
-    THIRTY({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 30, 30) }),
-    FIFTEEN({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 15, 15) }),
-    SEVEN({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 7, 7) }),
-    ONE({ pluralStringResource(R.plurals.settingsValidityPeriodValue, 1, 1) }),
+    THIRTY({ getValidityPeriodTitle(ValidityPeriod.THIRTY) }),
+    FIFTEEN({ getValidityPeriodTitle(ValidityPeriod.FIFTEEN) }),
+    SEVEN({ getValidityPeriodTitle(ValidityPeriod.SEVEN) }),
+    ONE({ getValidityPeriodTitle(ValidityPeriod.ONE) });
+}
+
+@Composable
+private fun getValidityPeriodTitle(validityPeriod: ValidityPeriod): String {
+    val count = validityPeriod.value.toInt()
+    return pluralStringResource(R.plurals.settingsValidityPeriodValue, count, count)
 }
 
 @PreviewAllWindows
