@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "com.infomaniak.library.filetypes"
+    namespace = "com.infomaniak.core2"
     compileSdk = 34
 
     defaultConfig {
@@ -28,21 +27,8 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(filetypes.androidx.ui.android)
-    implementation(filetypes.androidx.foundation.android)
-    implementation(filetypes.androidx.ui.tooling.preview.android)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    debugImplementation(filetypes.androidx.ui.tooling)
 }

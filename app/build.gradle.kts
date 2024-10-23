@@ -80,6 +80,7 @@ sentry {
 }
 
 dependencies {
+    implementation(project(":Core2:Sentry"))
     implementation(project(":FileTypes"))
     implementation(kotlin("reflect"))
 
@@ -96,7 +97,6 @@ dependencies {
     implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.sentry.android)
 
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
