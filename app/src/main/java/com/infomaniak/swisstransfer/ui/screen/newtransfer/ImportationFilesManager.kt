@@ -57,8 +57,8 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     // the list of already imported files we listen to in the LazyRow.
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
-    private val localCopyFolder by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
-    private fun getGetLocalCopyFolderOrCopy() = localCopyFolder.apply { if (!exists()) mkdirs() }
+    private val importFolder by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
+    private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
 
     suspend fun addFiles(uris: List<Uri>) {
         uris.extractPickedFiles().forEach { filesToImport.send(it) }
@@ -71,13 +71,13 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     }
 
     fun removeLocalCopyFolder() {
-        if (localCopyFolder.exists()) runCatching { localCopyFolder.deleteRecursively() }
+        if (importFolder.exists()) runCatching { importFolder.deleteRecursively() }
     }
 
     suspend fun restoreAlreadyImportedFiles() {
-        if (!localCopyFolder.exists()) return
+        if (!importFolder.exists()) return
 
-        val alreadyCopiedFiles = localCopyFolder.listFiles() ?: return
+        val alreadyCopiedFiles = importFolder.listFiles() ?: return
         val restoredFileData = getRestoredFileData(alreadyCopiedFiles)
 
         if (alreadyCopiedFiles.size != restoredFileData.size) {
@@ -180,7 +180,7 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     }
 
     private fun copyFileLocally(uri: Uri, fileName: String): File? {
-        val file = File(getGetLocalCopyFolderOrCopy(), fileName).apply {
+        val file = File(getImportFolderOrCreate(), fileName).apply {
             if (exists()) delete()
             runCatching { createNewFile() }.onFailure { return null }
 
