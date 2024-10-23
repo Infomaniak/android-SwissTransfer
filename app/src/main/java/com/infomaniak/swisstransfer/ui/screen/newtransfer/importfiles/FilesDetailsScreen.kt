@@ -40,14 +40,16 @@ fun FilesDetailsScreen(
     filesList: () -> List<FileUi>,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
+    onCloseClicked: (() -> Unit),
+    navigateBack: (() -> Unit),
 ) {
     val files = filesList()
     Column {
         SwissTransferTopAppBar(
             title = title,
             titleRes = R.string.importFilesScreenTitle,
-            navigationMenu = TopAppBarButton.backButton {},
-            TopAppBarButton.closeButton {},
+            navigationMenu = TopAppBarButton.backButton { navigateBack() },
+            TopAppBarButton.closeButton { onCloseClicked() },
         )
 
         FilesSize(files, withSpaceLeft)
@@ -73,6 +75,8 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
                 filesList = { files },
                 withSpaceLeft = true,
                 onFileRemoved = { },
+                onCloseClicked = { },
+                navigateBack = { },
             )
         }
     }
