@@ -115,7 +115,8 @@ private fun SwissTransferTopAppBarPreview() {
         SwissTransferTopAppBar(
             titleRes = R.string.appName,
             navigationMenu = TopAppBarButton.backButton {},
-            actionMenus = arrayOf(TopAppBarButton(AppIcons.Add, R.string.appName) {}, TopAppBarButton.closeButton {}),
+            TopAppBarButton(AppIcons.Add, R.string.appName) {},
+            TopAppBarButton.closeButton {},
         )
     }
 }
