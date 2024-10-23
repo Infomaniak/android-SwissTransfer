@@ -51,18 +51,16 @@ class UploadLocalStorage @Inject constructor(@ApplicationContext private val app
             runCatching { createNewFile() }.onFailure { return null }
 
             runCatching {
-                val inputStream = appContext.contentResolver.openInputStream(uri) ?: run {
+                appContext.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                } ?: run {
                     Sentry.withScope { scope ->
                         scope.level = SentryLevel.ERROR
                         Sentry.addBreadcrumb("During local copy of the file openInputStream returned null")
                     }
                     return null
-                }
-
-                inputStream.use { inputStream ->
-                    outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
                 }
             }.onFailure {
                 Sentry.withScope { scope ->
