@@ -46,22 +46,12 @@ fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
     ) {
         val filesCount = files.count()
         val filesSize = LocalContext.current.getFilesSize(files)
+        val filesDetail = "${pluralStringResource(R.plurals.filesCount, filesCount, filesCount)}  •  $filesSize"
         Text(
-            pluralStringResource(R.plurals.filesCount, filesCount, filesCount),
+            filesDetail,
             modifier = Modifier
                 .padding(start = Margin.Medium)
                 .wrapContentWidth(),
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            style = SwissTransferTheme.typography.bodySmallRegular,
-        )
-        Text(
-            "•",
-            modifier = Modifier.padding(horizontal = Margin.Small),
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            style = SwissTransferTheme.typography.bodySmallRegular,
-        )
-        Text(
-            filesSize,
             color = SwissTransferTheme.colors.secondaryTextColor,
             style = SwissTransferTheme.typography.bodySmallRegular,
         )
