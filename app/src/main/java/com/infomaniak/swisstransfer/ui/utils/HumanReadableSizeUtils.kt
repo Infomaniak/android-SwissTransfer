@@ -24,10 +24,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.FileUi
 
 object HumanReadableSizeUtils {
+    private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
-    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String = context.formatShortFileSize(sizeInBytes)
+    private fun getHumanReadableSize(context: Context, sizeInBytes: Long) = context.formatShortFileSize(context, sizeInBytes)
+
+    private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSizeInBytes }
+
+    fun Context.getFilesSize(files: List<FileUi>): String = getHumanReadableSize(this, getFilesSizeInBytes(files))
+
+    fun Context.getSpaceLeft(files: List<FileUi>): String {
+        val spaceLeft = (TOTAL_FILE_SIZE - getFilesSizeInBytes(files)).coerceAtLeast(0)
+        return getHumanReadableSize(this, spaceLeft)
+    }
 
     @Composable
     fun formatSpaceLeft(humanReadableSize: () -> String): String {
@@ -44,7 +55,7 @@ object HumanReadableSizeUtils {
         val sizeParts = humanReadableSize.split(' ', Typography.nbsp, nnbsp)
 
         return if (sizeParts.size == 2) {
-            val local = resources.configuration.getLocales().get(0)
+            val local = resources.configuration.getLocales()[0]
             val parsedNumber = NumberFormat.getInstance(local).parse(sizeParts.first())
             parsedNumber?.toDouble()?.toInt() ?: 0
         } else {
