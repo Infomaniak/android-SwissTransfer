@@ -36,34 +36,37 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun FilesDetailsScreen(
-    withSpaceLeft: Boolean,
     title: String? = null,
-    files: List<FileUi>? = null,
-    onFileRemoved: (uuid: String) -> Unit,
+    files: () -> List<FileUi>,
+    withSpaceLeft: Boolean,
+    onFileRemoved: ((uuid: String) -> Unit)? = null,
 ) {
-    val files = listOf(
-        FileUi(
-            fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
-            uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-            fileSizeInBytes = 57689032,
-            mimeType = null,
-            uri = "",
-        ),
-        FileUi(
-            fileName = "Introduction to Turning It Off and On Again.pptx",
-            uid = "Introduction to Turning It Off and On Again.pptx",
-            fileSizeInBytes = 89723143,
-            mimeType = null,
-            uri = "",
-        ),
-        FileUi(
-            fileName = "Learning to Copy and Paste: A Complete Guide.docx",
-            uid = "Learning to Copy and Paste: A Complete Guide.docx",
-            fileSizeInBytes = 237866728,
-            mimeType = null,
-            uri = "",
-        ),
-    )
+    val testFiles = {
+        listOf(
+            FileUi(
+                fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
+                uid = "The 5-Step Guide to Not Breaking Your Code.txt",
+                fileSizeInBytes = 57689032,
+                mimeType = null,
+                uri = "",
+            ),
+            FileUi(
+                fileName = "Introduction to Turning It Off and On Again.pptx",
+                uid = "Introduction to Turning It Off and On Again.pptx",
+                fileSizeInBytes = 89723143,
+                mimeType = null,
+                uri = "",
+            ),
+            FileUi(
+                fileName = "Learning to Copy and Paste: A Complete Guide.docx",
+                uid = "Learning to Copy and Paste: A Complete Guide.docx",
+                fileSizeInBytes = 237866728,
+                mimeType = null,
+                uri = "",
+            ),
+        )
+    }
+    val files = testFiles()
     Column {
         SwissTransferTopAppBar(
             title = title,
@@ -71,16 +74,16 @@ fun FilesDetailsScreen(
             navigationMenu = TopAppBarButton.backButton {},
             TopAppBarButton.closeButton {},
         )
-        FilesSize(files, withSpaceLeft)
 
+        FilesSize(files, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
             files = files,
-            isRemoveButtonVisible = true,
+            isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = false,
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
-            onRemoveUid = { onFileRemoved(it) },
+            onRemoveUid = { onFileRemoved?.invoke(it) },
         )
     }
 }
@@ -91,10 +94,10 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
     SwissTransferTheme {
         Surface {
             FilesDetailsScreen(
-                withSpaceLeft = true,
                 title = "My album",
-                files = files,
-                onFileRemoved = {},
+                files = { files },
+                withSpaceLeft = true,
+                onFileRemoved = { },
             )
         }
     }
