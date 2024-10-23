@@ -24,6 +24,7 @@ import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.Companion.LOCAL_COPY_FOLDER
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import io.sentry.SentryLevel
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -50,7 +51,13 @@ class UploadLocalStorage @Inject constructor(@ApplicationContext private val app
             runCatching { createNewFile() }.onFailure { return null }
 
             runCatching {
-                val inputStream = appContext.contentResolver.openInputStream(uri) ?: return null
+                val inputStream = appContext.contentResolver.openInputStream(uri) ?: run {
+                    Sentry.withScope { scope ->
+                        scope.level = SentryLevel.ERROR
+                        Sentry.addBreadcrumb("During local copy of the file openInputStream returned null")
+                    }
+                    return null
+                }
 
                 inputStream.use { inputStream ->
                     outputStream().use { outputStream ->
@@ -58,6 +65,10 @@ class UploadLocalStorage @Inject constructor(@ApplicationContext private val app
                     }
                 }
             }.onFailure {
+                Sentry.withScope { scope ->
+                    scope.level = SentryLevel.ERROR
+                    Sentry.addBreadcrumb("Caught an exception while copying file to local storage: $it")
+                }
                 return null
             }
         }
