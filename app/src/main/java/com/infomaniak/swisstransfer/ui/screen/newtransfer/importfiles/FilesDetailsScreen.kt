@@ -37,36 +37,11 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun FilesDetailsScreen(
     title: String? = null,
-    files: () -> List<FileUi>,
+    filesList: () -> List<FileUi>,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
 ) {
-    val testFiles = {
-        listOf(
-            FileUi(
-                fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
-                uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-                fileSizeInBytes = 57689032,
-                mimeType = null,
-                uri = "",
-            ),
-            FileUi(
-                fileName = "Introduction to Turning It Off and On Again.pptx",
-                uid = "Introduction to Turning It Off and On Again.pptx",
-                fileSizeInBytes = 89723143,
-                mimeType = null,
-                uri = "",
-            ),
-            FileUi(
-                fileName = "Learning to Copy and Paste: A Complete Guide.docx",
-                uid = "Learning to Copy and Paste: A Complete Guide.docx",
-                fileSizeInBytes = 237866728,
-                mimeType = null,
-                uri = "",
-            ),
-        )
-    }
-    val files = testFiles()
+    val files = filesList()
     Column {
         SwissTransferTopAppBar(
             title = title,
@@ -95,7 +70,7 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
         Surface {
             FilesDetailsScreen(
                 title = "My album",
-                files = { files },
+                filesList = { files },
                 withSpaceLeft = true,
                 onFileRemoved = { },
             )
