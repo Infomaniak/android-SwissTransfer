@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -44,17 +42,14 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.Extensions.copyText
+import com.infomaniak.swisstransfer.ui.utils.Extensions.shareText
 
 // TODO: Use correct URL instead of hard-coded transferLink value
 @Composable
 fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String = "https://chk.me/83azQOl") {
 
     val context = LocalContext.current
-    val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        putExtra(Intent.EXTRA_TEXT, transferLink)
-        type = "text/plain"
-    }
-    val shareIntent = Intent.createChooser(sendIntent, null)
 
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
@@ -64,7 +59,7 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String = "ht
                 style = ButtonType.PRIMARY,
                 titleRes = R.string.buttonShare,
                 imageVector = AppIcons.PersonBadgeShare,
-                onClick = { context.startActivity(shareIntent) },
+                onClick = { context.shareText(transferLink) },
             )
         },
         bottomButton = {
@@ -128,7 +123,7 @@ private fun Content(transferType: TransferType, transferLink: String) {
         style = ButtonType.SECONDARY,
         titleRes = R.string.buttonCopyLink,
         imageVector = AppIcons.DocumentOnDocument,
-        onClick = { clipboardManager.setText(AnnotatedString(transferLink)) },
+        onClick = { clipboardManager.copyText(transferLink) },
     )
 }
 
