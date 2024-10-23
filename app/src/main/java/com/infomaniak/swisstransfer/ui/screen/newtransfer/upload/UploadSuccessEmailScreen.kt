@@ -32,8 +32,26 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+// TODO: Use correct emails instead of hard-coded values
 @Composable
-fun UploadSuccessEmailScreen(email: String) {
+fun UploadSuccessEmailScreen(
+    emails: List<String> = listOf(
+        "email@example.com",
+        "firstname.lastname@example.com",
+        "email@subdomain.example.com",
+        "firstname+lastname@example.com",
+        "email@123.123.123.123",
+        "email@[123.123.123.123]",
+        "\"email\"@example.com",
+        "1234567890@example.com",
+        "email@example-one.com",
+        "_______@example.com",
+        "email@example.name",
+        "email@example.museum",
+        "email@example.co.jp",
+        "firstname-lastname@example.com",
+    ),
+) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -43,12 +61,13 @@ fun UploadSuccessEmailScreen(email: String) {
                 onClick = { /* TODO */ },
             )
         },
-        content = { Content(email) },
+        content = { Content(emails) },
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Content(email: String) {
+private fun Content(emails: List<String>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,9 +83,17 @@ private fun Content(email: String) {
             modifier = Modifier.padding(horizontal = Margin.Medium),
         )
 
-        Spacer(Modifier.height(Margin.Small))
-
-        EmailAddressChip(text = email)
+        FlowRow(
+            modifier = Modifier.padding(Margin.Medium),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            emails.forEach {
+                EmailAddressChip(
+                    text = it,
+                    modifier = Modifier.padding(horizontal = Margin.XSmall)
+                )
+            }
+        }
     }
 }
 
@@ -75,7 +102,7 @@ private fun Content(email: String) {
 private fun UploadSuccessEmailScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessEmailScreen("test.test@ik.me")
+            UploadSuccessEmailScreen()
         }
     }
 }

@@ -26,7 +26,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun UploadSuccessScreen(transferType: TransferType) {
     if (transferType == TransferType.MAIL) {
-        UploadSuccessEmailScreen(email = "test.test@ik.me") // TODO: Use correct email instead of hard-coded value
+        UploadSuccessEmailScreen()
     } else {
         UploadSuccessQrScreen(transferType)
     }

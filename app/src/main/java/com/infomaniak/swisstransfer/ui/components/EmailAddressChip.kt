@@ -23,12 +23,16 @@ import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun EmailAddressChip(text: String) {
+fun EmailAddressChip(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     SuggestionChip(
         onClick = { },
         label = {
@@ -37,6 +41,7 @@ fun EmailAddressChip(text: String) {
                 style = SwissTransferTheme.typography.bodyRegular,
             )
         },
+        modifier = modifier,
         enabled = false,
         shape = CustomShapes.ROUNDED,
         colors = SuggestionChipDefaults.suggestionChipColors(
@@ -53,7 +58,7 @@ fun EmailAddressChip(text: String) {
 private fun EmailAddressChipPreview() {
     SwissTransferTheme {
         Surface {
-            EmailAddressChip("test.test@ik.me")
+            EmailAddressChip(text = "test.test@ik.me")
         }
     }
 }
