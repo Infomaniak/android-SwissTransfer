@@ -19,8 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.net.toUri
-import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.Companion.LOCAL_COPY_FOLDER
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry

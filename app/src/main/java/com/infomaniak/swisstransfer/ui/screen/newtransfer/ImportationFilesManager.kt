@@ -25,7 +25,6 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import com.infomaniak.swisstransfer.ui.components.FileUi
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.Companion.LOCAL_COPY_FOLDER
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
