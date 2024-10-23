@@ -71,7 +71,8 @@ private fun Content(emails: List<String>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(Margin.Medium),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -80,17 +81,17 @@ private fun Content(emails: List<String>) {
             icon = AppIllus.UploadSuccessEmail.image(),
             title = R.string.uploadSuccessEmailTitle,
             description = R.string.uploadSuccessEmailDescription,
-            modifier = Modifier.padding(horizontal = Margin.Medium),
         )
 
+        Spacer(modifier = Modifier.height(Margin.Medium))
+
         FlowRow(
-            modifier = Modifier.padding(Margin.Medium),
             horizontalArrangement = Arrangement.Center,
         ) {
             emails.forEach {
                 EmailAddressChip(
                     text = it,
-                    modifier = Modifier.padding(horizontal = Margin.XSmall)
+                    modifier = Modifier.padding(horizontal = Margin.XSmall),
                 )
             }
         }

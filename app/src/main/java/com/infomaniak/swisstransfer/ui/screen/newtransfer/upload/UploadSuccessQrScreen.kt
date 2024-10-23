@@ -78,7 +78,8 @@ private fun Content(transferType: TransferType) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(Margin.Medium),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -101,7 +102,7 @@ private fun Content(transferType: TransferType) {
         QrCode()
 
         if (transferType != TransferType.QR_CODE) {
-            Spacer(Modifier.height(Margin.XXLarge))
+            Spacer(Modifier.height(Margin.XLarge))
             Text(
                 text = stringResource(R.string.uploadSuccessLinkDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
