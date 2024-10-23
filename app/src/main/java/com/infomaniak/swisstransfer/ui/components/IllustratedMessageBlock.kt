@@ -44,7 +44,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun IllustratedMessageBlock(
     icon: ImageVector,
     @StringRes title: Int,
-    @StringRes description: Int,
+    description: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -64,7 +64,7 @@ fun IllustratedMessageBlock(
         Spacer(Modifier.height(Margin.Medium))
 
         Text(
-            text = stringResource(description),
+            text = description,
             textAlign = TextAlign.Center,
             style = SwissTransferTheme.typography.bodyRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,
@@ -82,7 +82,7 @@ private fun IllustratedMessageBlockPreview() {
             IllustratedMessageBlock(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
+                description = stringResource(R.string.noTransferReceivedDescription),
             )
         }
     }

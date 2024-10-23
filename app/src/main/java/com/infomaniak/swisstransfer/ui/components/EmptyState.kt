@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -48,7 +49,7 @@ fun EmptyState(
         IllustratedMessageBlock(
             icon = icon,
             title = title,
-            description = description,
+            description = stringResource(description),
             modifier = modifier.padding(horizontal = Margin.Medium),
         )
     }

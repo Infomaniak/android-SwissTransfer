@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -80,7 +81,7 @@ private fun Content(emails: List<String>) {
         IllustratedMessageBlock(
             icon = AppIllus.UploadSuccessEmail.image(),
             title = R.string.uploadSuccessEmailTitle,
-            description = R.string.uploadSuccessEmailDescription,
+            description = pluralStringResource(R.plurals.uploadSuccessEmailDescription, emails.count()),
         )
 
         Spacer(modifier = Modifier.height(Margin.Medium))
