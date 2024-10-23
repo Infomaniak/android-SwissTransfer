@@ -39,7 +39,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ImportationFilesManager @Inject constructor(@ApplicationContext private val appContext: Context) {
+class ImportationFilesManager @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private val uploadLocalStorage: UploadLocalStorage,
+) {
 
     private val filesToImport: TransferCountChannel = TransferCountChannel()
     val filesToImportCount: StateFlow<Int> = filesToImport.count
@@ -57,9 +60,6 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     // the list of already imported files we listen to in the LazyRow.
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
-    private val importFolder by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
-    private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
-
     suspend fun addFiles(uris: List<Uri>) {
         uris.extractPickedFiles().forEach { filesToImport.send(it) }
     }
@@ -70,14 +70,12 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
         }
     }
 
-    fun removeLocalCopyFolder() {
-        if (importFolder.exists()) runCatching { importFolder.deleteRecursively() }
-    }
+    fun removeLocalCopyFolder() = uploadLocalStorage.removeLocalCopyFolder()
 
     suspend fun restoreAlreadyImportedFiles() {
-        if (!importFolder.exists()) return
+        if (!uploadLocalStorage.importFolderExists()) return
 
-        val alreadyCopiedFiles = importFolder.listFiles() ?: return
+        val alreadyCopiedFiles = uploadLocalStorage.listImportFiles() ?: return
         val restoredFileData = getRestoredFileData(alreadyCopiedFiles)
 
         if (alreadyCopiedFiles.size != restoredFileData.size) {
@@ -94,7 +92,7 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
     suspend fun continuouslyCopyPickedFilesToLocalStorage() {
         filesToImport.consume { fileToImport ->
             Log.i(TAG, "Importing ${fileToImport.uri}")
-            val copiedFile = copyFileLocally(fileToImport.uri, fileToImport.fileName)
+            val copiedFile = uploadLocalStorage.copyFileLocally(fileToImport.uri, fileToImport.fileName)
 
             if (copiedFile == null) {
                 reportFailedImportation(fileToImport)
@@ -177,27 +175,6 @@ class ImportationFilesManager @Inject constructor(@ApplicationContext private va
 
     private fun Cursor.getColumnIndexOrNull(column: String): Int? {
         return getColumnIndex(column).takeIf { it != -1 }
-    }
-
-    private fun copyFileLocally(uri: Uri, fileName: String): File? {
-        val file = File(getImportFolderOrCreate(), fileName).apply {
-            if (exists()) delete()
-            runCatching { createNewFile() }.onFailure { return null }
-
-            runCatching {
-                val inputStream = appContext.contentResolver.openInputStream(uri) ?: return null
-
-                inputStream.use { inputStream ->
-                    outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
-            }.onFailure {
-                return null
-            }
-        }
-
-        return file
     }
 
     private suspend fun reportFailedImportation(file: PickedFile) {
