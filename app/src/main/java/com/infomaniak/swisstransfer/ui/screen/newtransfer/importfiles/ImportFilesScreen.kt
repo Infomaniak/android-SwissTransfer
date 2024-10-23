@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getFilesSize
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
@@ -66,7 +67,7 @@ private fun ImportFilesScreen(
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
-        context.getFilesSize(importedFiles)
+        context.getSpaceLeft(importedFiles)
     }
 
     val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
