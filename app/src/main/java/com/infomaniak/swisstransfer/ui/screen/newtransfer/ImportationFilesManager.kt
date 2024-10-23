@@ -29,9 +29,9 @@ import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
 import io.sentry.SentryLevel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.sync.withLock
 import java.io.File
 import javax.inject.Inject
@@ -179,73 +179,6 @@ class ImportationFilesManager @Inject constructor(
     private suspend fun reportFailedImportation(file: PickedFile) {
         Log.w(TAG, "Failed importation of ${file.uri}");
         _failedFiles.emit(file)
-    }
-
-    private class TransferCountChannel {
-        private val channel = Channel<PickedFile>(capacity = Channel.UNLIMITED)
-
-        private val _count = MutableStateFlow(0)
-        val count: StateFlow<Int> = _count
-
-        // Session resets when reaching 0 files in the queue
-        private val _currentSessionTotalUploadedFiles = MutableStateFlow(0)
-        val currentSessionTotalUploadedFiles: StateFlow<Int> = _currentSessionTotalUploadedFiles
-
-        private val countMutex = Mutex()
-
-        suspend fun send(element: PickedFile) {
-            countMutex.withLock {
-                _count.value += 1
-                _currentSessionTotalUploadedFiles.value += 1
-            }
-            channel.send(element)
-        }
-
-        suspend fun consume(process: suspend (PickedFile) -> Unit) {
-            for (element in channel) {
-                process(element)
-                countMutex.withLock {
-                    val newValue = _count.value - 1
-                    _count.value = newValue
-                    if (newValue == 0) _currentSessionTotalUploadedFiles.value = 0
-                }
-            }
-        }
-    }
-
-    class AlreadyUsedFileNamesSet {
-        private val alreadyUsedFileNames = mutableSetOf<String>()
-        val mutex = Mutex()
-
-        // No need for the mutex because this code is already called inside of the lock
-        fun contains(fileName: String): Boolean = alreadyUsedFileNames.contains(fileName)
-        fun add(fileName: String): Boolean = alreadyUsedFileNames.add(fileName)
-
-        suspend fun addAll(filesNames: List<String>): Boolean = mutex.withLock { alreadyUsedFileNames.addAll(filesNames) }
-        suspend fun remove(filesName: String): Boolean = mutex.withLock { alreadyUsedFileNames.remove(filesName) }
-    }
-
-    class FilesMutableStateFlow {
-        private val files = MutableStateFlow<List<FileUi>>(emptyList())
-        private val mutex = Mutex()
-
-        val flow = files.asStateFlow()
-
-        suspend fun addAll(newFiles: List<FileUi>): Unit = mutex.withLock { files.value += newFiles }
-        suspend fun add(newFile: FileUi): Unit = mutex.withLock { files.value += newFile }
-
-        suspend fun removeByUid(uid: String): String? = mutex.withLock {
-            val files = files.value.toMutableList()
-
-            val index = files.indexOfFirst { it.uid == uid }.takeIf { it != -1 } ?: return null
-            val fileToRemove = files.removeAt(index)
-
-            runCatching { File(fileToRemove.uri).delete() }
-
-            this.files.value = files
-
-            fileToRemove.fileName
-        }
     }
 
     data class PickedFile(val fileName: String, val fileSizeInBytes: Long, val uri: Uri)
