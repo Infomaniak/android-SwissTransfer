@@ -20,10 +20,18 @@ package com.infomaniak.swisstransfer.ui.theme
 import androidx.compose.ui.unit.dp
 
 object Margin {
-    val XSmall = 4.dp
-    val Small = 8.dp
+    /** 4dp */
+    val Micro = 4.dp
+    /** 8dp */
+    val Mini = 8.dp
+    /** 12dp */
+    val Small = 12.dp
+    /** 16dp */
     val Medium = 16.dp
+    /** 24dp */
     val Large = 24.dp
-    val XLarge = 32.dp
-    val XXLarge = 48.dp
+    /** 32dp */
+    val Huge = 32.dp
+    /** 48dp */
+    val Giant = 48.dp
 }

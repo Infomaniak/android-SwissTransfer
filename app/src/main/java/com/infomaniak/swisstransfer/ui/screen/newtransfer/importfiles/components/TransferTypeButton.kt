@@ -46,7 +46,7 @@ fun TransferTypeButton(
 
     Button(
         modifier = Modifier
-            .padding(Margin.XSmall)
+            .padding(Margin.Micro)
             .height(Dimens.LargeButtonHeight)
             .border(width = 1.dp, color = borderColor, shape = CustomShapes.SMALL),
         shape = CustomShapes.SMALL,
@@ -55,7 +55,7 @@ fun TransferTypeButton(
         contentPadding = PaddingValues(Margin.Medium),
     ) {
         Icon(modifier = Modifier.size(Margin.Medium), imageVector = transferType.buttonIcon, contentDescription = null)
-        Spacer(modifier = Modifier.width(Margin.Small))
+        Spacer(modifier = Modifier.width(Margin.Mini))
         Text(text = stringResource(transferType.buttonText), style = SwissTransferTheme.typography.bodySmallRegular)
     }
 }

@@ -89,7 +89,7 @@ private fun Content(transferType: TransferType) {
             contentDescription = null,
         )
 
-        Spacer(Modifier.height(Margin.XLarge))
+        Spacer(Modifier.height(Margin.Huge))
 
         Text(
             text = stringResource(uploadSuccessTitle),
@@ -97,12 +97,12 @@ private fun Content(transferType: TransferType) {
             color = SwissTransferTheme.colors.primaryTextColor,
         )
 
-        Spacer(Modifier.height(Margin.XLarge))
+        Spacer(Modifier.height(Margin.Huge))
 
         QrCode()
 
         if (transferType != TransferType.QR_CODE) {
-            Spacer(Modifier.height(Margin.XLarge))
+            Spacer(Modifier.height(Margin.Huge))
             Text(
                 text = stringResource(R.string.uploadSuccessLinkDescription),
                 style = SwissTransferTheme.typography.bodyRegular,

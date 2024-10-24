@@ -50,7 +50,7 @@ fun BrandTopAppBar() {
                 VerticalDivider(modifier = Modifier.height(Margin.Large), color = SwissTransferTheme.colors.toolbarTextColor)
                 Spacer(modifier = Modifier.width(Margin.Medium))
                 Image(imageVector = AppIllus.LogoSwissTransfer, contentDescription = null)
-                Spacer(modifier = Modifier.width(Margin.Small))
+                Spacer(modifier = Modifier.width(Margin.Mini))
                 Text(text = stringResource(id = R.string.appName), color = SwissTransferTheme.colors.toolbarTextColor)
             }
         },

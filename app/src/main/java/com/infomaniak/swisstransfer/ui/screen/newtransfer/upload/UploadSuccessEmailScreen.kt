@@ -94,7 +94,7 @@ private fun Content(emails: List<String>) {
             emails.forEach {
                 EmailAddressChip(
                     text = it,
-                    modifier = Modifier.padding(horizontal = Margin.XSmall),
+                    modifier = Modifier.padding(horizontal = Margin.Micro),
                 )
             }
         }

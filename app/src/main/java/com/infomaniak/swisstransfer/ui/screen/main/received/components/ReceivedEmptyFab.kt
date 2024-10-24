@@ -50,10 +50,10 @@ fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 modifier = Modifier
-                    .padding(top = Margin.XLarge)
+                    .padding(top = Margin.Huge)
                     .constrainAs(text) {
-                        bottom.linkTo(icon.top, Margin.Small)
-                        end.linkTo(icon.end, Margin.Small)
+                        bottom.linkTo(icon.top, Margin.Mini)
+                        end.linkTo(icon.end, Margin.Mini)
                     },
             )
 
@@ -61,7 +61,7 @@ fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
                 modifier = Modifier
                     .constrainAs(icon) {
                         top.linkTo(fab.top)
-                        bottom.linkTo(fab.bottom, Margin.Small)
+                        bottom.linkTo(fab.bottom, Margin.Mini)
                         end.linkTo(fab.start, Margin.Medium)
                     },
                 imageVector = AppIllus.ArrowRightCurved,

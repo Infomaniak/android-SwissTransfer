@@ -66,7 +66,7 @@ fun SentEmptyScreen() {
                 modifier = Modifier
                     .constrainAs(icon) {
                         top.linkTo(parent.top)
-                        end.linkTo(fab.start, Margin.Small)
+                        end.linkTo(fab.start, Margin.Mini)
                     },
                 imageVector = AppIllus.ArrowDownRightCurved,
                 contentDescription = null,
