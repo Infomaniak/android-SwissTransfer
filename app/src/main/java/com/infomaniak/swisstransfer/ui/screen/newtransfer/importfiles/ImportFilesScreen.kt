@@ -101,19 +101,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            val progress: (() -> Float)? = if (isImporting) {
-                { importProgress }
-            } else {
-                null
-            }
-
-            LargeButton(
-                modifier = modifier,
-                titleRes = R.string.transferSendButton,
-                style = ButtonType.PRIMARY,
-                progress = progress,
-                onClick = { /*TODO*/ },
-            )
+            SendButton(isImporting, importProgress, modifier)
         },
     ) {
         ImportedFilesCard(
@@ -130,6 +118,23 @@ private fun ImportFilesScreen(
             closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
         )
     }
+}
+
+@Composable
+private fun SendButton(isImporting: Boolean, importProgress: Float, modifier: Modifier) {
+    val progress: (() -> Float)? = if (isImporting) {
+        { importProgress }
+    } else {
+        null
+    }
+
+    LargeButton(
+        modifier = modifier,
+        titleRes = R.string.transferSendButton,
+        style = ButtonType.PRIMARY,
+        progress = progress,
+        onClick = { /*TODO*/ },
+    )
 }
 
 enum class PasswordTransferOption(override val title: @Composable () -> String) : TransferAdvancedOptionsEnum {
