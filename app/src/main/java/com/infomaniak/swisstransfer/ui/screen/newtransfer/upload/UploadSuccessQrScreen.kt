@@ -69,10 +69,10 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
 @Composable
 private fun Content(transferType: TransferType) {
 
-    val uploadSuccessTitle = if (transferType == TransferType.QR_CODE) {
-        R.string.uploadSuccessQrTitle
-    } else {
+    val uploadSuccessTitle = if (transferType == TransferType.LINK) {
         R.string.uploadSuccessLinkTitle
+    } else {
+        R.string.uploadSuccessQrTitle
     }
 
     Column(
