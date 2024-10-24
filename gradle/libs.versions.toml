@@ -15,6 +15,7 @@ junitVersion = "1.2.1"
 kotlin = "2.0.20"
 lifecycleRuntimeKtx = "2.8.6"
 navigation = "2.8.1"
+qrose = "1.0.1"
 serialization = "1.7.1"
 swisstransfer = "0.3.0"
 sentry = "4.12.0"
@@ -43,6 +44,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }
 # Tests
