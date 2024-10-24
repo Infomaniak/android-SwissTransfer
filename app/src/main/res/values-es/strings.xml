@@ -89,7 +89,10 @@
     <string name="transferUploadSourceChoiceFiles">Examinar archivos</string>
     <string name="transferUploadSourceChoiceGallery">Galería de fotos y vídeos</string>
     <string name="transferUploadSourceChoiceTitle">Descargar desde</string>
-    <string name="uploadSuccessEmailDescription">El enlace de descarga se ha enviado al siguiente destinatario:</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">El enlace de descarga se ha enviado al siguiente destinatario:</item>
+        <item quantity="other">El enlace de descarga se ha enviado a los siguientes destinatarios:</item>
+    </plurals>
     <string name="uploadSuccessEmailTitle">¡Y ya está!</string>
     <string name="uploadSuccessLinkDescription">Escanea este código QR a tu alrededor para compartir tus archivos o copia el enlace que aparece a continuación.</string>
     <string name="uploadSuccessLinkTitle">Su transferencia está lista</string>

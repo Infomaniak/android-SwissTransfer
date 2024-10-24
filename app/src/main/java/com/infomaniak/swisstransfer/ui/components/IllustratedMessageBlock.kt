@@ -19,38 +19,56 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun EmptyState(
+fun IllustratedMessageBlock(
     icon: ImageVector,
     @StringRes title: Int,
-    @StringRes description: Int,
+    description: String,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        IllustratedMessageBlock(
-            icon = icon,
-            title = title,
-            description = stringResource(description),
-            modifier = modifier.padding(horizontal = Margin.Medium),
+        Image(imageVector = icon, contentDescription = null)
+
+        Spacer(Modifier.height(Margin.XLarge))
+
+        Text(
+            text = stringResource(title),
+            textAlign = TextAlign.Center,
+            style = SwissTransferTheme.typography.h1,
+        )
+
+        Spacer(Modifier.height(Margin.Medium))
+
+        Text(
+            text = description,
+            textAlign = TextAlign.Center,
+            style = SwissTransferTheme.typography.bodyRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
         )
     }
 }
@@ -58,13 +76,13 @@ fun EmptyState(
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun EmptyStatePreview() {
+private fun IllustratedMessageBlockPreview() {
     SwissTransferTheme {
         Surface {
-            EmptyState(
+            IllustratedMessageBlock(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
+                description = stringResource(R.string.noTransferReceivedDescription),
             )
         }
     }

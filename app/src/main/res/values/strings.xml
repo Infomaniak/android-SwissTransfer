@@ -94,7 +94,10 @@
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
     <string name="transferUploadSourceChoiceTitle">Upload from</string>
-    <string name="uploadSuccessEmailDescription">The download link has been sent to the following recipient:</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">The download link has been sent to the following recipient:</item>
+        <item quantity="other">The download link has been sent to the following recipients:</item>
+    </plurals>
     <string name="uploadSuccessEmailTitle">It’s sent!</string>
     <string name="uploadSuccessLinkDescription">Scan this QR code around you to share your files, or copy the link below.</string>
     <string name="uploadSuccessLinkTitle">Your transfer is ready!</string>

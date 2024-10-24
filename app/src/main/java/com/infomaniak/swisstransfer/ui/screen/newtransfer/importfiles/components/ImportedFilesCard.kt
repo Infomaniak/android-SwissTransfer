@@ -58,19 +58,19 @@ fun ImportedFilesCard(
     SwissTransferCard(modifier) {
         SharpRippleButton(onClick = { /*TODO*/ }) {
             Text(
-                pluralStringResource(R.plurals.filesCount, fileCount, fileCount),
+                text = pluralStringResource(R.plurals.filesCount, fileCount, fileCount),
                 modifier = Modifier.padding(start = Margin.Medium),
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 style = SwissTransferTheme.typography.bodySmallRegular,
             )
             Text(
-                "•",
+                text = "•",
                 modifier = Modifier.padding(horizontal = Margin.Small),
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 style = SwissTransferTheme.typography.bodySmallRegular,
             )
             Text(
-                formatSpaceLeft(humanReadableSize),
+                text = formatSpaceLeft(humanReadableSize),
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 style = SwissTransferTheme.typography.bodySmallRegular,
             )
@@ -84,7 +84,7 @@ fun ImportedFilesCard(
         }
 
         LazyRow(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Medium),
             horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
         ) {
@@ -147,7 +147,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             humanReadableSize = { "20 GB" },
             showUploadSourceChoiceBottomSheet = {},
-            removeFileByUid = {}
+            removeFileByUid = {},
         )
     }
 }

@@ -17,10 +17,27 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessScreen() {
-    Text("UploadSuccessScreen")
+fun UploadSuccessScreen(transferType: TransferType) {
+    if (transferType == TransferType.MAIL) {
+        UploadSuccessEmailScreen()
+    } else {
+        UploadSuccessQrScreen(transferType)
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun UploadSuccessScreenPreview() {
+    SwissTransferTheme {
+        Surface {
+            UploadSuccessScreen(TransferType.QR_CODE)
+        }
+    }
 }

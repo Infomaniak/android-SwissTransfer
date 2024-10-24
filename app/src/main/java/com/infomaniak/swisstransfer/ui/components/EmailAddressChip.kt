@@ -18,54 +18,47 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
-import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun EmptyState(
-    icon: ImageVector,
-    @StringRes title: Int,
-    @StringRes description: Int,
+fun EmailAddressChip(
+    text: String,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        IllustratedMessageBlock(
-            icon = icon,
-            title = title,
-            description = stringResource(description),
-            modifier = modifier.padding(horizontal = Margin.Medium),
-        )
-    }
+    SuggestionChip(
+        onClick = { },
+        label = {
+            Text(
+                text = text,
+                style = SwissTransferTheme.typography.bodyRegular,
+            )
+        },
+        modifier = modifier,
+        enabled = false,
+        shape = CustomShapes.ROUNDED,
+        colors = SuggestionChipDefaults.suggestionChipColors(
+            disabledContainerColor = SwissTransferTheme.colors.emailAddressChipColor,
+            disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor
+        ),
+        border = null,
+    )
 }
 
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun EmptyStatePreview() {
+private fun EmailAddressChipPreview() {
     SwissTransferTheme {
         Surface {
-            EmptyState(
-                icon = AppIllus.MascotSearching,
-                title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
-            )
+            EmailAddressChip(text = "test.test@ik.me")
         }
     }
 }

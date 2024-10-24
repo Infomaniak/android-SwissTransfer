@@ -17,14 +17,22 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
+import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.launchActivity
 
 @Composable
@@ -54,6 +62,23 @@ enum class NewTransferFabType(val fabType: FabType, private val defaultElevation
             FloatingActionButtonDefaults.elevation(defaultElevation)
         } else {
             FloatingActionButtonDefaults.elevation()
+        }
+    }
+}
+
+@Preview(name = "Light mode")
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Composable
+private fun NewTransferFabPreview() {
+    SwissTransferTheme {
+        Surface {
+            Row {
+                NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
+                Spacer(modifier = Modifier.width(Margin.Large))
+                NewTransferFab(newTransferFabType = NewTransferFabType.EMPTY_STATE)
+                Spacer(modifier = Modifier.width(Margin.Large))
+                NewTransferFab(newTransferFabType = NewTransferFabType.NAVIGATION_RAIL)
+            }
         }
     }
 }
