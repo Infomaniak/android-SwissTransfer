@@ -39,12 +39,12 @@ import javax.inject.Singleton
 @Singleton
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
-    private val uploadLocalStorage: UploadLocalStorage,
+    private val importLocalStorage: ImportLocalStorage,
 ) {
 
-    private val filesToImport: TransferCountChannel = TransferCountChannel()
-    val filesToImportCount: StateFlow<Int> = filesToImport.count
-    val currentSessionFilesCount: StateFlow<Int> = filesToImport.currentSessionFilesCount
+    private val filesToImportChannel: TransferCountChannel = TransferCountChannel()
+    val filesToImportCount: StateFlow<Int> = filesToImportChannel.count
+    val currentSessionFilesCount: StateFlow<Int> = filesToImportChannel.currentSessionFilesCount
 
     private val _importedFiles = FilesMutableStateFlow()
     val importedFiles = _importedFiles.flow
@@ -59,7 +59,7 @@ class ImportationFilesManager @Inject constructor(
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
     suspend fun importFiles(uris: List<Uri>) {
-        uris.extractPickedFiles().forEach { filesToImport.send(it) }
+        uris.extractPickedFiles().forEach { filesToImportChannel.send(it) }
     }
 
     suspend fun removeFileByUid(uid: String) {
@@ -68,29 +68,29 @@ class ImportationFilesManager @Inject constructor(
         }
     }
 
-    fun removeLocalCopyFolder() = uploadLocalStorage.removeLocalCopyFolder()
+    fun removeLocalCopyFolder() = importLocalStorage.removeImportFolder()
 
     suspend fun restoreAlreadyImportedFiles() {
-        if (!uploadLocalStorage.importFolderExists()) return
+        if (!importLocalStorage.importFolderExists()) return
 
-        val alreadyCopiedFiles = uploadLocalStorage.listImportFiles() ?: return
-        val restoredFileData = getRestoredFileData(alreadyCopiedFiles)
+        val localFiles = importLocalStorage.getLocalFiles() ?: return
+        val restoredFileUi = getRestoredFileUi(localFiles)
 
-        if (alreadyCopiedFiles.size != restoredFileData.size) {
+        if (localFiles.size != restoredFileUi.size) {
             Sentry.withScope { scope ->
                 scope.level = SentryLevel.ERROR
                 Sentry.captureMessage("Failure of the restoration of the already imported files after a process kill")
             }
         }
 
-        alreadyUsedFileNames.addAll(restoredFileData.map { it.fileName })
-        _importedFiles.addAll(restoredFileData)
+        alreadyUsedFileNames.addAll(restoredFileUi.map { it.fileName })
+        _importedFiles.addAll(restoredFileUi)
     }
 
     suspend fun continuouslyCopyPickedFilesToLocalStorage() {
-        filesToImport.consume { fileToImport ->
+        filesToImportChannel.consume { fileToImport ->
             Log.i(TAG, "Importing ${fileToImport.uri}")
-            val copiedFile = uploadLocalStorage.copyFileLocally(fileToImport.uri, fileToImport.fileName)
+            val copiedFile = importLocalStorage.copyUriDataLocally(fileToImport.uri, fileToImport.fileName)
 
             if (copiedFile == null) {
                 reportFailedImportation(fileToImport)
@@ -111,7 +111,7 @@ class ImportationFilesManager @Inject constructor(
         }
     }
 
-    private fun getRestoredFileData(files: Array<File>): List<FileUi> {
+    private fun getRestoredFileUi(files: Array<File>): List<FileUi> {
         return files.mapNotNull { file ->
             val fileSizeInBytes = runCatching { file.length() }
                 .onFailure { Sentry.addBreadcrumb("Caught an exception while restoring imported files: $it") }
@@ -172,7 +172,7 @@ class ImportationFilesManager @Inject constructor(
     }
 
     private suspend fun reportFailedImportation(file: PickedFile) {
-        Log.w(TAG, "Failed importation of ${file.uri}");
+        Log.w(TAG, "Failed importation of ${file.uri}")
         _failedFiles.emit(file)
     }
 

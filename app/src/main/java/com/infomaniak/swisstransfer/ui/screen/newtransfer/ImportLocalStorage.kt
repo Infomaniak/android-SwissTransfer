@@ -28,22 +28,20 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UploadLocalStorage @Inject constructor(@ApplicationContext private val appContext: Context) {
+class ImportLocalStorage @Inject constructor(@ApplicationContext private val appContext: Context) {
 
     private val importFolder by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
     private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
 
-    fun removeLocalCopyFolder() {
+    fun removeImportFolder() {
         if (importFolder.exists()) runCatching { importFolder.deleteRecursively() }
     }
 
     fun importFolderExists() = importFolder.exists()
 
-    fun listImportFiles(): Array<File>? {
-        return importFolder.listFiles()
-    }
+    fun getLocalFiles(): Array<File>? = importFolder.listFiles()
 
-    fun copyFileLocally(uri: Uri, fileName: String): File? {
+    fun copyUriDataLocally(uri: Uri, fileName: String): File? {
         val file = File(getImportFolderOrCreate(), fileName).apply {
             if (exists()) delete()
             runCatching { createNewFile() }.onFailure { return null }
