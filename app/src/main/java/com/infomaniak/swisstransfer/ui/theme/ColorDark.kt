@@ -59,6 +59,7 @@ val DarkColorScheme = darkColorScheme(
     surfaceContainerLow = Color(dark2), // Used for bottom sheet backgrounds
     surfaceContainerHighest = Color(dark2), // Used for filled cards backgrounds
 
+    outline = Color(dark3), // Used for TextField's border
     outlineVariant = Color(dark3), // Used for divider's color
 
     error = Color(error),
