@@ -44,7 +44,7 @@ class ImportationFilesManager @Inject constructor(
 
     private val filesToImport: TransferCountChannel = TransferCountChannel()
     val filesToImportCount: StateFlow<Int> = filesToImport.count
-    val currentSessionTotalUploadedFiles: StateFlow<Int> = filesToImport.currentSessionTotalUploadedFiles
+    val currentSessionFilesCount: StateFlow<Int> = filesToImport.currentSessionFilesCount
 
     private val _importedFiles = FilesMutableStateFlow()
     val importedFiles = _importedFiles.flow

@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -27,18 +28,22 @@ class TransferCountChannel {
     private val channel = Channel<ImportationFilesManager.PickedFile>(capacity = Channel.UNLIMITED)
 
     private val _count = MutableStateFlow(0)
-    val count: StateFlow<Int> = _count
+    val count: StateFlow<Int> = _count.asStateFlow()
 
-    // Session resets when reaching 0 files in the queue
-    private val _currentSessionTotalUploadedFiles = MutableStateFlow(0)
-    val currentSessionTotalUploadedFiles: StateFlow<Int> = _currentSessionTotalUploadedFiles
+
+    /**
+     * A "session" lasts from when the queue count is greater than 0 until it resets to 0 again.
+     * This count is used to track and compute the progress of files being imported during the current session.
+     */
+    private val _currentSessionFilesCount = MutableStateFlow(0)
+    val currentSessionFilesCount: StateFlow<Int> = _currentSessionFilesCount
 
     private val countMutex = Mutex()
 
     suspend fun send(element: ImportationFilesManager.PickedFile) {
         countMutex.withLock {
             _count.value += 1
-            _currentSessionTotalUploadedFiles.value += 1
+            _currentSessionFilesCount.value += 1
         }
         channel.send(element)
     }
@@ -47,9 +52,8 @@ class TransferCountChannel {
         for (element in channel) {
             process(element)
             countMutex.withLock {
-                val newValue = _count.value - 1
-                _count.value = newValue
-                if (newValue == 0) _currentSessionTotalUploadedFiles.value = 0
+                _count.value -= 1
+                if (_count.value == 0) _currentSessionFilesCount.value = 0
             }
         }
     }

@@ -47,11 +47,11 @@ fun ImportFilesScreen(
 ) {
     val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
-    val currentSessionTotalUploadedFiles by newTransferViewModel.currentSessionTotalUploadedFiles.collectAsStateWithLifecycle()
+    val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
     ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
-        currentSessionTotalUploadedFiles = { currentSessionTotalUploadedFiles },
+        currentSessionFilesCount = { currentSessionFilesCount },
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
@@ -63,7 +63,7 @@ fun ImportFilesScreen(
 private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
-    currentSessionTotalUploadedFiles: () -> Int,
+    currentSessionFilesCount: () -> Int,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -82,7 +82,7 @@ private fun ImportFilesScreen(
     val count = filesToImportCount()
     val isImporting by remember(count) { derivedStateOf { count > 0 } }
 
-    val total = currentSessionTotalUploadedFiles()
+    val total = currentSessionFilesCount()
     val importProgress = remember(count, total) { 1 - (count.toFloat() / total) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -139,7 +139,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
         ImportFilesScreen(
             files = { files },
             filesToImportCount = { 0 },
-            currentSessionTotalUploadedFiles = { 0 },
+            currentSessionFilesCount = { 0 },
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},
