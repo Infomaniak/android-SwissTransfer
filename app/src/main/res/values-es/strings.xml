@@ -24,7 +24,9 @@
     <string name="buttonShare">Compartir</string>
     <string name="contentDescriptionButtonBack">Volver</string>
     <string name="contentDescriptionButtonClose">Cerrar</string>
+    <string name="contentDescriptionButtonHidePassword">Ocultar contraseña</string>
     <string name="contentDescriptionButtonRemove">Eliminar archivo</string>
+    <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
