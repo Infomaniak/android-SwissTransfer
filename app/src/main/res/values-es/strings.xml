@@ -32,6 +32,7 @@
     </plurals>
     <string name="firstTransferDescription">Realice su primera transferencia</string>
     <string name="importFilesScreenTitle">Archivos para transferir</string>
+    <string name="linkCopied">El enlace se ha copiado en el portapapeles.</string>
     <string name="myFilesTitle">Mis archivos</string>
     <string name="noFileDescription">Añade hasta 50 GB de archivos</string>
     <string name="noFileTitle">Si no hay archivo, no hay transferencia.</string>
