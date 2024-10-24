@@ -58,7 +58,7 @@ class ImportationFilesManager @Inject constructor(
     // the list of already imported files we listen to in the LazyRow.
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
-    suspend fun addFiles(uris: List<Uri>) {
+    suspend fun importFiles(uris: List<Uri>) {
         uris.extractPickedFiles().forEach { filesToImport.send(it) }
     }
 
