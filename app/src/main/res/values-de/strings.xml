@@ -16,6 +16,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
+    <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonFinished">Beenden</string>
@@ -31,6 +32,7 @@
     </plurals>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
+    <string name="myFilesTitle">Meine Dateien</string>
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
     <string name="noTransferReceivedDescription">Alle Überweisungen, die du in den letzten 30 Tagen erhältst, werden hier angezeigt.</string>
