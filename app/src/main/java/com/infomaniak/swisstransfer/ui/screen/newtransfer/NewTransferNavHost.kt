@@ -37,6 +37,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<ImportFilesDestination> {
             ImportFilesScreen(
                 closeActivity = closeActivity,
+                navigateToUploadProgress = { navController.navigate(UploadProgressDestination) }
             )
         }
         composable<TransferOptionsDestination> {

@@ -44,6 +44,7 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
+    navigateToUploadProgress: () -> Unit,
 ) {
     val files by newTransferViewModel.files.collectAsStateWithLifecycle()
     ImportFilesScreen(
@@ -51,6 +52,7 @@ fun ImportFilesScreen(
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::addFiles,
         closeActivity = closeActivity,
+        navigateToUploadProgress = navigateToUploadProgress,
         initialShowUploadSourceChoiceBottomSheet = true,
     )
 }
@@ -62,6 +64,7 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
+    navigateToUploadProgress: () -> Unit,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -73,7 +76,7 @@ private fun ImportFilesScreen(
         getHumanReadableSize(context, spaceLeft)
     }
 
-    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
+    val isSendButtonEnabled by remember { mutableStateOf(true) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -95,7 +98,7 @@ private fun ImportFilesScreen(
                 titleRes = R.string.transferSendButton,
                 style = ButtonType.PRIMARY,
                 enabled = { isSendButtonEnabled },
-                onClick = { /*TODO*/ },
+                onClick = { navigateToUploadProgress() },
             )
         },
         content = {
@@ -126,6 +129,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             addFiles = {},
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
+            navigateToUploadProgress = { },
         )
     }
 }
