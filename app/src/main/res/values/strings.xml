@@ -94,7 +94,7 @@
     <string name="transferTypeProximity">Proximity</string>
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transfer</string>
-    <string name="transferTypeTitle">Send your files by</string>
+    <string name="transferTypeTitle">Send by</string>
     <string name="transferUploadSourceChoiceCamera">Camera</string>
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>

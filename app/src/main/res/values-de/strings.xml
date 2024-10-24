@@ -89,7 +89,7 @@
     <string name="transferTypeProximity">In der Nähe</string>
     <string name="transferTypeQrCode">QR-Code</string>
     <string name="transferTypeScreenTitle">Übertragen</string>
-    <string name="transferTypeTitle">Schicke deine Dateien per</string>
+    <string name="transferTypeTitle">Schicken per</string>
     <string name="transferUploadSourceChoiceCamera">Kamera</string>
     <string name="transferUploadSourceChoiceFiles">Dateien durchsuchen</string>
     <string name="transferUploadSourceChoiceGallery">Foto- und Videogalerie</string>
