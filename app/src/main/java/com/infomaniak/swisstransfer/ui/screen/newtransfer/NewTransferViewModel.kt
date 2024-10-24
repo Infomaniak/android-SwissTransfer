@@ -85,8 +85,6 @@ class NewTransferViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "File importation"
-        const val LOCAL_COPY_FOLDER = "local_copy_folder"
-        const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
+        private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 }

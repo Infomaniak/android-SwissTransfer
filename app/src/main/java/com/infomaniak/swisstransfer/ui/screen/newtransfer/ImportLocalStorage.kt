@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.content.Context
 import android.net.Uri
 import com.infomaniak.sentry.SentryLog
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.Companion.LOCAL_COPY_FOLDER
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.InputStream
@@ -76,6 +75,7 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
     private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
 
     companion object {
-        private val TAG = "Importation stream copy"
+        private const val TAG = "Importation stream copy"
+        private const val LOCAL_COPY_FOLDER = "local_copy_folder"
     }
 }
