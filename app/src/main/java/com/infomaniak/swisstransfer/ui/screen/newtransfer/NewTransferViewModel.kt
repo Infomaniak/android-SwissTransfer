@@ -21,8 +21,9 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
@@ -33,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(
     private val importationFilesManager: ImportationFilesManager,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -56,7 +58,7 @@ class NewTransferViewModel @Inject constructor(
         }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
                 isFirstViewModelCreation = false
                 // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required
@@ -71,13 +73,13 @@ class NewTransferViewModel @Inject constructor(
     }
 
     fun importFiles(uris: List<Uri>) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             importationFilesManager.importFiles(uris)
         }
     }
 
     fun removeFileByUid(uid: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             importationFilesManager.removeFileByUid(uid)
         }
     }
