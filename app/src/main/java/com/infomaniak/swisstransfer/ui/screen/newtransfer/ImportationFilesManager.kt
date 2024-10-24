@@ -111,18 +111,18 @@ class ImportationFilesManager @Inject constructor(
         }
     }
 
-    private fun getRestoredFileUi(files: Array<File>): List<FileUi> {
-        return files.mapNotNull { file ->
-            val fileSizeInBytes = runCatching { file.length() }
+    private fun getRestoredFileUi(localFiles: Array<File>): List<FileUi> {
+        return localFiles.mapNotNull { localFile ->
+            val fileSizeInBytes = runCatching { localFile.length() }
                 .onFailure { Sentry.addBreadcrumb("Caught an exception while restoring imported files: $it") }
                 .getOrNull() ?: return@mapNotNull null
 
             FileUi(
-                uid = file.name,
-                fileName = file.name,
+                uid = localFile.name,
+                fileName = localFile.name,
                 fileSizeInBytes = fileSizeInBytes,
                 mimeType = null,
-                uri = file.toUri().toString(),
+                uri = localFile.toUri().toString(),
             )
         }
     }
