@@ -19,11 +19,12 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
 import android.net.Uri
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.Companion.LOCAL_COPY_FOLDER
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.sentry.Sentry
-import io.sentry.SentryLevel
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,7 +32,6 @@ import javax.inject.Singleton
 class ImportLocalStorage @Inject constructor(@ApplicationContext private val appContext: Context) {
 
     private val importFolder by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
-    private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
 
     fun removeImportFolder() {
         if (importFolder.exists()) runCatching { importFolder.deleteRecursively() }
@@ -42,31 +42,40 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
     fun getLocalFiles(): Array<File>? = importFolder.listFiles()
 
     fun copyUriDataLocally(uri: Uri, fileName: String): File? {
-        val file = File(getImportFolderOrCreate(), fileName).apply {
-            if (exists()) delete()
-            runCatching { createNewFile() }.onFailure { return null }
+        val file = File(getImportFolderOrCreate(), fileName)
 
-            runCatching {
-                appContext.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                } ?: run {
-                    Sentry.withScope { scope ->
-                        scope.level = SentryLevel.ERROR
-                        Sentry.addBreadcrumb("During local copy of the file openInputStream returned null")
-                    }
-                    return null
-                }
-            }.onFailure {
-                Sentry.withScope { scope ->
-                    scope.level = SentryLevel.ERROR
-                    Sentry.addBreadcrumb("Caught an exception while copying file to local storage: $it")
-                }
-                return null
-            }
+        if (file.exists()) file.delete()
+        runCatching { file.createNewFile() }.onFailure { return null }
+
+        runCatching {
+            val inputStream = openInputStream(uri) ?: return null
+            copyStreams(inputStream, file.outputStream())
+        }.onFailure {
+            SentryLog.w(TAG, "Caught an exception while copying file to local storage: $it")
+            return null
         }
 
         return file
+    }
+
+    private fun openInputStream(uri: Uri): InputStream? {
+        return appContext.contentResolver.openInputStream(uri) ?: run {
+            SentryLog.w(TAG, "During local copy of the file openInputStream returned null")
+            null
+        }
+    }
+
+    private fun copyStreams(inputStream: InputStream, outputStream: OutputStream): Long {
+        return inputStream.use { inputStream ->
+            outputStream.use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+    }
+
+    private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
+
+    companion object {
+        private val TAG = "Importation stream copy"
     }
 }
