@@ -47,7 +47,7 @@ class NewTransferViewModel @Inject constructor(
 
     val failedFiles = importationFilesManager.failedFiles
     val filesToImportCount = importationFilesManager.filesToImportCount
-    val currentSessionTotalUploadedFiles = importationFilesManager.currentSessionTotalUploadedFiles
+    val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
     private var isFirstViewModelCreation: Boolean
         get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
