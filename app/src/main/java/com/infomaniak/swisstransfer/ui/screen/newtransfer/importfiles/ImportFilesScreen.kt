@@ -35,10 +35,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-
-private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportFilesScreen(
@@ -68,9 +66,7 @@ private fun ImportFilesScreen(
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
-        val usedSpace = importedFiles.sumOf { it.fileSizeInBytes }
-        val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-        getHumanReadableSize(context, spaceLeft)
+        context.getSpaceLeft(importedFiles)
     }
 
     val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
