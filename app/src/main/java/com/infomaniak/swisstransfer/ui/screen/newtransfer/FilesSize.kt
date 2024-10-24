@@ -18,7 +18,9 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,9 +42,7 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(vertical = Margin.Medium)
+            .padding(vertical = Margin.Medium),
     ) {
         val filesCount = files.count()
         val filesSize = LocalContext.current.getFilesSize(files)
@@ -50,8 +50,7 @@ fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
         Text(
             filesDetail,
             modifier = Modifier
-                .padding(start = Margin.Medium)
-                .wrapContentWidth(),
+                .padding(start = Margin.Medium),
             color = SwissTransferTheme.colors.secondaryTextColor,
             style = SwissTransferTheme.typography.bodySmallRegular,
         )
