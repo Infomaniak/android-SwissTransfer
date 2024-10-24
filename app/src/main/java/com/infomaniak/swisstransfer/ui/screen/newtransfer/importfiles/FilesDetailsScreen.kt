@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.components.FileUi
@@ -36,31 +37,57 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun FilesDetailsScreen(
-    title: String? = null,
-    filesList: () -> List<FileUi>,
+    filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
+    fileId: String,
+    navigateToDetails: (String) -> Unit,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
     onCloseClicked: (() -> Unit),
     navigateBack: (() -> Unit),
 ) {
-    val files = filesList()
+    FilesDetailsScreen(
+        title = {
+            //TODO Get fileId detail to get the title
+            "Some Folder"
+        },
+        files = { filesDetailsViewModel.getFilesFromUUID(fileId) },
+        navigateToDetails = navigateToDetails,
+        withSpaceLeft = withSpaceLeft,
+        onFileRemoved = onFileRemoved,
+        onCloseClicked = onCloseClicked,
+        navigateBack = navigateBack,
+    )
+}
+
+@Composable
+private fun FilesDetailsScreen(
+    title: () -> String,
+    files: () -> List<FileUi>,
+    navigateToDetails: (String) -> Unit,
+    withSpaceLeft: Boolean,
+    onFileRemoved: ((uuid: String) -> Unit)? = null,
+    onCloseClicked: (() -> Unit),
+    navigateBack: (() -> Unit),
+) {
+    val filesToDisplay = files()
     Column {
         SwissTransferTopAppBar(
-            title = title,
+            title = title(),
             titleRes = R.string.importFilesScreenTitle,
             navigationMenu = TopAppBarButton.backButton { navigateBack() },
             TopAppBarButton.closeButton { onCloseClicked() },
         )
 
-        FilesSize(files, withSpaceLeft)
+        FilesSize(filesToDisplay, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
-            files = files,
+            files = filesToDisplay,
             isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = false,
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
+            onClick = { navigateToDetails(it) }
         )
     }
 }
@@ -71,8 +98,8 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
     SwissTransferTheme {
         Surface {
             FilesDetailsScreen(
-                title = "My album",
-                filesList = { files },
+                fileId = "",
+                navigateToDetails = { },
                 withSpaceLeft = true,
                 onFileRemoved = { },
                 onCloseClicked = { },

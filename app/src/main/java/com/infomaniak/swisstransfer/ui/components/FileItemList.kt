@@ -80,6 +80,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = {},
+            onClick = {},
         )
     }
 }
