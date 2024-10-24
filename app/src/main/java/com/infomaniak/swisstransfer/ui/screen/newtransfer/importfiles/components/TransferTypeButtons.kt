@@ -32,20 +32,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Chain
 import com.infomaniak.swisstransfer.ui.images.icons.Envelope
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (TransferType) -> Unit) {
-
-    val selectedItem by rememberSaveable { mutableStateOf(initialSelectedTransferType) }
-
+fun TransferTypeButtons(selectedType: () -> TransferType, onClick: (TransferType) -> Unit) {
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
@@ -54,7 +54,7 @@ fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (Tra
         for (transferTypeEntry in TransferType.entries) {
             TransferTypeButton(
                 transferType = transferTypeEntry,
-                isActive = { transferTypeEntry == selectedItem },
+                isActive = { transferTypeEntry == selectedType() },
                 onClick = { onClick(transferTypeEntry) },
             )
         }
@@ -99,7 +99,7 @@ enum class TransferType(
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferTypeButtons(initialSelectedTransferType = TransferType.QR_CODE, onClick = {})
+            TransferTypeButtons(selectedType = { TransferType.QR_CODE }, onClick = {})
         }
     }
 }

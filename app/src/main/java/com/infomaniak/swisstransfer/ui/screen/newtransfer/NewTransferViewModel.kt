@@ -22,12 +22,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,6 +55,10 @@ class NewTransferViewModel @Inject constructor(
         set(value) {
             savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] = value
         }
+
+    private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
+    val selectedTransferType: StateFlow<TransferType> = _selectedTransferType
+
 
     init {
         viewModelScope.launch(ioDispatcher) {
@@ -86,5 +89,9 @@ class NewTransferViewModel @Inject constructor(
 
     companion object {
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
+    }
+
+    fun selectTransferType(type: TransferType) {
+        _selectedTransferType.value = type
     }
 }

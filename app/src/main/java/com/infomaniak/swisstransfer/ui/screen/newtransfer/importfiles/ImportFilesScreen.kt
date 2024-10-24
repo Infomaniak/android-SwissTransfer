@@ -20,6 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -60,10 +62,14 @@ fun ImportFilesScreen(
     val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
+    val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+
     ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
+        selectedTransferType = { selectedTransferType },
+        onTransferTypeClicked = newTransferViewModel::selectTransferType,
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
@@ -77,6 +83,8 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
+    selectedTransferType: () -> TransferType,
+    onTransferTypeClicked: (TransferType) -> Unit,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -130,7 +138,7 @@ private fun ImportFilesScreen(
                 )
                 ImportTextFields(initialShouldShowEmailAddressesFields)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
-                TransferTypeButtons(initialSelectedTransferType = TransferType.LINK, onClick = {})
+                TransferTypeButtons(selectedTransferType, onTransferTypeClicked)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferAdvancedSettings(
                     states = {
@@ -215,6 +223,8 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
+            selectedTransferType = { TransferType.QR_CODE },
+            onTransferTypeClicked = {},
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},
