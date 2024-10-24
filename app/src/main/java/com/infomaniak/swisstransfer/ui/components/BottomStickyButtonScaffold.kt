@@ -19,18 +19,24 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
 fun BottomStickyButtonScaffold(
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState? = null,
     topBar: @Composable () -> Unit,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    Scaffold(topBar = topBar) { contentPaddings ->
+    Scaffold(
+        snackbarHost = { snackbarHostState?.let { SnackbarHost(hostState = it) } },
+        topBar = topBar,
+    ) { contentPaddings ->
         Column(
             modifier = modifier
                 .fillMaxWidth()

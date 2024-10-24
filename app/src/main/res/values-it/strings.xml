@@ -31,6 +31,7 @@
     </plurals>
     <string name="firstTransferDescription">Effettua il tuo primo trasferimento!</string>
     <string name="importFilesScreenTitle">File da trasferire</string>
+    <string name="linkCopied">Il link è stato copiato negli appunti.</string>
     <string name="noFileDescription">Aggiungere fino a 50 GB di file</string>
     <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noTransferReceivedDescription">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
