@@ -17,17 +17,30 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.AlreadyUsedFileNamesSet.AlreadyUsedStrategy
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class AlreadyUsedFileNamesSet {
     private val alreadyUsedFileNames = mutableSetOf<String>()
-    val mutex = Mutex()
+    private val mutex = Mutex()
 
-    // No need for the mutex because this code is already called inside of the lock
-    fun contains(fileName: String): Boolean = alreadyUsedFileNames.contains(fileName)
-    fun add(fileName: String): Boolean = alreadyUsedFileNames.add(fileName)
+    suspend fun addUniqueFileName(computeUniqueFileName: (AlreadyUsedStrategy) -> String): String {
+        val uniqueFileName: String
+
+        mutex.withLock {
+            val alreadyUsedStrategy = AlreadyUsedStrategy { alreadyUsedFileNames.contains(it) }
+            uniqueFileName = computeUniqueFileName(alreadyUsedStrategy)
+            alreadyUsedFileNames.add(uniqueFileName)
+        }
+
+        return uniqueFileName
+    }
 
     suspend fun addAll(filesNames: List<String>): Boolean = mutex.withLock { alreadyUsedFileNames.addAll(filesNames) }
     suspend fun remove(filesName: String): Boolean = mutex.withLock { alreadyUsedFileNames.remove(filesName) }
+
+    fun interface AlreadyUsedStrategy {
+        fun isAlreadyUsed(fileName: String): Boolean
+    }
 }

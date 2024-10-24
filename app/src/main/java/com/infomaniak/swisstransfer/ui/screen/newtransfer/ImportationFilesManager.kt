@@ -32,7 +32,6 @@ import io.sentry.SentryLevel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.sync.withLock
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -143,16 +142,12 @@ class ImportationFilesManager @Inject constructor(
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         return cursor?.getFileNameAndSize()?.let { (name, size) ->
-            val uniqueName: String
-
-            alreadyUsedFileNames.mutex.withLock {
-                uniqueName = FileNameUtils.postfixExistingFileNames(
+            val uniqueName = alreadyUsedFileNames.addUniqueFileName(computeUniqueFileName = { alreadyUsedStrategy ->
+                FileNameUtils.postfixExistingFileNames(
                     fileName = name,
-                    isAlreadyUsed = { alreadyUsedFileNames.contains(it) }
+                    isAlreadyUsed = { alreadyUsedStrategy.isAlreadyUsed(it) }
                 )
-
-                alreadyUsedFileNames.add(uniqueName)
-            }
+            })
 
             PickedFile(uniqueName, size, uri)
         }
