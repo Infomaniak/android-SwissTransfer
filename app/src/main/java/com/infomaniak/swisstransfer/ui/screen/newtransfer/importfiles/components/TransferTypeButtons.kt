@@ -48,7 +48,7 @@ fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (Tra
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = Margin.Small),
+            .padding(horizontal = Margin.Mini),
     ) {
         for (transferTypeEntry in TransferType.entries) {
             TransferTypeButton(

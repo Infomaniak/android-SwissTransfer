@@ -65,7 +65,7 @@ fun ImportedFilesCard(
             )
             Text(
                 text = "•",
-                modifier = Modifier.padding(horizontal = Margin.Small),
+                modifier = Modifier.padding(horizontal = Margin.Mini),
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 style = SwissTransferTheme.typography.bodySmallRegular,
             )

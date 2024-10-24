@@ -103,14 +103,14 @@ private fun FileItemContent(
                     onCheckedChange = null,
                     Modifier
                         .align(Alignment.TopStart)
-                        .padding(12.dp),
+                        .padding(Margin.Small),
                 )
             }
 
             if (isRemoveButtonVisible) CrossCircleButton(onClick = onRemove)
         }
 
-        Column(Modifier.padding(Margin.Small)) {
+        Column(Modifier.padding(Margin.Mini)) {
             Text(
                 text = title,
                 style = SwissTransferTheme.typography.bodySmallRegular,

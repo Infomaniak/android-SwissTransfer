@@ -53,7 +53,7 @@ fun IllustratedMessageBlock(
     ) {
         Image(imageVector = icon, contentDescription = null)
 
-        Spacer(Modifier.height(Margin.XLarge))
+        Spacer(Modifier.height(Margin.Huge))
 
         Text(
             text = stringResource(title),
