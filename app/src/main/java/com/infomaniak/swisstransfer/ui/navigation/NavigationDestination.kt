@@ -38,6 +38,9 @@ sealed class MainNavigation : NavigationDestination() {
     data class TransferDetailsDestination(val transferId: Int) : MainNavigation()
 
     @Serializable
+    data class FilesDetailsDestination(val fileId: String) : MainNavigation()
+
+    @Serializable
     data object SettingsDestination : MainNavigation()
 
     companion object {
@@ -64,6 +67,9 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object UploadProgressDestination : NewTransferNavigation()
     @Serializable
     data object UploadSuccessDestination : NewTransferNavigation()
+
+    @Serializable
+    data class FilesDetailsDestination(val fileId: String) : MainNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination

@@ -32,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 
 @Composable
 fun MainNavHost(
@@ -53,6 +54,19 @@ fun MainNavHost(
         composable<TransferDetailsDestination> {
             val transferDetails: TransferDetailsDestination = it.toRoute()
             TransferDetailsScreen(transferId = transferDetails.transferId)
+        }
+        composable<FilesDetailsDestination> {
+            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
+            FilesDetailsScreen(
+                navigateToDetails = { fileId ->
+                    //TODO check here if specified filedId is a folder
+                    navController.navigate(FilesDetailsDestination(fileId))
+                },
+                fileId = filesDetailsDestination.fileId,
+                navigateBack = { navController.popBackStack() },
+                withSpaceLeft = false,
+                onCloseClicked = {},
+            )
         }
         composable<SettingsDestination> {
             SettingsScreenWrapper()

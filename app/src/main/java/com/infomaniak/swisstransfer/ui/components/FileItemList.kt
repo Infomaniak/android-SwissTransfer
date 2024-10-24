@@ -39,6 +39,7 @@ fun FileItemList(
     isUidChecked: (String) -> Boolean,
     setUidCheckStatus: (String, Boolean) -> Unit,
     onRemoveUid: (String) -> Unit,
+    onClick: (String) -> Unit,
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -52,7 +53,7 @@ fun FileItemList(
                 isRemoveButtonVisible = isRemoveButtonVisible,
                 isCheckboxVisible = isCheckboxVisible,
                 isChecked = { isUidChecked(file.uid) },
-                onClick = { if (isCheckboxVisible) setUidCheckStatus(file.uid, !isUidChecked(file.uid)) },
+                onClick = { if (isCheckboxVisible) setUidCheckStatus(file.uid, !isUidChecked(file.uid)) else onClick(file.uid) },
                 onRemove = { onRemoveUid(file.uid) },
             )
         }
@@ -70,6 +71,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = {},
+            onClick = {},
         )
     }
 }

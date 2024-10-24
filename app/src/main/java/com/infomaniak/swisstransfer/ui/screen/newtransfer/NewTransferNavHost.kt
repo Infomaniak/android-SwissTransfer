@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
@@ -51,6 +53,18 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<UploadSuccessDestination> {
             // TODO: Use correct TransferType instead of hard-coded value
             UploadSuccessScreen(transferType = TransferType.MAIL)
+        }
+        composable<FilesDetailsDestination> {
+            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
+            FilesDetailsScreen(
+                navigateToDetails = { fileId ->
+                    navController.navigate(FilesDetailsDestination(fileId))
+                },
+                fileId = filesDetailsDestination.fileId,
+                withSpaceLeft = false, onCloseClicked = {},
+                onFileRemoved = {},
+                navigateBack = { navController.popBackStack() }
+            )
         }
     }
 }

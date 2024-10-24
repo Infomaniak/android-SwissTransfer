@@ -102,6 +102,7 @@ private fun ReceivedScreen(
                 isUidChecked = isFileChecked,
                 setUidCheckStatus = setFileCheckStatus,
                 onRemoveUid = {},
+                onClick = {},
             )
         }
     }

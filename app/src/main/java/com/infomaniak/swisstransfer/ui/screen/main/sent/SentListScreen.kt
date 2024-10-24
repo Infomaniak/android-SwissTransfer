@@ -63,6 +63,7 @@ fun SentListScreen(transfers: List<Any>) {
         isUidChecked = { false },
         setUidCheckStatus = { _, _ -> },
         onRemoveUid = {},
+        onClick = {},
     )
 }
 
