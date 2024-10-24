@@ -25,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -114,6 +115,15 @@ private fun ImportFilesScreen(
             )
         },
     )
+}
+
+enum class PasswordTransferOption(override val title: @Composable () -> String) : TransferAdvancedOptionsEnum {
+    NONE({ stringResource(R.string.settingsOptionNone) }),
+    ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
+}
+
+interface TransferAdvancedOptionsEnum {
+    val title: @Composable () -> String
 }
 
 @PreviewAllWindows

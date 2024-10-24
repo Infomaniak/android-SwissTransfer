@@ -57,7 +57,7 @@ val DarkColorScheme = darkColorScheme(
     onSurface = Color(green_main),
     onSurfaceVariant = Color(rabbit),
     surfaceContainerLow = Color(dark2), // Used for bottom sheet backgrounds
-    surfaceContainerHighest = Color(dark2),
+    surfaceContainerHighest = Color(dark2), // Used for filled cards backgrounds
 
     outlineVariant = Color(dark3), // Used for divider's color
 

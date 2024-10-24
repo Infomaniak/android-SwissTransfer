@@ -25,6 +25,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -48,7 +49,7 @@ enum class EmailLanguageOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
-) : SettingOption {
+) : SettingOption, TransferAdvancedOptionsEnum {
     ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVectorResId = R.drawable.flag_gb),
     FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVectorResId = R.drawable.flag_fr),
     GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVectorResId = R.drawable.flag_ge),
