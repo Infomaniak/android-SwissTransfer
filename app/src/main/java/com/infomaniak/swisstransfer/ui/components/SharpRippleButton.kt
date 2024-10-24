@@ -34,7 +34,7 @@ fun SharpRippleButton(
     isSelected: () -> Boolean = { false },
     onClick: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    content: @Composable (RowScope.() -> Unit),
+    content: @Composable RowScope.() -> Unit,
 ) {
     val colors = if (isSelected()) {
         ButtonDefaults.textButtonColors(

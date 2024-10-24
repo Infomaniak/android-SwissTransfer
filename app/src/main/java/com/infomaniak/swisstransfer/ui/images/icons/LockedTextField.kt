@@ -9,8 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.EvenOdd
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
@@ -19,26 +17,18 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 
-val AppIcons.Password: ImageVector
+val AppIcons.LockedTextField: ImageVector
     get() {
-        if (_password != null) return _password!!
+        if (_lockedTextField != null) return _lockedTextField!!
 
-        _password = Builder(
-            name = "Password",
+        _lockedTextField = Builder(
+            name = "LockedTextField",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 16.0f,
             viewportHeight = 16.0f,
         ).apply {
-            path(
-                fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
-                pathFillType = NonZero,
-            ) {
+            path(fill = SolidColor(Color(0xFF3CB572)), pathFillType = NonZero) {
                 moveTo(8.564f, 8.963f)
                 horizontalLineTo(1.527f)
                 curveToRelative(-0.398f, 0.0f, -0.797f, -0.133f, -1.062f, -0.465f)
@@ -65,11 +55,7 @@ val AppIcons.Password: ImageVector
                 curveToRelative(0.266f, 0.0f, 0.532f, 0.199f, 0.532f, 0.53f)
                 curveToRelative(0.0f, 0.266f, -0.2f, 0.466f, -0.465f, 0.466f)
             }
-            path(
-                fill = SolidColor(Color(0xFF3CB572)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
-            ) {
+            path(fill = SolidColor(Color(0xFF3CB572)), pathFillType = NonZero) {
                 moveTo(3.519f, 5.245f)
                 curveToRelative(-0.067f, 0.0f, -0.2f, 0.0f, -0.266f, -0.067f)
                 curveTo(3.12f, 5.112f, 2.988f, 5.046f, 2.921f, 4.913f)
@@ -110,11 +96,7 @@ val AppIcons.Password: ImageVector
                 quadToRelative(-0.2f, 0.2f, -0.398f, 0.2f)
                 curveToRelative(-0.067f, 0.066f, -0.133f, 0.066f, -0.2f, 0.066f)
             }
-            path(
-                fill = SolidColor(Color(0xFF3CB572)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = EvenOdd
-            ) {
+            path(fill = SolidColor(Color(0xFF3CB572)), pathFillType = EvenOdd) {
                 moveTo(15.137f, 9.826f)
                 arcToRelative(0.143f, 0.143f, 0.0f, false, true, -0.133f, -0.133f)
                 verticalLineTo(9.029f)
@@ -144,19 +126,17 @@ val AppIcons.Password: ImageVector
                 close()
             }
         }.build()
-        return _password!!
+        return _lockedTextField!!
     }
 
-private var _password: ImageVector? = null
+private var _lockedTextField: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.Password,
-            contentDescription = null,
-            modifier = Modifier.size(AppImages.previewSize)
+            imageVector = AppIcons.LockedTextField, contentDescription = null, modifier = Modifier.size(AppImages.previewSize)
         )
     }
 }

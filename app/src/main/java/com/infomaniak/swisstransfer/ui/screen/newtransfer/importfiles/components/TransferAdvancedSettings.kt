@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Clock
-import com.infomaniak.swisstransfer.ui.images.icons.Password
+import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -44,8 +44,8 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferAdvancedSettings(states: () -> List<TransferAdvancedOptionsEnum>, onClick: () -> Unit) {
-    SwissTransferCard(modifier = Modifier.padding(Margin.Medium)) {
+fun TransferAdvancedSettings(modifier: Modifier, states: () -> List<TransferAdvancedOptionsEnum>, onClick: () -> Unit) {
+    SwissTransferCard(modifier = modifier) {
         TransferAdvancedSettingType.entries.forEach { settingType ->
             val title by remember { derivedStateOf { states()[settingType.ordinal] } }
             TransferAdvancedSetting(settingType, { title }, onClick)
@@ -56,7 +56,7 @@ fun TransferAdvancedSettings(states: () -> List<TransferAdvancedOptionsEnum>, on
 enum class TransferAdvancedSettingType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
     VALIDITY_DURATION(buttonIcon = AppIcons.Clock, buttonText = R.string.settingsOptionValidityPeriod),
     DOWNLOAD_NUMBER_LIMIT(buttonIcon = AppIcons.ArrowDownFile, buttonText = R.string.settingsOptionDownloadLimit),
-    PASSWORD(buttonIcon = AppIcons.Password, buttonText = R.string.settingsOptionPassword),
+    PASSWORD(buttonIcon = AppIcons.LockedTextField, buttonText = R.string.settingsOptionPassword),
     LANGUAGE(buttonIcon = AppIcons.SpeechBubble, buttonText = R.string.settingsOptionEmailLanguage),
 }
 
@@ -73,7 +73,7 @@ private fun TransferTypeButtonsPreview() {
                 EmailLanguageOption.FRENCH,
             )
 
-            TransferAdvancedSettings({ selectedOptionValues }, onClick = {})
+            TransferAdvancedSettings(modifier = Modifier.padding(Margin.Medium), states = { selectedOptionValues }, onClick = {})
         }
     }
 }
