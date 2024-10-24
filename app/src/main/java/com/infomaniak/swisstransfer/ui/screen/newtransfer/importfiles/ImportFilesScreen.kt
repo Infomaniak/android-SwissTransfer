@@ -20,11 +20,15 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -99,13 +103,18 @@ private fun ImportFilesScreen(
             )
         },
         content = {
-            ImportedFilesCard(
-                modifier = Modifier.padding(Margin.Medium),
-                files = files,
-                humanReadableSize = { humanReadableSize },
-                showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
-                removeFileByUid = removeFileByUid,
-            )
+            Column(Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) {
+                ImportFilesTitle(titleRes = R.string.myFilesTitle)
+                ImportedFilesCard(
+                    modifier = Modifier.padding(vertical = Margin.Medium),
+                    files = files,
+                    humanReadableSize = { humanReadableSize },
+                    showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
+                    removeFileByUid = removeFileByUid,
+                )
+                ImportFilesTitle(titleRes = R.string.transferTypeTitle)
+                ImportFilesTitle(titleRes = R.string.advancedSettingsTitle)
+            }
 
             UploadSourceChoiceBottomSheet(
                 isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
@@ -113,6 +122,15 @@ private fun ImportFilesScreen(
                 closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )
         },
+    )
+}
+
+@Composable
+private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+    Text(
+        modifier = modifier,
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        text = stringResource(titleRes),
     )
 }
 
