@@ -22,8 +22,8 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.core.net.toUri
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -89,7 +89,7 @@ class ImportationFilesManager @Inject constructor(
 
     suspend fun continuouslyCopyPickedFilesToLocalStorage() {
         filesToImportChannel.consume { fileToImport ->
-            Log.i(TAG, "Importing ${fileToImport.uri}")
+            SentryLog.i(TAG, "Importing ${fileToImport.uri}")
             val copiedFile = importLocalStorage.copyUriDataLocally(fileToImport.uri, fileToImport.fileName)
 
             if (copiedFile == null) {
@@ -97,7 +97,7 @@ class ImportationFilesManager @Inject constructor(
                 return@consume
             }
 
-            Log.i(TAG, "Successfully imported ${fileToImport.uri}")
+            SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
             _importedFiles.add(
                 FileUi(
@@ -172,7 +172,7 @@ class ImportationFilesManager @Inject constructor(
     }
 
     private suspend fun reportFailedImportation(file: PickedFile) {
-        Log.w(TAG, "Failed importation of ${file.uri}")
+        SentryLog.e(TAG, "Failed importation of ${file.uri}")
         _failedFiles.emit(file)
     }
 
