@@ -128,7 +128,7 @@ private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class)
         Surface {
             Column(
                 modifier = Modifier
-                    .padding(24.dp)
+                    .padding(Margin.Large)
                     .width(164.dp)
             )
             {
@@ -144,7 +144,7 @@ private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class)
                     onRemove = {},
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Margin.Medium))
 
                 val imageFile = files[1]
                 FileItem(
