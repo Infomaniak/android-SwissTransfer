@@ -18,13 +18,12 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import com.infomaniak.swisstransfer.R
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -57,4 +56,19 @@ fun Context.openAppNotificationSettings() {
             }
         }
     }.also(::startActivity)
+}
+
+fun Context.copyText(text: String, showSnackbar: (String) -> Unit) {
+    val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboardManager.setPrimaryClip(ClipData.newPlainText(text, text))
+
+    showSnackbar(getString(R.string.linkCopied))
+}
+
+fun Context.shareText(text: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    startActivity(Intent.createChooser(intent, null))
 }

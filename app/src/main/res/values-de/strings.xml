@@ -31,6 +31,7 @@
     </plurals>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
+    <string name="linkCopied">Der Link wurde in die Zwischenablage kopiert.</string>
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
     <string name="noTransferReceivedDescription">Alle Überweisungen, die du in den letzten 30 Tagen erhältst, werden hier angezeigt.</string>
