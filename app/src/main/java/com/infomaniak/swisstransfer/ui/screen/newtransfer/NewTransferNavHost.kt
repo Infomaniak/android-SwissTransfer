@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
@@ -66,6 +67,18 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         }
         composable<UploadErrorDestination> {
             UploadErrorScreen(navigateToImportFiles = { navController.navigate(ImportFilesDestination) })
+		}
+        composable<FilesDetailsDestination> {
+            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
+            FilesDetailsScreen(
+                navigateToDetails = { fileId ->
+                    navController.navigate(FilesDetailsDestination(fileId))
+                },
+                fileId = filesDetailsDestination.fileId,
+                withSpaceLeft = false, onCloseClicked = {},
+                onFileRemoved = {},
+                navigateBack = { navController.popBackStack() }
+            )
         }
     }
 }
