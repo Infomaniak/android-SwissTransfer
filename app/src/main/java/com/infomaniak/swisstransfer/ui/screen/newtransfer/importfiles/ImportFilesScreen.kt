@@ -54,7 +54,7 @@ fun ImportFilesScreen(
         filesToImportCount = { filesToImportCount },
         currentSessionTotalUploadedFiles = { currentSessionTotalUploadedFiles },
         removeFileByUid = newTransferViewModel::removeFileByUid,
-        addFiles = newTransferViewModel::addFiles,
+        addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
         initialShowUploadSourceChoiceBottomSheet = true,
     )

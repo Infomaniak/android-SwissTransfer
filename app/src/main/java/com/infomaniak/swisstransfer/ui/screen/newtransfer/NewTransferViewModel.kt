@@ -70,9 +70,9 @@ class NewTransferViewModel @Inject constructor(
         }
     }
 
-    fun addFiles(uris: List<Uri>) {
+    fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(Dispatchers.IO) {
-            importationFilesManager.addFiles(uris)
+            importationFilesManager.importFiles(uris)
         }
     }
 
