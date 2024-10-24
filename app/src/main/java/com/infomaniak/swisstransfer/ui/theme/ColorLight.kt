@@ -60,6 +60,7 @@ val LightColorScheme = lightColorScheme(
     surfaceContainerLow = Color(white), // Same value as background. Used for bottom sheet backgrounds
     surfaceContainerHighest = Color(polar_bear), // Used for filled cards backgrounds
 
+    outline = Color(mouse), // Used for TextField's border
     outlineVariant = Color(mouse), // Used for divider's color
 
     error = Color(error),

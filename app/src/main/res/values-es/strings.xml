@@ -23,7 +23,9 @@
     <string name="buttonShare">Compartir</string>
     <string name="contentDescriptionButtonBack">Volver</string>
     <string name="contentDescriptionButtonClose">Cerrar</string>
+    <string name="contentDescriptionButtonHidePassword">Ocultar contraseña</string>
     <string name="contentDescriptionButtonRemove">Eliminar archivo</string>
+    <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
@@ -77,11 +79,16 @@
         <item quantity="one">día %d</item>
         <item quantity="other">%d días</item>
     </plurals>
+    <string name="textFieldOptional">(Opcional)</string>
+    <string name="transferMessagePlaceholder">¿Algún mensaje que quiera transmitir?</string>
+    <string name="transferRecipientAddressPlaceholder">Envíe los archivos a</string>
     <string name="transferSendButton">Enviar</string>
+    <string name="transferSenderAddressPlaceholder">Su dirección de correo electrónico</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">Queda %s</item>
         <item quantity="other">Quedan %s</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Dé un título a su transferencia</string>
     <string name="transferTypeEmail">Correo electrónico</string>
     <string name="transferTypeLink">Enlace</string>
     <string name="transferTypeProximity">Proximidad</string>
