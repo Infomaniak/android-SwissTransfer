@@ -56,6 +56,7 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
+    navigateToUploadProgress: () -> Unit,
 ) {
     val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
@@ -67,6 +68,7 @@ fun ImportFilesScreen(
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
+        navigateToUploadProgress = navigateToUploadProgress,
         initialShowUploadSourceChoiceBottomSheet = true,
         initialShouldShowEmailAddressesFields = true,
     )
@@ -82,6 +84,7 @@ private fun ImportFilesScreen(
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
     initialShouldShowEmailAddressesFields: Boolean,
+    navigateToUploadProgress: () -> Unit,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -220,6 +223,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
             initialShouldShowEmailAddressesFields = true,
+            navigateToUploadProgress = { },
         )
     }
 }
