@@ -101,7 +101,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            SendButton(isImporting, importProgress, modifier)
+            SendButton({ isImporting }, { importProgress }, modifier)
         },
     ) {
         ImportedFilesCard(
@@ -121,12 +121,8 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun SendButton(isImporting: Boolean, importProgress: Float, modifier: Modifier) {
-    val progress: (() -> Float)? = if (isImporting) {
-        { importProgress }
-    } else {
-        null
-    }
+private fun SendButton(isImporting: () -> Boolean, importProgress: () -> Float, modifier: Modifier) {
+    val progress: (() -> Float)? = if (isImporting()) importProgress else null
 
     LargeButton(
         modifier = modifier,
