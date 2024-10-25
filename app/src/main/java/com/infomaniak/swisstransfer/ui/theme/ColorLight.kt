@@ -58,7 +58,7 @@ val LightColorScheme = lightColorScheme(
     onSurface = Color(green_main),
     onSurfaceVariant = Color(green_dark),
     surfaceContainerLow = Color(white), // Same value as background. Used for bottom sheet backgrounds
-    surfaceContainerHighest = Color(polar_bear),
+    surfaceContainerHighest = Color(polar_bear), // Used for filled cards backgrounds
 
     outlineVariant = Color(mouse), // Used for divider's color
 

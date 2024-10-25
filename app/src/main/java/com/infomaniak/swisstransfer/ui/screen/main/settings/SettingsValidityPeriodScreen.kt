@@ -25,6 +25,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -48,7 +49,7 @@ enum class ValidityPeriodOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
-) : SettingOption {
+) : SettingOption, TransferAdvancedOptionsEnum {
     THIRTY({ getValidityPeriodTitle(ValidityPeriod.THIRTY) }),
     FIFTEEN({ getValidityPeriodTitle(ValidityPeriod.FIFTEEN) }),
     SEVEN({ getValidityPeriodTitle(ValidityPeriod.SEVEN) }),
