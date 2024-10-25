@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import java.io.File
+import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -90,7 +91,7 @@ class ImportationFilesManager @Inject constructor(
     suspend fun continuouslyCopyPickedFilesToLocalStorage() {
         filesToImportChannel.consume { fileToImport ->
             SentryLog.i(TAG, "Importing ${fileToImport.uri}")
-            val copiedFile = importLocalStorage.copyUriDataLocally(fileToImport.uri, fileToImport.fileName)
+            val copiedFile = copyUriDataLocally(fileToImport.uri, fileToImport.fileName)
 
             if (copiedFile == null) {
                 reportFailedImportation(fileToImport)
@@ -108,6 +109,18 @@ class ImportationFilesManager @Inject constructor(
                     uri = copiedFile.toUri().toString(),
                 )
             )
+        }
+    }
+
+    private fun copyUriDataLocally(uri: Uri, fileName: String): File? {
+        val inputStream = openInputStream(uri) ?: return null
+        return importLocalStorage.copyUriDataLocally(inputStream, fileName)
+    }
+
+    private fun openInputStream(uri: Uri): InputStream? {
+        return appContext.contentResolver.openInputStream(uri) ?: run {
+            SentryLog.w(ImportLocalStorage.TAG, "During local copy of the file openInputStream returned null")
+            null
         }
     }
 

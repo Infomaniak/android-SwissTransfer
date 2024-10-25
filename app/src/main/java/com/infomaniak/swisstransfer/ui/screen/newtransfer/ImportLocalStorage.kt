@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
-import android.net.Uri
 import com.infomaniak.sentry.SentryLog
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -40,14 +39,13 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
 
     fun getLocalFiles(): Array<File>? = importFolder.listFiles()
 
-    fun copyUriDataLocally(uri: Uri, fileName: String): File? {
+    fun copyUriDataLocally(inputStream: InputStream, fileName: String): File? {
         val file = File(getImportFolderOrCreate(), fileName)
 
         if (file.exists()) file.delete()
         runCatching { file.createNewFile() }.onFailure { return null }
 
         runCatching {
-            val inputStream = openInputStream(uri) ?: return null
             copyStreams(inputStream, file.outputStream())
         }.onFailure {
             SentryLog.w(TAG, "Caught an exception while copying file to local storage: $it")
@@ -55,13 +53,6 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
         }
 
         return file
-    }
-
-    private fun openInputStream(uri: Uri): InputStream? {
-        return appContext.contentResolver.openInputStream(uri) ?: run {
-            SentryLog.w(TAG, "During local copy of the file openInputStream returned null")
-            null
-        }
     }
 
     private fun copyStreams(inputStream: InputStream, outputStream: OutputStream): Long {
@@ -75,7 +66,7 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
     private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
 
     companion object {
-        private const val TAG = "Importation stream copy"
+        const val TAG = "Importation stream copy"
         private const val LOCAL_COPY_FOLDER = "local_copy_folder"
     }
 }
