@@ -99,22 +99,21 @@ private fun ImportFilesScreen(
                 onClick = { /*TODO*/ },
             )
         },
-        content = {
-            ImportedFilesCard(
-                modifier = Modifier.padding(Margin.Medium),
-                files = files,
-                humanReadableSize = { humanReadableSize },
-                showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
-                removeFileByUid = removeFileByUid,
-            )
+    ) {
+        ImportedFilesCard(
+            modifier = Modifier.padding(Margin.Medium),
+            files = files,
+            humanReadableSize = { humanReadableSize },
+            showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
+            removeFileByUid = removeFileByUid,
+        )
 
-            UploadSourceChoiceBottomSheet(
-                isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
-                onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
-                closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
-            )
-        },
-    )
+        UploadSourceChoiceBottomSheet(
+            isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
+            onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
+            closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
+        )
+    }
 }
 
 enum class PasswordTransferOption(override val title: @Composable () -> String) : TransferAdvancedOptionsEnum {
