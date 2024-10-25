@@ -54,13 +54,6 @@ fun FileItem(
     onRemove: (() -> Unit)? = null,
 ) {
     FileItemContent(
-        content = {
-            FilePreview(
-                file = file,
-                circleColor = SwissTransferTheme.materialColors.surface,
-                circleSize = 64.dp,
-            )
-        },
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
@@ -68,19 +61,26 @@ fun FileItem(
         onRemove = onRemove,
         title = file.fileName,
         description = Formatter.formatShortFileSize(LocalContext.current, file.fileSizeInBytes),
-    )
+    ) {
+        FilePreview(
+            file = file,
+            circleColor = SwissTransferTheme.materialColors.surface,
+            circleSize = 64.dp,
+        )
+    }
+
 }
 
 @Composable
 private fun FileItemContent(
-    content: @Composable () -> Unit,
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
     isRemoveButtonVisible: Boolean,
     onRemove: (() -> Unit)?,
     title: String,
-    description: String
+    description: String,
+    content: @Composable () -> Unit,
 ) {
     Card(
         onClick = onClick,

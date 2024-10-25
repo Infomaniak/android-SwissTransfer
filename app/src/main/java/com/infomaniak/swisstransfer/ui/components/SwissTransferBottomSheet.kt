@@ -46,9 +46,9 @@ fun SwissTransferBottomSheet(
     imageVector: ImageVector? = null,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int? = null,
-    content: @Composable (() -> Unit)? = null,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
+    content: @Composable (() -> Unit)? = null,
 ) {
     ModalBottomSheet(
         modifier = modifier,
@@ -123,7 +123,7 @@ private fun BottomSheetDefaultsPreview() {
                         modifier = Modifier
                             .size(200.dp)
                             .background(Color.Gray),
-                    ) {}
+                    )
                 },
                 topButton = {
                     LargeButton(

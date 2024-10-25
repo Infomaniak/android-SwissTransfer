@@ -34,7 +34,7 @@ fun EmailAddressChip(
     modifier: Modifier = Modifier,
 ) {
     SuggestionChip(
-        onClick = { },
+        onClick = {},
         label = {
             Text(
                 text = text,

@@ -40,41 +40,41 @@ fun UploadSourceChoiceBottomSheet(
     onFilePickerClicked: () -> Unit,
     closeBottomSheet: () -> Unit,
 ) {
-    if (isBottomSheetVisible()) {
-        SwissTransferBottomSheet(
-            onDismissRequest = closeBottomSheet,
-            titleRes = R.string.transferUploadSourceChoiceTitle,
-            content = {
-                Column {
-                    BottomSheetItem(
-                        imageVector = AppIcons.Camera,
-                        titleRes = R.string.transferUploadSourceChoiceCamera,
-                        onClick = {
-                            closeBottomSheet()
-                            /* TODO */
-                        },
-                    )
-                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(
-                        imageVector = AppIcons.PolaroidLandscape,
-                        titleRes = R.string.transferUploadSourceChoiceGallery,
-                        onClick = {
-                            closeBottomSheet()
-                            /* TODO */
-                        },
-                    )
-                    HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
-                    BottomSheetItem(
-                        imageVector = AppIcons.Folder,
-                        titleRes = R.string.transferUploadSourceChoiceFiles,
-                        onClick = {
-                            closeBottomSheet()
-                            onFilePickerClicked()
-                        },
-                    )
-                }
-            },
-        )
+
+    if (!isBottomSheetVisible()) return
+
+    SwissTransferBottomSheet(
+        onDismissRequest = closeBottomSheet,
+        titleRes = R.string.transferUploadSourceChoiceTitle,
+    ) {
+        Column {
+            BottomSheetItem(
+                imageVector = AppIcons.Camera,
+                titleRes = R.string.transferUploadSourceChoiceCamera,
+                onClick = {
+                    closeBottomSheet()
+                    /* TODO */
+                },
+            )
+            HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
+            BottomSheetItem(
+                imageVector = AppIcons.PolaroidLandscape,
+                titleRes = R.string.transferUploadSourceChoiceGallery,
+                onClick = {
+                    closeBottomSheet()
+                    /* TODO */
+                },
+            )
+            HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
+            BottomSheetItem(
+                imageVector = AppIcons.Folder,
+                titleRes = R.string.transferUploadSourceChoiceFiles,
+                onClick = {
+                    closeBottomSheet()
+                    onFilePickerClicked()
+                },
+            )
+        }
     }
 }
 
