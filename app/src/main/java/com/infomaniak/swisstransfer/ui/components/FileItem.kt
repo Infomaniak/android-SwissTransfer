@@ -61,14 +61,14 @@ fun FileItem(
         onRemove = onRemove,
         title = file.fileName,
         description = Formatter.formatShortFileSize(LocalContext.current, file.fileSizeInBytes),
-    ) {
-        FilePreview(
-            file = file,
-            circleColor = SwissTransferTheme.materialColors.surface,
-            circleSize = 64.dp,
-        )
-    }
-
+        content = {
+            FilePreview(
+                file = file,
+                circleColor = SwissTransferTheme.materialColors.surface,
+                circleSize = 64.dp,
+            )
+        },
+    )
 }
 
 @Composable
