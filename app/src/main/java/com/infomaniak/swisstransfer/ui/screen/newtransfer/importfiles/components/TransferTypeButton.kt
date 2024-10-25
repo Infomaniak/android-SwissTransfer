@@ -56,7 +56,7 @@ fun TransferTypeButton(
     ) {
         Icon(modifier = Modifier.size(Dimens.IconSize), imageVector = transferType.buttonIcon, contentDescription = null)
         Spacer(modifier = Modifier.width(Margin.Mini))
-        Text(text = stringResource(transferType.buttonText), style = SwissTransferTheme.typography.bodySmallRegular)
+        Text(text = stringResource(transferType.buttonTextRes), style = SwissTransferTheme.typography.bodySmallRegular)
     }
 }
 

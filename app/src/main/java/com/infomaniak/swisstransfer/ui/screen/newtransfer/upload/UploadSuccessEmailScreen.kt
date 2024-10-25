@@ -30,6 +30,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessEmail.UploadSuccessEmail
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -81,8 +82,8 @@ private fun Content(emails: List<String>) {
 
         IllustratedMessageBlock(
             icon = AppIllus.UploadSuccessEmail.image(),
-            title = R.string.uploadSuccessEmailTitle,
-            description = pluralStringResource(R.plurals.uploadSuccessEmailDescription, emails.count()),
+            title = TransferType.MAIL.titleRes,
+            description = pluralStringResource(TransferType.MAIL.descriptionRes!!, emails.count()),
         )
 
         Spacer(modifier = Modifier.height(Margin.Medium))
