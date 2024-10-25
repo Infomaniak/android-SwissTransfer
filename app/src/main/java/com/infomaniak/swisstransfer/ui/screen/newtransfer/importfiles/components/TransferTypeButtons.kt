@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import android.content.res.Configuration
+import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Row
@@ -60,11 +61,36 @@ fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (Tra
     }
 }
 
-enum class TransferType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
-    LINK(buttonIcon = AppIcons.Chain, buttonText = R.string.transferTypeLink),
-    QR_CODE(buttonIcon = AppIcons.QrCode, buttonText = R.string.transferTypeQrCode),
-    PROXIMITY(buttonIcon = AppIcons.WifiWave, buttonText = R.string.transferTypeProximity),
-    MAIL(buttonIcon = AppIcons.Envelope, buttonText = R.string.transferTypeEmail),
+enum class TransferType(
+    val buttonIcon: ImageVector,
+    @StringRes val buttonTextRes: Int,
+    @StringRes val titleRes: Int,
+    @StringRes @PluralsRes val descriptionRes: Int?,
+) {
+    LINK(
+        buttonIcon = AppIcons.Chain,
+        buttonTextRes = R.string.transferTypeLink,
+        titleRes = R.string.uploadSuccessLinkTitle,
+        descriptionRes = R.string.uploadSuccessLinkDescription,
+    ),
+    QR_CODE(
+        buttonIcon = AppIcons.QrCode,
+        buttonTextRes = R.string.transferTypeQrCode,
+        titleRes = R.string.uploadSuccessQrTitle,
+        descriptionRes = null,
+    ),
+    PROXIMITY(
+        buttonIcon = AppIcons.WifiWave,
+        buttonTextRes = R.string.transferTypeProximity,
+        titleRes = R.string.uploadSuccessLinkTitle,
+        descriptionRes = R.string.uploadSuccessLinkDescription,
+    ),
+    MAIL(
+        buttonIcon = AppIcons.Envelope,
+        buttonTextRes = R.string.transferTypeEmail,
+        titleRes = R.string.uploadSuccessEmailTitle,
+        descriptionRes = R.plurals.uploadSuccessEmailDescription,
+    ),
 }
 
 @Preview(name = "Light")

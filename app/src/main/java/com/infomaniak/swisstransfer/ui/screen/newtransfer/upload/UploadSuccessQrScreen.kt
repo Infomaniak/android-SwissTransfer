@@ -68,13 +68,6 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
 
 @Composable
 private fun Content(transferType: TransferType) {
-
-    val uploadSuccessTitle = if (transferType == TransferType.LINK) {
-        R.string.uploadSuccessLinkTitle
-    } else {
-        R.string.uploadSuccessQrTitle
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +85,7 @@ private fun Content(transferType: TransferType) {
         Spacer(Modifier.height(Margin.Huge))
 
         Text(
-            text = stringResource(uploadSuccessTitle),
+            text = stringResource(transferType.titleRes),
             style = SwissTransferTheme.typography.h1,
             color = SwissTransferTheme.colors.primaryTextColor,
         )
@@ -101,10 +94,10 @@ private fun Content(transferType: TransferType) {
 
         QrCode()
 
-        if (transferType != TransferType.QR_CODE) {
+        transferType.descriptionRes?.let { descriptionRes ->
             Spacer(Modifier.height(Margin.Huge))
             Text(
-                text = stringResource(R.string.uploadSuccessLinkDescription),
+                text = stringResource(descriptionRes),
                 style = SwissTransferTheme.typography.bodyRegular,
                 textAlign = TextAlign.Center,
                 color = SwissTransferTheme.colors.secondaryTextColor,
