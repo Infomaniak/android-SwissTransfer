@@ -79,7 +79,7 @@ private fun FileItemContent(
         modifier = Modifier.aspectRatio(164 / 152f),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
-        border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant)
+        border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant),
     ) {
         Box(
             modifier = Modifier
@@ -129,7 +129,7 @@ private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class)
             Column(
                 modifier = Modifier
                     .padding(Margin.Large)
-                    .width(164.dp)
+                    .width(164.dp),
             )
             {
                 var isChecked by remember { mutableStateOf(true) }

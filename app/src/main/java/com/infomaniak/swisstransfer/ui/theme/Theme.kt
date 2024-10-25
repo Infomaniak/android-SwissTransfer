@@ -85,6 +85,8 @@ data class CustomColorScheme(
     val onEmailAddressChipColor: Color = Color.Unspecified,
     val qrCodeDarkPixels: Color = Color.Unspecified,
     val qrCodeLightPixels: Color = Color.Unspecified,
+    val transferFilePreviewOverflow: Color = Color.Unspecified,
+    val onTransferFilePreviewOverflow: Color = Color.Unspecified,
 )
 
 private val Shapes = Shapes(

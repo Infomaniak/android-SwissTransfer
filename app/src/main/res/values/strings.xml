@@ -33,6 +33,7 @@
     <string name="contentDescriptionButtonRemove">Remove file</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
+    <string name="expiresIn">Expires in %d days</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
         <item quantity="other">%d files</item>
