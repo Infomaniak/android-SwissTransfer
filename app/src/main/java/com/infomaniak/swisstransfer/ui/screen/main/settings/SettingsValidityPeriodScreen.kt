@@ -54,6 +54,15 @@ enum class ValidityPeriodOption(
     FIFTEEN({ getValidityPeriodTitle(ValidityPeriod.FIFTEEN) }),
     SEVEN({ getValidityPeriodTitle(ValidityPeriod.SEVEN) }),
     ONE({ getValidityPeriodTitle(ValidityPeriod.ONE) });
+
+    companion object {
+        fun ValidityPeriod.toAdvancedOption() = when (this) {
+            ValidityPeriod.THIRTY -> THIRTY
+            ValidityPeriod.FIFTEEN -> FIFTEEN
+            ValidityPeriod.SEVEN -> SEVEN
+            ValidityPeriod.ONE -> ONE
+        }
+    }
 }
 
 @Composable

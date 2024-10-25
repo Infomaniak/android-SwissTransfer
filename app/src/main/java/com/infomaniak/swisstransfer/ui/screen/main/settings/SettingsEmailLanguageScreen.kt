@@ -54,7 +54,17 @@ enum class EmailLanguageOption(
     FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVectorResId = R.drawable.flag_fr),
     GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVectorResId = R.drawable.flag_ge),
     ITALIAN({ stringResource(R.string.settingsEmailLanguageValueItalian) }, imageVectorResId = R.drawable.flag_it),
-    SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es),
+    SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es);
+
+    companion object {
+        fun EmailLanguage.toAdvancedOption() = when (this) {
+            EmailLanguage.ENGLISH -> ENGLISH
+            EmailLanguage.FRENCH -> FRENCH
+            EmailLanguage.GERMAN -> GERMAN
+            EmailLanguage.ITALIAN -> ITALIAN
+            EmailLanguage.SPANISH -> SPANISH
+        }
+    }
 }
 
 @PreviewAllWindows

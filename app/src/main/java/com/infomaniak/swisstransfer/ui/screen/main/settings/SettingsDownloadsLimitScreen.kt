@@ -52,7 +52,16 @@ enum class DownloadLimitOption(
     TWO_HUNDRED_FIFTY({ DownloadLimit.TWO_HUNDRED_FIFTY.value }),
     ONE_HUNDRED({ DownloadLimit.ONE_HUNDRED.value }),
     TWENTY({ DownloadLimit.TWENTY.value }),
-    ONE({ DownloadLimit.ONE.value }),
+    ONE({ DownloadLimit.ONE.value });
+
+    companion object {
+        fun DownloadLimit.toAdvancedOption() = when (this) {
+            DownloadLimit.TWO_HUNDRED_FIFTY -> TWO_HUNDRED_FIFTY
+            DownloadLimit.ONE_HUNDRED -> ONE_HUNDRED
+            DownloadLimit.TWENTY -> TWENTY
+            DownloadLimit.ONE -> ONE
+        }
+    }
 }
 
 @PreviewAllWindows

@@ -25,6 +25,11 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -52,5 +57,19 @@ class SettingsViewModel @Inject constructor(
 
     fun setEmailLanguage(emailLanguage: EmailLanguage) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setEmailLanguage(emailLanguage)
+    }
+
+    data class AppSettingsData(
+        val validityPeriod: ValidityPeriod,
+        val downloadLimit: DownloadLimit,
+        val isPasswordActivated: Boolean,
+        val emailLanguage: EmailLanguage,
+    ) {
+        fun toAdvancedOptionsList() = listOf<TransferAdvancedOptionsEnum>(
+            validityPeriod.toAdvancedOption(),
+            downloadLimit.toAdvancedOption(),
+            if (isPasswordActivated) PasswordTransferOption.ACTIVATED else PasswordTransferOption.NONE,
+            emailLanguage.toAdvancedOption(),
+        )
     }
 }
