@@ -35,12 +35,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
-import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
@@ -58,6 +59,7 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 @Composable
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
+    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
@@ -65,24 +67,33 @@ fun ImportFilesScreen(
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
     val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
-    ImportFilesScreen(
-        files = { files },
-        filesToImportCount = { filesToImportCount },
-        currentSessionFilesCount = { currentSessionFilesCount },
-        selectedTransferType = GetSetCallbacks(
-            get = { selectedTransferType },
-            set = newTransferViewModel::selectTransferType,
-        ),
-        removeFileByUid = newTransferViewModel::removeFileByUid,
-        addFiles = newTransferViewModel::importFiles,
-        closeActivity = closeActivity,
-        sendTransfer = newTransferViewModel::sendTransfer,
-        initialShowUploadSourceChoiceBottomSheet = true,
-    )
+    appSettings?.let { safeAppSettings ->
+        ImportFilesScreen(
+            files = { files },
+            filesToImportCount = { filesToImportCount },
+            currentSessionFilesCount = { currentSessionFilesCount },
+            initialAppSettingsData = SettingsViewModel.AppSettingsData(
+                validityPeriod = safeAppSettings.validityPeriod,
+                downloadLimit = safeAppSettings.downloadLimit,
+                isPasswordActivated = false,
+                emailLanguage = safeAppSettings.emailLanguage,
+            ),
+            selectedTransferType = GetSetCallbacks(
+                get = { selectedTransferType },
+                set = newTransferViewModel::selectTransferType,
+            ),
+            removeFileByUid = newTransferViewModel::removeFileByUid,
+            addFiles = newTransferViewModel::importFiles,
+            closeActivity = closeActivity,
+            sendTransfer = newTransferViewModel::sendTransfer,
+            initialShowUploadSourceChoiceBottomSheet = true,
+        )
+    }
 }
 
 @Composable
@@ -105,6 +116,7 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
+    initialAppSettingsData: SettingsViewModel.AppSettingsData,
     selectedTransferType: GetSetCallbacks<TransferType>,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
@@ -157,17 +169,7 @@ private fun ImportFilesScreen(
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
                 TransferTypeButtons(selectedTransferType)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
-                TransferAdvancedSettings(
-                    states = {
-                        listOf(
-                            ValidityPeriodOption.THIRTY,
-                            DownloadLimitOption.ONE,
-                            PasswordTransferOption.NONE,
-                            EmailLanguageOption.GERMAN,
-                        )
-                    },
-                    onClick = {},
-                )
+                TransferAdvancedSettings(Modifier, states = { initialAppSettingsData.toAdvancedOptionsList() }) { }
             }
 
             UploadSourceChoiceBottomSheet(
@@ -269,6 +271,12 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
+            initialAppSettingsData = SettingsViewModel.AppSettingsData(
+                validityPeriod = ValidityPeriod.THIRTY,
+                downloadLimit = DownloadLimit.ONE,
+                isPasswordActivated = true,
+                emailLanguage = EmailLanguage.FRENCH,
+            ),
             selectedTransferType = GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}),
             removeFileByUid = {},
             addFiles = {},
