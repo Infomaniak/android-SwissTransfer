@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
-import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
+import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -76,7 +76,7 @@ fun ImportedFilesCard(
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                imageVector = AppImages.AppIcons.ChevronRightSmall,
+                imageVector = AppImages.AppIcons.ChevronRightThick,
                 contentDescription = null,
                 modifier = Modifier.padding(Margin.Medium),
                 tint = SwissTransferTheme.colors.iconColor,

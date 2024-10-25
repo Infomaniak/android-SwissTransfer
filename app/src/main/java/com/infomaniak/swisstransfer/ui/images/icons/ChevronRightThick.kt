@@ -35,12 +35,12 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-val AppIcons.ChevronRightSmall: ImageVector
+val AppIcons.ChevronRightThick: ImageVector
     get() {
 
-        if (_chevronRightSmall != null) return _chevronRightSmall!!
+        if (_chevronRightThick != null) return _chevronRightThick!!
 
-        _chevronRightSmall = Builder(
+        _chevronRightThick = Builder(
             name = "ChevronRightSmall",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
@@ -64,17 +64,17 @@ val AppIcons.ChevronRightSmall: ImageVector
             }
         }.build()
 
-        return _chevronRightSmall!!
+        return _chevronRightThick!!
     }
 
-private var _chevronRightSmall: ImageVector? = null
+private var _chevronRightThick: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIcons.ChevronRightSmall,
+            imageVector = AppIcons.ChevronRightThick,
             contentDescription = null,
             modifier = Modifier.size(AppImages.previewSize),
         )

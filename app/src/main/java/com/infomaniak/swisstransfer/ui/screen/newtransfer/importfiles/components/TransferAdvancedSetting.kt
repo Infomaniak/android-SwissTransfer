@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
+import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.Dimens
@@ -62,7 +62,7 @@ fun TransferAdvancedSetting(
         Spacer(modifier = Modifier.width(Margin.Small))
         Icon(
             modifier = Modifier.size(Dimens.SmallIconSize),
-            imageVector = AppIcons.ChevronRightSmall,
+            imageVector = AppIcons.ChevronRightThick,
             tint = SwissTransferTheme.colors.iconColor,
             contentDescription = null,
         )

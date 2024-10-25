@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowOpenOutside
-import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightSmall
+import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.images.icons.Folder
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -132,6 +132,6 @@ private fun SettingItemPreview() {
 }
 
 enum class EndIconType(val icon: ImageVector) {
-    CHEVRON(AppIcons.ChevronRightSmall),
+    CHEVRON(AppIcons.ChevronRightThick),
     OPEN_OUTSIDE(AppIcons.ArrowOpenOutside),
 }
