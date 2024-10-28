@@ -30,7 +30,6 @@ class TransferCountChannel {
     private val _count = MutableStateFlow(0)
     val count: StateFlow<Int> = _count.asStateFlow()
 
-
     /**
      * A "session" lasts from when the queue count is greater than 0 until it resets to 0 again.
      * This count is used to track and compute the progress of files being imported during the current session.
