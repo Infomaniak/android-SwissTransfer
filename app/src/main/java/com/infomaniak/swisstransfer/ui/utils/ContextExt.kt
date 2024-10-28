@@ -63,7 +63,7 @@ fun Context.copyText(text: String, showSnackbar: (String) -> Unit) {
     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboardManager.setPrimaryClip(ClipData.newPlainText(text, text))
 
-    showSnackbar(getString(R.string.linkCopied))
+    showSnackbar(getString(R.string.snackbarLinkCopiedToClipboard))
 }
 
 fun Context.shareText(text: String) {

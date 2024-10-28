@@ -32,7 +32,6 @@
     </plurals>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
-    <string name="linkCopied">Der Link wurde in die Zwischenablage kopiert.</string>
     <string name="myFilesTitle">Meine Dateien</string>
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
@@ -80,6 +79,7 @@
         <item quantity="one">%d Tag</item>
         <item quantity="other">%d Tage</item>
     </plurals>
+    <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="transferSendButton">Senden</string>
     <plurals name="transferSpaceLeft">

@@ -37,7 +37,6 @@
     </plurals>
     <string name="firstTransferDescription">Make your first transfer!</string>
     <string name="importFilesScreenTitle">Files to transfer</string>
-    <string name="linkCopied">The link has been copied to the clipboard.</string>
     <string name="myFilesTitle">My files</string>
     <string name="noFileDescription">Add up to 50 GB of files</string>
     <string name="noFileTitle">No file, no transfer!</string>
@@ -85,6 +84,7 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
+    <string name="snackbarLinkCopiedToClipboard">Link copied to clipboard</string>
     <string name="startActivityCantHandleAction">No application has been found to handle this action</string>
     <string name="transferSendButton">Send</string>
     <plurals name="transferSpaceLeft">

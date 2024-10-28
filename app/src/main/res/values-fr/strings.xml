@@ -33,7 +33,6 @@
     </plurals>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
     <string name="importFilesScreenTitle">Fichiers à transférer</string>
-    <string name="linkCopied">Le lien a été copié dans le presse papier.</string>
     <string name="myFilesTitle">Mes fichiers</string>
     <string name="noFileDescription">Ajoute jusqu’à 50 Go de fichiers</string>
     <string name="noFileTitle">Pas de fichier, pas de transfert !</string>
@@ -81,6 +80,7 @@
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
     </plurals>
+    <string name="snackbarLinkCopiedToClipboard">Lien copié dans le presse-papiers</string>
     <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
     <string name="transferSendButton">Envoyer</string>
     <plurals name="transferSpaceLeft">
