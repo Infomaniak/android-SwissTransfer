@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +27,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +39,8 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
-import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.Dimens
@@ -83,7 +90,7 @@ private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInByt
 
                 WeightOneSpacer(minHeight = Margin.Medium)
 
-                Image(imageVector = AppImages.AppIllus.Matomo.image(), contentDescription = null)
+                Image(imageVector = AppIllus.Matomo.image(), contentDescription = null)
 
                 WeightOneSpacer(minHeight = Margin.Medium)
             }
@@ -143,6 +150,33 @@ private fun TotalSize(totalSizeInBytes: () -> Long) {
     }
 
     Text(" / $humanReadableTotalSize")
+}
+
+
+enum class UploadProgressAdType(
+    @StringRes private val descriptionTemplate: Int,
+    @StringRes private val descriptionAccentuatedPart: Int,
+    val illustration: ThemedImage,
+) {
+    INDEPENDENCE(R.string.appName, R.string.appName, AppIllus.Matomo),
+    ENERGY(R.string.appName, R.string.appName, AppIllus.Matomo),
+    CONFIDENTIALITY(R.string.appName, R.string.appName, AppIllus.Matomo);
+
+    @Composable
+    fun description(): AnnotatedString {
+        val template = stringResource(descriptionTemplate)
+        val templateArgument = stringResource(descriptionAccentuatedPart)
+
+        val description = String.format(template, templateArgument)
+
+        val startIndex = description.indexOf(templateArgument)
+        val endIndex = startIndex + templateArgument.length
+
+        return buildAnnotatedString {
+            append(description)
+            addStyle(style = SpanStyle(fontWeight = FontWeight.Bold), start = startIndex, end = endIndex)
+        }
+    }
 }
 
 
