@@ -25,6 +25,7 @@ import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
@@ -50,6 +51,9 @@ class NewTransferViewModel @Inject constructor(
     val failedFiles = importationFilesManager.failedFiles
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
+
+    val uploadedSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(9842314)
+    val totalSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(12342314)
 
     private var isFirstViewModelCreation: Boolean
         get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true

@@ -22,25 +22,38 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import java.util.Locale
 
 @Composable
-fun UploadProgressScreen() {
+fun UploadProgressScreen(newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>()) {
+    val uploadedSizeInBytes by newTransferViewModel.uploadedSizeInBytes.collectAsState()
+    val totalSizeInBytes by newTransferViewModel.totalSizeInBytes.collectAsState()
+
+    UploadProgressScreen({ uploadedSizeInBytes }, { totalSizeInBytes })
+}
+
+@Composable
+private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -77,7 +90,7 @@ fun UploadProgressScreen() {
 
             Spacer(modifier = Modifier.height(Margin.Medium))
             Text("Transfert en cours...")
-            Progress()
+            Progress(uploadedSizeInBytes, totalSizeInBytes)
             Spacer(modifier = Modifier.height(Margin.Huge)) // TODO
         }
     }
@@ -90,23 +103,46 @@ private fun ColumnScope.WeightOneSpacer(minHeight: Dp) {
 }
 
 @Composable
-fun Progress() {
+fun Progress(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
     Row {
-        Percentage()
+        Percentage(uploadedSizeInBytes, totalSizeInBytes)
         Text(" - ")
-        UploadedSize()
-        Text(" / 6.7 Mo")
+        UploadedSize(uploadedSizeInBytes)
+
+        TotalSize(totalSizeInBytes)
     }
 }
 
 @Composable
-private fun Percentage() {
-    Text("30%")
+private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
+    val percentageNoDecimals by remember {
+        derivedStateOf {
+            val percentage = (uploadedSizeInBytes().toFloat() / totalSizeInBytes())
+            String.format(Locale.getDefault(), "%.0f", percentage * 100)
+        }
+    }
+
+    Text("$percentageNoDecimals%")
 }
 
 @Composable
-private fun UploadedSize() {
-    Text("2 Mo")
+private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
+    val context = LocalContext.current
+    val humanReadableSize by remember {
+        derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, uploadedSizeInBytes()) }
+    }
+
+    Text(humanReadableSize)
+}
+
+@Composable
+private fun TotalSize(totalSizeInBytes: () -> Long) {
+    val context = LocalContext.current
+    val humanReadableTotalSize by remember {
+        derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes()) }
+    }
+
+    Text(" / $humanReadableTotalSize")
 }
 
 
@@ -115,6 +151,6 @@ private fun UploadedSize() {
 @Composable
 private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
-        UploadProgressScreen()
+        UploadProgressScreen({ 44321654 }, { 76321894 })
     }
 }
