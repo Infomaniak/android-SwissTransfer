@@ -45,6 +45,15 @@ import java.util.UUID
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
+
+    val createdDate = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
+    val expirationDate = Date(transfer.expirationDateTimestamp)
+    val remainingDays = transfer.expiresInDays
+    val remainingDownloads = transfer.downloadLeft
+    val uploadedSize = Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded)
+    val files = transfer.files
+    val filesCount = files.count()
+
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
@@ -58,7 +67,7 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
             Column(modifier = Modifier.weight(1.0f)) {
 
                 Text(
-                    text = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE),
+                    text = createdDate,
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.colors.primaryTextColor,
                     maxLines = 1,
@@ -67,18 +76,35 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 TextDotText(
-                    firstText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
-                    secondText = { stringResource(R.string.expiresIn, transfer.expiresInDays) },
+                    firstText = { uploadedSize },
+                    secondText = {
+
+                        val (text, color) = when {
+                            remainingDays < 0 -> {
+                                stringResource(R.string.expiredThe, expirationDate.format(FORMAT_DATE_SIMPLE)) to
+                                        SwissTransferTheme.materialColors.error
+                            }
+                            remainingDownloads == 0 -> {
+                                "Transfert expiré (TODO)" to SwissTransferTheme.materialColors.error
+                            }
+                            else -> {
+                                stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
+                            }
+                        }
+
+                        // TODO: Find a way to also send the color
+                        text to color
+                    },
                 )
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 ContextualFlowRow(
-                    itemCount = transfer.files.count(),
+                    itemCount = filesCount,
                     maxLines = 1,
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                     overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
                 ) { index ->
-                    TransferFilePreview(file = transfer.files[index])
+                    TransferFilePreview(file = files[index])
                 }
             }
 

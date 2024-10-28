@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -118,11 +119,11 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                     createdDateTimestamp = Date().time - 30L * 86_400_000L,
                     expirationDateTimestamp = Calendar.getInstance().apply {
                         time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 1)
+                        set(Calendar.DATE, get(Calendar.DATE) + 3)
                     }.time.time,
                     sizeUploaded = 57_689_032L,
-                    downloadLimit = 10,
-                    downloadLeft = 8,
+                    downloadLimit = 1,
+                    downloadLeft = 1,
                     message = "Coucou c'est moi le message de description du transfert.",
                     files = files,
                 ),
@@ -131,11 +132,11 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                     createdDateTimestamp = Date().time - 5L * 86_400_000L,
                     expirationDateTimestamp = Calendar.getInstance().apply {
                         time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 4)
+                        set(Calendar.DATE, get(Calendar.DATE) + 5)
                     }.time.time,
                     sizeUploaded = 89_723_143L,
-                    downloadLimit = 2,
-                    downloadLeft = 2,
+                    downloadLimit = 20,
+                    downloadLeft = 0,
                     message = null,
                     files = files,
                 ),
@@ -144,11 +145,11 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                     createdDateTimestamp = Date().time - 0.5f.toLong() * 86_400_000L,
                     expirationDateTimestamp = Calendar.getInstance().apply {
                         time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 7)
+                        set(Calendar.DATE, get(Calendar.DATE) - 4)
                     }.time.time,
                     sizeUploaded = 237_866_728L,
-                    downloadLimit = 420_069,
-                    downloadLeft = 402_690,
+                    downloadLimit = 250,
+                    downloadLeft = 123,
                     message = "3ème transfert. RAS.",
                     files = files,
                 ),
@@ -157,7 +158,15 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
             TransferItemList(
                 modifier = Modifier.padding(Margin.Medium),
                 transfers = transfers,
-                onClick = { /* TODO */ }
+                onClick = { transfer ->
+                    if (transfer.expiresInDays < 0 || transfer.downloadLeft == 0) {
+                        Log.d("TODO", "Display expired transfer bottomSheet")
+                        // TODO
+                    } else {
+                        Log.d("TODO", "Display transfer details screen")
+                        // TODO
+                    }
+                }
             )
         }
     }

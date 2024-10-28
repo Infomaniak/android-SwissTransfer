@@ -29,6 +29,7 @@
     <string name="contentDescriptionButtonRemove">Supprimer le fichier</string>
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
+    <string name="expiredThe">Expiré le %s</string>
     <string name="expiresIn">Expire dans %d jours</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
