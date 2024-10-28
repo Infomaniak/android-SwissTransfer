@@ -23,6 +23,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import com.infomaniak.swisstransfer.R
 import kotlin.reflect.KClass
 
@@ -70,5 +71,17 @@ fun Context.shareText(text: String) {
         putExtra(Intent.EXTRA_TEXT, text)
         type = "text/plain"
     }
-    startActivity(Intent.createChooser(intent, null))
+    safeStartActivity(Intent.createChooser(intent, null))
+}
+
+fun Context.safeStartActivity(intent: Intent) {
+    runCatching {
+        startActivity(intent)
+    }.onFailure {
+        showToast(R.string.startActivityCantHandleAction)
+    }
+}
+
+fun Context.showToast(title: Int, duration: Int = Toast.LENGTH_LONG) {
+    Toast.makeText(this, title, duration).show()
 }

@@ -80,6 +80,7 @@
         <item quantity="one">%d Tag</item>
         <item quantity="other">%d Tage</item>
     </plurals>
+    <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="transferSendButton">Senden</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s übrig</item>
