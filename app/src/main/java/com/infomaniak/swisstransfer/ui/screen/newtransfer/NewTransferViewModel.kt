@@ -18,38 +18,73 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.swisstransfer.ui.components.FileUi
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewTransferViewModel @Inject constructor(private val transferFilesManager: TransferFilesManager) : ViewModel() {
+class NewTransferViewModel @Inject constructor(
+    private val importationFilesManager: ImportationFilesManager,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
 
-    private val _files = MutableStateFlow<List<FileUi>>(emptyList())
-    val files: StateFlow<List<FileUi>> = _files
+    @OptIn(FlowPreview::class)
+    val importedFilesDebounced = importationFilesManager.importedFiles
+        .debounce(50)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList(),
+        )
 
-    private val _failedFileCount = MutableSharedFlow<Int>()
-    val failedFileCount: SharedFlow<Int> = _failedFileCount
+    val failedFiles = importationFilesManager.failedFiles
+    val filesToImportCount = importationFilesManager.filesToImportCount
+    val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
-    fun addFiles(uris: List<Uri>) {
-        viewModelScope.launch {
-            val alreadyUsedFileNames = buildSet { files.value.forEach { add(it.fileName) } }
+    private var isFirstViewModelCreation: Boolean
+        get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
+        set(value) {
+            savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] = value
+        }
 
-            val newFiles = transferFilesManager.getFiles(uris, alreadyUsedFileNames)
+    init {
+        viewModelScope.launch(ioDispatcher) {
+            if (isFirstViewModelCreation) {
+                isFirstViewModelCreation = false
+                // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required
+                // for already imported files restoration to not pick up old files in some extreme cases.
+                importationFilesManager.removeLocalCopyFolder()
+            } else {
+                importationFilesManager.restoreAlreadyImportedFiles()
+            }
 
-            _files.value += newFiles
-            _failedFileCount.emit(uris.count() - newFiles.count())
+            importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+        }
+    }
+
+    fun importFiles(uris: List<Uri>) {
+        viewModelScope.launch(ioDispatcher) {
+            importationFilesManager.importFiles(uris)
         }
     }
 
     fun removeFileByUid(uid: String) {
-        _files.value = _files.value.filterNot { it.uid == uid }
+        viewModelScope.launch(ioDispatcher) {
+            importationFilesManager.removeFileByUid(uid)
+        }
+    }
+
+    companion object {
+        private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 }

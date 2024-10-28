@@ -21,29 +21,29 @@ import com.infomaniak.swisstransfer.ui.utils.FileNameUtils.postfixExistingFileNa
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class PostifxedFileNameUnitTest {
+class PostfixedFileNameUnitTest {
     @Test
     fun unusedName_isUnchanged() {
         val inputFileName = "world.txt"
-        val newName = postfixExistingFileNames(inputFileName, alreadyUsedFileNames)
+        val newName = postfixExistingFileNames(inputFileName, alreadyUsedFileNames::contains)
         assertEquals(newName, inputFileName)
     }
 
     @Test
     fun usedName_isPostfixed() {
-        val newName = postfixExistingFileNames("hello.txt", alreadyUsedFileNames)
+        val newName = postfixExistingFileNames("hello.txt", alreadyUsedFileNames::contains)
         assertEquals(newName, "hello(1).txt")
     }
 
     @Test
     fun alreadyPostfixedName_isPostfixedAgain() {
-        val newName = postfixExistingFileNames("test(1).txt", alreadyUsedFileNames)
+        val newName = postfixExistingFileNames("test(1).txt", alreadyUsedFileNames::contains)
         assertEquals(newName, "test(1)(1).txt")
     }
 
     @Test
     fun postfixedNameThatCollidesWithAnotherName_isPostfixedUntilNoMoreCollision() {
-        val newName = postfixExistingFileNames("test.txt", alreadyUsedFileNames)
+        val newName = postfixExistingFileNames("test.txt", alreadyUsedFileNames::contains)
         assertEquals(newName, "test(3).txt")
     }
 
@@ -83,12 +83,12 @@ class PostifxedFileNameUnitTest {
     }
 
     private fun assertAlreadyExistingFileName(inputFileName: String, expectedFileName: String) {
-        val newName = postfixExistingFileNames(inputFileName, setOf(inputFileName))
+        val newName = postfixExistingFileNames(inputFileName, setOf(inputFileName)::contains)
         assertEquals(newName, expectedFileName)
     }
 
     private fun assertNewFileNameIsUnchanged(inputFileName: String) {
-        val newName = postfixExistingFileNames(inputFileName, emptySet())
+        val newName = postfixExistingFileNames(inputFileName, emptySet<String>()::contains)
         assertEquals(newName, inputFileName)
     }
 

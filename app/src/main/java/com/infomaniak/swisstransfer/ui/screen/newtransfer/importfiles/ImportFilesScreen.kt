@@ -46,11 +46,15 @@ fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
 ) {
-    val files by newTransferViewModel.files.collectAsStateWithLifecycle()
+    val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
+    val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
     ImportFilesScreen(
         files = { files },
+        filesToImportCount = { filesToImportCount },
+        currentSessionFilesCount = { currentSessionFilesCount },
         removeFileByUid = newTransferViewModel::removeFileByUid,
-        addFiles = newTransferViewModel::addFiles,
+        addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
         initialShowUploadSourceChoiceBottomSheet = true,
     )
@@ -59,6 +63,8 @@ fun ImportFilesScreen(
 @Composable
 private fun ImportFilesScreen(
     files: () -> List<FileUi>,
+    filesToImportCount: () -> Int,
+    currentSessionFilesCount: () -> Int,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -74,7 +80,11 @@ private fun ImportFilesScreen(
         getHumanReadableSize(context, spaceLeft)
     }
 
-    val isSendButtonEnabled by remember { derivedStateOf { importedFiles.isNotEmpty() } }
+    val count = filesToImportCount()
+    val isImporting by remember(count) { derivedStateOf { count > 0 } }
+
+    val total = currentSessionFilesCount()
+    val importProgress = remember(count, total) { 1 - (count.toFloat() / total) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
@@ -91,13 +101,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            LargeButton(
-                modifier = modifier,
-                titleRes = R.string.transferSendButton,
-                style = ButtonType.PRIMARY,
-                enabled = { isSendButtonEnabled },
-                onClick = { /*TODO*/ },
-            )
+            SendButton({ isImporting }, { importProgress }, modifier)
         },
     ) {
         ImportedFilesCard(
@@ -116,6 +120,19 @@ private fun ImportFilesScreen(
     }
 }
 
+@Composable
+private fun SendButton(isImporting: () -> Boolean, importProgress: () -> Float, modifier: Modifier) {
+    val progress: (() -> Float)? = if (isImporting()) importProgress else null
+
+    LargeButton(
+        modifier = modifier,
+        titleRes = R.string.transferSendButton,
+        style = ButtonType.PRIMARY,
+        progress = progress,
+        onClick = { /*TODO*/ },
+    )
+}
+
 enum class PasswordTransferOption(override val title: @Composable () -> String) : TransferAdvancedOptionsEnum {
     NONE({ stringResource(R.string.settingsOptionNone) }),
     ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
@@ -131,6 +148,8 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
     SwissTransferTheme {
         ImportFilesScreen(
             files = { files },
+            filesToImportCount = { 0 },
+            currentSessionFilesCount = { 0 },
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},
