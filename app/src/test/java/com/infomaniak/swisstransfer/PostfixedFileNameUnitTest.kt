@@ -21,7 +21,7 @@ import com.infomaniak.swisstransfer.ui.utils.FileNameUtils.postfixExistingFileNa
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class PostifxedFileNameUnitTest {
+class PostfixedFileNameUnitTest {
     @Test
     fun unusedName_isUnchanged() {
         val inputFileName = "world.txt"
