@@ -80,7 +80,7 @@ class ImportationFilesManager @Inject constructor(
         if (localFiles.size != restoredFileUi.size) {
             Sentry.withScope { scope ->
                 scope.level = SentryLevel.ERROR
-                Sentry.captureMessage("Failure of the restoration of the already imported files after a process kill")
+                Sentry.captureMessage("Restoration failure of already imported files after a process kill")
             }
         }
 
