@@ -29,6 +29,7 @@ import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,6 +72,10 @@ class NewTransferViewModel @Inject constructor(
 
     private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
     val selectedTransferType: StateFlow<TransferType> = _selectedTransferType.asStateFlow()
+
+    private val _selectedAdvancedOptions = MutableStateFlow<List<() -> TransferAdvancedOptionsEnum>>(emptyList())
+    val selectedAdvancedOptions: StateFlow<List<() -> TransferAdvancedOptionsEnum>> = _selectedAdvancedOptions
+
 
     init {
         viewModelScope.launch(ioDispatcher) {
