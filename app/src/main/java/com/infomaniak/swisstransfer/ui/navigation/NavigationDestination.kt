@@ -36,7 +36,7 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data object ReceivedDestination : MainNavigation()
     @Serializable
-    data class TransferDetailsDestination(val transferId: Int) : MainNavigation()
+    data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
 
     @Serializable
     data object SettingsDestination : MainNavigation()

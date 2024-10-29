@@ -46,17 +46,23 @@ import java.util.UUID
 
 @Composable
 fun ReceivedScreen(
-    navigateToDetails: (transferId: Int) -> Unit,
+    navigateToDetails: (transferUuid: String) -> Unit,
     sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
     val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
 
-    ReceivedScreen(areTransfersEmpty = { areTransfersEmpty })
+    ReceivedScreen(
+        navigateToDetails = navigateToDetails,
+        areTransfersEmpty = { areTransfersEmpty },
+    )
 }
 
 @Composable
-private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
+private fun ReceivedScreen(
+    navigateToDetails: (transferUuid: String) -> Unit,
+    areTransfersEmpty: () -> Boolean,
+) {
 
     var isVisible: Boolean by rememberSaveable { mutableStateOf(false) }
     var expirationDate: Date? by rememberSaveable { mutableStateOf(null) }
@@ -174,8 +180,7 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                             downloadsLimit = transfer.downloadLimit
                         }
                         else -> {
-                            Log.d("TODO", "Display transfer details screen")
-                            // TODO
+                            navigateToDetails(transfer.uuid)
                         }
                     }
                 }
@@ -204,7 +209,10 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
 private fun ReceivedScreenPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen(areTransfersEmpty = { true })
+            ReceivedScreen(
+                navigateToDetails = {},
+                areTransfersEmpty = { true },
+            )
         }
     }
 }

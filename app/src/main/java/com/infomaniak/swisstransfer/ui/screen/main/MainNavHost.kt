@@ -52,7 +52,7 @@ fun MainNavHost(
         }
         composable<TransferDetailsDestination> {
             val transferDetails: TransferDetailsDestination = it.toRoute()
-            TransferDetailsScreen(transferId = transferDetails.transferId)
+            TransferDetailsScreen(transferUuid = transferDetails.transferUuid)
         }
         composable<SettingsDestination> {
             SettingsScreenWrapper()

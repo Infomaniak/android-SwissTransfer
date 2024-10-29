@@ -21,6 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun TransferDetailsScreen(transferId: Int) {
-    Text("TransferDetails for transfer $transferId")
+fun TransferDetailsScreen(transferUuid: String) {
+    Text("TransferDetails for transfer $transferUuid")
 }
