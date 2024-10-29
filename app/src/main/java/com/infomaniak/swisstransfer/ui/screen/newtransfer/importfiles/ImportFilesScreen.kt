@@ -96,12 +96,6 @@ private fun ImportFilesScreen(
         getHumanReadableSize(context, spaceLeft)
     }
 
-    val count = filesToImportCount()
-    val isImporting by remember(count) { derivedStateOf { count > 0 } }
-
-    val total = currentSessionFilesCount()
-    val importProgress = remember(count, total) { 1 - (count.toFloat() / total) }
-
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments()
     ) { uris: List<Uri> ->
@@ -116,7 +110,9 @@ private fun ImportFilesScreen(
                 TopAppBarButton.closeButton { closeActivity() },
             )
         },
-        topButton = { modifier -> SendButton({ isImporting }, { importProgress }, modifier) },
+        topButton = { modifier ->
+            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, navigateToUploadProgress)
+        },
         content = {
             Column(
                 modifier = Modifier
@@ -180,15 +176,32 @@ private fun ImportTextFields(initialShouldShowEmailAddressesFields: Boolean) {
 }
 
 @Composable
-private fun SendButton(isImporting: () -> Boolean, importProgress: () -> Float, modifier: Modifier) {
-    val progress: (() -> Float)? = if (isImporting()) importProgress else null
+private fun SendButton(
+    filesToImportCount: () -> Int,
+    currentSessionFilesCount: () -> Int,
+    importedFiles: () -> List<FileUi>,
+    modifier: Modifier,
+    navigateToUploadProgress: () -> Unit
+) {
+    val count = filesToImportCount()
+    val isImporting by remember(count) { derivedStateOf { count > 0 } }
+
+    val total = currentSessionFilesCount()
+    val importProgress = remember(count, total) { 1 - (count.toFloat() / total) }
+
+    val progress: (() -> Float)? = if (isImporting) {
+        { importProgress }
+    } else {
+        null
+    }
 
     LargeButton(
         modifier = modifier,
         titleRes = R.string.transferSendButton,
         style = ButtonType.PRIMARY,
+        enabled = { importedFiles().isNotEmpty() && !isImporting },
         progress = progress,
-        onClick = { /*TODO*/ },
+        onClick = navigateToUploadProgress,
     )
 }
 
