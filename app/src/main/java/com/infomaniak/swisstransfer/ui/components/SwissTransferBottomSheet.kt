@@ -19,11 +19,15 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,7 +84,7 @@ private fun BottomSheetContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         imageVector?.let {
-            Icon(imageVector = imageVector, contentDescription = null)
+            Image(imageVector = imageVector, contentDescription = null)
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
