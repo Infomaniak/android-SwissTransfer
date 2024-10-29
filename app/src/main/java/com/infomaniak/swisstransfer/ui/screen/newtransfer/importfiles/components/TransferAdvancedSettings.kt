@@ -47,12 +47,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun TransferAdvancedSettings(
     modifier: Modifier = Modifier,
     states: () -> List<TransferAdvancedOptionsEnum>,
-    onClick: () -> Unit,
+    onClick: (TransferAdvancedSettingType) -> Unit,
 ) {
     SwissTransferCard(modifier = modifier) {
         TransferAdvancedSettingType.entries.forEach { settingType ->
             val title by remember { derivedStateOf { states()[settingType.ordinal] } }
-            TransferAdvancedSetting(settingType, { title }, onClick)
+            TransferAdvancedSetting(settingType, { title }, { onClick(settingType) })
         }
     }
 }

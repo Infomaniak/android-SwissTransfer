@@ -62,13 +62,13 @@ class SettingsViewModel @Inject constructor(
     data class AppSettingsData(
         val validityPeriod: ValidityPeriod,
         val downloadLimit: DownloadLimit,
-        val isPasswordActivated: Boolean,
+        val passwordOption: PasswordTransferOption,
         val emailLanguage: EmailLanguage,
     ) {
         fun toAdvancedOptionsList() = listOf<TransferAdvancedOptionsEnum>(
             validityPeriod.toAdvancedOption(),
             downloadLimit.toAdvancedOption(),
-            if (isPasswordActivated) PasswordTransferOption.ACTIVATED else PasswordTransferOption.NONE,
+            passwordOption,
             emailLanguage.toAdvancedOption(),
         )
     }
