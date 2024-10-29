@@ -21,6 +21,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,5 +37,6 @@ class NewTransferActivity : ComponentActivity() {
                 NewTransferScreen(closeActivity = { finish() })
             }
         }
+        trackScreen()
     }
 }

@@ -28,7 +28,7 @@ import org.matomo.sdk.extra.TrackHelper
 
 interface Matomo {
 
-    val tracker: Tracker
+    val Context.tracker: Tracker
     val siteId: Int
 
     fun Context.buildTracker(shouldOptOut: Boolean = false): Tracker {
@@ -62,7 +62,6 @@ interface Matomo {
     }
 
     //region Track screens
-
     fun Activity.trackScreen() {
         TrackHelper.track().screen(this).title(this::class.java.simpleName).with(tracker)
     }
@@ -70,11 +69,9 @@ interface Matomo {
     fun Context.trackScreen(path: String, title: String) {
         TrackHelper.track().screen(path).title(title).with(tracker)
     }
-
     //endregion
 
     //region Track events
-
     fun Context.trackEvent(category: String, name: String, action: TrackerAction = TrackerAction.CLICK, value: Float? = null) {
         TrackHelper.track()
             .event(category, action.toString())
@@ -91,7 +88,7 @@ interface Matomo {
     fun Boolean.toFloat() = if (this) 1.0f else 0.0f
 
     fun shouldOptOut(context: Context, shouldOptOut: Boolean) {
-        tracker.isOptOut = shouldOptOut
+        context.tracker.isOptOut = shouldOptOut
     }
 
     enum class TrackerAction {

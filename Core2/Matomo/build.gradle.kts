@@ -39,6 +39,4 @@ android {
 
 dependencies {
     api(core2.matomo)
-    api(core2.androidx.core)
-    api(core2.appcompat)
 }

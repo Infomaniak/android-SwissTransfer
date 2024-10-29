@@ -1,11 +1,7 @@
 [versions]
 sentry-android = "7.15.0"
 matomo = "4.1.4"
-androidx-core = "1.13.1"
-appcompatVersion = "1.7.0"
 
 [libraries]
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
 matomo = { module = "com.github.matomo-org:matomo-sdk-android", version.ref = "matomo" }
-androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }

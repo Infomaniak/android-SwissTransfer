@@ -21,8 +21,8 @@ import android.content.Context
 import com.infomaniak.matomo.Matomo
 import org.matomo.sdk.Tracker
 
-class MatomoSwissTransfer(private val context: Context) : Matomo {
+object MatomoSwissTransfer : Matomo {
 
-    override val tracker: Tracker by lazy { context.buildTracker() }
+    override val Context.tracker: Tracker get() = (this as MainActivity).buildTracker() //TODO fetch appSettings for opt out
     override val siteId: Int = -1 //TODO replace with the right site ID when we have one
 }
