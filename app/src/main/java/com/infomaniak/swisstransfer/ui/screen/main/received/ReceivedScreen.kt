@@ -20,17 +20,17 @@ package com.infomaniak.swisstransfer.ui.screen.main.received
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
@@ -57,6 +57,11 @@ fun ReceivedScreen(
 
 @Composable
 private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
+
+    var isVisible: Boolean by rememberSaveable { mutableStateOf(false) }
+    var expirationDate: Date? by rememberSaveable { mutableStateOf(null) }
+    var downloadsLimit: Int? by rememberSaveable { mutableStateOf(null) }
+
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) {
@@ -64,7 +69,7 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
             EmptyState(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
+                description = stringResource(R.string.noTransferReceivedDescription),
             )
         } else {
 
@@ -159,14 +164,36 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                 modifier = Modifier.padding(Margin.Medium),
                 transfers = transfers,
                 onClick = { transfer ->
-                    if (transfer.expiresInDays < 0 || transfer.downloadLeft == 0) {
-                        Log.d("TODO", "Display expired transfer bottomSheet")
-                        // TODO
-                    } else {
-                        Log.d("TODO", "Display transfer details screen")
-                        // TODO
+                    when {
+                        transfer.expiresInDays < 0 -> {
+                            isVisible = true
+                            expirationDate = Date(transfer.expirationDateTimestamp)
+                        }
+                        transfer.downloadLeft == 0 -> {
+                            isVisible = true
+                            downloadsLimit = transfer.downloadLimit
+                        }
+                        else -> {
+                            Log.d("TODO", "Display transfer details screen")
+                            // TODO
+                        }
                     }
                 }
+            )
+
+            TransferExpiredBottomSheet(
+                isVisible = { isVisible },
+                expirationDate = { expirationDate },
+                downloadsLimit = { downloadsLimit },
+                onDeleteTransferClicked = {
+                    Log.d("TODO", "Delete expired Transfer")
+                    // TODO
+                },
+                closeBottomSheet = {
+                    isVisible = false
+                    expirationDate = null
+                    downloadsLimit = null
+                },
             )
         }
     }

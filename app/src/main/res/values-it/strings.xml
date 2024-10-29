@@ -89,6 +89,9 @@
     <string name="startActivityCantHandleAction">Non è stata trovata alcuna applicazione in grado di gestire questa azione</string>
     <string name="textFieldOptional">(Opzionale)</string>
     <string name="transferExpiredButton">Cancellare dalla cronologia</string>
+    <string name="transferExpiredDateReachedDescription">Spiacente, questo trasferimento è scaduto il %s. Non è più possibile scaricare o visualizzare i file.</string>
+    <string name="transferExpiredLimitReachedDescription">Spiacente, questo trasferimento ha raggiunto il limite di %d download possibili.</string>
+    <string name="transferExpiredTitle">Questo trasferimento non è più disponibile</string>
     <string name="transferRecipientAddressPlaceholder">Invia i file a</string>
     <string name="transferMessagePlaceholder">C’è qualche messaggio che vorrebbe trasmettere?</string>
     <string name="transferSendButton">Invia</string>
