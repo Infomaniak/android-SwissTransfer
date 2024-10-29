@@ -17,10 +17,8 @@
  */
 package com.infomaniak.swisstransfer.di
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
-import com.infomaniak.matomo.Matomo
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.ui.MainActivity
 import androidx.work.WorkManager
