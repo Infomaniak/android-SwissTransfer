@@ -40,6 +40,7 @@
     <string name="noFileTitle">Si no hay archivo, no hay transferencia.</string>
     <string name="noTransferReceivedDescription">Aquí aparecerán todas las transferencias recibidas en los últimos 30 días.</string>
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
+    <string name="receivedFilesTitle">Archivos recibidos</string>
     <string name="receivedTitle">Recibido</string>
     <string name="sentEmptyTitle">Nuestra historia comienza aquí</string>
     <string name="sentTitle">Enviado a</string>
