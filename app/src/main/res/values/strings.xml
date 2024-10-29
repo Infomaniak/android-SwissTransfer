@@ -23,6 +23,7 @@
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="buttonAddFiles">Add files</string>
+    <string name="buttonCancel">Cancel</string>
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonFinished">Finish</string>
     <string name="buttonNext">Next</string>
@@ -89,6 +90,7 @@
     <string name="snackbarLinkCopiedToClipboard">Link copied to clipboard</string>
     <string name="startActivityCantHandleAction">No application has been found to handle this action</string>
     <string name="textFieldOptional">(Optional)</string>
+    <string name="transferExpiredButton">Delete from history</string>
     <string name="transferMessagePlaceholder">A message to pass on?</string>
     <string name="transferRecipientAddressPlaceholder">Send files to</string>
     <string name="transferSendButton">Send</string>
@@ -107,6 +109,12 @@
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
     <string name="transferUploadSourceChoiceTitle">Upload from</string>
+    <string name="uploadSuccessDescriptionArgumentConfidentiality">Internet that respects confidentiality and privacy.</string>
+    <string name="uploadSuccessDescriptionArgumentEnergy">our own data centers, without air conditioning</string>
+    <string name="uploadSuccessDescriptionArgumentIndependence">technological independence in Europe.</string>
+    <string name="uploadSuccessDescriptionTemplateConfidentiality">We’re independent and contribute to an %s</string>
+    <string name="uploadSuccessDescriptionTemplateEnergy">We design %s, to exceed market standards for energy efficiency.</string>
+    <string name="uploadSuccessDescriptionTemplateIndependence">We develop %s Without compromising on ecology, privacy and people.</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">The download link has been sent to the following recipient:</item>
         <item quantity="other">The download link has been sent to the following recipients:</item>
@@ -115,6 +123,8 @@
     <string name="uploadSuccessLinkDescription">Scan this QR code around you to share your files, or copy the link below.</string>
     <string name="uploadSuccessLinkTitle">Your transfer is ready!</string>
     <string name="uploadSuccessQrTitle">Your QR code is ready!</string>
+    <string name="uploadSuccessTitle">What sets us apart?</string>
+    <string name="uploadSuccessTransferInProgress">Transfer in progress…</string>
     <string name="urlAbout">https://www.infomaniak.com/en/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/f12466ad-db5b-4f5c-b24c-a54b0a5117ca/#ideas/popular</string>
     <string name="version">Version</string>

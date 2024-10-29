@@ -64,7 +64,7 @@ private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInByt
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(R.string.appName, modifier = it, onClick = {})
+            LargeButton(R.string.buttonCancel, modifier = it, onClick = {})
         }
     ) {
         Column(
@@ -79,7 +79,7 @@ private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInByt
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(Margin.Giant))
-                Text("Ce qui nous rend différent ?", style = SwissTransferTheme.typography.bodyMedium)
+                Text(stringResource(R.string.uploadSuccessTitle), style = SwissTransferTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(Margin.Huge))
                 Text(
                     "Nous développons l’indépendance technologique en Europe. Sans compromis sur l’écologie, la vie privée et l'humain.",
@@ -96,7 +96,7 @@ private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInByt
             }
 
             Spacer(modifier = Modifier.height(Margin.Medium))
-            Text("Transfert en cours...")
+            Text(stringResource(R.string.uploadSuccessTransferInProgress))
             Progress(uploadedSizeInBytes, totalSizeInBytes)
             Spacer(modifier = Modifier.height(Margin.Huge)) // TODO
         }
@@ -158,9 +158,21 @@ enum class UploadProgressAdType(
     @StringRes private val descriptionAccentuatedPart: Int,
     val illustration: ThemedImage,
 ) {
-    INDEPENDENCE(R.string.appName, R.string.appName, AppIllus.Matomo),
-    ENERGY(R.string.appName, R.string.appName, AppIllus.Matomo),
-    CONFIDENTIALITY(R.string.appName, R.string.appName, AppIllus.Matomo);
+    INDEPENDENCE(
+        R.string.uploadSuccessDescriptionTemplateIndependence,
+        R.string.uploadSuccessDescriptionArgumentIndependence,
+        AppIllus.Matomo
+    ),
+    ENERGY(
+        R.string.uploadSuccessDescriptionTemplateEnergy,
+        R.string.uploadSuccessDescriptionArgumentEnergy,
+        AppIllus.Matomo
+    ),
+    CONFIDENTIALITY(
+        R.string.uploadSuccessDescriptionTemplateConfidentiality,
+        R.string.uploadSuccessDescriptionArgumentConfidentiality,
+        AppIllus.Matomo
+    );
 
     @Composable
     fun description(): AnnotatedString {

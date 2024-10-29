@@ -18,6 +18,7 @@
 <resources>
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
+    <string name="buttonCancel">Abbrechen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonFinished">Beenden</string>
     <string name="buttonNext">Weiter zu</string>
@@ -84,6 +85,7 @@
     <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Fakultativ)</string>
+    <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferMessagePlaceholder">Eine Nachricht, die du weitergeben willst?</string>
     <string name="transferRecipientAddressPlaceholder">Dateien senden an</string>
     <string name="transferSendButton">Senden</string>
@@ -102,6 +104,12 @@
     <string name="transferUploadSourceChoiceFiles">Dateien durchsuchen</string>
     <string name="transferUploadSourceChoiceGallery">Foto- und Videogalerie</string>
     <string name="transferUploadSourceChoiceTitle">Herunterladen von</string>
+    <string name="uploadSuccessDescriptionArgumentConfidentiality">einem Internet bei, das den Datenschutz und die Privatsphäre respektiert.</string>
+    <string name="uploadSuccessDescriptionArgumentEnergy">unsere eigenen Rechenzentren ohne Klimaanlagen</string>
+    <string name="uploadSuccessDescriptionArgumentIndependence">die technologische Unabhängigkeit in Europa.</string>
+    <string name="uploadSuccessDescriptionTemplateConfidentiality">Wir sind unabhängig und tragen zu %s</string>
+    <string name="uploadSuccessDescriptionTemplateEnergy">Wir entwerfen %s, um die Energieeffizienzstandards der Branche zu übertreffen.</string>
+    <string name="uploadSuccessDescriptionTemplateIndependence">Wir entwickeln %s Ohne Kompromisse bei Ökologie, Privatsphäre und Menschen.</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Der Download-Link wurde erfolgreich an den folgenden Empfänger gesendet:</item>
         <item quantity="other">Der Download-Link wurde an die folgenden Empfänger gesendet:</item>
@@ -110,6 +118,8 @@
     <string name="uploadSuccessLinkDescription">Lass diesen QR-Code in deiner Umgebung scannen, um deine Dateien weiterzugeben, oder kopiere den untenstehenden Link.</string>
     <string name="uploadSuccessLinkTitle">Deine Überweisung ist fertig!</string>
     <string name="uploadSuccessQrTitle">Dein QR-Code ist fertig!</string>
+    <string name="uploadSuccessTitle">Was zeichnet uns aus?</string>
+    <string name="uploadSuccessTransferInProgress">Transfer wird durchgeführt…</string>
     <string name="urlAbout">https://www.infomaniak.com/de/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/9abc7665-a78e-4fd2-aa41-a47a8b867fcd/#ideas/popular</string>
     <string name="version">Version</string>
