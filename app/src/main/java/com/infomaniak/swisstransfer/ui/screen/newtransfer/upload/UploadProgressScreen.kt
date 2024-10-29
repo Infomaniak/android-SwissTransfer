@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -56,11 +57,17 @@ fun UploadProgressScreen(newTransferViewModel: NewTransferViewModel = hiltViewMo
     val uploadedSizeInBytes by newTransferViewModel.uploadedSizeInBytes.collectAsState()
     val totalSizeInBytes by newTransferViewModel.totalSizeInBytes.collectAsState()
 
-    UploadProgressScreen({ uploadedSizeInBytes }, { totalSizeInBytes })
+    val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
+
+    UploadProgressScreen({ uploadedSizeInBytes }, { totalSizeInBytes }, adScreenType)
 }
 
 @Composable
-private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
+private fun UploadProgressScreen(
+    uploadedSizeInBytes: () -> Long,
+    totalSizeInBytes: () -> Long,
+    adScreenType: UploadProgressAdType
+) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -82,7 +89,7 @@ private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInByt
                 Text(stringResource(R.string.uploadSuccessTitle), style = SwissTransferTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(Margin.Huge))
                 Text(
-                    "Nous développons l’indépendance technologique en Europe. Sans compromis sur l’écologie, la vie privée et l'humain.",
+                    adScreenType.description(),
                     modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
                     style = SwissTransferTheme.typography.specificLight18,
                     textAlign = TextAlign.Center,
@@ -90,7 +97,7 @@ private fun UploadProgressScreen(uploadedSizeInBytes: () -> Long, totalSizeInByt
 
                 WeightOneSpacer(minHeight = Margin.Medium)
 
-                Image(imageVector = AppIllus.Matomo.image(), contentDescription = null)
+                Image(imageVector = adScreenType.illustration.image(), contentDescription = null)
 
                 WeightOneSpacer(minHeight = Margin.Medium)
             }
@@ -197,6 +204,6 @@ enum class UploadProgressAdType(
 @Composable
 private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
-        UploadProgressScreen({ 44321654 }, { 76321894 })
+        UploadProgressScreen({ 44321654 }, { 76321894 }, UploadProgressAdType.ENERGY)
     }
 }
