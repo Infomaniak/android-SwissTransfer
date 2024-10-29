@@ -42,7 +42,9 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
-import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
+import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MetallicSafe
+import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MountainGondola
+import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.SwissWithFlag
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -168,17 +170,17 @@ enum class UploadProgressAdType(
     INDEPENDENCE(
         R.string.uploadSuccessDescriptionTemplateIndependence,
         R.string.uploadSuccessDescriptionArgumentIndependence,
-        AppIllus.Matomo
+        AppIllus.SwissWithFlag
     ),
     ENERGY(
         R.string.uploadSuccessDescriptionTemplateEnergy,
         R.string.uploadSuccessDescriptionArgumentEnergy,
-        AppIllus.Matomo
+        AppIllus.MountainGondola
     ),
     CONFIDENTIALITY(
         R.string.uploadSuccessDescriptionTemplateConfidentiality,
         R.string.uploadSuccessDescriptionArgumentConfidentiality,
-        AppIllus.Matomo
+        AppIllus.MetallicSafe
     );
 
     @Composable
@@ -204,6 +206,6 @@ enum class UploadProgressAdType(
 @Composable
 private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
-        UploadProgressScreen({ 44321654 }, { 76321894 }, UploadProgressAdType.ENERGY)
+        UploadProgressScreen({ 44321654 }, { 76321894 }, UploadProgressAdType.INDEPENDENCE)
     }
 }
