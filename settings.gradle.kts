@@ -31,4 +31,5 @@ rootProject.name = "android-SwissTransfer"
 include(":app")
 include(":Core2")
 include(":Core2:Sentry")
+include(":Core2:Matomo")
 include(":FileTypes")

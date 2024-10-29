@@ -17,10 +17,15 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import com.infomaniak.matomo.Matomo
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.swisstransfer.ui.MainActivity
 import androidx.work.WorkManager
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +40,9 @@ import javax.inject.Singleton
 object ApplicationModule {
 
     @Provides
+    fun providesApplicationContext(@ApplicationContext context: Context) = context
+
+    @Provides
     fun providesMainApplication(application: Application) = application as MainApplication
 
     @Provides
@@ -42,6 +50,14 @@ object ApplicationModule {
     fun providesGlobalCoroutineScope(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): CoroutineScope {
         return CoroutineScope(defaultDispatcher)
     }
+
+    @Provides
+    @Singleton
+    fun provideMatomoSwissTransfer(application: MainApplication) = MatomoSwissTransfer(application)
+
+    @Provides
+    @Singleton
+    fun provideMatomoTracker(matomo: MatomoSwissTransfer) = matomo.tracker
 
     @Provides
     @Singleton
