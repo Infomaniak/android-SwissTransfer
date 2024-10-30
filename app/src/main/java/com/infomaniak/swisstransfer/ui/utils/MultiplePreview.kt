@@ -57,14 +57,13 @@ annotation class PreviewSmallWindow
 )
 @Preview(
     name = "(3) Large window landscape light",
-    group = "LargeWindow",
-    device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
+    group = "LargeWindow", device = "spec:width=1280dp,height=800dp,dpi=240",
 )
 @Preview(
     name = "(4) Large window landscape dark",
     group = "LargeWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240",
+    device = "spec:width=1280dp,height=800dp,dpi=240",
 )
 annotation class PreviewLargeWindow
 
