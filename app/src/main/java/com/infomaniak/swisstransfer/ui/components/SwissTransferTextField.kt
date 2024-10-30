@@ -76,7 +76,7 @@ fun SwissTransferTextField(
         maxLines = maxLineNumber,
         colors = textFieldColors,
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
-        onValueChange = onValueChange ?: { text = Html.escapeHtml(it.trim()) },
+        onValueChange = onValueChange ?: { text = it },
         visualTransformation = if (isPassword && !shouldShowPassword) {
             PasswordVisualTransformation()
         } else {
