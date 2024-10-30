@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import com.infomaniak.swisstransfer.ui.components.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex

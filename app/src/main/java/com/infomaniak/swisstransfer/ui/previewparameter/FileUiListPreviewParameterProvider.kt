@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.components.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 
 class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUi>> {
     override val values: Sequence<List<FileUi>> = sequenceOf(
