@@ -17,10 +17,19 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.infomaniak.swisstransfer.ui.theme.Margin
 
 @Composable
-fun TransferDetailsScreen(transferUuid: String) {
-    Text("TransferDetails for transfer $transferUuid")
+fun TransferDetailsScreen(
+    transferUuid: String,
+    navigateBack: (() -> Unit)?,
+) {
+    Text(
+        text = "TransferDetails for transfer $transferUuid",
+        modifier = Modifier.padding(all = Margin.Giant),
+    )
 }
