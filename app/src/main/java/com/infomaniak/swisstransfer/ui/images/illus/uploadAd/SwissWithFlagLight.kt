@@ -2,6 +2,7 @@ package com.infomaniak.swisstransfer.ui.images.illus.uploadAd
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,7 +41,7 @@ val AppIllus.SwissWithFlagLight: ImageVector
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(30.0f, 175.41f)
+                moveToRelative(30.0f, 175.41f)
                 lineToRelative(27.18f, -8.98f)
                 verticalLineToRelative(-9.34f)
                 lineToRelative(14.58f, -2.61f)
@@ -51,13 +52,13 @@ val AppIllus.SwissWithFlagLight: ImageVector
                 lineToRelative(10.44f, -3.95f)
                 verticalLineToRelative(-3.5f)
                 lineToRelative(15.3f, 1.08f)
-                horizontalLineTo(165.0f)
+                horizontalLineToRelative(23.22f)
                 lineToRelative(4.32f, -3.06f)
                 lineToRelative(25.02f, 1.26f)
                 lineToRelative(2.88f, -3.05f)
                 lineToRelative(-12.24f, 0.9f)
                 verticalLineToRelative(-5.39f)
-                lineToRelative(13.7f, -1.53f)
+                lineTo(198.68f, 119.0f)
                 lineToRelative(13.68f, 6.02f)
                 lineToRelative(22.14f, -0.99f)
                 lineToRelative(28.8f, 13.65f)
@@ -94,7 +95,7 @@ val AppIllus.SwissWithFlagLight: ImageVector
                 lineToRelative(-16.74f, -16.53f)
                 lineToRelative(14.58f, -11.14f)
                 lineToRelative(-19.44f, -4.94f)
-                lineTo(48.19f, 180.0f)
+                lineToRelative(-27.18f, 2.61f)
                 lineToRelative(-6.48f, 8.18f)
                 lineToRelative(5.04f, 4.49f)
                 lineTo(30.0f, 195.63f)
@@ -114,24 +115,24 @@ val AppIllus.SwissWithFlagLight: ImageVector
                 verticalLineToRelative(54.43f)
                 horizontalLineToRelative(54.43f)
                 close()
-                moveToRelative(-21.77f, 10.88f)
+                moveTo(204.78f, 57.09f)
                 horizontalLineToRelative(-10.89f)
                 verticalLineToRelative(21.77f)
                 horizontalLineToRelative(10.89f)
-                verticalLineTo(57.09f)
+                verticalLineToRelative(-21.77f)
                 moveToRelative(-10.89f, 10.89f)
-                horizontalLineTo(183.0f)
-                verticalLineToRelative(10.89f)
-                horizontalLineToRelative(10.89f)
-                close()
-                moveToRelative(21.78f, 0.0f)
                 horizontalLineToRelative(-10.89f)
                 verticalLineToRelative(10.89f)
                 horizontalLineToRelative(10.89f)
                 close()
-                moveToRelative(-21.78f, 10.88f)
-                horizontalLineToRelative(10.89f)
+                moveTo(215.67f, 67.98f)
+                horizontalLineToRelative(-10.89f)
                 verticalLineToRelative(10.89f)
+                horizontalLineToRelative(10.89f)
+                close()
+                moveTo(193.89f, 78.86f)
+                horizontalLineToRelative(10.89f)
+                lineTo(204.78f, 89.75f)
                 horizontalLineToRelative(-10.89f)
                 close()
             }
