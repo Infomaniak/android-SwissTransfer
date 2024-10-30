@@ -114,13 +114,16 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.hilt.androidx.work)
     kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.androidx.compiler)
     implementation(libs.hilt.navigation.compose)
 
     // Others
     implementation(libs.kotlinx.serialization)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.recaptcha)
+    implementation(libs.workmanager)
 
     // Test
     testImplementation(libs.junit)
