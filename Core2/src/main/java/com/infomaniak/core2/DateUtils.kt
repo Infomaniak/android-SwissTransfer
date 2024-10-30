@@ -24,5 +24,6 @@ import java.util.Locale
 const val FORMAT_DATE_DEFAULT = "dd.MM.yy"
 const val FORMAT_DATE_TITLE = "E d MMMM"
 const val FORMAT_DATE_SIMPLE = "dd/MM/yyyy"
+const val FORMAT_DATE_FULL = "EEEE d MMMM"
 
 fun Date.format(pattern: String = FORMAT_DATE_DEFAULT): String = SimpleDateFormat(pattern, Locale.getDefault()).format(this)

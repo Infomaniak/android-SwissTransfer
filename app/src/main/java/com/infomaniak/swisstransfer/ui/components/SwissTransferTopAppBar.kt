@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
-    @StringRes titleRes: Int,
+    title: String,
     navigationMenu: TopAppBarButton? = null,
     vararg actionMenus: TopAppBarButton,
 ) {
@@ -45,7 +45,7 @@ fun SwissTransferTopAppBar(
             actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
             navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
         ),
-        title = { Text(stringResource(id = titleRes), style = SwissTransferTheme.typography.h2) },
+        title = { Text(title, style = SwissTransferTheme.typography.h2) },
         navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
         actions = { actionMenus.forEach { actionMenu -> MenuButton(actionMenu) } },
     )
@@ -79,7 +79,7 @@ data class TopAppBarButton(
 private fun SwissTransferTopAppBarPreview() {
     SwissTransferTheme {
         SwissTransferTopAppBar(
-            titleRes = R.string.appName,
+            title = stringResource(R.string.appName),
             navigationMenu = TopAppBarButton.backButton {},
             TopAppBarButton(AppIcons.Add, R.string.appName) {},
             TopAppBarButton.closeButton {},

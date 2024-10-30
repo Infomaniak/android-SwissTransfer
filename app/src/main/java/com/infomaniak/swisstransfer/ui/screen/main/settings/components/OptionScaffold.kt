@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
@@ -45,7 +46,12 @@ fun OptionScaffold(
     navigateBack: (() -> Unit)?,
 ) {
     SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = { SwissTransferTopAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
+        smallWindowTopAppBar = {
+            SwissTransferTopAppBar(
+                title = stringResource(topAppBarTitleRes),
+                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+            )
+        },
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             OptionTitle(titleRes = optionTitleRes)

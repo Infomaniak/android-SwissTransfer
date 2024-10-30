@@ -181,7 +181,7 @@ private fun ImportFilesScreen(
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.importFilesScreenTitle,
+                title = stringResource(R.string.importFilesScreenTitle),
                 navigationMenu = null,
                 TopAppBarButton.closeButton { closeActivity() },
             )
