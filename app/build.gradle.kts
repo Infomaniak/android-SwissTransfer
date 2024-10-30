@@ -104,6 +104,7 @@ dependencies {
     implementation(libs.androidx.adaptive.navigation)
 
     implementation(libs.swisstransfer.core)
+    implementation(libs.swisstransfer.network)
 
     implementation(libs.coil.compose)
     implementation(libs.qrose)
