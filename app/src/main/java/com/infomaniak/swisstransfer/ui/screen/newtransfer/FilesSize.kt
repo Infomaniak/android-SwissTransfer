@@ -35,22 +35,19 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getFilesSize
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceUsed
 
 @Composable
-fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = Margin.Medium),
-    ) {
-        val filesCount = files.count()
-        val filesSize = LocalContext.current.getFilesSize(files)
+fun FilesSize(modifier: Modifier, files: () -> List<FileUi>, withSpaceLeft: Boolean) {
+    Row(modifier = modifier) {
+        val files = files()
+        val filesCount = files().count()
+        val filesSize = LocalContext.current.getSpaceUsed(files)
         val filesDetail = "${pluralStringResource(R.plurals.filesCount, filesCount, filesCount)}  •  $filesSize"
         Text(
             filesDetail,
-            modifier = Modifier
-                .padding(start = Margin.Medium),
+            modifier = Modifier.padding(start = Margin.Medium),
             color = SwissTransferTheme.colors.secondaryTextColor,
             style = SwissTransferTheme.typography.bodySmallRegular,
         )
@@ -69,15 +66,12 @@ fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
 }
 
 @Preview(name = "Light")
-@Preview(
-    name = "Dark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 fun FileSizePreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface {
-            FilesSize(files, withSpaceLeft = true)
+            FilesSize(Modifier.padding(Margin.Medium), { files }, withSpaceLeft = true)
         }
     }
 }

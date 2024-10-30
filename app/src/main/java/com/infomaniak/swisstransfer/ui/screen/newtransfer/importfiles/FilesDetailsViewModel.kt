@@ -18,16 +18,21 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.infomaniak.swisstransfer.ui.components.FileUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class FilesDetailsViewModel @Inject constructor() : ViewModel() {
 
-    fun getFilesFromUUID(uuid: String): List<FileUi> {
+    fun getFilesFromUUID(uuid: String): Flow<List<FileUi>?> {
         // TODO Call the right manager to fetch files from Realm
-        return listOf(
+        val fileUiList = listOf(
             FileUi(
                 fileName = "How to not get fired.pdf",
                 uid = "How to not get fired.pdf",
@@ -50,5 +55,6 @@ class FilesDetailsViewModel @Inject constructor() : ViewModel() {
                 uri = "",
             ),
         )
+        return flow { emit(fileUiList) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     }
 }
