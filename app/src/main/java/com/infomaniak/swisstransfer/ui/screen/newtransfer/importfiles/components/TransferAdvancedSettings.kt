@@ -46,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun TransferAdvancedSettings(
     modifier: Modifier = Modifier,
-    states: () -> List<SettingOption>,
+    states: () -> List<SettingOption?>,
     onClick: (TransferAdvancedSettingType) -> Unit,
 ) {
     SwissTransferCard(modifier = modifier) {

@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun TransferAdvancedSetting(
     settingType: TransferAdvancedSettingType,
-    selectedSetting: () -> SettingOption,
+    selectedSetting: () -> SettingOption?,
     onClick: () -> Unit,
 ) {
     SharpRippleButton(onClick = onClick, contentPadding = PaddingValues(horizontal = Margin.Large, vertical = Margin.Medium)) {
@@ -70,9 +70,9 @@ fun TransferAdvancedSetting(
 }
 
 @Composable
-private fun SettingValue(selectedSetting: () -> SettingOption) {
+private fun SettingValue(selectedSetting: () -> SettingOption?) {
     Text(
-        text = selectedSetting().title(),
+        text = selectedSetting()?.title?.invoke() ?: "",
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
     )

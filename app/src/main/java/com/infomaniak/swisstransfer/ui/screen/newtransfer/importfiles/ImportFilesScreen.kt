@@ -42,7 +42,10 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.SendActionResult
@@ -66,13 +69,18 @@ fun ImportFilesScreen(
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
     val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
-    val advancedOptionsStates by newTransferViewModel.selectedAdvancedOptions.collectAsStateWithLifecycle()
+    val validityPeriodState by newTransferViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimitState by newTransferViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOptionState by newTransferViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguageState by newTransferViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
     appSettings?.let { safeAppSettings ->
+        newTransferViewModel.initTransferAdvancedOptionsValues(safeAppSettings)
+
         ImportFilesScreen(
             files = { files },
             filesToImportCount = { filesToImportCount },
@@ -88,9 +96,16 @@ fun ImportFilesScreen(
                     passwordOption = PasswordTransferOption.NONE,
                     emailLanguage = safeAppSettings.emailLanguage,
                 ),
-                advancedOptionsStates = advancedOptionsStates,
+                advancedOptionsStates = {
+                    listOf(validityPeriodState, downloadLimitState, passwordOptionState, emailLanguageState)
+                },
                 onAdvancedOptionsClicked = { option ->
-                    // TODO: Update viewModel
+                    when (option) {
+                        is ValidityPeriodOption -> newTransferViewModel.selectTransferValidityPeriod(option)
+                        is DownloadLimitOption -> newTransferViewModel.selectTransferDownloadLimit(option)
+                        is PasswordTransferOption -> newTransferViewModel.selectTransferPasswordOption(option)
+                        is EmailLanguageOption -> newTransferViewModel.selectTransferLanguage(option)
+                    }
                 },
             ),
             removeFileByUid = newTransferViewModel::removeFileByUid,
@@ -190,7 +205,7 @@ private fun ImportFilesScreen(
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferAdvancedSettings(
                     modifier = Modifier,
-                    states = { advancedOptionsCallbacks.initialValues.toAdvancedOptionsList() },
+                    states = advancedOptionsCallbacks.advancedOptionsStates,
                     onClick = ::onAdvancedOptionClicked,
                 )
             }
@@ -307,7 +322,7 @@ private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes:
 
 data class AdvancedOptionsCallbacks(
     val initialValues: SettingsViewModel.AppSettingsData,
-    val advancedOptionsStates: List<() -> SettingOption>,
+    val advancedOptionsStates: () -> List<SettingOption?>,
     val onAdvancedOptionsClicked: (SettingOption) -> Unit,
 )
 
@@ -336,7 +351,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
                     passwordOption = PasswordTransferOption.NONE,
                     emailLanguage = EmailLanguage.FRENCH,
                 ),
-                advancedOptionsStates = emptyList(),
+                advancedOptionsStates = { emptyList() },
                 onAdvancedOptionsClicked = {},
             ),
             removeFileByUid = {},
