@@ -59,7 +59,7 @@ fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
 ) {
 
-    val files = listOf(
+    val transferFiles = listOf(
         FileUi(
             uid = UUID.randomUUID().toString(),
             fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
@@ -104,6 +104,51 @@ fun TransferDetailsScreen(
         ),
     )
 
+    val files = listOf(
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
+            fileSizeInBytes = 57_689_032L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Introduction to Turning It Off and On Again (1).pptx",
+            fileSizeInBytes = 89_723_143L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
+            fileSizeInBytes = 237_866_728L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
+            fileSizeInBytes = 57_689_032L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Introduction to Turning It Off and On Again (2).pptx",
+            fileSizeInBytes = 89_723_143L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
+            fileSizeInBytes = 237_866_728L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+    )
+
     val transfer = TransferUi(
         uuid = UUID.randomUUID().toString(),
         createdDateTimestamp = Date().time - 30L * 86_400_000L,
@@ -115,7 +160,7 @@ fun TransferDetailsScreen(
         downloadLimit = 250,
         downloadLeft = 42,
         message = "Coucou c'est moi le message de description du transfert.",
-        files = files,
+        files = transferFiles,
     )
 
     val transferSenderEmail: String? = "john.smith@ik.me" // TODO
@@ -134,16 +179,26 @@ fun TransferDetailsScreen(
         floatingActionButton = {},
     ) {
         Column {
-            Spacer(modifier = Modifier.height(Margin.Large))
-            Column(
+
+            FileItemList(
                 modifier = Modifier
                     .weight(1.0f)
-                    .padding(horizontal = Margin.Medium),
+                    .padding(horizontal = Margin.Large),
+                files = files, // transfer.files, // TODO
+                isRemoveButtonVisible = false,
+                isCheckboxVisible = { isMultiselectOn },
+                isUidChecked = { fileUid -> false }, // TODO
+                setUidCheckStatus = { fileUid, isChecked -> /* TODO */ },
             ) {
-                TransferInfos(transfer)
-                TransferMessage(transfer, transferSenderEmail)
-                TransferContent(transfer, isMultiselectOn = { isMultiselectOn })
+                Column {
+                    TransferInfos(transfer)
+                    TransferMessage(transfer, transferSenderEmail)
+                    TransferContent()
+                }
             }
+
+            Spacer(modifier = Modifier.height(Margin.Large))
+
             BottomBar(
                 isMultiselectOn = { isMultiselectOn },
                 onClick = { item ->
@@ -271,67 +326,12 @@ private fun TransferMessage(transfer: TransferUi, transferSenderEmail: String?) 
 
 @Composable
 private fun TransferContent(
-    transfer: TransferUi,
-    isMultiselectOn: () -> Boolean,
 ) {
-
-    val files = listOf(
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
-            fileSizeInBytes = 57_689_032L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (1).pptx",
-            fileSizeInBytes = 89_723_143L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
-            fileSizeInBytes = 237_866_728L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
-            fileSizeInBytes = 57_689_032L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (2).pptx",
-            fileSizeInBytes = 89_723_143L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
-            fileSizeInBytes = 237_866_728L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-    )
-
     Text(
         text = stringResource(R.string.transferContentHeader),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
-        modifier = Modifier.padding(top = Margin.Large, bottom = Margin.Medium),
-    )
-    FileItemList(
-        files = files, // transfer.files, // TODO
-        isRemoveButtonVisible = false,
-        isCheckboxVisible = { isMultiselectOn() },
-        isUidChecked = { fileUid -> false }, // TODO
-        setUidCheckStatus = { fileUid, isChecked -> /* TODO */ },
+        modifier = Modifier.padding(top = Margin.Large),
     )
 }
 
