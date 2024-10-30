@@ -29,7 +29,7 @@ import javax.inject.Singleton
 @Singleton
 class ImportLocalStorage @Inject constructor(@ApplicationContext private val appContext: Context) {
 
-    private val importFolder by lazy { File(appContext.cacheDir, LOCAL_COPY_FOLDER) }
+    private val importFolder by lazy { File(appContext.filesDir, IMPORTED_FILES) }
 
     fun removeImportFolder() {
         if (importFolder.exists()) runCatching { importFolder.deleteRecursively() }
@@ -67,6 +67,6 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
 
     companion object {
         const val TAG = "Importation stream copy"
-        private const val LOCAL_COPY_FOLDER = "local_copy_folder"
+        private const val IMPORTED_FILES = "imported_files"
     }
 }
