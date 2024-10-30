@@ -56,9 +56,9 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
     }
 
     private fun copyStreams(inputStream: InputStream, outputStream: OutputStream): Long {
-        return inputStream.use { inputStream ->
-            outputStream.use { outputStream ->
-                inputStream.copyTo(outputStream)
+        return inputStream.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
             }
         }
     }
