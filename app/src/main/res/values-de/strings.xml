@@ -104,6 +104,9 @@
     <string name="transferUploadSourceChoiceFiles">Dateien durchsuchen</string>
     <string name="transferUploadSourceChoiceGallery">Foto- und Videogalerie</string>
     <string name="transferUploadSourceChoiceTitle">Herunterladen von</string>
+    <string name="uploadCancelConfirmBottomSheetCancel">Übertragung abbrechen</string>
+    <string name="uploadCancelConfirmBottomSheetClose">Schliessen und weiter</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Überweisung rückgängig machen willst?</string>
     <string name="uploadSuccessDescriptionArgumentConfidentiality">einem Internet bei, das den Datenschutz und die Privatsphäre respektiert.</string>
     <string name="uploadSuccessDescriptionArgumentEnergy">unsere eigenen Rechenzentren ohne Klimaanlagen</string>
     <string name="uploadSuccessDescriptionArgumentIndependence">die technologische Unabhängigkeit in Europa.</string>

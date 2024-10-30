@@ -126,11 +126,11 @@ private fun UploadProgressScreen(
 @Composable
 private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -> Unit) {
     SwissTransferBottomSheet(
-        titleRes = R.string.appName,
+        titleRes = R.string.uploadCancelConfirmBottomSheetTitle,
         imageVector = AppIllus.RedCrossPaperPlanes.image(),
         topButton = {
             LargeButton(
-                titleRes = R.string.appName,
+                titleRes = R.string.uploadCancelConfirmBottomSheetCancel,
                 modifier = it,
                 style = ButtonType.ERROR,
                 onClick = onCancel,
@@ -138,7 +138,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
         },
         bottomButton = {
             LargeButton(
-                titleRes = R.string.appName,
+                titleRes = R.string.uploadCancelConfirmBottomSheetClose,
                 modifier = it,
                 style = ButtonType.TERTIARY,
                 onClick = closeButtonSheet,

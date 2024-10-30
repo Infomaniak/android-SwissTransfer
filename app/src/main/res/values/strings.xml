@@ -109,6 +109,9 @@
     <string name="transferUploadSourceChoiceFiles">Browse files</string>
     <string name="transferUploadSourceChoiceGallery">Photo and video gallery</string>
     <string name="transferUploadSourceChoiceTitle">Upload from</string>
+    <string name="uploadCancelConfirmBottomSheetCancel">Cancel the transfer</string>
+    <string name="uploadCancelConfirmBottomSheetClose">Close and continue</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Are you sure you want to cancel the transfer?</string>
     <string name="uploadSuccessDescriptionArgumentConfidentiality">Internet that respects confidentiality and privacy.</string>
     <string name="uploadSuccessDescriptionArgumentEnergy">our own data centers, without air conditioning</string>
     <string name="uploadSuccessDescriptionArgumentIndependence">technological independence in Europe.</string>
