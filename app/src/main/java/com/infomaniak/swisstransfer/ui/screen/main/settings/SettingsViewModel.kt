@@ -28,8 +28,8 @@ import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toAdvancedOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toAdvancedOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -65,7 +65,7 @@ class SettingsViewModel @Inject constructor(
         val passwordOption: PasswordTransferOption,
         val emailLanguage: EmailLanguage,
     ) {
-        fun toAdvancedOptionsList() = listOf<TransferAdvancedOptionsEnum>(
+        fun toAdvancedOptionsList() = listOf<SettingOption>(
             validityPeriod.toAdvancedOption(),
             downloadLimit.toAdvancedOption(),
             passwordOption,

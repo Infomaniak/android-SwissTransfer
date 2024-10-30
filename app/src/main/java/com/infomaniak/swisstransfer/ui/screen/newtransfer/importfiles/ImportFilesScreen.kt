@@ -307,21 +307,17 @@ private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes:
 
 data class AdvancedOptionsCallbacks(
     val initialValues: SettingsViewModel.AppSettingsData,
-    val advancedOptionsStates: List<() -> TransferAdvancedOptionsEnum>,
-    val onAdvancedOptionsClicked: (TransferAdvancedOptionsEnum) -> Unit,
+    val advancedOptionsStates: List<() -> SettingOption>,
+    val onAdvancedOptionsClicked: (SettingOption) -> Unit,
 )
 
 enum class PasswordTransferOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
-) : TransferAdvancedOptionsEnum, SettingOption {
+) : SettingOption {
     NONE({ stringResource(R.string.settingsOptionNone) }),
     ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
-}
-
-interface TransferAdvancedOptionsEnum {
-    val title: @Composable () -> String
 }
 
 @PreviewAllWindows
