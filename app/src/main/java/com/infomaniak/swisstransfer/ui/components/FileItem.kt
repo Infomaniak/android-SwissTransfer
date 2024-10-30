@@ -39,9 +39,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 data class FileUi(
     val uid: String,
     val fileName: String,
-    val fileSizeInBytes: Long,
+    val fileSize: Long,
     val mimeType: String?,
-    val uri: String,
+    val localPath: String,
 )
 
 @Composable
@@ -60,7 +60,7 @@ fun FileItem(
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
         title = file.fileName,
-        description = Formatter.formatShortFileSize(LocalContext.current, file.fileSizeInBytes),
+        description = Formatter.formatShortFileSize(LocalContext.current, file.fileSize),
         content = {
             FilePreview(
                 file = file,

@@ -78,7 +78,7 @@ private fun ImportFilesScreen(
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
-        val usedSpace = importedFiles.sumOf { it.fileSizeInBytes }
+        val usedSpace = importedFiles.sumOf { it.fileSize }
         val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
         getHumanReadableSize(context, spaceLeft)
     }

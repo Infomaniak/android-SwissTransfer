@@ -39,7 +39,7 @@ class FilesMutableStateFlow {
         val index = files.indexOfFirst { it.uid == uid }.takeIf { it != -1 } ?: return null
         val fileToRemove = files.removeAt(index)
 
-        runCatching { File(fileToRemove.uri).delete() }
+        runCatching { File(fileToRemove.localPath).delete() }
 
         this.files.value = files
 

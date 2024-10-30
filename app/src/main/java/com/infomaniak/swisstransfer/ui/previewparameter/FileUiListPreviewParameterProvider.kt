@@ -26,23 +26,23 @@ class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUi>> {
             FileUi(
                 fileName = "How to not get fired.pdf",
                 uid = "How to not get fired.pdf",
-                fileSizeInBytes = 10302130,
+                fileSize = 10302130,
                 mimeType = null,
-                uri = "",
+                localPath = "",
             ),
             FileUi(
                 fileName = "Opening images tutorial.png",
                 uid = "Opening images tutorial.png",
-                fileSizeInBytes = 456782,
+                fileSize = 456782,
                 mimeType = null,
-                uri = "https://picsum.photos/200/300",
+                localPath = "https://picsum.photos/200/300",
             ),
             FileUi(
                 fileName = "The 5 step guide to turning it off and on again.docx",
                 uid = "The 5 step guide to turning it off and on again.docx",
-                fileSizeInBytes = 89723143,
+                fileSize = 89723143,
                 mimeType = null,
-                uri = "",
+                localPath = "",
             ),
         )
     )

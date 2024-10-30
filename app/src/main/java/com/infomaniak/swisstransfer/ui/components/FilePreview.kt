@@ -49,7 +49,7 @@ fun FilePreview(
     var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
 
     if (displayPreview) {
-        FileThumbnail(file.uri, onError = { displayPreview = false })
+        FileThumbnail(file.localPath, onError = { displayPreview = false })
     } else {
         FileIcon(file.fileType, circleColor, circleSize)
     }

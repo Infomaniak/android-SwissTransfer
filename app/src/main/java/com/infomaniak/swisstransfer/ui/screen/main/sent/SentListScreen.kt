@@ -35,23 +35,23 @@ fun SentListScreen(transfers: List<Any>) {
         FileUi(
             fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
             uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-            fileSizeInBytes = 57_689_032L,
+            fileSize = 57_689_032L,
             mimeType = null,
-            uri = "",
+            localPath = "",
         ),
         FileUi(
             fileName = "Introduction to Turning It Off and On Again.pptx",
             uid = "Introduction to Turning It Off and On Again.pptx",
-            fileSizeInBytes = 89_723_143L,
+            fileSize = 89_723_143L,
             mimeType = null,
-            uri = "",
+            localPath = "",
         ),
         FileUi(
             fileName = "Learning to Copy and Paste: A Complete Guide.docx",
             uid = "Learning to Copy and Paste: A Complete Guide.docx",
-            fileSizeInBytes = 237_866_728L,
+            fileSize = 237_866_728L,
             mimeType = null,
-            uri = "",
+            localPath = "",
         ),
     )
 

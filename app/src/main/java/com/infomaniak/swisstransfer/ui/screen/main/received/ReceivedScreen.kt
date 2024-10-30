@@ -75,23 +75,23 @@ private fun ReceivedScreen(
                 FileUi(
                     fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
                     uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-                    fileSizeInBytes = 57689032,
+                    fileSize = 57689032,
                     mimeType = null,
-                    uri = "",
+                    localPath = "",
                 ),
                 FileUi(
                     fileName = "Introduction to Turning It Off and On Again.pptx",
                     uid = "Introduction to Turning It Off and On Again.pptx",
-                    fileSizeInBytes = 89723143,
+                    fileSize = 89723143,
                     mimeType = null,
-                    uri = "",
+                    localPath = "",
                 ),
                 FileUi(
                     fileName = "Learning to Copy and Paste: A Complete Guide.docx",
                     uid = "Learning to Copy and Paste: A Complete Guide.docx",
-                    fileSizeInBytes = 237866728,
+                    fileSize = 237866728,
                     mimeType = null,
-                    uri = "",
+                    localPath = "",
                 ),
             )
             FileItemList(
