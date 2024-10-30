@@ -32,7 +32,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -143,7 +142,7 @@ fun TransferDetailsScreen(
             ) {
                 TransferInfos(transfer)
                 TransferMessage(transfer, transferSenderEmail)
-                TransferContent(transfer)
+                TransferContent(transfer, isMultiselectOn = { isMultiselectOn })
             }
             BottomBar(
                 isMultiselectOn = { isMultiselectOn },
@@ -271,12 +270,68 @@ private fun TransferMessage(transfer: TransferUi, transferSenderEmail: String?) 
 }
 
 @Composable
-private fun TransferContent(transfer: TransferUi) {
+private fun TransferContent(
+    transfer: TransferUi,
+    isMultiselectOn: () -> Boolean,
+) {
+
+    val files = listOf(
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
+            fileSizeInBytes = 57_689_032L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Introduction to Turning It Off and On Again (1).pptx",
+            fileSizeInBytes = 89_723_143L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
+            fileSizeInBytes = 237_866_728L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
+            fileSizeInBytes = 57_689_032L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Introduction to Turning It Off and On Again (2).pptx",
+            fileSizeInBytes = 89_723_143L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+        com.infomaniak.swisstransfer.ui.components.FileUi(
+            uid = UUID.randomUUID().toString(),
+            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
+            fileSizeInBytes = 237_866_728L,
+            mimeType = null,
+            uri = "https://chk.me/83azQOl",
+        ),
+    )
+
     Text(
         text = stringResource(R.string.transferContentHeader),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
         modifier = Modifier.padding(top = Margin.Large, bottom = Margin.Medium),
+    )
+    FileItemList(
+        files = files, // transfer.files, // TODO
+        isRemoveButtonVisible = false,
+        isCheckboxVisible = { isMultiselectOn() },
+        isUidChecked = { fileUid -> false }, // TODO
+        setUidCheckStatus = { fileUid, isChecked -> /* TODO */ },
     )
 }
 
@@ -288,7 +343,7 @@ private fun BottomBar(
     Column(
         modifier = Modifier
             .height(80.dp)
-            .background(Color(0xFFFAFAFA)),
+            .background(SwissTransferTheme.colors.navigationItemBackground),
     ) {
         HorizontalDivider()
         Row(

@@ -59,10 +59,9 @@ fun SentListScreen(transfers: List<Any>) {
         modifier = Modifier.padding(Margin.Medium),
         files = transfers,
         isRemoveButtonVisible = true,
-        isCheckboxVisible = false,
+        isCheckboxVisible = { false },
         isUidChecked = { false },
         setUidCheckStatus = { _, _ -> },
-        onRemoveUid = {},
     )
 }
 
