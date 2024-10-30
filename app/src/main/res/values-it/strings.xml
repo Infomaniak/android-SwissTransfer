@@ -16,6 +16,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
+    <string name="advancedSettingsTitle">Impostazioni avanzate</string>
     <string name="buttonAddFiles">Aggiunta di file</string>
     <string name="buttonCopyLink">Copia link</string>
     <string name="buttonFinished">Finisci</string>
@@ -31,6 +32,7 @@
     </plurals>
     <string name="firstTransferDescription">Effettua il tuo primo trasferimento!</string>
     <string name="importFilesScreenTitle">File da trasferire</string>
+    <string name="myFilesTitle">I miei file</string>
     <string name="noFileDescription">Aggiungere fino a 50 GB di file</string>
     <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noTransferReceivedDescription">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
@@ -87,7 +89,7 @@
     <string name="transferTypeProximity">Vicino</string>
     <string name="transferTypeQrCode">Codice QR</string>
     <string name="transferTypeScreenTitle">Trasferimento</string>
-    <string name="transferTypeTitle">Invia i tuoi file tramite</string>
+    <string name="transferTypeTitle">Inviare da</string>
     <string name="transferUploadSourceChoiceCamera">Macchina fotografica</string>
     <string name="transferUploadSourceChoiceFiles">Sfoglia i file</string>
     <string name="transferUploadSourceChoiceGallery">Galleria di foto e video</string>

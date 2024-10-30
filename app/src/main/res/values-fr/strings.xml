@@ -16,6 +16,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
     <string name="buttonCopyLink">Copier le lien</string>
     <string name="buttonFinished">Terminer</string>
@@ -32,6 +33,7 @@
     </plurals>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
     <string name="importFilesScreenTitle">Fichiers à transférer</string>
+    <string name="myFilesTitle">Mes fichiers</string>
     <string name="noFileDescription">Ajoute jusqu’à 50 Go de fichiers</string>
     <string name="noFileTitle">Pas de fichier, pas de transfert !</string>
     <string name="noTransferReceivedDescription">Tous les transferts que tu recevras sur les 30 derniers jours apparaitront ici.</string>
@@ -89,7 +91,7 @@
     <string name="transferTypeProximity">A proximité</string>
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transfert</string>
-    <string name="transferTypeTitle">Envoie tes fichiers par</string>
+    <string name="transferTypeTitle">Envoyer par</string>
     <string name="transferUploadSourceChoiceCamera">Appareil photo</string>
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
     <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>

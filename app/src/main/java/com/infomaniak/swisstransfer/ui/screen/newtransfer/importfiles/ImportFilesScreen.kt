@@ -20,7 +20,10 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -103,21 +106,27 @@ private fun ImportFilesScreen(
         topButton = { modifier ->
             SendButton({ isImporting }, { importProgress }, modifier)
         },
-    ) {
-        ImportedFilesCard(
-            modifier = Modifier.padding(Margin.Medium),
-            files = files,
-            humanReadableSize = { humanReadableSize },
-            showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
-            removeFileByUid = removeFileByUid,
-        )
+        content = {
+            Column(Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) {
+                ImportFilesTitle(titleRes = R.string.myFilesTitle)
+                ImportedFilesCard(
+                    modifier = Modifier.padding(vertical = Margin.Medium),
+                    files = files,
+                    humanReadableSize = { humanReadableSize },
+                    showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
+                    removeFileByUid = removeFileByUid,
+                )
+                ImportFilesTitle(titleRes = R.string.transferTypeTitle)
+                ImportFilesTitle(titleRes = R.string.advancedSettingsTitle)
+            }
 
-        UploadSourceChoiceBottomSheet(
-            isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
-            onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
-            closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
-        )
-    }
+            UploadSourceChoiceBottomSheet(
+                isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
+                onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
+                closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
+            )
+        }
+    )
 }
 
 @Composable
@@ -130,6 +139,15 @@ private fun SendButton(isImporting: () -> Boolean, importProgress: () -> Float, 
         style = ButtonType.PRIMARY,
         progress = progress,
         onClick = { /*TODO*/ },
+    )
+}
+
+@Composable
+private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+    Text(
+        modifier = modifier,
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        text = stringResource(titleRes),
     )
 }
 
