@@ -75,9 +75,10 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     navController.navigate(FilesDetailsDestination(fileId))
                 },
                 fileId = filesDetailsDestination.fileId,
-                withSpaceLeft = false, onCloseClicked = {},
+                withSpaceLeft = true,
+                onCloseClicked = {},
                 onFileRemoved = {},
-                navigateBack = { navController.popBackStack() }
+                navigateBack = { navController.popBackStack() },
             )
         }
     }
