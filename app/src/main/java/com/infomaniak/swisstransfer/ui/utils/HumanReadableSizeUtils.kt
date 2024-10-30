@@ -33,7 +33,7 @@ object HumanReadableSizeUtils {
 
     private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSizeInBytes }
 
-    fun Context.getFilesSize(files: List<FileUi>): String = getHumanReadableSize(this, getFilesSizeInBytes(files))
+    fun Context.getSpaceUsed(files: List<FileUi>): String = getHumanReadableSize(this, getFilesSizeInBytes(files))
 
     fun Context.getSpaceLeft(files: List<FileUi>): String {
         val spaceLeft = (TOTAL_FILE_SIZE - getFilesSizeInBytes(files)).coerceAtLeast(0)

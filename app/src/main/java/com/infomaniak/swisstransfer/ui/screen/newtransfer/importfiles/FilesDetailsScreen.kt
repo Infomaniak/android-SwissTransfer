@@ -21,9 +21,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.infomaniak.swisstransfer.R
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -43,12 +44,14 @@ fun FilesDetailsScreen(
     onCloseClicked: (() -> Unit),
     navigateBack: (() -> Unit),
 ) {
+    val files by filesDetailsViewModel.getFilesFromUUID(fileId).collectAsStateWithLifecycle(emptyList())
+
     FilesDetailsScreen(
         title = {
             //TODO Get fileId detail to get the title
             "Some Folder"
         },
-        files = { filesDetailsViewModel.getFilesFromUUID(fileId) },
+        files = { files ?: emptyList() },
         navigateToDetails = navigateToDetails,
         withSpaceLeft = withSpaceLeft,
         onFileRemoved = onFileRemoved,
@@ -67,19 +70,17 @@ private fun FilesDetailsScreen(
     onCloseClicked: (() -> Unit),
     navigateBack: (() -> Unit),
 ) {
-    val filesToDisplay = files()
     Column {
         SwissTransferTopAppBar(
             title = title(),
-            titleRes = R.string.importFilesScreenTitle,
             navigationMenu = TopAppBarButton.backButton { navigateBack() },
             TopAppBarButton.closeButton { onCloseClicked() },
         )
 
-        FilesSize(filesToDisplay, withSpaceLeft)
+        FilesSize(Modifier.padding(vertical = Margin.Medium), files, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
-            files = filesToDisplay,
+            files = files(),
             isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = false,
             isUidChecked = { false },
