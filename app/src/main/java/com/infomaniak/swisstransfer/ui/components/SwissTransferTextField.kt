@@ -18,7 +18,9 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.text.Html
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -33,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Eye
@@ -41,9 +42,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.EyeCrossed
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun SwissTransferTextField(
@@ -54,7 +52,7 @@ fun SwissTransferTextField(
     minLineNumber: Int = 1,
     maxLineNumber: Int = if (minLineNumber > 1) Int.MAX_VALUE else 1,
     keyboardType: KeyboardType = KeyboardType.Text,
-    errorMessageState: StateFlow<String?> = MutableStateFlow(null).asStateFlow(),
+    errorMessage: () -> String? = { null },
     supportingText: String? = null,
     onValueChange: ((String) -> Unit)? = null,
 ) {
@@ -62,7 +60,6 @@ fun SwissTransferTextField(
     var shouldShowPassword: Boolean by rememberSaveable { mutableStateOf(false) }
 
     var text by rememberSaveable { mutableStateOf(initialValue) }
-    val errorMessage by errorMessageState.collectAsStateWithLifecycle()
 
     val isPassword = keyboardType == KeyboardType.Password
     val displayLabel = if (isRequired) label else "$label ${stringResource(R.string.textFieldOptional)}"
@@ -91,26 +88,8 @@ fun SwissTransferTextField(
             null
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, autoCorrectEnabled = true),
-        isError = errorMessage != null,
-        supportingText = (errorMessage ?: supportingText)?.let { { Text(it) } },
-    )
-}
-
-@Composable
-fun SwissTransferPasswordField(
-    modifier: Modifier = Modifier,
-    supportingText: String? = null,
-    errorMessageState: StateFlow<String?> = MutableStateFlow(null).asStateFlow(),
-    onValueChange: ((String) -> Unit)? = null,
-) {
-    SwissTransferTextField(
-        modifier = modifier,
-        label = stringResource(R.string.settingsOptionPassword),
-        maxLineNumber = 1,
-        onValueChange = onValueChange,
-        keyboardType = KeyboardType.Password,
-        errorMessageState = errorMessageState,
-        supportingText = supportingText,
+        isError = errorMessage() != null,
+        supportingText = (errorMessage() ?: supportingText)?.let { { Text(it) } },
     )
 }
 
@@ -134,17 +113,16 @@ fun Preview() {
     SwissTransferTheme {
         Surface {
             Column(Modifier.padding(Margin.Medium)) {
-                Text("TextField cases")
                 SwissTransferTextField(label = stringResource(R.string.transferTitlePlaceholder))
                 SwissTransferTextField(
                     label = stringResource(R.string.transferTitlePlaceholder),
                     initialValue = "test",
-                    errorMessageState = MutableStateFlow("").asStateFlow(),
+                    errorMessage = { null },
                 )
                 SwissTransferTextField(
                     keyboardType = KeyboardType.Email,
                     initialValue = "a@a@.com",
-                    errorMessageState = MutableStateFlow("Invalid address").asStateFlow(),
+                    errorMessage = { "Invalid address" },
                     label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 )
                 SwissTransferTextField(
@@ -158,16 +136,6 @@ fun Preview() {
                     isRequired = false,
                     label = stringResource(R.string.transferTitlePlaceholder),
                     supportingText = "supporting Text",
-                )
-                Spacer(Modifier.height(Margin.Huge))
-                Text("PasswordField cases")
-                SwissTransferPasswordField(
-                    supportingText = "Supporting Text",
-                    errorMessageState = MutableStateFlow(null).asStateFlow(),
-                )
-                SwissTransferPasswordField(
-                    supportingText = "Supporting Text",
-                    errorMessageState = MutableStateFlow("Wrong Password").asStateFlow(),
                 )
             }
         }
