@@ -18,10 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.text.Html
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -39,8 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.EyeCrossedOutSmall
-import com.infomaniak.swisstransfer.ui.images.icons.EyeSmall
+import com.infomaniak.swisstransfer.ui.images.icons.Eye
+import com.infomaniak.swisstransfer.ui.images.icons.EyeCrossed
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -120,13 +118,13 @@ fun SwissTransferPasswordField(
 private fun ShowPasswordButton(shouldShowPassword: Boolean, onClick: () -> Unit) {
 
     val (contentDescription, icon) = if (shouldShowPassword) {
-        stringResource(R.string.contentDescriptionButtonHidePassword) to AppIcons.EyeCrossedOutSmall
+        stringResource(R.string.contentDescriptionButtonHidePassword) to AppIcons.EyeCrossed
     } else {
-        stringResource(R.string.contentDescriptionButtonShowPassword) to AppIcons.EyeSmall
+        stringResource(R.string.contentDescriptionButtonShowPassword) to AppIcons.Eye
     }
 
     IconButton(onClick = onClick) {
-        Icon(imageVector = icon, contentDescription = contentDescription)
+        Icon(icon, contentDescription, Modifier.size(Dimens.SmallIconSize))
     }
 }
 

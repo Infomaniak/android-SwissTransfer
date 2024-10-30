@@ -82,12 +82,12 @@
         <item quantity="other">%d Tage</item>
     </plurals>
     <string name="textFieldOptional">(Fakultativ)</string>
-    <string name="transferMessagePlaceholder">Eine Botschaft, die Sie weitergeben möchten?</string>
-    <string name="transferRecipientAddressPlaceholder">Senden Sie die Dateien an</string>
+    <string name="transferMessagePlaceholder">Eine Nachricht, die du weitergeben willst?</string>
+    <string name="transferRecipientAddressPlaceholder">Dateien senden an</string>
     <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="transferSendButton">Senden</string>
-    <string name="transferSenderAddressPlaceholder">Ihre E-Mail Adresse</string>
+    <string name="transferSenderAddressPlaceholder">Deine E-Mail Adresse</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s übrig</item>
         <item quantity="other">%s übrig</item>

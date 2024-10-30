@@ -82,17 +82,17 @@
         <item quantity="other">%d días</item>
     </plurals>
     <string name="textFieldOptional">(Opcional)</string>
-    <string name="transferMessagePlaceholder">¿Algún mensaje que quiera transmitir?</string>
-    <string name="transferRecipientAddressPlaceholder">Envíe los archivos a</string>
+    <string name="transferMessagePlaceholder">¿Algún mensaje que quieras transmitir?</string>
+    <string name="transferRecipientAddressPlaceholder">Enviar archivos a</string>
     <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="transferSendButton">Enviar</string>
-    <string name="transferSenderAddressPlaceholder">Su dirección de correo electrónico</string>
+    <string name="transferSenderAddressPlaceholder">Tu dirección de correo electrónico</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">Queda %s</item>
         <item quantity="other">Quedan %s</item>
     </plurals>
-    <string name="transferTitlePlaceholder">Dé un título a su transferencia</string>
+    <string name="transferTitlePlaceholder">Dar un título a su transferencia</string>
     <string name="transferTypeEmail">Correo electrónico</string>
     <string name="transferTypeLink">Enlace</string>
     <string name="transferTypeProximity">Proximidad</string>
