@@ -57,7 +57,8 @@ annotation class PreviewSmallWindow
 )
 @Preview(
     name = "(3) Large window landscape light",
-    group = "LargeWindow", device = "spec:width=1280dp,height=800dp,dpi=240",
+    group = "LargeWindow",
+    device = "spec:width=1280dp,height=800dp,dpi=240",
 )
 @Preview(
     name = "(4) Large window landscape dark",
