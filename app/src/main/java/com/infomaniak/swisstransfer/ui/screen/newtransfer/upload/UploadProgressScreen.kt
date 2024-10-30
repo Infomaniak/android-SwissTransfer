@@ -170,7 +170,7 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> 
     val percentageNoDecimals by remember {
         derivedStateOf {
             val percentage = (uploadedSizeInBytes().toFloat() / totalSizeInBytes())
-            String.format(Locale.getDefault(), "%.0f", percentage * 100)
+            String.format(Locale.getDefault(), "%d", (percentage * 100).toInt())
         }
     }
 
