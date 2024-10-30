@@ -35,9 +35,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val importLocalStorage: ImportLocalStorage,
