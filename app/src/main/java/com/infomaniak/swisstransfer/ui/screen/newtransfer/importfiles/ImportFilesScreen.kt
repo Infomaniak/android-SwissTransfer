@@ -118,7 +118,7 @@ private fun ImportFilesScreen(
             Column(
                 modifier = Modifier
                     .padding(horizontal = Margin.Medium, vertical = Margin.Large)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 ImportFilesTitle(titleRes = R.string.myFilesTitle)
                 ImportedFilesCard(
@@ -160,7 +160,7 @@ private fun ImportFilesScreen(
                             EmailLanguageOption.GERMAN,
                         )
                     },
-                    onClick = { },
+                    onClick = {},
                 )
             }
 

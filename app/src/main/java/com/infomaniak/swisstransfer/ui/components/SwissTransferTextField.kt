@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.text.Html
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -51,6 +50,7 @@ fun SwissTransferTextField(
     initialValue: String = "",
     minLineNumber: Int = 1,
     maxLineNumber: Int = if (minLineNumber > 1) Int.MAX_VALUE else 1,
+    isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     errorMessage: () -> String? = { null },
     supportingText: String? = null,
@@ -61,7 +61,6 @@ fun SwissTransferTextField(
 
     var text by rememberSaveable { mutableStateOf(initialValue) }
 
-    val isPassword = keyboardType == KeyboardType.Password
     val displayLabel = if (isRequired) label else "$label ${stringResource(R.string.textFieldOptional)}"
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
@@ -87,7 +86,10 @@ fun SwissTransferTextField(
         } else {
             null
         },
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, autoCorrectEnabled = true),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
+            autoCorrectEnabled = true,
+        ),
         isError = errorMessage() != null,
         supportingText = (errorMessage() ?: supportingText)?.let { { Text(it) } },
     )
