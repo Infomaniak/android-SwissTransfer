@@ -81,11 +81,11 @@
         <item quantity="one">día %d</item>
         <item quantity="other">%d días</item>
     </plurals>
+    <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
+    <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
     <string name="transferMessagePlaceholder">¿Algún mensaje que quieras transmitir?</string>
     <string name="transferRecipientAddressPlaceholder">Enviar archivos a</string>
-    <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
-    <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="transferSendButton">Enviar</string>
     <string name="transferSenderAddressPlaceholder">Tu dirección de correo electrónico</string>
     <plurals name="transferSpaceLeft">

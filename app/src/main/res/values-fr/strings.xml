@@ -83,10 +83,10 @@
         <item quantity="other">%d jours</item>
     </plurals>
     <string name="textFieldOptional">(Facultatif)</string>
-    <string name="transferMessagePlaceholder">Un message à faire passer ?</string>
-    <string name="transferRecipientAddressPlaceholder">Envoyer les fichiers à</string>
     <string name="snackbarLinkCopiedToClipboard">Lien copié dans le presse-papiers</string>
     <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
+    <string name="transferMessagePlaceholder">Un message à faire passer ?</string>
+    <string name="transferRecipientAddressPlaceholder">Envoyer les fichiers à</string>
     <string name="transferSendButton">Envoyer</string>
     <string name="transferSenderAddressPlaceholder">Ton adresse mail</string>
     <plurals name="transferSpaceLeft">

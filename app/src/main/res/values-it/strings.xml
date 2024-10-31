@@ -81,11 +81,10 @@
         <item quantity="one">%d giorno</item>
         <item quantity="other">%d giorni</item>
     </plurals>
-    <string name="textFieldOptional">(Opzionale)</string>
-    <string name="transferMessagePlaceholder">C’è qualche messaggio che vorresti trasmettere?</string>
-    <string name="transferRecipientAddressPlaceholder">Invia i file a</string>
     <string name="snackbarLinkCopiedToClipboard">Link copiato negli appunti</string>
     <string name="startActivityCantHandleAction">Non è stata trovata alcuna applicazione in grado di gestire questa azione</string>
+    <string name="textFieldOptional">(Opzionale)</string>
+    <string name="transferRecipientAddressPlaceholder">Invia i file a</string>
     <string name="transferMessagePlaceholder">C’è qualche messaggio che vorrebbe trasmettere?</string>
     <string name="transferSendButton">Invia</string>
     <string name="transferSenderAddressPlaceholder">Il tuo indirizzo e-mail</string>
