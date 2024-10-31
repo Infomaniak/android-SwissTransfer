@@ -98,11 +98,11 @@ private fun FilesDetailsScreenPreview() {
         Surface {
             FilesDetailsScreen(
                 fileId = "",
-                navigateToDetails = { },
+                navigateToDetails = {},
                 withSpaceLeft = true,
-                onFileRemoved = { },
-                onCloseClicked = { },
-                navigateBack = { },
+                onFileRemoved = {},
+                onCloseClicked = {},
+                navigateBack = {},
             )
         }
     }
