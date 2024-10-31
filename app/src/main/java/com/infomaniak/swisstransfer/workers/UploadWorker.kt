@@ -25,6 +25,9 @@ import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -89,6 +92,21 @@ class UploadWorker @AssistedInject constructor(
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
+        }
+
+        fun trackUploadProgressFlow(): Flow<MutableList<WorkInfo>> {
+            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
+                .addStates(listOf(WorkInfo.State.RUNNING))
+                .build()
+            return workManager.getWorkInfosFlow(workQuery)
+        }
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        fun isPendingOrRunningFlow(): Flow<Boolean> {
+            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
+                .addStates(listOf(WorkInfo.State.RUNNING, WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED))
+                .build()
+            return workManager.getWorkInfosFlow(workQuery).mapLatest { it.isNotEmpty() }
         }
 
         fun cancelWork() {
