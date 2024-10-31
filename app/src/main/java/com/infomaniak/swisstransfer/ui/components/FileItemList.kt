@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -64,6 +66,11 @@ fun FileItemList(
                 onRemove = { onRemoveUid?.invoke(file.uid) },
             )
         }
+
+        item(
+            span = { GridItemSpan(maxLineSpan) },
+            content = { Spacer(modifier = Modifier.height(Margin.Mini)) },
+        )
     }
 }
 

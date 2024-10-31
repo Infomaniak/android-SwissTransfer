@@ -138,7 +138,7 @@ fun TransferDetailsScreen(
             FileItemList(
                 modifier = Modifier
                     .weight(1.0f)
-                    .padding(horizontal = Margin.Large),
+                    .padding(horizontal = Margin.Medium),
                 files = transferFiles, // TODO
                 isRemoveButtonVisible = false,
                 isCheckboxVisible = { isMultiselectOn },
@@ -146,13 +146,13 @@ fun TransferDetailsScreen(
                 setUidCheckStatus = { fileUid, isChecked -> /* TODO */ },
             ) {
                 Column {
+                    Spacer(modifier = Modifier.height(Margin.Large))
                     TransferInfos(transfer)
                     TransferMessage(transfer, transferSenderEmail)
-                    TransferContent()
+                    Spacer(modifier = Modifier.height(Margin.Large))
+                    TransferContentHeader()
                 }
             }
-
-            Spacer(modifier = Modifier.height(Margin.Large))
 
             BottomBar(
                 isMultiselectOn = { isMultiselectOn },
@@ -280,13 +280,11 @@ private fun TransferMessage(transfer: TransferUi, transferSenderEmail: String?) 
 }
 
 @Composable
-private fun TransferContent(
-) {
+private fun TransferContentHeader() {
     Text(
         text = stringResource(R.string.transferContentHeader),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
-        modifier = Modifier.padding(top = Margin.Large),
     )
 }
 
