@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
@@ -55,6 +56,7 @@ import java.util.UUID
 fun TransferDetailsScreen(
     transferUuid: String,
     navigateBack: (() -> Unit)?,
+    transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
 
     val transferFiles = listOf(
@@ -140,8 +142,8 @@ fun TransferDetailsScreen(
                 files = transferFiles, // TODO
                 isRemoveButtonVisible = false,
                 isCheckboxVisible = { isMultiselectOn },
-                isUidChecked = { fileUid -> false }, // TODO
-                setUidCheckStatus = { fileUid, isChecked -> /* TODO */ },
+                isUidChecked = { fileUid -> transferDetailsViewModel.checkedFiles[fileUid] ?: false },
+                setUidCheckStatus = { fileUid, isChecked -> transferDetailsViewModel.checkedFiles[fileUid] = isChecked },
             ) {
                 Column {
                     Spacer(modifier = Modifier.height(Margin.Large))
@@ -157,8 +159,15 @@ fun TransferDetailsScreen(
                 onClick = { item ->
                     when (item) {
                         BottomBarItem.SHARE -> context.shareText(transferLink)
-                        BottomBarItem.DOWNLOAD -> TODO()
-                        BottomBarItem.MULTISELECT_DOWNLOAD -> TODO()
+                        BottomBarItem.DOWNLOAD -> {
+                            // TODO: Move the multiselect elsewhere, and implement this feature
+                            isMultiselectOn = true
+                        }
+                        BottomBarItem.MULTISELECT_DOWNLOAD -> {
+                            // TODO: Move the multiselect elsewhere, and implement this feature
+                            transferDetailsViewModel.checkedFiles.clear()
+                            isMultiselectOn = false
+                        }
                     }
                 },
             )
@@ -341,7 +350,7 @@ private enum class BottomBarItem(@StringRes val label: Int, val icon: ImageVecto
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            TransferDetailsScreen("") {}
+            TransferDetailsScreen("", {})
         }
     }
 }
