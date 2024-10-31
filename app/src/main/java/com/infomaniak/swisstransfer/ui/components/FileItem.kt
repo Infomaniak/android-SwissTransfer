@@ -84,7 +84,7 @@ private fun FileItemContent(
     ) {
         Box(
             modifier = Modifier
-                .weight(1f)
+                .weight(1.0f)
                 .fillMaxWidth()
                 .background(SwissTransferTheme.materialColors.surfaceContainerHighest)
         ) {

@@ -61,10 +61,7 @@ fun TransferItemList(
             contentType = { transfers[it] },
             itemContent = {
                 val transfer = transfers[it]
-                TransferItem(
-                    transfer = transfer,
-                    onClick = { onClick(transfer) },
-                )
+                TransferItem(transfer) { onClick(transfer) }
             },
         )
     }
@@ -163,10 +160,7 @@ private fun Preview() {
 
     SwissTransferTheme {
         Surface {
-            TransferItemList(
-                transfers = transfers,
-                onClick = {},
-            )
+            TransferItemList(transfers = transfers, onClick = {})
         }
     }
 }

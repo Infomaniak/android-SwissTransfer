@@ -44,10 +44,7 @@ import java.util.UUID
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TransferItem(
-    transfer: TransferUi,
-    onClick: () -> Unit,
-) {
+fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
@@ -58,9 +55,7 @@ fun TransferItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            Column(
-                modifier = Modifier.weight(1.0f),
-            ) {
+            Column(modifier = Modifier.weight(1.0f)) {
 
                 Text(
                     text = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE),
@@ -159,8 +154,7 @@ private fun Preview() {
                             localPath = null,
                         ),
                     ),
-
-                    ),
+                ),
                 onClick = {},
             )
         }
