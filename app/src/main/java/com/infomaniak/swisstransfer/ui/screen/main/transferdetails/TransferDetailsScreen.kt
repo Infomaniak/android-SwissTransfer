@@ -104,51 +104,6 @@ fun TransferDetailsScreen(
         ),
     )
 
-    val files = listOf(
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
-            fileSizeInBytes = 57_689_032L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (1).pptx",
-            fileSizeInBytes = 89_723_143L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
-            fileSizeInBytes = 237_866_728L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
-            fileSizeInBytes = 57_689_032L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (2).pptx",
-            fileSizeInBytes = 89_723_143L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-        com.infomaniak.swisstransfer.ui.components.FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
-            fileSizeInBytes = 237_866_728L,
-            mimeType = null,
-            uri = "https://chk.me/83azQOl",
-        ),
-    )
-
     val transfer = TransferUi(
         uuid = UUID.randomUUID().toString(),
         createdDateTimestamp = Date().time - 30L * 86_400_000L,
@@ -184,7 +139,7 @@ fun TransferDetailsScreen(
                 modifier = Modifier
                     .weight(1.0f)
                     .padding(horizontal = Margin.Large),
-                files = files, // transfer.files, // TODO
+                files = transferFiles, // TODO
                 isRemoveButtonVisible = false,
                 isCheckboxVisible = { isMultiselectOn },
                 isUidChecked = { fileUid -> false }, // TODO
