@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
@@ -47,13 +48,6 @@ fun TransferItem(
     transfer: TransferUi,
     onClick: () -> Unit,
 ) {
-
-    val date = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
-    val size = Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded)
-    val expiry = transfer.expiresInDays
-    val files = transfer.files
-    val itemCount = files.count()
-
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
@@ -69,7 +63,7 @@ fun TransferItem(
             ) {
 
                 Text(
-                    text = date,
+                    text = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE),
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.colors.primaryTextColor,
                     maxLines = 1,
@@ -77,33 +71,19 @@ fun TransferItem(
                 )
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
-                Row {
-                    Text(
-                        text = size,
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                    )
-                    Text(
-                        text = "•",
-                        modifier = Modifier.padding(horizontal = Margin.Mini),
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                    )
-                    Text(
-                        text = stringResource(R.string.expiresIn, expiry),
-                        color = SwissTransferTheme.colors.secondaryTextColor,
-                        style = SwissTransferTheme.typography.bodySmallRegular,
-                    )
-                }
+                TextDotText(
+                    firstText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
+                    secondText = { stringResource(R.string.expiresIn, transfer.expiresInDays) },
+                )
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 ContextualFlowRow(
-                    itemCount = itemCount,
+                    itemCount = transfer.files.count(),
                     maxLines = 1,
                     overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
                 ) { index ->
                     TransferFilePreview(
-                        file = files[index],
+                        file = transfer.files[index],
                         isFirstItem = index == 0,
                     )
                 }
