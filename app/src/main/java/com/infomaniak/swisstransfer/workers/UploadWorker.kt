@@ -51,6 +51,12 @@ class UploadWorker @AssistedInject constructor(
 
     override suspend fun launchWork(): Result {
         SentryLog.i(TAG, "work launched")
+
+        if (uploadManager.getUploadsCount() == 0L) {
+            SentryLog.w(TAG, "No upload pending")
+            return Result.failure()
+        }
+
         val uploadSession = uploadManager.initUploadSession(recaptcha = "Recaptcha")!!
         SentryLog.d(TAG, "work started with ${uploadSession.files.count()} files")
 
