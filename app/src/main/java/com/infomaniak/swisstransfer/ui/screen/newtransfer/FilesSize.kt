@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -41,19 +42,17 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceUsed
 @Composable
 fun FilesSize(modifier: Modifier, files: () -> List<FileUi>, withSpaceLeft: Boolean) {
     Row(modifier = modifier) {
-        val files = files()
-        val filesCount = files().count()
-        val filesSize = LocalContext.current.getSpaceUsed(files)
-        val filesDetail = "${pluralStringResource(R.plurals.filesCount, filesCount, filesCount)}  •  $filesSize"
-        Text(
-            filesDetail,
+        TextDotText(
+            firstText = {
+                val filesCount = files().count()
+                pluralStringResource(R.plurals.filesCount, filesCount, filesCount)
+            },
+            secondText = { LocalContext.current.getSpaceUsed(files()) },
             modifier = Modifier.padding(start = Margin.Medium),
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            style = SwissTransferTheme.typography.bodySmallRegular,
         )
         if (withSpaceLeft) {
             val context = LocalContext.current
-            val spaceLeft = formatSpaceLeft { context.getSpaceLeft(files) }
+            val spaceLeft = formatSpaceLeft { context.getSpaceLeft(files()) }
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.padding(horizontal = Margin.Medium),
