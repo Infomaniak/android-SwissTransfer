@@ -35,13 +35,12 @@ import io.github.alexzhirkevich.qrose.options.solid
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @Composable
-fun QrCode() {
+fun QrCode(transferLink: String) {
 
-    val url = "https://chk.me/83azQOl" // TODO: Use correct URL instead of hard-coded value.
     val centralIcon = rememberVectorPainter(AppIcons.QrInfomaniak.image())
     val darkPixelsColor = QrBrush.solid(SwissTransferTheme.colors.qrCodeDarkPixels)
     val lightPixelsColor = QrBrush.solid(SwissTransferTheme.colors.qrCodeLightPixels)
-    val painter = rememberQrCodePainter(url) {
+    val painter = rememberQrCodePainter(transferLink) {
         colors {
             dark = darkPixelsColor
             light = lightPixelsColor
@@ -66,7 +65,7 @@ fun QrCode() {
 private fun QrCodePreview() {
     SwissTransferTheme {
         Surface {
-            QrCode()
+            QrCode(transferLink = "https://chk.me/83azQOl")
         }
     }
 }

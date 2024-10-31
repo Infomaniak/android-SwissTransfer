@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.times
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -71,7 +72,7 @@ enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
 private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface(color = SwissTransferTheme.materialColors.surfaceContainerHighest) {
-            Column(Modifier.padding(16.dp)) {
+            Column(Modifier.padding(Margin.Medium)) {
                 val file = files.first()
 
                 SmallFileItem(
@@ -80,7 +81,7 @@ private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::c
                     onRemove = {}
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Margin.Medium))
 
                 SmallFileItem(
                     file = file,

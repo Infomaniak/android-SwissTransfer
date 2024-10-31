@@ -17,15 +17,20 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
@@ -40,10 +45,19 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.copyText
+import com.infomaniak.swisstransfer.ui.utils.shareText
+import kotlinx.coroutines.launch
 
+// TODO: Use correct URL instead of hard-coded transferLink value
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferType) {
+fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String = "https://chk.me/83azQOl") {
+
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
     BottomStickyButtonScaffold(
+        snackbarHostState = snackbarHostState,
         topBar = { BrandTopAppBar() },
         topButton = {
             LargeButton(
@@ -51,7 +65,7 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 style = ButtonType.PRIMARY,
                 titleRes = R.string.buttonShare,
                 imageVector = AppIcons.PersonBadgeShare,
-                onClick = { /* TODO */ },
+                onClick = { context.shareText(transferLink) },
             )
         },
         bottomButton = {
@@ -62,12 +76,15 @@ fun UploadSuccessQrScreen(transferType: TransferType) {
                 onClick = { /* TODO */ },
             )
         },
-        content = { Content(transferType) },
+        content = { Content(context, snackbarHostState, transferType, transferLink) },
     )
 }
 
 @Composable
-private fun Content(transferType: TransferType) {
+private fun Content(context: Context, snackbarHostState: SnackbarHostState, transferType: TransferType, transferLink: String) {
+
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +109,7 @@ private fun Content(transferType: TransferType) {
 
         Spacer(Modifier.height(Margin.Huge))
 
-        QrCode()
+        QrCode(transferLink)
 
         transferType.descriptionRes?.let { descriptionRes ->
             Spacer(Modifier.height(Margin.Huge))
@@ -112,7 +129,12 @@ private fun Content(transferType: TransferType) {
         style = ButtonType.SECONDARY,
         titleRes = R.string.buttonCopyLink,
         imageVector = AppIcons.DocumentOnDocument,
-        onClick = { /* TODO */ },
+        onClick = {
+            context.copyText(
+                text = transferLink,
+                showSnackbar = { scope.launch { snackbarHostState.showSnackbar(it) } },
+            )
+        },
     )
 }
 

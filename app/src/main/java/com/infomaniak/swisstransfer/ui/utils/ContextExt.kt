@@ -18,13 +18,13 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
+import com.infomaniak.swisstransfer.R
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -57,4 +57,31 @@ fun Context.openAppNotificationSettings() {
             }
         }
     }.also(::startActivity)
+}
+
+fun Context.copyText(text: String, showSnackbar: (String) -> Unit) {
+    val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboardManager.setPrimaryClip(ClipData.newPlainText(text, text))
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) showSnackbar(getString(R.string.snackbarLinkCopiedToClipboard))
+}
+
+fun Context.shareText(text: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
+    }
+    safeStartActivity(Intent.createChooser(intent, null))
+}
+
+fun Context.safeStartActivity(intent: Intent) {
+    runCatching {
+        startActivity(intent)
+    }.onFailure {
+        showToast(R.string.startActivityCantHandleAction)
+    }
+}
+
+fun Context.showToast(title: Int, duration: Int = Toast.LENGTH_LONG) {
+    Toast.makeText(this, title, duration).show()
 }

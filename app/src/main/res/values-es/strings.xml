@@ -79,6 +79,8 @@
         <item quantity="one">día %d</item>
         <item quantity="other">%d días</item>
     </plurals>
+    <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
+    <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="transferSendButton">Enviar</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">Queda %s</item>

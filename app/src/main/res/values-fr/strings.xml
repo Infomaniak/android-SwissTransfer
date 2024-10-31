@@ -80,6 +80,8 @@
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
     </plurals>
+    <string name="snackbarLinkCopiedToClipboard">Lien copié dans le presse-papiers</string>
+    <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
     <string name="transferSendButton">Envoyer</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s restant</item>
