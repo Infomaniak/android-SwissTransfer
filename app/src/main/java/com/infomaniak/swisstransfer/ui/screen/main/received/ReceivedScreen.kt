@@ -206,7 +206,7 @@ private fun ReceivedScreen(
 
 @PreviewAllWindows
 @Composable
-private fun ReceivedScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             ReceivedScreen(
