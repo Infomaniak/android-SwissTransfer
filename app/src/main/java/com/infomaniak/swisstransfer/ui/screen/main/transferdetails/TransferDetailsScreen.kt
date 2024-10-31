@@ -187,21 +187,10 @@ private fun TransferInfos(transfer: TransferUi) {
             tint = SwissTransferTheme.materialColors.primary,
             contentDescription = null,
         )
-        Text(
-            modifier = Modifier.padding(start = Margin.Mini),
-            text = pluralStringResource(R.plurals.filesCount, filesCount, filesCount),
-            style = SwissTransferTheme.typography.bodySmallRegular,
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-        Text(
-            text = "•",
-            style = SwissTransferTheme.typography.bodySmallRegular,
-            color = SwissTransferTheme.colors.primaryTextColor,
-            modifier = Modifier.padding(horizontal = Margin.Mini),
-        )
-        Text(
-            text = Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded),
-            style = SwissTransferTheme.typography.bodySmallRegular,
+        Spacer(Modifier.width(Margin.Mini))
+        TextDotText(
+            firstText = { pluralStringResource(R.plurals.filesCount, filesCount, filesCount) },
+            secondText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
             color = SwissTransferTheme.colors.primaryTextColor,
         )
     }
