@@ -92,7 +92,6 @@
         <item quantity="one">Queda %s</item>
         <item quantity="other">Quedan %s</item>
     </plurals>
-    <string name="transferTitlePlaceholder">Dar un título a su transferencia</string>
     <string name="transferTypeEmail">Correo electrónico</string>
     <string name="transferTypeLink">Enlace</string>
     <string name="transferTypeProximity">Proximidad</string>

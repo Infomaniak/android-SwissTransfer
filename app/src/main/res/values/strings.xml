@@ -97,7 +97,6 @@
         <item quantity="one">%s left</item>
         <item quantity="other">%s left</item>
     </plurals>
-    <string name="transferTitlePlaceholder">Title your transfer</string>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">Proximity</string>

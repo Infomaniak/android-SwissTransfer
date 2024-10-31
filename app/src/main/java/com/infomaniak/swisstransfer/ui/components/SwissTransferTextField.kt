@@ -115,9 +115,8 @@ fun Preview() {
     SwissTransferTheme {
         Surface {
             Column(Modifier.padding(Margin.Medium)) {
-                SwissTransferTextField(label = stringResource(R.string.transferTitlePlaceholder))
                 SwissTransferTextField(
-                    label = stringResource(R.string.transferTitlePlaceholder),
+                    label = stringResource(R.string.transferMessagePlaceholder),
                     initialValue = "test",
                     errorMessage = { null },
                 )
@@ -136,7 +135,7 @@ fun Preview() {
                     maxLineNumber = 10,
                     initialValue = "initial value",
                     isRequired = false,
-                    label = stringResource(R.string.transferTitlePlaceholder),
+                    label = stringResource(R.string.transferMessagePlaceholder),
                     supportingText = "supporting Text",
                 )
             }

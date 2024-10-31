@@ -94,7 +94,6 @@
         <item quantity="other">%s restants</item>
         <item quantity="many">%s restant</item>
     </plurals>
-    <string name="transferTitlePlaceholder">Donnes un titre à ton transfert</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Lien</string>
     <string name="transferTypeProximity">A proximité</string>

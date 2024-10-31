@@ -128,7 +128,6 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                SwissTransferTextField(Modifier.fillMaxWidth(), label = stringResource(R.string.transferTitlePlaceholder))
                 if (initialShouldShowEmailAddressesFields) {
                     Spacer(Modifier.size(Margin.Medium))
                     SwissTransferTextField(

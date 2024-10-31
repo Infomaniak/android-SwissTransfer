@@ -92,7 +92,6 @@
         <item quantity="one">%s übrig</item>
         <item quantity="other">%s übrig</item>
     </plurals>
-    <string name="transferTitlePlaceholder">Gib deiner Überweisung einen Titel</string>
     <string name="transferTypeEmail">E-Mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">In der Nähe</string>
