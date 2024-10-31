@@ -617,7 +617,6 @@ val AppIllus.MountainGondolaDark: ImageVector
                     reflectiveCurveToRelative(-2.66f, -6.12f, -5.94f, -6.12f)
                 }
                 path(
-                    fill = SolidColor(Color(0x00000000)),
                     stroke = SolidColor(Color(0xFFDCE4E5)),
                     strokeLineWidth = 0.5f,
                     strokeLineCap = Butt,

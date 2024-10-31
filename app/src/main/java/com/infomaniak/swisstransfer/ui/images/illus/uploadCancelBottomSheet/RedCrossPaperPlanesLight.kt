@@ -205,7 +205,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0x00000000)),
                 stroke = SolidColor(Color(0xFF014958)),
                 strokeLineWidth = 0.8f,
                 strokeLineCap = Round,

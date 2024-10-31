@@ -155,7 +155,6 @@ val AppIllus.MetallicSafeDark: ImageVector
                 arcToRelative(34.0f, 34.0f, 0.0f, true, true, -68.0f, 0.0f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)),
                 stroke = SolidColor(Color(0xFFDCE4E5)),
                 strokeLineWidth = 0.5f,
                 strokeLineCap = Butt,
@@ -353,7 +352,7 @@ private var _metallicSafeDark: ImageVector? = null
 private fun Preview() {
     Box {
         Image(
-            imageVector = AppIllus.MetallicSafeDark, contentDescription = null, modifier = Modifier.size(AppImages.previewSize)
+            imageVector = AppIllus.MetallicSafeDark, contentDescription = null, modifier = Modifier.size(500.dp)
         )
     }
 }
