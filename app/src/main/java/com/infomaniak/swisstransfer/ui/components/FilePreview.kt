@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.infomaniak.library.filetypes.FileType
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
 import com.infomaniak.swisstransfer.ui.utils.fileType
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
@@ -47,9 +48,10 @@ fun FilePreview(
     circleSize: Dp,
 ) {
     var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
+    val previewUri = file.localPath
 
-    if (displayPreview) {
-        FileThumbnail(file.uri, onError = { displayPreview = false })
+    if (displayPreview && previewUri != null) {
+        FileThumbnail(previewUri, onError = { displayPreview = false })
     } else {
         FileIcon(file.fileType, circleColor, circleSize)
     }

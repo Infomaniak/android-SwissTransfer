@@ -23,8 +23,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.core.net.toUri
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.sentry.SentryLog
-import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
@@ -102,9 +102,9 @@ class ImportationFilesManager @Inject constructor(
                 FileUi(
                     uid = fileToImport.fileName,
                     fileName = fileToImport.fileName,
-                    fileSizeInBytes = fileToImport.fileSizeInBytes,
+                    fileSize = fileToImport.fileSizeInBytes,
                     mimeType = null,
-                    uri = copiedFile.toUri().toString(),
+                    localPath = copiedFile.toUri().toString(),
                 )
             )
         }
@@ -131,9 +131,9 @@ class ImportationFilesManager @Inject constructor(
             FileUi(
                 uid = localFile.name,
                 fileName = localFile.name,
-                fileSizeInBytes = fileSizeInBytes,
+                fileSize = fileSizeInBytes,
                 mimeType = null,
-                uri = localFile.toUri().toString(),
+                localPath = localFile.toUri().toString(),
             )
         }
     }

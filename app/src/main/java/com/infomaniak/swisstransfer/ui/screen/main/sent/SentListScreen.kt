@@ -21,8 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
-import com.infomaniak.swisstransfer.ui.components.FileUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -35,23 +35,23 @@ fun SentListScreen(transfers: List<Any>) {
         FileUi(
             fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
             uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-            fileSizeInBytes = 57_689_032L,
+            fileSize = 57_689_032L,
             mimeType = null,
-            uri = "",
+            localPath = "",
         ),
         FileUi(
             fileName = "Introduction to Turning It Off and On Again.pptx",
             uid = "Introduction to Turning It Off and On Again.pptx",
-            fileSizeInBytes = 89_723_143L,
+            fileSize = 89_723_143L,
             mimeType = null,
-            uri = "",
+            localPath = "",
         ),
         FileUi(
             fileName = "Learning to Copy and Paste: A Complete Guide.docx",
             uid = "Learning to Copy and Paste: A Complete Guide.docx",
-            fileSizeInBytes = 237_866_728L,
+            fileSize = 237_866_728L,
             mimeType = null,
-            uri = "",
+            localPath = "",
         ),
     )
 

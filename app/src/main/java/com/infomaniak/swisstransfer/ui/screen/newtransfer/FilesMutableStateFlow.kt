@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import com.infomaniak.swisstransfer.ui.components.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
@@ -39,7 +39,7 @@ class FilesMutableStateFlow {
         val index = files.indexOfFirst { it.uid == uid }.takeIf { it != -1 } ?: return null
         val fileToRemove = files.removeAt(index)
 
-        runCatching { File(fileToRemove.uri).delete() }
+        runCatching { File(fileToRemove.localPath).delete() }
 
         this.files.value = files
 
