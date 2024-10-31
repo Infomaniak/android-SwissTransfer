@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.infomaniak.core2.FORMAT_DATE_SIMPLE
 import com.infomaniak.core2.FORMAT_DATE_TITLE
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi

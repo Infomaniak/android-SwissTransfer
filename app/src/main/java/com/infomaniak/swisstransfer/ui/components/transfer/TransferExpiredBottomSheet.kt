@@ -24,6 +24,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core2.FORMAT_DATE_SIMPLE
+import com.infomaniak.core2.format
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -34,9 +36,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.FORMAT_DATE_SIMPLE
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.swisstransfer.ui.utils.format
 import java.util.Date
 
 @Composable
