@@ -25,7 +25,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -53,27 +52,15 @@ fun ImportedFilesCard(
     showUploadSourceChoiceBottomSheet: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
 ) {
-    val importedFiles = files()
-    val fileCount = importedFiles.count()
-
     SwissTransferCard(modifier) {
-        SharpRippleButton(onClick = { /*TODO*/ }) {
-            Text(
-                text = pluralStringResource(R.plurals.filesCount, fileCount, fileCount),
+        SharpRippleButton(onClick = { /* TODO */ }) {
+            TextDotText(
+                firstText = {
+                    val fileCount = files().count()
+                    pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
+                },
+                secondText = { formatSpaceLeft(humanReadableSize) },
                 modifier = Modifier.padding(start = Margin.Medium),
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                style = SwissTransferTheme.typography.bodySmallRegular,
-            )
-            Text(
-                text = "•",
-                modifier = Modifier.padding(horizontal = Margin.Mini),
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                style = SwissTransferTheme.typography.bodySmallRegular,
-            )
-            Text(
-                text = formatSpaceLeft(humanReadableSize),
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                style = SwissTransferTheme.typography.bodySmallRegular,
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
@@ -94,7 +81,7 @@ fun ImportedFilesCard(
             }
 
             items(
-                items = importedFiles.asReversed(),
+                items = files().asReversed(),
                 key = { TransferLazyRowKey(TransferLazyRowKey.Type.FILE, it.uid) },
             ) { file ->
                 SmallFileItem(
