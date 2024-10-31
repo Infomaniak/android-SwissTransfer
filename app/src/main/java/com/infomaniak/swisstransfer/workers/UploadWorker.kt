@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.workers
 
 import android.content.Context
+import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
@@ -55,7 +56,7 @@ class UploadWorker @AssistedInject constructor(
     private var totalUploadedBytes = 0L
 
     override suspend fun launchWork(): Result {
-        SentryLog.i(TAG, "work launched")
+        SentryLog.i(TAG, "Work launched")
 
         if (uploadManager.getUploadsCount() == 0L) {
             SentryLog.w(TAG, "No upload pending")
@@ -63,42 +64,50 @@ class UploadWorker @AssistedInject constructor(
         }
 
         val uploadSession = uploadManager.initUploadSession(recaptcha = "Recaptcha")!!
-        SentryLog.d(TAG, "work started with ${uploadSession.files.count()} files")
+        val totalSize = uploadSession.files.sumOf { it.size }
+
+        SentryLog.d(TAG, "Work started with ${uploadSession.files.count()} files of $totalSize bytes")
 
         uploadSession.files.forEach { fileSession ->
             uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
                 totalUploadedBytes += bytesSent
-                setProgress(workDataOf(TOTAL_UPLOADED_BYTES_TAG to totalUploadedBytes))
+                setProgress(workDataOf(UPLOADED_BYTES_TAG to totalUploadedBytes, TOTAL_SIZE_TAG to totalSize))
             }
         }
 
         uploadManager.finishUploadSession(uploadSession.uuid)
         importLocalStorage.removeImportFolder()
 
-        setProgress(workDataOf(TOTAL_UPLOADED_BYTES_TAG to 100))
         return Result.success()
     }
 
     override fun onFinish() {
-        SentryLog.i(TAG, "work finished")
+        SentryLog.i(TAG, "Work finished")
     }
 
     @Singleton
     class Scheduler @Inject constructor(private val workManager: WorkManager) {
 
         fun scheduleWork() {
-            SentryLog.i(TAG, "work scheduled")
+            SentryLog.i(TAG, "Work scheduled")
             val workRequest = OneTimeWorkRequestBuilder<UploadWorker>()
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
         }
 
-        fun trackUploadProgressFlow(): Flow<MutableList<WorkInfo>> {
+        @OptIn(ExperimentalCoroutinesApi::class)
+        fun trackUploadProgressFlow(): Flow<UploadTransferProgress> {
             val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
                 .addStates(listOf(WorkInfo.State.RUNNING))
                 .build()
-            return workManager.getWorkInfosFlow(workQuery)
+            return workManager.getWorkInfosFlow(workQuery).mapLatest {
+                val workProgress = it.first().progress
+                UploadTransferProgress(
+                    uploadedSize = workProgress.getLong(UPLOADED_BYTES_TAG, 0L),
+                    totalSize = workProgress.getLong(TOTAL_SIZE_TAG, 0L),
+                )
+            }
         }
 
         @OptIn(ExperimentalCoroutinesApi::class)
@@ -110,10 +119,16 @@ class UploadWorker @AssistedInject constructor(
         }
 
         fun cancelWork() {
-            SentryLog.i(TAG, "work cancelled")
+            SentryLog.i(TAG, "Work cancelled")
             workManager.cancelUniqueWork(TAG)
         }
     }
+
+    @Immutable
+    data class UploadTransferProgress(
+        val uploadedSize: Long,
+        val totalSize: Long,
+    )
 
     companion object {
         private const val TAG = "UploadWorker"
@@ -121,6 +136,7 @@ class UploadWorker @AssistedInject constructor(
         private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
         private const val TOTAL_CHUNKS = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
-        const val TOTAL_UPLOADED_BYTES_TAG = "totalUploadBytes"
+        const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
+        const val TOTAL_SIZE_TAG = "total_size_tag"
     }
 }
