@@ -53,6 +53,18 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
     val uploadedSize = Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded)
     val files = transfer.files
     val filesCount = files.count()
+    val (expiryText, expiryColor) = when {
+        remainingDays < 0 -> {
+            stringResource(R.string.expiredThe, expirationDate.format(FORMAT_DATE_SIMPLE)) to
+                    SwissTransferTheme.materialColors.error
+        }
+        remainingDownloads == 0 -> {
+            "Transfert expiré (TODO)" to SwissTransferTheme.materialColors.error
+        }
+        else -> {
+            stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
+        }
+    }
 
     Card(
         onClick = onClick,
@@ -77,24 +89,8 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 TextDotText(
                     firstText = { uploadedSize },
-                    secondText = {
-
-                        val (text, color) = when {
-                            remainingDays < 0 -> {
-                                stringResource(R.string.expiredThe, expirationDate.format(FORMAT_DATE_SIMPLE)) to
-                                        SwissTransferTheme.materialColors.error
-                            }
-                            remainingDownloads == 0 -> {
-                                "Transfert expiré (TODO)" to SwissTransferTheme.materialColors.error
-                            }
-                            else -> {
-                                stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
-                            }
-                        }
-
-                        // TODO: Find a way to also send the color
-                        text to color
-                    },
+                    secondText = { expiryText },
+                    optionalSecondTextColor = expiryColor,
                 )
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
