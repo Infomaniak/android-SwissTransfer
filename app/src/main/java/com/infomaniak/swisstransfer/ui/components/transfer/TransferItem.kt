@@ -19,16 +19,14 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 
 import android.text.format.Formatter
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -37,8 +35,11 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.FORMAT_DATE_TITLE
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.format
+import java.util.Calendar
 import java.util.Date
+import java.util.UUID
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -114,6 +115,75 @@ fun TransferItem(
                 contentDescription = null,
                 modifier = Modifier.size(Margin.Medium),
                 tint = SwissTransferTheme.colors.iconColor,
+            )
+        }
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            TransferItem(
+                transfer = TransferUi(
+                    uuid = UUID.randomUUID().toString(),
+                    createdDateTimestamp = Date().time - 30L * 86_400_000L,
+                    expirationDateTimestamp = Calendar.getInstance().apply {
+                        time = Date()
+                        set(Calendar.DATE, get(Calendar.DATE) + 1)
+                    }.time.time,
+                    sizeUploaded = 57_689_032L,
+                    downloadLimit = 10,
+                    downloadLeft = 8,
+                    message = "Coucou c'est moi le message de description du transfert.",
+                    files = listOf(
+                        FileUi(
+                            uid = UUID.randomUUID().toString(),
+                            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
+                            fileSize = 57_689_032L,
+                            mimeType = null,
+                            localPath = null,
+                        ),
+                        FileUi(
+                            uid = UUID.randomUUID().toString(),
+                            fileName = "Introduction to Turning It Off and On Again (1).pptx",
+                            fileSize = 89_723_143L,
+                            mimeType = null,
+                            localPath = null,
+                        ),
+                        FileUi(
+                            uid = UUID.randomUUID().toString(),
+                            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
+                            fileSize = 237_866_728L,
+                            mimeType = null,
+                            localPath = null,
+                        ),
+                        FileUi(
+                            uid = UUID.randomUUID().toString(),
+                            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
+                            fileSize = 57_689_032L,
+                            mimeType = null,
+                            localPath = null,
+                        ),
+                        FileUi(
+                            uid = UUID.randomUUID().toString(),
+                            fileName = "Introduction to Turning It Off and On Again (2).pptx",
+                            fileSize = 89_723_143L,
+                            mimeType = null,
+                            localPath = null,
+                        ),
+                        FileUi(
+                            uid = UUID.randomUUID().toString(),
+                            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
+                            fileSize = 237_866_728L,
+                            mimeType = null,
+                            localPath = null,
+                        ),
+                    ),
+
+                    ),
+                onClick = {},
             )
         }
     }

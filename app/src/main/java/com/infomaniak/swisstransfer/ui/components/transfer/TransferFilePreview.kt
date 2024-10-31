@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +31,7 @@ import com.infomaniak.swisstransfer.ui.components.SmallFileTileSize
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun TransferFilePreview(
@@ -68,6 +70,38 @@ fun TransferFilePreview(
                     color = SwissTransferTheme.colors.onTransferFilePreviewOverflow,
                     style = SwissTransferTheme.typography.bodyRegular,
                 )
+            }
+        }
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            Row {
+                TransferFilePreview(
+                    file = FileUi(
+                        fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
+                        uid = "The 5-Step Guide to Not Breaking Your Code.txt",
+                        fileSize = 57_689_032L,
+                        mimeType = null,
+                        localPath = "",
+                    ),
+                    isFirstItem = true,
+                )
+                TransferFilePreview(
+                    file =
+                    FileUi(
+                        fileName = "Introduction to Turning It Off and On Again.pptx",
+                        uid = "Introduction to Turning It Off and On Again.pptx",
+                        fileSize = 89_723_143L,
+                        mimeType = null,
+                        localPath = "",
+                    ),
+                )
+                TransferFilePreview(remainingFilesCount = 42)
             }
         }
     }
