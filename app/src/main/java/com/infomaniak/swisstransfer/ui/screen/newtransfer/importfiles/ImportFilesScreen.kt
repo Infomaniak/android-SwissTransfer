@@ -128,25 +128,7 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                if (initialShouldShowEmailAddressesFields) {
-                    Spacer(Modifier.size(Margin.Medium))
-                    SwissTransferTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = stringResource(R.string.transferSenderAddressPlaceholder),
-                    )
-                    Spacer(Modifier.size(Margin.Medium))
-                    SwissTransferTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        label = stringResource(R.string.transferRecipientAddressPlaceholder),
-                    )
-                }
-                Spacer(Modifier.size(Margin.Medium))
-                SwissTransferTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = stringResource(R.string.transferMessagePlaceholder),
-                    isRequired = false,
-                    minLineNumber = 3,
-                )
+                ImportTextFields(initialShouldShowEmailAddressesFields)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
                 TransferTypeButtons(initialSelectedTransferType = TransferType.LINK, onClick = {})
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
@@ -169,6 +151,28 @@ private fun ImportFilesScreen(
                 closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )
         }
+    )
+}
+
+@Composable
+private fun ImportTextFields(initialShouldShowEmailAddressesFields: Boolean) {
+    if (initialShouldShowEmailAddressesFields) {
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferSenderAddressPlaceholder),
+        )
+        Spacer(Modifier.size(Margin.Medium))
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferRecipientAddressPlaceholder),
+        )
+        Spacer(Modifier.size(Margin.Medium))
+    }
+    SwissTransferTextField(
+        modifier = Modifier.fillMaxWidth(),
+        label = stringResource(R.string.transferMessagePlaceholder),
+        isRequired = false,
+        minLineNumber = 3,
     )
 }
 

@@ -42,6 +42,11 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
+/**
+ * Wrapper for Material's [OutlinedTextField] that enforce our design needs.
+ * By default, this TextField is single lined. You can specify [maxLineNumber] or [minLineNumber] to make it multi-lined
+ * If [isPassword] value is true, the [keyboardType] field will be ignored to force [KeyboardType.Password]
+ */
 @Composable
 fun SwissTransferTextField(
     modifier: Modifier = Modifier,
@@ -75,16 +80,17 @@ fun SwissTransferTextField(
         maxLines = maxLineNumber,
         colors = textFieldColors,
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
-        onValueChange = onValueChange ?: { text = it },
-        visualTransformation = if (isPassword && !shouldShowPassword) {
-            PasswordVisualTransformation()
-        } else {
-            VisualTransformation.None
+        onValueChange = {
+            text = it
+            onValueChange?.invoke(it)
         },
-        trailingIcon = if (isPassword) {
-            { ShowPasswordButton(shouldShowPassword, onClick = { shouldShowPassword = !shouldShowPassword }) }
-        } else {
-            null
+        visualTransformation = when {
+            isPassword && !shouldShowPassword -> PasswordVisualTransformation()
+            else -> VisualTransformation.None
+        },
+        trailingIcon = when {
+            isPassword -> getShowPasswordButton(shouldShowPassword, onClick = { shouldShowPassword = !shouldShowPassword })
+            else -> null
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
@@ -95,16 +101,14 @@ fun SwissTransferTextField(
     )
 }
 
-@Composable
-private fun ShowPasswordButton(shouldShowPassword: Boolean, onClick: () -> Unit) {
-
-    val (contentDescription, icon) = if (shouldShowPassword) {
-        stringResource(R.string.contentDescriptionButtonHidePassword) to AppIcons.EyeCrossed
-    } else {
-        stringResource(R.string.contentDescriptionButtonShowPassword) to AppIcons.Eye
-    }
-
+private fun getShowPasswordButton(shouldShowPassword: Boolean, onClick: () -> Unit): @Composable () -> Unit = {
     IconButton(onClick = onClick) {
+        val (contentDescription, icon) = if (shouldShowPassword) {
+            stringResource(R.string.contentDescriptionButtonHidePassword) to AppIcons.EyeCrossed
+        } else {
+            stringResource(R.string.contentDescriptionButtonShowPassword) to AppIcons.Eye
+        }
+
         Icon(icon, contentDescription, Modifier.size(Dimens.SmallIconSize))
     }
 }
@@ -136,6 +140,21 @@ fun Preview() {
                     initialValue = "initial value",
                     isRequired = false,
                     label = stringResource(R.string.transferMessagePlaceholder),
+                    supportingText = "supporting Text",
+                )
+                SwissTransferTextField(
+                    maxLineNumber = 10,
+                    initialValue = "initial value",
+                    isPassword = true,
+                    label = stringResource(R.string.settingsOptionPassword),
+                    supportingText = "supporting Text",
+                )
+                SwissTransferTextField(
+                    maxLineNumber = 10,
+                    initialValue = "initial value",
+                    isPassword = true,
+                    label = stringResource(R.string.settingsOptionPassword),
+                    errorMessage = { "Wrong password" },
                     supportingText = "supporting Text",
                 )
             }
