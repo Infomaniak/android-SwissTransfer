@@ -22,16 +22,16 @@ import android.icu.text.NumberFormat
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.FileUi
 
 object HumanReadableSizeUtils {
     private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
     private fun getHumanReadableSize(context: Context, sizeInBytes: Long) = context.formatShortFileSize(context, sizeInBytes)
 
-    private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSizeInBytes }
+    private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
 
     fun Context.getSpaceUsed(files: List<FileUi>): String = getHumanReadableSize(this, getFilesSizeInBytes(files))
 
