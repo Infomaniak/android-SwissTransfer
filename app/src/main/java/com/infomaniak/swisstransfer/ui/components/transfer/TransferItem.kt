@@ -80,12 +80,10 @@ fun TransferItem(
                 ContextualFlowRow(
                     itemCount = transfer.files.count(),
                     maxLines = 1,
+                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                     overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
                 ) { index ->
-                    TransferFilePreview(
-                        file = transfer.files[index],
-                        isFirstItem = index == 0,
-                    )
+                    TransferFilePreview(file = transfer.files[index])
                 }
             }
 

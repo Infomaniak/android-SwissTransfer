@@ -18,7 +18,9 @@
 package com.infomaniak.swisstransfer.ui.components.transfer
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,13 +36,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun TransferFilePreview(
-    file: FileUi? = null,
-    isFirstItem: Boolean = false,
-    remainingFilesCount: Int? = null,
-) {
+fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) {
     Row {
-        if (!isFirstItem || remainingFilesCount != null) Spacer(modifier = Modifier.width(Margin.Mini))
         if (file != null) {
             // TODO: Temporary code to be able to test the view, while waiting real Transfers data
             // AsyncImage(
@@ -89,7 +86,6 @@ private fun Preview() {
                         mimeType = null,
                         localPath = "",
                     ),
-                    isFirstItem = true,
                 )
                 TransferFilePreview(
                     file =
