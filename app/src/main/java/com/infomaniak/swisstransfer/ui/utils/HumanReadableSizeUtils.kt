@@ -38,8 +38,11 @@ object HumanReadableSizeUtils {
     }
 
     private fun Context.getQuantityFromHumanReadableSize(humanReadableSize: String): Int {
-        // Space character for languages such as EN and NBSP character for languages such as FR
-        val sizeParts = humanReadableSize.split(' ', Typography.nbsp)
+
+        // Space character for languages such as EN
+        // NBSP & NNBSP characters for languages such as FR
+        val nnbsp = ' '
+        val sizeParts = humanReadableSize.split(' ', Typography.nbsp, nnbsp)
 
         return if (sizeParts.size == 2) {
             val local = resources.configuration.getLocales().get(0)
