@@ -181,13 +181,13 @@ private fun SendButton(
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
     modifier: Modifier,
-    navigateToUploadProgress: () -> Unit
+    navigateToUploadProgress: () -> Unit,
 ) {
-    val count = filesToImportCount()
-    val isImporting by remember(count) { derivedStateOf { count > 0 } }
+    val remainingFilesCount = filesToImportCount()
+    val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
 
     val total = currentSessionFilesCount()
-    val importProgress = remember(count, total) { 1 - (count.toFloat() / total) }
+    val importProgress = remember(remainingFilesCount, total) { 1 - (remainingFilesCount.toFloat() / total) }
 
     val progress: (() -> Float)? = if (isImporting) {
         { importProgress }
@@ -236,7 +236,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
             initialShouldShowEmailAddressesFields = true,
-            navigateToUploadProgress = { },
+            navigateToUploadProgress = {},
         )
     }
 }

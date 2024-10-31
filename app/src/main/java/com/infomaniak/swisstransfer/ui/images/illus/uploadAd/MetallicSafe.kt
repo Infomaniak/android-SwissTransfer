@@ -31,12 +31,12 @@ import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 val AppIllus.MetallicSafe: ThemedImage
-    get() = _metallicsafe ?: object : ThemedImage {
+    get() = _metallicSafe ?: object : ThemedImage {
         override val light = AppIllus.MetallicSafeLight
         override val dark = AppIllus.MetallicSafeDark
-    }.also { _metallicsafe = it }
+    }.also { _metallicSafe = it }
 
-private var _metallicsafe: ThemedImage? = null
+private var _metallicSafe: ThemedImage? = null
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)

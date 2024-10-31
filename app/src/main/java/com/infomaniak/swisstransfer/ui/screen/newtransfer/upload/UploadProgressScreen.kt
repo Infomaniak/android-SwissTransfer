@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -49,14 +50,13 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import java.util.Locale
 
 @Composable
 fun UploadProgressScreen(newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>()) {
-    val uploadedSizeInBytes by newTransferViewModel.uploadedSizeInBytes.collectAsState()
-    val totalSizeInBytes by newTransferViewModel.totalSizeInBytes.collectAsState()
+    val uploadedSizeInBytes by newTransferViewModel.uploadedSizeInBytes.collectAsStateWithLifecycle()
+    val totalSizeInBytes by newTransferViewModel.totalSizeInBytes.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
 
@@ -83,7 +83,7 @@ private fun UploadProgressScreen(
         topBar = { BrandTopAppBar() },
         bottomButton = {
             LargeButton(R.string.buttonCancel, modifier = it, onClick = { showBottomSheet = true })
-        }
+        },
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -94,7 +94,7 @@ private fun UploadProgressScreen(
                     .fillMaxWidth()
                     .weight(1f)
                     .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(Margin.Giant))
                 Text(stringResource(R.string.uploadSuccessTitle), style = SwissTransferTheme.typography.bodyMedium)
@@ -116,7 +116,7 @@ private fun UploadProgressScreen(
             Spacer(modifier = Modifier.height(Margin.Medium))
             Text(stringResource(R.string.uploadSuccessTransferInProgress))
             Progress(uploadedSizeInBytes, totalSizeInBytes)
-            Spacer(modifier = Modifier.height(Margin.Huge)) // TODO
+            Spacer(modifier = Modifier.height(Margin.Huge))
         }
 
         if (showBottomSheet) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet = false })
@@ -160,7 +160,7 @@ fun Progress(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
         Percentage(uploadedSizeInBytes, totalSizeInBytes)
         Text(" - ")
         UploadedSize(uploadedSizeInBytes)
-
+        Text(" / ")
         TotalSize(totalSizeInBytes)
     }
 }
@@ -194,7 +194,7 @@ private fun TotalSize(totalSizeInBytes: () -> Long) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes()) }
     }
 
-    Text(" / $humanReadableTotalSize")
+    Text(humanReadableTotalSize)
 }
 
 
@@ -206,17 +206,17 @@ enum class UploadProgressAdType(
     INDEPENDENCE(
         R.string.uploadSuccessDescriptionTemplateIndependence,
         R.string.uploadSuccessDescriptionArgumentIndependence,
-        AppIllus.SwissWithFlag
+        AppIllus.SwissWithFlag,
     ),
     ENERGY(
         R.string.uploadSuccessDescriptionTemplateEnergy,
         R.string.uploadSuccessDescriptionArgumentEnergy,
-        AppIllus.MountainGondola
+        AppIllus.MountainGondola,
     ),
     CONFIDENTIALITY(
         R.string.uploadSuccessDescriptionTemplateConfidentiality,
         R.string.uploadSuccessDescriptionArgumentConfidentiality,
-        AppIllus.MetallicSafe
+        AppIllus.MetallicSafe,
     );
 
     @Composable
@@ -236,17 +236,15 @@ enum class UploadProgressAdType(
     }
 }
 
-
-@PreviewSmallWindow
-@PreviewLargeWindow
+@PreviewAllWindows
 @Composable
 private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
         UploadProgressScreen(
-            { 44321654 },
-            { 76321894 },
-            UploadProgressAdType.INDEPENDENCE,
-            {}
+            uploadedSizeInBytes = { 44_321_654L },
+            totalSizeInBytes = { 76_321_894L },
+            adScreenType = UploadProgressAdType.INDEPENDENCE,
+            onCancel = {},
         )
     }
 }

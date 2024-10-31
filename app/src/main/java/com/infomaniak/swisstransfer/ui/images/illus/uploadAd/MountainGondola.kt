@@ -31,12 +31,12 @@ import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 val AppIllus.MountainGondola: ThemedImage
-    get() = _mountaingondola ?: object : ThemedImage {
+    get() = _mountainGondola ?: object : ThemedImage {
         override val light = AppIllus.MountainGondolaLight
         override val dark = AppIllus.MountainGondolaDark
-    }.also { _mountaingondola = it }
+    }.also { _mountainGondola = it }
 
-private var _mountaingondola: ThemedImage? = null
+private var _mountainGondola: ThemedImage? = null
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
