@@ -26,7 +26,9 @@ import com.infomaniak.sentry.SentryLog
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withLock
 import java.io.BufferedInputStream
 import java.io.File
 import java.util.concurrent.ArrayBlockingQueue
@@ -36,9 +38,12 @@ class UploadFileTask(
     private val fileChunkSizeManager: FileChunkSizeManager,
 ) {
 
+    private val mutex = Mutex()
+
     suspend fun start(
         uploadFileSession: UploadFileSession,
         uploadSession: UploadSession,
+        onUploadBytes: suspend (Long) -> Unit,
     ) = coroutineScope {
         SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}")
         val fileUUID: String = uploadFileSession.remoteUploadFile?.uuid
@@ -71,7 +76,7 @@ class UploadFileTask(
                 }
 
                 async(chunkParentJob) {
-                    startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray)
+                    startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
                     byteArrayPool.offer(dataByteArray)
                     requestSemaphore.release()
                 }
@@ -109,15 +114,20 @@ class UploadFileTask(
         chunkIndex: Int,
         isLastChunk: Boolean,
         data: ByteArray,
+        crossinline onUploadBytes: suspend (Long) -> Unit,
     ) {
+        var oldBytesSentTotal = 0L
         uploadManager.uploadChunk(
             uuid = uploadSession.uuid,
             fileUUID = fileUUID,
             chunkIndex = chunkIndex,
             isLastChunk = isLastChunk,
             data = data,
-            onUpload = { bytesSentTotal, chunkSize ->
-                // Log.e("progress", "startUploadChunk: bytesSentTotal:$bytesSentTotal, chunkSize:$chunkSize")
+            onUpload = { bytesSentTotal, _ ->
+                mutex.withLock {
+                    onUploadBytes(bytesSentTotal - oldBytesSentTotal)
+                    oldBytesSentTotal = bytesSentTotal
+                }
             }
         )
     }

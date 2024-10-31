@@ -49,6 +49,8 @@ class UploadWorker @AssistedInject constructor(
         UploadFileTask(uploadManager, fileChunkSizeManager)
     }
 
+    private var totalUploadedBytes = 0L
+
     override suspend fun launchWork(): Result {
         SentryLog.i(TAG, "work launched")
 
@@ -61,12 +63,16 @@ class UploadWorker @AssistedInject constructor(
         SentryLog.d(TAG, "work started with ${uploadSession.files.count()} files")
 
         uploadSession.files.forEach { fileSession ->
-            uploadFileTask.start(fileSession, uploadSession)
+            uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
+                totalUploadedBytes += bytesSent
+                setProgress(workDataOf(TOTAL_UPLOADED_BYTES_TAG to totalUploadedBytes))
+            }
         }
 
         uploadManager.finishUploadSession(uploadSession.uuid)
         importLocalStorage.removeImportFolder()
 
+        setProgress(workDataOf(TOTAL_UPLOADED_BYTES_TAG to 100))
         return Result.success()
     }
 
@@ -96,5 +102,7 @@ class UploadWorker @AssistedInject constructor(
         private const val EXPECTED_CHUNK_SIZE = 50L * 1024 * 1024 // 50Mo
         private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
         private const val TOTAL_CHUNKS = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
+
+        const val TOTAL_UPLOADED_BYTES_TAG = "totalUploadBytes"
     }
 }
