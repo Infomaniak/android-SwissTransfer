@@ -54,17 +54,7 @@ fun TransferFilePreview(
             //         .clip(CustomShapes.SMALL)
             //         .background(SwissTransferTheme.colors.transferFilePreviewOverflow),
             // )
-            SmallFileItem(
-                file = com.infomaniak.swisstransfer.ui.components.FileUi(
-                    // TODO: Use file received from TransferFilePreview(…) parameters
-                    fileName = "Introduction to Turning It Off and On Again.pptx",
-                    uid = "Introduction to Turning It Off and On Again.pptx",
-                    fileSizeInBytes = 89_723_143L,
-                    mimeType = null,
-                    uri = "",
-                ),
-                smallFileTileSize = SmallFileTileSize.SMALL,
-            )
+            SmallFileItem(file = file, smallFileTileSize = SmallFileTileSize.SMALL)
         } else {
             Box(
                 contentAlignment = Alignment.Center,
