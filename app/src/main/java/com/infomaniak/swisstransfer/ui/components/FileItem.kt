@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -79,7 +80,7 @@ private fun FileItemContent(
         modifier = Modifier.aspectRatio(164 / 152f),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
-        border = BorderStroke(width = 1.dp, SwissTransferTheme.materialColors.outlineVariant),
+        border = BorderStroke(width = Dimens.BorderWidth, SwissTransferTheme.materialColors.outlineVariant),
     ) {
         Box(
             modifier = Modifier

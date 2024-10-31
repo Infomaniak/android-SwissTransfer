@@ -26,4 +26,5 @@ object Dimens {
     val LargeButtonHeight = 56.dp
     val SmallIconSize = 16.dp
     val IconSize = 24.dp
+    val BorderWidth = 1.dp
 }
