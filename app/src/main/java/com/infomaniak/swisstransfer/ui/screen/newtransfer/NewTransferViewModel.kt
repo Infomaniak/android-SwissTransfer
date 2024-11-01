@@ -57,7 +57,7 @@ class NewTransferViewModel @Inject constructor(
         }
 
     private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
-    val selectedTransferType: StateFlow<TransferType> = _selectedTransferType
+    val selectedTransferType: StateFlow<TransferType> = _selectedTransferType.asStateFlow()
 
     init {
         viewModelScope.launch(ioDispatcher) {

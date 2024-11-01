@@ -48,6 +48,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -67,8 +68,10 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
-        selectedTransferType = { selectedTransferType },
-        onTransferTypeClicked = newTransferViewModel::selectTransferType,
+        selectedTransferType = GetSetCallbacks(
+            get = { selectedTransferType },
+            set = newTransferViewModel::selectTransferType,
+        ),
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
@@ -81,8 +84,7 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
-    selectedTransferType: () -> TransferType,
-    onTransferTypeClicked: (TransferType) -> Unit,
+    selectedTransferType: GetSetCallbacks<TransferType>,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -133,9 +135,9 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                ImportTextFields(selectedTransferType)
+                ImportTextFields(selectedTransferType.get)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
-                TransferTypeButtons(selectedTransferType, onTransferTypeClicked)
+                TransferTypeButtons(selectedTransferType)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferAdvancedSettings(
                     states = {
@@ -160,7 +162,20 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun ImportTextFields(selectedTransferType: () -> TransferType) {
+private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferType) {
+
+    EmailAddressesTextFields(selectedTransferType)
+
+    SwissTransferTextField(
+        modifier = Modifier.fillMaxWidth(),
+        label = stringResource(R.string.transferMessagePlaceholder),
+        isRequired = false,
+        minLineNumber = 3,
+    )
+}
+
+@Composable
+private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> TransferType) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferType.MAIL } }
 
@@ -178,13 +193,6 @@ private fun ImportTextFields(selectedTransferType: () -> TransferType) {
             Spacer(Modifier.size(Margin.Medium))
         }
     }
-
-    SwissTransferTextField(
-        modifier = Modifier.fillMaxWidth(),
-        label = stringResource(R.string.transferMessagePlaceholder),
-        isRequired = false,
-        minLineNumber = 3,
-    )
 }
 
 @Composable
@@ -226,8 +234,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
-            selectedTransferType = { TransferType.QR_CODE },
-            onTransferTypeClicked = {},
+            selectedTransferType = GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}),
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},

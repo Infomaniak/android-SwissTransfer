@@ -37,9 +37,10 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
 @Composable
-fun TransferTypeButtons(selectedType: () -> TransferType, onClick: (TransferType) -> Unit) {
+fun TransferTypeButtons(transferType: GetSetCallbacks<TransferType>) {
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
@@ -48,8 +49,8 @@ fun TransferTypeButtons(selectedType: () -> TransferType, onClick: (TransferType
         for (transferTypeEntry in TransferType.entries) {
             TransferTypeButton(
                 transferType = transferTypeEntry,
-                isActive = { transferTypeEntry == selectedType() },
-                onClick = { onClick(transferTypeEntry) },
+                isActive = { transferTypeEntry == transferType.get() },
+                onClick = { transferType.set(transferTypeEntry) },
             )
         }
     }
@@ -93,7 +94,7 @@ enum class TransferType(
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferTypeButtons(selectedType = { TransferType.QR_CODE }, onClick = {})
+            TransferTypeButtons(GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}))
         }
     }
 }
