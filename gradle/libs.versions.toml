@@ -20,7 +20,7 @@ qrose = "1.0.1"
 recaptcha = "18.6.1"
 sentry = "4.12.0"
 serialization = "1.7.1"
-swisstransfer = "0.6.0"
+swisstransfer = "0.7.0"
 workmanager = "2.9.1"
 
 [libraries]
