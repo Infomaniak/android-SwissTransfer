@@ -24,21 +24,14 @@ import java.util.Date
 import java.util.UUID
 
 val filesPreviewData = listOf(
-    FileUi(
-        uid = UUID.randomUUID().toString(),
-        fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
-        fileSize = 57_689_032L,
+    FileUi( // Non-preview file (i.e. pdf, txt, etc.)
+        fileName = "How to not get fired.pdf",
+        uid = "How to not get fired.pdf",
+        fileSize = 10_302_130L,
         mimeType = null,
-        localPath = null,
+        localPath = "",
     ),
-    FileUi(
-        uid = UUID.randomUUID().toString(),
-        fileName = "Introduction to Turning It Off and On Again.pptx",
-        fileSize = 98_723_143L,
-        mimeType = null,
-        localPath = null,
-    ),
-    FileUi(
+    FileUi( // Preview file (i.e. png, jpg, etc.)
         fileName = "Opening images tutorial.png",
         uid = "Opening images tutorial.png",
         fileSize = 456_782L,
@@ -46,9 +39,9 @@ val filesPreviewData = listOf(
         localPath = "https://picsum.photos/200/300",
     ),
     FileUi(
-        fileName = "How to not get fired.pdf",
-        uid = "How to not get fired.pdf",
-        fileSize = 10_302_130L,
+        fileName = "The 5 step guide to turning it off and on again.docx",
+        uid = "The 5 step guide to turning it off and on again.docx",
+        fileSize = 89_723_143L,
         mimeType = null,
         localPath = "",
     ),
@@ -60,11 +53,18 @@ val filesPreviewData = listOf(
         localPath = null,
     ),
     FileUi(
-        fileName = "The 5 step guide to turning it off and on again.docx",
-        uid = "The 5 step guide to turning it off and on again.docx",
-        fileSize = 89_723_143L,
+        uid = UUID.randomUUID().toString(),
+        fileName = "Introduction to Turning It Off and On Again.pptx",
+        fileSize = 98_723_143L,
         mimeType = null,
-        localPath = "",
+        localPath = null,
+    ),
+    FileUi(
+        uid = UUID.randomUUID().toString(),
+        fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
+        fileSize = 57_689_032L,
+        mimeType = null,
+        localPath = null,
     ),
 )
 
