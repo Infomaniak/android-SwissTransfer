@@ -28,6 +28,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -102,12 +103,12 @@ class UploadWorker @AssistedInject constructor(
                 .addStates(listOf(WorkInfo.State.RUNNING))
                 .build()
             return workManager.getWorkInfosFlow(workQuery).mapLatest {
-                val workProgress = it.first().progress
+                val workProgress = it.firstOrNull()?.progress ?: return@mapLatest null
                 UploadTransferProgress(
                     uploadedSize = workProgress.getLong(UPLOADED_BYTES_TAG, 0L),
                     totalSize = workProgress.getLong(TOTAL_SIZE_TAG, 0L),
                 )
-            }
+            }.filterNotNull()
         }
 
         @OptIn(ExperimentalCoroutinesApi::class)
