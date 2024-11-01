@@ -21,8 +21,9 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,8 +37,14 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferAdvancedSettings
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
@@ -61,6 +68,7 @@ fun ImportFilesScreen(
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
         initialShowUploadSourceChoiceBottomSheet = true,
+        initialShouldShowEmailAddressesFields = true,
     )
 }
 
@@ -73,6 +81,7 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
+    initialShouldShowEmailAddressesFields: Boolean,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -104,11 +113,13 @@ private fun ImportFilesScreen(
                 TopAppBarButton.closeButton { closeActivity() },
             )
         },
-        topButton = { modifier ->
-            SendButton({ isImporting }, { importProgress }, modifier)
-        },
+        topButton = { modifier -> SendButton({ isImporting }, { importProgress }, modifier) },
         content = {
-            Column(Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = Margin.Medium, vertical = Margin.Large)
+                    .verticalScroll(rememberScrollState()),
+            ) {
                 ImportFilesTitle(titleRes = R.string.myFilesTitle)
                 ImportedFilesCard(
                     modifier = Modifier.padding(vertical = Margin.Medium),
@@ -117,8 +128,21 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                ImportFilesTitle(titleRes = R.string.transferTypeTitle)
-                ImportFilesTitle(titleRes = R.string.advancedSettingsTitle)
+                ImportTextFields(initialShouldShowEmailAddressesFields)
+                ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
+                TransferTypeButtons(initialSelectedTransferType = TransferType.LINK, onClick = {})
+                ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
+                TransferAdvancedSettings(
+                    states = {
+                        listOf(
+                            ValidityPeriodOption.THIRTY,
+                            DownloadLimitOption.ONE,
+                            PasswordTransferOption.NONE,
+                            EmailLanguageOption.GERMAN,
+                        )
+                    },
+                    onClick = {},
+                )
             }
 
             UploadSourceChoiceBottomSheet(
@@ -127,6 +151,28 @@ private fun ImportFilesScreen(
                 closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )
         }
+    )
+}
+
+@Composable
+private fun ImportTextFields(initialShouldShowEmailAddressesFields: Boolean) {
+    if (initialShouldShowEmailAddressesFields) {
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferSenderAddressPlaceholder),
+        )
+        Spacer(Modifier.size(Margin.Medium))
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferRecipientAddressPlaceholder),
+        )
+        Spacer(Modifier.size(Margin.Medium))
+    }
+    SwissTransferTextField(
+        modifier = Modifier.fillMaxWidth(),
+        label = stringResource(R.string.transferMessagePlaceholder),
+        isRequired = false,
+        minLineNumber = 3,
     )
 }
 
@@ -173,6 +219,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             addFiles = {},
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
+            initialShouldShowEmailAddressesFields = true,
         )
     }
 }

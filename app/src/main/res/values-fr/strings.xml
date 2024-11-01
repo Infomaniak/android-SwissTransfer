@@ -24,7 +24,9 @@
     <string name="buttonShare">Partager</string>
     <string name="contentDescriptionButtonBack">Retour</string>
     <string name="contentDescriptionButtonClose">Fermer</string>
+    <string name="contentDescriptionButtonHidePassword">Cacher le mot de passe</string>
     <string name="contentDescriptionButtonRemove">Supprimer le fichier</string>
+    <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
@@ -80,9 +82,13 @@
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
     </plurals>
+    <string name="textFieldOptional">(Facultatif)</string>
     <string name="snackbarLinkCopiedToClipboard">Lien copié dans le presse-papiers</string>
     <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
+    <string name="transferMessagePlaceholder">Un message à faire passer ?</string>
+    <string name="transferRecipientAddressPlaceholder">Envoyer les fichiers à</string>
     <string name="transferSendButton">Envoyer</string>
+    <string name="transferSenderAddressPlaceholder">Ton adresse mail</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s restant</item>
         <item quantity="other">%s restants</item>

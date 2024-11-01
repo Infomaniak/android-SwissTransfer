@@ -29,7 +29,9 @@
     <string name="buttonShare">Share</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
+    <string name="contentDescriptionButtonHidePassword">Hide password</string>
     <string name="contentDescriptionButtonRemove">Remove file</string>
+    <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
@@ -86,7 +88,11 @@
     </plurals>
     <string name="snackbarLinkCopiedToClipboard">Link copied to clipboard</string>
     <string name="startActivityCantHandleAction">No application has been found to handle this action</string>
+    <string name="textFieldOptional">(Optional)</string>
+    <string name="transferMessagePlaceholder">A message to pass on?</string>
+    <string name="transferRecipientAddressPlaceholder">Send files to</string>
     <string name="transferSendButton">Send</string>
+    <string name="transferSenderAddressPlaceholder">Your email address</string>
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s left</item>
         <item quantity="other">%s left</item>
