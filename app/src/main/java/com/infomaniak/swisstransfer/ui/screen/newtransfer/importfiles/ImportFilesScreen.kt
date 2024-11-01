@@ -20,9 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -74,7 +73,6 @@ fun ImportFilesScreen(
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
         initialShowUploadSourceChoiceBottomSheet = true,
-        initialShouldShowEmailAddressesFields = true,
     )
 }
 
@@ -89,7 +87,6 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
-    initialShouldShowEmailAddressesFields: Boolean,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -136,7 +133,7 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                ImportTextFields(initialShouldShowEmailAddressesFields)
+                ImportTextFields(selectedTransferType)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
                 TransferTypeButtons(selectedTransferType, onTransferTypeClicked)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
@@ -163,19 +160,25 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun ImportTextFields(initialShouldShowEmailAddressesFields: Boolean) {
-    if (initialShouldShowEmailAddressesFields) {
-        SwissTransferTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.transferSenderAddressPlaceholder),
-        )
-        Spacer(Modifier.size(Margin.Medium))
-        SwissTransferTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.transferRecipientAddressPlaceholder),
-        )
-        Spacer(Modifier.size(Margin.Medium))
+private fun ImportTextFields(selectedTransferType: () -> TransferType) {
+
+    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferType.MAIL } }
+
+    AnimatedVisibility(visible = shouldShowEmailAddressesFields) {
+        Column {
+            SwissTransferTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(R.string.transferSenderAddressPlaceholder),
+            )
+            Spacer(Modifier.size(Margin.Medium))
+            SwissTransferTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(R.string.transferRecipientAddressPlaceholder),
+            )
+            Spacer(Modifier.size(Margin.Medium))
+        }
     }
+
     SwissTransferTextField(
         modifier = Modifier.fillMaxWidth(),
         label = stringResource(R.string.transferMessagePlaceholder),
@@ -229,7 +232,6 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             addFiles = {},
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
-            initialShouldShowEmailAddressesFields = true,
         )
     }
 }

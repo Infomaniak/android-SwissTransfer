@@ -59,7 +59,6 @@ class NewTransferViewModel @Inject constructor(
     private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
     val selectedTransferType: StateFlow<TransferType> = _selectedTransferType
 
-
     init {
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
