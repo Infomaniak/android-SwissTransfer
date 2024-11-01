@@ -21,9 +21,13 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -32,10 +36,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(
-    private val importationFilesManager: ImportationFilesManager,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle,
+    private val importationFilesManager: ImportationFilesManager,
+    private val swissTransferInjection: SwissTransferInjection,
+    private val uploadWorkerScheduler: UploadWorker.Scheduler,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
+
+    private val uploadManager inline get() = swissTransferInjection.uploadManager
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -86,6 +94,18 @@ class NewTransferViewModel @Inject constructor(
     fun removeFileByUid(uid: String) {
         viewModelScope.launch(ioDispatcher) {
             importationFilesManager.removeFileByUid(uid)
+        }
+    }
+
+    fun sendTransfer(newUploadSession: NewUploadSession) {
+        viewModelScope.launch(ioDispatcher) {
+            runCatching {
+                uploadManager.createAndGetUpload(newUploadSession)
+                uploadWorkerScheduler.scheduleWork()
+            }.onFailure { exception ->
+                // TODO: Handle user feedback
+                Sentry.captureException(exception)
+            }
         }
     }
 
