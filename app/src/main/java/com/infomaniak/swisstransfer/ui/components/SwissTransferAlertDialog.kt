@@ -20,14 +20,13 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -47,8 +46,8 @@ fun SwissTransferAlertDialog(
             .wrapContentHeight()
             .fillMaxWidth(),
     ) {
-        Card(shape = RoundedCornerShape(28.dp)) {
-            BasicAlertDialogContent(modifier, titleRes, descriptionRes, content)
+        Card(shape = RoundedCornerShape(Margin.Medium)) {
+            BasicAlertDialogContent(modifier, titleRes, descriptionRes, content, onDismissRequest)
         }
     }
 }
@@ -59,6 +58,7 @@ fun BasicAlertDialogContent(
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
+    onDismissRequest: () -> Unit,
 ) {
     Column(modifier.padding(Margin.Large)) {
         Text(
@@ -74,6 +74,42 @@ fun BasicAlertDialogContent(
         )
         Spacer(Modifier.height(Margin.Large))
         additionalContent?.let { it() }
+        ActionButtons(onDismissRequest, {})
+
+    }
+}
+
+@Composable
+private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SmallButton(
+            style = ButtonType.TERTIARY,
+            titleRes = R.string.buttonCancel,
+            onClick = { onDismissRequest() },
+        )
+        Spacer(Modifier.width(Margin.Micro))
+        SmallButton(
+            titleRes = R.string.buttonCancel,
+            onClick = { onConfirmation() },
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewAlertDialog() {
+    SwissTransferTheme {
+        Surface {
+            SwissTransferAlertDialog(
+                titleRes = R.string.uploadSuccessLinkTitle,
+                descriptionRes = R.string.uploadSuccessLinkDescription,
+                onDismissRequest = {}
+            ) { }
+        }
     }
 }
 
