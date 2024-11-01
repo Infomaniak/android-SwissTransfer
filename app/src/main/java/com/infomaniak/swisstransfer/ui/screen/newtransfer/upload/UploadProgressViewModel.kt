@@ -18,13 +18,30 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class UploadProgressViewModel @Inject constructor() : ViewModel() {
-
+class UploadProgressViewModel @Inject constructor(
+    uploadWorkerScheduler: UploadWorker.Scheduler,
+    @IoDispatcher ioDispatcher: CoroutineDispatcher,
+) : ViewModel() {
     val uploadedSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(9_842_314L)
     val totalSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(12_342_314L)
+
+    val progress = uploadWorkerScheduler.trackUploadProgressFlow()
+        .flowOn(ioDispatcher)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = UploadWorker.UploadTransferProgress(0, 0)
+        )
 }

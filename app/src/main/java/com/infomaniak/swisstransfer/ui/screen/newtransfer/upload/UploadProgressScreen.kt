@@ -43,11 +43,11 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.workers.UploadWorker
 
 @Composable
 fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>()) {
-    val uploadedSizeInBytes by uploadProgressViewModel.uploadedSizeInBytes.collectAsStateWithLifecycle()
-    val totalSizeInBytes by uploadProgressViewModel.totalSizeInBytes.collectAsStateWithLifecycle()
+    val progress by uploadProgressViewModel.progress.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
 
@@ -58,8 +58,7 @@ fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hilt
     }
 
     UploadProgressScreen(
-        uploadedSizeInBytes = { uploadedSizeInBytes },
-        totalSizeInBytes = { totalSizeInBytes },
+        progress = { progress },
         showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
         onCancel = {
@@ -70,8 +69,7 @@ fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hilt
 
 @Composable
 private fun UploadProgressScreen(
-    uploadedSizeInBytes: () -> Long,
-    totalSizeInBytes: () -> Long,
+    progress: () -> UploadWorker.UploadTransferProgress,
     adScreenType: UploadProgressAdType,
     onCancel: () -> Unit,
     showBottomSheet: GetSetCallbacks<Boolean>,
@@ -90,7 +88,7 @@ private fun UploadProgressScreen(
 
             Spacer(modifier = Modifier.height(Margin.Medium))
             Text(stringResource(R.string.uploadSuccessTransferInProgress))
-            Progress(uploadedSizeInBytes, totalSizeInBytes)
+            Progress(progress)
             Spacer(modifier = Modifier.height(Margin.Huge))
         }
 
@@ -128,8 +126,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
 private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
         UploadProgressScreen(
-            uploadedSizeInBytes = { 44_321_654L },
-            totalSizeInBytes = { 76_321_894L },
+            progress = { UploadWorker.UploadTransferProgress(44_321_654L, 76_321_894L) },
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
             showBottomSheet = GetSetCallbacks(get = { false }, set = { }),
