@@ -46,7 +46,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.workers.UploadWorker
 
 @Composable
-fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>()) {
+fun UploadProgressScreen(
+    uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
+    closeActivity: () -> Unit,
+) {
     val progress by uploadProgressViewModel.progress.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
@@ -62,7 +65,8 @@ fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hilt
         showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
         onCancel = {
-            // TODO
+            uploadProgressViewModel.cancelUpload()
+            closeActivity()
         }
     )
 }
