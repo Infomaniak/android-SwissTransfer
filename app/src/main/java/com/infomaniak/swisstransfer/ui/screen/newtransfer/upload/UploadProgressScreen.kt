@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHe
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
@@ -49,9 +51,16 @@ fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hilt
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
 
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+
+    BackHandler(!showBottomSheet) {
+        showBottomSheet = true
+    }
+
     UploadProgressScreen(
         uploadedSizeInBytes = { uploadedSizeInBytes },
         totalSizeInBytes = { totalSizeInBytes },
+        showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
         onCancel = {
             // TODO
@@ -65,13 +74,12 @@ private fun UploadProgressScreen(
     totalSizeInBytes: () -> Long,
     adScreenType: UploadProgressAdType,
     onCancel: () -> Unit,
+    showBottomSheet: GetSetCallbacks<Boolean>,
 ) {
-    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(R.string.buttonCancel, modifier = it, onClick = { showBottomSheet = true })
+            LargeButton(R.string.buttonCancel, modifier = it, onClick = { showBottomSheet.set(true) })
         },
     ) {
         Column(
@@ -86,7 +94,7 @@ private fun UploadProgressScreen(
             Spacer(modifier = Modifier.height(Margin.Huge))
         }
 
-        if (showBottomSheet) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet = false })
+        if (showBottomSheet.get()) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet.set(false) })
     }
 }
 
@@ -124,6 +132,7 @@ private fun UploadProgressScreenPreview() {
             totalSizeInBytes = { 76_321_894L },
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
+            showBottomSheet = GetSetCallbacks(get = { false }, set = { }),
         )
     }
 }
