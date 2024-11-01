@@ -26,9 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,12 +37,10 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
 @Composable
-fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (TransferType) -> Unit) {
-
-    val selectedItem by rememberSaveable { mutableStateOf(initialSelectedTransferType) }
-
+fun TransferTypeButtons(transferType: GetSetCallbacks<TransferType>) {
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
@@ -54,8 +49,8 @@ fun TransferTypeButtons(initialSelectedTransferType: TransferType, onClick: (Tra
         for (transferTypeEntry in TransferType.entries) {
             TransferTypeButton(
                 transferType = transferTypeEntry,
-                isActive = { transferTypeEntry == selectedItem },
-                onClick = { onClick(transferTypeEntry) },
+                isActive = { transferTypeEntry == transferType.get() },
+                onClick = { transferType.set(transferTypeEntry) },
             )
         }
     }
@@ -99,7 +94,7 @@ enum class TransferType(
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferTypeButtons(initialSelectedTransferType = TransferType.QR_CODE, onClick = {})
+            TransferTypeButtons(GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}))
         }
     }
 }

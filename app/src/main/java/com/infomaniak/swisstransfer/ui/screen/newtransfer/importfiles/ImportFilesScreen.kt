@@ -21,6 +21,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -47,6 +48,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -60,15 +62,20 @@ fun ImportFilesScreen(
     val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
+    val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+
     ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
+        selectedTransferType = GetSetCallbacks(
+            get = { selectedTransferType },
+            set = newTransferViewModel::selectTransferType,
+        ),
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
         initialShowUploadSourceChoiceBottomSheet = true,
-        initialShouldShowEmailAddressesFields = true,
     )
 }
 
@@ -77,11 +84,11 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
+    selectedTransferType: GetSetCallbacks<TransferType>,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
-    initialShouldShowEmailAddressesFields: Boolean,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -128,9 +135,9 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                ImportTextFields(initialShouldShowEmailAddressesFields)
+                ImportTextFields(selectedTransferType.get)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
-                TransferTypeButtons(initialSelectedTransferType = TransferType.LINK, onClick = {})
+                TransferTypeButtons(selectedTransferType)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferAdvancedSettings(
                     states = {
@@ -155,25 +162,37 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun ImportTextFields(initialShouldShowEmailAddressesFields: Boolean) {
-    if (initialShouldShowEmailAddressesFields) {
-        SwissTransferTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.transferSenderAddressPlaceholder),
-        )
-        Spacer(Modifier.size(Margin.Medium))
-        SwissTransferTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.transferRecipientAddressPlaceholder),
-        )
-        Spacer(Modifier.size(Margin.Medium))
-    }
+private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferType) {
+
+    EmailAddressesTextFields(selectedTransferType)
+
     SwissTransferTextField(
         modifier = Modifier.fillMaxWidth(),
         label = stringResource(R.string.transferMessagePlaceholder),
         isRequired = false,
         minLineNumber = 3,
     )
+}
+
+@Composable
+private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> TransferType) {
+
+    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferType.MAIL } }
+
+    AnimatedVisibility(visible = shouldShowEmailAddressesFields) {
+        Column {
+            SwissTransferTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(R.string.transferSenderAddressPlaceholder),
+            )
+            Spacer(Modifier.size(Margin.Medium))
+            SwissTransferTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(R.string.transferRecipientAddressPlaceholder),
+            )
+            Spacer(Modifier.size(Margin.Medium))
+        }
+    }
 }
 
 @Composable
@@ -215,11 +234,11 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
+            selectedTransferType = GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}),
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
-            initialShouldShowEmailAddressesFields = true,
         )
     }
 }
