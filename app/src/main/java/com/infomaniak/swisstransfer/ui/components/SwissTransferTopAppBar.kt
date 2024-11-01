@@ -17,20 +17,19 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowLeft
 import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun SwissTransferTopAppBar(
@@ -84,8 +83,7 @@ data class TopAppBarButton(
     }
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@PreviewLightAndDark
 @Composable
 private fun SwissTransferTopAppBarPreview() {
     SwissTransferTheme {
