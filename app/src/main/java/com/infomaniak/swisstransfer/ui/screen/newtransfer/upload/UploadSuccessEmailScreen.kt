@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessEmail.UploadSuccessEmail
+import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -81,7 +81,7 @@ private fun Content(emails: List<String>) {
     ) {
 
         IllustratedMessageBlock(
-            icon = AppIllus.UploadSuccessEmail.image(),
+            icon = AppIllus.Beers.image(),
             title = TransferType.MAIL.titleRes,
             description = pluralStringResource(TransferType.MAIL.descriptionRes!!, emails.count()),
         )

@@ -1,3 +1,20 @@
+/*
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2024 Infomaniak Network SA
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.infomaniak.swisstransfer.ui.images.icons
 
 import androidx.compose.foundation.Image
@@ -20,15 +37,15 @@ import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRoun
 
 val AppIcons.AddThick: ImageVector
     get() {
-        if (_addThick != null) {
-            return _addThick!!
-        }
+
+        if (_addThick != null) return _addThick!!
+
         _addThick = Builder(
             name = "AddThick",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 16.0f,
-            viewportHeight = 16.0f
+            viewportHeight = 16.0f,
         ).apply {
             path(
                 fill = null,
@@ -37,7 +54,7 @@ val AppIcons.AddThick: ImageVector
                 strokeLineCap = strokeCapRound,
                 strokeLineJoin = strokeJoinRound,
                 strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(1.0f, 8.0f)
                 horizontalLineToRelative(14.0f)
@@ -45,6 +62,7 @@ val AppIcons.AddThick: ImageVector
                 verticalLineToRelative(14.0f)
             }
         }.build()
+
         return _addThick!!
     }
 

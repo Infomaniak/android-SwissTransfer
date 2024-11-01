@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessEmail
+package com.infomaniak.swisstransfer.ui.images.illus.beers
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -29,13 +29,13 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-val AppIllus.UploadSuccessEmail: ThemedImage
-    get() = _uploadSuccessEmail ?: object : ThemedImage {
-        override val light = AppIllus.UploadSuccessEmailLight
-        override val dark = AppIllus.UploadSuccessEmailDark
-    }.also { _uploadSuccessEmail = it }
+val AppIllus.Beers: ThemedImage
+    get() = _beers ?: object : ThemedImage {
+        override val light = AppIllus.BeersLight
+        override val dark = AppIllus.BeersDark
+    }.also { _beers = it }
 
-private var _uploadSuccessEmail: ThemedImage? = null
+private var _beers: ThemedImage? = null
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
@@ -44,7 +44,7 @@ private fun Preview() {
     SwissTransferTheme {
         Box {
             Image(
-                imageVector = AppIllus.UploadSuccessEmail.image(),
+                imageVector = AppIllus.Beers.image(),
                 contentDescription = null,
                 modifier = Modifier.size(AppImages.previewSize),
             )
