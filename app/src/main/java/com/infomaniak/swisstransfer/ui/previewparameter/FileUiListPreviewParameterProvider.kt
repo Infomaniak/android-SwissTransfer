@@ -17,21 +17,25 @@
  */
 package com.infomaniak.swisstransfer.ui.previewparameter
 
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
-import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
+class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUi>> {
+    override val values: Sequence<List<FileUi>> = sequenceOf(filesPreviewData)
+}
+
 val filesPreviewData = listOf(
-    FileUi( // Non-preview file (i.e. pdf, txt, etc.)
+    FileUi(
+        // Non-preview file (i.e. pdf, txt, etc.)
         fileName = "How to not get fired.pdf",
         uid = "How to not get fired.pdf",
         fileSize = 10_302_130L,
         mimeType = null,
         localPath = "",
     ),
-    FileUi( // Preview file (i.e. png, jpg, etc.)
+    FileUi(
+        // Preview file (i.e. png, jpg, etc.)
         fileName = "Opening images tutorial.png",
         uid = "Opening images tutorial.png",
         fileSize = 456_782L,
@@ -65,47 +69,5 @@ val filesPreviewData = listOf(
         fileSize = 57_689_032L,
         mimeType = null,
         localPath = null,
-    ),
-)
-
-val transfersPreviewData = listOf(
-    TransferUi(
-        uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = Date().time - 30L * 86_400_000L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) + 3)
-        }.time.time,
-        sizeUploaded = 57_689_032L,
-        downloadLimit = 1,
-        downloadLeft = 1,
-        message = "Coucou c'est moi le message de description du transfert.",
-        files = filesPreviewData,
-    ),
-    TransferUi(
-        uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = Date().time - 5L * 86_400_000L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) + 5)
-        }.time.time,
-        sizeUploaded = 89_723_143L,
-        downloadLimit = 20,
-        downloadLeft = 0,
-        message = null,
-        files = filesPreviewData,
-    ),
-    TransferUi(
-        uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = Date().time - 0.5f.toLong() * 86_400_000L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) - 4)
-        }.time.time,
-        sizeUploaded = 237_866_728L,
-        downloadLimit = 250,
-        downloadLeft = 123,
-        message = "3ème transfert. RAS.",
-        files = filesPreviewData,
     ),
 )
