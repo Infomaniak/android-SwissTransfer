@@ -136,7 +136,7 @@ class UploadWorker @AssistedInject constructor(
         private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
         private const val TOTAL_CHUNKS = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
-        const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
-        const val TOTAL_SIZE_TAG = "total_size_tag"
+        private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
+        private const val TOTAL_SIZE_TAG = "total_size_tag"
     }
 }
