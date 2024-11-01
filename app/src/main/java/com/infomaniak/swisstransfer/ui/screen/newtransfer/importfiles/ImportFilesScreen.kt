@@ -25,6 +25,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,6 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.icons.Camera
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -62,14 +65,17 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
-    val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
-    val currentSessionFilesCount by importFilesViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
-    val selectedTransferType by importFilesViewModel.selectedTransferType.collectAsStateWithLifecycle()
-    val validityPeriodState by importFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
-    val downloadLimitState by importFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
-    val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
-    val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
+    val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
+    val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
+
+    val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+
+    val validityPeriodState by newTransferViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimitState by newTransferViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOptionState by newTransferViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguageState by newTransferViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
+
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
 
@@ -227,11 +233,14 @@ private fun ImportFilesScreen(
                 initialValue = advancedOptionsCallbacks.advancedOptionsStates()[1].settingState(),
             )
 
-            PasswordOptionBottomSheet(
-                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.PASSWORD },
-                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = ::closeOptionBottomSheet,
-                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[2].settingState(),
+            SwissTransferAlertDialog(
+                titleRes = R.string.settingsOptionPassword,
+                descriptionRes = R.string.settingsOptionPassword,
+                onDismissRequest = {},
+                content = {
+                    Text("toto")
+                    Icon(AppImages.AppIcons.Camera, contentDescription = "")
+                }
             )
 
             EmailLanguageBottomSheet(

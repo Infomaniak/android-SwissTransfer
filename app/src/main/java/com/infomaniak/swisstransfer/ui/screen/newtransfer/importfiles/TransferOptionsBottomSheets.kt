@@ -108,23 +108,6 @@ fun DownloadLimitBottomSheet(
 }
 
 @Composable
-fun PasswordOptionBottomSheet(
-    isBottomSheetVisible: () -> Boolean,
-    onOptionClicked: (PasswordTransferOption) -> Unit,
-    closeBottomSheet: () -> Unit,
-    initialValue: SettingOption?,
-) {
-    TransferOptionBottomSheetScaffold(
-        isBottomSheetVisible = isBottomSheetVisible,
-        closeBottomSheet = closeBottomSheet,
-        initialValue = initialValue,
-        titleRes = R.string.settingsOptionPassword,
-        optionEntries = PasswordTransferOption.entries,
-        onOptionClicked = { onOptionClicked(it as PasswordTransferOption) },
-    )
-}
-
-@Composable
 fun EmailLanguageBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (EmailLanguageOption) -> Unit,
