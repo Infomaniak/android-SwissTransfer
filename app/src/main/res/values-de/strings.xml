@@ -29,6 +29,7 @@
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
+    <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
         <item quantity="other">%d Dateien</item>
@@ -40,6 +41,7 @@
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
     <string name="noTransferReceivedDescription">Alle Überweisungen, die du in den letzten 30 Tagen erhältst, werden hier angezeigt.</string>
     <string name="noTransferReceivedTitle">Keine Überweisungen erhalten</string>
+    <string name="receivedFilesTitle">Empfangene Dateien</string>
     <string name="receivedTitle">Empfangen</string>
     <string name="sentEmptyTitle">Unsere Geschichte beginnt hier</string>
     <string name="sentTitle">Gesendet</string>

@@ -27,9 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.FileItemList
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
@@ -38,6 +39,9 @@ import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import java.util.Calendar
+import java.util.Date
+import java.util.UUID
 
 @Composable
 fun ReceivedScreen(
@@ -45,22 +49,13 @@ fun ReceivedScreen(
     sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
-    val isTransferChecked = sentViewModel.selectedTransferIds
     val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
 
-    ReceivedScreen(
-        isFileChecked = { uid -> isTransferChecked[uid] == true },
-        setFileCheckStatus = { uid, isChecked -> isTransferChecked[uid] = isChecked },
-        areTransfersEmpty = { areTransfersEmpty }
-    )
+    ReceivedScreen(areTransfersEmpty = { areTransfersEmpty })
 }
 
 @Composable
-private fun ReceivedScreen(
-    isFileChecked: (String) -> Boolean,
-    setFileCheckStatus: (String, Boolean) -> Unit,
-    areTransfersEmpty: () -> Boolean,
-) {
+private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) {
@@ -71,37 +66,98 @@ private fun ReceivedScreen(
                 description = R.string.noTransferReceivedDescription,
             )
         } else {
+
             val files = listOf(
                 FileUi(
-                    fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
-                    uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-                    fileSize = 57689032,
+                    uid = UUID.randomUUID().toString(),
+                    fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
+                    fileSize = 57_689_032L,
                     mimeType = null,
-                    localPath = "",
+                    localPath = null,
                 ),
                 FileUi(
-                    fileName = "Introduction to Turning It Off and On Again.pptx",
-                    uid = "Introduction to Turning It Off and On Again.pptx",
-                    fileSize = 89723143,
+                    uid = UUID.randomUUID().toString(),
+                    fileName = "Introduction to Turning It Off and On Again (1).pptx",
+                    fileSize = 89_723_143L,
                     mimeType = null,
-                    localPath = "",
+                    localPath = null,
                 ),
                 FileUi(
-                    fileName = "Learning to Copy and Paste: A Complete Guide.docx",
-                    uid = "Learning to Copy and Paste: A Complete Guide.docx",
-                    fileSize = 237866728,
+                    uid = UUID.randomUUID().toString(),
+                    fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
+                    fileSize = 237_866_728L,
                     mimeType = null,
-                    localPath = "",
+                    localPath = null,
+                ),
+                FileUi(
+                    uid = UUID.randomUUID().toString(),
+                    fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
+                    fileSize = 57_689_032L,
+                    mimeType = null,
+                    localPath = null,
+                ),
+                FileUi(
+                    uid = UUID.randomUUID().toString(),
+                    fileName = "Introduction to Turning It Off and On Again (2).pptx",
+                    fileSize = 89_723_143L,
+                    mimeType = null,
+                    localPath = null,
+                ),
+                FileUi(
+                    uid = UUID.randomUUID().toString(),
+                    fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
+                    fileSize = 237_866_728L,
+                    mimeType = null,
+                    localPath = null,
                 ),
             )
-            FileItemList(
+
+            val transfers = listOf(
+                TransferUi(
+                    uuid = UUID.randomUUID().toString(),
+                    createdDateTimestamp = Date().time - 30L * 86_400_000L,
+                    expirationDateTimestamp = Calendar.getInstance().apply {
+                        time = Date()
+                        set(Calendar.DATE, get(Calendar.DATE) + 1)
+                    }.time.time,
+                    sizeUploaded = 57_689_032L,
+                    downloadLimit = 10,
+                    downloadLeft = 8,
+                    message = "Coucou c'est moi le message de description du transfert.",
+                    files = files,
+                ),
+                TransferUi(
+                    uuid = UUID.randomUUID().toString(),
+                    createdDateTimestamp = Date().time - 5L * 86_400_000L,
+                    expirationDateTimestamp = Calendar.getInstance().apply {
+                        time = Date()
+                        set(Calendar.DATE, get(Calendar.DATE) + 4)
+                    }.time.time,
+                    sizeUploaded = 89_723_143L,
+                    downloadLimit = 2,
+                    downloadLeft = 2,
+                    message = null,
+                    files = files,
+                ),
+                TransferUi(
+                    uuid = UUID.randomUUID().toString(),
+                    createdDateTimestamp = Date().time - 0.5f.toLong() * 86_400_000L,
+                    expirationDateTimestamp = Calendar.getInstance().apply {
+                        time = Date()
+                        set(Calendar.DATE, get(Calendar.DATE) + 7)
+                    }.time.time,
+                    sizeUploaded = 237_866_728L,
+                    downloadLimit = 420_069,
+                    downloadLeft = 402_690,
+                    message = "3ème transfert. RAS.",
+                    files = files,
+                ),
+            )
+
+            TransferItemList(
                 modifier = Modifier.padding(Margin.Medium),
-                files = files,
-                isRemoveButtonVisible = false,
-                isCheckboxVisible = true,
-                isUidChecked = isFileChecked,
-                setUidCheckStatus = setFileCheckStatus,
-                onRemoveUid = {},
+                transfers = transfers,
+                onClick = { /* TODO */ }
             )
         }
     }
@@ -112,7 +168,7 @@ private fun ReceivedScreen(
 private fun ReceivedScreenPreview() {
     SwissTransferTheme {
         Surface {
-            ReceivedScreen(areTransfersEmpty = { true }, isFileChecked = { false }, setFileCheckStatus = { _, _ -> })
+            ReceivedScreen(areTransfersEmpty = { true })
         }
     }
 }

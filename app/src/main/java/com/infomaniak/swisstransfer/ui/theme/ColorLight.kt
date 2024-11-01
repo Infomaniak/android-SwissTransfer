@@ -90,4 +90,6 @@ val CustomLightColorScheme = CustomColorScheme(
     onEmailAddressChipColor = Color(green_dark),
     qrCodeDarkPixels = Color(green_dark),
     qrCodeLightPixels = Color(white),
+    transferFilePreviewOverflow = Color(green_dark),
+    onTransferFilePreviewOverflow = Color(green_contrast),
 )

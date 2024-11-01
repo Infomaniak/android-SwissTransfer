@@ -34,6 +34,7 @@
     <string name="contentDescriptionButtonRemove">Remove file</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
+    <string name="expiresIn">Expires in %d days</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
         <item quantity="other">%d files</item>
@@ -45,6 +46,7 @@
     <string name="noFileTitle">No file, no transfer!</string>
     <string name="noTransferReceivedDescription">All transfers you receive over the last 30 days will appear here.</string>
     <string name="noTransferReceivedTitle">No transfers received</string>
+    <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
     <string name="sentEmptyTitle">Our story begins here</string>
     <string name="sentTitle">Sent</string>

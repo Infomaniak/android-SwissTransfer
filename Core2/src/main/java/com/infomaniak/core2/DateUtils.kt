@@ -15,16 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.theme
+package com.infomaniak.core2
 
-import androidx.compose.ui.unit.dp
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-object Dimens {
-    val SettingHorizontalMargin = Margin.Medium
-    val SettingVerticalMargin = Margin.Small
-    val DescriptionWidth = 300.dp
-    val LargeButtonHeight = 56.dp
-    val SmallIconSize = 16.dp
-    val IconSize = 24.dp
-    val BorderWidth = 1.dp
-}
+const val FORMAT_DATE_DEFAULT = "dd.MM.yy"
+const val FORMAT_DATE_TITLE = "E d MMMM"
+
+fun Date.format(pattern: String = FORMAT_DATE_DEFAULT): String = SimpleDateFormat(pattern, Locale.getDefault()).format(this)

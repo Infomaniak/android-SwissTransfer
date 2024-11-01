@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.CrossThick
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -55,7 +55,7 @@ fun BoxScope.CrossCircleButton(onClick: (() -> Unit)?, size: Dp = 48.dp) {
         ) {
             Icon(
                 modifier = Modifier.size(Margin.Mini),
-                imageVector = AppImages.AppIcons.CrossThick,
+                imageVector = AppIcons.CrossThick,
                 contentDescription = stringResource(R.string.contentDescriptionButtonRemove),
                 tint = Color.White,
             )

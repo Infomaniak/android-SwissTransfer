@@ -41,7 +41,7 @@ val AppIcons.ChevronRightThick: ImageVector
         if (_chevronRightThick != null) return _chevronRightThick!!
 
         _chevronRightThick = Builder(
-            name = "ChevronRightSmall",
+            name = "ChevronRightThick",
             defaultWidth = 16.0.dp,
             defaultHeight = 16.0.dp,
             viewportWidth = 16.0f,

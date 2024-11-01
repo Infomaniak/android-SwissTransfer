@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessQr
+package com.infomaniak.swisstransfer.ui.images.illus.beers
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,21 +38,21 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.AppImages.previewSize
 
-val AppIllus.UploadSuccessQrDark: ImageVector
+val AppIllus.BeersLight: ImageVector
     get() {
 
-        if (_uploadSuccessQrDark != null) return _uploadSuccessQrDark!!
+        if (_beersLight != null) return _beersLight!!
 
-        _uploadSuccessQrDark = Builder(
-            name = "UploadSuccessQrDark",
+        _beersLight = Builder(
+            name = "BeersLight",
             defaultWidth = 175.0.dp,
             defaultHeight = 115.0.dp,
             viewportWidth = 175.0f,
             viewportHeight = 115.0f
         ).apply {
             path(
-                fill = SolidColor(Color(0xFF67DD95)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                fill = SolidColor(Color(0xFF3CB572)), stroke =
+                SolidColor(Color(0xFF014958)), strokeLineWidth = 2.0f, strokeLineCap =
                 Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -78,19 +78,19 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFE3F6DC)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(85.62f, 25.67f)
                 curveTo(86.7f, 25.94f, 87.8f, 25.27f, 88.06f, 24.19f)
-                curveTo(88.32f, 23.11f, 87.66f, 22.02f, 86.58f, 21.75f)
+                curveTo(88.32f, 23.11f, 87.66f, 22.01f, 86.58f, 21.75f)
                 curveTo(85.49f, 21.49f, 84.4f, 22.15f, 84.14f, 23.23f)
                 curveTo(83.87f, 24.32f, 84.54f, 25.41f, 85.62f, 25.67f)
                 close()
                 moveTo(83.78f, 29.62f)
                 curveTo(83.44f, 31.0f, 82.05f, 31.85f, 80.67f, 31.51f)
-                curveTo(79.28f, 31.17f, 78.44f, 29.78f, 78.77f, 28.4f)
+                curveTo(79.28f, 31.17f, 78.43f, 29.78f, 78.77f, 28.4f)
                 curveTo(79.11f, 27.01f, 80.51f, 26.16f, 81.89f, 26.5f)
                 curveTo(83.27f, 26.84f, 84.12f, 28.24f, 83.78f, 29.62f)
                 close()
@@ -98,21 +98,21 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 curveTo(85.34f, 42.64f, 86.97f, 41.36f, 87.43f, 39.48f)
                 curveTo(87.99f, 37.18f, 86.58f, 34.85f, 84.27f, 34.29f)
                 curveTo(83.43f, 34.09f, 82.59f, 34.14f, 81.84f, 34.41f)
-                curveTo(81.25f, 34.02f, 80.6f, 33.72f, 79.87f, 33.54f)
+                curveTo(81.25f, 34.01f, 80.59f, 33.72f, 79.87f, 33.54f)
                 curveTo(76.62f, 32.75f, 73.34f, 34.74f, 72.55f, 37.99f)
                 curveTo(72.46f, 38.36f, 72.4f, 38.73f, 72.38f, 39.1f)
-                curveTo(72.22f, 38.98f, 72.04f, 38.89f, 71.83f, 38.84f)
-                curveTo(71.03f, 38.64f, 70.22f, 39.13f, 70.02f, 39.94f)
+                curveTo(72.22f, 38.98f, 72.03f, 38.89f, 71.83f, 38.84f)
+                curveTo(71.02f, 38.64f, 70.22f, 39.13f, 70.02f, 39.94f)
                 curveTo(69.93f, 40.31f, 69.99f, 40.68f, 70.16f, 41.0f)
                 curveTo(70.11f, 40.99f, 70.07f, 40.97f, 70.03f, 40.96f)
                 curveTo(68.02f, 40.47f, 66.0f, 41.7f, 65.51f, 43.71f)
-                curveTo(65.27f, 44.71f, 65.45f, 45.73f, 65.95f, 46.55f)
+                curveTo(65.26f, 44.71f, 65.45f, 45.73f, 65.95f, 46.55f)
                 curveTo(63.92f, 46.84f, 62.14f, 48.22f, 61.4f, 50.22f)
                 curveTo(59.24f, 50.01f, 57.33f, 50.79f, 55.04f, 51.74f)
                 curveTo(52.97f, 52.59f, 50.58f, 53.57f, 47.39f, 54.08f)
                 curveTo(40.57f, 55.17f, 33.41f, 39.71f, 33.41f, 39.71f)
                 lineTo(24.0f, 99.04f)
-                curveTo(23.87f, 99.83f, 24.38f, 100.59f, 25.15f, 100.78f)
+                curveTo(23.87f, 99.83f, 24.38f, 100.58f, 25.15f, 100.78f)
                 lineTo(59.53f, 109.17f)
                 curveTo(60.31f, 109.36f, 61.1f, 108.92f, 61.35f, 108.16f)
                 lineTo(82.88f, 43.55f)
@@ -121,13 +121,12 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 moveTo(87.48f, 32.27f)
                 curveTo(87.29f, 33.07f, 86.49f, 33.56f, 85.69f, 33.36f)
                 curveTo(84.89f, 33.17f, 84.41f, 32.37f, 84.6f, 31.57f)
-                curveTo(84.8f, 30.77f, 85.6f, 30.29f, 86.4f, 30.48f)
+                curveTo(84.79f, 30.77f, 85.6f, 30.29f, 86.39f, 30.48f)
                 curveTo(87.19f, 30.67f, 87.68f, 31.48f, 87.48f, 32.27f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -139,8 +138,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 lineTo(39.33f, 83.72f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -152,8 +150,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 lineTo(50.94f, 86.56f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -165,7 +162,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 lineTo(62.56f, 89.4f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -175,7 +172,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -185,7 +182,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(1.49f, 1.49f, 58.72f, true, true, -2.9f, -0.71f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -195,7 +192,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.5f, 0.5f, 58.72f, true, true, -0.97f, -0.24f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -205,7 +202,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.5f, 0.5f, 58.72f, true, true, -0.97f, -0.24f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -215,7 +212,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(1.0f, 1.0f, 58.72f, true, true, -1.94f, -0.47f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -225,7 +222,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.75f, 0.75f, 58.72f, true, true, -1.45f, -0.35f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -235,29 +232,28 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.75f, 0.75f, 58.72f, true, true, -1.45f, -0.35f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 0.5f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
-                moveTo(36.61f, 30.49f)
-                curveTo(35.59f, 30.25f, 34.58f, 30.92f, 34.42f, 31.95f)
-                lineTo(23.62f, 98.97f)
-                curveTo(23.48f, 99.89f, 24.06f, 100.77f, 24.97f, 100.99f)
-                lineTo(59.6f, 109.45f)
-                curveTo(60.51f, 109.67f, 61.43f, 109.16f, 61.73f, 108.27f)
-                lineTo(83.04f, 43.82f)
-                curveTo(83.37f, 42.83f, 82.78f, 41.77f, 81.77f, 41.52f)
-                lineTo(36.61f, 30.49f)
+                moveTo(36.67f, 30.25f)
+                curveTo(35.51f, 29.97f, 34.36f, 30.73f, 34.17f, 31.91f)
+                lineTo(23.38f, 98.93f)
+                curveTo(23.21f, 99.98f, 23.87f, 100.98f, 24.91f, 101.23f)
+                lineTo(59.54f, 109.69f)
+                curveTo(60.58f, 109.94f, 61.63f, 109.36f, 61.96f, 108.35f)
+                lineTo(83.28f, 43.9f)
+                curveTo(83.65f, 42.77f, 82.98f, 41.56f, 81.83f, 41.28f)
+                lineTo(36.67f, 30.25f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFDCE4E5)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
                 moveTo(22.27f, 99.42f)
-                curveTo(22.33f, 98.96f, 22.77f, 98.65f, 23.22f, 98.76f)
+                curveTo(22.33f, 98.96f, 22.77f, 98.66f, 23.22f, 98.76f)
                 lineTo(62.66f, 108.4f)
                 curveTo(63.11f, 108.51f, 63.36f, 108.99f, 63.2f, 109.42f)
                 lineTo(62.32f, 111.72f)
@@ -268,8 +264,8 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF67DD95)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                fill = SolidColor(Color(0xFF3CB572)), stroke =
+                SolidColor(Color(0xFF014958)), strokeLineWidth = 2.0f, strokeLineCap =
                 Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -287,7 +283,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 curveTo(147.1f, 72.59f, 149.15f, 71.23f, 150.81f, 69.48f)
                 curveTo(152.48f, 67.72f, 153.71f, 65.6f, 154.43f, 63.28f)
                 curveTo(155.14f, 60.97f, 155.31f, 58.53f, 154.93f, 56.14f)
-                curveTo(154.54f, 53.74f, 153.62f, 51.47f, 152.21f, 49.5f)
+                curveTo(154.54f, 53.75f, 153.62f, 51.48f, 152.21f, 49.5f)
                 curveTo(150.82f, 47.53f, 148.98f, 45.9f, 146.85f, 44.75f)
                 curveTo(144.72f, 43.6f, 142.35f, 42.95f, 139.93f, 42.86f)
                 curveTo(137.51f, 42.77f, 135.11f, 43.24f, 132.9f, 44.23f)
@@ -295,7 +291,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFE3F6DC)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = EvenOdd
             ) {
@@ -323,8 +319,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -336,21 +331,19 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 lineTo(133.81f, 74.58f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
                 moveTo(130.17f, 76.21f)
                 lineTo(134.87f, 90.04f)
-                curveTo(135.13f, 90.79f, 134.77f, 91.62f, 134.04f, 91.94f)
+                curveTo(135.13f, 90.8f, 134.77f, 91.62f, 134.04f, 91.94f)
                 lineTo(132.05f, 92.83f)
                 curveTo(131.33f, 93.16f, 130.48f, 92.88f, 130.09f, 92.19f)
                 lineTo(122.9f, 79.46f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -362,7 +355,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 lineTo(111.98f, 84.35f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -372,7 +365,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -382,7 +375,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(1.49f, 1.49f, 110.89f, true, false, 2.73f, -1.22f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -392,7 +385,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.5f, 0.5f, 110.89f, true, false, 0.91f, -0.41f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -402,7 +395,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.5f, 0.5f, 110.89f, true, false, 0.91f, -0.41f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -412,7 +405,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(1.0f, 1.0f, 110.89f, true, false, 1.82f, -0.81f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -422,7 +415,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.75f, 0.75f, 110.89f, true, false, 1.36f, -0.61f)
             }
             path(
-                fill = SolidColor(Color(0xFF152123)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -432,24 +425,23 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 arcToRelative(0.75f, 0.75f, 110.89f, true, false, 1.36f, -0.61f)
             }
             path(
-                fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 0.5f, strokeLineCap =
+                stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
                 Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
-                moveTo(126.89f, 21.73f)
-                curveTo(127.84f, 21.3f, 128.96f, 21.78f, 129.3f, 22.77f)
-                lineTo(152.0f, 86.74f)
-                curveTo(152.32f, 87.62f, 151.9f, 88.59f, 151.05f, 88.97f)
-                lineTo(118.5f, 103.54f)
-                curveTo(117.65f, 103.92f, 116.65f, 103.58f, 116.2f, 102.76f)
-                lineTo(83.62f, 43.21f)
-                curveTo(83.12f, 42.3f, 83.5f, 41.15f, 84.46f, 40.72f)
-                lineTo(126.89f, 21.73f)
+                moveTo(126.79f, 21.5f)
+                curveTo(127.87f, 21.02f, 129.14f, 21.56f, 129.54f, 22.68f)
+                lineTo(152.24f, 86.66f)
+                curveTo(152.6f, 87.66f, 152.12f, 88.77f, 151.15f, 89.2f)
+                lineTo(118.61f, 103.76f)
+                curveTo(117.64f, 104.2f, 116.5f, 103.82f, 115.99f, 102.88f)
+                lineTo(83.4f, 43.33f)
+                curveTo(82.83f, 42.29f, 83.27f, 40.98f, 84.36f, 40.49f)
+                lineTo(126.79f, 21.5f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFDCE4E5)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -465,7 +457,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFF3CB572)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -488,7 +480,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -511,7 +503,7 @@ val AppIllus.UploadSuccessQrDark: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
+                fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
                 0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
                 4.0f, pathFillType = NonZero
             ) {
@@ -535,17 +527,17 @@ val AppIllus.UploadSuccessQrDark: ImageVector
             }
         }.build()
 
-        return _uploadSuccessQrDark!!
+        return _beersLight!!
     }
 
-private var _uploadSuccessQrDark: ImageVector? = null
+private var _beersLight: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.background(Color.White)) {
         Image(
-            imageVector = AppIllus.UploadSuccessQrDark,
+            imageVector = AppIllus.BeersLight,
             contentDescription = null,
             modifier = Modifier.size(previewSize),
         )

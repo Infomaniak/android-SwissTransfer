@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
@@ -64,7 +64,7 @@ fun ImportedFilesCard(
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
-                imageVector = AppImages.AppIcons.ChevronRightThick,
+                imageVector = AppIcons.ChevronRightThick,
                 contentDescription = null,
                 modifier = Modifier.padding(Margin.Medium),
                 tint = SwissTransferTheme.colors.iconColor,
@@ -108,7 +108,7 @@ private fun AddNewFileButton(modifier: Modifier = Modifier, onClick: () -> Unit)
     ) {
         Icon(
             modifier = Modifier.size(24.dp),
-            imageVector = AppImages.AppIcons.AddThick,
+            imageVector = AppIcons.AddThick,
             contentDescription = null,
         )
     }

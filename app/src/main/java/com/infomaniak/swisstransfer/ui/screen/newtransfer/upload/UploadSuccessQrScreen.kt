@@ -39,7 +39,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.DocumentOnDocument
 import com.infomaniak.swisstransfer.ui.images.icons.PersonBadgeShare
-import com.infomaniak.swisstransfer.ui.images.illus.uploadSuccessQr.UploadSuccessQr
+import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -95,7 +95,7 @@ private fun Content(context: Context, snackbarHostState: SnackbarHostState, tran
     ) {
 
         Image(
-            imageVector = AppIllus.UploadSuccessQr.image(),
+            imageVector = AppIllus.Beers.image(),
             contentDescription = null,
         )
 
