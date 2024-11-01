@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -26,24 +27,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core2.FORMAT_DATE_SIMPLE
 import com.infomaniak.core2.FORMAT_DATE_TITLE
 import com.infomaniak.core2.format
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import java.util.Calendar
 import java.util.Date
-import java.util.UUID
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -128,68 +128,14 @@ fun TransferItem(
     }
 }
 
-@PreviewAllWindows
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
     SwissTransferTheme {
         Surface {
             TransferItem(
-                transfer = TransferUi(
-                    uuid = UUID.randomUUID().toString(),
-                    createdDateTimestamp = Date().time - 30L * 86_400_000L,
-                    expirationDateTimestamp = Calendar.getInstance().apply {
-                        time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 1)
-                    }.time.time,
-                    sizeUploaded = 57_689_032L,
-                    downloadLimit = 10,
-                    downloadLeft = 8,
-                    message = "Coucou c'est moi le message de description du transfert.",
-                    files = listOf(
-                        FileUi(
-                            uid = UUID.randomUUID().toString(),
-                            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
-                            fileSize = 57_689_032L,
-                            mimeType = null,
-                            localPath = null,
-                        ),
-                        FileUi(
-                            uid = UUID.randomUUID().toString(),
-                            fileName = "Introduction to Turning It Off and On Again (1).pptx",
-                            fileSize = 89_723_143L,
-                            mimeType = null,
-                            localPath = null,
-                        ),
-                        FileUi(
-                            uid = UUID.randomUUID().toString(),
-                            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
-                            fileSize = 237_866_728L,
-                            mimeType = null,
-                            localPath = null,
-                        ),
-                        FileUi(
-                            uid = UUID.randomUUID().toString(),
-                            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
-                            fileSize = 57_689_032L,
-                            mimeType = null,
-                            localPath = null,
-                        ),
-                        FileUi(
-                            uid = UUID.randomUUID().toString(),
-                            fileName = "Introduction to Turning It Off and On Again (2).pptx",
-                            fileSize = 89_723_143L,
-                            mimeType = null,
-                            localPath = null,
-                        ),
-                        FileUi(
-                            uid = UUID.randomUUID().toString(),
-                            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
-                            fileSize = 237_866_728L,
-                            mimeType = null,
-                            localPath = null,
-                        ),
-                    ),
-                ),
+                transfer = transfers.first(),
                 isSelected = { false },
                 onClick = {},
             )

@@ -21,43 +21,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.previewparameter.filesPreviewData
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun SentListScreen(transfers: List<Any>) {
-
-    // TODO: Remove this when `transfers` contains the real data.
-    val transfers = listOf(
-        FileUi(
-            fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
-            uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-            fileSize = 57_689_032L,
-            mimeType = null,
-            localPath = "",
-        ),
-        FileUi(
-            fileName = "Introduction to Turning It Off and On Again.pptx",
-            uid = "Introduction to Turning It Off and On Again.pptx",
-            fileSize = 89_723_143L,
-            mimeType = null,
-            localPath = "",
-        ),
-        FileUi(
-            fileName = "Learning to Copy and Paste: A Complete Guide.docx",
-            uid = "Learning to Copy and Paste: A Complete Guide.docx",
-            fileSize = 237_866_728L,
-            mimeType = null,
-            localPath = "",
-        ),
-    )
-
     FileItemList(
         modifier = Modifier.padding(Margin.Medium),
-        files = transfers,
+        files = filesPreviewData, // TODO: Use real data
         isRemoveButtonVisible = true,
         isCheckboxVisible = { false },
         isUidChecked = { false },
@@ -67,10 +44,10 @@ fun SentListScreen(transfers: List<Any>) {
 
 @PreviewAllWindows
 @Composable
-private fun SentListScreenPreview() {
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
     SwissTransferTheme {
         Surface {
-            SentListScreen(transfers = listOf(Unit))
+            SentListScreen(transfers)
         }
     }
 }

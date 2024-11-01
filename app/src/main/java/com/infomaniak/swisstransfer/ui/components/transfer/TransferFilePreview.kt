@@ -17,28 +17,45 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.SmallFileItem
 import com.infomaniak.swisstransfer.ui.components.SmallFileTileSize
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) {
     Row {
-        if (file != null) {
+        if (file == null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(Margin.Giant)
+                    .clip(CustomShapes.SMALL)
+                    .background(SwissTransferTheme.colors.transferFilePreviewOverflow),
+            ) {
+                Text(
+                    text = "+$remainingFilesCount",
+                    color = SwissTransferTheme.colors.onTransferFilePreviewOverflow,
+                    style = SwissTransferTheme.typography.bodyRegular,
+                )
+            }
+        } else {
             // TODO: Temporary code to be able to test the view, while waiting real Transfers data
             // AsyncImage(
             //     model = ImageRequest.Builder(LocalContext.current)
@@ -54,50 +71,28 @@ fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) 
             //         .background(SwissTransferTheme.colors.transferFilePreviewOverflow),
             // )
             SmallFileItem(file = file, smallFileTileSize = SmallFileTileSize.SMALL)
-        } else {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(Margin.Giant)
-                    .clip(CustomShapes.SMALL)
-                    .background(SwissTransferTheme.colors.transferFilePreviewOverflow),
-            ) {
-                Text(
-                    text = "+$remainingFilesCount",
-                    color = SwissTransferTheme.colors.onTransferFilePreviewOverflow,
-                    style = SwissTransferTheme.typography.bodyRegular,
-                )
-            }
         }
     }
 }
 
-@PreviewAllWindows
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface {
-            Row {
-                TransferFilePreview(
-                    file = FileUi(
-                        fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
-                        uid = "The 5-Step Guide to Not Breaking Your Code.txt",
-                        fileSize = 57_689_032L,
-                        mimeType = null,
-                        localPath = "",
-                    ),
-                )
-                TransferFilePreview(
-                    file =
-                    FileUi(
-                        fileName = "Introduction to Turning It Off and On Again.pptx",
-                        uid = "Introduction to Turning It Off and On Again.pptx",
-                        fileSize = 89_723_143L,
-                        mimeType = null,
-                        localPath = "",
-                    ),
-                )
-                TransferFilePreview(remainingFilesCount = 42)
+            Card(
+                shape = CustomShapes.NONE,
+                colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
+            ) {
+                Row(
+                    modifier = Modifier.padding(Margin.Mini),
+                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
+                ) {
+                    TransferFilePreview(file = files[0])
+                    TransferFilePreview(file = files[1])
+                    TransferFilePreview(remainingFilesCount = 42)
+                }
             }
         }
     }

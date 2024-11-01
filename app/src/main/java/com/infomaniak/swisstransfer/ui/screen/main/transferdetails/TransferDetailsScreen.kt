@@ -34,21 +34,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.infomaniak.core2.FORMAT_DATE_FULL
 import com.infomaniak.core2.format
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
+import com.infomaniak.swisstransfer.ui.previewparameter.transfersPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.shareText
-import java.util.Calendar
 import java.util.Date
-import java.util.UUID
 
 @Composable
 fun TransferDetailsScreen(
@@ -57,65 +55,7 @@ fun TransferDetailsScreen(
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
 
-    val transferFiles = listOf(
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
-            fileSize = 57_689_032L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (1).pptx",
-            fileSize = 89_723_143L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
-            fileSize = 237_866_728L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
-            fileSize = 57_689_032L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (2).pptx",
-            fileSize = 89_723_143L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
-            fileSize = 237_866_728L,
-            mimeType = null,
-            localPath = null,
-        ),
-    )
-
-    val transfer = TransferUi(
-        uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = Date().time - 30L * 86_400_000L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) + 3)
-        }.time.time,
-        sizeUploaded = 57_689_032L,
-        downloadLimit = 250,
-        downloadLeft = 42,
-        message = "Coucou c'est moi le message de description du transfert.",
-        files = transferFiles,
-    )
-
+    val transfer = transfersPreviewData.first() // TODO: Use real data
     val transferSenderEmail: String? = "john.smith@ik.me" // TODO
     val transferLink = "https://chk.me/83azQOl" // TODO
 
@@ -137,7 +77,7 @@ fun TransferDetailsScreen(
                 modifier = Modifier
                     .weight(1.0f)
                     .padding(horizontal = Margin.Medium),
-                files = transferFiles, // TODO
+                files = transfer.files,
                 isRemoveButtonVisible = false,
                 isCheckboxVisible = { isMultiselectOn },
                 isUidChecked = { fileUid -> transferDetailsViewModel.checkedFiles[fileUid] ?: false },
