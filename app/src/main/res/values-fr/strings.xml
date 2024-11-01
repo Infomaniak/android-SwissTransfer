@@ -18,6 +18,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
+    <string name="buttonCancel">Annuler</string>
     <string name="buttonCopyLink">Copier le lien</string>
     <string name="buttonFinished">Terminer</string>
     <string name="buttonNext">Suivant</string>
@@ -87,6 +88,7 @@
     <string name="textFieldOptional">(Facultatif)</string>
     <string name="snackbarLinkCopiedToClipboard">Lien copié dans le presse-papiers</string>
     <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
+    <string name="transferExpiredButton">Supprimer de l’historique</string>
     <string name="transferMessagePlaceholder">Un message à faire passer ?</string>
     <string name="transferRecipientAddressPlaceholder">Envoyer les fichiers à</string>
     <string name="transferSendButton">Envoyer</string>
@@ -106,6 +108,15 @@
     <string name="transferUploadSourceChoiceFiles">Parcourir les fichiers</string>
     <string name="transferUploadSourceChoiceGallery">Galerie photos et vidéos</string>
     <string name="transferUploadSourceChoiceTitle">Télécharger à partir de</string>
+    <string name="uploadCancelConfirmBottomSheetCancel">Annuler le transfert</string>
+    <string name="uploadCancelConfirmBottomSheetClose">Fermer et continuer</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Es-tu certain de vouloir annuler le transfert ?</string>
+    <string name="uploadSuccessDescriptionArgumentConfidentiality">un Internet qui respecte la confidentialité et la vie privée.</string>
+    <string name="uploadSuccessDescriptionArgumentEnergy">nos propres data centers, sans climatisation</string>
+    <string name="uploadSuccessDescriptionArgumentIndependence">l’indépendance technologique en Europe.</string>
+    <string name="uploadSuccessDescriptionTemplateConfidentiality">Nous sommes indépendants et contribuons à %s</string>
+    <string name="uploadSuccessDescriptionTemplateEnergy">Nous concevons %s, pour dépasser les standards d’efficacité énergétique du marché.</string>
+    <string name="uploadSuccessDescriptionTemplateIndependence">Nous développons %s Sans compromis sur l’écologie, la vie privée et l’humain.</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Le lien de téléchargement a bien été envoyé au destinataire suivant :</item>
         <item quantity="other">Le lien de téléchargement a été envoyé aux destinataires suivants :</item>
@@ -114,6 +125,8 @@
     <string name="uploadSuccessLinkDescription">Fais scanner ce QR code autour de toi pour partager tes fichiers ou copie le lien ci-dessous.</string>
     <string name="uploadSuccessLinkTitle">Ton transfert est prêt !</string>
     <string name="uploadSuccessQrTitle">Ton QR code est prêt !</string>
+    <string name="uploadSuccessTitle">Ce qui nous rend différent ?</string>
+    <string name="uploadSuccessTransferInProgress">Transfert en cours…</string>
     <string name="urlAbout">https://www.infomaniak.com/fr/a-propos</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
     <string name="version">Version</string>

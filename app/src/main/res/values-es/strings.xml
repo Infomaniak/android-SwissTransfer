@@ -18,6 +18,7 @@
 <resources>
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="buttonAddFiles">Añadir archivos</string>
+    <string name="buttonCancel">Cancelar</string>
     <string name="buttonCopyLink">Copiar enlace</string>
     <string name="buttonFinished">Acabado</string>
     <string name="buttonNext">Siguiente</string>
@@ -86,6 +87,7 @@
     <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
+    <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferMessagePlaceholder">¿Algún mensaje que quieras transmitir?</string>
     <string name="transferRecipientAddressPlaceholder">Enviar archivos a</string>
     <string name="transferSendButton">Enviar</string>
@@ -104,6 +106,15 @@
     <string name="transferUploadSourceChoiceFiles">Examinar archivos</string>
     <string name="transferUploadSourceChoiceGallery">Galería de fotos y vídeos</string>
     <string name="transferUploadSourceChoiceTitle">Descargar desde</string>
+    <string name="uploadCancelConfirmBottomSheetCancel">Cancelar transferencia</string>
+    <string name="uploadCancelConfirmBottomSheetClose">Cerrar y continuar</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
+    <string name="uploadSuccessDescriptionArgumentConfidentiality">una Internet que respeta la confidencialidad y la privacidad.</string>
+    <string name="uploadSuccessDescriptionArgumentEnergy">nuestros propios centros de datos, sin aire acondicionado</string>
+    <string name="uploadSuccessDescriptionArgumentIndependence">la independencia tecnológica en Europa.</string>
+    <string name="uploadSuccessDescriptionTemplateConfidentiality">Somos independientes y contribuimos a %s</string>
+    <string name="uploadSuccessDescriptionTemplateEnergy">Diseñamos %s, para superar las normas de eficiencia energética del mercado.</string>
+    <string name="uploadSuccessDescriptionTemplateIndependence">Desarrollamos %s Sin comprometer la ecología, la privacidad ni a las personas.</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">El enlace de descarga se ha enviado al siguiente destinatario:</item>
         <item quantity="other">El enlace de descarga se ha enviado a los siguientes destinatarios:</item>
@@ -112,6 +123,8 @@
     <string name="uploadSuccessLinkDescription">Escanea este código QR a tu alrededor para compartir tus archivos o copia el enlace que aparece a continuación.</string>
     <string name="uploadSuccessLinkTitle">Su transferencia está lista</string>
     <string name="uploadSuccessQrTitle">Su código QR está listo</string>
+    <string name="uploadSuccessTitle">¿Qué nos diferencia?</string>
+    <string name="uploadSuccessTransferInProgress">Transferencia en curso…</string>
     <string name="urlAbout">https://www.infomaniak.com/es/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
     <string name="version">Versión</string>
