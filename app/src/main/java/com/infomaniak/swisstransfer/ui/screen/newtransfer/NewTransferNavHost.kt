@@ -47,7 +47,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             ValidateUserEmailScreen()
         }
         composable<UploadProgressDestination> {
-            UploadProgressScreen()
+            UploadProgressScreen(closeActivity = closeActivity)
         }
         composable<UploadSuccessDestination> {
             // TODO: Use correct TransferType instead of hard-coded value
