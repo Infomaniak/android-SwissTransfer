@@ -36,7 +36,6 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -44,9 +43,9 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadProgressScreen(newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>()) {
-    val uploadedSizeInBytes by newTransferViewModel.uploadedSizeInBytes.collectAsStateWithLifecycle()
-    val totalSizeInBytes by newTransferViewModel.totalSizeInBytes.collectAsStateWithLifecycle()
+fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>()) {
+    val uploadedSizeInBytes by uploadProgressViewModel.uploadedSizeInBytes.collectAsStateWithLifecycle()
+    val totalSizeInBytes by uploadProgressViewModel.totalSizeInBytes.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
 

@@ -58,9 +58,6 @@ class NewTransferViewModel @Inject constructor(
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
-    val uploadedSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(9_842_314L)
-    val totalSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(12_342_314L)
-
     private var isFirstViewModelCreation: Boolean
         get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
         set(value) {
