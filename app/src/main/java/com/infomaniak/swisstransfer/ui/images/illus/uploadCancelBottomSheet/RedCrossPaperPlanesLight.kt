@@ -53,11 +53,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFF44336)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(95.16f, 5.32f)
@@ -72,11 +67,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(103.13f, 21.7f)
@@ -123,11 +113,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd
             ) {
                 moveTo(84.15f, 62.36f)
@@ -141,11 +126,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveToRelative(33.35f, 94.11f)
@@ -255,11 +235,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd
             ) {
                 moveToRelative(144.14f, 57.21f)
@@ -273,11 +248,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveToRelative(121.98f, 71.06f)
@@ -366,11 +336,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd
             ) {
                 moveTo(18.48f, 60.45f)
@@ -384,11 +349,6 @@ val AppIllus.RedCrossPaperPlanesLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveToRelative(2.0f, 70.75f)

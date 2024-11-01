@@ -35,11 +35,6 @@ val AppIllus.MountainGondolaDark: ImageVector
             group {
                 path(
                     fill = SolidColor(Color(0xFF152123)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
                     moveTo(51.0f, 210.08f)
@@ -70,11 +65,6 @@ val AppIllus.MountainGondolaDark: ImageVector
             group {
                 path(
                     fill = SolidColor(Color(0xFFDCE4E5)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
                     moveToRelative(51.0f, 210.08f)
@@ -596,11 +586,6 @@ val AppIllus.MountainGondolaDark: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFF67DD95)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = EvenOdd
                 ) {
                     moveTo(244.18f, 112.65f)
@@ -629,11 +614,6 @@ val AppIllus.MountainGondolaDark: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFF3C4F52)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
                     moveTo(23.0f, 124.71f)
@@ -664,11 +644,6 @@ val AppIllus.MountainGondolaDark: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFFDCE4E5)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
                     moveTo(34.0f, 127.71f)
@@ -689,11 +664,6 @@ val AppIllus.MountainGondolaDark: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFF3C4F52)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = EvenOdd
                 ) {
                     moveTo(38.67f, 110.71f)

@@ -47,11 +47,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(206.0f, 95.0f)
@@ -67,11 +62,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(250.0f, 139.0f)
@@ -87,11 +77,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(237.11f, 170.11f)
@@ -107,11 +92,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(174.89f, 170.11f)
@@ -142,11 +122,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(206.5f, 139.0f)
@@ -225,11 +200,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(138.5f, 111.0f)
@@ -245,11 +215,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(138.5f, 153.0f)
@@ -265,11 +230,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveToRelative(86.57f, 38.06f)
@@ -291,11 +251,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveToRelative(101.22f, 13.86f)
@@ -317,11 +272,6 @@ val AppIllus.MetallicSafeLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFE3F6DC)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveToRelative(136.65f, 36.15f)

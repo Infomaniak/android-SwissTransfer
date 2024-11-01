@@ -102,11 +102,6 @@ val AppIllus.SwissWithFlagDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFEC1D25)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(172.12f, 46.21f)
@@ -117,11 +112,6 @@ val AppIllus.SwissWithFlagDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd
             ) {
                 moveTo(193.89f, 57.09f)
@@ -147,11 +137,6 @@ val AppIllus.SwissWithFlagDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3C4F52)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(167.47f, 38.83f)

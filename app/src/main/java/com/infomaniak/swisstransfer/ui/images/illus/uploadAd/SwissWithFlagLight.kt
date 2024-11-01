@@ -2,7 +2,6 @@ package com.infomaniak.swisstransfer.ui.images.illus.uploadAd
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -103,11 +102,6 @@ val AppIllus.SwissWithFlagLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFEC1D25)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd
             ) {
                 moveTo(226.55f, 46.21f)
@@ -138,11 +132,6 @@ val AppIllus.SwissWithFlagLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
                 moveTo(167.47f, 38.83f)
