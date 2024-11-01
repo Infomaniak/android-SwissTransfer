@@ -157,16 +157,16 @@ class NewTransferViewModel @Inject constructor(
 
     //region Transfer Advanced Options
     private val _selectedValidityPeriodOption = MutableStateFlow<ValidityPeriodOption?>(null)
-    val selectedValidityPeriodOption: StateFlow<ValidityPeriodOption?> = _selectedValidityPeriodOption
+    val selectedValidityPeriodOption: StateFlow<ValidityPeriodOption?> = _selectedValidityPeriodOption.asStateFlow()
 
     private val _selectedDownloadLimitOption = MutableStateFlow<DownloadLimitOption?>(null)
-    val selectedDownloadLimitOption: StateFlow<DownloadLimitOption?> = _selectedDownloadLimitOption
+    val selectedDownloadLimitOption: StateFlow<DownloadLimitOption?> = _selectedDownloadLimitOption.asStateFlow()
 
     private val _selectedPasswordOption = MutableStateFlow(PasswordTransferOption.NONE)
-    val selectedPasswordOption: StateFlow<PasswordTransferOption?> = _selectedPasswordOption
+    val selectedPasswordOption: StateFlow<PasswordTransferOption?> = _selectedPasswordOption.asStateFlow()
 
     private val _selectedLanguageOption = MutableStateFlow<EmailLanguageOption?>(null)
-    val selectedLanguageOption: StateFlow<EmailLanguageOption?> = _selectedLanguageOption
+    val selectedLanguageOption: StateFlow<EmailLanguageOption?> = _selectedLanguageOption.asStateFlow()
 
     fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
         _selectedValidityPeriodOption.value = validityPeriodOption

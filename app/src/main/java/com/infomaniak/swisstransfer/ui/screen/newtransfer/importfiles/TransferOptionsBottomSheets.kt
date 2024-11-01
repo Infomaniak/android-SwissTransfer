@@ -34,7 +34,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
-
 @Composable
 private fun TransferOptionBottomSheetScaffold(
     isBottomSheetVisible: () -> Boolean,
@@ -95,7 +94,7 @@ fun DownloadLimitBottomSheet(
         initialPosition = initialPosition,
         titleRes = R.string.settingsOptionDownloadLimit,
         optionEntries = DownloadLimitOption.entries,
-        onOptionClicked =  { onOptionClicked(it as DownloadLimitOption) },
+        onOptionClicked = { onOptionClicked(it as DownloadLimitOption) },
     )
 }
 
@@ -112,7 +111,7 @@ fun PasswordOptionBottomSheet(
         initialPosition = initialPosition,
         titleRes = R.string.settingsOptionPassword,
         optionEntries = PasswordTransferOption.entries,
-        onOptionClicked =  { onOptionClicked(it as PasswordTransferOption) },
+        onOptionClicked = { onOptionClicked(it as PasswordTransferOption) },
     )
 }
 
@@ -129,7 +128,7 @@ fun EmailLanguageBottomSheet(
         initialPosition = initialPosition,
         titleRes = R.string.settingsOptionEmailLanguage,
         optionEntries = EmailLanguageOption.entries,
-        onOptionClicked =  { onOptionClicked(it as EmailLanguageOption) },
+        onOptionClicked = { onOptionClicked(it as EmailLanguageOption) },
     )
 }
 
