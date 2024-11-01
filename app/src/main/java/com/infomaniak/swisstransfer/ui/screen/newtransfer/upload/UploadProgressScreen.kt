@@ -100,7 +100,7 @@ private fun UploadProgressScreen(
                 Text(stringResource(R.string.uploadSuccessTitle), style = SwissTransferTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(Margin.Huge))
                 Text(
-                    adScreenType.description(),
+                    text = adScreenType.description(),
                     modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
                     style = SwissTransferTheme.typography.specificLight18,
                     textAlign = TextAlign.Center,
