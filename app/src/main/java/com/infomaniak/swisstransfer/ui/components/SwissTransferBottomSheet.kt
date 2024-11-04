@@ -49,7 +49,7 @@ fun SwissTransferBottomSheet(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     imageVector: ImageVector? = null,
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int? = null,
     @StringRes descriptionRes: Int? = null,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
@@ -72,8 +72,8 @@ fun SwissTransferBottomSheet(
 @Composable
 private fun BottomSheetContent(
     imageVector: ImageVector?,
-    titleRes: Int,
-    descriptionRes: Int?,
+    @StringRes titleRes: Int?,
+    @StringRes descriptionRes: Int?,
     content: @Composable (() -> Unit)?,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
@@ -89,13 +89,15 @@ private fun BottomSheetContent(
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
-        Text(
-            text = stringResource(titleRes),
-            style = SwissTransferTheme.typography.bodyMedium,
-            color = SwissTransferTheme.colors.primaryTextColor,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(Margin.Large))
+        titleRes?.let {
+            Text(
+                text = stringResource(it),
+                style = SwissTransferTheme.typography.bodyMedium,
+                color = SwissTransferTheme.colors.primaryTextColor,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(Margin.Large))
+        }
 
         descriptionRes?.let {
             Text(

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.swisstransfer.R
 
 object HumanReadableSizeUtils {
+
     fun getHumanReadableSize(context: Context, sizeInBytes: Long): String {
         return Formatter.formatShortFileSize(context, sizeInBytes)
     }

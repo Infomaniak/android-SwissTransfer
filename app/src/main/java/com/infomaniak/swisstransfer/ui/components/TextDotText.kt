@@ -35,6 +35,7 @@ fun TextDotText(
     modifier: Modifier = Modifier,
     color: Color = SwissTransferTheme.colors.secondaryTextColor,
     style: TextStyle = SwissTransferTheme.typography.bodySmallRegular,
+    optionalSecondTextColor: Color? = null,
 ) {
     Row(modifier) {
         CustomText(firstText, color, style)
@@ -45,7 +46,7 @@ fun TextDotText(
             style = style,
         )
         Spacer(Modifier.width(Margin.Mini))
-        CustomText(secondText, color, style)
+        CustomText(secondText, optionalSecondTextColor ?: color, style)
     }
 }
 

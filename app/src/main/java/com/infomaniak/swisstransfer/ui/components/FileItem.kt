@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.text.format.Formatter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,6 +34,7 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
@@ -53,7 +53,7 @@ fun FileItem(
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
         title = file.fileName,
-        description = Formatter.formatShortFileSize(LocalContext.current, file.fileSize),
+        description = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, file.fileSize),
         content = {
             FilePreview(
                 file = file,

@@ -39,7 +39,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun EmptyState(
     icon: ImageVector,
     @StringRes title: Int,
-    @StringRes description: Int,
+    description: String,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -49,7 +49,7 @@ fun EmptyState(
         IllustratedMessageBlock(
             icon = icon,
             title = title,
-            description = stringResource(description),
+            description = description,
             modifier = modifier.padding(horizontal = Margin.Medium),
         )
     }
@@ -64,7 +64,7 @@ private fun EmptyStatePreview() {
             EmptyState(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
+                description = stringResource(R.string.noTransferReceivedDescription),
             )
         }
     }
