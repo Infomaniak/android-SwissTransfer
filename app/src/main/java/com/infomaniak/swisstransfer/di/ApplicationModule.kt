@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.di
 import android.app.Application
 import android.content.Context
 import androidx.work.WorkManager
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.Module
 import dagger.Provides
@@ -37,10 +36,6 @@ object ApplicationModule {
 
     @Provides
     fun providesMainApplication(application: Application) = application as MainApplication
-
-    @Provides
-    @Singleton
-    fun providesSwissTransferInjection() = SwissTransferInjection()
 
     @Provides
     @Singleton

@@ -30,6 +30,10 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
+    fun providesSwissTransferInjection() = SwissTransferInjection()
+
+    @Provides
+    @Singleton
     fun providesTransferManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.transferManager
 
     @Provides
