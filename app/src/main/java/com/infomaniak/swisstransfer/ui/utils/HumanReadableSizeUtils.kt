@@ -29,11 +29,9 @@ import com.infomaniak.swisstransfer.R
 object HumanReadableSizeUtils {
     private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
-    private fun getHumanReadableSize(context: Context, sizeInBytes: Long) = Formatter.formatFileSize(context, sizeInBytes)
+    fun getHumanReadableSize(context: Context, sizeInBytes: Long) = Formatter.formatFileSize(context, sizeInBytes)
 
     private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
-
-    fun Context.getSpaceUsed(files: List<FileUi>): String = getHumanReadableSize(this, getFilesSizeInBytes(files))
 
     fun Context.getSpaceLeft(files: List<FileUi>): String {
         val spaceLeft = (TOTAL_FILE_SIZE - getFilesSizeInBytes(files)).coerceAtLeast(0)
