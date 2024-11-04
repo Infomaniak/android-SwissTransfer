@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import android.text.format.Formatter
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import java.util.Calendar
 import java.util.Date
@@ -51,7 +51,7 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
     val expirationDate = Date(transfer.expirationDateTimestamp)
     val remainingDays = transfer.expiresInDays
     val remainingDownloads = transfer.downloadLeft
-    val uploadedSize = Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded)
+    val uploadedSize = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, transfer.sizeUploaded)
     val files = transfer.files
     val filesCount = files.count()
     val (expiryText, expiryColor) = when {
