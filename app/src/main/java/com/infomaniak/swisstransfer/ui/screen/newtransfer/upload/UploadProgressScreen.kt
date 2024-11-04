@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,38 +41,47 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHe
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.workers.UploadWorker
 
 @Composable
-fun UploadProgressScreen(uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>()) {
-    val uploadedSizeInBytes by uploadProgressViewModel.uploadedSizeInBytes.collectAsStateWithLifecycle()
-    val totalSizeInBytes by uploadProgressViewModel.totalSizeInBytes.collectAsStateWithLifecycle()
+fun UploadProgressScreen(
+    uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
+    closeActivity: () -> Unit,
+) {
+    val progress by uploadProgressViewModel.progress.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
 
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+
+    BackHandler(!showBottomSheet) {
+        showBottomSheet = true
+    }
+
     UploadProgressScreen(
-        uploadedSizeInBytes = { uploadedSizeInBytes },
-        totalSizeInBytes = { totalSizeInBytes },
+        progress = { progress },
+        showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
         onCancel = {
-            // TODO
+            uploadProgressViewModel.cancelUpload()
+            closeActivity()
         }
     )
 }
 
 @Composable
 private fun UploadProgressScreen(
-    uploadedSizeInBytes: () -> Long,
-    totalSizeInBytes: () -> Long,
+    progress: () -> UploadWorker.UploadTransferProgress,
     adScreenType: UploadProgressAdType,
     onCancel: () -> Unit,
+    showBottomSheet: GetSetCallbacks<Boolean>,
 ) {
-    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(R.string.buttonCancel, modifier = it, onClick = { showBottomSheet = true })
+            LargeButton(R.string.buttonCancel, modifier = it, onClick = { showBottomSheet.set(true) })
         },
     ) {
         Column(
@@ -82,11 +92,11 @@ private fun UploadProgressScreen(
 
             Spacer(modifier = Modifier.height(Margin.Medium))
             Text(stringResource(R.string.uploadSuccessTransferInProgress))
-            Progress(uploadedSizeInBytes, totalSizeInBytes)
+            Progress(progress)
             Spacer(modifier = Modifier.height(Margin.Huge))
         }
 
-        if (showBottomSheet) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet = false })
+        if (showBottomSheet.get()) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet.set(false) })
     }
 }
 
@@ -120,10 +130,10 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
 private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
         UploadProgressScreen(
-            uploadedSizeInBytes = { 44_321_654L },
-            totalSizeInBytes = { 76_321_894L },
+            progress = { UploadWorker.UploadTransferProgress(44_321_654L, 76_321_894L) },
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
+            showBottomSheet = GetSetCallbacks(get = { false }, set = { }),
         )
     }
 }

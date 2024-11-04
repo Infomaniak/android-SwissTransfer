@@ -25,16 +25,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
+import com.infomaniak.swisstransfer.workers.UploadWorker
 import java.util.Locale
 
 @Composable
-fun Progress(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
+fun Progress(progress: () -> UploadWorker.UploadTransferProgress) {
+    val uploadedSize by remember { derivedStateOf { progress().uploadedSize } }
+    val totalSize by remember { derivedStateOf { progress().totalSize } }
+
     Row {
-        Percentage(uploadedSizeInBytes, totalSizeInBytes)
+        Percentage({ uploadedSize }, { totalSize })
         Text(" - ")
-        UploadedSize(uploadedSizeInBytes)
+        UploadedSize({ uploadedSize })
         Text(" / ")
-        TotalSize(totalSizeInBytes)
+        TotalSize({ totalSize })
     }
 }
 @Composable
