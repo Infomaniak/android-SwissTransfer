@@ -47,7 +47,7 @@ class UploadWorker @AssistedInject constructor(
         FileChunkSizeManager(
             chunkMinSize = EXPECTED_CHUNK_SIZE,
             chunkMaxSize = EXPECTED_CHUNK_SIZE,
-            totalChunks = TOTAL_CHUNKS,
+            maxChunkCount = MAX_CHUNK_COUNT,
         )
     }
     private val uploadFileTask by lazy {
@@ -135,7 +135,7 @@ class UploadWorker @AssistedInject constructor(
         private const val TAG = "UploadWorker"
         private const val EXPECTED_CHUNK_SIZE = 50L * 1024 * 1024 // 50Mo
         private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
-        private const val TOTAL_CHUNKS = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
+        private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
         private const val TOTAL_SIZE_TAG = "total_size_tag"
