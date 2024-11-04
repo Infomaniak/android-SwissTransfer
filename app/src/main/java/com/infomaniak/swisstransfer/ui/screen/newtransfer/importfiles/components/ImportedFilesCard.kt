@@ -48,8 +48,6 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
 
-private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
-
 @Composable
 fun ImportedFilesCard(
     modifier: Modifier = Modifier,
