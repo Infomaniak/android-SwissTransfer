@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
@@ -39,19 +40,25 @@ import com.infomaniak.swisstransfer.ui.images.icons.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.images.icons.sentry.Sentry
 import com.infomaniak.swisstransfer.ui.images.illus.dataProtection.DataProtection
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.openUrl
 
 @Composable
 fun SettingsDataManagementScreen(
     navigateBack: (() -> Unit)?,
     onItemClick: (SettingsOptionScreens) -> Unit,
 ) {
+
+    val context = LocalContext.current
+    val sourceCodeURL = stringResource(R.string.urlSourceCode) // TODO: Update this URL when we know what we want
+
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
@@ -77,7 +84,7 @@ fun SettingsDataManagementScreen(
             )
             SharpRippleButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onItemClick(DATA_MANAGEMENT_SOURCE_CODE) },
+                onClick = { context.openUrl(sourceCodeURL) },
             ) {
                 Text(
                     text = stringResource(R.string.settingsDataManagementSourceCode),
