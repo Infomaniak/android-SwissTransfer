@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,11 +33,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadProgressViewModel @Inject constructor(
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
-    private val swissTransferInjection: SwissTransferInjection,
+    private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val uploadManager inline get() = swissTransferInjection.uploadManager
-
     val progress = uploadWorkerScheduler.trackUploadProgressFlow()
         .flowOn(ioDispatcher)
         .stateIn(
