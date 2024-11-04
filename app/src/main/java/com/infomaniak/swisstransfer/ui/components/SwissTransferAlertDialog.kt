@@ -40,7 +40,6 @@ fun SwissTransferAlertDialog(
     onConfirmation: () -> Unit,
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
-
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
         modifier = Modifier
@@ -97,7 +96,7 @@ private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Un
         )
         Spacer(Modifier.width(Margin.Micro))
         SmallButton(
-            titleRes = R.string.buttonCancel,
+            titleRes = R.string.buttonConfirm,
             onClick = onConfirmation,
         )
     }
@@ -109,8 +108,8 @@ private fun PreviewAlertDialog() {
     SwissTransferTheme {
         Surface {
             SwissTransferAlertDialog(
-                titleRes = R.string.uploadSuccessLinkTitle,
-                descriptionRes = R.string.uploadSuccessLinkDescription,
+                titleRes = R.string.settingsOptionPassword,
+                descriptionRes = R.string.settingsPasswordDescription,
                 onDismissRequest = {},
                 onConfirmation = {},
             )

@@ -25,7 +25,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,8 +38,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages
-import com.infomaniak.swisstransfer.ui.images.icons.Camera
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -233,15 +230,23 @@ private fun ImportFilesScreen(
                 initialValue = advancedOptionsCallbacks.advancedOptionsStates()[1].settingState(),
             )
 
-            SwissTransferAlertDialog(
-                titleRes = R.string.settingsOptionPassword,
-                descriptionRes = R.string.settingsOptionPassword,
-                onDismissRequest = {},
-                onConfirmation = {},
-            ) {
-                Text("toto")
-                Icon(AppImages.AppIcons.Camera, contentDescription = "")
-            }
+            val initialIsChecked = advancedOptionsCallbacks.advancedOptionsStates().find {
+                it is PasswordTransferOption
+            } == PasswordTransferOption.ACTIVATED
+            PasswordOptionAlertDialog(
+                initialIsChecked = initialIsChecked,
+                showPasswordOptionAlert = { showPasswordOptionAlert },
+                onConfirmation = { isChecked ->
+                    val selectedOption = if (isChecked) {
+                        PasswordTransferOption.ACTIVATED
+                    } else {
+                        PasswordTransferOption.NONE
+                    }
+
+                    advancedOptionsCallbacks.onAdvancedOptionsValueSelected(selectedOption)
+                },
+                closeAlertDialog = { showPasswordOptionAlert = false }
+            )
 
             EmailLanguageBottomSheet(
                 isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.LANGUAGE },

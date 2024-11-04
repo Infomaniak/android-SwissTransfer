@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Impostazioni avanzate</string>
     <string name="buttonAddFiles">Aggiunta di file</string>
+    <string name="buttonCancel">Annulla</string>
+    <string name="buttonConfirm">Conferma</string>
     <string name="buttonCopyLink">Copia link</string>
     <string name="buttonDownload">Scaricare</string>
     <string name="buttonDownloadSelected">Scarica la selezione</string>
@@ -80,6 +82,8 @@
     <string name="settingsOptionThemeLight">Chiaro</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
     <string name="settingsOptionValidityPeriod">Periodo di validità</string>
+    <string name="settingsPasswordDescription">I destinatari dovranno inserire la password per scaricare i file.</string>
+    <string name="settingsPasswordToggleDescription">Attivare la protezione</string>
     <string name="settingsSentryDescription">Sentry è uno strumento ospitato e gestito esclusivamente da Infomaniak per monitorare la stabilità dell’applicazione in tempo reale e segnalare automaticamente eventuali errori tecnici ai nostri sviluppatori.\n\nQuesti dati consentono al nostro team di correggere e ottimizzare rapidamente l’applicazione, migliorando l’esperienza dell’utente.</string>
     <string name="settingsThemeTitle">Seleziona un tema</string>
     <string name="settingsTitle">Parametri</string>
