@@ -22,6 +22,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
@@ -94,16 +98,37 @@ class NewTransferViewModel @Inject constructor(
         }
     }
 
-    fun sendTransfer(newUploadSession: NewUploadSession) {
+    fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
             runCatching {
-                uploadManager.createAndGetUpload(newUploadSession)
+                uploadManager.createAndGetUpload(generateNewUploadSession())
                 uploadWorkerScheduler.scheduleWork()
             }.onFailure { exception ->
                 // TODO: Handle user feedback
                 Sentry.captureException(exception)
             }
         }
+    }
+
+    private fun generateNewUploadSession(): NewUploadSession {
+        return NewUploadSession(
+            duration = "30",
+            authorEmail = "",
+            password = "",
+            message = "sisi test",
+            numberOfDownload = 20,
+            language = EmailLanguage.ENGLISH,
+            recipientsEmails = emptyList(),
+            files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
+                object : UploadFileSession {
+                    override val localPath: String = fileUi.localPath ?: ""
+                    override val mimeType: String = fileUi.mimeType ?: ""
+                    override val name: String = fileUi.fileName
+                    override val remoteUploadFile: RemoteUploadFile? = null
+                    override val size: Long = fileUi.fileSize
+                }
+            }
+        )
     }
 
     companion object {

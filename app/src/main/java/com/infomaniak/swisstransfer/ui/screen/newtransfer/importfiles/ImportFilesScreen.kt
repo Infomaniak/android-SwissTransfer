@@ -35,11 +35,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
-import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
-import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
@@ -81,8 +76,8 @@ fun ImportFilesScreen(
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
-        navigateToUploadProgress = { newUploadSession ->
-            newTransferViewModel.sendTransfer(newUploadSession)
+        navigateToUploadProgress = {
+            newTransferViewModel.sendTransfer()
             navigateToUploadProgress()
         },
         initialShowUploadSourceChoiceBottomSheet = true,
@@ -99,7 +94,7 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
-    navigateToUploadProgress: (NewUploadSession) -> Unit,
+    navigateToUploadProgress: () -> Unit,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -127,7 +122,7 @@ private fun ImportFilesScreen(
         },
         topButton = { modifier ->
             SendButton(filesToImportCount, currentSessionFilesCount, files, modifier) {
-                navigateToUploadProgress(generateNewUploadSession(importedFiles))
+                navigateToUploadProgress()
             }
         },
         content = {
@@ -166,27 +161,6 @@ private fun ImportFilesScreen(
                 onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
                 closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )
-        }
-    )
-}
-
-private fun generateNewUploadSession(importedFiles: List<FileUi>): NewUploadSession {
-    return NewUploadSession(
-        duration = "30",
-        authorEmail = "",
-        password = "",
-        message = "sisi test",
-        numberOfDownload = 20,
-        language = EmailLanguage.ENGLISH,
-        recipientsEmails = emptyList(),
-        files = importedFiles.mapToList { fileUi ->
-            object : UploadFileSession {
-                override val localPath: String = fileUi.localPath ?: ""
-                override val mimeType: String = fileUi.mimeType ?: ""
-                override val name: String = fileUi.fileName
-                override val remoteUploadFile: RemoteUploadFile? = null
-                override val size: Long = fileUi.fileSize
-            }
         }
     )
 }
