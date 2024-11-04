@@ -151,10 +151,19 @@ private fun DetailPane(
             navigateBack = navigateBack,
             onEmailLanguageChange = { emailLanguage.set(it) },
         )
+        DATA_MANAGEMENT -> SettingsDataManagementScreen(
+            navigateBack = navigateBack,
+            onItemClick = { item ->
+                // Navigate to the detail pane with the passed item
+                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+            },
+        )
+        DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+        DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
         NOTIFICATIONS,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
-        GIVE_FEEDBACK -> Unit
+        GIVE_FEEDBACK,
         null -> NoSelectionEmptyState()
     }
 }
