@@ -237,11 +237,11 @@ private fun ImportFilesScreen(
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsOptionPassword,
                 onDismissRequest = {},
-                content = {
-                    Text("toto")
-                    Icon(AppImages.AppIcons.Camera, contentDescription = "")
-                }
-            )
+                onConfirmation = {},
+            ) {
+                Text("toto")
+                Icon(AppImages.AppIcons.Camera, contentDescription = "")
+            }
 
             EmailLanguageBottomSheet(
                 isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.LANGUAGE },

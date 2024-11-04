@@ -37,7 +37,8 @@ fun SwissTransferAlertDialog(
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
     onDismissRequest: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    onConfirmation: () -> Unit,
+    content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
 
     BasicAlertDialog(
@@ -47,7 +48,7 @@ fun SwissTransferAlertDialog(
             .fillMaxWidth(),
     ) {
         Card(shape = RoundedCornerShape(Margin.Medium)) {
-            BasicAlertDialogContent(modifier, titleRes, descriptionRes, content, onDismissRequest)
+            BasicAlertDialogContent(modifier, titleRes, descriptionRes, content, onDismissRequest, onConfirmation)
         }
     }
 }
@@ -59,6 +60,7 @@ fun BasicAlertDialogContent(
     @StringRes descriptionRes: Int,
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
     onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
 ) {
     Column(modifier.padding(Margin.Large)) {
         Text(
@@ -73,9 +75,11 @@ fun BasicAlertDialogContent(
             color = SwissTransferTheme.colors.secondaryTextColor,
         )
         Spacer(Modifier.height(Margin.Large))
-        additionalContent?.let { it() }
-        ActionButtons(onDismissRequest, {})
-
+        additionalContent?.let {
+            it()
+            Spacer(Modifier.height(Margin.Large))
+        }
+        ActionButtons(onDismissRequest, onConfirmation)
     }
 }
 
@@ -89,12 +93,12 @@ private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Un
         SmallButton(
             style = ButtonType.TERTIARY,
             titleRes = R.string.buttonCancel,
-            onClick = { onDismissRequest() },
+            onClick = onDismissRequest,
         )
         Spacer(Modifier.width(Margin.Micro))
         SmallButton(
             titleRes = R.string.buttonCancel,
-            onClick = { onConfirmation() },
+            onClick = onConfirmation,
         )
     }
 }
@@ -107,8 +111,9 @@ private fun PreviewAlertDialog() {
             SwissTransferAlertDialog(
                 titleRes = R.string.uploadSuccessLinkTitle,
                 descriptionRes = R.string.uploadSuccessLinkDescription,
-                onDismissRequest = {}
-            ) { }
+                onDismissRequest = {},
+                onConfirmation = {},
+            )
         }
     }
 }
