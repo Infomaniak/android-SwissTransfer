@@ -61,7 +61,6 @@ fun TransferExpiredBottomSheet(
     }
 
     SwissTransferBottomSheet(
-        modifier = Modifier,
         onDismissRequest = closeBottomSheet,
         bottomButton = {
             LargeButton(
