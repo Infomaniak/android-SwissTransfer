@@ -121,9 +121,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier) {
-                navigateToUploadProgress()
-            }
+            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, navigateToUploadProgress)
         },
         content = {
             Column(
