@@ -46,6 +46,8 @@ fun PasswordOptionAlertDialog(
     showPasswordOptionAlert: () -> Boolean,
     closeAlertDialog: () -> Unit,
     onConfirmation: (Boolean) -> Unit,
+    setPassword: (String) -> Unit,
+    isPasswordValid: () -> Boolean,
 ) {
 
     var isChecked by rememberSaveable { mutableStateOf(initialIsChecked) }
@@ -78,8 +80,8 @@ fun PasswordOptionAlertDialog(
                 SwissTransferTextField(
                     label = stringResource(R.string.settingsOptionPassword),
                     isPassword = true,
-                    errorMessage = { null },
-                    onValueChange = {},
+                    errorMessage = { if (isPasswordValid()) null else stringResource(R.string.errorTransferPasswordLength) },
+                    onValueChange = { setPassword(it) },
                 )
             }
         }
@@ -96,6 +98,8 @@ fun Preview() {
                 showPasswordOptionAlert = { true },
                 closeAlertDialog = {},
                 onConfirmation = {},
+                setPassword = {},
+                isPasswordValid = { false },
             )
         }
     }

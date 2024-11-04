@@ -32,7 +32,9 @@
     <string name="contentDescriptionButtonRemove">Rimuovi il file</string>
     <string name="contentDescriptionButtonShowPassword">Mostra password</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
-    <string name="downloadedTransferLabel">Trasferimento scaricato: %d/%d</string>
+    <string name="downloadedTransferLabel">Trasferimento scaricato : %d/%d</string>
+    <string name="errorTransferPasswordLength">La password deve essere compresa tra 6 e 24 caratteri</string>
+    <string name="expiredThe">Scaduto il %s</string>
     <string name="expiresIn">Scade tra %d giorni</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>

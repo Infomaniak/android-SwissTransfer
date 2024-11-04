@@ -18,6 +18,10 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -188,6 +192,15 @@ class ImportFilesViewModel @Inject constructor(
         selectTransferValidityPeriod(safeAppSettings.validityPeriod.toAdvancedOption())
         selectTransferDownloadLimit(safeAppSettings.downloadLimit.toAdvancedOption())
         selectTransferLanguage(safeAppSettings.emailLanguage.toAdvancedOption())
+    }
+    //endregion
+
+    //region Password
+    var transferPassword by mutableStateOf("")
+
+    val isPasswordValid by derivedStateOf {
+        val trimmedPassword = transferPassword.trim()
+        trimmedPassword.length in 6..25
     }
     //endregion
 

@@ -57,7 +57,7 @@ fun SwissTransferTextField(
     maxLineNumber: Int = if (minLineNumber > 1) Int.MAX_VALUE else 1,
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
-    errorMessage: () -> String? = { null },
+    errorMessage: @Composable () -> String? = { null },
     supportingText: String? = null,
     onValueChange: ((String) -> Unit)? = null,
 ) {
