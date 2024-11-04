@@ -17,33 +17,38 @@
  */
 package com.infomaniak.swisstransfer.di
 
-import android.app.Application
-import android.content.Context
-import androidx.work.WorkManager
-import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ApplicationModule {
-
-    @Provides
-    fun providesMainApplication(application: Application) = application as MainApplication
+object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesGlobalCoroutineScope(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): CoroutineScope {
-        return CoroutineScope(defaultDispatcher)
-    }
+    fun providesSwissTransferInjection() = SwissTransferInjection()
 
     @Provides
     @Singleton
-    fun providesWorkManager(@ApplicationContext context: Context) = WorkManager.getInstance(context)
+    fun providesTransferManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.transferManager
+
+    @Provides
+    @Singleton
+    fun providesAppSettingsManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.appSettingsManager
+
+    @Provides
+    @Singleton
+    fun providesAccountManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.accountManager
+
+    @Provides
+    @Singleton
+    fun providesUploadManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.uploadManager
+
+    @Provides
+    @Singleton
+    fun providesSharedApiUrlCreator(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.sharedApiUrlCreator
 }

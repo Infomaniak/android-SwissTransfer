@@ -19,11 +19,11 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,10 +32,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val swissTransferInjection: SwissTransferInjection,
+    private val appSettingsManager: AppSettingsManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val appSettingsManager inline get() = swissTransferInjection.appSettingsManager
 
     val appSettingsFlow = appSettingsManager.appSettings
 

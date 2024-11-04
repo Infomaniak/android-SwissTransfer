@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import dagger.assisted.Assisted
@@ -38,10 +38,8 @@ class UploadWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted params: WorkerParameters,
     private val importLocalStorage: ImportLocalStorage,
-    private val swissTransferInjection: SwissTransferInjection,
+    private val uploadManager: UploadManager,
 ) : BaseCoroutineWorker(appContext, params) {
-
-    private val uploadManager inline get() = swissTransferInjection.uploadManager
 
     private val fileChunkSizeManager by lazy {
         FileChunkSizeManager(
