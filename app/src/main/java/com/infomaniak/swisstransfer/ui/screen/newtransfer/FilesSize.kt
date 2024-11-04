@@ -35,23 +35,23 @@ import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceUsed
 
 @Composable
 fun FilesSize(modifier: Modifier, files: () -> List<FileUi>, withSpaceLeft: Boolean) {
     Row(modifier = modifier) {
+        val context = LocalContext.current
         TextDotText(
             firstText = {
                 val filesCount = files().count()
                 pluralStringResource(R.plurals.filesCount, filesCount, filesCount)
             },
-            secondText = { LocalContext.current.getSpaceUsed(files()) },
+            secondText = { HumanReadableSizeUtils.getHumanReadableSize(context, files().sumOf { it.fileSize }) },
             modifier = Modifier.padding(start = Margin.Medium),
         )
         if (withSpaceLeft) {
-            val context = LocalContext.current
             val spaceLeft = formatSpaceLeft { context.getSpaceLeft(files()) }
             Spacer(modifier = Modifier.weight(1f))
             Text(
