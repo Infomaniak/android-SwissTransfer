@@ -27,11 +27,11 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.Uploa
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -105,7 +105,7 @@ class NewTransferViewModel @Inject constructor(
                 uploadWorkerScheduler.scheduleWork()
             }.onFailure { exception ->
                 // TODO: Handle user feedback
-                Sentry.captureException(exception)
+                SentryLog.e(TAG, "Failed to start the upload", exception)
             }
         }
     }
@@ -132,6 +132,7 @@ class NewTransferViewModel @Inject constructor(
     }
 
     companion object {
+        private val TAG = NewTransferViewModel::class.java.simpleName
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 
