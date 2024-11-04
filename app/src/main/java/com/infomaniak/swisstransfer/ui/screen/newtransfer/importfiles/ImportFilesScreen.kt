@@ -76,7 +76,10 @@ fun ImportFilesScreen(
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
-        navigateToUploadProgress = navigateToUploadProgress,
+        navigateToUploadProgress = {
+            newTransferViewModel.sendTransfer()
+            navigateToUploadProgress()
+        },
         initialShowUploadSourceChoiceBottomSheet = true,
     )
 }

@@ -45,6 +45,17 @@
             android:name="io.sentry.dsn"
             android:value="https://8fa636a7655a9ab4949a2e7fc22bdee3@sentry-mobile.infomaniak.com/18" />
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

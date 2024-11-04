@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
@@ -32,7 +34,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application() {
+class MainApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var swissTransferInjection: SwissTransferInjection
@@ -42,6 +44,12 @@ class MainApplication : Application() {
 
     @Inject
     lateinit var globalCoroutineScope: CoroutineScope
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
     override fun onCreate() {
         super.onCreate()

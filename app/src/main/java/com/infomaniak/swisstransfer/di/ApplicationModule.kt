@@ -18,11 +18,14 @@
 package com.infomaniak.swisstransfer.di
 
 import android.app.Application
+import android.content.Context
+import androidx.work.WorkManager
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -44,4 +47,8 @@ object ApplicationModule {
     fun providesGlobalCoroutineScope(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): CoroutineScope {
         return CoroutineScope(defaultDispatcher)
     }
+
+    @Provides
+    @Singleton
+    fun providesWorkManager(@ApplicationContext context: Context) = WorkManager.getInstance(context)
 }

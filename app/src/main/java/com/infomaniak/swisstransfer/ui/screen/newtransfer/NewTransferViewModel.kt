@@ -21,8 +21,16 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
+import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
@@ -32,10 +40,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewTransferViewModel @Inject constructor(
-    private val importationFilesManager: ImportationFilesManager,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle,
+    private val importationFilesManager: ImportationFilesManager,
+    private val swissTransferInjection: SwissTransferInjection,
+    private val uploadWorkerScheduler: UploadWorker.Scheduler,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
+
+    private val uploadManager inline get() = swissTransferInjection.uploadManager
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -49,9 +61,6 @@ class NewTransferViewModel @Inject constructor(
     val failedFiles = importationFilesManager.failedFiles
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
-
-    val uploadedSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(9_842_314L)
-    val totalSizeInBytes: MutableStateFlow<Long> = MutableStateFlow(12_342_314L)
 
     private var isFirstViewModelCreation: Boolean
         get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
@@ -89,7 +98,41 @@ class NewTransferViewModel @Inject constructor(
         }
     }
 
+    fun sendTransfer() {
+        viewModelScope.launch(ioDispatcher) {
+            runCatching {
+                uploadManager.createAndGetUpload(generateNewUploadSession())
+                uploadWorkerScheduler.scheduleWork()
+            }.onFailure { exception ->
+                // TODO: Handle user feedback
+                SentryLog.e(TAG, "Failed to start the upload", exception)
+            }
+        }
+    }
+
+    private fun generateNewUploadSession(): NewUploadSession {
+        return NewUploadSession(
+            duration = "30",
+            authorEmail = "",
+            password = "",
+            message = "sisi test",
+            numberOfDownload = 20,
+            language = EmailLanguage.ENGLISH,
+            recipientsEmails = emptyList(),
+            files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
+                object : UploadFileSession {
+                    override val localPath: String = fileUi.localPath ?: ""
+                    override val mimeType: String = fileUi.mimeType ?: ""
+                    override val name: String = fileUi.fileName
+                    override val remoteUploadFile: RemoteUploadFile? = null
+                    override val size: Long = fileUi.fileSize
+                }
+            }
+        )
+    }
+
     companion object {
+        private val TAG = NewTransferViewModel::class.java.simpleName
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 
