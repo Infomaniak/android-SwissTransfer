@@ -152,7 +152,7 @@ private fun ImportFilesScreen(
             }
 
             UploadSourceChoiceBottomSheet(
-                isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
+                isVisible = { showUploadSourceChoiceBottomSheet },
                 onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
                 closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )
