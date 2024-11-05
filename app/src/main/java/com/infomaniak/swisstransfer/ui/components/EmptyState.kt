@@ -38,7 +38,15 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun EmptyState(
     icon: ImageVector,
-    @StringRes title: Int,
+    @StringRes titleRes: Int,
+    @StringRes descriptionRes: Int,
+    modifier: Modifier = Modifier,
+) = EmptyState(icon, titleRes, stringResource(descriptionRes), modifier)
+
+@Composable
+fun EmptyState(
+    icon: ImageVector,
+    @StringRes titleRes: Int,
     description: String,
     modifier: Modifier = Modifier,
 ) {
@@ -48,7 +56,7 @@ fun EmptyState(
     ) {
         IllustratedMessageBlock(
             icon = icon,
-            title = title,
+            title = titleRes,
             description = description,
             modifier = modifier.padding(horizontal = Margin.Medium),
         )
@@ -63,8 +71,8 @@ private fun EmptyStatePreview() {
         Surface {
             EmptyState(
                 icon = AppIllus.MascotSearching,
-                title = R.string.noTransferReceivedTitle,
-                description = stringResource(R.string.noTransferReceivedDescription),
+                titleRes = R.string.noTransferReceivedTitle,
+                descriptionRes = R.string.noTransferReceivedDescription,
             )
         }
     }

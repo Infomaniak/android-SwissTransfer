@@ -74,8 +74,8 @@ private fun ReceivedScreen(
         if (areTransfersEmpty()) {
             EmptyState(
                 icon = AppIllus.MascotSearching,
-                title = R.string.noTransferReceivedTitle,
-                description = stringResource(R.string.noTransferReceivedDescription),
+                titleRes = R.string.noTransferReceivedTitle,
+                descriptionRes = R.string.noTransferReceivedDescription,
             )
         } else {
             TransferItemList(
