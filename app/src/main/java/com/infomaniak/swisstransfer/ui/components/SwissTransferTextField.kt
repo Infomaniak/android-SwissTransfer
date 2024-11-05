@@ -72,6 +72,12 @@ fun SwissTransferTextField(
         unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
     )
 
+    @Composable
+    fun getSupportingText(): (@Composable () -> Unit)? {
+        val displayText = if (text.isEmpty()) supportingText else errorMessage() ?: supportingText
+        return displayText?.let { @Composable { Text(it) } }
+    }
+
     OutlinedTextField(
         modifier = modifier,
         value = text,
@@ -96,8 +102,8 @@ fun SwissTransferTextField(
             keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
             autoCorrectEnabled = true,
         ),
-        isError = errorMessage() != null,
-        supportingText = (errorMessage() ?: supportingText)?.let { { Text(it) } },
+        isError = errorMessage() != null && text.isNotEmpty(),
+        supportingText = getSupportingText(),
     )
 }
 

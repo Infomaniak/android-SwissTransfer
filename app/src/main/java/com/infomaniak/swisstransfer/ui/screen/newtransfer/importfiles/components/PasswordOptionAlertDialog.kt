@@ -64,6 +64,7 @@ fun PasswordOptionAlertDialog(
                 onConfirmation(isChecked)
                 closeAlertDialog()
             },
+            shouldEnableConfirmButton = { if (isChecked) isPasswordValid() else true },
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

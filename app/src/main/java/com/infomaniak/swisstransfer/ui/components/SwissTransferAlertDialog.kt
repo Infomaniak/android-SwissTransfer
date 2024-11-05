@@ -38,6 +38,7 @@ fun SwissTransferAlertDialog(
     @StringRes descriptionRes: Int,
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
+    shouldEnableConfirmButton: () -> Boolean = { true },
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     BasicAlertDialog(
@@ -47,7 +48,15 @@ fun SwissTransferAlertDialog(
             .fillMaxWidth(),
     ) {
         Card(shape = RoundedCornerShape(Margin.Medium)) {
-            BasicAlertDialogContent(modifier, titleRes, descriptionRes, content, onDismissRequest, onConfirmation)
+            BasicAlertDialogContent(
+                modifier = modifier,
+                titleRes = titleRes,
+                descriptionRes = descriptionRes,
+                additionalContent = content,
+                onDismissRequest = onDismissRequest,
+                onConfirmation = onConfirmation,
+                shouldEnableConfirmButton = shouldEnableConfirmButton,
+            )
         }
     }
 }
@@ -60,6 +69,7 @@ fun BasicAlertDialogContent(
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
+    shouldEnableConfirmButton: () -> Boolean = { true },
 ) {
     Column(modifier.padding(Margin.Large)) {
         Text(
@@ -78,12 +88,12 @@ fun BasicAlertDialogContent(
             it()
             Spacer(Modifier.height(Margin.Large))
         }
-        ActionButtons(onDismissRequest, onConfirmation)
+        ActionButtons(onDismissRequest, onConfirmation, shouldEnableConfirmButton)
     }
 }
 
 @Composable
-private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Unit) {
+private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Unit, shouldEnable: () -> Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
@@ -98,6 +108,7 @@ private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Un
         SmallButton(
             titleRes = R.string.buttonConfirm,
             onClick = onConfirmation,
+            enabled = shouldEnable
         )
     }
 }
