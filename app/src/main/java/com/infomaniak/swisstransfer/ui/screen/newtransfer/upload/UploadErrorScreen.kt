@@ -28,6 +28,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.core2.R as RCore2
 
 @Composable
 fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
@@ -36,7 +37,7 @@ fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
         bottomButton = {
             LargeButton(
                 modifier = it,
-                titleRes = R.string.appName,
+                titleRes = RCore2.string.buttonRetry,
                 onClick = navigateToImportFiles
             )
         }

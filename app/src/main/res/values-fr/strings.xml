@@ -18,7 +18,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
-    <string name="buttonCancel">Annuler</string>
     <string name="buttonCopyLink">Copier le lien</string>
     <string name="buttonDownload">Télécharger</string>
     <string name="buttonDownloadSelected">Télécharger la sélection</string>

@@ -16,4 +16,6 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="buttonCancel">Annuler</string>
+    <string name="buttonRetry">Réessayer</string>
 </resources>
