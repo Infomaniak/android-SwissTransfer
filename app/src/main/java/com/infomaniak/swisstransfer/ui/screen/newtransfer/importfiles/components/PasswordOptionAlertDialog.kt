@@ -39,31 +39,29 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.WeightOneSpacer
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
 @Composable
 fun PasswordOptionAlertDialog(
-    initialIsChecked: Boolean,
+    initialPassword: String,
+    password: GetSetCallbacks<String>,
     showPasswordOptionAlert: () -> Boolean,
-    closeAlertDialog: () -> Unit,
+    onDismiss: () -> Unit,
     onConfirmation: (Boolean) -> Unit,
-    setPassword: (String) -> Unit,
     isPasswordValid: () -> Boolean,
 ) {
 
-    var isChecked by rememberSaveable { mutableStateOf(initialIsChecked) }
+    var isChecked by rememberSaveable { mutableStateOf(initialPassword.isNotEmpty()) }
 
     if (showPasswordOptionAlert()) {
         SwissTransferAlertDialog(
             titleRes = R.string.settingsOptionPassword,
             descriptionRes = R.string.settingsPasswordDescription,
             onDismissRequest = {
-                isChecked = initialIsChecked
-                closeAlertDialog()
+                isChecked = initialPassword.isNotEmpty()
+                onDismiss()
             },
-            onConfirmation = {
-                onConfirmation(isChecked)
-                closeAlertDialog()
-            },
+            onConfirmation = { onConfirmation(isChecked) },
             shouldEnableConfirmButton = { if (isChecked) isPasswordValid() else true },
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -81,8 +79,9 @@ fun PasswordOptionAlertDialog(
                 SwissTransferTextField(
                     label = stringResource(R.string.settingsOptionPassword),
                     isPassword = true,
+                    initialValue = password.get(),
                     errorMessage = { if (isPasswordValid()) null else stringResource(R.string.errorTransferPasswordLength) },
-                    onValueChange = { setPassword(it) },
+                    onValueChange = { password.set(it) },
                 )
             }
         }
@@ -95,11 +94,11 @@ fun Preview() {
     SwissTransferTheme {
         Surface {
             PasswordOptionAlertDialog(
-                initialIsChecked = true,
+                initialPassword = "pass",
+                password = GetSetCallbacks(get = { "pass" }, set = {}),
                 showPasswordOptionAlert = { true },
-                closeAlertDialog = {},
+                onDismiss = {},
                 onConfirmation = {},
-                setPassword = {},
                 isPasswordValid = { false },
             )
         }

@@ -112,7 +112,10 @@ fun ImportFilesScreen(
                 )
             },
             onAdvancedOptionsValueSelected = ::onAdvancedOptionsValueSelected,
-            setPassword = { newTransferViewModel.transferPassword = it },
+            password = GetSetCallbacks(
+                get = { newTransferViewModel.transferPassword },
+                set = { newTransferViewModel.transferPassword = it },
+            ),
             isPasswordValid = { newTransferViewModel.isPasswordValid }
         )
 
@@ -179,9 +182,7 @@ private fun ImportFilesScreen(
         addFiles(uris)
     }
 
-    val initialPasswordTransferOption = advancedOptionsCallbacks.advancedOptionsStates().find {
-        it.advancedSettingType == TransferAdvancedSettingType.PASSWORD
-    }?.settingState?.invoke()
+    var savedPassword by remember { mutableStateOf("") }
 
     fun closeAdvancedOption() {
         showAdvancedOption = null
@@ -237,7 +238,8 @@ private fun ImportFilesScreen(
             )
 
             PasswordOptionAlertDialog(
-                initialIsChecked = initialPasswordTransferOption == PasswordTransferOption.ACTIVATED,
+                initialPassword = savedPassword,
+                password = advancedOptionsCallbacks.password,
                 showPasswordOptionAlert = { showAdvancedOption == TransferAdvancedSettingType.PASSWORD },
                 onConfirmation = { isChecked ->
                     val selectedOption = if (isChecked) {
@@ -247,9 +249,13 @@ private fun ImportFilesScreen(
                     }
 
                     advancedOptionsCallbacks.onAdvancedOptionsValueSelected(selectedOption)
+                    savedPassword = advancedOptionsCallbacks.password.get()
+                    closeAdvancedOption()
                 },
-                closeAlertDialog = ::closeAdvancedOption,
-                setPassword = advancedOptionsCallbacks.setPassword,
+                onDismiss = {
+                    advancedOptionsCallbacks.password.set(savedPassword)
+                    closeAdvancedOption()
+                },
                 isPasswordValid = advancedOptionsCallbacks.isPasswordValid,
             )
 
@@ -345,7 +351,7 @@ private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes:
 data class AdvancedOptionsCallbacks(
     val advancedOptionsStates: () -> List<AdvancedOptionsState>,
     val onAdvancedOptionsValueSelected: (SettingOption) -> Unit,
-    val setPassword: (String) -> Unit,
+    val password: GetSetCallbacks<String>,
     val isPasswordValid: () -> Boolean,
 )
 
@@ -389,7 +395,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
                 )
             },
             onAdvancedOptionsValueSelected = {},
-            setPassword = {},
+            password = GetSetCallbacks(get = { "password" }, set = {}),
             isPasswordValid = { true },
         )
 
