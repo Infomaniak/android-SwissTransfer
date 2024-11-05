@@ -116,7 +116,7 @@ fun ImportFilesScreen(
                 get = { newTransferViewModel.transferPassword },
                 set = { newTransferViewModel.transferPassword = it },
             ),
-            isPasswordValid = { newTransferViewModel.isPasswordValid }
+            isPasswordValid = { newTransferViewModel.isPasswordValid },
         )
 
         ImportFilesScreen(
@@ -359,33 +359,33 @@ enum class PasswordTransferOption(
 @PreviewAllWindows
 @Composable
 private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
-    SwissTransferTheme {
-        val advancedOptionsCallbacks = AdvancedOptionsCallbacks(
-            advancedOptionsStates = {
-                listOf(
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
-                        settingState = { ValidityPeriodOption.THIRTY },
-                    ),
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
-                        settingState = { DownloadLimitOption.TWO_HUNDRED_FIFTY },
-                    ),
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.PASSWORD,
-                        settingState = { PasswordTransferOption.NONE },
-                    ),
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
-                        settingState = { EmailLanguageOption.FRENCH },
-                    ),
-                )
-            },
-            onAdvancedOptionsValueSelected = {},
-            password = GetSetCallbacks(get = { "password" }, set = {}),
-            isPasswordValid = { true },
-        )
+    val advancedOptionsCallbacks = AdvancedOptionsCallbacks(
+        advancedOptionsStates = {
+            listOf(
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                    settingState = { ValidityPeriodOption.THIRTY },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                    settingState = { DownloadLimitOption.TWO_HUNDRED_FIFTY },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                    settingState = { PasswordTransferOption.NONE },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                    settingState = { EmailLanguageOption.FRENCH },
+                ),
+            )
+        },
+        onAdvancedOptionsValueSelected = {},
+        password = GetSetCallbacks(get = { "password" }, set = {}),
+        isPasswordValid = { true },
+    )
 
+    SwissTransferTheme {
         ImportFilesScreen(
             files = { files },
             filesToImportCount = { 0 },

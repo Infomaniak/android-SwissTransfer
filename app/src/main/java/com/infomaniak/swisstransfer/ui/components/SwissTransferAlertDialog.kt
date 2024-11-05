@@ -72,24 +72,29 @@ fun BasicAlertDialogContent(
     shouldEnableConfirmButton: () -> Boolean = { true },
 ) {
     Column(modifier.padding(Margin.Large)) {
-        Text(
-            stringResource(titleRes),
-            style = SwissTransferTheme.typography.bodyMedium,
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-        Spacer(Modifier.height(Margin.Large))
-        Text(
-            stringResource(descriptionRes),
-            style = SwissTransferTheme.typography.bodyRegular,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-        )
-        Spacer(Modifier.height(Margin.Large))
+        TitleAndDescription(titleRes, descriptionRes)
         additionalContent?.let {
             it()
             Spacer(Modifier.height(Margin.Large))
         }
         ActionButtons(onDismissRequest, onConfirmation, shouldEnableConfirmButton)
     }
+}
+
+@Composable
+private fun TitleAndDescription(titleRes: Int, descriptionRes: Int) {
+    Text(
+        text = stringResource(titleRes),
+        style = SwissTransferTheme.typography.bodyMedium,
+        color = SwissTransferTheme.colors.primaryTextColor,
+    )
+    Spacer(Modifier.height(Margin.Large))
+    Text(
+        text = stringResource(descriptionRes),
+        style = SwissTransferTheme.typography.bodyRegular,
+        color = SwissTransferTheme.colors.secondaryTextColor,
+    )
+    Spacer(Modifier.height(Margin.Large))
 }
 
 @Composable
@@ -127,4 +132,3 @@ private fun PreviewAlertDialog() {
         }
     }
 }
-
