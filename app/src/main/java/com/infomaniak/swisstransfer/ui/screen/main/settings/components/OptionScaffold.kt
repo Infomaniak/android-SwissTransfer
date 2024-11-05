@@ -70,7 +70,7 @@ fun OptionScaffold(
 
 @PreviewAllWindows
 @Composable
-private fun OptionScaffoldPreview() {
+private fun Preview() {
     SwissTransferTheme {
         OptionScaffold(
             topAppBarTitleRes = R.string.settingsOptionTheme,

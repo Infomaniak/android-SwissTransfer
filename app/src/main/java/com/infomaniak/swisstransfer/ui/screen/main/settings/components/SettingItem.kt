@@ -117,7 +117,7 @@ private fun SettingItemContent(
 
 @PreviewLightAndDark
 @Composable
-private fun SettingItemPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             Column(modifier = Modifier.selectableGroup()) {

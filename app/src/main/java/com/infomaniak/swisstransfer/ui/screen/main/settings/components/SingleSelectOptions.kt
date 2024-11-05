@@ -102,7 +102,7 @@ interface SettingOption {
 
 @PreviewLightAndDark
 @Composable
-private fun SettingOptionItemPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             Column {
