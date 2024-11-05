@@ -24,11 +24,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.WeightOneSpacer
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -43,25 +41,30 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
 @Composable
 fun PasswordOptionAlertDialog(
-    initialPassword: String,
     password: GetSetCallbacks<String>,
     showPasswordOptionAlert: () -> Boolean,
     onDismiss: () -> Unit,
-    onConfirmation: (Boolean) -> Unit,
+    onConfirmation: (PasswordTransferOption) -> Unit,
     isPasswordValid: () -> Boolean,
 ) {
 
-    var isChecked by rememberSaveable { mutableStateOf(initialPassword.isNotEmpty()) }
+    var isChecked by rememberSaveable { mutableStateOf(password.get().isNotEmpty()) }
+    var savedPassword by remember { mutableStateOf("") }
 
     if (showPasswordOptionAlert()) {
         SwissTransferAlertDialog(
             titleRes = R.string.settingsOptionPassword,
             descriptionRes = R.string.settingsPasswordDescription,
             onDismissRequest = {
-                isChecked = initialPassword.isNotEmpty()
+                isChecked = savedPassword.isNotEmpty()
+                password.set(savedPassword)
                 onDismiss()
             },
-            onConfirmation = { onConfirmation(isChecked) },
+            onConfirmation = {
+                savedPassword = password.get()
+                val passwordOption = if (isChecked) PasswordTransferOption.ACTIVATED else PasswordTransferOption.NONE
+                onConfirmation(passwordOption)
+            },
             shouldEnableConfirmButton = { if (isChecked) isPasswordValid() else true },
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -94,7 +97,6 @@ fun Preview() {
     SwissTransferTheme {
         Surface {
             PasswordOptionAlertDialog(
-                initialPassword = "pass",
                 password = GetSetCallbacks(get = { "pass" }, set = {}),
                 showPasswordOptionAlert = { true },
                 onDismiss = {},

@@ -182,8 +182,6 @@ private fun ImportFilesScreen(
         addFiles(uris)
     }
 
-    var savedPassword by remember { mutableStateOf("") }
-
     fun closeAdvancedOption() {
         showAdvancedOption = null
     }
@@ -238,24 +236,13 @@ private fun ImportFilesScreen(
             )
 
             PasswordOptionAlertDialog(
-                initialPassword = savedPassword,
                 password = advancedOptionsCallbacks.password,
                 showPasswordOptionAlert = { showAdvancedOption == TransferAdvancedSettingType.PASSWORD },
-                onConfirmation = { isChecked ->
-                    val selectedOption = if (isChecked) {
-                        PasswordTransferOption.ACTIVATED
-                    } else {
-                        PasswordTransferOption.NONE
-                    }
-
-                    advancedOptionsCallbacks.onAdvancedOptionsValueSelected(selectedOption)
-                    savedPassword = advancedOptionsCallbacks.password.get()
+                onConfirmation = { passwordOption ->
+                    advancedOptionsCallbacks.onAdvancedOptionsValueSelected(passwordOption)
                     closeAdvancedOption()
                 },
-                onDismiss = {
-                    advancedOptionsCallbacks.password.set(savedPassword)
-                    closeAdvancedOption()
-                },
+                onDismiss = ::closeAdvancedOption,
                 isPasswordValid = advancedOptionsCallbacks.isPasswordValid,
             )
 
