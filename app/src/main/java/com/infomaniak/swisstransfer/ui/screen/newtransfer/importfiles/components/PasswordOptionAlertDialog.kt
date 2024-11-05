@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -48,46 +49,69 @@ fun PasswordOptionAlertDialog(
     isPasswordValid: () -> Boolean,
 ) {
 
-    var isChecked by rememberSaveable { mutableStateOf(password.get().isNotEmpty()) }
-    var savedPassword by remember { mutableStateOf("") }
+    var isPasswordActivated by rememberSaveable { mutableStateOf(password.get().isNotEmpty()) }
+    var lastValidPassword by remember { mutableStateOf("") }
+
+    fun onDismissRequest() {
+        isPasswordActivated = lastValidPassword.isNotEmpty()
+        password.set(lastValidPassword)
+        onDismiss()
+    }
+
+    fun onConfirmButtonClicked() {
+        val passwordOption = if (isPasswordActivated) {
+            PasswordTransferOption.ACTIVATED
+        } else {
+            password.set("")
+            PasswordTransferOption.NONE
+        }
+
+        lastValidPassword = password.get()
+        onConfirmation(passwordOption)
+    }
 
     if (showPasswordOptionAlert()) {
         SwissTransferAlertDialog(
             titleRes = R.string.settingsOptionPassword,
             descriptionRes = R.string.settingsPasswordDescription,
-            onDismissRequest = {
-                isChecked = savedPassword.isNotEmpty()
-                password.set(savedPassword)
-                onDismiss()
-            },
-            onConfirmation = {
-                savedPassword = password.get()
-                val passwordOption = if (isChecked) PasswordTransferOption.ACTIVATED else PasswordTransferOption.NONE
-                onConfirmation(passwordOption)
-            },
-            shouldEnableConfirmButton = { if (isChecked) isPasswordValid() else true },
+            onDismissRequest = ::onDismissRequest,
+            onConfirmation = ::onConfirmButtonClicked,
+            shouldEnableConfirmButton = { if (isPasswordActivated) isPasswordValid() else true },
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(R.string.settingsPasswordToggleDescription),
-                    style = SwissTransferTheme.typography.bodyMedium,
-                    color = SwissTransferTheme.colors.primaryTextColor,
-                )
-                WeightOneSpacer(minWidth = Margin.Medium)
-                Switch(checked = isChecked, onCheckedChange = { isChecked = it })
-            }
-
-            AnimatedVisibility(isChecked) {
-                Spacer(Modifier.height(Margin.Mini))
-                SwissTransferTextField(
-                    label = stringResource(R.string.settingsOptionPassword),
-                    isPassword = true,
-                    initialValue = password.get(),
-                    errorMessage = { if (isPasswordValid()) null else stringResource(R.string.errorTransferPasswordLength) },
-                    onValueChange = { password.set(it) },
-                )
-            }
+            ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
+            AnimatedPasswordInput(isPasswordActivated, password, isPasswordValid)
         }
+    }
+}
+
+@Composable
+private fun ActivatePasswordSwitch(isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = stringResource(R.string.settingsPasswordToggleDescription),
+            style = SwissTransferTheme.typography.bodyMedium,
+            color = SwissTransferTheme.colors.primaryTextColor,
+        )
+        WeightOneSpacer(minWidth = Margin.Medium)
+        Switch(isChecked, onCheckedChange)
+    }
+}
+
+@Composable
+private fun ColumnScope.AnimatedPasswordInput(
+    isChecked: Boolean,
+    password: GetSetCallbacks<String>,
+    isPasswordValid: () -> Boolean
+) {
+    AnimatedVisibility(isChecked) {
+        Spacer(Modifier.height(Margin.Mini))
+        SwissTransferTextField(
+            label = stringResource(R.string.settingsOptionPassword),
+            isPassword = true,
+            initialValue = password.get(),
+            errorMessage = { if (isPasswordValid()) null else stringResource(R.string.errorTransferPasswordLength) },
+            onValueChange = { password.set(it) },
+        )
     }
 }
 
