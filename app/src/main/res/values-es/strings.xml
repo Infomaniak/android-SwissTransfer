@@ -124,6 +124,8 @@
     <string name="uploadProgressDescriptionTemplateConfidentiality">Somos independientes y contribuimos a %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Diseñamos %s, para superar las normas de eficiencia energética del mercado.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Desarrollamos %s Sin comprometer la ecología, la privacidad ni a las personas.</string>
+    <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
+    <string name="uploadErrorTitle">¿Pero qué, qué?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">El enlace de descarga se ha enviado al siguiente destinatario:</item>
         <item quantity="other">El enlace de descarga se ha enviado a los siguientes destinatarios:</item>

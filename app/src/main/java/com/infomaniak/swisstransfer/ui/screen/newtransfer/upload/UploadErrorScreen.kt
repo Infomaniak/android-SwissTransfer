@@ -44,8 +44,8 @@ fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
     ) {
         EmptyState(
             icon = AppImages.AppIllus.Matomo.image(),
-            titleRes = R.string.appName,
-            descriptionRes = R.string.appName,
+            titleRes = R.string.uploadErrorTitle,
+            descriptionRes = R.string.uploadErrorDescription,
         )
     }
 }
