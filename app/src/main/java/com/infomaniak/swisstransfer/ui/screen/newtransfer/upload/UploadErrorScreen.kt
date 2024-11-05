@@ -25,7 +25,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
-import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
+import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.core2.R as RCore2
@@ -43,7 +43,7 @@ fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
         }
     ) {
         EmptyState(
-            icon = AppImages.AppIllus.Matomo.image(),
+            icon = AppImages.AppIllus.GhostMagnifyingGlassQuestionMark.image(),
             titleRes = R.string.uploadErrorTitle,
             descriptionRes = R.string.uploadErrorDescription,
         )
