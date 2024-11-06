@@ -113,10 +113,6 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun selectTransferType(type: TransferType) {
-        _selectedTransferType.value = type
-    }
-
     fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
             runCatching {
@@ -155,42 +151,53 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     //region Transfer Type
-    private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
+    private val _selectedTransferType = MutableStateFlow(savedStateHandle[SELECTED_TRANSFER_TYPE] ?: TransferType.LINK)
     val selectedTransferType: StateFlow<TransferType> = _selectedTransferType
 
-    sealed class SendActionResult {
-        data class Success(val totalSize: Long) : SendActionResult()
-        data object Failure : SendActionResult()
+    fun selectTransferType(type: TransferType) {
+        _selectedTransferType.value = type
+        savedStateHandle[SELECTED_TRANSFER_TYPE] = type
     }
     //endregion
 
     //region Transfer Advanced Options
-    private val _selectedValidityPeriodOption = MutableStateFlow<ValidityPeriodOption?>(null)
+
+    private val _selectedValidityPeriodOption = MutableStateFlow<ValidityPeriodOption?>(
+        savedStateHandle[SELECTED_VALIDITY_PERIOD_KEY]
+    )
     val selectedValidityPeriodOption: StateFlow<ValidityPeriodOption?> = _selectedValidityPeriodOption.asStateFlow()
 
-    private val _selectedDownloadLimitOption = MutableStateFlow<DownloadLimitOption?>(null)
+    private val _selectedDownloadLimitOption = MutableStateFlow<DownloadLimitOption?>(
+        savedStateHandle[SELECTED_DOWNLOAD_LIMIT_KEY]
+    )
     val selectedDownloadLimitOption: StateFlow<DownloadLimitOption?> = _selectedDownloadLimitOption.asStateFlow()
 
-    private val _selectedPasswordOption = MutableStateFlow(PasswordTransferOption.NONE)
+    private val _selectedPasswordOption = MutableStateFlow<PasswordTransferOption?>(
+        savedStateHandle[SELECTED_PASSWORD_OPTION_KEY] ?: PasswordTransferOption.NONE
+    )
     val selectedPasswordOption: StateFlow<PasswordTransferOption?> = _selectedPasswordOption.asStateFlow()
 
-    private val _selectedLanguageOption = MutableStateFlow<EmailLanguageOption?>(null)
+    private val _selectedLanguageOption = MutableStateFlow<EmailLanguageOption?>(savedStateHandle[SELECTED_LANGUAGE_KEY])
     val selectedLanguageOption: StateFlow<EmailLanguageOption?> = _selectedLanguageOption.asStateFlow()
 
-    fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
+    private fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
         _selectedValidityPeriodOption.value = validityPeriodOption
+        savedStateHandle[SELECTED_VALIDITY_PERIOD_KEY] = validityPeriodOption
     }
 
-    fun selectTransferDownloadLimit(downloadLimit: DownloadLimitOption) {
+    private fun selectTransferDownloadLimit(downloadLimit: DownloadLimitOption) {
         _selectedDownloadLimitOption.value = downloadLimit
+        savedStateHandle[SELECTED_DOWNLOAD_LIMIT_KEY] = downloadLimit
     }
 
-    fun selectTransferPasswordOption(passwordOption: PasswordTransferOption) {
+    private fun selectTransferPasswordOption(passwordOption: PasswordTransferOption) {
         _selectedPasswordOption.value = passwordOption
+        savedStateHandle[SELECTED_PASSWORD_OPTION_KEY] = passwordOption
     }
 
-    fun selectTransferLanguage(language: EmailLanguageOption) {
+    private fun selectTransferLanguage(language: EmailLanguageOption) {
         _selectedLanguageOption.value = language
+        savedStateHandle[SELECTED_LANGUAGE_KEY] = language
     }
 
     fun initTransferAdvancedOptionsValues(safeAppSettings: AppSettings) {
@@ -259,8 +266,18 @@ class ImportFilesViewModel @Inject constructor(
     }
     //endregion
 
+    sealed class SendActionResult {
+        data class Success(val totalSize: Long) : SendActionResult()
+        data object Failure : SendActionResult()
+    }
+
     companion object {
         private val TAG = ImportFilesViewModel::class.java.simpleName
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
+        private const val SELECTED_TRANSFER_TYPE = "SELECTED_TRANSFER_TYPE"
+        private const val SELECTED_VALIDITY_PERIOD_KEY = "SELECTED_VALIDITY_PERIOD_KEY"
+        private const val SELECTED_DOWNLOAD_LIMIT_KEY = "SELECTED_DOWNLOAD_LIMIT_KEY"
+        private const val SELECTED_PASSWORD_OPTION_KEY = "SELECTED_PASSWORD_OPTION_KEY"
+        private const val SELECTED_LANGUAGE_KEY = "SELECTED_TRANSFER_LANGUAGE_KEY"
     }
 }
