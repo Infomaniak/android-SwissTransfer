@@ -29,6 +29,7 @@
     <string name="contentDescriptionButtonRemove">Eliminar archivo</string>
     <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
+    <string name="expiredThe">Expirado el %s</string>
     <string name="expiresIn">Caduca en %d días</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
@@ -88,6 +89,9 @@
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
     <string name="transferExpiredButton">Borrar del historial</string>
+    <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
+    <string name="transferExpiredLimitReachedDescription">Lo sentimos, esta transferencia ha alcanzado el límite de %d descargas posibles.</string>
+    <string name="transferExpiredTitle">Esta transferencia ya no está disponible</string>
     <string name="transferMessagePlaceholder">¿Algún mensaje que quieras transmitir?</string>
     <string name="transferRecipientAddressPlaceholder">Enviar archivos a</string>
     <string name="transferSendButton">Enviar</string>

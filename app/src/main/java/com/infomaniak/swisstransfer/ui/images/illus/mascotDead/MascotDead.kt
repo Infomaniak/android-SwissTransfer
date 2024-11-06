@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet
+package com.infomaniak.swisstransfer.ui.images.illus.mascotDead
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,27 +29,25 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-val AppIllus.RedCrossPaperPlanes: ThemedImage
-    get() = _redCrossPaperPlanes ?: object : ThemedImage {
-        override val light = AppIllus.RedCrossPaperPlanesLight
-        override val dark = AppIllus.RedCrossPaperPlanesDark
-    }.also { _redCrossPaperPlanes = it }
+val AppIllus.MascotDead: ThemedImage
+    get() = _mascotDead ?: object : ThemedImage {
+        override val light = AppIllus.MascotDeadLight
+        override val dark = AppIllus.MascotDeadDark
+    }.also { _mascotDead = it }
 
-private var _redCrossPaperPlanes: ThemedImage? = null
+private var _mascotDead: ThemedImage? = null
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
 private fun Preview() {
     SwissTransferTheme {
-        Surface {
-            Box {
-                Image(
-                    imageVector = AppIllus.RedCrossPaperPlanes.image(),
-                    contentDescription = null,
-                    modifier = Modifier.size(AppImages.previewSize),
-                )
-            }
+        Box {
+            Image(
+                imageVector = AppIllus.MascotDead.image(),
+                contentDescription = null,
+                modifier = Modifier.size(AppImages.previewSize),
+            )
         }
     }
 }

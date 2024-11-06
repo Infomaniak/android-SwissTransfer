@@ -36,12 +36,12 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSourceChoiceBottomSheet(
-    isBottomSheetVisible: () -> Boolean,
+    isVisible: () -> Boolean,
     onFilePickerClicked: () -> Unit,
     closeBottomSheet: () -> Unit,
 ) {
 
-    if (!isBottomSheetVisible()) return
+    if (!isVisible()) return
 
     SwissTransferBottomSheet(
         onDismissRequest = closeBottomSheet,
@@ -84,7 +84,7 @@ private fun UploadSourceChoiceBottomSheetPreview() {
     SwissTransferTheme {
         Surface {
             UploadSourceChoiceBottomSheet(
-                isBottomSheetVisible = { true },
+                isVisible = { true },
                 onFilePickerClicked = {},
                 closeBottomSheet = {},
             )

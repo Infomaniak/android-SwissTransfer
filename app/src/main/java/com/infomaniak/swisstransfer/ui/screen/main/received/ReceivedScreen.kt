@@ -17,19 +17,20 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
@@ -56,6 +57,11 @@ fun ReceivedScreen(
 
 @Composable
 private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
+
+    var isVisible: Boolean by rememberSaveable { mutableStateOf(false) }
+    var expirationDate: Date? by rememberSaveable { mutableStateOf(null) }
+    var downloadsLimit: Int? by rememberSaveable { mutableStateOf(null) }
+
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) {
@@ -63,7 +69,7 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
             EmptyState(
                 icon = AppIllus.MascotSearching,
                 title = R.string.noTransferReceivedTitle,
-                description = R.string.noTransferReceivedDescription,
+                description = stringResource(R.string.noTransferReceivedDescription),
             )
         } else {
 
@@ -118,11 +124,11 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                     createdDateTimestamp = Date().time - 30L * 86_400_000L,
                     expirationDateTimestamp = Calendar.getInstance().apply {
                         time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 1)
+                        set(Calendar.DATE, get(Calendar.DATE) + 3)
                     }.time.time,
                     sizeUploaded = 57_689_032L,
-                    downloadLimit = 10,
-                    downloadLeft = 8,
+                    downloadLimit = 1,
+                    downloadLeft = 1,
                     message = "Coucou c'est moi le message de description du transfert.",
                     files = files,
                 ),
@@ -131,11 +137,11 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                     createdDateTimestamp = Date().time - 5L * 86_400_000L,
                     expirationDateTimestamp = Calendar.getInstance().apply {
                         time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 4)
+                        set(Calendar.DATE, get(Calendar.DATE) + 5)
                     }.time.time,
                     sizeUploaded = 89_723_143L,
-                    downloadLimit = 2,
-                    downloadLeft = 2,
+                    downloadLimit = 20,
+                    downloadLeft = 0,
                     message = null,
                     files = files,
                 ),
@@ -144,11 +150,11 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
                     createdDateTimestamp = Date().time - 0.5f.toLong() * 86_400_000L,
                     expirationDateTimestamp = Calendar.getInstance().apply {
                         time = Date()
-                        set(Calendar.DATE, get(Calendar.DATE) + 7)
+                        set(Calendar.DATE, get(Calendar.DATE) - 4)
                     }.time.time,
                     sizeUploaded = 237_866_728L,
-                    downloadLimit = 420_069,
-                    downloadLeft = 402_690,
+                    downloadLimit = 250,
+                    downloadLeft = 123,
                     message = "3ème transfert. RAS.",
                     files = files,
                 ),
@@ -157,7 +163,37 @@ private fun ReceivedScreen(areTransfersEmpty: () -> Boolean) {
             TransferItemList(
                 modifier = Modifier.padding(Margin.Medium),
                 transfers = transfers,
-                onClick = { /* TODO */ }
+                onClick = { transfer ->
+                    when {
+                        transfer.expiresInDays < 0 -> {
+                            isVisible = true
+                            expirationDate = Date(transfer.expirationDateTimestamp)
+                        }
+                        transfer.downloadLeft == 0 -> {
+                            isVisible = true
+                            downloadsLimit = transfer.downloadLimit
+                        }
+                        else -> {
+                            Log.d("TODO", "Display transfer details screen")
+                            // TODO
+                        }
+                    }
+                }
+            )
+
+            TransferExpiredBottomSheet(
+                isVisible = { isVisible },
+                expirationDate = { expirationDate },
+                downloadsLimit = { downloadsLimit },
+                onDeleteTransferClicked = {
+                    Log.d("TODO", "Delete expired Transfer")
+                    // TODO
+                },
+                closeBottomSheet = {
+                    isVisible = false
+                    expirationDate = null
+                    downloadsLimit = null
+                },
             )
         }
     }

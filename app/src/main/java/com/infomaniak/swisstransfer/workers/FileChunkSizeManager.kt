@@ -24,7 +24,7 @@ class FileChunkSizeManager(
     private val chunkMinSize: Long = CHUNK_MIN_SIZE,
     private val chunkMaxSize: Long = CHUNK_MAX_SIZE,
     private val optimalTotalChunks: Int = OPTIMAL_TOTAL_CHUNKS,
-    private val totalChunks: Int = TOTAL_CHUNKS,
+    private val maxChunkCount: Int = MAX_CHUNK_COUNT,
     private val maxParallelChunks: Int = MAX_PARALLEL_CHUNKS,
 ) {
 
@@ -32,7 +32,9 @@ class FileChunkSizeManager(
      * Calculates the size of a chunk from the size of a file within a limit between [chunkMinSize] and [chunkMaxSize],
      * taking into account the memory available to the application.
      * If the limit is exceeded, an [AllowedFileSizeExceededException] is thrown, otherwise the chunk size is returned.
+     *
      * @return The file chunk size otherwise raises an [AllowedFileSizeExceededException]
+     *
      * @throws AllowedFileSizeExceededException
      */
     fun computeChunkSize(fileSize: Long): Long {
@@ -40,7 +42,7 @@ class FileChunkSizeManager(
         var fileChunkSize = ceil(fileSize.toDouble() / optimalTotalChunks).toLong()
 
         if (fileChunkSize > chunkMaxSize) {
-            fileChunkSize = ceil(fileSize.toDouble() / totalChunks).toLong()
+            fileChunkSize = ceil(fileSize.toDouble() / maxChunkCount).toLong()
         }
 
         if (fileChunkSize > chunkMaxSize) throw AllowedFileSizeExceededException()
@@ -55,21 +57,17 @@ class FileChunkSizeManager(
         return floor(halfAvailableMemory / fileChunkSize).toInt().coerceIn(1, maxParallelChunks)
     }
 
-    private fun adjustChunkSizeByAvailableMemory(fileChunkSize: Long): Long {
-        return fileChunkSize.coerceAtMost(getHalfHeapMemory())
-    }
+    private fun adjustChunkSizeByAvailableMemory(fileChunkSize: Long): Long = fileChunkSize.coerceAtMost(getHalfHeapMemory())
 
-    private fun getHalfHeapMemory(): Long {
-        return Runtime.getRuntime().maxMemory() / 2
-    }
+    private fun getHalfHeapMemory(): Long = Runtime.getRuntime().maxMemory() / 2
 
     class AllowedFileSizeExceededException : Exception()
 
-    private companion object {
+    companion object {
         private const val CHUNK_MIN_SIZE = 1L * 1024 * 1024 // 1Mo
         private const val CHUNK_MAX_SIZE = 50L * 1024 * 1024 // 50Mo
         private const val OPTIMAL_TOTAL_CHUNKS = 200
-        private const val TOTAL_CHUNKS = 10_000
+        private const val MAX_CHUNK_COUNT = 10_000
         private const val MAX_PARALLEL_CHUNKS = 4
     }
 

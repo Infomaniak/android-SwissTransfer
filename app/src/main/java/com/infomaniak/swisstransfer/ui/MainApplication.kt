@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.UploadRecaptcha
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class MainApplication : Application(), Configuration.Provider {
 
     @Inject
-    lateinit var swissTransferInjection: SwissTransferInjection
+    lateinit var accountManager: AccountManager
 
     @Inject
     lateinit var uploadRecaptcha: UploadRecaptcha
@@ -55,7 +55,7 @@ class MainApplication : Application(), Configuration.Provider {
         super.onCreate()
 
         globalCoroutineScope.launch {
-            AccountUtils.init(swissTransferInjection)
+            AccountUtils.init(accountManager)
             uploadRecaptcha.initializeClient()
         }
 

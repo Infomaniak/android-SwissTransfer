@@ -34,6 +34,7 @@
     <string name="contentDescriptionButtonRemove">Remove file</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
+    <string name="expiredThe">Expired on %s</string>
     <string name="expiresIn">Expires in %d days</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
@@ -93,6 +94,9 @@
     <string name="startActivityCantHandleAction">No application has been found to handle this action</string>
     <string name="textFieldOptional">(Optional)</string>
     <string name="transferExpiredButton">Delete from history</string>
+    <string name="transferExpiredDateReachedDescription">Sorry, this transfer expired on %s. You can no longer download or view the files.</string>
+    <string name="transferExpiredLimitReachedDescription">Sorry, this transfer has reached the limit of %d possible downloads.</string>
+    <string name="transferExpiredTitle">This transfer is no longer available</string>
     <string name="transferMessagePlaceholder">A message to pass on?</string>
     <string name="transferRecipientAddressPlaceholder">Send files to</string>
     <string name="transferSendButton">Send</string>

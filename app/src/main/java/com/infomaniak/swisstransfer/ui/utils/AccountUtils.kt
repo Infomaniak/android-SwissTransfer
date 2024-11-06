@@ -17,13 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 
 object AccountUtils {
 
     private const val DEFAULT_USER_ID = 0
 
-    suspend fun init(swissTransferInjection: SwissTransferInjection) {
-        swissTransferInjection.accountManager.loadUser(userId = DEFAULT_USER_ID)
+    suspend fun init(accountManager: AccountManager) {
+        accountManager.loadUser(userId = DEFAULT_USER_ID)
     }
 }

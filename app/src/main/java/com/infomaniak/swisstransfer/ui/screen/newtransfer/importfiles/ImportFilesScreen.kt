@@ -138,9 +138,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier) {
-                sendTransfer()
-            }
+            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, sendTransfer)
         },
         content = {
             Column(
@@ -174,7 +172,7 @@ private fun ImportFilesScreen(
             }
 
             UploadSourceChoiceBottomSheet(
-                isBottomSheetVisible = { showUploadSourceChoiceBottomSheet },
+                isVisible = { showUploadSourceChoiceBottomSheet },
                 onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
                 closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
             )

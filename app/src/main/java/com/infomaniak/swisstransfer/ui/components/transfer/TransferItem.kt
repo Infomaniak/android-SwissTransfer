@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import android.text.format.Formatter
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.infomaniak.core2.FORMAT_DATE_SIMPLE
 import com.infomaniak.core2.FORMAT_DATE_TITLE
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -37,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import java.util.Calendar
 import java.util.Date
@@ -45,6 +46,27 @@ import java.util.UUID
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
+
+    val createdDate = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
+    val expirationDate = Date(transfer.expirationDateTimestamp)
+    val remainingDays = transfer.expiresInDays
+    val remainingDownloads = transfer.downloadLeft
+    val uploadedSize = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, transfer.sizeUploaded)
+    val files = transfer.files
+    val filesCount = files.count()
+    val (expiryText, expiryColor) = when {
+        remainingDays < 0 -> {
+            stringResource(R.string.expiredThe, expirationDate.format(FORMAT_DATE_SIMPLE)) to
+                    SwissTransferTheme.materialColors.error
+        }
+        remainingDownloads == 0 -> {
+            "Transfert expiré (TODO)" to SwissTransferTheme.materialColors.error
+        }
+        else -> {
+            stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
+        }
+    }
+
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
@@ -58,7 +80,7 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
             Column(modifier = Modifier.weight(1.0f)) {
 
                 Text(
-                    text = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE),
+                    text = createdDate,
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.colors.primaryTextColor,
                     maxLines = 1,
@@ -67,18 +89,19 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 TextDotText(
-                    firstText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
-                    secondText = { stringResource(R.string.expiresIn, transfer.expiresInDays) },
+                    firstText = { uploadedSize },
+                    secondText = { expiryText },
+                    optionalSecondTextColor = expiryColor,
                 )
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 ContextualFlowRow(
-                    itemCount = transfer.files.count(),
+                    itemCount = filesCount,
                     maxLines = 1,
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                     overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
                 ) { index ->
-                    TransferFilePreview(file = transfer.files[index])
+                    TransferFilePreview(file = files[index])
                 }
             }
 
