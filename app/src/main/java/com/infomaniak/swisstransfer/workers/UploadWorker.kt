@@ -79,7 +79,7 @@ class UploadWorker @AssistedInject constructor(
         val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
         importLocalStorage.removeImportFolder()
 
-        return Result.success(workDataOf(TRANSFER_RESULT_TAG to transferUuid, UPLOADED_BYTES_TAG to totalSize))
+        return Result.success(workDataOf(TRANSFER_UUID_TAG to transferUuid, UPLOADED_BYTES_TAG to totalSize))
     }
 
     override fun onFinish() {
@@ -124,7 +124,7 @@ class UploadWorker @AssistedInject constructor(
                     ).also { lastUploadedSize = it.uploadedSize }
                     WorkInfo.State.SUCCEEDED -> UploadProgressUiState.Success(
                         uploadedSize = workInfo.outputData.getLong(UPLOADED_BYTES_TAG, 0L),
-                        transferLink = workInfo.outputData.getString(TRANSFER_RESULT_TAG)
+                        transferLink = workInfo.outputData.getString(TRANSFER_UUID_TAG)
                             ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) }
                             ?: return@mapLatest UploadProgressUiState.Cancelled(lastUploadedSize)
                     )
@@ -160,7 +160,7 @@ class UploadWorker @AssistedInject constructor(
         private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
-        private const val TRANSFER_RESULT_TAG = "transfer_result_tag"
+        private const val TRANSFER_UUID_TAG = "transfer_result_tag"
 
         private const val PROGRESS_ELAPSED_TIME = 50
     }
