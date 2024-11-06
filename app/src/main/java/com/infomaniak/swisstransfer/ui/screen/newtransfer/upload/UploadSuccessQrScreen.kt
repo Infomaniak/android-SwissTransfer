@@ -49,9 +49,8 @@ import com.infomaniak.swisstransfer.ui.utils.copyText
 import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.launch
 
-// TODO: Use correct URL instead of hard-coded transferLink value
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String = "https://chk.me/83azQOl") {
+fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String) {
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -143,7 +142,7 @@ private fun Content(context: Context, snackbarHostState: SnackbarHostState, tran
 private fun UploadSuccessQrScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessQrScreen(transferType = TransferType.LINK)
+            UploadSuccessQrScreen(transferType = TransferType.LINK, transferLink = "https://chk.me/83azQOl")
         }
     }
 }

@@ -21,12 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
 
@@ -37,7 +37,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<ImportFilesDestination> {
             ImportFilesScreen(
                 closeActivity = closeActivity,
-                navigateToUploadProgress = { navController.navigate(UploadProgressDestination) }
+                navigateToUploadProgress = { navController.navigate(UploadProgressDestination(it)) }
             )
         }
         composable<TransferOptionsDestination> {
@@ -47,11 +47,17 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             ValidateUserEmailScreen()
         }
         composable<UploadProgressDestination> {
-            UploadProgressScreen(closeActivity = closeActivity)
+            UploadProgressScreen(
+                totalSizeInBytes = it.toRoute<UploadProgressDestination>().totalSize,
+                navigateToUploadSuccess = { transferType, transferLink ->
+                    navController.navigate(UploadSuccessDestination(transferType, transferLink))
+                },
+                closeActivity = closeActivity
+            )
         }
         composable<UploadSuccessDestination> {
-            // TODO: Use correct TransferType instead of hard-coded value
-            UploadSuccessScreen(transferType = TransferType.MAIL)
+            val args = it.toRoute<UploadSuccessDestination>()
+            UploadSuccessScreen(transferType = args.transferType, transferLink = args.transferLink)
         }
     }
 }

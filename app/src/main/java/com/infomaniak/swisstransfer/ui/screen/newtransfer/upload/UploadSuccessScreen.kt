@@ -24,11 +24,14 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessScreen(transferType: TransferType) {
+fun UploadSuccessScreen(
+    transferType: TransferType,
+    transferLink: String,
+) {
     if (transferType == TransferType.MAIL) {
         UploadSuccessEmailScreen()
     } else {
-        UploadSuccessQrScreen(transferType)
+        UploadSuccessQrScreen(transferType, transferLink)
     }
 }
 
@@ -37,7 +40,7 @@ fun UploadSuccessScreen(transferType: TransferType) {
 private fun UploadSuccessScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessScreen(TransferType.QR_CODE)
+            UploadSuccessScreen(transferType = TransferType.QR_CODE, transferLink = "https://chk.me/83azQOl")
         }
     }
 }
