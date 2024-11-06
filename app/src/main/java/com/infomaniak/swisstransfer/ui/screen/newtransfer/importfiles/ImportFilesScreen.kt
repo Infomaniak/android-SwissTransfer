@@ -59,7 +59,7 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (totalSize: Long) -> Unit,
+    navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
     val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
@@ -67,7 +67,7 @@ fun ImportFilesScreen(
     val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
     val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
 
-    HandleSendActionResult({ sendActionResult }, navigateToUploadProgress)
+    HandleSendActionResult({ sendActionResult }, selectedTransferType, navigateToUploadProgress)
 
     ImportFilesScreen(
         files = { files },
@@ -90,11 +90,12 @@ fun ImportFilesScreen(
 @Composable
 private fun HandleSendActionResult(
     getSendActionResult: () -> SendActionResult?,
-    navigateToUploadProgress: (totalSize: Long) -> Unit,
+    transferType: TransferType,
+    navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> navigateToUploadProgress(actionResult.totalSize)
+            is SendActionResult.Success -> navigateToUploadProgress(transferType, actionResult.totalSize)
             is SendActionResult.Failure -> Unit //TODO: Show error
             else -> Unit
         }

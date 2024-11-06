@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.workers.UploadWorker.UploadProgressUiState
 @Composable
 fun UploadProgressScreen(
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
+    transferType: TransferType,
     totalSizeInBytes: Long,
     navigateToUploadSuccess: (TransferType, String) -> Unit,
     closeActivity: () -> Unit,
@@ -63,7 +64,7 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleProgressState({ uiState }, navigateToUploadSuccess)
+    HandleProgressState({ uiState }, transferType, navigateToUploadSuccess)
 
     UploadProgressScreen(
         progressState = { uiState },
@@ -80,6 +81,7 @@ fun UploadProgressScreen(
 @Composable
 private fun HandleProgressState(
     uiState: () -> UploadProgressUiState,
+    transferType: TransferType,
     navigateToUploadSuccess: (TransferType, String) -> Unit
 ) {
     val currentUiState = uiState()
@@ -87,7 +89,7 @@ private fun HandleProgressState(
         when (currentUiState) {
             is UploadProgressUiState.Success -> {
                 // TODO: Use correct TransferType instead of hard-coded value
-                navigateToUploadSuccess(TransferType.LINK, currentUiState.transferLink)
+                navigateToUploadSuccess(transferType, currentUiState.transferLink)
             }
             is UploadProgressUiState.Cancelled -> {
                 // TODO: navigate to failure screen

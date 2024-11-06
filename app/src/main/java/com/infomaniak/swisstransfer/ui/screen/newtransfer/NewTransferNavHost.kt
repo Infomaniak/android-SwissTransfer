@@ -37,7 +37,9 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<ImportFilesDestination> {
             ImportFilesScreen(
                 closeActivity = closeActivity,
-                navigateToUploadProgress = { navController.navigate(UploadProgressDestination(it)) }
+                navigateToUploadProgress = { transferType, totalSize ->
+                    navController.navigate(UploadProgressDestination(transferType, totalSize))
+                },
             )
         }
         composable<TransferOptionsDestination> {
@@ -47,8 +49,10 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             ValidateUserEmailScreen()
         }
         composable<UploadProgressDestination> {
+            val args = it.toRoute<UploadProgressDestination>()
             UploadProgressScreen(
-                totalSizeInBytes = it.toRoute<UploadProgressDestination>().totalSize,
+                transferType = args.transferType,
+                totalSizeInBytes = args.totalSize,
                 navigateToUploadSuccess = { transferType, transferLink ->
                     navController.navigate(UploadSuccessDestination(transferType, transferLink))
                 },
