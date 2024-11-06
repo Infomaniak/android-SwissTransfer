@@ -54,7 +54,7 @@ class UploadWorker @AssistedInject constructor(
         UploadFileTask(uploadManager, fileChunkSizeManager)
     }
 
-    private var totalUploadedBytes = 0L
+    private var uploadedBytes = 0L
     private var lastUpdateTime = 0L
 
     override suspend fun launchWork(): Result {
@@ -72,7 +72,7 @@ class UploadWorker @AssistedInject constructor(
 
         uploadSession.files.forEach { fileSession ->
             uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
-                totalUploadedBytes += bytesSent
+                uploadedBytes += bytesSent
                 emitProgress()
             }
         }
@@ -90,7 +90,7 @@ class UploadWorker @AssistedInject constructor(
     private suspend fun emitProgress() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastUpdateTime > PROGRESS_ELAPSED_TIME) {
-            setProgress(workDataOf(UPLOADED_BYTES_TAG to totalUploadedBytes))
+            setProgress(workDataOf(UPLOADED_BYTES_TAG to uploadedBytes))
             lastUpdateTime = currentTime
         }
     }
@@ -166,7 +166,7 @@ class UploadWorker @AssistedInject constructor(
         private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
-        private const val TRANSFER_UUID_TAG = "transfer_result_tag"
+        private const val TRANSFER_UUID_TAG = "transfer_uuid_tag"
 
         private const val PROGRESS_ELAPSED_TIME = 50
     }

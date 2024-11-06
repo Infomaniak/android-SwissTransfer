@@ -88,7 +88,6 @@ private fun HandleProgressState(
     LaunchedEffect(uiState()) {
         when (currentUiState) {
             is UploadProgressUiState.Success -> {
-                // TODO: Use correct TransferType instead of hard-coded value
                 navigateToUploadSuccess(transferType, currentUiState.transferLink)
             }
             is UploadProgressUiState.Cancelled -> {

@@ -80,9 +80,7 @@ fun ImportFilesScreen(
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
-        sendTransfer = {
-            newTransferViewModel.sendTransfer()
-        },
+        sendTransfer = newTransferViewModel::sendTransfer,
         initialShowUploadSourceChoiceBottomSheet = true,
     )
 }
