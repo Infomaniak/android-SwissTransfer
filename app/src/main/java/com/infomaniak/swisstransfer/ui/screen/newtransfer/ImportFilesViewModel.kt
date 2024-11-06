@@ -40,8 +40,13 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toAdvancedOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AdvancedOptionsCallbacks
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AdvancedOptionsState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferAdvancedSettingType
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -192,6 +197,56 @@ class ImportFilesViewModel @Inject constructor(
         selectTransferValidityPeriod(safeAppSettings.validityPeriod.toAdvancedOption())
         selectTransferDownloadLimit(safeAppSettings.downloadLimit.toAdvancedOption())
         selectTransferLanguage(safeAppSettings.emailLanguage.toAdvancedOption())
+    }
+
+    fun getTransferAdvancedOptionCallbacks(
+        appSettings: AppSettings?,
+        validityPeriodState: () -> ValidityPeriodOption?,
+        downloadLimitState: () -> DownloadLimitOption?,
+        passwordOptionState: () -> PasswordTransferOption?,
+        emailLanguageState: () -> EmailLanguageOption?,
+    ): AdvancedOptionsCallbacks? {
+
+        if (appSettings == null) return null
+
+        initTransferAdvancedOptionsValues(appSettings)
+        return AdvancedOptionsCallbacks(
+            advancedOptionsStates = {
+                listOf(
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                        settingState = validityPeriodState,
+                    ),
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                        settingState = downloadLimitState,
+                    ),
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                        settingState = passwordOptionState,
+                    ),
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                        settingState = emailLanguageState,
+                    ),
+                )
+            },
+            onAdvancedOptionsValueSelected = ::onAdvancedOptionsValueSelected,
+            password = GetSetCallbacks(
+                get = { transferPassword },
+                set = { transferPassword = it },
+            ),
+            isPasswordValid = { isPasswordValid },
+        )
+    }
+
+    private fun onAdvancedOptionsValueSelected(option: SettingOption) {
+        when (option) {
+            is ValidityPeriodOption -> selectTransferValidityPeriod(option)
+            is DownloadLimitOption -> selectTransferDownloadLimit(option)
+            is PasswordTransferOption -> selectTransferPasswordOption(option)
+            is EmailLanguageOption -> selectTransferLanguage(option)
+        }
     }
     //endregion
 

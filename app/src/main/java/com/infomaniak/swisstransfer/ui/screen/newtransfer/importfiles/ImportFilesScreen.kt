@@ -62,79 +62,43 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
-    val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
-    val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
+    val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
+    val currentSessionFilesCount by importFilesViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
 
-    val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+    val selectedTransferType by importFilesViewModel.selectedTransferType.collectAsStateWithLifecycle()
 
-    val validityPeriodState by newTransferViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
-    val downloadLimitState by newTransferViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
-    val passwordOptionState by newTransferViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
-    val emailLanguageState by newTransferViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
+    val validityPeriodState by importFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimitState by importFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
-    fun onAdvancedOptionsValueSelected(option: SettingOption) {
-        when (option) {
-            is ValidityPeriodOption -> importFilesViewModel.selectTransferValidityPeriod(option)
-            is DownloadLimitOption -> importFilesViewModel.selectTransferDownloadLimit(option)
-            is PasswordTransferOption -> importFilesViewModel.selectTransferPasswordOption(option)
-            is EmailLanguageOption -> importFilesViewModel.selectTransferLanguage(option)
-        }
-    }
+    val advancedOptionsCallbacks = importFilesViewModel.getTransferAdvancedOptionCallbacks(
+        appSettings, { validityPeriodState }, { downloadLimitState }, { passwordOptionState }, { emailLanguageState },
+    )
 
-    appSettings?.let { safeAppSettings ->
-        importFilesViewModel.initTransferAdvancedOptionsValues(safeAppSettings)
+    if (advancedOptionsCallbacks == null) return
 
-        val advancedOptionsCallbacks = AdvancedOptionsCallbacks(
-            advancedOptionsStates = {
-                listOf(
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
-                        settingState = { validityPeriodState },
-                    ),
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
-                        settingState = { downloadLimitState },
-                    ),
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.PASSWORD,
-                        settingState = { passwordOptionState },
-                    ),
-                    AdvancedOptionsState(
-                        advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
-                        settingState = { emailLanguageState },
-                    ),
-                )
-            },
-            onAdvancedOptionsValueSelected = ::onAdvancedOptionsValueSelected,
-            password = GetSetCallbacks(
-                get = { newTransferViewModel.transferPassword },
-                set = { newTransferViewModel.transferPassword = it },
-            ),
-            isPasswordValid = { newTransferViewModel.isPasswordValid },
-        )
-
-        ImportFilesScreen(
-            files = { files },
-            filesToImportCount = { filesToImportCount },
-            currentSessionFilesCount = { currentSessionFilesCount },
-            selectedTransferType = GetSetCallbacks(
-                get = { selectedTransferType },
-                set = importFilesViewModel::selectTransferType,
-            ),
-            advancedOptionsCallbacks = advancedOptionsCallbacks,
-            removeFileByUid = importFilesViewModel::removeFileByUid,
-            addFiles = importFilesViewModel::importFiles,
-            closeActivity = closeActivity,
-            sendTransfer = importFilesViewModel::sendTransfer,
-            initialShowUploadSourceChoiceBottomSheet = true,
-        )
-    }
+    ImportFilesScreen(
+        files = { files },
+        filesToImportCount = { filesToImportCount },
+        currentSessionFilesCount = { currentSessionFilesCount },
+        selectedTransferType = GetSetCallbacks(
+            get = { selectedTransferType },
+            set = importFilesViewModel::selectTransferType,
+        ),
+        advancedOptionsCallbacks = advancedOptionsCallbacks,
+        removeFileByUid = importFilesViewModel::removeFileByUid,
+        addFiles = importFilesViewModel::importFiles,
+        closeActivity = closeActivity,
+        sendTransfer = importFilesViewModel::sendTransfer,
+        initialShowUploadSourceChoiceBottomSheet = true,
+    )
 }
 
 @Composable
