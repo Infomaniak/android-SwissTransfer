@@ -21,7 +21,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.infomaniak.swisstransfer.R
@@ -39,11 +39,19 @@ private fun TransferOptionBottomSheetScaffold(
     isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (SettingOption) -> Unit,
     closeBottomSheet: () -> Unit,
-    initialPosition: Int,
+    initialValue: SettingOption?,
     optionEntries: List<SettingOption>,
     @StringRes titleRes: Int,
 ) {
-    var selectedItem by rememberSaveable { mutableIntStateOf(initialPosition) }
+    var selectedItem by rememberSaveable { mutableStateOf(initialValue) }
+
+    val selectedPosition = when (initialValue) {
+        is ValidityPeriodOption -> initialValue.ordinal
+        is DownloadLimitOption -> initialValue.ordinal
+        is PasswordTransferOption -> initialValue.ordinal
+        is EmailLanguageOption -> initialValue.ordinal
+        else -> 0
+    }
 
     if (isBottomSheetVisible()) {
         SwissTransferBottomSheet(
@@ -52,10 +60,11 @@ private fun TransferOptionBottomSheetScaffold(
             content = {
                 SingleSelectOptions(
                     items = optionEntries,
-                    selectedItem = { selectedItem },
+                    selectedItem = { selectedPosition },
                     setSelectedItem = { position ->
-                        selectedItem = position
-                        onOptionClicked(optionEntries[position])
+                        val selectedValue = optionEntries[position]
+                        selectedItem = selectedValue
+                        onOptionClicked(selectedValue)
                         closeBottomSheet()
                     },
                 )
@@ -69,12 +78,12 @@ fun ValidityPeriodBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (ValidityPeriodOption) -> Unit,
     closeBottomSheet: () -> Unit,
-    initialPosition: Int,
+    initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
         isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
-        initialPosition = initialPosition,
+        initialValue = initialValue,
         titleRes = R.string.settingsOptionValidityPeriod,
         optionEntries = ValidityPeriodOption.entries,
         onOptionClicked = { onOptionClicked(it as ValidityPeriodOption) },
@@ -86,12 +95,12 @@ fun DownloadLimitBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (DownloadLimitOption) -> Unit,
     closeBottomSheet: () -> Unit,
-    initialPosition: Int,
+    initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
         isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
-        initialPosition = initialPosition,
+        initialValue = initialValue,
         titleRes = R.string.settingsOptionDownloadLimit,
         optionEntries = DownloadLimitOption.entries,
         onOptionClicked = { onOptionClicked(it as DownloadLimitOption) },
@@ -103,12 +112,12 @@ fun PasswordOptionBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (PasswordTransferOption) -> Unit,
     closeBottomSheet: () -> Unit,
-    initialPosition: Int,
+    initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
         isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
-        initialPosition = initialPosition,
+        initialValue = initialValue,
         titleRes = R.string.settingsOptionPassword,
         optionEntries = PasswordTransferOption.entries,
         onOptionClicked = { onOptionClicked(it as PasswordTransferOption) },
@@ -120,12 +129,12 @@ fun EmailLanguageBottomSheet(
     isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (EmailLanguageOption) -> Unit,
     closeBottomSheet: () -> Unit,
-    initialPosition: Int,
+    initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
         isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
-        initialPosition = initialPosition,
+        initialValue = initialValue,
         titleRes = R.string.settingsOptionEmailLanguage,
         optionEntries = EmailLanguageOption.entries,
         onOptionClicked = { onOptionClicked(it as EmailLanguageOption) },
@@ -141,7 +150,7 @@ private fun ValidityPeriodOptionBottomSheetPreview() {
                 isBottomSheetVisible = { true },
                 onOptionClicked = {},
                 closeBottomSheet = {},
-                initialPosition = ValidityPeriodOption.SEVEN.ordinal,
+                initialValue = ValidityPeriodOption.SEVEN,
             )
         }
     }
