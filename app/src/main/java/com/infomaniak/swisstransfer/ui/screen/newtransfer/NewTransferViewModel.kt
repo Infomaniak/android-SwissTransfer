@@ -48,6 +48,8 @@ class NewTransferViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val uploadManager inline get() = swissTransferInjection.uploadManager
+    private val _sendActionResult = MutableStateFlow<SendActionResult?>(null)
+    val sendActionResult = _sendActionResult.asStateFlow()
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -98,14 +100,22 @@ class NewTransferViewModel @Inject constructor(
         }
     }
 
+    fun selectTransferType(type: TransferType) {
+        _selectedTransferType.value = type
+    }
+
     fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
             runCatching {
-                uploadManager.createAndGetUpload(generateNewUploadSession())
-                uploadWorkerScheduler.scheduleWork()
+                val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
+                uploadWorkerScheduler.scheduleWork(uuid)
+                _sendActionResult.update {
+                    val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
+                    SendActionResult.Success(totalSize)
+                }
             }.onFailure { exception ->
-                // TODO: Handle user feedback
                 Sentry.captureException(exception)
+                _sendActionResult.update { SendActionResult.Failure }
             }
         }
     }
@@ -135,7 +145,8 @@ class NewTransferViewModel @Inject constructor(
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 
-    fun selectTransferType(type: TransferType) {
-        _selectedTransferType.value = type
+    sealed class SendActionResult {
+        data class Success(val totalSize: Long) : SendActionResult()
+        data object Failure : SendActionResult()
     }
 }
