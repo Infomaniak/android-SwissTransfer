@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
@@ -27,11 +28,14 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 fun UploadSuccessScreen(
     transferType: TransferType,
     transferLink: String,
+    closeActivity: () -> Unit,
 ) {
+    BackHandler(onBack = closeActivity)
+
     if (transferType == TransferType.MAIL) {
-        UploadSuccessEmailScreen()
+        UploadSuccessEmailScreen(closeActivity = closeActivity)
     } else {
-        UploadSuccessQrScreen(transferType, transferLink)
+        UploadSuccessQrScreen(transferType, transferLink, closeActivity)
     }
 }
 
@@ -40,7 +44,11 @@ fun UploadSuccessScreen(
 private fun UploadSuccessScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessScreen(transferType = TransferType.QR_CODE, transferLink = "https://chk.me/83azQOl")
+            UploadSuccessScreen(
+                transferType = TransferType.QR_CODE,
+                transferLink = "https://chk.me/83azQOl",
+                closeActivity = {}
+            )
         }
     }
 }

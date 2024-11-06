@@ -50,7 +50,7 @@ import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.launch
 
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String) {
+fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String, closeActivity: () -> Unit) {
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -72,7 +72,7 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String) {
                 modifier = it,
                 style = ButtonType.SECONDARY,
                 titleRes = R.string.buttonFinished,
-                onClick = { /* TODO */ },
+                onClick = closeActivity,
             )
         },
         content = { Content(context, snackbarHostState, transferType, transferLink) },
@@ -142,7 +142,11 @@ private fun Content(context: Context, snackbarHostState: SnackbarHostState, tran
 private fun UploadSuccessQrScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessQrScreen(transferType = TransferType.LINK, transferLink = "https://chk.me/83azQOl")
+            UploadSuccessQrScreen(
+                transferType = TransferType.LINK,
+                transferLink = "https://chk.me/83azQOl",
+                closeActivity = {}
+            )
         }
     }
 }

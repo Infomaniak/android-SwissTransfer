@@ -61,7 +61,11 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         }
         composable<UploadSuccessDestination> {
             val args = it.toRoute<UploadSuccessDestination>()
-            UploadSuccessScreen(transferType = args.transferType, transferLink = args.transferLink)
+            UploadSuccessScreen(
+                transferType = args.transferType,
+                transferLink = args.transferLink,
+                closeActivity = closeActivity
+            )
         }
     }
 }
