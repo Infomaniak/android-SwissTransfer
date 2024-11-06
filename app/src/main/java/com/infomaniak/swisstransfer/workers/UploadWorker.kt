@@ -55,6 +55,7 @@ class UploadWorker @AssistedInject constructor(
     }
 
     private var totalUploadedBytes = 0L
+    private var lastUpdateTime = 0L
 
     override suspend fun launchWork(): Result {
         SentryLog.i(TAG, "Work launched")
@@ -72,26 +73,40 @@ class UploadWorker @AssistedInject constructor(
         uploadSession.files.forEach { fileSession ->
             uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
                 totalUploadedBytes += bytesSent
-                setProgress(workDataOf(UPLOADED_BYTES_TAG to totalUploadedBytes, TOTAL_SIZE_TAG to totalSize))
+                emitProgress()
             }
         }
 
-        uploadManager.finishUploadSession(uploadSession.uuid)
+        val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
         importLocalStorage.removeImportFolder()
 
-        return Result.success()
+        return Result.success(workDataOf(TRANSFER_RESULT_TAG to transferUuid, UPLOADED_BYTES_TAG to totalSize))
     }
 
     override fun onFinish() {
         SentryLog.i(TAG, "Work finished")
     }
 
-    @Singleton
-    class Scheduler @Inject constructor(private val workManager: WorkManager) {
+    private suspend fun emitProgress() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastUpdateTime > PROGRESS_ELAPSED_TIME) {
+            setProgress(workDataOf(UPLOADED_BYTES_TAG to totalUploadedBytes))
+            lastUpdateTime = currentTime
+        }
+    }
 
-        fun scheduleWork() {
-            SentryLog.i(TAG, "Work scheduled")
+    @Singleton
+    class Scheduler @Inject constructor(
+        private val workManager: WorkManager,
+        private val swissTransferInjection: SwissTransferInjection,
+    ) {
+
+        private val sharedApiUrlCreator inline get() = swissTransferInjection.sharedApiUrlCreator
+
+        fun scheduleWork(uploadSessionUuid: String) {
+            SentryLog.i(TAG, "Work scheduled uploadSessionUuid:$uploadSessionUuid")
             val workRequest = OneTimeWorkRequestBuilder<UploadWorker>()
+                .addTag(uploadSessionUuid)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
@@ -148,6 +163,8 @@ class UploadWorker @AssistedInject constructor(
         private const val TOTAL_CHUNKS = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
-        private const val TOTAL_SIZE_TAG = "total_size_tag"
+        private const val TRANSFER_RESULT_TAG = "transfer_result_tag"
+
+        private const val PROGRESS_ELAPSED_TIME = 50
     }
 }
