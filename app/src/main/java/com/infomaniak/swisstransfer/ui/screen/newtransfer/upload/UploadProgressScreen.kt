@@ -63,7 +63,7 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleUiState({ uiState }, navigateToUploadSuccess)
+    HandleProgressState({ uiState }, navigateToUploadSuccess)
 
     UploadProgressScreen(
         progressState = { uiState },
@@ -78,7 +78,7 @@ fun UploadProgressScreen(
 }
 
 @Composable
-private fun HandleUiState(
+private fun HandleProgressState(
     uiState: () -> UploadProgressUiState,
     navigateToUploadSuccess: (TransferType, String) -> Unit
 ) {
