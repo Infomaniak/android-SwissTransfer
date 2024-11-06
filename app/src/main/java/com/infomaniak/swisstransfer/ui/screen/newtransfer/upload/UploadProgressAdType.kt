@@ -37,18 +37,18 @@ enum class UploadProgressAdType(
     val illustration: ThemedImage,
 ) {
     INDEPENDENCE(
-        R.string.uploadSuccessDescriptionTemplateIndependence,
-        R.string.uploadSuccessDescriptionArgumentIndependence,
+        R.string.uploadProgressDescriptionTemplateIndependence,
+        R.string.uploadProgressDescriptionArgumentIndependence,
         AppImages.AppIllus.SwissWithFlag,
     ),
     ENERGY(
-        R.string.uploadSuccessDescriptionTemplateEnergy,
-        R.string.uploadSuccessDescriptionArgumentEnergy,
+        R.string.uploadProgressDescriptionTemplateEnergy,
+        R.string.uploadProgressDescriptionArgumentEnergy,
         AppImages.AppIllus.MountainGondola,
     ),
     CONFIDENTIALITY(
-        R.string.uploadSuccessDescriptionTemplateConfidentiality,
-        R.string.uploadSuccessDescriptionArgumentConfidentiality,
+        R.string.uploadProgressDescriptionTemplateConfidentiality,
+        R.string.uploadProgressDescriptionArgumentConfidentiality,
         AppImages.AppIllus.MetallicSafe,
     );
 
