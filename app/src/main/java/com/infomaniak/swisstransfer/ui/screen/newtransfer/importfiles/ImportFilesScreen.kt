@@ -41,7 +41,6 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
@@ -58,7 +57,6 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 @Composable
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
-    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
@@ -73,16 +71,34 @@ fun ImportFilesScreen(
     val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
-    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
-    val advancedOptionsCallbacks = importFilesViewModel.getTransferAdvancedOptionCallbacks(
-        appSettings, { validityPeriodState }, { downloadLimitState }, { passwordOptionState }, { emailLanguageState },
-    )
+    LaunchedEffect(Unit) { importFilesViewModel.initTransferAdvancedOptionsValues() }
 
-    if (advancedOptionsCallbacks == null) return
+    val advancedOptionsCallbacks = importFilesViewModel.getTransferAdvancedOptionsCallbacks(
+        advancedOptionsStates = {
+            listOf(
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                    settingState = { validityPeriodState },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                    settingState = { downloadLimitState },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                    settingState = { passwordOptionState },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                    settingState = { emailLanguageState },
+                ),
+            )
+        },
+    )
 
     ImportFilesScreen(
         files = { files },
