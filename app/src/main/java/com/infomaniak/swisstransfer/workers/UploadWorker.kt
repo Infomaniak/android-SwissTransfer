@@ -98,25 +98,28 @@ class UploadWorker @AssistedInject constructor(
         }
 
         @OptIn(ExperimentalCoroutinesApi::class)
-        fun trackUploadProgressFlow(): Flow<UploadTransferProgress> {
+        fun trackUploadProgressFlow(uploadSessionUuid: String): Flow<UploadProgressUiState> {
+            var lastUploadedSize = 0L
             val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
-                .addStates(listOf(WorkInfo.State.RUNNING))
+                .addTags(listOf(uploadSessionUuid))
                 .build()
-            return workManager.getWorkInfosFlow(workQuery).mapLatest {
-                val workProgress = it.firstOrNull()?.progress ?: return@mapLatest null
-                UploadTransferProgress(
-                    uploadedSize = workProgress.getLong(UPLOADED_BYTES_TAG, 0L),
-                    totalSize = workProgress.getLong(TOTAL_SIZE_TAG, 0L),
-                )
-            }.filterNotNull()
-        }
 
-        @OptIn(ExperimentalCoroutinesApi::class)
-        fun isPendingOrRunningFlow(): Flow<Boolean> {
-            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
-                .addStates(listOf(WorkInfo.State.RUNNING, WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED))
-                .build()
-            return workManager.getWorkInfosFlow(workQuery).mapLatest { it.isNotEmpty() }
+            return workManager.getWorkInfosFlow(workQuery).mapLatest { workInfoList ->
+                val workInfo = workInfoList.firstOrNull() ?: return@mapLatest UploadProgressUiState.Default
+                return@mapLatest when (workInfo.state) {
+                    WorkInfo.State.RUNNING -> UploadProgressUiState.Progress(
+                        uploadedSize = workInfo.progress.getLong(UPLOADED_BYTES_TAG, 0L),
+                    ).also { lastUploadedSize = it.uploadedSize }
+                    WorkInfo.State.SUCCEEDED -> UploadProgressUiState.Success(
+                        uploadedSize = workInfo.outputData.getLong(UPLOADED_BYTES_TAG, 0L),
+                        transferLink = workInfo.outputData.getString(TRANSFER_RESULT_TAG)
+                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) }
+                            ?: return@mapLatest UploadProgressUiState.Cancelled(lastUploadedSize)
+                    )
+                    WorkInfo.State.CANCELLED -> UploadProgressUiState.Cancelled(lastUploadedSize)
+                    else -> UploadProgressUiState.Default
+                }
+            }.filterNotNull()
         }
 
         fun cancelWork() {
@@ -125,11 +128,18 @@ class UploadWorker @AssistedInject constructor(
         }
     }
 
-    @Immutable
-    data class UploadTransferProgress(
-        val uploadedSize: Long,
-        val totalSize: Long,
-    )
+    sealed class UploadProgressUiState(open val uploadedSize: Long = 0) {
+        data object Default : UploadProgressUiState()
+
+        @Immutable
+        data class Progress(override val uploadedSize: Long) : UploadProgressUiState(uploadedSize)
+
+        @Immutable
+        data class Success(override val uploadedSize: Long, val transferLink: String) : UploadProgressUiState(uploadedSize)
+
+        @Immutable
+        data class Cancelled(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+    }
 
     companion object {
         private const val TAG = "UploadWorker"
