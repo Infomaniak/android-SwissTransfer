@@ -21,6 +21,7 @@ import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
+import androidx.work.WorkInfo.State
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
@@ -119,18 +120,11 @@ class UploadWorker @AssistedInject constructor(
             return workManager.getWorkInfosFlow(workQuery).mapLatest { workInfoList ->
                 val workInfo = workInfoList.firstOrNull() ?: return@mapLatest UploadProgressUiState.Default
                 return@mapLatest when (workInfo.state) {
-                    WorkInfo.State.RUNNING -> UploadProgressUiState.Progress(
-                        uploadedSize = workInfo.progress.getLong(UPLOADED_BYTES_TAG, 0L),
-                    ).also { lastUploadedSize = it.uploadedSize }
-                    WorkInfo.State.SUCCEEDED -> UploadProgressUiState.Success(
-                        uploadedSize = workInfo.outputData.getLong(UPLOADED_BYTES_TAG, 0L),
-                        transferLink = workInfo.outputData.getString(TRANSFER_UUID_TAG)
-                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) }
-                            ?: return@mapLatest UploadProgressUiState.Cancelled(lastUploadedSize)
-                    )
-                    WorkInfo.State.CANCELLED -> UploadProgressUiState.Cancelled(lastUploadedSize)
+                    State.RUNNING -> UploadProgressUiState.Progress(workInfo.progress).also { lastUploadedSize = it.uploadedSize }
+                    State.SUCCEEDED -> UploadProgressUiState.Success.create(workInfo.outputData, sharedApiUrlCreator)
+                    State.CANCELLED -> UploadProgressUiState.Cancelled(lastUploadedSize)
                     else -> UploadProgressUiState.Default
-                }
+                } ?: UploadProgressUiState.Cancelled(lastUploadedSize)
             }.filterNotNull()
         }
 
@@ -144,10 +138,22 @@ class UploadWorker @AssistedInject constructor(
         data object Default : UploadProgressUiState()
 
         @Immutable
-        data class Progress(override val uploadedSize: Long) : UploadProgressUiState(uploadedSize)
+        data class Progress(override val uploadedSize: Long) : UploadProgressUiState(uploadedSize) {
+            internal constructor(progressData: Data) : this(progressData.getLong(UPLOADED_BYTES_TAG, 0L))
+        }
 
         @Immutable
-        data class Success(override val uploadedSize: Long, val transferLink: String) : UploadProgressUiState(uploadedSize)
+        data class Success(override val uploadedSize: Long, val transferLink: String) : UploadProgressUiState(uploadedSize) {
+            companion object {
+                fun create(outputData: Data, sharedApiUrlCreator: SharedApiUrlCreator): Success? {
+                    return Success(
+                        uploadedSize = outputData.getLong(UPLOADED_BYTES_TAG, 0L),
+                        transferLink = outputData.getString(TRANSFER_UUID_TAG)
+                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null
+                    )
+                }
+            }
+        }
 
         @Immutable
         data class Cancelled(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
