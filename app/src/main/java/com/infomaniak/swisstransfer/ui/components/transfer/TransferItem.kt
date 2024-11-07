@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import com.infomaniak.swisstransfer.ui.utils.isExpired
 import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -52,15 +53,12 @@ fun TransferItem(
 ) {
 
     val createdDate = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
-    val remainingDays = transfer.expiresInDays
-    val remainingDownloads = transfer.downloadLeft
     val uploadedSize = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, transfer.sizeUploaded)
     val files = transfer.files
-    val filesCount = files.count()
-    val (expiryText, expiryColor) = if (remainingDays < 0 || remainingDownloads == 0) {
+    val (expiryText, expiryColor) = if (transfer.isExpired) {
         stringResource(R.string.transferExpired) to SwissTransferTheme.materialColors.error
     } else {
-        stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
+        stringResource(R.string.expiresIn, transfer.expiresInDays) to SwissTransferTheme.colors.secondaryTextColor
     }
     val border = if (isSelected()) {
         BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.colors.transferListStroke)
@@ -98,7 +96,7 @@ fun TransferItem(
 
                 Spacer(modifier = Modifier.height(Margin.Mini))
                 ContextualFlowRow(
-                    itemCount = filesCount,
+                    itemCount = files.count(),
                     maxLines = 1,
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                     overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
