@@ -29,23 +29,23 @@ import com.infomaniak.swisstransfer.workers.UploadWorker
 import java.util.Locale
 
 @Composable
-fun Progress(progress: () -> UploadWorker.UploadTransferProgress) {
-    val uploadedSize by remember { derivedStateOf { progress().uploadedSize } }
-    val totalSize by remember { derivedStateOf { progress().totalSize } }
-
+fun Progress(
+    progressState: () -> UploadWorker.UploadProgressUiState,
+    totalSizeInBytes: Long,
+) {
     Row {
-        Percentage({ uploadedSize }, { totalSize })
+        Percentage({ progressState().uploadedSize }, totalSizeInBytes)
         Text(" - ")
-        UploadedSize({ uploadedSize })
+        UploadedSize({ progressState().uploadedSize })
         Text(" / ")
-        TotalSize({ totalSize })
+        TotalSize(totalSizeInBytes)
     }
 }
 @Composable
-private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: () -> Long) {
+private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) {
     val percentageNoDecimals by remember {
         derivedStateOf {
-            val percentage = (uploadedSizeInBytes().toFloat() / totalSizeInBytes())
+            val percentage = (uploadedSizeInBytes().toFloat() / totalSizeInBytes)
             String.format(Locale.getDefault(), "%d", (percentage * 100).toInt())
         }
     }
@@ -62,10 +62,10 @@ private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
     Text(humanReadableSize)
 }
 @Composable
-private fun TotalSize(totalSizeInBytes: () -> Long) {
+private fun TotalSize(totalSizeInBytes: Long) {
     val context = LocalContext.current
     val humanReadableTotalSize by remember {
-        derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes()) }
+        derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes) }
     }
 
     Text(humanReadableTotalSize)

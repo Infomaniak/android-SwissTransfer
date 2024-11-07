@@ -42,6 +42,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferAdvancedSettings
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
@@ -58,12 +59,15 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
     closeActivity: () -> Unit,
-    navigateToUploadProgress: () -> Unit,
+    navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
     val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
     val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+    val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
+
+    HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
     ImportFilesScreen(
         files = { files },
@@ -76,12 +80,24 @@ fun ImportFilesScreen(
         removeFileByUid = newTransferViewModel::removeFileByUid,
         addFiles = newTransferViewModel::importFiles,
         closeActivity = closeActivity,
-        navigateToUploadProgress = {
-            newTransferViewModel.sendTransfer()
-            navigateToUploadProgress()
-        },
+        sendTransfer = newTransferViewModel::sendTransfer,
         initialShowUploadSourceChoiceBottomSheet = true,
     )
+}
+
+@Composable
+private fun HandleSendActionResult(
+    getSendActionResult: () -> SendActionResult?,
+    transferType: () -> TransferType,
+    navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
+) {
+    LaunchedEffect(getSendActionResult()) {
+        when (val actionResult = getSendActionResult()) {
+            is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
+            is SendActionResult.Failure -> Unit //TODO: Show error
+            else -> Unit
+        }
+    }
 }
 
 @Composable
@@ -94,7 +110,7 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     initialShowUploadSourceChoiceBottomSheet: Boolean,
-    navigateToUploadProgress: () -> Unit,
+    sendTransfer: () -> Unit,
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
@@ -121,7 +137,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, navigateToUploadProgress)
+            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, sendTransfer)
         },
         content = {
             Column(
@@ -258,7 +274,7 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             addFiles = {},
             closeActivity = {},
             initialShowUploadSourceChoiceBottomSheet = false,
-            navigateToUploadProgress = {},
+            sendTransfer = {},
         )
     }
 }

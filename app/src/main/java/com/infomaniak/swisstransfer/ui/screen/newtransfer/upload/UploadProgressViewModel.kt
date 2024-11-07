@@ -20,13 +20,13 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,13 +36,31 @@ class UploadProgressViewModel @Inject constructor(
     private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    val progress = uploadWorkerScheduler.trackUploadProgressFlow()
-        .flowOn(ioDispatcher)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = UploadWorker.UploadTransferProgress(0, 0)
-        )
+
+    private val _transferUuidFlow = MutableSharedFlow<String?>()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val transferProgressUiState = _transferUuidFlow.flatMapLatest { transferUuid ->
+        when (transferUuid) {
+            null -> flow { emit(UploadWorker.UploadProgressUiState.Cancelled()) }
+            else -> uploadWorkerScheduler.trackUploadProgressFlow(transferUuid).flowOn(ioDispatcher)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = UploadWorker.UploadProgressUiState.Default
+    )
+
+    fun trackUploadProgress() {
+        viewModelScope.launch(ioDispatcher) {
+            runCatching {
+                _transferUuidFlow.emit(uploadManager.getLastUpload()?.uuid)
+            }.onFailure {
+                SentryLog.e(TAG, "Failed to retrieve the last upload", it)
+                _transferUuidFlow.emit(null)
+            }
+        }
+    }
 
     fun cancelUpload() {
         uploadWorkerScheduler.cancelWork()
@@ -52,5 +70,9 @@ class UploadProgressViewModel @Inject constructor(
                 uploadManager.deleteUploadSession(it.uuid)
             }
         }
+    }
+
+    companion object {
+        private val TAG = UploadProgressViewModel::class.java.simpleName
     }
 }

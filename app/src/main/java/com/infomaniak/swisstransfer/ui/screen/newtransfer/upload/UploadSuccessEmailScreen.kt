@@ -54,6 +54,7 @@ fun UploadSuccessEmailScreen(
         "email@example.co.jp",
         "firstname-lastname@example.com",
     ),
+    closeActivity: () -> Unit,
 ) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
@@ -61,7 +62,7 @@ fun UploadSuccessEmailScreen(
             LargeButton(
                 modifier = it,
                 titleRes = R.string.buttonFinished,
-                onClick = { /* TODO */ },
+                onClick = closeActivity,
             )
         },
         content = { Content(emails) },
@@ -107,7 +108,7 @@ private fun Content(emails: List<String>) {
 private fun UploadSuccessEmailScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadSuccessEmailScreen()
+            UploadSuccessEmailScreen(closeActivity = {})
         }
     }
 }

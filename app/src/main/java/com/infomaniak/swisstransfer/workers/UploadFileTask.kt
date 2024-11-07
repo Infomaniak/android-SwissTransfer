@@ -26,6 +26,7 @@ import com.infomaniak.sentry.SentryLog
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
@@ -115,7 +116,7 @@ class UploadFileTask(
         isLastChunk: Boolean,
         data: ByteArray,
         crossinline onUploadBytes: suspend (Long) -> Unit,
-    ) {
+    ) = coroutineScope {
         var oldBytesSentTotal = 0L
         uploadManager.uploadChunk(
             uuid = uploadSession.uuid,
@@ -125,6 +126,7 @@ class UploadFileTask(
             data = data,
             onUpload = { bytesSentTotal, _ ->
                 mutex.withLock {
+                    ensureActive() // Cancel when this chunk is resumed while parent scope is cancelled
                     onUploadBytes(bytesSentTotal - oldBytesSentTotal)
                     oldBytesSentTotal = bytesSentTotal
                 }

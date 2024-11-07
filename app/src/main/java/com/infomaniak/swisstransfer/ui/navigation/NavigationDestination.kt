@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.navigation
 
 import android.os.Bundle
 import androidx.navigation.NavBackStackEntry
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -61,9 +62,9 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object ValidateUserEmailDestination : NewTransferNavigation()
 
     @Serializable
-    data object UploadProgressDestination : NewTransferNavigation()
+    data class UploadProgressDestination(val transferType: TransferType, val totalSize: Long) : NewTransferNavigation()
     @Serializable
-    data object UploadSuccessDestination : NewTransferNavigation()
+    data class UploadSuccessDestination(val transferType: TransferType, val transferLink: String) : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination

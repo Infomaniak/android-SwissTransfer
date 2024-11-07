@@ -21,6 +21,8 @@ import android.content.Context
 import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
+import androidx.work.WorkInfo.State
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
@@ -52,7 +54,8 @@ class UploadWorker @AssistedInject constructor(
         UploadFileTask(uploadManager, fileChunkSizeManager)
     }
 
-    private var totalUploadedBytes = 0L
+    private var uploadedBytes = 0L
+    private var lastUpdateTime = 0L
 
     override suspend fun launchWork(): Result {
         SentryLog.i(TAG, "Work launched")
@@ -69,52 +72,60 @@ class UploadWorker @AssistedInject constructor(
 
         uploadSession.files.forEach { fileSession ->
             uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
-                totalUploadedBytes += bytesSent
-                setProgress(workDataOf(UPLOADED_BYTES_TAG to totalUploadedBytes, TOTAL_SIZE_TAG to totalSize))
+                uploadedBytes += bytesSent
+                emitProgress()
             }
         }
 
-        uploadManager.finishUploadSession(uploadSession.uuid)
+        val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
         importLocalStorage.removeImportFolder()
 
-        return Result.success()
+        return Result.success(workDataOf(TRANSFER_UUID_TAG to transferUuid, UPLOADED_BYTES_TAG to totalSize))
     }
 
     override fun onFinish() {
         SentryLog.i(TAG, "Work finished")
     }
 
-    @Singleton
-    class Scheduler @Inject constructor(private val workManager: WorkManager) {
+    private suspend fun emitProgress() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastUpdateTime > PROGRESS_ELAPSED_TIME) {
+            setProgress(workDataOf(UPLOADED_BYTES_TAG to uploadedBytes))
+            lastUpdateTime = currentTime
+        }
+    }
 
-        fun scheduleWork() {
-            SentryLog.i(TAG, "Work scheduled")
+    @Singleton
+    class Scheduler @Inject constructor(
+        private val workManager: WorkManager,
+        private val sharedApiUrlCreator: SharedApiUrlCreator,
+    ) {
+
+        fun scheduleWork(uploadSessionUuid: String) {
+            SentryLog.i(TAG, "Work scheduled uploadSessionUuid:$uploadSessionUuid")
             val workRequest = OneTimeWorkRequestBuilder<UploadWorker>()
+                .addTag(uploadSessionUuid)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
         }
 
         @OptIn(ExperimentalCoroutinesApi::class)
-        fun trackUploadProgressFlow(): Flow<UploadTransferProgress> {
+        fun trackUploadProgressFlow(uploadSessionUuid: String): Flow<UploadProgressUiState> {
+            var lastUploadedSize = 0L
             val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
-                .addStates(listOf(WorkInfo.State.RUNNING))
+                .addTags(listOf(uploadSessionUuid))
                 .build()
-            return workManager.getWorkInfosFlow(workQuery).mapLatest {
-                val workProgress = it.firstOrNull()?.progress ?: return@mapLatest null
-                UploadTransferProgress(
-                    uploadedSize = workProgress.getLong(UPLOADED_BYTES_TAG, 0L),
-                    totalSize = workProgress.getLong(TOTAL_SIZE_TAG, 0L),
-                )
-            }.filterNotNull()
-        }
 
-        @OptIn(ExperimentalCoroutinesApi::class)
-        fun isPendingOrRunningFlow(): Flow<Boolean> {
-            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
-                .addStates(listOf(WorkInfo.State.RUNNING, WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED))
-                .build()
-            return workManager.getWorkInfosFlow(workQuery).mapLatest { it.isNotEmpty() }
+            return workManager.getWorkInfosFlow(workQuery).mapLatest { workInfoList ->
+                val workInfo = workInfoList.firstOrNull() ?: return@mapLatest UploadProgressUiState.Default
+                return@mapLatest when (workInfo.state) {
+                    State.RUNNING -> UploadProgressUiState.Progress(workInfo.progress).also { lastUploadedSize = it.uploadedSize }
+                    State.SUCCEEDED -> UploadProgressUiState.Success.create(workInfo.outputData, sharedApiUrlCreator)
+                    State.CANCELLED -> UploadProgressUiState.Cancelled(lastUploadedSize)
+                    else -> UploadProgressUiState.Default
+                } ?: UploadProgressUiState.Cancelled(lastUploadedSize)
+            }.filterNotNull()
         }
 
         fun cancelWork() {
@@ -123,11 +134,30 @@ class UploadWorker @AssistedInject constructor(
         }
     }
 
-    @Immutable
-    data class UploadTransferProgress(
-        val uploadedSize: Long,
-        val totalSize: Long,
-    )
+    sealed class UploadProgressUiState(open val uploadedSize: Long = 0) {
+        data object Default : UploadProgressUiState()
+
+        @Immutable
+        data class Progress(override val uploadedSize: Long) : UploadProgressUiState(uploadedSize) {
+            internal constructor(progressData: Data) : this(progressData.getLong(UPLOADED_BYTES_TAG, 0L))
+        }
+
+        @Immutable
+        data class Success(override val uploadedSize: Long, val transferLink: String) : UploadProgressUiState(uploadedSize) {
+            companion object {
+                fun create(outputData: Data, sharedApiUrlCreator: SharedApiUrlCreator): Success? {
+                    return Success(
+                        uploadedSize = outputData.getLong(UPLOADED_BYTES_TAG, 0L),
+                        transferLink = outputData.getString(TRANSFER_UUID_TAG)
+                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null
+                    )
+                }
+            }
+        }
+
+        @Immutable
+        data class Cancelled(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+    }
 
     companion object {
         private const val TAG = "UploadWorker"
@@ -136,6 +166,8 @@ class UploadWorker @AssistedInject constructor(
         private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
-        private const val TOTAL_SIZE_TAG = "total_size_tag"
+        private const val TRANSFER_UUID_TAG = "transfer_uuid_tag"
+
+        private const val PROGRESS_ELAPSED_TIME = 50
     }
 }
