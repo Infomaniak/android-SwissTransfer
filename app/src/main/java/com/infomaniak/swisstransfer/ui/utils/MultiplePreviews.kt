@@ -74,6 +74,6 @@ annotation class PreviewLargeWindow
 annotation class PreviewAllWindows
 
 // Light + Dark (for Components)
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@Preview(name = "(1) Light")
+@Preview(name = "(2) Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 annotation class PreviewLightAndDark
