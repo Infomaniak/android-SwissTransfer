@@ -201,37 +201,7 @@ private fun ImportFilesScreen(
                 )
             }
 
-            ValidityPeriodBottomSheet(
-                isBottomSheetVisible = { showAdvancedOption == TransferAdvancedSettingType.VALIDITY_DURATION },
-                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = ::closeAdvancedOption,
-                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[0].settingState(),
-            )
-
-            DownloadLimitBottomSheet(
-                isBottomSheetVisible = { showAdvancedOption == TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT },
-                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = ::closeAdvancedOption,
-                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[1].settingState(),
-            )
-
-            PasswordOptionAlertDialog(
-                password = advancedOptionsCallbacks.password,
-                showPasswordOptionAlert = { showAdvancedOption == TransferAdvancedSettingType.PASSWORD },
-                onConfirmation = { passwordOption ->
-                    advancedOptionsCallbacks.onAdvancedOptionsValueSelected(passwordOption)
-                    closeAdvancedOption()
-                },
-                closeAlertDialog = ::closeAdvancedOption,
-                isPasswordValid = advancedOptionsCallbacks.isPasswordValid,
-            )
-
-            EmailLanguageBottomSheet(
-                isBottomSheetVisible = { showAdvancedOption == TransferAdvancedSettingType.LANGUAGE },
-                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = ::closeAdvancedOption,
-                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[3].settingState(),
-            )
+            AdvancedOptions({ showAdvancedOption }, advancedOptionsCallbacks, ::closeAdvancedOption)
 
             UploadSourceChoiceBottomSheet(
                 isVisible = { showUploadSourceChoiceBottomSheet },
@@ -273,6 +243,41 @@ private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> Tra
             )
             Spacer(Modifier.size(Margin.Medium))
         }
+    }
+}
+
+@Composable
+private fun AdvancedOptions(
+    selectedTransferType: () -> TransferAdvancedSettingType?,
+    advancedOptionsCallbacks: AdvancedOptionsCallbacks,
+    closeAdvancedOption: () -> Unit,
+) {
+    when (selectedTransferType()) {
+        TransferAdvancedSettingType.VALIDITY_DURATION -> ValidityPeriodBottomSheet(
+            onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+            closeBottomSheet = closeAdvancedOption,
+            initialValue = advancedOptionsCallbacks.advancedOptionsStates()[0].settingState(),
+        )
+        TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT -> DownloadLimitBottomSheet(
+            onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+            closeBottomSheet = closeAdvancedOption,
+            initialValue = advancedOptionsCallbacks.advancedOptionsStates()[1].settingState(),
+        )
+        TransferAdvancedSettingType.PASSWORD -> PasswordOptionAlertDialog(
+            password = advancedOptionsCallbacks.password,
+            onConfirmation = { passwordOption ->
+                advancedOptionsCallbacks.onAdvancedOptionsValueSelected(passwordOption)
+                closeAdvancedOption()
+            },
+            closeAlertDialog = closeAdvancedOption,
+            isPasswordValid = advancedOptionsCallbacks.isPasswordValid,
+        )
+        TransferAdvancedSettingType.LANGUAGE -> EmailLanguageBottomSheet(
+            onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+            closeBottomSheet = closeAdvancedOption,
+            initialValue = advancedOptionsCallbacks.advancedOptionsStates()[3].settingState(),
+        )
+        null -> Unit
     }
 }
 

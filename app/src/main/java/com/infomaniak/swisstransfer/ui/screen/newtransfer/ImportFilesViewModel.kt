@@ -240,10 +240,7 @@ class ImportFilesViewModel @Inject constructor(
     //region Password
     private var transferPassword by mutableStateOf("")
 
-    private val isPasswordValid by derivedStateOf {
-        val trimmedPassword = transferPassword.trim()
-        trimmedPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH
-    }
+    private val isPasswordValid by derivedStateOf { transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
     //endregion
 
     sealed class SendActionResult {

@@ -44,7 +44,6 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 @Composable
 fun PasswordOptionAlertDialog(
     password: GetSetCallbacks<String>,
-    showPasswordOptionAlert: () -> Boolean,
     closeAlertDialog: () -> Unit,
     onConfirmation: (PasswordTransferOption) -> Unit,
     isPasswordValid: () -> Boolean,
@@ -71,17 +70,15 @@ fun PasswordOptionAlertDialog(
         onConfirmation(passwordOption)
     }
 
-    if (showPasswordOptionAlert()) {
-        SwissTransferAlertDialog(
-            titleRes = R.string.settingsOptionPassword,
-            descriptionRes = R.string.settingsPasswordDescription,
-            onDismiss = ::onDismiss,
-            onConfirmation = ::onConfirmButtonClicked,
-            shouldEnableConfirmButton = { if (isPasswordActivated) isPasswordValid() else true },
-        ) {
-            ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
-            AnimatedPasswordInput(isPasswordActivated, password, isPasswordValid)
-        }
+    SwissTransferAlertDialog(
+        titleRes = R.string.settingsOptionPassword,
+        descriptionRes = R.string.settingsPasswordDescription,
+        onDismiss = ::onDismiss,
+        onConfirmation = ::onConfirmButtonClicked,
+        shouldEnableConfirmButton = { if (isPasswordActivated) isPasswordValid() else true },
+    ) {
+        ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
+        AnimatedPasswordInput(isPasswordActivated, password, isPasswordValid)
     }
 }
 
@@ -124,7 +121,6 @@ fun Preview() {
         Surface {
             PasswordOptionAlertDialog(
                 password = GetSetCallbacks(get = { "pass" }, set = {}),
-                showPasswordOptionAlert = { true },
                 closeAlertDialog = {},
                 onConfirmation = {},
                 isPasswordValid = { false },

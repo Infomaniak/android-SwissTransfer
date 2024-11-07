@@ -36,7 +36,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 private fun TransferOptionBottomSheetScaffold(
-    isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (SettingOption) -> Unit,
     closeBottomSheet: () -> Unit,
     initialValue: SettingOption?,
@@ -53,35 +52,31 @@ private fun TransferOptionBottomSheetScaffold(
         else -> 0
     }
 
-    if (isBottomSheetVisible()) {
-        SwissTransferBottomSheet(
-            onDismissRequest = closeBottomSheet,
-            titleRes = titleRes,
-            content = {
-                SingleSelectOptions(
-                    items = optionEntries,
-                    selectedItem = { selectedPosition },
-                    setSelectedItem = { position ->
-                        val selectedValue = optionEntries[position]
-                        selectedItem = selectedValue
-                        onOptionClicked(selectedValue)
-                        closeBottomSheet()
-                    },
-                )
-            },
-        )
-    }
+    SwissTransferBottomSheet(
+        onDismissRequest = closeBottomSheet,
+        titleRes = titleRes,
+        content = {
+            SingleSelectOptions(
+                items = optionEntries,
+                selectedItem = { selectedPosition },
+                setSelectedItem = { position ->
+                    val selectedValue = optionEntries[position]
+                    selectedItem = selectedValue
+                    onOptionClicked(selectedValue)
+                    closeBottomSheet()
+                },
+            )
+        },
+    )
 }
 
 @Composable
 fun ValidityPeriodBottomSheet(
-    isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (ValidityPeriodOption) -> Unit,
     closeBottomSheet: () -> Unit,
     initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
-        isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
         initialValue = initialValue,
         titleRes = R.string.settingsOptionValidityPeriod,
@@ -92,13 +87,11 @@ fun ValidityPeriodBottomSheet(
 
 @Composable
 fun DownloadLimitBottomSheet(
-    isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (DownloadLimitOption) -> Unit,
     closeBottomSheet: () -> Unit,
     initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
-        isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
         initialValue = initialValue,
         titleRes = R.string.settingsOptionDownloadLimit,
@@ -109,13 +102,11 @@ fun DownloadLimitBottomSheet(
 
 @Composable
 fun EmailLanguageBottomSheet(
-    isBottomSheetVisible: () -> Boolean,
     onOptionClicked: (EmailLanguageOption) -> Unit,
     closeBottomSheet: () -> Unit,
     initialValue: SettingOption?,
 ) {
     TransferOptionBottomSheetScaffold(
-        isBottomSheetVisible = isBottomSheetVisible,
         closeBottomSheet = closeBottomSheet,
         initialValue = initialValue,
         titleRes = R.string.settingsOptionEmailLanguage,
@@ -130,7 +121,6 @@ private fun ValidityPeriodOptionBottomSheetPreview() {
     SwissTransferTheme {
         Surface {
             ValidityPeriodBottomSheet(
-                isBottomSheetVisible = { true },
                 onOptionClicked = {},
                 closeBottomSheet = {},
                 initialValue = ValidityPeriodOption.SEVEN,
