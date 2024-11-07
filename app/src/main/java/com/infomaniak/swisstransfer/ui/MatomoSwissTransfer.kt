@@ -17,26 +17,12 @@
  */
 package com.infomaniak.swisstransfer.ui
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import dagger.hilt.android.AndroidEntryPoint
+import android.content.Context
+import com.infomaniak.matomo.Matomo
+import org.matomo.sdk.Tracker
 
-@AndroidEntryPoint
-class NewTransferActivity : ComponentActivity() {
+object MatomoSwissTransfer : Matomo {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SwissTransferTheme {
-                NewTransferScreen(closeActivity = { finish() })
-            }
-        }
-        trackScreen()
-    }
+    override val Context.tracker: Tracker get() = (this as MainActivity).buildTracker() //TODO fetch appSettings for opt out
+    override val siteId: Int = -1 //TODO replace with the right site ID when we have one
 }
