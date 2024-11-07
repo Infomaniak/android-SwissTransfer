@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -169,61 +170,6 @@ fun TransferDetailsScreen(
                 },
             )
         }
-    }
-}
-
-@Composable
-private fun TransferInfo(transfer: TransferUi) {
-
-    val filesCount by remember { derivedStateOf { transfer.files.count() } }
-    val downloadedCount by remember { derivedStateOf { transfer.downloadLimit - transfer.downloadLeft } }
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = AppIcons.FileZip,
-            tint = SwissTransferTheme.materialColors.primary,
-            contentDescription = null,
-        )
-        Spacer(Modifier.width(Margin.Mini))
-        TextDotText(
-            firstText = { pluralStringResource(R.plurals.filesCount, filesCount, filesCount) },
-            secondText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-    }
-
-    HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            modifier = Modifier.size(Margin.Medium),
-            imageVector = AppIcons.Clock,
-            tint = SwissTransferTheme.materialColors.primary,
-            contentDescription = null,
-        )
-        Text(
-            modifier = Modifier.padding(start = Margin.Mini),
-            text = stringResource(R.string.expiresIn, transfer.expiresInDays),
-            style = SwissTransferTheme.typography.bodySmallRegular,
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-    }
-
-    HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            modifier = Modifier.size(Margin.Medium),
-            imageVector = AppIcons.ArrowDownFile,
-            tint = SwissTransferTheme.materialColors.primary,
-            contentDescription = null,
-        )
-        Text(
-            modifier = Modifier.padding(start = Margin.Mini),
-            text = stringResource(R.string.downloadedTransferLabel, downloadedCount, transfer.downloadLimit),
-            style = SwissTransferTheme.typography.bodySmallRegular,
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
     }
 }
 
