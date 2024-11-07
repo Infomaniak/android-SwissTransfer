@@ -21,6 +21,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiError(
-    val errorCode: Int,
-    val message: String,
+    val errorCode: String = "",
+    val message: String = "",
 )

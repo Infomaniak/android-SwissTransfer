@@ -19,19 +19,21 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
+import com.infomaniak.appintegrity.AppIntegrityManager
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun NewTransferScreen(closeActivity: () -> Unit) {
+fun NewTransferScreen(closeActivity: () -> Unit, appIntegrityManager: AppIntegrityManager) {
     val navController = rememberNavController()
-    NewTransferNavHost(navController, closeActivity)
+    NewTransferNavHost(navController, closeActivity, appIntegrityManager)
 }
 
 @PreviewAllWindows
 @Composable
 private fun NewTransferPreview() {
     SwissTransferTheme {
-        NewTransferScreen {}
+        NewTransferScreen({}, AppIntegrityManager(BuildConfig.APPLICATION_ID))
     }
 }

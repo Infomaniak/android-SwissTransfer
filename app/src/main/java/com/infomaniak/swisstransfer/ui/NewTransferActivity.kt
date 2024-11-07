@@ -21,19 +21,32 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.infomaniak.appintegrity.AppIntegrityManager
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
+import io.sentry.Sentry
+import io.sentry.SentryLevel
 
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
+
+    private val appIntegrityManager by lazy { AppIntegrityManager(BuildConfig.APPLICATION_ID) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SwissTransferTheme {
-                NewTransferScreen(closeActivity = { finish() })
+                NewTransferScreen(closeActivity = { finish() }, appIntegrityManager)
+            }
+        }
+        appIntegrityManager.warmUpTokenProvider(applicationContext, appCloudNumber = 364109398419) { exception ->
+            exception.printStackTrace()
+            Sentry.captureMessage("Exception during AppIntegrityManager's warmup", SentryLevel.ERROR) { scope ->
+                scope.setTag("exception", exception.message.toString())
+                scope.setExtra("stacktrace", exception.printStackTrace().toString())
             }
         }
     }
