@@ -77,6 +77,10 @@ fun <T> TwoPaneScaffold(
     )
 }
 
+/**
+ * Keep the DetailPane's content in memory so that it's always available while navigating back.
+ * When leaving the DetailPane, its content becomes `null`, which creates a visual glitch in the back animation.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun <T> ThreePaneScaffoldNavigator<T>.safeCurrentContent(): T? {
