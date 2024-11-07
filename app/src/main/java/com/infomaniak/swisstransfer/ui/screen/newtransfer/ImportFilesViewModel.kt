@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
+import android.util.Log
+import androidx.compose.runtime.*
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.appintegrity.AppIntegrityManager
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -48,6 +51,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.sentry.Sentry
+import io.sentry.SentryLevel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -128,10 +133,38 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun sendTransfer() {
+    fun sendTransfer(appIntegrityManager: AppIntegrityManager) {
         _sendActionResult.update { SendActionResult.Pending }
         viewModelScope.launch(ioDispatcher) {
             runCatching {
+                appIntegrityManager.requestIntegrityVerdictToken(
+                    requestHash = "",
+                    onSuccess = { token ->
+                        viewModelScope.launch(ioDispatcher) {
+                            Log.e("TOTO", "requestIntegrityVerdictToken: m<dkosvn")
+                            val result = appIntegrityManager.requestApiJwtToken(
+                                token,
+                                "http://api-core.devd471.dev.infomaniak.ch/1/attest/demo"
+                            )
+                            Log.e("TOTO", "result = $result")
+                        }
+                    },
+                    onFailure = { exception ->
+                        Sentry.captureMessage(
+                            "Error when requiring an integrity token during account creation",
+                            SentryLevel.ERROR,
+                        ) { scope ->
+                            scope.setTag("exception", exception?.message.toString())
+                            scope.setExtra("stacktrace", exception?.printStackTrace().toString())
+                        }
+                        Log.e("TOTO", "sendTransfer: failed ${exception?.message}")
+                    },
+                    onNullTokenProvider = { message ->
+                        Sentry.captureMessage(message, SentryLevel.ERROR)
+                        // TODO: Better error ?
+                        Log.e("TOTO", "sendTransfer: nullTokenprovider : $message")
+                    },
+                )
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
                 uploadManager.initUploadSession(recaptcha = "Recaptcha")!! // TODO: Handle ContainerErrorsException here
                 uploadWorkerScheduler.scheduleWork(uuid)

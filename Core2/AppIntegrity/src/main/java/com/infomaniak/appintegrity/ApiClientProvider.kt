@@ -18,6 +18,7 @@
 package com.infomaniak.appintegrity
 
 import com.infomaniak.appintegrity.exceptions.ApiException
+import com.infomaniak.appintegrity.exceptions.NetworkException
 import com.infomaniak.appintegrity.exceptions.UnexpectedApiErrorFormatException
 import com.infomaniak.appintegrity.exceptions.UnknownException
 import com.infomaniak.appintegrity.models.ApiError
@@ -85,7 +86,7 @@ class ApiClientProvider internal constructor(engine: HttpClientEngineFactory<*>?
                 }
                 handleResponseExceptionWithRequest { cause, _ ->
                     when (cause) {
-                        is IOException -> throw com.infomaniak.appintegrity.exceptions.NetworkException("Network error: ${cause.message}")
+                        is IOException -> throw NetworkException("Network error: ${cause.message}")
                         is ApiException, is UnexpectedApiErrorFormatException -> throw cause
                         else -> throw UnknownException(cause)
                     }

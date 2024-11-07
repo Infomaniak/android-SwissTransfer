@@ -26,4 +26,4 @@ package com.infomaniak.appintegrity.exceptions
  * @param errorCode The specific error code returned by the API.
  * @param errorMessage The detailed error message explaining the cause of the failure.
  */
-open class ApiException(val errorCode: Int, errorMessage: String) : Exception(errorMessage)
+open class ApiException(val errorCode: String, errorMessage: String) : Exception(errorMessage)

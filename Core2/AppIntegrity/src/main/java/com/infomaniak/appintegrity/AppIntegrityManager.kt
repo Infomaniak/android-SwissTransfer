@@ -22,6 +22,7 @@ import android.util.Log
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.StandardIntegrityManager.*
 import com.infomaniak.appintegrity.exceptions.ApiException
+import kotlinx.coroutines.coroutineScope
 
 class AppIntegrityManager(private val packageName: String) {
 
@@ -37,24 +38,29 @@ class AppIntegrityManager(private val packageName: String) {
         }.addOnFailureListener(onFailure)
     }
 
-    fun requestIntegrityVerdictToken(
+    suspend fun requestIntegrityVerdictToken(
         requestHash: String,
         onSuccess: (String) -> Unit,
         onFailure: (Exception?) -> Unit,
         onNullTokenProvider: (String) -> Unit,
-    ) {
+    ) = coroutineScope {
         if (appIntegrityTokenProvider == null) {
             onNullTokenProvider("Integrity token provider is null during a verdict request. This should not be possible")
         } else {
+            Log.e("TOTO", "requestIntegrityVerdictToken: b")
             appIntegrityTokenProvider?.request(StandardIntegrityTokenRequest.builder().setRequestHash(requestHash).build())
-                ?.addOnSuccessListener { response -> onSuccess(response.token()) }
+                ?.addOnSuccessListener { response ->
+                    onSuccess(response.token())
+                }
                 ?.addOnFailureListener(onFailure)
         }
     }
 
     suspend fun requestApiJwtToken(integrityToken: String, targetUrl: String): String? = runCatching {
-        AppIntegrityRepository.getJwtToken(integrityToken, packageName, targetUrl).data
+        Log.e("TOTO", "requestApiJwtToken: successful integrity call token = $integrityToken")
+        AppIntegrityRepository.getJwtToken(integrityToken, packageName, targetUrl).data?.let { callDemoRoute(it) }
     }.getOrElse { exception ->
+        exception.printStackTrace()
         if (exception is ApiException) {
             when (exception.message) {
                 "invalid_attestation" -> "Integrity is invalid"
@@ -65,8 +71,10 @@ class AppIntegrityManager(private val packageName: String) {
         }
     }
 
-    suspend fun callDemoRoute(mobileToken: String): String? = runCatching {
-        AppIntegrityRepository.demo(mobileToken).data
+    private suspend fun callDemoRoute(mobileToken: String): String? = runCatching {
+        val apiResponse = AppIntegrityRepository.demo(mobileToken)
+        Log.e("TOTO", "callDemoRoute: success ${apiResponse.data}")
+        apiResponse.data
     }.getOrElse { exception ->
         if (exception is ApiException) {
             when (exception.message) {

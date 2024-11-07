@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.isEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
@@ -61,6 +62,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    appIntegrityManager: AppIntegrityManager,
 ) {
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
@@ -134,8 +136,8 @@ fun ImportFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
+        sendTransfer = { importFilesViewModel.sendTransfer(appIntegrityManager) },
         shouldStartByPromptingUserForFiles = true,
-        sendTransfer = importFilesViewModel::sendTransfer,
         isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
         snackbarHostState = snackbarHostState,
     )
