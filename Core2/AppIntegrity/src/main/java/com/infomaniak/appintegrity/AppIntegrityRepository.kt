@@ -34,7 +34,10 @@ object AppIntegrityRepository {
 
     suspend fun getJwtToken(integrityToken: String, packageName: String, targetUrl: String): ApiResponse<String> {
         val body = mapOf("token" to integrityToken, "package_name" to packageName, "target_url" to targetUrl)
-        return post<ApiResponse<String>>(url = Url("http://api-core.devd471.dev.infomaniak.ch/1/attest/integrity"), data = body)
+        return post<ApiResponse<String>>(
+            url = Url("https://api-core.devd471.dev.infomaniak.ch:443/1/attest/integrity"),
+            data = body
+        )
     }
 
     suspend fun demo(mobileToken: String): ApiResponse<String> {
