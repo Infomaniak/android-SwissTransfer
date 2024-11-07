@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
+import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -55,7 +56,7 @@ private fun ListPane(navigator: ThreePaneScaffoldNavigator<String>) {
 @Composable
 private fun DetailPane(navigator: ThreePaneScaffoldNavigator<String>) {
 
-    val transferUuid = navigator.currentDestination?.content
+    val transferUuid = navigator.safeCurrentContent()
 
     if (transferUuid == null) {
         NoSelectionEmptyState()
