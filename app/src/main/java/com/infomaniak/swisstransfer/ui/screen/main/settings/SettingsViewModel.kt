@@ -25,6 +25,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -53,4 +54,11 @@ class SettingsViewModel @Inject constructor(
     fun setEmailLanguage(emailLanguage: EmailLanguage) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setEmailLanguage(emailLanguage)
     }
+
+    data class AppSettingsData(
+        val validityPeriod: ValidityPeriod,
+        val downloadLimit: DownloadLimit,
+        val passwordOption: PasswordTransferOption,
+        val emailLanguage: EmailLanguage,
+    )
 }

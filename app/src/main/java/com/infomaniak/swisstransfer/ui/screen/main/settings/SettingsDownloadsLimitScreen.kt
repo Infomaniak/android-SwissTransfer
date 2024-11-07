@@ -24,7 +24,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -48,11 +47,20 @@ enum class DownloadLimitOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
-) : SettingOption, TransferAdvancedOptionsEnum {
+) : SettingOption {
     TWO_HUNDRED_FIFTY({ DownloadLimit.TWO_HUNDRED_FIFTY.value }),
     ONE_HUNDRED({ DownloadLimit.ONE_HUNDRED.value }),
     TWENTY({ DownloadLimit.TWENTY.value }),
-    ONE({ DownloadLimit.ONE.value }),
+    ONE({ DownloadLimit.ONE.value });
+
+    companion object {
+        fun DownloadLimit.toAdvancedOption() = when (this) {
+            DownloadLimit.TWO_HUNDRED_FIFTY -> TWO_HUNDRED_FIFTY
+            DownloadLimit.ONE_HUNDRED -> ONE_HUNDRED
+            DownloadLimit.TWENTY -> TWENTY
+            DownloadLimit.ONE -> ONE
+        }
+    }
 }
 
 @PreviewAllWindows

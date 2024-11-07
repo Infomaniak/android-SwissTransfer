@@ -25,7 +25,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -49,12 +48,22 @@ enum class EmailLanguageOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
-) : SettingOption, TransferAdvancedOptionsEnum {
+) : SettingOption {
     ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVectorResId = R.drawable.flag_gb),
     FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVectorResId = R.drawable.flag_fr),
     GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVectorResId = R.drawable.flag_ge),
     ITALIAN({ stringResource(R.string.settingsEmailLanguageValueItalian) }, imageVectorResId = R.drawable.flag_it),
-    SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es),
+    SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es);
+
+    companion object {
+        fun EmailLanguage.toAdvancedOption() = when (this) {
+            EmailLanguage.ENGLISH -> ENGLISH
+            EmailLanguage.FRENCH -> FRENCH
+            EmailLanguage.GERMAN -> GERMAN
+            EmailLanguage.ITALIAN -> ITALIAN
+            EmailLanguage.SPANISH -> SPANISH
+        }
+    }
 }
 
 @PreviewAllWindows

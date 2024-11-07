@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -40,13 +41,12 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.SendActionResult
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.ImportedFilesCard
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferAdvancedSettings
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeButtons
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -58,6 +58,7 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 @Composable
 fun ImportFilesScreen(
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
+    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
@@ -65,24 +66,67 @@ fun ImportFilesScreen(
     val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
     val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
+    val validityPeriodState by newTransferViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimitState by newTransferViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOptionState by newTransferViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguageState by newTransferViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
+    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
-    ImportFilesScreen(
-        files = { files },
-        filesToImportCount = { filesToImportCount },
-        currentSessionFilesCount = { currentSessionFilesCount },
-        selectedTransferType = GetSetCallbacks(
-            get = { selectedTransferType },
-            set = newTransferViewModel::selectTransferType,
-        ),
-        removeFileByUid = newTransferViewModel::removeFileByUid,
-        addFiles = newTransferViewModel::importFiles,
-        closeActivity = closeActivity,
-        sendTransfer = newTransferViewModel::sendTransfer,
-        initialShowUploadSourceChoiceBottomSheet = true,
-    )
+    fun onAdvancedOptionsValueSelected(option: SettingOption) {
+        when (option) {
+            is ValidityPeriodOption -> newTransferViewModel.selectTransferValidityPeriod(option)
+            is DownloadLimitOption -> newTransferViewModel.selectTransferDownloadLimit(option)
+            is PasswordTransferOption -> newTransferViewModel.selectTransferPasswordOption(option)
+            is EmailLanguageOption -> newTransferViewModel.selectTransferLanguage(option)
+        }
+    }
+
+    appSettings?.let { safeAppSettings ->
+        newTransferViewModel.initTransferAdvancedOptionsValues(safeAppSettings)
+
+        val advancedOptionsCallbacks = AdvancedOptionsCallbacks(
+            advancedOptionsStates = {
+                listOf(
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                        settingState = { validityPeriodState },
+                    ),
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                        settingState = { downloadLimitState },
+                    ),
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                        settingState = { passwordOptionState },
+                    ),
+                    AdvancedOptionsState(
+                        advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                        settingState = { emailLanguageState },
+                    ),
+                )
+            },
+            onAdvancedOptionsValueSelected = ::onAdvancedOptionsValueSelected,
+        )
+
+        ImportFilesScreen(
+            files = { files },
+            filesToImportCount = { filesToImportCount },
+            currentSessionFilesCount = { currentSessionFilesCount },
+            selectedTransferType = GetSetCallbacks(
+                get = { selectedTransferType },
+                set = newTransferViewModel::selectTransferType,
+            ),
+            advancedOptionsCallbacks = advancedOptionsCallbacks,
+            removeFileByUid = newTransferViewModel::removeFileByUid,
+            addFiles = newTransferViewModel::importFiles,
+            closeActivity = closeActivity,
+            sendTransfer = newTransferViewModel::sendTransfer,
+            initialShowUploadSourceChoiceBottomSheet = true,
+        )
+    }
 }
 
 @Composable
@@ -106,6 +150,7 @@ private fun ImportFilesScreen(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     selectedTransferType: GetSetCallbacks<TransferType>,
+    advancedOptionsCallbacks: AdvancedOptionsCallbacks,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
@@ -114,6 +159,7 @@ private fun ImportFilesScreen(
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
+    var showOptionBottomSheet by rememberSaveable { mutableStateOf<TransferAdvancedSettingType?>(null) }
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
@@ -126,6 +172,10 @@ private fun ImportFilesScreen(
         contract = ActivityResultContracts.OpenMultipleDocuments()
     ) { uris: List<Uri> ->
         addFiles(uris)
+    }
+
+    fun closeOptionBottomSheet() {
+        showOptionBottomSheet = null
     }
 
     BottomStickyButtonScaffold(
@@ -158,17 +208,38 @@ private fun ImportFilesScreen(
                 TransferTypeButtons(selectedTransferType)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferAdvancedSettings(
-                    states = {
-                        listOf(
-                            ValidityPeriodOption.THIRTY,
-                            DownloadLimitOption.ONE,
-                            PasswordTransferOption.NONE,
-                            EmailLanguageOption.GERMAN,
-                        )
-                    },
-                    onClick = {},
+                    advancedSettingsItemsStates = advancedOptionsCallbacks.advancedOptionsStates,
+                    onClick = { selectedOption -> showOptionBottomSheet = selectedOption },
                 )
             }
+
+            ValidityPeriodBottomSheet(
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.VALIDITY_DURATION },
+                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+                closeBottomSheet = ::closeOptionBottomSheet,
+                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[0].settingState(),
+            )
+
+            DownloadLimitBottomSheet(
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT },
+                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+                closeBottomSheet = ::closeOptionBottomSheet,
+                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[1].settingState(),
+            )
+
+            PasswordOptionBottomSheet(
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.PASSWORD },
+                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+                closeBottomSheet = ::closeOptionBottomSheet,
+                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[2].settingState(),
+            )
+
+            EmailLanguageBottomSheet(
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.LANGUAGE },
+                onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
+                closeBottomSheet = ::closeOptionBottomSheet,
+                initialValue = advancedOptionsCallbacks.advancedOptionsStates()[3].settingState(),
+            )
 
             UploadSourceChoiceBottomSheet(
                 isVisible = { showUploadSourceChoiceBottomSheet },
@@ -252,13 +323,23 @@ private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes:
     )
 }
 
-enum class PasswordTransferOption(override val title: @Composable () -> String) : TransferAdvancedOptionsEnum {
+data class AdvancedOptionsCallbacks(
+    val advancedOptionsStates: () -> List<AdvancedOptionsState>,
+    val onAdvancedOptionsValueSelected: (SettingOption) -> Unit,
+)
+
+data class AdvancedOptionsState(
+    val advancedSettingType: TransferAdvancedSettingType,
+    val settingState: () -> SettingOption?,
+)
+
+enum class PasswordTransferOption(
+    override val title: @Composable () -> String,
+    override val imageVector: ImageVector? = null,
+    override val imageVectorResId: Int? = null,
+) : SettingOption {
     NONE({ stringResource(R.string.settingsOptionNone) }),
     ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
-}
-
-interface TransferAdvancedOptionsEnum {
-    val title: @Composable () -> String
 }
 
 @PreviewAllWindows
@@ -270,6 +351,29 @@ private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParamete
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
             selectedTransferType = GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}),
+            advancedOptionsCallbacks = AdvancedOptionsCallbacks(
+                advancedOptionsStates = {
+                    listOf(
+                        AdvancedOptionsState(
+                            advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                            settingState = { ValidityPeriodOption.THIRTY },
+                        ),
+                        AdvancedOptionsState(
+                            advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                            settingState = { DownloadLimitOption.TWO_HUNDRED_FIFTY },
+                        ),
+                        AdvancedOptionsState(
+                            advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                            settingState = { PasswordTransferOption.NONE },
+                        ),
+                        AdvancedOptionsState(
+                            advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                            settingState = { EmailLanguageOption.FRENCH },
+                        ),
+                    )
+                },
+                onAdvancedOptionsValueSelected = {},
+            ),
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},

@@ -38,21 +38,21 @@ import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AdvancedOptionsState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferAdvancedOptionsEnum
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun TransferAdvancedSettings(
     modifier: Modifier = Modifier,
-    states: () -> List<TransferAdvancedOptionsEnum>,
-    onClick: () -> Unit,
+    advancedSettingsItemsStates: () -> List<AdvancedOptionsState>,
+    onClick: (TransferAdvancedSettingType) -> Unit,
 ) {
     SwissTransferCard(modifier = modifier) {
-        TransferAdvancedSettingType.entries.forEach { settingType ->
-            val title by remember { derivedStateOf { states()[settingType.ordinal] } }
-            TransferAdvancedSetting(settingType, { title }, onClick)
+        advancedSettingsItemsStates().forEach {
+            val title by remember { derivedStateOf { it.settingState } }
+            TransferAdvancedSetting(it.advancedSettingType, title, onClick = { onClick(it.advancedSettingType) })
         }
     }
 }
@@ -71,13 +71,29 @@ private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
             val selectedOptionValues = listOf(
-                ValidityPeriodOption.THIRTY,
-                DownloadLimitOption.TWO_HUNDRED_FIFTY,
-                PasswordTransferOption.NONE,
-                EmailLanguageOption.FRENCH,
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                    settingState = { ValidityPeriodOption.THIRTY },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                    settingState = { DownloadLimitOption.TWO_HUNDRED_FIFTY },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                    settingState = { PasswordTransferOption.NONE },
+                ),
+                AdvancedOptionsState(
+                    advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                    settingState = { EmailLanguageOption.FRENCH },
+                ),
             )
 
-            TransferAdvancedSettings(modifier = Modifier.padding(Margin.Medium), states = { selectedOptionValues }, onClick = {})
+            TransferAdvancedSettings(
+                modifier = Modifier.padding(Margin.Medium),
+                advancedSettingsItemsStates = { selectedOptionValues },
+                onClick = {},
+            )
         }
     }
 }

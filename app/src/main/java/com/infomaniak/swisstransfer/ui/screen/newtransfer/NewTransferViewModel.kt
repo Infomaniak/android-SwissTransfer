@@ -21,6 +21,7 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
@@ -29,6 +30,13 @@ import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -68,9 +76,6 @@ class NewTransferViewModel @Inject constructor(
         set(value) {
             savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] = value
         }
-
-    private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
-    val selectedTransferType: StateFlow<TransferType> = _selectedTransferType.asStateFlow()
 
     init {
         viewModelScope.launch(ioDispatcher) {
@@ -140,13 +145,54 @@ class NewTransferViewModel @Inject constructor(
         )
     }
 
-    companion object {
-        private val TAG = NewTransferViewModel::class.java.simpleName
-        private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
-    }
+    //region Transfer Type
+    private val _selectedTransferType = MutableStateFlow(TransferType.LINK)
+    val selectedTransferType: StateFlow<TransferType> = _selectedTransferType
 
     sealed class SendActionResult {
         data class Success(val totalSize: Long) : SendActionResult()
         data object Failure : SendActionResult()
+    }
+    //endregion
+
+    //region Transfer Advanced Options
+    private val _selectedValidityPeriodOption = MutableStateFlow<ValidityPeriodOption?>(null)
+    val selectedValidityPeriodOption: StateFlow<ValidityPeriodOption?> = _selectedValidityPeriodOption.asStateFlow()
+
+    private val _selectedDownloadLimitOption = MutableStateFlow<DownloadLimitOption?>(null)
+    val selectedDownloadLimitOption: StateFlow<DownloadLimitOption?> = _selectedDownloadLimitOption.asStateFlow()
+
+    private val _selectedPasswordOption = MutableStateFlow(PasswordTransferOption.NONE)
+    val selectedPasswordOption: StateFlow<PasswordTransferOption?> = _selectedPasswordOption.asStateFlow()
+
+    private val _selectedLanguageOption = MutableStateFlow<EmailLanguageOption?>(null)
+    val selectedLanguageOption: StateFlow<EmailLanguageOption?> = _selectedLanguageOption.asStateFlow()
+
+    fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
+        _selectedValidityPeriodOption.value = validityPeriodOption
+    }
+
+    fun selectTransferDownloadLimit(downloadLimit: DownloadLimitOption) {
+        _selectedDownloadLimitOption.value = downloadLimit
+    }
+
+    fun selectTransferPasswordOption(passwordOption: PasswordTransferOption) {
+        _selectedPasswordOption.value = passwordOption
+    }
+
+    fun selectTransferLanguage(language: EmailLanguageOption) {
+        _selectedLanguageOption.value = language
+    }
+
+    fun initTransferAdvancedOptionsValues(safeAppSettings: AppSettings) {
+        selectTransferValidityPeriod(safeAppSettings.validityPeriod.toAdvancedOption())
+        selectTransferDownloadLimit(safeAppSettings.downloadLimit.toAdvancedOption())
+        selectTransferLanguage(safeAppSettings.emailLanguage.toAdvancedOption())
+    }
+    //endregion
+
+    companion object {
+        private val TAG = NewTransferViewModel::class.java.simpleName
+        private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 }
