@@ -30,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
@@ -109,6 +110,7 @@ private fun ColumnScope.AnimatedPasswordInput(
             label = stringResource(R.string.settingsOptionPassword),
             isPassword = true,
             initialValue = password.get(),
+            imeAction = ImeAction.Done,
             errorMessage = { if (isPasswordValid()) null else stringResource(R.string.errorTransferPasswordLength) },
             onValueChange = { password.set(it) },
         )
