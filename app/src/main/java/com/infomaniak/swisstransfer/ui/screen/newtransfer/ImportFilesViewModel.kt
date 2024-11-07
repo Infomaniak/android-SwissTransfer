@@ -242,7 +242,7 @@ class ImportFilesViewModel @Inject constructor(
 
     private val isPasswordValid by derivedStateOf {
         val trimmedPassword = transferPassword.trim()
-        trimmedPassword.length in 6..25
+        trimmedPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH
     }
     //endregion
 
@@ -253,6 +253,10 @@ class ImportFilesViewModel @Inject constructor(
 
     companion object {
         private val TAG = ImportFilesViewModel::class.java.simpleName
+
+        private const val PASSWORD_MIN_LENGTH = 6
+        private const val PASSWORD_MAX_LENGTH = 25
+
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
         private const val SELECTED_TRANSFER_TYPE = "SELECTED_TRANSFER_TYPE"
         private const val SELECTED_VALIDITY_PERIOD_KEY = "SELECTED_VALIDITY_PERIOD_KEY"

@@ -222,7 +222,7 @@ private fun ImportFilesScreen(
                     advancedOptionsCallbacks.onAdvancedOptionsValueSelected(passwordOption)
                     closeAdvancedOption()
                 },
-                onDismiss = ::closeAdvancedOption,
+                closeAlertDialog = ::closeAdvancedOption,
                 isPasswordValid = advancedOptionsCallbacks.isPasswordValid,
             )
 

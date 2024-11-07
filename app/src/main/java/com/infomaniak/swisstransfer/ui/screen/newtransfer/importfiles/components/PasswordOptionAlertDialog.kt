@@ -44,7 +44,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 fun PasswordOptionAlertDialog(
     password: GetSetCallbacks<String>,
     showPasswordOptionAlert: () -> Boolean,
-    onDismiss: () -> Unit,
+    closeAlertDialog: () -> Unit,
     onConfirmation: (PasswordTransferOption) -> Unit,
     isPasswordValid: () -> Boolean,
 ) {
@@ -52,10 +52,10 @@ fun PasswordOptionAlertDialog(
     var isPasswordActivated by rememberSaveable { mutableStateOf(password.get().isNotEmpty()) }
     var lastValidPassword by remember { mutableStateOf("") }
 
-    fun onDismissRequest() {
+    fun onDismiss() {
         isPasswordActivated = lastValidPassword.isNotEmpty()
         password.set(lastValidPassword)
-        onDismiss()
+        closeAlertDialog()
     }
 
     fun onConfirmButtonClicked() {
@@ -74,7 +74,7 @@ fun PasswordOptionAlertDialog(
         SwissTransferAlertDialog(
             titleRes = R.string.settingsOptionPassword,
             descriptionRes = R.string.settingsPasswordDescription,
-            onDismissRequest = ::onDismissRequest,
+            onDismiss = ::onDismiss,
             onConfirmation = ::onConfirmButtonClicked,
             shouldEnableConfirmButton = { if (isPasswordActivated) isPasswordValid() else true },
         ) {
@@ -123,7 +123,7 @@ fun Preview() {
             PasswordOptionAlertDialog(
                 password = GetSetCallbacks(get = { "pass" }, set = {}),
                 showPasswordOptionAlert = { true },
-                onDismiss = {},
+                closeAlertDialog = {},
                 onConfirmation = {},
                 isPasswordValid = { false },
             )

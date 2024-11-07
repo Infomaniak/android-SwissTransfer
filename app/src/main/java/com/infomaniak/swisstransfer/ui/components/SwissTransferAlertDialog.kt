@@ -36,13 +36,13 @@ fun SwissTransferAlertDialog(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
-    onDismissRequest: () -> Unit,
+    onDismiss: () -> Unit,
     onConfirmation: () -> Unit,
     shouldEnableConfirmButton: () -> Boolean = { true },
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     BasicAlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = onDismiss,
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth(),
@@ -53,7 +53,7 @@ fun SwissTransferAlertDialog(
                 titleRes = titleRes,
                 descriptionRes = descriptionRes,
                 additionalContent = content,
-                onDismissRequest = onDismissRequest,
+                onDismiss = onDismiss,
                 onConfirmation = onConfirmation,
                 shouldEnableConfirmButton = shouldEnableConfirmButton,
             )
@@ -62,12 +62,12 @@ fun SwissTransferAlertDialog(
 }
 
 @Composable
-fun BasicAlertDialogContent(
+private fun BasicAlertDialogContent(
     modifier: Modifier,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
-    onDismissRequest: () -> Unit,
+    onDismiss: () -> Unit,
     onConfirmation: () -> Unit,
     shouldEnableConfirmButton: () -> Boolean = { true },
 ) {
@@ -77,7 +77,7 @@ fun BasicAlertDialogContent(
             it()
             Spacer(Modifier.height(Margin.Large))
         }
-        ActionButtons(onDismissRequest, onConfirmation, shouldEnableConfirmButton)
+        ActionButtons(onDismiss, onConfirmation, shouldEnableConfirmButton)
     }
 }
 
@@ -126,7 +126,7 @@ private fun PreviewAlertDialog() {
             SwissTransferAlertDialog(
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsPasswordDescription,
-                onDismissRequest = {},
+                onDismiss = {},
                 onConfirmation = {},
             )
         }
