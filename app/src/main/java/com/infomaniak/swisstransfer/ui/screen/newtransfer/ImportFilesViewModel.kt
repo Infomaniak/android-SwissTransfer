@@ -18,10 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -151,52 +148,47 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     //region Transfer Type
-    private val _selectedTransferType = MutableStateFlow(savedStateHandle[SELECTED_TRANSFER_TYPE] ?: TransferType.LINK)
-    val selectedTransferType: StateFlow<TransferType> = _selectedTransferType
+    val selectedTransferType = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferType.LINK)
 
     fun selectTransferType(type: TransferType) {
-        _selectedTransferType.value = type
         savedStateHandle[SELECTED_TRANSFER_TYPE] = type
     }
     //endregion
 
     //region Transfer Advanced Options
-
-    private val _selectedValidityPeriodOption = MutableStateFlow<ValidityPeriodOption?>(
-        savedStateHandle[SELECTED_VALIDITY_PERIOD_KEY]
+    val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
+        key = SELECTED_VALIDITY_PERIOD_KEY,
+        initialValue = ValidityPeriodOption.THIRTY
     )
-    val selectedValidityPeriodOption: StateFlow<ValidityPeriodOption?> = _selectedValidityPeriodOption.asStateFlow()
 
-    private val _selectedDownloadLimitOption = MutableStateFlow<DownloadLimitOption?>(
-        savedStateHandle[SELECTED_DOWNLOAD_LIMIT_KEY]
+    val selectedDownloadLimitOption = savedStateHandle.getStateFlow(
+        key = SELECTED_DOWNLOAD_LIMIT_KEY,
+        initialValue = DownloadLimitOption.TWO_HUNDRED_FIFTY,
     )
-    val selectedDownloadLimitOption: StateFlow<DownloadLimitOption?> = _selectedDownloadLimitOption.asStateFlow()
 
-    private val _selectedPasswordOption = MutableStateFlow<PasswordTransferOption?>(
-        savedStateHandle[SELECTED_PASSWORD_OPTION_KEY] ?: PasswordTransferOption.NONE
+    val selectedPasswordOption = savedStateHandle.getStateFlow(
+        key = SELECTED_PASSWORD_OPTION_KEY,
+        initialValue = PasswordTransferOption.NONE,
     )
-    val selectedPasswordOption: StateFlow<PasswordTransferOption?> = _selectedPasswordOption.asStateFlow()
 
-    private val _selectedLanguageOption = MutableStateFlow<EmailLanguageOption?>(savedStateHandle[SELECTED_LANGUAGE_KEY])
-    val selectedLanguageOption: StateFlow<EmailLanguageOption?> = _selectedLanguageOption.asStateFlow()
+    val selectedLanguageOption = savedStateHandle.getStateFlow(
+        key = SELECTED_LANGUAGE_KEY,
+        initialValue = EmailLanguageOption.FRENCH,
+    )
 
     private fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
-        _selectedValidityPeriodOption.value = validityPeriodOption
         savedStateHandle[SELECTED_VALIDITY_PERIOD_KEY] = validityPeriodOption
     }
 
     private fun selectTransferDownloadLimit(downloadLimit: DownloadLimitOption) {
-        _selectedDownloadLimitOption.value = downloadLimit
         savedStateHandle[SELECTED_DOWNLOAD_LIMIT_KEY] = downloadLimit
     }
 
     private fun selectTransferPasswordOption(passwordOption: PasswordTransferOption) {
-        _selectedPasswordOption.value = passwordOption
         savedStateHandle[SELECTED_PASSWORD_OPTION_KEY] = passwordOption
     }
 
     private fun selectTransferLanguage(language: EmailLanguageOption) {
-        _selectedLanguageOption.value = language
         savedStateHandle[SELECTED_LANGUAGE_KEY] = language
     }
 

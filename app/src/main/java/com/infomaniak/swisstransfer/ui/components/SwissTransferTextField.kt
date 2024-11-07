@@ -78,7 +78,12 @@ fun SwissTransferTextField(
 
     @Composable
     fun getSupportingText(): (@Composable () -> Unit)? {
-        val displayText = if (text.isEmpty()) supportingText else errorMessage() ?: supportingText
+        val displayText = if (text.isEmpty()) {
+            supportingText
+        } else {
+            errorMessage() ?: supportingText
+        }
+
         return displayText?.let { @Composable { Text(it) } }
     }
 

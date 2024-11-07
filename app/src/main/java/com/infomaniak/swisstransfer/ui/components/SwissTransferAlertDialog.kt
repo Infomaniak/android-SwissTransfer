@@ -73,6 +73,7 @@ private fun BasicAlertDialogContent(
 ) {
     Column(modifier.padding(Margin.Large)) {
         TitleAndDescription(titleRes, descriptionRes)
+        Spacer(Modifier.height(Margin.Large))
         additionalContent?.let {
             it()
             Spacer(Modifier.height(Margin.Large))
@@ -94,7 +95,6 @@ private fun TitleAndDescription(titleRes: Int, descriptionRes: Int) {
         style = SwissTransferTheme.typography.bodyRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
     )
-    Spacer(Modifier.height(Margin.Large))
 }
 
 @Composable
