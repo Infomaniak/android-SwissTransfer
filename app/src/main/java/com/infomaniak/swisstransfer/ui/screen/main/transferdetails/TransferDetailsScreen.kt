@@ -22,11 +22,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -147,7 +144,7 @@ fun TransferDetailsScreen(
             ) {
                 Column {
                     Spacer(modifier = Modifier.height(Margin.Large))
-                    TransferInfos(transfer)
+                    TransferInfo(transfer)
                     TransferMessage(transfer, transferSenderEmail)
                     Spacer(modifier = Modifier.height(Margin.Large))
                     TransferContentHeader()
@@ -176,10 +173,10 @@ fun TransferDetailsScreen(
 }
 
 @Composable
-private fun TransferInfos(transfer: TransferUi) {
+private fun TransferInfo(transfer: TransferUi) {
 
-    val filesCount = transfer.files.count()
-    val downloadedCount = transfer.downloadLimit - transfer.downloadLeft
+    val filesCount by remember { derivedStateOf { transfer.files.count() } }
+    val downloadedCount by remember { derivedStateOf { transfer.downloadLimit - transfer.downloadLeft } }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
