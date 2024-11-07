@@ -26,16 +26,13 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -57,23 +54,17 @@ private fun ListPane(navigator: ThreePaneScaffoldNavigator<String>) {
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun DetailPane(navigator: ThreePaneScaffoldNavigator<String>) {
-    var lastSelectedTransfer by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val transferUuid = navigator.currentDestination?.content ?: lastSelectedTransfer
-    navigator.currentDestination?.content?.let { lastSelectedTransfer = it }
+    val transferUuid = navigator.currentDestination?.content
 
     if (transferUuid == null) {
         NoSelectionEmptyState()
-        return
+    } else {
+        TransferDetailsScreen(
+            transferUuid = transferUuid,
+            navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+        )
     }
-
-    val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
-    val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
-
-    TransferDetailsScreen(
-        transferUuid = transferUuid,
-        navigateBack = navigateBack,
-    )
 }
 
 // Show the detail pane content if selected item is available

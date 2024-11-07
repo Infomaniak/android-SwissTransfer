@@ -127,8 +127,7 @@ private fun DetailPane(
     val destination = navigator.currentDestination?.content ?: lastSelectedScreen
     navigator.currentDestination?.content?.let { lastSelectedScreen = it }
 
-    val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
-    val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+    val navigateBack = ScreenWrapperUtils.getBackNavigation(navigator)
 
     when (destination) {
         THEME -> SettingsThemeScreen(
