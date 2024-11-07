@@ -31,7 +31,6 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
