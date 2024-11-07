@@ -47,6 +47,7 @@ import java.util.UUID
 @Composable
 fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
     sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
@@ -54,6 +55,7 @@ fun ReceivedScreen(
 
     ReceivedScreen(
         navigateToDetails = navigateToDetails,
+        getSelectedTransferUuid = getSelectedTransferUuid,
         areTransfersEmpty = { areTransfersEmpty },
     )
 }
@@ -61,6 +63,7 @@ fun ReceivedScreen(
 @Composable
 private fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
     areTransfersEmpty: () -> Boolean,
 ) {
 
@@ -169,6 +172,7 @@ private fun ReceivedScreen(
             TransferItemList(
                 modifier = Modifier.padding(Margin.Medium),
                 transfers = transfers,
+                getSelectedTransferUuid = getSelectedTransferUuid,
                 onClick = { transfer ->
                     when {
                         transfer.expiresInDays < 0 -> {
@@ -211,6 +215,7 @@ private fun Preview() {
         Surface {
             ReceivedScreen(
                 navigateToDetails = {},
+                getSelectedTransferUuid = { null },
                 areTransfersEmpty = { true },
             )
         }

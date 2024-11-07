@@ -87,6 +87,7 @@ data class CustomColorScheme(
     val qrCodeLightPixels: Color = Color.Unspecified,
     val transferFilePreviewOverflow: Color = Color.Unspecified,
     val onTransferFilePreviewOverflow: Color = Color.Unspecified,
+    val transferListStroke: Color = Color.Unspecified,
 )
 
 private val Shapes = Shapes(

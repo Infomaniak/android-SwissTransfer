@@ -49,6 +49,7 @@ fun ReceivedScreenWrapper() {
 private fun ListPane(navigator: ThreePaneScaffoldNavigator<String>) {
     ReceivedScreen(
         navigateToDetails = { transferUuid -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid) },
+        getSelectedTransferUuid = { navigator.currentDestination?.content },
     )
 }
 

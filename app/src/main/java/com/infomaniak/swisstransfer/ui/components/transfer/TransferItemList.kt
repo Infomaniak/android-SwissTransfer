@@ -39,8 +39,12 @@ import java.util.UUID
 fun TransferItemList(
     modifier: Modifier = Modifier,
     transfers: List<TransferUi>,
+    getSelectedTransferUuid: () -> String?,
     onClick: (TransferUi) -> Unit,
 ) {
+
+    val selectedTransferUuid = getSelectedTransferUuid()
+
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Medium),
@@ -60,7 +64,11 @@ fun TransferItemList(
             contentType = { transfers[it] },
             itemContent = {
                 val transfer = transfers[it]
-                TransferItem(transfer) { onClick(transfer) }
+                TransferItem(
+                    transfer = transfer,
+                    isSelected = { selectedTransferUuid == transfer.uuid },
+                    onClick = { onClick(transfer) },
+                )
             },
         )
     }
@@ -159,7 +167,11 @@ private fun Preview() {
 
     SwissTransferTheme {
         Surface {
-            TransferItemList(transfers = transfers, onClick = {})
+            TransferItemList(
+                transfers = transfers,
+                getSelectedTransferUuid = { null },
+                onClick = {},
+            )
         }
     }
 }

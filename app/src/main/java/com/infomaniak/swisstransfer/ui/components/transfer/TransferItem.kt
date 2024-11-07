@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
@@ -45,7 +47,11 @@ import java.util.UUID
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
+fun TransferItem(
+    transfer: TransferUi,
+    isSelected: () -> Boolean,
+    onClick: () -> Unit,
+) {
 
     val createdDate = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
     val expirationDate = Date(transfer.expirationDateTimestamp)
@@ -66,11 +72,17 @@ fun TransferItem(transfer: TransferUi, onClick: () -> Unit) {
             stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
         }
     }
+    val border = if (isSelected()) {
+        BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.colors.transferListStroke)
+    } else {
+        null
+    }
 
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
         shape = CustomShapes.SMALL,
+        border = border,
     ) {
         Row(
             modifier = Modifier.padding(Margin.Medium),
@@ -178,6 +190,7 @@ private fun Preview() {
                         ),
                     ),
                 ),
+                isSelected = { false },
                 onClick = {},
             )
         }
