@@ -18,8 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components.transfer
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,10 +44,10 @@ fun TransferItemList(
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Medium),
+        contentPadding = PaddingValues(top = Margin.Mini),
     ) {
 
         item {
-            Spacer(modifier = Modifier.height(Margin.Mini))
             Text(
                 text = stringResource(R.string.receivedFilesTitle),
                 style = SwissTransferTheme.typography.h1,
