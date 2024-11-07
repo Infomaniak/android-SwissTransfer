@@ -31,7 +31,6 @@
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
-    <string name="expiredThe">Abgelaufen am %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
@@ -93,6 +92,7 @@
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Fakultativ)</string>
     <string name="transferContentHeader">Inhalt der Übertragung :</string>
+    <string name="transferExpired">Transfer abgelaufen</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
     <string name="transferExpiredLimitReachedDescription">Entschuldigung, diese Übertragung hat die Grenze der %d möglichen Downloads erreicht.</string>

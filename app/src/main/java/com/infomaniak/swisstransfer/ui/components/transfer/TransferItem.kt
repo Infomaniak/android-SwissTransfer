@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.infomaniak.core2.FORMAT_DATE_SIMPLE
 import com.infomaniak.core2.FORMAT_DATE_TITLE
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -53,23 +52,15 @@ fun TransferItem(
 ) {
 
     val createdDate = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
-    val expirationDate = Date(transfer.expirationDateTimestamp)
     val remainingDays = transfer.expiresInDays
     val remainingDownloads = transfer.downloadLeft
     val uploadedSize = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, transfer.sizeUploaded)
     val files = transfer.files
     val filesCount = files.count()
-    val (expiryText, expiryColor) = when {
-        remainingDays < 0 -> {
-            stringResource(R.string.expiredThe, expirationDate.format(FORMAT_DATE_SIMPLE)) to
-                    SwissTransferTheme.materialColors.error
-        }
-        remainingDownloads == 0 -> {
-            "Transfert expiré (TODO)" to SwissTransferTheme.materialColors.error
-        }
-        else -> {
-            stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
-        }
+    val (expiryText, expiryColor) = if (remainingDays < 0 || remainingDownloads == 0) {
+        stringResource(R.string.transferExpired) to SwissTransferTheme.materialColors.error
+    } else {
+        stringResource(R.string.expiresIn, remainingDays) to SwissTransferTheme.colors.secondaryTextColor
     }
     val border = if (isSelected()) {
         BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.colors.transferListStroke)
