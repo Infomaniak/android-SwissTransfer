@@ -159,10 +159,7 @@ private fun ImportFilesScreen(
 ) {
     val context = LocalContext.current
     var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
-    var showValidityPeriodBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showDownloadLimitBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showPasswordOptionBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showEmailLanguageBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showOptionBottomSheet by rememberSaveable { mutableStateOf<TransferAdvancedSettingType?>(null) }
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
@@ -177,13 +174,8 @@ private fun ImportFilesScreen(
         addFiles(uris)
     }
 
-    fun onAdvancedOptionClicked(advancedOption: TransferAdvancedSettingType) {
-        when (advancedOption) {
-            TransferAdvancedSettingType.VALIDITY_DURATION -> showValidityPeriodBottomSheet = true
-            TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT -> showDownloadLimitBottomSheet = true
-            TransferAdvancedSettingType.PASSWORD -> showPasswordOptionBottomSheet = true
-            TransferAdvancedSettingType.LANGUAGE -> showEmailLanguageBottomSheet = true
-        }
+    fun closeOptionBottomSheet() {
+        showOptionBottomSheet = null
     }
 
     BottomStickyButtonScaffold(
@@ -217,35 +209,35 @@ private fun ImportFilesScreen(
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferAdvancedSettings(
                     advancedSettingsItemsStates = advancedOptionsCallbacks.advancedOptionsStates,
-                    onClick = ::onAdvancedOptionClicked,
+                    onClick = { selectedOption -> showOptionBottomSheet = selectedOption },
                 )
             }
 
             ValidityPeriodBottomSheet(
-                isBottomSheetVisible = { showValidityPeriodBottomSheet },
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.VALIDITY_DURATION },
                 onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = { showValidityPeriodBottomSheet = false },
+                closeBottomSheet = ::closeOptionBottomSheet,
                 initialValue = advancedOptionsCallbacks.advancedOptionsStates()[0].settingState(),
             )
 
             DownloadLimitBottomSheet(
-                isBottomSheetVisible = { showDownloadLimitBottomSheet },
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT },
                 onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = { showDownloadLimitBottomSheet = false },
+                closeBottomSheet = ::closeOptionBottomSheet,
                 initialValue = advancedOptionsCallbacks.advancedOptionsStates()[1].settingState(),
             )
 
             PasswordOptionBottomSheet(
-                isBottomSheetVisible = { showPasswordOptionBottomSheet },
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.PASSWORD },
                 onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = { showPasswordOptionBottomSheet = false },
+                closeBottomSheet = ::closeOptionBottomSheet,
                 initialValue = advancedOptionsCallbacks.advancedOptionsStates()[2].settingState(),
             )
 
             EmailLanguageBottomSheet(
-                isBottomSheetVisible = { showEmailLanguageBottomSheet },
+                isBottomSheetVisible = { showOptionBottomSheet == TransferAdvancedSettingType.LANGUAGE },
                 onOptionClicked = { advancedOptionsCallbacks.onAdvancedOptionsValueSelected(it) },
-                closeBottomSheet = { showEmailLanguageBottomSheet = false },
+                closeBottomSheet = ::closeOptionBottomSheet,
                 initialValue = advancedOptionsCallbacks.advancedOptionsStates()[3].settingState(),
             )
 
