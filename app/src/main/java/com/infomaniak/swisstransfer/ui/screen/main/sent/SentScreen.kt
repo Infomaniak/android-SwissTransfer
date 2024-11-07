@@ -32,7 +32,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun SentScreen(
-    navigateToDetails: (transferId: Int) -> Unit,
+    navigateToDetails: (transferUuid: String) -> Unit,
     sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
 ) {
     val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()

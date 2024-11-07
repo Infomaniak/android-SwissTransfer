@@ -15,21 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
+package com.infomaniak.swisstransfer.ui.utils
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.infomaniak.swisstransfer.ui.theme.Margin
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 
-@Composable
-fun TransferDetailsScreen(
-    transferUuid: String,
-    navigateBack: (() -> Unit)?,
-) {
-    Text(
-        text = "TransferDetails for transfer $transferUuid",
-        modifier = Modifier.padding(all = Margin.Giant),
-    )
+object ScreenWrapperUtils {
+
+    @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+    fun getBackNavigation(navigator: ThreePaneScaffoldNavigator<*>): (() -> Unit)? {
+        val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
+        val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+        return navigateBack
+    }
 }
