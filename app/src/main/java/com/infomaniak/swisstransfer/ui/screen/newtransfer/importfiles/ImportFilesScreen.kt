@@ -67,7 +67,7 @@ fun ImportFilesScreen(
     val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
     val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
 
-    HandleSendActionResult({ sendActionResult }, selectedTransferType, navigateToUploadProgress)
+    HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
     ImportFilesScreen(
         files = { files },
@@ -88,12 +88,12 @@ fun ImportFilesScreen(
 @Composable
 private fun HandleSendActionResult(
     getSendActionResult: () -> SendActionResult?,
-    transferType: TransferType,
+    transferType: () -> TransferType,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> navigateToUploadProgress(transferType, actionResult.totalSize)
+            is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
             is SendActionResult.Failure -> Unit //TODO: Show error
             else -> Unit
         }

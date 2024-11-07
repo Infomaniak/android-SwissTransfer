@@ -126,7 +126,7 @@ class UploadFileTask(
             data = data,
             onUpload = { bytesSentTotal, _ ->
                 mutex.withLock {
-                    ensureActive()
+                    ensureActive() // Cancel when this chunk is resumed while parent scope is cancelled
                     onUploadBytes(bytesSentTotal - oldBytesSentTotal)
                     oldBytesSentTotal = bytesSentTotal
                 }

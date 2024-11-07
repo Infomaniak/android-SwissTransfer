@@ -34,7 +34,6 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -46,9 +45,8 @@ import com.infomaniak.swisstransfer.workers.UploadWorker.UploadProgressUiState
 @Composable
 fun UploadProgressScreen(
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
-    transferType: TransferType,
     totalSizeInBytes: Long,
-    navigateToUploadSuccess: (TransferType, String) -> Unit,
+    navigateToUploadSuccess: (String) -> Unit,
     closeActivity: () -> Unit,
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
@@ -64,7 +62,7 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleProgressState({ uiState }, transferType, navigateToUploadSuccess)
+    HandleProgressState({ uiState }, navigateToUploadSuccess)
 
     UploadProgressScreen(
         progressState = { uiState },
@@ -81,14 +79,13 @@ fun UploadProgressScreen(
 @Composable
 private fun HandleProgressState(
     uiState: () -> UploadProgressUiState,
-    transferType: TransferType,
-    navigateToUploadSuccess: (TransferType, String) -> Unit
+    navigateToUploadSuccess: (String) -> Unit
 ) {
     val currentUiState = uiState()
     LaunchedEffect(uiState()) {
         when (currentUiState) {
             is UploadProgressUiState.Success -> {
-                navigateToUploadSuccess(transferType, currentUiState.transferLink)
+                navigateToUploadSuccess(currentUiState.transferLink)
             }
             is UploadProgressUiState.Cancelled -> {
                 // TODO: navigate to failure screen

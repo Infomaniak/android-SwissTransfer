@@ -51,10 +51,9 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<UploadProgressDestination> {
             val args = it.toRoute<UploadProgressDestination>()
             UploadProgressScreen(
-                transferType = args.transferType,
                 totalSizeInBytes = args.totalSize,
-                navigateToUploadSuccess = { transferType, transferLink ->
-                    navController.navigate(UploadSuccessDestination(transferType, transferLink))
+                navigateToUploadSuccess = { transferLink ->
+                    navController.navigate(UploadSuccessDestination(args.transferType, transferLink))
                 },
                 closeActivity = closeActivity
             )
