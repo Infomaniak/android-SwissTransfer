@@ -42,15 +42,6 @@ fun SwissTransferTopAppBar(
 }
 
 @Composable
-fun SwissTransferTopAppBar(
-    @StringRes titleRes: Int,
-    navigationMenu: TopAppBarButton? = null,
-    vararg actionMenus: TopAppBarButton,
-) {
-    SwissTransferTopAppBar(title = stringResource(titleRes), navigationMenu, *actionMenus)
-}
-
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
     title: String,
