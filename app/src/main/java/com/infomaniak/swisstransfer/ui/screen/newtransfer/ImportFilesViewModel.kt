@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewTransferViewModel @Inject constructor(
+class ImportFilesViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
     private val uploadManager: UploadManager,
@@ -192,7 +192,7 @@ class NewTransferViewModel @Inject constructor(
     //endregion
 
     companion object {
-        private val TAG = NewTransferViewModel::class.java.simpleName
+        private val TAG = ImportFilesViewModel::class.java.simpleName
         private const val IS_VIEW_MODEL_RESTORED_KEY = "IS_VIEW_MODEL_RESTORED_KEY"
     }
 }
