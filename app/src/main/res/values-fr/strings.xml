@@ -31,7 +31,6 @@
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
-    <string name="expiredThe">Expiré le %s</string>
     <string name="expiresIn">Expire dans %d jours</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
@@ -94,6 +93,7 @@
     <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
     <string name="textFieldOptional">(Facultatif)</string>
     <string name="transferContentHeader">Contenu du transfert :</string>
+    <string name="transferExpired">Transfert expiré</string>
     <string name="transferExpiredButton">Supprimer de l’historique</string>
     <string name="transferExpiredDateReachedDescription">Désolé, ce transfert a expiré le %s. Tu ne peux plus télécharger ni consulter les fichiers.</string>
     <string name="transferExpiredLimitReachedDescription">Désolé, ce transfert a atteint la limite de %d téléchargements possibles.</string>
