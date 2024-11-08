@@ -117,7 +117,7 @@ private fun UploadProgressScreen(
             AdHeader(adScreenType)
 
             Spacer(modifier = Modifier.height(Margin.Medium))
-            Text(stringResource(R.string.uploadSuccessTransferInProgress))
+            Text(stringResource(R.string.uploadProgressIndication))
             Progress(progressState, totalSizeInBytes)
             Spacer(modifier = Modifier.height(Margin.Huge))
         }

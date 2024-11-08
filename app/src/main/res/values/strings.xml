@@ -123,14 +123,15 @@
     <string name="uploadCancelConfirmBottomSheetCancel">Cancel the transfer</string>
     <string name="uploadCancelConfirmBottomSheetClose">Close and continue</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Are you sure you want to cancel the transfer?</string>
+    <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
+    <string name="uploadErrorTitle">Wait, what just happened?</string>
     <string name="uploadProgressDescriptionArgumentConfidentiality">Internet that respects confidentiality and privacy.</string>
     <string name="uploadProgressDescriptionArgumentEnergy">our own data centers, without air conditioning</string>
     <string name="uploadProgressDescriptionArgumentIndependence">technological independence in Europe.</string>
     <string name="uploadProgressDescriptionTemplateConfidentiality">We’re independent and contribute to an %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">We design %s, to exceed market standards for energy efficiency.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">We develop %s Without compromising on ecology, privacy and people.</string>
-    <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
-    <string name="uploadErrorTitle">Wait, what just happened?</string>
+    <string name="uploadProgressIndication">Transfer in progress…</string>
     <string name="uploadProgressTitleArgument">apart</string>
     <string name="uploadProgressTitleTemplate">What sets us %s?</string>
     <plurals name="uploadSuccessEmailDescription">
@@ -141,7 +142,6 @@
     <string name="uploadSuccessLinkDescription">Scan this QR code around you to share your files, or copy the link below.</string>
     <string name="uploadSuccessLinkTitle">Your transfer is ready!</string>
     <string name="uploadSuccessQrTitle">Your QR code is ready!</string>
-    <string name="uploadSuccessTransferInProgress">Transfer in progress…</string>
     <string name="urlAbout">https://www.infomaniak.com/en/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/f12466ad-db5b-4f5c-b24c-a54b0a5117ca/#ideas/popular</string>
     <string name="version">Version</string>
