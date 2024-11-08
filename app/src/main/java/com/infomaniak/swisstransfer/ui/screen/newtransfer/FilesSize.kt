@@ -21,6 +21,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,19 +41,19 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceL
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 
 @Composable
-fun FilesSize(modifier: Modifier, files: () -> List<FileUi>, withSpaceLeft: Boolean) {
-    Row(modifier = modifier) {
+fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
+    Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
+        Spacer(Modifier.size(Margin.Medium))
         val context = LocalContext.current
         TextDotText(
             firstText = {
-                val filesCount = files().count()
+                val filesCount = files.count()
                 pluralStringResource(R.plurals.filesCount, filesCount, filesCount)
             },
-            secondText = { HumanReadableSizeUtils.getHumanReadableSize(context, files().sumOf { it.fileSize }) },
-            modifier = Modifier.padding(start = Margin.Medium),
+            secondText = { HumanReadableSizeUtils.getHumanReadableSize(context, files.sumOf { it.fileSize }) },
         )
         if (withSpaceLeft) {
-            val spaceLeft = formatSpaceLeft { context.getSpaceLeft(files()) }
+            val spaceLeft = formatSpaceLeft { context.getSpaceLeft(files) }
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.padding(horizontal = Margin.Medium),
@@ -70,7 +71,7 @@ fun FilesSize(modifier: Modifier, files: () -> List<FileUi>, withSpaceLeft: Bool
 fun FileSizePreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface {
-            FilesSize(Modifier.padding(Margin.Medium), { files }, withSpaceLeft = true)
+            FilesSize(files, withSpaceLeft = true)
         }
     }
 }

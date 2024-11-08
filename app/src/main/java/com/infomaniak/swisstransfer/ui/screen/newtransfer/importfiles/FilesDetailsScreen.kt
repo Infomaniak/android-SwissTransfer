@@ -47,11 +47,8 @@ fun FilesDetailsScreen(
     val files by filesDetailsViewModel.getFilesFromUUID(fileId).collectAsStateWithLifecycle(emptyList())
 
     FilesDetailsScreen(
-        title = {
-            //TODO Get fileId detail to get the title
-            "Some Folder"
-        },
-        files = { files ?: emptyList() },
+        title = "Some Folder", //TODO Get fileId detail to get the title
+        files = files ?: emptyList(),
         navigateToDetails = navigateToDetails,
         withSpaceLeft = withSpaceLeft,
         onFileRemoved = onFileRemoved,
@@ -62,8 +59,8 @@ fun FilesDetailsScreen(
 
 @Composable
 private fun FilesDetailsScreen(
-    title: () -> String,
-    files: () -> List<FileUi>,
+    title: String,
+    files: List<FileUi>,
     navigateToDetails: (String) -> Unit,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
@@ -72,17 +69,17 @@ private fun FilesDetailsScreen(
 ) {
     Column {
         SwissTransferTopAppBar(
-            title = title(),
+            title = title,
             navigationMenu = TopAppBarButton.backButton { navigateBack() },
             TopAppBarButton.closeButton { onCloseClicked() },
         )
 
-        FilesSize(Modifier.padding(vertical = Margin.Medium), files, withSpaceLeft)
+        FilesSize(files, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
-            files = files(),
+            files = files,
             isRemoveButtonVisible = onFileRemoved != null,
-            isCheckboxVisible = false,
+            isCheckboxVisible = { false },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
@@ -100,7 +97,6 @@ private fun FilesDetailsScreenPreview() {
                 fileId = "",
                 navigateToDetails = {},
                 withSpaceLeft = true,
-                onFileRemoved = {},
                 onCloseClicked = {},
                 navigateBack = {},
             )
