@@ -149,13 +149,11 @@ private fun TextLayoutResult.getBoundingBoxesForRange(start: Int, end: Int): Lis
 
         if (firstLineCharRect == null) {
             firstLineCharRect = rect
-        } else if (previousRect != null) {
-            if (previousRect.bottom != rect.bottom || isLastRect) {
-                boundingBoxes.add(
-                    firstLineCharRect.copy(right = previousRect.right)
-                )
-                firstLineCharRect = rect
-            }
+        } else if (previousRect != null && (previousRect.bottom != rect.bottom || isLastRect)) {
+            boundingBoxes.add(
+                firstLineCharRect.copy(right = previousRect.right)
+            )
+            firstLineCharRect = rect
         }
         previousRect = rect
     }
