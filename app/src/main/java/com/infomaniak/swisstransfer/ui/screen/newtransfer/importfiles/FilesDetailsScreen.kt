@@ -83,7 +83,10 @@ private fun FilesDetailsScreen(
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
-            onClick = { navigateToDetails(it) }
+            onClick = {
+                //TODO Check here if the clicked file is a folder before navigating
+                navigateToDetails(it)
+            }
         )
     }
 }
