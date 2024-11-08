@@ -39,7 +39,7 @@ sealed class MainNavigation : NavigationDestination() {
     data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
 
     @Serializable
-    data class FilesDetailsDestination(val fileId: String) : MainNavigation()
+    data class FilesDetailsDestination(val transferUuid: String? = null, val fileUuid: String? = null) : MainNavigation()
 
     @Serializable
     data object SettingsDestination : MainNavigation()
@@ -70,7 +70,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object UploadErrorDestination : NewTransferNavigation()
 
     @Serializable
-    data class FilesDetailsDestination(val fileId: String) : MainNavigation()
+    data class FilesDetailsDestination(val fileUuid: String) : MainNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination
