@@ -44,8 +44,8 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferViewModel.SendActionResult
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -57,35 +57,35 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportFilesScreen(
-    newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
+    importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
 ) {
-    val files by newTransferViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val filesToImportCount by newTransferViewModel.filesToImportCount.collectAsStateWithLifecycle()
-    val currentSessionFilesCount by newTransferViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
-    val selectedTransferType by newTransferViewModel.selectedTransferType.collectAsStateWithLifecycle()
-    val validityPeriodState by newTransferViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
-    val downloadLimitState by newTransferViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
-    val passwordOptionState by newTransferViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
-    val emailLanguageState by newTransferViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
+    val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
+    val currentSessionFilesCount by importFilesViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
+    val selectedTransferType by importFilesViewModel.selectedTransferType.collectAsStateWithLifecycle()
+    val validityPeriodState by importFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimitState by importFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-    val sendActionResult by newTransferViewModel.sendActionResult.collectAsStateWithLifecycle()
+    val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
     fun onAdvancedOptionsValueSelected(option: SettingOption) {
         when (option) {
-            is ValidityPeriodOption -> newTransferViewModel.selectTransferValidityPeriod(option)
-            is DownloadLimitOption -> newTransferViewModel.selectTransferDownloadLimit(option)
-            is PasswordTransferOption -> newTransferViewModel.selectTransferPasswordOption(option)
-            is EmailLanguageOption -> newTransferViewModel.selectTransferLanguage(option)
+            is ValidityPeriodOption -> importFilesViewModel.selectTransferValidityPeriod(option)
+            is DownloadLimitOption -> importFilesViewModel.selectTransferDownloadLimit(option)
+            is PasswordTransferOption -> importFilesViewModel.selectTransferPasswordOption(option)
+            is EmailLanguageOption -> importFilesViewModel.selectTransferLanguage(option)
         }
     }
 
     appSettings?.let { safeAppSettings ->
-        newTransferViewModel.initTransferAdvancedOptionsValues(safeAppSettings)
+        importFilesViewModel.initTransferAdvancedOptionsValues(safeAppSettings)
 
         val advancedOptionsCallbacks = AdvancedOptionsCallbacks(
             advancedOptionsStates = {
@@ -117,13 +117,13 @@ fun ImportFilesScreen(
             currentSessionFilesCount = { currentSessionFilesCount },
             selectedTransferType = GetSetCallbacks(
                 get = { selectedTransferType },
-                set = newTransferViewModel::selectTransferType,
+                set = importFilesViewModel::selectTransferType,
             ),
             advancedOptionsCallbacks = advancedOptionsCallbacks,
-            removeFileByUid = newTransferViewModel::removeFileByUid,
-            addFiles = newTransferViewModel::importFiles,
+            removeFileByUid = importFilesViewModel::removeFileByUid,
+            addFiles = importFilesViewModel::importFiles,
             closeActivity = closeActivity,
-            sendTransfer = newTransferViewModel::sendTransfer,
+            sendTransfer = importFilesViewModel::sendTransfer,
             initialShowUploadSourceChoiceBottomSheet = true,
         )
     }
