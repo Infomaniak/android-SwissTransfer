@@ -23,11 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
-private val WIDTH_LIMIT = 800.dp
 private val WIDTH_THRESHOLD = 500.dp
 
 @Composable
@@ -37,7 +37,7 @@ fun ColumnScope.DoubleButtonCombo(
 ) {
     BoxWithConstraints(
         modifier = Modifier
-            .widthIn(max = WIDTH_LIMIT)
+            .widthIn(max = Dimens.DoubleButtonMaxWidth)
             .align(Alignment.CenterHorizontally),
     ) {
         when {
@@ -95,7 +95,7 @@ private fun HorizontallyStackedButtons(
 
 @Composable
 private fun SingleButton(button: @Composable (Modifier) -> Unit) {
-    Box(Modifier.widthIn(max = WIDTH_LIMIT / 2)) {
+    Box(Modifier.widthIn(max = Dimens.SingleButtonMaxWidth)) {
         button(
             Modifier
                 .fillMaxWidth()

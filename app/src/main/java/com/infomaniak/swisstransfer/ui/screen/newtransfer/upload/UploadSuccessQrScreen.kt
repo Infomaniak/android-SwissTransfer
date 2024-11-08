@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -27,114 +26,91 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.icons.DocumentOnDocument
-import com.infomaniak.swisstransfer.ui.images.icons.PersonBadgeShare
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ShareAndCopyButtons
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.swisstransfer.ui.utils.copyText
-import com.infomaniak.swisstransfer.ui.utils.shareText
-import kotlinx.coroutines.launch
 
 @Composable
 fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, closeActivity: () -> Unit) {
-
-    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     BottomStickyButtonScaffold(
         snackbarHostState = snackbarHostState,
         topBar = { BrandTopAppBar() },
-        topButton = {
-            LargeButton(
-                modifier = it,
-                style = ButtonType.PRIMARY,
-                titleRes = R.string.buttonShare,
-                imageVector = AppIcons.PersonBadgeShare,
-                onClick = { context.shareText(transferUrl) },
-            )
-        },
         bottomButton = {
             LargeButton(
                 modifier = it,
-                style = ButtonType.SECONDARY,
+                style = ButtonType.PRIMARY,
                 titleRes = R.string.buttonFinished,
                 onClick = closeActivity,
             )
         },
-        content = { Content(context, snackbarHostState, transferType, transferUrl) },
+        content = { Content(snackbarHostState, transferType, transferUrl) },
     )
 }
 
 @Composable
-private fun Content(context: Context, snackbarHostState: SnackbarHostState, transferType: TransferType, transferUrl: String) {
+private fun Content(snackbarHostState: SnackbarHostState, transferType: TransferType, transferUrl: String) {
+    Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = Margin.Medium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Spacer(modifier = Modifier.height(Margin.Medium))
 
-    val scope = rememberCoroutineScope()
+            Image(
+                imageVector = AppIllus.Beers.image(),
+                contentDescription = null,
+            )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Margin.Medium),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-
-        Image(
-            imageVector = AppIllus.Beers.image(),
-            contentDescription = null,
-        )
-
-        Spacer(Modifier.height(Margin.Huge))
-
-        Text(
-            text = stringResource(transferType.titleRes),
-            style = SwissTransferTheme.typography.h1,
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-
-        Spacer(Modifier.height(Margin.Huge))
-
-        QrCode(transferUrl)
-
-        transferType.descriptionRes?.let { descriptionRes ->
             Spacer(Modifier.height(Margin.Huge))
-            Text(
-                text = stringResource(descriptionRes),
-                style = SwissTransferTheme.typography.bodyRegular,
-                textAlign = TextAlign.Center,
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
-            )
-        }
-    }
 
-    // TODO: What do we want to do with this button placement?
-    LargeButton(
-        modifier = Modifier.padding(Margin.Medium),
-        style = ButtonType.SECONDARY,
-        titleRes = R.string.buttonCopyLink,
-        imageVector = AppIcons.DocumentOnDocument,
-        onClick = {
-            context.copyText(
-                text = transferUrl,
-                showSnackbar = { scope.launch { snackbarHostState.showSnackbar(it) } },
+            Text(
+                text = stringResource(transferType.titleRes),
+                style = SwissTransferTheme.typography.h1,
+                color = SwissTransferTheme.colors.primaryTextColor,
             )
-        },
-    )
+
+            Spacer(Modifier.height(Margin.Huge))
+
+            QrCode(transferUrl)
+
+            transferType.descriptionRes?.let { descriptionRes ->
+                Spacer(Modifier.height(Margin.Huge))
+                Text(
+                    text = stringResource(descriptionRes),
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    textAlign = TextAlign.Center,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
+                )
+            }
+        }
+
+        ShareAndCopyButtons(
+            modifier = Modifier
+                .padding(horizontal = Margin.Medium)
+                .padding(bottom = Margin.Medium, top = Margin.Mini),
+            transferLink = transferUrl,
+            snackbarHostState = snackbarHostState,
+        )
+    }
 }
 
 @PreviewAllWindows
