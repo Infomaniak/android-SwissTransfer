@@ -48,6 +48,7 @@ fun UploadProgressScreen(
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
     totalSizeInBytes: Long,
     navigateToUploadSuccess: (String) -> Unit,
+    navigateToUploadError: () -> Unit,
     closeActivity: () -> Unit,
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
@@ -63,7 +64,7 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleProgressState({ uiState }, navigateToUploadSuccess)
+    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError)
 
     UploadProgressScreen(
         progressState = { uiState },
@@ -80,7 +81,8 @@ fun UploadProgressScreen(
 @Composable
 private fun HandleProgressState(
     uiState: () -> UploadProgressUiState,
-    navigateToUploadSuccess: (String) -> Unit
+    navigateToUploadSuccess: (String) -> Unit,
+    navigateToUploadError: () -> Unit,
 ) {
     val currentUiState = uiState()
     LaunchedEffect(uiState()) {
@@ -89,7 +91,7 @@ private fun HandleProgressState(
                 navigateToUploadSuccess(currentUiState.transferLink)
             }
             is UploadProgressUiState.Cancelled -> {
-                // TODO: navigate to failure screen
+                navigateToUploadError()
             }
             else -> Unit
         }
