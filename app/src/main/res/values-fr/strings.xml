@@ -128,6 +128,8 @@
     <string name="uploadProgressDescriptionTemplateIndependence">Nous développons %s Sans compromis sur l’écologie, la vie privée et l’humain.</string>
     <string name="uploadErrorDescription">Le transfert n’a pas fonctionné, donnes-lui une autre chance. Si le problème persiste, contacte notre support.</string>
     <string name="uploadErrorTitle">Qu’est-ce que quoi ?</string>
+    <string name="uploadProgressTitleArgument">différent</string>
+    <string name="uploadProgressTitleTemplate">Ce qui nous rend %s ?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Le lien de téléchargement a bien été envoyé au destinataire suivant :</item>
         <item quantity="other">Le lien de téléchargement a été envoyé aux destinataires suivants :</item>
@@ -136,7 +138,6 @@
     <string name="uploadSuccessLinkDescription">Fais scanner ce QR code autour de toi pour partager tes fichiers ou copie le lien ci-dessous.</string>
     <string name="uploadSuccessLinkTitle">Ton transfert est prêt !</string>
     <string name="uploadSuccessQrTitle">Ton QR code est prêt !</string>
-    <string name="uploadSuccessTitle">Ce qui nous rend différent ?</string>
     <string name="uploadSuccessTransferInProgress">Transfert en cours…</string>
     <string name="urlAbout">https://www.infomaniak.com/fr/a-propos</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>

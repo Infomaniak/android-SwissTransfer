@@ -92,4 +92,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     transferFilePreviewOverflow = Color(dark3),
     onTransferFilePreviewOverflow = Color(green_main),
     transferListStroke = Color(green_main),
+    highlighterColor = Color(green_dark),
 )
