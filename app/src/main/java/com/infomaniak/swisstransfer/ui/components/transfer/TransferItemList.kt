@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,15 +26,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import java.util.Calendar
-import java.util.Date
-import java.util.UUID
 
 @Composable
 fun TransferItemList(
@@ -74,97 +73,10 @@ fun TransferItemList(
     }
 }
 
-@PreviewAllWindows
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-private fun Preview() {
-
-    val files = listOf(
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (1).txt",
-            fileSize = 57_689_032L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (1).pptx",
-            fileSize = 89_723_143L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (1).docx",
-            fileSize = 237_866_728L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "The 5-Step Guide to Not Breaking Your Code (2).txt",
-            fileSize = 57_689_032L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Introduction to Turning It Off and On Again (2).pptx",
-            fileSize = 89_723_143L,
-            mimeType = null,
-            localPath = null,
-        ),
-        FileUi(
-            uid = UUID.randomUUID().toString(),
-            fileName = "Learning to Copy and Paste: A Complete Guide (2).docx",
-            fileSize = 237_866_728L,
-            mimeType = null,
-            localPath = null,
-        ),
-    )
-
-    val transfers = listOf(
-        TransferUi(
-            uuid = UUID.randomUUID().toString(),
-            createdDateTimestamp = Date().time - 30L * 86_400_000L,
-            expirationDateTimestamp = Calendar.getInstance().apply {
-                time = Date()
-                set(Calendar.DATE, get(Calendar.DATE) + 1)
-            }.time.time,
-            sizeUploaded = 57_689_032L,
-            downloadLimit = 10,
-            downloadLeft = 8,
-            message = "Coucou c'est moi le message de description du transfert.",
-            files = files,
-        ),
-        TransferUi(
-            uuid = UUID.randomUUID().toString(),
-            createdDateTimestamp = Date().time - 5L * 86_400_000L,
-            expirationDateTimestamp = Calendar.getInstance().apply {
-                time = Date()
-                set(Calendar.DATE, get(Calendar.DATE) + 4)
-            }.time.time,
-            sizeUploaded = 89_723_143L,
-            downloadLimit = 2,
-            downloadLeft = 2,
-            message = null,
-            files = files,
-        ),
-        TransferUi(
-            uuid = UUID.randomUUID().toString(),
-            createdDateTimestamp = Date().time - 0.5f.toLong() * 86_400_000L,
-            expirationDateTimestamp = Calendar.getInstance().apply {
-                time = Date()
-                set(Calendar.DATE, get(Calendar.DATE) + 7)
-            }.time.time,
-            sizeUploaded = 237_866_728L,
-            downloadLimit = 420_069,
-            downloadLeft = 402_690,
-            message = "3ème transfert. RAS.",
-            files = files,
-        ),
-    )
-
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
     SwissTransferTheme {
         Surface {
             TransferItemList(

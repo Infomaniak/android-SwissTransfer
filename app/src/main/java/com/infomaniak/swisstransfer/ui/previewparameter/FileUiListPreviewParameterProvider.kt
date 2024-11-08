@@ -19,31 +19,55 @@ package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import java.util.UUID
 
 class FileUiListPreviewParameter : PreviewParameterProvider<List<FileUi>> {
-    override val values: Sequence<List<FileUi>> = sequenceOf(
-        listOf(
-            FileUi(
-                fileName = "How to not get fired.pdf",
-                uid = "How to not get fired.pdf",
-                fileSize = 10302130,
-                mimeType = null,
-                localPath = "",
-            ),
-            FileUi(
-                fileName = "Opening images tutorial.png",
-                uid = "Opening images tutorial.png",
-                fileSize = 456782,
-                mimeType = null,
-                localPath = "https://picsum.photos/200/300",
-            ),
-            FileUi(
-                fileName = "The 5 step guide to turning it off and on again.docx",
-                uid = "The 5 step guide to turning it off and on again.docx",
-                fileSize = 89723143,
-                mimeType = null,
-                localPath = "",
-            ),
-        )
-    )
+    override val values: Sequence<List<FileUi>> = sequenceOf(filesPreviewData)
 }
+
+val filesPreviewData = listOf(
+    FileUi(
+        // Non-preview file (i.e. pdf, txt, etc.)
+        fileName = "How to not get fired.pdf",
+        uid = "How to not get fired.pdf",
+        fileSize = 10_302_130L,
+        mimeType = null,
+        localPath = "",
+    ),
+    FileUi(
+        // Preview file (i.e. png, jpg, etc.)
+        fileName = "Opening images tutorial.png",
+        uid = "Opening images tutorial.png",
+        fileSize = 456_782L,
+        mimeType = null,
+        localPath = "https://picsum.photos/200/300",
+    ),
+    FileUi(
+        fileName = "The 5 step guide to turning it off and on again.docx",
+        uid = "The 5 step guide to turning it off and on again.docx",
+        fileSize = 89_723_143L,
+        mimeType = null,
+        localPath = "",
+    ),
+    FileUi(
+        uid = UUID.randomUUID().toString(),
+        fileName = "Learning to Copy and Paste: A Complete Guide.docx",
+        fileSize = 237_866_728L,
+        mimeType = null,
+        localPath = null,
+    ),
+    FileUi(
+        uid = UUID.randomUUID().toString(),
+        fileName = "Introduction to Turning It Off and On Again.pptx",
+        fileSize = 98_723_143L,
+        mimeType = null,
+        localPath = null,
+    ),
+    FileUi(
+        uid = UUID.randomUUID().toString(),
+        fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
+        fileSize = 57_689_032L,
+        mimeType = null,
+        localPath = null,
+    ),
+)
