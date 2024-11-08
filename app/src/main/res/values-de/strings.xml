@@ -20,6 +20,8 @@
     <string name="buttonAddFiles">Dateien hinzufügen</string>
     <string name="buttonCancel">Abbrechen</string>
     <string name="buttonCopyLink">Link kopieren</string>
+    <string name="buttonDownload">Download</string>
+    <string name="buttonDownloadSelected">Auswahl herunterladen</string>
     <string name="buttonFinished">Beenden</string>
     <string name="buttonNext">Weiter zu</string>
     <string name="buttonShare">Teilen</string>
@@ -29,6 +31,7 @@
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
+    <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
     <string name="expiredThe">Abgelaufen am %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
@@ -36,7 +39,9 @@
         <item quantity="other">%d Dateien</item>
     </plurals>
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
+    <string name="fromHeader">Von:</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
+    <string name="messageHeader">Nachricht :</string>
     <string name="myFilesTitle">Meine Dateien</string>
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
@@ -88,6 +93,7 @@
     <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Fakultativ)</string>
+    <string name="transferContentHeader">Inhalt der Übertragung :</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
     <string name="transferExpiredLimitReachedDescription">Entschuldigung, diese Übertragung hat die Grenze der %d möglichen Downloads erreicht.</string>

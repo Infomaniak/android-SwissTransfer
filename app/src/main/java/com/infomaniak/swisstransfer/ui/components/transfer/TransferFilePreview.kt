@@ -47,7 +47,7 @@ fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) 
             //         .build(),
             //     contentDescription = null,
             //     contentScale = ContentScale.Crop,
-            //     onError = { }, // TODO ?
+            //     onError = {}, // TODO ?
             //     modifier = Modifier
             //         .size(Margin.Giant)
             //         .clip(CustomShapes.SMALL)

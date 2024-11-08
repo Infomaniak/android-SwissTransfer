@@ -32,9 +32,18 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
     @StringRes titleRes: Int,
+    navigationMenu: TopAppBarButton? = null,
+    vararg actionMenus: TopAppBarButton,
+) {
+    SwissTransferTopAppBar(title = stringResource(titleRes), navigationMenu, *actionMenus)
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun SwissTransferTopAppBar(
+    title: String,
     navigationMenu: TopAppBarButton? = null,
     vararg actionMenus: TopAppBarButton,
 ) {
@@ -45,7 +54,7 @@ fun SwissTransferTopAppBar(
             actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
             navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
         ),
-        title = { Text(stringResource(id = titleRes), style = SwissTransferTheme.typography.h2) },
+        title = { Text(title, style = SwissTransferTheme.typography.h2) },
         navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
         actions = { actionMenus.forEach { actionMenu -> MenuButton(actionMenu) } },
     )

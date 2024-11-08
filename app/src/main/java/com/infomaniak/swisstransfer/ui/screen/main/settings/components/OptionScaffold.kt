@@ -45,7 +45,12 @@ fun OptionScaffold(
     navigateBack: (() -> Unit)?,
 ) {
     SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = { SwissTransferTopAppBar(topAppBarTitleRes, TopAppBarButton.backButton(navigateBack ?: {})) },
+        smallWindowTopAppBar = {
+            SwissTransferTopAppBar(
+                titleRes = topAppBarTitleRes,
+                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+            )
+        },
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             OptionTitle(titleRes = optionTitleRes)

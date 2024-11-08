@@ -18,9 +18,8 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -36,25 +35,35 @@ fun FileItemList(
     modifier: Modifier = Modifier,
     files: List<FileUi>,
     isRemoveButtonVisible: Boolean,
-    isCheckboxVisible: Boolean,
+    isCheckboxVisible: () -> Boolean,
     isUidChecked: (String) -> Boolean,
     setUidCheckStatus: (String, Boolean) -> Unit,
-    onRemoveUid: (String) -> Unit,
+    onRemoveUid: ((String) -> Unit)? = null,
+    header: (@Composable LazyGridItemScope.() -> Unit)? = null,
 ) {
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Adaptive(150.dp),
         verticalArrangement = Arrangement.spacedBy(Margin.Medium),
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
+        contentPadding = PaddingValues(bottom = Margin.Mini),
     ) {
+
+        header?.let {
+            item(
+                span = { GridItemSpan(maxLineSpan) },
+                content = it,
+            )
+        }
+
         items(files, key = { it.uid }) { file ->
             FileItem(
                 file = file,
                 isRemoveButtonVisible = isRemoveButtonVisible,
-                isCheckboxVisible = isCheckboxVisible,
+                isCheckboxVisible = isCheckboxVisible(),
                 isChecked = { isUidChecked(file.uid) },
-                onClick = { if (isCheckboxVisible) setUidCheckStatus(file.uid, !isUidChecked(file.uid)) },
-                onRemove = { onRemoveUid(file.uid) },
+                onClick = { if (isCheckboxVisible()) setUidCheckStatus(file.uid, !isUidChecked(file.uid)) },
+                onRemove = { onRemoveUid?.invoke(file.uid) },
             )
         }
     }
@@ -67,7 +76,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
         FileItemList(
             files = files,
             isRemoveButtonVisible = false,
-            isCheckboxVisible = true,
+            isCheckboxVisible = { true },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = {},

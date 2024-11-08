@@ -26,6 +26,10 @@ import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -71,4 +75,19 @@ fun <T> TwoPaneScaffold(
         detailPane = { AnimatedPane { navigator.detailPane() } },
         modifier = modifier,
     )
+}
+
+/**
+ * Keep the DetailPane's content in memory so that it's always available while navigating back.
+ * When leaving the DetailPane, its content becomes `null`, which creates a visual glitch in the back animation.
+ */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+fun <T> ThreePaneScaffoldNavigator<T>.safeCurrentContent(): T? {
+    var oldContent by rememberSaveable { mutableStateOf<T?>(null) }
+
+    val newContent = currentDestination?.content ?: oldContent
+    currentDestination?.content?.let { oldContent = it }
+
+    return newContent
 }

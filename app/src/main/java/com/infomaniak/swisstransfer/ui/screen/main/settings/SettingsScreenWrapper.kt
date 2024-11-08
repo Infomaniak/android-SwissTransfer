@@ -27,9 +27,6 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,6 +39,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
+import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.*
@@ -122,11 +120,8 @@ private fun DetailPane(
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
 ) {
-    var lastSelectedScreen by rememberSaveable { mutableStateOf<SettingsOptionScreens?>(null) }
 
-    val destination = navigator.currentDestination?.content ?: lastSelectedScreen
-    navigator.currentDestination?.content?.let { lastSelectedScreen = it }
-
+    val destination = navigator.safeCurrentContent()
     val navigateBack = ScreenWrapperUtils.getBackNavigation(navigator)
 
     when (destination) {

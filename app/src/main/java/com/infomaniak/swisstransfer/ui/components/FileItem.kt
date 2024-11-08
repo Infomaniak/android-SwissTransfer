@@ -77,10 +77,10 @@ private fun FileItemContent(
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.aspectRatio(164 / 152f),
+        modifier = Modifier.aspectRatio(164.0f / 152.0f),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
-        border = BorderStroke(width = Dimens.BorderWidth, SwissTransferTheme.materialColors.outlineVariant),
+        border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
     ) {
         Box(
             modifier = Modifier

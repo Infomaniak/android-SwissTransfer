@@ -91,4 +91,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     qrCodeLightPixels = Color(dark1),
     transferFilePreviewOverflow = Color(dark3),
     onTransferFilePreviewOverflow = Color(green_main),
+    transferListStroke = Color(green_main),
 )

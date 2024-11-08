@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.core2
+package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-const val FORMAT_DATE_DEFAULT = "dd.MM.yy"
-const val FORMAT_DATE_TITLE = "E d MMMM"
-const val FORMAT_DATE_SIMPLE = "dd/MM/yyyy"
-const val FORMAT_DATE_FULL = "EEEE d MMMM"
-
-fun Date.format(pattern: String = FORMAT_DATE_DEFAULT): String = SimpleDateFormat(pattern, Locale.getDefault()).format(this)
+@HiltViewModel
+class TransferDetailsViewModel @Inject constructor() : ViewModel() {
+    val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+}
