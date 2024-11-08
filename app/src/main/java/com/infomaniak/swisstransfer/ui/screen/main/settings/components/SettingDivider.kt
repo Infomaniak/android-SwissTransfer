@@ -19,9 +19,12 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.theme.Dimens
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun SettingDivider() {
@@ -31,4 +34,14 @@ fun SettingDivider() {
             vertical = Dimens.SettingVerticalMargin,
         ),
     )
+}
+
+@PreviewLightAndDark
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            SettingDivider()
+        }
+    }
 }
