@@ -54,6 +54,7 @@ fun ImportedFilesCard(
     files: () -> List<FileUi>,
     pickFiles: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -64,7 +65,7 @@ fun ImportedFilesCard(
     }
 
     SwissTransferCard(modifier) {
-        SharpRippleButton(onClick = { /* TODO */ }) {
+        SharpRippleButton(onClick = { navigateToFilesDetails() }) {
             TextDotText(
                 firstText = {
                     val fileCount = files().count()
@@ -144,6 +145,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             pickFiles = {},
             removeFileByUid = {},
+            navigateToFilesDetails = {}
         )
     }
 }

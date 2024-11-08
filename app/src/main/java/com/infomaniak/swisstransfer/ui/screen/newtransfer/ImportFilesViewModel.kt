@@ -25,6 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -100,6 +102,8 @@ class ImportFilesViewModel @Inject constructor(
             importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
         }
     }
+
+    fun getImportedFiles(): Flow<List<FileUi>?> = importationFilesManager.importedFiles
 
     fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(ioDispatcher) {
