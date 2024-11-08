@@ -22,6 +22,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,17 +40,27 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun EmptyState(
     icon: ImageVector,
-    @StringRes title: Int,
+    @StringRes titleRes: Int,
+    @StringRes descriptionRes: Int,
+    modifier: Modifier = Modifier,
+) = EmptyState(icon, titleRes, stringResource(descriptionRes), modifier)
+
+@Composable
+fun EmptyState(
+    icon: ImageVector,
+    @StringRes titleRes: Int,
     description: String,
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center,
     ) {
         IllustratedMessageBlock(
             icon = icon,
-            title = title,
+            title = titleRes,
             description = description,
             modifier = modifier.padding(horizontal = Margin.Medium),
         )
@@ -63,8 +75,8 @@ private fun EmptyStatePreview() {
         Surface {
             EmptyState(
                 icon = AppIllus.MascotSearching,
-                title = R.string.noTransferReceivedTitle,
-                description = stringResource(R.string.noTransferReceivedDescription),
+                titleRes = R.string.noTransferReceivedTitle,
+                descriptionRes = R.string.noTransferReceivedDescription,
             )
         }
     }

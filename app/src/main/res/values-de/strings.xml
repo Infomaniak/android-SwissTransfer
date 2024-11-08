@@ -18,7 +18,6 @@
 <resources>
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
-    <string name="buttonCancel">Abbrechen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Auswahl herunterladen</string>
@@ -125,6 +124,8 @@
     <string name="uploadProgressDescriptionTemplateConfidentiality">Wir sind unabhängig und tragen zu %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Wir entwerfen %s, um die Energieeffizienzstandards der Branche zu übertreffen.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Wir entwickeln %s Ohne Kompromisse bei Ökologie, Privatsphäre und Menschen.</string>
+    <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
+    <string name="uploadErrorTitle">Was ist das denn?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Der Download-Link wurde erfolgreich an den folgenden Empfänger gesendet:</item>
         <item quantity="other">Der Download-Link wurde an die folgenden Empfänger gesendet:</item>

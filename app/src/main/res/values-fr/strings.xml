@@ -18,7 +18,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
-    <string name="buttonCancel">Annuler</string>
     <string name="buttonCopyLink">Copier le lien</string>
     <string name="buttonDownload">Télécharger</string>
     <string name="buttonDownloadSelected">Télécharger la sélection</string>
@@ -127,6 +126,8 @@
     <string name="uploadProgressDescriptionTemplateConfidentiality">Nous sommes indépendants et contribuons à %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Nous concevons %s, pour dépasser les standards d’efficacité énergétique du marché.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Nous développons %s Sans compromis sur l’écologie, la vie privée et l’humain.</string>
+    <string name="uploadErrorDescription">Le transfert n’a pas fonctionné, donnes-lui une autre chance. Si le problème persiste, contacte notre support.</string>
+    <string name="uploadErrorTitle">Qu’est-ce que quoi ?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Le lien de téléchargement a bien été envoyé au destinataire suivant :</item>
         <item quantity="other">Le lien de téléchargement a été envoyé aux destinataires suivants :</item>

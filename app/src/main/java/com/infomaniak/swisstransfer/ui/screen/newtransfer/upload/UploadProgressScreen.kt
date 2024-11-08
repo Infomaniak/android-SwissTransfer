@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.workers.UploadWorker.UploadProgressUiState
+import com.infomaniak.core2.R as RCore2
 
 @Composable
 fun UploadProgressScreen(
@@ -106,7 +107,7 @@ private fun UploadProgressScreen(
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(R.string.buttonCancel, modifier = it, onClick = { showBottomSheet.set(true) })
+            LargeButton(RCore2.string.buttonCancel, modifier = it, onClick = { showBottomSheet.set(true) })
         },
     ) {
         Column(

@@ -65,6 +65,8 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data class UploadProgressDestination(val transferType: TransferType, val totalSize: Long) : NewTransferNavigation()
     @Serializable
     data class UploadSuccessDestination(val transferType: TransferType, val transferLink: String) : NewTransferNavigation()
+    @Serializable
+    data object UploadErrorDestination : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination

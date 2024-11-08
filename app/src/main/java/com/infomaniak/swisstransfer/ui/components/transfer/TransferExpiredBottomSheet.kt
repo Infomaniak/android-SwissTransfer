@@ -75,7 +75,7 @@ fun TransferExpiredBottomSheet(
             Spacer(modifier = Modifier.height(Margin.Medium))
             EmptyState(
                 icon = AppIllus.MascotDead.image(),
-                title = R.string.transferExpiredTitle,
+                titleRes = R.string.transferExpiredTitle,
                 description = descriptionText,
             )
         }

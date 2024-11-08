@@ -23,7 +23,6 @@
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="buttonAddFiles">Add files</string>
-    <string name="buttonCancel">Cancel</string>
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
@@ -130,6 +129,8 @@
     <string name="uploadProgressDescriptionTemplateConfidentiality">We’re independent and contribute to an %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">We design %s, to exceed market standards for energy efficiency.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">We develop %s Without compromising on ecology, privacy and people.</string>
+    <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
+    <string name="uploadErrorTitle">Wait, what just happened?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">The download link has been sent to the following recipient:</item>
         <item quantity="other">The download link has been sent to the following recipients:</item>
