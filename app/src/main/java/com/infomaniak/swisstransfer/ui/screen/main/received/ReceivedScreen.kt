@@ -18,6 +18,9 @@
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue

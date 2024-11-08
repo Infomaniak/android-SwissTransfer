@@ -44,6 +44,7 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
@@ -59,9 +60,11 @@ private val HORIZONTAL_PADDING = Margin.Medium
 @Composable
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
+    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
     navigateToEmailValidation: (email: String, recipients: List<String>) -> Unit,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -151,6 +154,7 @@ fun ImportFilesScreen(
         sendTransfer = importFilesViewModel::sendTransfer,
         shouldStartByPromptingUserForFiles = true,
         snackbarHostState = snackbarHostState,
+        navigateToFilesDetails = navigateToFilesDetails,
     )
 }
 
@@ -209,6 +213,7 @@ private fun ImportFilesScreen(
     sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.Mail } }
@@ -246,6 +251,14 @@ private fun ImportFilesScreen(
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 SendByOptions(modifier, selectedTransferType)
                 FilesToImport(modifier, files, navigateToFileDetails = { /*TODO*/ }, addFiles, shouldStartByPromptingUserForFiles)
+                FilesToImport(
+                    modifier,
+                    files,
+                    removeFileByUid,
+                    addFiles,
+                    shouldStartByPromptingUserForFiles,
+                    navigateToFilesDetails
+                )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
@@ -267,6 +280,7 @@ private fun FilesToImport(
     navigateToFileDetails: () -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
+    navigateToFilesDetails: (String) -> Unit,
 ) {
     var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
 
@@ -283,7 +297,12 @@ private fun FilesToImport(
     LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
     ImportFilesTitle(modifier, R.string.myFilesTitle)
-    ImportedFilesCard(modifier, files, ::pickFiles, navigateToFileDetails)
+    ImportedFilesCard(
+        modifier,
+        files,
+        ::pickFiles,
+        navigateToFilesDetails = { navigateToFilesDetails("fileUuid") }
+    )
 }
 
 @Composable
@@ -546,6 +565,8 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             shouldStartByPromptingUserForFiles = false,
             sendStatus = { SendStatus.Initial },
             sendTransfer = {},
+            isTransferStarted = { false },
+            navigateToFilesDetails = { _ -> },
         )
     }
 }

@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,13 +46,17 @@ fun NewTransferNavHost(
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
             ImportFilesScreen(
+                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
                 closeActivity = closeActivity,
                 navigateToUploadProgress = { transferType, totalSize, recipients ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize, recipients))
                 },
                 navigateToEmailValidation = { email, recipients ->
                     navController.navigate(ValidateUserEmailDestination(email, recipients))
-                }
+				},
+                navigateToFilesDetails = { fileUuid ->
+                    navController.navigate(FilesDetailsDestination(fileUuid))
+                },
             )
         }
         composable<ValidateUserEmailDestination> {
@@ -113,14 +119,15 @@ fun NewTransferNavHost(
                 },
         composable<FilesDetailsDestination> {
             val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
+            val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
             FilesDetailsScreen(
+                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
                 navigateToDetails = { fileId ->
                     navController.navigate(FilesDetailsDestination(fileId))
                 },
-                fileId = filesDetailsDestination.fileId,
+                fileUuid = filesDetailsDestination.fileUuid,
                 withSpaceLeft = true,
                 onCloseClicked = {},
-                onFileRemoved = {},
                 navigateBack = { navController.popBackStack() },
             )
         }

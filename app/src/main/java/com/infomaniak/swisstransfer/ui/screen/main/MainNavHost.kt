@@ -55,11 +55,10 @@ fun MainNavHost(
         composable<FilesDetailsDestination> {
             val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
             FilesDetailsScreen(
-                navigateToDetails = { fileId ->
-                    //TODO check here if specified filedId is a folder
-                    navController.navigate(FilesDetailsDestination(fileId))
+                navigateToDetails = { fileUuid ->
+                    navController.navigate(FilesDetailsDestination(fileUuid = fileUuid))
                 },
-                fileId = filesDetailsDestination.fileId,
+                transferUuid = filesDetailsDestination.transferUuid,
                 navigateBack = { navController.popBackStack() },
                 withSpaceLeft = false,
                 onCloseClicked = {},

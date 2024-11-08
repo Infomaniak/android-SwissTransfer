@@ -23,35 +23,44 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.FilesSize
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun FilesDetailsScreen(
-    filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
-    fileId: String,
+    importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
+    transferUuid: String? = null,
+    fileUuid: String? = null,
     navigateToDetails: (String) -> Unit,
     withSpaceLeft: Boolean,
-    onFileRemoved: ((uuid: String) -> Unit)? = null,
     onCloseClicked: (() -> Unit),
     navigateBack: (() -> Unit),
 ) {
-    val files by filesDetailsViewModel.getFilesFromUUID(fileId).collectAsStateWithLifecycle(emptyList())
+    // Load of files with transferUuid or fileUuid depending of if we click on a folder or not.
+    // If we don't have transferUuid and fileUuid, it means we have to load files from importedFiles in ImportFilesViewModel
+    val files by importFilesViewModel.getImportedFiles().collectAsStateWithLifecycle(null)
+
+    if (files?.isEmpty() == true) navigateBack()
 
     FilesDetailsScreen(
-        title = "Some Folder", //TODO Get fileId detail to get the title
+        title = "Title", //TODO Get fileId detail to get the title in case we're in a folder ?
         files = files ?: emptyList(),
         navigateToDetails = navigateToDetails,
         withSpaceLeft = withSpaceLeft,
-        onFileRemoved = onFileRemoved,
+        onFileRemoved = {
+            importFilesViewModel.removeFileByUid(it)
+        },
         onCloseClicked = onCloseClicked,
         navigateBack = navigateBack,
     )
@@ -93,14 +102,16 @@ private fun FilesDetailsScreen(
 
 @PreviewAllWindows
 @Composable
-private fun FilesDetailsScreenPreview() {
+private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface {
             FilesDetailsScreen(
-                fileId = "",
+                title = "Title",
+                files = files,
                 navigateToDetails = {},
                 withSpaceLeft = true,
                 onCloseClicked = {},
+                onFileRemoved = {},
                 navigateBack = {},
             )
         }

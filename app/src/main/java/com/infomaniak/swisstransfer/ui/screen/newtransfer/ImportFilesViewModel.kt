@@ -131,6 +131,8 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
+    fun getImportedFiles(): Flow<List<FileUi>?> = importationFilesManager.importedFiles
+
     fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(ioDispatcher) {
             importationFilesManager.importFiles(uris)
