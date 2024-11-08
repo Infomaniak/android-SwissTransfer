@@ -23,9 +23,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferExpiredBottomSheet
@@ -86,7 +86,7 @@ private fun ReceivedScreen(
                     when {
                         transfer.expiresInDays < 0 -> {
                             isVisible = true
-                            expirationDate = Date(transfer.expirationDateTimestamp)
+                            expirationDate = transfer.expirationDateTimestamp.toDateFromSeconds()
                         }
                         transfer.downloadLeft == 0 -> {
                             isVisible = true
