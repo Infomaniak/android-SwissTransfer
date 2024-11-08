@@ -28,24 +28,30 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlin.math.cos
 import kotlin.math.sin
 
+private val VERTICAL_PADDING @Composable get() = with(LocalDensity.current) { 3.sp.toPx() }
+private val HORIZONTAL_PADDING @Composable get() = with(LocalDensity.current) { 10.sp.toPx() }
+private const val ROTATION_ANGLE_DEGREE = -3f
+
 @Composable
 fun HighlighterText(
     templateRes: Int,
     argumentRes: Int,
     style: TextStyle,
-    verticalPadding: Float = 2f, // TODO
-    horizontalPadding: Float = 24f, // TODO
-    angleDegrees: Float = -3f, // TODO
+    verticalPadding: Float = VERTICAL_PADDING,
+    horizontalPadding: Float = HORIZONTAL_PADDING,
+    angleDegrees: Float = ROTATION_ANGLE_DEGREE,
 ) {
     val template = stringResource(templateRes)
     val argument = stringResource(argumentRes)
