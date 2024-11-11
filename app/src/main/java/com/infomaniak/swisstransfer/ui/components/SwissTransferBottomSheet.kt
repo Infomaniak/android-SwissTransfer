@@ -62,7 +62,7 @@ fun SwissTransferBottomSheet(
         description = descriptionRes?.let { stringResource(descriptionRes) },
         topButton = topButton,
         bottomButton = bottomButton,
-        content = content
+        content = content,
     )
 }
 
@@ -78,18 +78,8 @@ fun SwissTransferBottomSheet(
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
-    ModalBottomSheet(
-        modifier = modifier,
-        onDismissRequest = onDismissRequest,
-    ) {
-        BottomSheetContent(
-            imageVector = imageVector,
-            title = title,
-            description = description,
-            content = content,
-            topButton = topButton,
-            bottomButton = bottomButton,
-        )
+    ModalBottomSheet(onDismissRequest, modifier) {
+        BottomSheetContent(imageVector, title, description, content, topButton, bottomButton)
     }
 }
 
@@ -140,6 +130,7 @@ private fun BottomSheetContent(
         DoubleButtonCombo(topButton = topButton, bottomButton = bottomButton)
     }
 }
+
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
