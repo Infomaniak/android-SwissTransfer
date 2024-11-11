@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.infomaniak.swisstransfer.R
@@ -42,7 +43,7 @@ import kotlin.math.sin
 
 private val VERTICAL_PADDING @Composable get() = with(LocalDensity.current) { 3.sp.toPx() }
 private val HORIZONTAL_PADDING @Composable get() = with(LocalDensity.current) { 10.sp.toPx() }
-private const val ROTATION_ANGLE_DEGREE = -3f
+private const val ROTATION_ANGLE_DEGREE = -3.0f
 
 @Composable
 fun HighlightedText(
@@ -70,9 +71,9 @@ fun HighlightedText(
         },
         modifier = Modifier.drawBehind {
             highlightedPath?.let {
-                drawPath(it, style = Fill, color = highlightedColor)
+                drawPath(path = it, style = Fill, color = highlightedColor)
             }
-        }
+        },
     )
 }
 
@@ -151,14 +152,12 @@ private fun TextLayoutResult.getBoundingBoxesForRange(start: Int, end: Int): Lis
 
         // `rect.right` is zero for the last space in each line
         // Might be an issue: https://issuetracker.google.com/issues/197146630
-        if (!isLastRect && rect.right == 0f) continue
+        if (!isLastRect && rect.right == 0.0f) continue
 
         if (firstLineCharRect == null) {
             firstLineCharRect = rect
         } else if (previousRect != null && (previousRect.bottom != rect.bottom || isLastRect)) {
-            boundingBoxes.add(
-                firstLineCharRect.copy(right = previousRect.right)
-            )
+            boundingBoxes.add(firstLineCharRect.copy(right = previousRect.right))
             firstLineCharRect = rect
         }
         previousRect = rect
@@ -166,8 +165,11 @@ private fun TextLayoutResult.getBoundingBoxesForRange(start: Int, end: Int): Lis
     return boundingBoxes
 }
 
-
 @PreviewLightAndDark
+@Preview(locale = "fr")
+@Preview(locale = "de")
+@Preview(locale = "es")
+@Preview(locale = "it")
 @Composable
 private fun Preview() {
     SwissTransferTheme {
