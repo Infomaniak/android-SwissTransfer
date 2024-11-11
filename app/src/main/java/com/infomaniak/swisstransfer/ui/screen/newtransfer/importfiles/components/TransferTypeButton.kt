@@ -44,7 +44,6 @@ fun TransferTypeButton(
 
     Button(
         modifier = Modifier
-            .padding(Margin.Micro)
             .height(Dimens.LargeButtonHeight)
             .border(width = Dimens.BorderWidth, color = borderColor, shape = CustomShapes.SMALL),
         shape = CustomShapes.SMALL,
