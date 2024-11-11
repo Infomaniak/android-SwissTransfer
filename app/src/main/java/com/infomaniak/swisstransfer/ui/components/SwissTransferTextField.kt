@@ -115,7 +115,7 @@ private fun getShowPasswordButton(shouldShowPassword: Boolean, onClick: () -> Un
 
 @Composable
 @Preview
-fun Preview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             Column(Modifier.padding(Margin.Medium)) {
