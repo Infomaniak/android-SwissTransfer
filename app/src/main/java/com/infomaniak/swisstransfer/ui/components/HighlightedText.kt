@@ -45,7 +45,7 @@ private val HORIZONTAL_PADDING @Composable get() = with(LocalDensity.current) { 
 private const val ROTATION_ANGLE_DEGREE = -3f
 
 @Composable
-fun HighlighterText(
+fun HighlightedText(
     templateRes: Int,
     argumentRes: Int,
     style: TextStyle,
@@ -57,20 +57,20 @@ fun HighlighterText(
     val argument = stringResource(argumentRes)
     val text = String.format(template, argument)
 
-    val highlighterColor = SwissTransferTheme.colors.highlighterColor
+    val highlightedColor = SwissTransferTheme.colors.highlightedColor
 
-    var highlighterPath by remember { mutableStateOf<Path?>(null) }
+    var highlightedPath by remember { mutableStateOf<Path?>(null) }
 
     Text(
         text = text,
         style = style,
         onTextLayout = { layoutResult ->
             val boundingBoxes = layoutResult.getArgumentBoundingBoxes(text, argument)
-            highlighterPath = boundingBoxes.transformForHighlighterStyle(verticalPadding, horizontalPadding, angleDegrees)
+            highlightedPath = boundingBoxes.transformForHighlightedStyle(verticalPadding, horizontalPadding, angleDegrees)
         },
         modifier = Modifier.drawBehind {
-            highlighterPath?.let {
-                drawPath(it, style = Fill, color = highlighterColor)
+            highlightedPath?.let {
+                drawPath(it, style = Fill, color = highlightedColor)
             }
         }
     )
@@ -81,17 +81,17 @@ private fun TextLayoutResult.getArgumentBoundingBoxes(text: String, argument: St
     return getBoundingBoxesForRange(start = startIndex, end = startIndex + argument.count())
 }
 
-private fun List<Rect>.transformForHighlighterStyle(
+private fun List<Rect>.transformForHighlightedStyle(
     verticalPadding: Float,
     horizontalPadding: Float,
     angleDegrees: Float,
 ): Path = Path().apply {
     forEach { boundingBox ->
-        addPath(boundingBox.transformForHighlighterStyle(verticalPadding, horizontalPadding, angleDegrees))
+        addPath(boundingBox.transformForHighlightedStyle(verticalPadding, horizontalPadding, angleDegrees))
     }
 }
 
-private fun Rect.transformForHighlighterStyle(verticalPadding: Float, horizontalPadding: Float, angleDegrees: Float): Path {
+private fun Rect.transformForHighlightedStyle(verticalPadding: Float, horizontalPadding: Float, angleDegrees: Float): Path {
     return getRotatedRectanglePath(
         Rect(
             left = left - horizontalPadding,
@@ -173,7 +173,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             Box(modifier = Modifier.padding(20.dp)) {
-                HighlighterText(
+                HighlightedText(
                     templateRes = R.string.uploadProgressTitleTemplate,
                     argumentRes = R.string.uploadProgressTitleArgument,
                     style = SwissTransferTheme.typography.bodyMedium

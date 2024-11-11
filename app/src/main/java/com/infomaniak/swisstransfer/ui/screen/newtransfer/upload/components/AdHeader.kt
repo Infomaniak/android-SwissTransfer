@@ -27,9 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.HighlighterText
+import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressAdType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -47,7 +46,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
     ) {
         Spacer(modifier = Modifier.height(Margin.Giant))
 
-        HighlighterText(
+        HighlightedText(
             templateRes = R.string.uploadProgressTitleTemplate,
             argumentRes = R.string.uploadProgressTitleArgument,
             style = SwissTransferTheme.typography.bodyMedium,
