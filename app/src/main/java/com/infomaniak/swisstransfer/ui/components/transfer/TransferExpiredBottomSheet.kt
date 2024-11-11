@@ -17,24 +17,18 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core2.FORMAT_DATE_SIMPLE
 import com.infomaniak.core2.format
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import java.util.Date
@@ -70,16 +64,10 @@ fun TransferExpiredBottomSheet(
                 onClick = onDeleteTransferClicked,
             )
         },
-    ) {
-        Column {
-            Spacer(modifier = Modifier.height(Margin.Medium))
-            EmptyState(
-                icon = AppIllus.MascotDead.image(),
-                titleRes = R.string.transferExpiredTitle,
-                description = descriptionText,
-            )
-        }
-    }
+        imageVector = AppIllus.MascotDead.image(),
+        title = stringResource(R.string.transferExpiredTitle),
+        description = descriptionText,
+    )
 }
 
 @PreviewAllWindows

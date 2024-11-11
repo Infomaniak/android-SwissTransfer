@@ -43,7 +43,6 @@ import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferBottomSheet(
     modifier: Modifier = Modifier,
@@ -55,25 +54,50 @@ fun SwissTransferBottomSheet(
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
+    SwissTransferBottomSheet(
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        imageVector = imageVector,
+        title = titleRes?.let { stringResource(titleRes) },
+        description = descriptionRes?.let { stringResource(descriptionRes) },
+        topButton = topButton,
+        bottomButton = bottomButton,
+        content = content
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwissTransferBottomSheet(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    imageVector: ImageVector? = null,
+    title: String? = null,
+    description: String? = null,
+    topButton: @Composable ((Modifier) -> Unit)? = null,
+    bottomButton: @Composable ((Modifier) -> Unit)? = null,
+    content: @Composable (() -> Unit)? = null,
+) {
     ModalBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
     ) {
         BottomSheetContent(
             imageVector = imageVector,
-            titleRes = titleRes,
-            descriptionRes = descriptionRes,
+            title = title,
+            description = description,
             content = content,
             topButton = topButton,
             bottomButton = bottomButton,
         )
     }
 }
+
 @Composable
 private fun BottomSheetContent(
     imageVector: ImageVector?,
-    @StringRes titleRes: Int?,
-    @StringRes descriptionRes: Int?,
+    title: String?,
+    description: String?,
     content: @Composable (() -> Unit)?,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
@@ -89,9 +113,9 @@ private fun BottomSheetContent(
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
-        titleRes?.let {
+        title?.let {
             Text(
-                text = stringResource(it),
+                text = it,
                 style = SwissTransferTheme.typography.bodyMedium,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 textAlign = TextAlign.Center,
@@ -99,9 +123,9 @@ private fun BottomSheetContent(
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
-        descriptionRes?.let {
+        description?.let {
             Text(
-                text = stringResource(it),
+                text = it,
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
             )
@@ -124,8 +148,8 @@ private fun BottomSheetDefaultsPreview() {
         Surface {
             BottomSheetContent(
                 imageVector = AppIllus.ArrowDownRightCurved,
-                titleRes = R.string.appName,
-                descriptionRes = R.string.sentEmptyTitle,
+                title = stringResource(R.string.appName),
+                description = stringResource(R.string.sentEmptyTitle),
                 content = {
                     Box(
                         modifier = Modifier
