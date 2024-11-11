@@ -85,7 +85,7 @@
     <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
     <string name="settingsValidityPeriodTitle">Défini une durée de validité par défaut pour tes transferts</string>
-    <plurals name="settingsValidityPeriodValue" tools:ignore="MissingQuantity">
+    <plurals name="settingsValidityPeriodValue">
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
     </plurals>
@@ -120,14 +120,15 @@
     <string name="uploadCancelConfirmBottomSheetCancel">Annuler le transfert</string>
     <string name="uploadCancelConfirmBottomSheetClose">Fermer et continuer</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Es-tu certain de vouloir annuler le transfert ?</string>
+    <string name="uploadErrorDescription">Le transfert n’a pas fonctionné, donnes-lui une autre chance. Si le problème persiste, contacte notre support.</string>
+    <string name="uploadErrorTitle">Qu’est-ce que quoi ?</string>
     <string name="uploadProgressDescriptionArgumentConfidentiality">un Internet qui respecte la confidentialité et la vie privée.</string>
     <string name="uploadProgressDescriptionArgumentEnergy">nos propres data centers, sans climatisation</string>
     <string name="uploadProgressDescriptionArgumentIndependence">l’indépendance technologique en Europe.</string>
     <string name="uploadProgressDescriptionTemplateConfidentiality">Nous sommes indépendants et contribuons à %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Nous concevons %s, pour dépasser les standards d’efficacité énergétique du marché.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Nous développons %s Sans compromis sur l’écologie, la vie privée et l’humain.</string>
-    <string name="uploadErrorDescription">Le transfert n’a pas fonctionné, donnes-lui une autre chance. Si le problème persiste, contacte notre support.</string>
-    <string name="uploadErrorTitle">Qu’est-ce que quoi ?</string>
+    <string name="uploadProgressIndication">Transfert en cours…</string>
     <string name="uploadProgressTitleArgument">différent</string>
     <string name="uploadProgressTitleTemplate">Ce qui nous rend %s ?</string>
     <plurals name="uploadSuccessEmailDescription">
@@ -138,7 +139,6 @@
     <string name="uploadSuccessLinkDescription">Fais scanner ce QR code autour de toi pour partager tes fichiers ou copie le lien ci-dessous.</string>
     <string name="uploadSuccessLinkTitle">Ton transfert est prêt !</string>
     <string name="uploadSuccessQrTitle">Ton QR code est prêt !</string>
-    <string name="uploadSuccessTransferInProgress">Transfert en cours…</string>
     <string name="urlAbout">https://www.infomaniak.com/fr/a-propos</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
     <string name="version">Version</string>
