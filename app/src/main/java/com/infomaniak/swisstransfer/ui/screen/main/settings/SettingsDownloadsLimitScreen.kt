@@ -54,7 +54,7 @@ enum class DownloadLimitOption(
     ONE({ DownloadLimit.ONE.value });
 
     companion object {
-        fun DownloadLimit.toAdvancedOption() = when (this) {
+        fun DownloadLimit.toTransferOption() = when (this) {
             DownloadLimit.TWO_HUNDRED_FIFTY -> TWO_HUNDRED_FIFTY
             DownloadLimit.ONE_HUNDRED -> ONE_HUNDRED
             DownloadLimit.TWENTY -> TWENTY

@@ -55,7 +55,7 @@ enum class ValidityPeriodOption(
     ONE({ getValidityPeriodTitle(ValidityPeriod.ONE) });
 
     companion object {
-        fun ValidityPeriod.toAdvancedOption() = when (this) {
+        fun ValidityPeriod.toTransferOption() = when (this) {
             ValidityPeriod.THIRTY -> THIRTY
             ValidityPeriod.FIFTEEN -> FIFTEEN
             ValidityPeriod.SEVEN -> SEVEN
