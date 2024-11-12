@@ -62,7 +62,6 @@ fun BoxScope.CrossCircleButton(onClick: (() -> Unit)?, size: Dp = 48.dp) {
     }
 }
 
-
 @PreviewLightAndDark
 @Composable
 private fun CrossCircleButtonPreview() {
