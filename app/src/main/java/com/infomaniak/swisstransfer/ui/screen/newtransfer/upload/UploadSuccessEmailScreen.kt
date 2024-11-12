@@ -54,7 +54,6 @@ fun UploadSuccessEmailScreen(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Content(emails: List<String>) {
     Column(
@@ -74,17 +73,11 @@ private fun Content(emails: List<String>) {
 
         Spacer(modifier = Modifier.height(Margin.Medium))
 
-        FlowRow(
+        EmailsFlowRow(
+            emails = emails,
             modifier = Modifier.widthIn(max = 800.dp),
             horizontalArrangement = Arrangement.Center,
-        ) {
-            emails.forEach {
-                EmailAddressChip(
-                    text = it,
-                    modifier = Modifier.padding(horizontal = Margin.Micro),
-                )
-            }
-        }
+        )
     }
 }
 
