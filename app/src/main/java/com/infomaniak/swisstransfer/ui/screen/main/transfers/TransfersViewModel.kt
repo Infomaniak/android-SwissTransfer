@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.sent
+package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -28,7 +28,8 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class SentViewModel @Inject constructor() : ViewModel() {
-    val transfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+class TransfersViewModel @Inject constructor() : ViewModel() {
+    val sentTransfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val receivedTransfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 }

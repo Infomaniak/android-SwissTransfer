@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.previewparameter.transfersPreviewData
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -34,6 +35,7 @@ import java.util.Date
 
 @Composable
 fun TransfersListWithExpiredBottomSheet(
+    direction: TransferDirection,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
 ) {
@@ -44,6 +46,7 @@ fun TransfersListWithExpiredBottomSheet(
 
     TransferItemList(
         modifier = Modifier.padding(Margin.Medium),
+        direction = direction,
         transfers = transfersPreviewData, // TODO: Use real data
         getSelectedTransferUuid = getSelectedTransferUuid,
         onClick = { transfer ->
@@ -82,6 +85,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             TransfersListWithExpiredBottomSheet(
+                direction = TransferDirection.RECEIVED,
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
             )

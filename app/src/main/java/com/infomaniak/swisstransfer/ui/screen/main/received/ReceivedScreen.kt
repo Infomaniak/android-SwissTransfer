@@ -19,11 +19,10 @@ package com.infomaniak.swisstransfer.ui.screen.main.received
 
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
@@ -31,7 +30,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
-import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -39,10 +38,11 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
-    val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
-    val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
+    val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
+    val areTransfersEmpty = false // TODO: Use the next line instead when available :
+    // val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
 
     ReceivedScreen(
         navigateToDetails = navigateToDetails,
@@ -67,7 +67,7 @@ private fun ReceivedScreen(
                 descriptionRes = R.string.noTransferReceivedDescription,
             )
         } else {
-            TransfersListWithExpiredBottomSheet(navigateToDetails, getSelectedTransferUuid)
+            TransfersListWithExpiredBottomSheet(TransferDirection.RECEIVED, navigateToDetails, getSelectedTransferUuid)
         }
     }
 }
@@ -80,7 +80,7 @@ private fun Preview() {
             ReceivedScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                areTransfersEmpty = { true },
+                areTransfersEmpty = { false },
             )
         }
     }

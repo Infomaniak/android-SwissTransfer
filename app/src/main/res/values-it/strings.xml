@@ -52,6 +52,7 @@
     <string name="receivedFilesTitle">File ricevuti</string>
     <string name="receivedTitle">Ricevuto</string>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
+    <string name="sentFilesTitle">File condivisi</string>
     <string name="sentTitle">Inviato a</string>
     <string name="settingsAuthorizeTracking">Autorizza il tracciamento</string>
     <string name="settingsCategoryAbout">Chi siamo</string>

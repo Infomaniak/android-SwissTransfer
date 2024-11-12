@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.received
+package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +28,11 @@ import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
+import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
+import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -37,20 +40,26 @@ import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun ReceivedScreenWrapper() {
+fun TransfersScreenWrapper(direction: TransferDirection) {
     TwoPaneScaffold<String>(
-        listPane = { ListPane(navigator = this) },
+        listPane = { ListPane(direction, navigator = this) },
         detailPane = { DetailPane(navigator = this) },
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(navigator: ThreePaneScaffoldNavigator<String>) {
-    ReceivedScreen(
-        navigateToDetails = { transferUuid -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid) },
-        getSelectedTransferUuid = { navigator.currentDestination?.content },
-    )
+private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<String>) {
+    when (direction) {
+        TransferDirection.SENT -> SentScreen(
+            navigateToDetails = { transferUuid -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid) },
+            getSelectedTransferUuid = { navigator.currentDestination?.content },
+        )
+        TransferDirection.RECEIVED -> ReceivedScreen(
+            navigateToDetails = { transferUuid -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid) },
+            getSelectedTransferUuid = { navigator.currentDestination?.content },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -81,7 +90,7 @@ private fun NoSelectionEmptyState() {
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            ReceivedScreenWrapper()
+            TransfersScreenWrapper(TransferDirection.RECEIVED)
         }
     }
 }
