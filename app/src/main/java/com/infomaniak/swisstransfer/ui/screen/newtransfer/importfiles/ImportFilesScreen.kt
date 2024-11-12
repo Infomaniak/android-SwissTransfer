@@ -343,7 +343,7 @@ enum class PasswordTransferOption(
 
 @PreviewAllWindows
 @Composable
-private fun ImportFilesScreenPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
+private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     val transferOptionsCallbacks = TransferOptionsCallbacks(
         transferOptionsStates = {
             listOf(

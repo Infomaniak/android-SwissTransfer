@@ -65,7 +65,7 @@ enum class DownloadLimitOption(
 
 @PreviewAllWindows
 @Composable
-private fun SettingsThemeScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsDownloadsLimitScreen(

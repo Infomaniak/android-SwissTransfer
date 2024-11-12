@@ -68,7 +68,7 @@ enum class EmailLanguageOption(
 
 @PreviewAllWindows
 @Composable
-private fun SettingsThemeScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsEmailLanguageScreen(

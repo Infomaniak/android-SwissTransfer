@@ -72,7 +72,7 @@ private fun getValidityPeriodTitle(validityPeriod: ValidityPeriod): String {
 
 @PreviewAllWindows
 @Composable
-private fun SettingsThemeScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsValidityPeriodScreen(

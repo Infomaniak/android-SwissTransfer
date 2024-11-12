@@ -116,7 +116,7 @@ private fun ColumnScope.AnimatedPasswordInput(
 
 @Preview
 @Composable
-fun Preview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             PasswordOptionAlertDialog(

@@ -65,7 +65,7 @@ enum class TransferOptionType(val buttonIcon: ImageVector, @StringRes val button
 
 @PreviewLightAndDark
 @Composable
-private fun TransferTypeButtonsPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             val selectedOptionValues = listOf(

@@ -79,7 +79,7 @@ private fun SettingValue(selectedSetting: () -> SettingOption?) {
 
 @PreviewLightAndDark
 @Composable
-private fun TransferTypeButtonsPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             TransferOption(

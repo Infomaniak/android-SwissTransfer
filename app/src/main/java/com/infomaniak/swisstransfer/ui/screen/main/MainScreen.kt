@@ -50,7 +50,7 @@ fun MainScreen() {
 
 @PreviewAllWindows
 @Composable
-private fun MainScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         MainScreen()
     }

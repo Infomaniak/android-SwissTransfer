@@ -117,7 +117,7 @@ fun EmailLanguageBottomSheet(
 
 @PreviewAllWindows
 @Composable
-private fun ValidityPeriodOptionBottomSheetPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             ValidityPeriodBottomSheet(
