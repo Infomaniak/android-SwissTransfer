@@ -51,7 +51,7 @@ fun TransferOptionsTypes(
     SwissTransferCard(modifier = modifier) {
         transferOptionsStates().forEach {
             val title by remember { derivedStateOf { it.settingState } }
-            TransferOption(it.transferOptionType, title, onClick = { onClick(it.transferOptionType) })
+            TransferOptionType(it.transferOptionType, title, onClick = { onClick(it.transferOptionType) })
         }
     }
 }

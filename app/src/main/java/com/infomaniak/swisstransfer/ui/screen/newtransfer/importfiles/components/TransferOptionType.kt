@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferOption(
+fun TransferOptionType(
     transferOptionType: TransferOptionType,
     selectedSetting: () -> SettingOption?,
     onClick: () -> Unit,
@@ -82,7 +82,7 @@ private fun SettingValue(selectedSetting: () -> SettingOption?) {
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            TransferOption(
+            TransferOptionType(
                 transferOptionType = TransferOptionType.VALIDITY_DURATION,
                 selectedSetting = { ValidityPeriodOption.THIRTY },
                 onClick = {},
