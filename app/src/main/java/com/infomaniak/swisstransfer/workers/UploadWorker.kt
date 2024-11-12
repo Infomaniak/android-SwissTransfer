@@ -143,12 +143,12 @@ class UploadWorker @AssistedInject constructor(
         }
 
         @Immutable
-        data class Success(override val uploadedSize: Long, val transferLink: String) : UploadProgressUiState(uploadedSize) {
+        data class Success(override val uploadedSize: Long, val transferUrl: String) : UploadProgressUiState(uploadedSize) {
             companion object {
                 fun create(outputData: Data, sharedApiUrlCreator: SharedApiUrlCreator): Success? {
                     return Success(
                         uploadedSize = outputData.getLong(UPLOADED_BYTES_TAG, 0L),
-                        transferLink = outputData.getString(TRANSFER_UUID_TAG)
+                        transferUrl = outputData.getString(TRANSFER_UUID_TAG)
                             ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null
                     )
                 }
