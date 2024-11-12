@@ -48,12 +48,33 @@ enum class EmailLanguageOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
+    val apiValue: EmailLanguage,
 ) : SettingOption {
-    ENGLISH({ stringResource(R.string.settingsEmailLanguageValueEnglish) }, imageVectorResId = R.drawable.flag_gb),
-    FRENCH({ stringResource(R.string.settingsEmailLanguageValueFrench) }, imageVectorResId = R.drawable.flag_fr),
-    GERMAN({ stringResource(R.string.settingsEmailLanguageValueGerman) }, imageVectorResId = R.drawable.flag_ge),
-    ITALIAN({ stringResource(R.string.settingsEmailLanguageValueItalian) }, imageVectorResId = R.drawable.flag_it),
-    SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es);
+    ENGLISH(
+        { stringResource(R.string.settingsEmailLanguageValueEnglish) },
+        imageVectorResId = R.drawable.flag_gb,
+        apiValue = EmailLanguage.ENGLISH,
+    ),
+    FRENCH(
+        { stringResource(R.string.settingsEmailLanguageValueFrench) },
+        imageVectorResId = R.drawable.flag_fr,
+        apiValue = EmailLanguage.FRENCH,
+    ),
+    GERMAN(
+        { stringResource(R.string.settingsEmailLanguageValueGerman) },
+        imageVectorResId = R.drawable.flag_ge,
+        apiValue = EmailLanguage.GERMAN,
+    ),
+    ITALIAN(
+        { stringResource(R.string.settingsEmailLanguageValueItalian) },
+        imageVectorResId = R.drawable.flag_it,
+        apiValue = EmailLanguage.ITALIAN,
+    ),
+    SPANISH(
+        { stringResource(R.string.settingsEmailLanguageValueSpanish) },
+        imageVectorResId = R.drawable.flag_es,
+        apiValue = EmailLanguage.SPANISH,
+    );
 
     companion object {
         fun EmailLanguage.toTransferOption() = when (this) {

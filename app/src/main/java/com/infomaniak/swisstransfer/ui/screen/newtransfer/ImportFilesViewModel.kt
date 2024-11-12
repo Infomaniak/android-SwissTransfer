@@ -27,7 +27,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
@@ -136,12 +135,13 @@ class ImportFilesViewModel @Inject constructor(
 
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
-            duration = "30",
+            duration = selectedValidityPeriodOption.value.apiValue.value,
             authorEmail = "",
             password = "",
             message = "sisi test",
-            numberOfDownload = 20,
-            language = EmailLanguage.ENGLISH,
+            // TODO: Accept enum in kmp instead of parsing toInt()
+            numberOfDownload = selectedDownloadLimitOption.value.apiValue.value.toInt(),
+            language = selectedLanguageOption.value.apiValue,
             recipientsEmails = emptyList(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {

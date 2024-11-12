@@ -44,14 +44,16 @@ fun SettingsDownloadsLimitScreen(
 }
 
 enum class DownloadLimitOption(
-    override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
+    val apiValue: DownloadLimit,
 ) : SettingOption {
-    TWO_HUNDRED_FIFTY({ DownloadLimit.TWO_HUNDRED_FIFTY.value }),
-    ONE_HUNDRED({ DownloadLimit.ONE_HUNDRED.value }),
-    TWENTY({ DownloadLimit.TWENTY.value }),
-    ONE({ DownloadLimit.ONE.value });
+    TWO_HUNDRED_FIFTY(apiValue = DownloadLimit.TWO_HUNDRED_FIFTY),
+    ONE_HUNDRED(apiValue = DownloadLimit.ONE_HUNDRED),
+    TWENTY(apiValue = DownloadLimit.TWENTY),
+    ONE(apiValue = DownloadLimit.ONE);
+
+    override val title: @Composable () -> String = { apiValue.value }
 
     companion object {
         fun DownloadLimit.toTransferOption() = when (this) {
