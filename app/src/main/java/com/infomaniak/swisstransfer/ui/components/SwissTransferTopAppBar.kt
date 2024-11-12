@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowLeft
 import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -80,6 +81,9 @@ data class TopAppBarButton(
         val closeButton: (onClick: () -> Unit) -> TopAppBarButton = {
             TopAppBarButton(AppIcons.Cross, R.string.contentDescriptionButtonClose, it)
         }
+        val downloadButton: (onClick: () -> Unit) -> TopAppBarButton = {
+            TopAppBarButton(AppIcons.ArrowDownBar, R.string.buttonDownload, it)
+        }
     }
 }
 
@@ -92,6 +96,7 @@ private fun SwissTransferTopAppBarPreview() {
             navigationMenu = TopAppBarButton.backButton {},
             TopAppBarButton(AppIcons.Add, R.string.appName) {},
             TopAppBarButton.closeButton {},
+            TopAppBarButton.downloadButton {},
         )
     }
 }

@@ -81,6 +81,7 @@ fun TransferDetailsScreen(
             SwissTransferTopAppBar(
                 title = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_FULL),
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+                TopAppBarButton.downloadButton { /* TODO */ },
             )
         },
         floatingActionButton = {},
