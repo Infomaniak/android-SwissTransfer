@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
+    <string name="buttonCancel">Abbrechen</string>
+    <string name="buttonConfirm">Bestätigen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Auswahl herunterladen</string>
@@ -30,7 +32,9 @@
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
-    <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
+    <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
+    <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
+    <string name="expiredThe">Abgelaufen am %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
@@ -80,6 +84,8 @@
     <string name="settingsOptionThemeLight">Hell</string>
     <string name="settingsOptionThemeSystem">System</string>
     <string name="settingsOptionValidityPeriod">Dauer der Gültigkeit</string>
+    <string name="settingsPasswordDescription">Deine Empfänger müssen das Passwort eingeben, um die Dateien herunterzuladen.</string>
+    <string name="settingsPasswordToggleDescription">Schutz aktivieren</string>
     <string name="settingsSentryDescription">Sentry ist ein Tool, das ausschliesslich von Infomaniak gehostet und verwaltet wird, um die Stabilität der Anwendung in Echtzeit zu überwachen und unseren Entwicklern automatisch alle technischen Fehler zu melden.\n\nAnhand dieser Daten kann unser Team die Anwendung schnell korrigieren und optimieren, was zu einem besseren Nutzererlebnis für Sie führt.</string>
     <string name="settingsThemeTitle">Wähle ein Thema aus</string>
     <string name="settingsTitle">Einstellungen</string>

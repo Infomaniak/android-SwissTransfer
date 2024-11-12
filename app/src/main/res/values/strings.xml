@@ -23,6 +23,8 @@
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="buttonAddFiles">Add files</string>
+    <string name="buttonCancel">Cancel</string>
+    <string name="buttonConfirm">Confirm</string>
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
@@ -36,6 +38,8 @@
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
+    <string name="errorTransferPasswordLength">The password must be between 6 and 25 characters</string>
+    <string name="expiredThe">Expired on %s</string>
     <string name="expiresIn">Expires in %d days</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
@@ -85,6 +89,8 @@
     <string name="settingsOptionThemeLight">Light</string>
     <string name="settingsOptionThemeSystem">System</string>
     <string name="settingsOptionValidityPeriod">Validity period</string>
+    <string name="settingsPasswordDescription">Your recipients will need to enter the password to download the files.</string>
+    <string name="settingsPasswordToggleDescription">Activate protection</string>
     <string name="settingsSentryDescription">Sentry is a tool hosted and managed exclusively by Infomaniak to monitor the stability of the application in real time and automatically report any technical errors to our developers.\n\nThis data enables our team to quickly correct and optimise the application, resulting in a better user experience for you.</string>
     <string name="settingsThemeTitle">Select a theme</string>
     <string name="settingsTitle">Settings</string>

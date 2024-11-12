@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -57,7 +59,9 @@ fun SwissTransferTextField(
     maxLineNumber: Int = if (minLineNumber > 1) Int.MAX_VALUE else 1,
     isPassword: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
-    errorMessage: () -> String? = { null },
+    imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    errorMessage: @Composable () -> String? = { null },
     supportingText: String? = null,
     onValueChange: ((String) -> Unit)? = null,
 ) {
@@ -71,6 +75,17 @@ fun SwissTransferTextField(
         unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
         unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
     )
+
+    @Composable
+    fun getSupportingText(): (@Composable () -> Unit)? {
+        val displayText = if (text.isEmpty()) {
+            supportingText
+        } else {
+            errorMessage() ?: supportingText
+        }
+
+        return displayText?.let { @Composable { Text(it) } }
+    }
 
     OutlinedTextField(
         modifier = modifier,
@@ -95,9 +110,11 @@ fun SwissTransferTextField(
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
             autoCorrectEnabled = true,
+            imeAction = imeAction,
         ),
-        isError = errorMessage() != null,
-        supportingText = (errorMessage() ?: supportingText)?.let { { Text(it) } },
+        keyboardActions = keyboardActions,
+        isError = errorMessage() != null && text.isNotEmpty(),
+        supportingText = getSupportingText(),
     )
 }
 

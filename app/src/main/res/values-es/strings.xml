@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="buttonAddFiles">Añadir archivos</string>
+    <string name="buttonCancel">Cancelar</string>
+    <string name="buttonConfirm">Confirme</string>
     <string name="buttonCopyLink">Copiar enlace</string>
     <string name="buttonDownload">Descargar</string>
     <string name="buttonDownloadSelected">Descargar la selección</string>
@@ -30,8 +32,9 @@
     <string name="contentDescriptionButtonRemove">Eliminar archivo</string>
     <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
-    <string name="downloadedTransferLabel">Transferencia descargada: %d/%d</string>
+    <string name="downloadedTransferLabel">Transferencia descargada : %d/%d</string>
     <string name="errorTransferPasswordLength">La contraseña debe tener entre 6 y 25 caracteres</string>
+    <string name="expiredThe">Expirado el %s</string>
     <string name="expiresIn">Caduca en %d días</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
@@ -81,6 +84,8 @@
     <string name="settingsOptionThemeLight">Luz</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
     <string name="settingsOptionValidityPeriod">Periodo de validez</string>
+    <string name="settingsPasswordDescription">Los destinatarios tendrán que introducir la contraseña para descargar los archivos.</string>
+    <string name="settingsPasswordToggleDescription">Activar la protección</string>
     <string name="settingsSentryDescription">Sentry es una herramienta alojada y gestionada en exclusiva por Infomaniak para supervisar la estabilidad de la aplicación en tiempo real e informar automáticamente de cualquier error técnico a nuestros desarrolladores.\n\nEstos datos permiten a nuestro equipo corregir y optimizar rápidamente la aplicación, lo que se traduce en una mejor experiencia de usuario para usted.</string>
     <string name="settingsThemeTitle">Seleccione un tema</string>
     <string name="settingsTitle">Parámetros</string>

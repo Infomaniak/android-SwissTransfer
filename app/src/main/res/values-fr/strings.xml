@@ -18,6 +18,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
+    <string name="buttonCancel">Annuler</string>
+    <string name="buttonConfirm">Confirmer</string>
     <string name="buttonCopyLink">Copier le lien</string>
     <string name="buttonDownload">Télécharger</string>
     <string name="buttonDownloadSelected">Télécharger la sélection</string>
@@ -31,6 +33,8 @@
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
+    <string name="errorTransferPasswordLength">Le mot de passe doit comporter entre 6 et 25 caractères</string>
+    <string name="expiredThe">Expiré le %s</string>
     <string name="expiresIn">Expire dans %d jours</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
@@ -81,6 +85,8 @@
     <string name="settingsOptionThemeLight">Clair</string>
     <string name="settingsOptionThemeSystem">Système</string>
     <string name="settingsOptionValidityPeriod">Durée de validité</string>
+    <string name="settingsPasswordDescription">Tes destinataires devront saisir le mot de passe pour télécharger les fichiers.</string>
+    <string name="settingsPasswordToggleDescription">Activer la protection</string>
     <string name="settingsSentryDescription">Sentry est un outil hébergé et géré exclusivement par Infomaniak pour surveiller en temps réel la stabilité de l’application et signaler automatiquement d’éventuelles erreurs techniques à nos développeurs.\n\nCes données permettent à notre équipe de rapidement corriger et optimiser l’application, ce qui se traduit par une meilleure expérience d’utilisation pour vous.</string>
     <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>

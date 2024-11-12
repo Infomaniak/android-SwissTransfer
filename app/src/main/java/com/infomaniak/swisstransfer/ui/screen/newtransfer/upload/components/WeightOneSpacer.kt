@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components
 
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -27,5 +25,11 @@ import androidx.compose.ui.unit.Dp
 @Composable
 fun ColumnScope.WeightOneSpacer(minHeight: Dp) {
     Spacer(modifier = Modifier.height(minHeight))
+    Spacer(modifier = Modifier.weight(1f))
+}
+
+@Composable
+fun RowScope.WeightOneSpacer(minWidth: Dp) {
+    Spacer(modifier = Modifier.width(minWidth))
     Spacer(modifier = Modifier.weight(1f))
 }
