@@ -36,27 +36,27 @@ import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AdvancedOptionsState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionState
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferAdvancedSettings(
+fun TransferOptionsTypes(
     modifier: Modifier = Modifier,
-    advancedSettingsItemsStates: () -> List<AdvancedOptionsState>,
-    onClick: (TransferAdvancedSettingType) -> Unit,
+    transferOptionsStates: () -> List<TransferOptionState>,
+    onClick: (TransferOptionType) -> Unit,
 ) {
     SwissTransferCard(modifier = modifier) {
-        advancedSettingsItemsStates().forEach {
+        transferOptionsStates().forEach {
             val title by remember { derivedStateOf { it.settingState } }
-            TransferAdvancedSetting(it.advancedSettingType, title, onClick = { onClick(it.advancedSettingType) })
+            TransferOptionType(it.transferOptionType, title, onClick = { onClick(it.transferOptionType) })
         }
     }
 }
 
-enum class TransferAdvancedSettingType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
+enum class TransferOptionType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
     VALIDITY_DURATION(buttonIcon = AppIcons.Clock, buttonText = R.string.settingsOptionValidityPeriod),
     DOWNLOAD_NUMBER_LIMIT(buttonIcon = AppIcons.ArrowDownFile, buttonText = R.string.settingsOptionDownloadLimit),
     PASSWORD(buttonIcon = AppIcons.LockedTextField, buttonText = R.string.settingsOptionPassword),
@@ -65,31 +65,31 @@ enum class TransferAdvancedSettingType(val buttonIcon: ImageVector, @StringRes v
 
 @PreviewLightAndDark
 @Composable
-private fun TransferTypeButtonsPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             val selectedOptionValues = listOf(
-                AdvancedOptionsState(
-                    advancedSettingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+                TransferOptionState(
+                    transferOptionType = TransferOptionType.VALIDITY_DURATION,
                     settingState = { ValidityPeriodOption.THIRTY },
                 ),
-                AdvancedOptionsState(
-                    advancedSettingType = TransferAdvancedSettingType.DOWNLOAD_NUMBER_LIMIT,
+                TransferOptionState(
+                    transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
                     settingState = { DownloadLimitOption.TWO_HUNDRED_FIFTY },
                 ),
-                AdvancedOptionsState(
-                    advancedSettingType = TransferAdvancedSettingType.PASSWORD,
+                TransferOptionState(
+                    transferOptionType = TransferOptionType.PASSWORD,
                     settingState = { PasswordTransferOption.NONE },
                 ),
-                AdvancedOptionsState(
-                    advancedSettingType = TransferAdvancedSettingType.LANGUAGE,
+                TransferOptionState(
+                    transferOptionType = TransferOptionType.LANGUAGE,
                     settingState = { EmailLanguageOption.FRENCH },
                 ),
             )
 
-            TransferAdvancedSettings(
+            TransferOptionsTypes(
                 modifier = Modifier.padding(Margin.Medium),
-                advancedSettingsItemsStates = { selectedOptionValues },
+                transferOptionsStates = { selectedOptionValues },
                 onClick = {},
             )
         }

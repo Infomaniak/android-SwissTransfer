@@ -18,7 +18,10 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
-import androidx.compose.runtime.*
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,15 +35,15 @@ import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toAdvancedOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AdvancedOptionsCallbacks
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AdvancedOptionsState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionState
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsCallbacks
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.workers.UploadWorker
@@ -155,7 +158,7 @@ class ImportFilesViewModel @Inject constructor(
     }
     //endregion
 
-    //region Transfer Advanced Options
+    //region Transfer Options
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
         key = SELECTED_VALIDITY_PERIOD_KEY,
         initialValue = ValidityPeriodOption.THIRTY
@@ -192,12 +195,12 @@ class ImportFilesViewModel @Inject constructor(
         savedStateHandle[SELECTED_LANGUAGE_KEY] = language
     }
 
-    fun initTransferAdvancedOptionsValues() {
+    fun initTransferOptionsValues() {
         viewModelScope.launch(ioDispatcher) {
             appSettingsManager.getAppSettings()?.let {
-                selectTransferValidityPeriod(it.validityPeriod.toAdvancedOption())
-                selectTransferDownloadLimit(it.downloadLimit.toAdvancedOption())
-                selectTransferLanguage(it.emailLanguage.toAdvancedOption())
+                selectTransferValidityPeriod(it.validityPeriod.toTransferOption())
+                selectTransferDownloadLimit(it.downloadLimit.toTransferOption())
+                selectTransferLanguage(it.emailLanguage.toTransferOption())
             } ?: run {
                 SentryLog.e(TAG, "AppSettings is null in ImportFilesScreen, it should not happened")
                 selectTransferValidityPeriod(ValidityPeriodOption.THIRTY)
@@ -207,10 +210,10 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun getTransferAdvancedOptionsCallbacks(advancedOptionsStates: () -> List<AdvancedOptionsState>): AdvancedOptionsCallbacks {
-        return AdvancedOptionsCallbacks(
-            advancedOptionsStates = advancedOptionsStates,
-            onAdvancedOptionsValueSelected = ::onAdvancedOptionsValueSelected,
+    fun getTransferOptionsCallbacks(transferOptionsStates: () -> List<TransferOptionState>): TransferOptionsCallbacks {
+        return TransferOptionsCallbacks(
+            transferOptionsStates = transferOptionsStates,
+            onTransferOptionValueSelected = ::onTransferOptionValueSelected,
             password = GetSetCallbacks(
                 get = { transferPassword },
                 set = { transferPassword = it },
@@ -219,7 +222,7 @@ class ImportFilesViewModel @Inject constructor(
         )
     }
 
-    private fun onAdvancedOptionsValueSelected(option: SettingOption) {
+    private fun onTransferOptionValueSelected(option: SettingOption) {
         when (option) {
             is ValidityPeriodOption -> selectTransferValidityPeriod(option)
             is DownloadLimitOption -> selectTransferDownloadLimit(option)

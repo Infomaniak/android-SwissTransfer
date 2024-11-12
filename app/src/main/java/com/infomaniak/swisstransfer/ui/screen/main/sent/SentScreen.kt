@@ -62,7 +62,7 @@ private fun SentScreen(transfers: List<Any>?) {
 
 @PreviewAllWindows
 @Composable
-private fun SentScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SentScreen(transfers = emptyList())
