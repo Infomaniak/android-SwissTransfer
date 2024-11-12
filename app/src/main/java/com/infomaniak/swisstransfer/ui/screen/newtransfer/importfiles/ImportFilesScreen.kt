@@ -126,7 +126,7 @@ private fun HandleSendActionResult(
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
             is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
-            is SendActionResult.Failure -> Unit //TODO: Show error
+            is SendActionResult.Failure -> Unit // TODO: Show error
             else -> Unit
         }
     }
