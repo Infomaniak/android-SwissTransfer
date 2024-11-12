@@ -25,7 +25,6 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
@@ -42,9 +41,6 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
             )
-        }
-        composable<TransferOptionsDestination> {
-            TransferOptionsScreen()
         }
         composable<ValidateUserEmailDestination> {
             ValidateUserEmailScreen()
