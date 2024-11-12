@@ -41,36 +41,22 @@ fun SentScreen(
     getSelectedTransferUuid: () -> String?,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
+
     val transfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
-    val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
-
-    SentScreen(
-        navigateToDetails = navigateToDetails,
-        getSelectedTransferUuid = getSelectedTransferUuid,
-        areTransfersEmpty = { areTransfersEmpty },
-    )
-}
-
-@Composable
-private fun SentScreen(
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
-    areTransfersEmpty: () -> Boolean,
-) {
-
+    val areTransfersEmpty by remember { derivedStateOf { transfers.isEmpty() } }
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     BrandTopAppBarScaffold(
         floatingActionButton = {
-            if (windowAdaptiveInfo.isWindowSmall() && !areTransfersEmpty()) {
+            if (windowAdaptiveInfo.isWindowSmall() && !areTransfersEmpty) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
             }
         },
     ) {
-        if (areTransfersEmpty()) {
+        if (areTransfersEmpty) {
             SentEmptyScreen()
         } else {
-            TransfersListWithExpiredBottomSheet(TransferDirection.SENT, navigateToDetails, getSelectedTransferUuid)
+            TransfersListWithExpiredBottomSheet(TransferDirection.SENT, transfers, navigateToDetails, getSelectedTransferUuid)
         }
     }
 }
@@ -83,7 +69,6 @@ private fun Preview() {
             SentScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                areTransfersEmpty = { true },
             )
         }
     }
