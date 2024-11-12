@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(direction: TransferDirection) {
-    TwoPaneScaffold<String>(
+    TwoPaneScaffold<Pair<TransferDirection, String>>(
         listPane = { ListPane(direction, navigator = this) },
         detailPane = { DetailPane(navigator = this) },
     )
@@ -49,40 +49,44 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<String>) {
+private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
-            navigateToDetails = navigator::navigateToDetails,
+            navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
-            navigateToDetails = navigator::navigateToDetails,
+            navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<String>.navigateToDetails(transferUuid: String) {
-    navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid)
+private fun ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>.navigateToDetails(
+    direction: TransferDirection,
+    transferUuid: String,
+) {
+    navigateTo(ListDetailPaneScaffoldRole.Detail, direction to transferUuid)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<String>.getSelectedTransferUuid(): String? {
-    return currentDestination?.content
+private fun ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>.getSelectedTransferUuid(): String? {
+    return currentDestination?.content?.second
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<String>) {
+private fun DetailPane(navigator: ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>) {
 
-    val transferUuid = navigator.safeCurrentContent()
+    val (direction, transferUuid) = navigator.safeCurrentContent() ?: (TransferDirection.SENT to null)
 
     if (transferUuid == null) {
         NoSelectionEmptyState()
     } else {
         TransferDetailsScreen(
             transferUuid = transferUuid,
+            direction = direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
         )
     }

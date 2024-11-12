@@ -51,6 +51,10 @@
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="receivedFilesTitle">Archivos recibidos</string>
     <string name="receivedTitle">Recibido</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Destinatario:</item>
+        <item quantity="other">Para:</item>
+    </plurals>
     <string name="sentEmptyTitle">Nuestra historia comienza aquí</string>
     <string name="sentFilesTitle">Archivos compartidos</string>
     <string name="sentTitle">Enviado a</string>
@@ -95,6 +99,11 @@
         <item quantity="one">día %d</item>
         <item quantity="other">%d días</item>
     </plurals>
+    <string name="sharePasswordButton">Copiar contraseña</string>
+    <string name="sharePasswordDescription">Aquí está la clave para descargar los archivos</string>
+    <string name="sharePasswordTitle">Esta transferencia es segura</string>
+    <string name="shareQrCodeDescription">Escanee este código QR a su alrededor para compartir su traslado:</string>
+    <string name="shareQrCodeTitle">Compartir rápidamente</string>
     <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
@@ -115,7 +124,7 @@
     <string name="transferTypeEmail">Correo electrónico</string>
     <string name="transferTypeLink">Enlace</string>
     <string name="transferTypeProximity">Proximidad</string>
-    <string name="transferTypeQrCode">Código QR</string>
+    <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transferencia</string>
     <string name="transferTypeTitle">Enviar por</string>
     <string name="transferUploadSourceChoiceCamera">Cámara</string>

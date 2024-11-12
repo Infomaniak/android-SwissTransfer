@@ -52,6 +52,10 @@
     <string name="noTransferReceivedTitle">Aucun transfert reçu</string>
     <string name="receivedFilesTitle">Fichiers reçus</string>
     <string name="receivedTitle">Reçu</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Destinataire :</item>
+        <item quantity="other">Destinataires :</item>
+    </plurals>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
     <string name="sentFilesTitle">Fichiers partagés</string>
     <string name="sentTitle">Envoyé</string>
@@ -96,6 +100,11 @@
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
     </plurals>
+    <string name="sharePasswordButton">Copier le mot de passe</string>
+    <string name="sharePasswordDescription">Voilà le sésame pour télécharger les fichiers !</string>
+    <string name="sharePasswordTitle">Ce transfert est sécurisé</string>
+    <string name="shareQrCodeDescription">Fais scanner ce QR code autour de toi pour partager ton transfert :</string>
+    <string name="shareQrCodeTitle">Partage rapide</string>
     <string name="snackbarLinkCopiedToClipboard">Lien copié dans le presse-papiers</string>
     <string name="startActivityCantHandleAction">Aucune application n’a été trouvée pour gérer cette action</string>
     <string name="textFieldOptional">(Facultatif)</string>
