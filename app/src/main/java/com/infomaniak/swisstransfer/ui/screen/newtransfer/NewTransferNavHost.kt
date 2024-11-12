@@ -52,6 +52,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadSuccess = { transferLink ->
                     navController.navigate(UploadSuccessDestination(args.transferType, transferLink))
                 },
+                navigateToUploadError = { navController.navigate(UploadErrorDestination) },
                 closeActivity = closeActivity
             )
         }
