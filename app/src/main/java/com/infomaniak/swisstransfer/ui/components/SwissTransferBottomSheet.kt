@@ -98,13 +98,17 @@ private fun BottomSheetContent(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
+        val paddedModifier = Modifier.padding(horizontal = Margin.Medium)
+
         imageVector?.let {
-            Image(imageVector = imageVector, contentDescription = null)
+            Image(modifier = paddedModifier, imageVector = imageVector, contentDescription = null)
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
         title?.let {
             Text(
+                modifier = paddedModifier,
                 text = it,
                 style = SwissTransferTheme.typography.bodyMedium,
                 color = SwissTransferTheme.colors.primaryTextColor,
@@ -115,9 +119,11 @@ private fun BottomSheetContent(
 
         description?.let {
             Text(
+                modifier = paddedModifier,
                 text = it,
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(Margin.Large))
         }
