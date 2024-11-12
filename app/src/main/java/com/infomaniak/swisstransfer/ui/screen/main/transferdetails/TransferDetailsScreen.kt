@@ -72,9 +72,6 @@ fun TransferDetailsScreen(
     // val transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid)
     val transferPassword = "toto42" // TODO: Use real data
 
-    val shouldDisplayRecipients = recipients.isNotEmpty()
-    val shouldDisplayMessage = transfer.message != null
-
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
     var isQrCodeVisible: Boolean by rememberSaveable { mutableStateOf(false) }
     var isPasswordVisible: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -90,27 +87,7 @@ fun TransferDetailsScreen(
     ) {
         Column {
 
-            FileItemList(
-                modifier = Modifier
-                    .weight(1.0f)
-                    .padding(horizontal = Margin.Medium),
-                files = transfer.files,
-                isRemoveButtonVisible = false,
-                isCheckboxVisible = { isMultiselectOn },
-                isUidChecked = { fileUid -> transferDetailsViewModel.checkedFiles[fileUid] ?: false },
-                setUidCheckStatus = { fileUid, isChecked -> transferDetailsViewModel.checkedFiles[fileUid] = isChecked },
-            ) {
-                Column {
-                    Spacer(modifier = Modifier.height(Margin.Large))
-                    TransferInfo(transfer)
-                    Spacer(modifier = Modifier.height(Margin.Large))
-                    if (shouldDisplayRecipients) TransferRecipients(recipients)
-                    if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Mini))
-                    if (shouldDisplayMessage) TransferMessage(transfer)
-                    if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Large))
-                    TransferContentHeader()
-                }
-            }
+            FilesList(transfer, recipients, isMultiselectOn, transferDetailsViewModel)
 
             BottomBar(
                 direction = direction,
@@ -145,6 +122,41 @@ fun TransferDetailsScreen(
             closeBottomSheet = { isPasswordVisible = false },
         )
     }
+}
+
+@Composable
+private fun ColumnScope.FilesList(
+    transfer: TransferUi,
+    recipients: List<String>,
+    isMultiselectOn: Boolean,
+    transferDetailsViewModel: TransferDetailsViewModel,
+) {
+
+    val shouldDisplayRecipients = recipients.isNotEmpty()
+    val shouldDisplayMessage = transfer.message != null
+
+    FileItemList(
+        modifier = Modifier
+            .weight(1.0f)
+            .padding(horizontal = Margin.Medium),
+        files = transfer.files,
+        isRemoveButtonVisible = false,
+        isCheckboxVisible = { isMultiselectOn },
+        isUidChecked = { fileUid -> transferDetailsViewModel.checkedFiles[fileUid] ?: false },
+        setUidCheckStatus = { fileUid, isChecked -> transferDetailsViewModel.checkedFiles[fileUid] = isChecked },
+        header = {
+            Column {
+                Spacer(modifier = Modifier.height(Margin.Large))
+                TransferInfo(transfer)
+                Spacer(modifier = Modifier.height(Margin.Large))
+                if (shouldDisplayRecipients) TransferRecipients(recipients)
+                if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Mini))
+                if (shouldDisplayMessage) TransferMessage(transfer)
+                if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Large))
+                TransferContentHeader()
+            }
+        },
+    )
 }
 
 @Composable
