@@ -31,7 +31,7 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.previewparameter.emailsPreviewData
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -62,8 +62,8 @@ fun UploadSuccessEmailScreen(
 
             IllustratedMessageBlock(
                 icon = AppIllus.Beers.image(),
-                title = TransferType.MAIL.titleRes,
-                description = pluralStringResource(TransferType.MAIL.descriptionRes!!, emails.count()),
+                title = TransferTypeUi.MAIL.titleRes,
+                description = pluralStringResource(TransferTypeUi.MAIL.descriptionRes!!, emails.count()),
             )
 
             Spacer(modifier = Modifier.height(Margin.Medium))

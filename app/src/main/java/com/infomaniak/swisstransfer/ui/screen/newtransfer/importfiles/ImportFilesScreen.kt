@@ -58,7 +58,7 @@ private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
 ) {
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
@@ -120,8 +120,8 @@ fun ImportFilesScreen(
 @Composable
 private fun HandleSendActionResult(
     getSendActionResult: () -> SendActionResult?,
-    transferType: () -> TransferType,
-    navigateToUploadProgress: (transferType: TransferType, totalSize: Long) -> Unit,
+    transferType: () -> TransferTypeUi,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
 ) {
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
@@ -137,7 +137,7 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
-    selectedTransferType: GetSetCallbacks<TransferType>,
+    selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
@@ -213,7 +213,7 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferType) {
+private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferTypeUi) {
 
     EmailAddressesTextFields(selectedTransferType)
 
@@ -226,9 +226,9 @@ private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferTyp
 }
 
 @Composable
-private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> TransferType) {
+private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> TransferTypeUi) {
 
-    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferType.MAIL } }
+    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferTypeUi.MAIL } }
 
     AnimatedVisibility(visible = shouldShowEmailAddressesFields) {
         Column {
@@ -375,7 +375,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
-            selectedTransferType = GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}),
+            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.QR_CODE }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             removeFileByUid = {},
             addFiles = {},

@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Chain
@@ -39,12 +40,12 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferTypeButtons(transferType: GetSetCallbacks<TransferType>) {
+fun TransferTypeButtons(transferType: GetSetCallbacks<TransferTypeUi>) {
     Row(
         modifier = Modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
     ) {
-        for (transferTypeEntry in TransferType.entries) {
+        for (transferTypeEntry in TransferTypeUi.entries) {
             TransferTypeButton(
                 transferType = transferTypeEntry,
                 isActive = { transferTypeEntry == transferType.get() },
@@ -54,36 +55,50 @@ fun TransferTypeButtons(transferType: GetSetCallbacks<TransferType>) {
     }
 }
 
-enum class TransferType(
+enum class TransferTypeUi(
     val buttonIcon: ImageVector,
     @StringRes val buttonTextRes: Int,
     @StringRes val titleRes: Int,
     @StringRes @PluralsRes val descriptionRes: Int?,
+    val dbValue: TransferType,
 ) {
-    LINK(
-        buttonIcon = AppIcons.Chain,
-        buttonTextRes = R.string.transferTypeLink,
-        titleRes = R.string.uploadSuccessLinkTitle,
-        descriptionRes = R.string.uploadSuccessLinkDescription,
-    ),
     QR_CODE(
         buttonIcon = AppIcons.QrCode,
         buttonTextRes = R.string.transferTypeQrCode,
         titleRes = R.string.uploadSuccessQrTitle,
         descriptionRes = null,
+        dbValue = TransferType.QR_CODE,
+    ),
+    LINK(
+        buttonIcon = AppIcons.Chain,
+        buttonTextRes = R.string.transferTypeLink,
+        titleRes = R.string.uploadSuccessLinkTitle,
+        descriptionRes = R.string.uploadSuccessLinkDescription,
+        dbValue = TransferType.LINK,
     ),
     PROXIMITY(
         buttonIcon = AppIcons.WifiWave,
         buttonTextRes = R.string.transferTypeProximity,
         titleRes = R.string.uploadSuccessLinkTitle,
         descriptionRes = R.string.uploadSuccessLinkDescription,
+        dbValue = TransferType.PROXIMITY,
     ),
     MAIL(
         buttonIcon = AppIcons.Envelope,
         buttonTextRes = R.string.transferTypeEmail,
         titleRes = R.string.uploadSuccessEmailTitle,
         descriptionRes = R.plurals.uploadSuccessEmailDescription,
-    ),
+        dbValue = TransferType.MAIL,
+    );
+
+    companion object {
+        fun TransferType.toTransferTypeUi() = when(this) {
+            TransferType.LINK -> LINK
+            TransferType.QR_CODE -> QR_CODE
+            TransferType.PROXIMITY -> PROXIMITY
+            TransferType.MAIL -> MAIL
+        }
+    }
 }
 
 @PreviewLightAndDark
@@ -91,7 +106,7 @@ enum class TransferType(
 private fun TransferTypeButtonsPreview() {
     SwissTransferTheme {
         Surface {
-            TransferTypeButtons(GetSetCallbacks(get = { TransferType.QR_CODE }, set = {}))
+            TransferTypeButtons(GetSetCallbacks(get = { TransferTypeUi.QR_CODE }, set = {}))
         }
     }
 }

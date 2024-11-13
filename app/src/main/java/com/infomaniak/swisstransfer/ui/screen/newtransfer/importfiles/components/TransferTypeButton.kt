@@ -32,7 +32,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun TransferTypeButton(
-    transferType: TransferType,
+    transferType: TransferTypeUi,
     isActive: () -> Boolean,
     onClick: () -> Unit,
 ) {
@@ -63,7 +63,7 @@ private fun TransferTypeButtonPreview() {
     SwissTransferTheme {
         Surface {
             Column {
-                TransferType.entries.forEach { entry ->
+                TransferTypeUi.entries.forEach { entry ->
                     TransferTypeButton(
                         transferType = entry,
                         isActive = { entry.ordinal == 0 },
