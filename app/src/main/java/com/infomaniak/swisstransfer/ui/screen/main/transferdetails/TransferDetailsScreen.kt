@@ -89,7 +89,7 @@ private fun TransferDetailsScreen(
 
     val context = LocalContext.current
     val transfer = getTransfer() ?: return
-    val transferRecipients = if (direction == TransferDirection.SENT) emailsPreviewData else emptyList() // TODO: Use real data
+    val transferRecipients: List<String> = emptyList() // TODO: Use real data
     val transferPassword = "toto42" // TODO: Use real data
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
