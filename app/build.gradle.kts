@@ -30,7 +30,7 @@ android {
         }
 
         buildConfigField("String", "RECAPTCHA_API_SITE_KEY", "\"6LfaxOgpAAAAAI3Sj4rtB2oAFjkRJILiGEt-LUsc\"")
-        buildConfigField ("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
+        buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
     }
 
     buildTypes {
