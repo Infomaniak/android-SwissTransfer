@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ShareAndCopyButtons
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, closeActivity: () -> Unit) {
+fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, closeActivity: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     BottomStickyButtonScaffold(
@@ -70,7 +70,7 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, close
 }
 
 @Composable
-private fun ColumnScope.SuccessMessage(transferType: TransferType, transferUrl: String) {
+private fun ColumnScope.SuccessMessage(transferType: TransferTypeUi, transferUrl: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,7 +115,7 @@ private fun UploadSuccessQrScreenPreview() {
     SwissTransferTheme {
         Surface {
             UploadSuccessQrScreen(
-                transferType = TransferType.LINK,
+                transferType = TransferTypeUi.QR_CODE,
                 transferUrl = "https://chk.me/83azQOl",
                 closeActivity = {}
             )

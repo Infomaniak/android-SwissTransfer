@@ -43,7 +43,8 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOp
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsCallbacks
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -155,10 +156,11 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     //region Transfer Type
-    val selectedTransferType = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferType.LINK)
+    val selectedTransferType = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.QR_CODE)
 
-    fun selectTransferType(type: TransferType) {
+    fun selectTransferType(type: TransferTypeUi) {
         savedStateHandle[SELECTED_TRANSFER_TYPE] = type
+        viewModelScope.launch(ioDispatcher) { appSettingsManager.setLastTransferType(type.dbValue) }
     }
     //endregion
 
@@ -205,6 +207,7 @@ class ImportFilesViewModel @Inject constructor(
                 selectTransferValidityPeriod(it.validityPeriod.toTransferOption())
                 selectTransferDownloadLimit(it.downloadLimit.toTransferOption())
                 selectTransferLanguage(it.emailLanguage.toTransferOption())
+                selectTransferType(it.lastTransferType.toTransferTypeUi())
             } ?: run {
                 SentryLog.e(TAG, "AppSettings is null in ImportFilesScreen, it should not happened")
                 selectTransferValidityPeriod(ValidityPeriodOption.THIRTY)
