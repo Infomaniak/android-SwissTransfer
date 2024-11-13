@@ -73,6 +73,7 @@ fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink:
         )
     }
 }
+
 @Composable
 private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int, onClick: () -> Unit) {
     Button(
@@ -80,7 +81,7 @@ private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int,
         shape = CustomShapes.MEDIUM,
         colors = ButtonType.SECONDARY.buttonColors(),
         contentPadding = PaddingValues(vertical = Margin.Medium),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,7 +93,6 @@ private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int,
         }
     }
 }
-
 
 @PreviewLightAndDark
 @Composable

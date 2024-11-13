@@ -93,10 +93,7 @@ private fun ColumnScope.ScreenContent(
 private fun SuccessMessage(transferType: TransferType, transferUrl: String) {
     Spacer(modifier = Modifier.height(Margin.Medium))
 
-    Image(
-        imageVector = AppIllus.Beers.image(),
-        contentDescription = null,
-    )
+    Image(imageVector = AppIllus.Beers.image(), contentDescription = null)
 
     Spacer(Modifier.height(Margin.Huge))
 
