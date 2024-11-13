@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
@@ -46,6 +47,16 @@ fun ReceivedScreen(
     val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
     val areTransfersEmpty by remember { derivedStateOf { transfers.isEmpty() } }
 
+    ReceivedScreen(navigateToDetails, getSelectedTransferUuid, transfers, areTransfersEmpty)
+}
+
+@Composable
+private fun ReceivedScreen(
+    navigateToDetails: (transferUuid: String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
+    transfers: List<TransferUi>,
+    areTransfersEmpty: Boolean,
+) {
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab { areTransfersEmpty } },
     ) {
@@ -69,6 +80,8 @@ private fun Preview() {
             ReceivedScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
+                transfers = emptyList(),
+                areTransfersEmpty = true,
             )
         }
     }

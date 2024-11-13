@@ -23,12 +23,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -44,6 +47,18 @@ fun SentScreen(
 
     val transfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
     val areTransfersEmpty by remember { derivedStateOf { transfers.isEmpty() } }
+
+    SentScreen(navigateToDetails, getSelectedTransferUuid, transfers, areTransfersEmpty)
+}
+
+@Composable
+private fun SentScreen(
+    navigateToDetails: (transferUuid: String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
+    transfers: List<TransferUi>,
+    areTransfersEmpty: Boolean,
+) {
+
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     BrandTopAppBarScaffold(
@@ -63,12 +78,14 @@ fun SentScreen(
 
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
     SwissTransferTheme {
         Surface {
             SentScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
+                transfers = transfers,
+                areTransfersEmpty = false,
             )
         }
     }
