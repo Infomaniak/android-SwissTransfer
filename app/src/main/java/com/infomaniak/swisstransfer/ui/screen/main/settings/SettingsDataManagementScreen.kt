@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -57,7 +58,6 @@ fun SettingsDataManagementScreen(
 ) {
 
     val context = LocalContext.current
-    val sourceCodeURL = stringResource(R.string.urlSourceCode) // TODO: Update this URL when we know what we want
 
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
@@ -84,7 +84,7 @@ fun SettingsDataManagementScreen(
             )
             SharpRippleButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { context.openUrl(sourceCodeURL) },
+                onClick = { context.openUrl(BuildConfig.GITHUB_REPO_URL) },
             ) {
                 Text(
                     text = stringResource(R.string.settingsDataManagementSourceCode),

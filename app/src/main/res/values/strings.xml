@@ -19,7 +19,6 @@
     <string name="appName" translatable="false">SwissTransfer</string>
     <string name="matomo" translatable="false">Matomo</string>
     <string name="sentry" translatable="false">Sentry</string>
-    <string name="urlSourceCode" translatable="false">https://chk.me/83azQOl</string>
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="buttonAddFiles">Add files</string>

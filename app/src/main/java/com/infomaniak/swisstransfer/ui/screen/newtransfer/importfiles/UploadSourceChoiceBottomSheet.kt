@@ -53,7 +53,7 @@ fun UploadSourceChoiceBottomSheet(
                 titleRes = R.string.transferUploadSourceChoiceCamera,
                 onClick = {
                     closeBottomSheet()
-                    /* TODO */
+                    // TODO: Handle this feature
                 },
             )
             HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
@@ -62,7 +62,7 @@ fun UploadSourceChoiceBottomSheet(
                 titleRes = R.string.transferUploadSourceChoiceGallery,
                 onClick = {
                     closeBottomSheet()
-                    /* TODO */
+                    // TODO: Handle this feature
                 },
             )
             HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
