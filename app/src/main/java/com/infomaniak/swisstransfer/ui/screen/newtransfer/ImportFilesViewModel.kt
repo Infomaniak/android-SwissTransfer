@@ -137,7 +137,7 @@ class ImportFilesViewModel @Inject constructor(
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue.value,
             authorEmail = "",
-            password = "",
+            password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = "sisi test",
             // TODO: Accept enum in kmp instead of parsing toInt()
             numberOfDownload = selectedDownloadLimitOption.value.apiValue.value.toInt(),
@@ -260,5 +260,7 @@ class ImportFilesViewModel @Inject constructor(
         private const val SELECTED_DOWNLOAD_LIMIT_KEY = "SELECTED_DOWNLOAD_LIMIT_KEY"
         private const val SELECTED_PASSWORD_OPTION_KEY = "SELECTED_PASSWORD_OPTION_KEY"
         private const val SELECTED_LANGUAGE_KEY = "SELECTED_TRANSFER_LANGUAGE_KEY"
+
+        private const val NO_PASSWORD = ""
     }
 }
