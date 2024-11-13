@@ -45,11 +45,11 @@ import com.infomaniak.core2.R as RCore2
 
 @Composable
 fun UploadProgressScreen(
-    uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
     totalSizeInBytes: Long,
     navigateToUploadSuccess: (String) -> Unit,
     navigateToUploadError: () -> Unit,
     closeActivity: () -> Unit,
+    uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
 

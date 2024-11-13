@@ -20,10 +20,16 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class TransferDetailsViewModel @Inject constructor() : ViewModel() {
+class TransferDetailsViewModel @Inject constructor(
+    private val sharedApiUrlCreator: SharedApiUrlCreator,
+) : ViewModel() {
+
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+
+    fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 }

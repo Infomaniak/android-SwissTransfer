@@ -61,6 +61,7 @@ fun SwissTransferTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    isReadOnly: Boolean = false,
     errorMessage: @Composable () -> String? = { null },
     supportingText: String? = null,
     onValueChange: ((String) -> Unit)? = null,
@@ -74,6 +75,9 @@ fun SwissTransferTextField(
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
         unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
+        disabledBorderColor = SwissTransferTheme.materialColors.outline,
+        unfocusedTrailingIconColor = SwissTransferTheme.colors.iconColor,
+        disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
     )
 
     @Composable
@@ -89,6 +93,8 @@ fun SwissTransferTextField(
 
     OutlinedTextField(
         modifier = modifier,
+        readOnly = isReadOnly,
+        enabled = !isReadOnly,
         value = text,
         label = displayLabel?.let { { Text(text = it) } },
         minLines = minLineNumber,

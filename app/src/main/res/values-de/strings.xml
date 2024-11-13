@@ -18,7 +18,6 @@
 <resources>
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
-    <string name="buttonCancel">Abbrechen</string>
     <string name="buttonConfirm">Bestätigen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonDownload">Download</string>
@@ -34,7 +33,6 @@
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
-    <string name="expiredThe">Abgelaufen am %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
@@ -51,6 +49,10 @@
     <string name="noTransferReceivedTitle">Keine Überweisungen erhalten</string>
     <string name="receivedFilesTitle">Empfangene Dateien</string>
     <string name="receivedTitle">Empfangen</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Empfänger:</item>
+        <item quantity="other">Adressaten:</item>
+    </plurals>
     <string name="sentEmptyTitle">Unsere Geschichte beginnt hier</string>
     <string name="sentFilesTitle">Geteilte Dateien</string>
     <string name="sentTitle">Gesendet</string>
@@ -95,6 +97,11 @@
         <item quantity="one">%d Tag</item>
         <item quantity="other">%d Tage</item>
     </plurals>
+    <string name="sharePasswordButton">Kopieren des Passworts</string>
+    <string name="sharePasswordDescription">Hier ist das Sesam-öffne-dich zum Herunterladen der Dateien!</string>
+    <string name="sharePasswordTitle">Diese Übertragung ist sicher</string>
+    <string name="shareQrCodeDescription">Lass diesen QR-Code in deiner Umgebung scannen, um deine Übertragung zu teilen:</string>
+    <string name="shareQrCodeTitle">Schnelles Teilen</string>
     <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Fakultativ)</string>
@@ -115,7 +122,7 @@
     <string name="transferTypeEmail">E-Mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">In der Nähe</string>
-    <string name="transferTypeQrCode">QR-Code</string>
+    <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Übertragen</string>
     <string name="transferTypeTitle">Schicken per</string>
     <string name="transferUploadSourceChoiceCamera">Kamera</string>

@@ -21,28 +21,33 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.infomaniak.core2.FORMAT_DATE_FULL
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
+import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
+import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
+import com.infomaniak.swisstransfer.ui.previewparameter.emailsPreviewData
 import com.infomaniak.swisstransfer.ui.previewparameter.transfersPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -53,110 +58,154 @@ import java.util.Date
 @Composable
 fun TransferDetailsScreen(
     transferUuid: String,
+    direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
+    TransferDetailsScreen(
+        transferUuid = transferUuid,
+        direction = direction,
+        navigateBack = navigateBack,
+        getCheckedFiles = { transferDetailsViewModel.checkedFiles },
+        clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
+        setFileCheckStatus = { fileUid, isChecked ->
+            transferDetailsViewModel.checkedFiles[fileUid] = isChecked
+        },
+    )
+}
 
+@Composable
+private fun TransferDetailsScreen(
+    transferUuid: String,
+    direction: TransferDirection,
+    navigateBack: (() -> Unit)?,
+    getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
+    clearCheckedFiles: () -> Unit,
+    setFileCheckStatus: (String, Boolean) -> Unit,
+) {
+
+    val context = LocalContext.current
     val transfer = transfersPreviewData.first() // TODO: Use real data
-    val transferSenderEmail: String? = "john.smith@ik.me" // TODO
-    val transferUrl = "https://chk.me/83azQOl" // TODO
+    val recipients = if (direction == TransferDirection.SENT) emailsPreviewData else emptyList() // TODO: Use real data
+    val transferUrl = "https://chk.me/83azQOl" // TODO: Use the next line instead when available :
+    // val transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid)
+    val transferPassword = "toto42" // TODO: Use real data
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
-    val context = LocalContext.current
+    var showQrCodeSheet: Boolean by rememberSaveable { mutableStateOf(false) }
+    var showPasswordSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
                 title = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_FULL),
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+                TopAppBarButton.downloadButton { /* TODO */ },
             )
         },
         floatingActionButton = {},
     ) {
         Column {
 
-            FileItemList(
-                modifier = Modifier
-                    .weight(1.0f)
-                    .padding(horizontal = Margin.Medium),
-                files = transfer.files,
-                isRemoveButtonVisible = false,
-                isCheckboxVisible = { isMultiselectOn },
-                isUidChecked = { fileUid -> transferDetailsViewModel.checkedFiles[fileUid] ?: false },
-                setUidCheckStatus = { fileUid, isChecked -> transferDetailsViewModel.checkedFiles[fileUid] = isChecked },
-            ) {
-                Column {
-                    Spacer(modifier = Modifier.height(Margin.Large))
-                    TransferInfo(transfer)
-                    TransferMessage(transfer, transferSenderEmail)
-                    Spacer(modifier = Modifier.height(Margin.Large))
-                    TransferContentHeader()
-                }
-            }
+            FilesList(transfer, recipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
 
             BottomBar(
+                direction = direction,
                 isMultiselectOn = { isMultiselectOn },
                 onClick = { item ->
                     when (item) {
                         BottomBarItem.SHARE -> context.shareText(transferUrl)
+                        BottomBarItem.QR_CODE -> showQrCodeSheet = true
+                        BottomBarItem.PASSWORD -> showPasswordSheet = true
                         BottomBarItem.DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
                             isMultiselectOn = true
                         }
                         BottomBarItem.MULTISELECT_DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
-                            transferDetailsViewModel.checkedFiles.clear()
+                            clearCheckedFiles()
                             isMultiselectOn = false
                         }
                     }
                 },
             )
         }
+
+        QrCodeBottomSheet(
+            isVisible = { showQrCodeSheet },
+            transferUrl = transferUrl,
+            closeBottomSheet = { showQrCodeSheet = false },
+        )
+        PasswordBottomSheet(
+            isVisible = { showPasswordSheet },
+            transferPassword = transferPassword,
+            closeBottomSheet = { showPasswordSheet = false },
+        )
     }
 }
 
 @Composable
-private fun TransferMessage(transfer: TransferUi, transferSenderEmail: String?) {
+private fun ColumnScope.FilesList(
+    transfer: TransferUi,
+    recipients: List<String>,
+    isMultiselectOn: Boolean,
+    getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
+    setFileCheckStatus: (String, Boolean) -> Unit,
+) {
 
-    if (transferSenderEmail == null && transfer.message == null) return
+    val shouldDisplayRecipients = recipients.isNotEmpty()
+    val shouldDisplayMessage = transfer.message != null
 
-    Spacer(modifier = Modifier.height(Margin.Large))
+    FileItemList(
+        modifier = Modifier
+            .weight(1.0f)
+            .padding(horizontal = Margin.Medium),
+        files = transfer.files,
+        isRemoveButtonVisible = false,
+        isCheckboxVisible = { isMultiselectOn },
+        isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
+        setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
+        header = {
+            Column {
+                Spacer(modifier = Modifier.height(Margin.Large))
+                TransferInfo(transfer)
+                Spacer(modifier = Modifier.height(Margin.Large))
+                if (shouldDisplayRecipients) TransferRecipients(recipients)
+                if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Mini))
+                if (shouldDisplayMessage) TransferMessage(transfer.message!!)
+                if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Large))
+                TransferContentHeader()
+            }
+        },
+    )
+}
 
+@Composable
+private fun TransferRecipients(recipients: List<String>) {
+    Text(
+        text = pluralStringResource(R.plurals.recipientHeader, recipients.count()),
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        color = SwissTransferTheme.colors.secondaryTextColor,
+    )
+    Spacer(modifier = Modifier.height(Margin.Mini))
+    EmailsFlowRow(recipients)
+}
+
+@Composable
+private fun TransferMessage(transferMessage: String) {
     Text(
         text = stringResource(R.string.messageHeader),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
     )
-
-    SwissTransferCard(modifier = Modifier.padding(top = Margin.Medium)) {
-
-        transferSenderEmail?.let {
-            Row(
-                modifier = Modifier.padding(all = Margin.Large),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.fromHeader),
-                    style = SwissTransferTheme.typography.bodySmallRegular,
-                    color = SwissTransferTheme.colors.primaryTextColor,
-                )
-                EmailAddressChip(
-                    text = it,
-                    modifier = Modifier.padding(start = Margin.Mini),
-                )
-            }
-        }
-
-        if (transferSenderEmail != null && transfer.message != null) HorizontalDivider()
-
-        transfer.message?.let {
-            Text(
-                text = it,
-                modifier = Modifier.padding(all = Margin.Large),
-                style = SwissTransferTheme.typography.bodySmallRegular,
-                color = SwissTransferTheme.colors.primaryTextColor,
-            )
-        }
+    Spacer(modifier = Modifier.height(Margin.Medium))
+    SwissTransferCard {
+        Text(
+            text = transferMessage,
+            modifier = Modifier.padding(all = Margin.Large),
+            style = SwissTransferTheme.typography.bodySmallRegular,
+            color = SwissTransferTheme.colors.primaryTextColor,
+        )
     }
 }
 
@@ -170,10 +219,7 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-private fun BottomBar(
-    isMultiselectOn: () -> Boolean,
-    onClick: (BottomBarItem) -> Unit,
-) {
+private fun BottomBar(direction: TransferDirection, isMultiselectOn: () -> Boolean, onClick: (BottomBarItem) -> Unit) {
     Column(
         modifier = Modifier
             .height(80.dp)
@@ -187,8 +233,20 @@ private fun BottomBar(
                 BottomBarButton(BottomBarItem.MULTISELECT_DOWNLOAD, onClick)
             } else {
                 BottomBarButton(BottomBarItem.SHARE, onClick)
-                Spacer(modifier = Modifier.width(Margin.Medium))
-                BottomBarButton(BottomBarItem.DOWNLOAD, onClick)
+
+                when (direction) {
+                    TransferDirection.SENT -> {
+                        Spacer(modifier = Modifier.width(Margin.Medium))
+                        BottomBarButton(BottomBarItem.QR_CODE, onClick)
+
+                        Spacer(modifier = Modifier.width(Margin.Medium))
+                        BottomBarButton(BottomBarItem.PASSWORD, onClick)
+                    }
+                    TransferDirection.RECEIVED -> {
+                        Spacer(modifier = Modifier.width(Margin.Medium))
+                        BottomBarButton(BottomBarItem.DOWNLOAD, onClick)
+                    }
+                }
             }
         }
     }
@@ -215,6 +273,8 @@ private fun RowScope.BottomBarButton(item: BottomBarItem, onClick: (BottomBarIte
 
 private enum class BottomBarItem(@StringRes val label: Int, val icon: ImageVector) {
     SHARE(R.string.buttonShare, AppIcons.Share),
+    QR_CODE(R.string.transferTypeQrCode, AppIcons.QrCode),
+    PASSWORD(R.string.settingsOptionPassword, AppIcons.LockedTextField),
     DOWNLOAD(R.string.buttonDownload, AppIcons.ArrowDownBar),
     MULTISELECT_DOWNLOAD(R.string.buttonDownloadSelected, AppIcons.ArrowDownBar),
 }
@@ -224,7 +284,7 @@ private enum class BottomBarItem(@StringRes val label: Int, val icon: ImageVecto
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            TransferDetailsScreen("", {})
+            TransferDetailsScreen("", TransferDirection.SENT, {}, { mutableStateMapOf() }, {}, { _, _ -> })
         }
     }
 }

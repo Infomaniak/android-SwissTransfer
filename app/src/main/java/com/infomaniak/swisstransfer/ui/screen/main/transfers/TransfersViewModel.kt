@@ -21,15 +21,25 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class TransfersViewModel @Inject constructor() : ViewModel() {
-    val sentTransfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    val receivedTransfers = flow<List<Any>> { emit(listOf(1)) }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+class TransfersViewModel @Inject constructor(transferManager: TransferManager) : ViewModel() {
+
+    val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyList())
+
+    val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyList())
+
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 }

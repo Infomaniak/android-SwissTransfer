@@ -18,7 +18,6 @@
 <resources>
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="buttonAddFiles">Añadir archivos</string>
-    <string name="buttonCancel">Cancelar</string>
     <string name="buttonConfirm">Confirme</string>
     <string name="buttonCopyLink">Copiar enlace</string>
     <string name="buttonDownload">Descargar</string>
@@ -34,7 +33,6 @@
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <string name="downloadedTransferLabel">Transferencia descargada : %d/%d</string>
     <string name="errorTransferPasswordLength">La contraseña debe tener entre 6 y 25 caracteres</string>
-    <string name="expiredThe">Expirado el %s</string>
     <string name="expiresIn">Caduca en %d días</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
@@ -51,6 +49,10 @@
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="receivedFilesTitle">Archivos recibidos</string>
     <string name="receivedTitle">Recibido</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Destinatario:</item>
+        <item quantity="other">Para:</item>
+    </plurals>
     <string name="sentEmptyTitle">Nuestra historia comienza aquí</string>
     <string name="sentFilesTitle">Archivos compartidos</string>
     <string name="sentTitle">Enviado a</string>
@@ -95,6 +97,11 @@
         <item quantity="one">día %d</item>
         <item quantity="other">%d días</item>
     </plurals>
+    <string name="sharePasswordButton">Copiar contraseña</string>
+    <string name="sharePasswordDescription">¡Aquí está la llave mágica para descargar los archivos!</string>
+    <string name="sharePasswordTitle">Esta transferencia es segura</string>
+    <string name="shareQrCodeDescription">Escanee este código QR a su alrededor para compartir su traslado:</string>
+    <string name="shareQrCodeTitle">Compartir rápidamente</string>
     <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
@@ -115,7 +122,7 @@
     <string name="transferTypeEmail">Correo electrónico</string>
     <string name="transferTypeLink">Enlace</string>
     <string name="transferTypeProximity">Proximidad</string>
-    <string name="transferTypeQrCode">Código QR</string>
+    <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transferencia</string>
     <string name="transferTypeTitle">Enviar por</string>
     <string name="transferUploadSourceChoiceCamera">Cámara</string>

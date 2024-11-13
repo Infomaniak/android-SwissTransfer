@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.core2.R as RCore2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +107,7 @@ private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Un
     ) {
         SmallButton(
             style = ButtonType.TERTIARY,
-            titleRes = R.string.buttonCancel,
+            titleRes = RCore2.string.buttonCancel,
             onClick = onDismissRequest,
         )
         Spacer(Modifier.width(Margin.Micro))

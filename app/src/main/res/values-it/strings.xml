@@ -18,7 +18,6 @@
 <resources>
     <string name="advancedSettingsTitle">Impostazioni avanzate</string>
     <string name="buttonAddFiles">Aggiunta di file</string>
-    <string name="buttonCancel">Annulla</string>
     <string name="buttonConfirm">Conferma</string>
     <string name="buttonCopyLink">Copia link</string>
     <string name="buttonDownload">Scaricare</string>
@@ -34,7 +33,6 @@
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
     <string name="downloadedTransferLabel">Trasferimento scaricato : %d/%d</string>
     <string name="errorTransferPasswordLength">La password deve essere compresa tra 6 e 24 caratteri</string>
-    <string name="expiredThe">Scaduto il %s</string>
     <string name="expiresIn">Scade tra %d giorni</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
@@ -51,6 +49,10 @@
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
     <string name="receivedFilesTitle">File ricevuti</string>
     <string name="receivedTitle">Ricevuto</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">A:</item>
+        <item quantity="other">A:</item>
+    </plurals>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
     <string name="sentFilesTitle">File condivisi</string>
     <string name="sentTitle">Inviato a</string>
@@ -95,6 +97,11 @@
         <item quantity="one">%d giorno</item>
         <item quantity="other">%d giorni</item>
     </plurals>
+    <string name="sharePasswordButton">Copia la password</string>
+    <string name="sharePasswordDescription">Ecco la chiave magica per scaricare i file!</string>
+    <string name="sharePasswordTitle">Questo trasferimento è sicuro</string>
+    <string name="shareQrCodeDescription">Scansionate questo codice QR intorno a voi per condividere il vostro trasferimento:</string>
+    <string name="shareQrCodeTitle">Condivisione rapida</string>
     <string name="snackbarLinkCopiedToClipboard">Link copiato negli appunti</string>
     <string name="startActivityCantHandleAction">Non è stata trovata alcuna applicazione in grado di gestire questa azione</string>
     <string name="textFieldOptional">(Opzionale)</string>
@@ -115,7 +122,7 @@
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeProximity">Vicino</string>
-    <string name="transferTypeQrCode">Codice QR</string>
+    <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Trasferimento</string>
     <string name="transferTypeTitle">Inviare da</string>
     <string name="transferUploadSourceChoiceCamera">Macchina fotografica</string>
