@@ -50,7 +50,7 @@ import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.launch
 
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String, closeActivity: () -> Unit) {
+fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, closeActivity: () -> Unit) {
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -64,7 +64,7 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String, clos
                 style = ButtonType.PRIMARY,
                 titleRes = R.string.buttonShare,
                 imageVector = AppIcons.PersonBadgeShare,
-                onClick = { context.shareText(transferLink) },
+                onClick = { context.shareText(transferUrl) },
             )
         },
         bottomButton = {
@@ -75,12 +75,12 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferLink: String, clos
                 onClick = closeActivity,
             )
         },
-        content = { Content(context, snackbarHostState, transferType, transferLink) },
+        content = { Content(context, snackbarHostState, transferType, transferUrl) },
     )
 }
 
 @Composable
-private fun Content(context: Context, snackbarHostState: SnackbarHostState, transferType: TransferType, transferLink: String) {
+private fun Content(context: Context, snackbarHostState: SnackbarHostState, transferType: TransferType, transferUrl: String) {
 
     val scope = rememberCoroutineScope()
 
@@ -108,7 +108,7 @@ private fun Content(context: Context, snackbarHostState: SnackbarHostState, tran
 
         Spacer(Modifier.height(Margin.Huge))
 
-        QrCode(transferLink)
+        QrCode(transferUrl)
 
         transferType.descriptionRes?.let { descriptionRes ->
             Spacer(Modifier.height(Margin.Huge))
@@ -130,7 +130,7 @@ private fun Content(context: Context, snackbarHostState: SnackbarHostState, tran
         imageVector = AppIcons.DocumentOnDocument,
         onClick = {
             context.copyText(
-                text = transferLink,
+                text = transferUrl,
                 showSnackbar = { scope.launch { snackbarHostState.showSnackbar(it) } },
             )
         },
@@ -144,7 +144,7 @@ private fun UploadSuccessQrScreenPreview() {
         Surface {
             UploadSuccessQrScreen(
                 transferType = TransferType.LINK,
-                transferLink = "https://chk.me/83azQOl",
+                transferUrl = "https://chk.me/83azQOl",
                 closeActivity = {}
             )
         }

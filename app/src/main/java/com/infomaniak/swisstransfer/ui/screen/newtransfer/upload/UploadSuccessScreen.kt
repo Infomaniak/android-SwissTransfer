@@ -27,7 +27,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun UploadSuccessScreen(
     transferType: TransferType,
-    transferLink: String,
+    transferUrl: String,
     closeActivity: () -> Unit,
 ) {
     BackHandler(onBack = closeActivity)
@@ -35,7 +35,7 @@ fun UploadSuccessScreen(
     if (transferType == TransferType.MAIL) {
         UploadSuccessEmailScreen(closeActivity = closeActivity)
     } else {
-        UploadSuccessQrScreen(transferType, transferLink, closeActivity)
+        UploadSuccessQrScreen(transferType, transferUrl, closeActivity)
     }
 }
 
@@ -46,7 +46,7 @@ private fun UploadSuccessScreenPreview() {
         Surface {
             UploadSuccessScreen(
                 transferType = TransferType.QR_CODE,
-                transferLink = "https://chk.me/83azQOl",
+                transferUrl = "https://chk.me/83azQOl",
                 closeActivity = {}
             )
         }

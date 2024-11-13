@@ -87,7 +87,7 @@ private fun HandleProgressState(
     val currentUiState = uiState()
     LaunchedEffect(uiState()) {
         when (currentUiState) {
-            is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferLink)
+            is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferUrl)
             is UploadProgressUiState.Cancelled -> navigateToUploadError()
             else -> Unit
         }
