@@ -42,7 +42,7 @@ class UploadProgressViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val transferProgressUiState = _transferUuidFlow.flatMapLatest { transferUuid ->
         when (transferUuid) {
-            null -> flow { emit(UploadWorker.UploadProgressUiState.Cancelled()) }
+            null -> flow { emit(UploadWorker.UploadProgressUiState.Error()) }
             else -> uploadWorkerScheduler.trackUploadProgressFlow(transferUuid).flowOn(ioDispatcher)
         }
     }.stateIn(
