@@ -44,7 +44,14 @@ fun MainScaffold(
     content: @Composable () -> Unit = {},
 ) {
     val navType by rememberNavType(currentDestination)
-    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, largeWindowTopAppBar, content)
+
+    MainScaffold(
+        navType,
+        currentDestination,
+        navController::navigateToSelectedItem,
+        if (navType != NavigationSuiteType.None) largeWindowTopAppBar else { {} },
+        content
+    )
 }
 
 @Composable

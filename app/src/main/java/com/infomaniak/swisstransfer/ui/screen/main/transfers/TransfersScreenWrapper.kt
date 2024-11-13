@@ -50,7 +50,7 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 
     TwoPaneScaffold<DestinationContent>(
         listPane = { ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }) },
-        detailPane = { DetailPane(navigator = this, hasTransfer) },
+        detailPane = { DetailPane(navigator = this, hasTransfer, navigateToFilesDetails) },
     )
 }
 
@@ -90,7 +90,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>, hasTransfer: Boolean) {
+private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>, hasTransfer: Boolean, navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit) {
 
     val destinationContent = navigator.safeCurrentContent()
 
@@ -101,6 +101,7 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+            navigateToFilesDetails = navigateToFilesDetails
         )
     }
 }
