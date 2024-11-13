@@ -24,6 +24,8 @@ object Dimens {
     val SettingVerticalMargin = Margin.Small
     val DescriptionWidth = 300.dp
     val LargeButtonHeight = 56.dp
+    val DoubleButtonMaxWidth = 800.dp
+    val SingleButtonMaxWidth = DoubleButtonMaxWidth / 2
     val SmallIconSize = 16.dp
     val IconSize = 24.dp
     val BorderWidth = 1.dp
