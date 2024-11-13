@@ -25,12 +25,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 
 @Composable
 fun MainNavHost(
@@ -44,15 +45,14 @@ fun MainNavHost(
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
         composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
-        composable<ReceivedDestination> { 
-TransfersScreenWrapper(
-TransferDirection.RECEIVED,
-navigateToFilesDetails = { transferUuid, fileUuid ->
+        composable<ReceivedDestination> {
+            TransfersScreenWrapper(
+                TransferDirection.RECEIVED,
+                navigateToFilesDetails = { transferUuid, fileUuid ->
                     navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
                 }
-
-)
-}
+            )
+        }
         composable<SettingsDestination> { SettingsScreenWrapper() }
         composable<FilesDetailsDestination> {
             val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
