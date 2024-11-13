@@ -152,7 +152,7 @@ private fun ColumnScope.FilesList(
                 Spacer(modifier = Modifier.height(Margin.Large))
                 if (shouldDisplayRecipients) TransferRecipients(recipients)
                 if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Mini))
-                if (shouldDisplayMessage) TransferMessage(transfer)
+                if (shouldDisplayMessage) TransferMessage(transfer.message!!)
                 if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Large))
                 TransferContentHeader()
             }
@@ -172,7 +172,7 @@ private fun TransferRecipients(recipients: List<String>) {
 }
 
 @Composable
-private fun TransferMessage(transfer: TransferUi) {
+private fun TransferMessage(transferMessage: String) {
     Text(
         text = stringResource(R.string.messageHeader),
         style = SwissTransferTheme.typography.bodySmallRegular,
@@ -181,7 +181,7 @@ private fun TransferMessage(transfer: TransferUi) {
     Spacer(modifier = Modifier.height(Margin.Medium))
     SwissTransferCard {
         Text(
-            text = transfer.message!!,
+            text = transferMessage,
             modifier = Modifier.padding(all = Margin.Large),
             style = SwissTransferTheme.typography.bodySmallRegular,
             color = SwissTransferTheme.colors.primaryTextColor,
@@ -199,11 +199,7 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-private fun BottomBar(
-    direction: TransferDirection,
-    isMultiselectOn: () -> Boolean,
-    onClick: (BottomBarItem) -> Unit,
-) {
+private fun BottomBar(direction: TransferDirection, isMultiselectOn: () -> Boolean, onClick: (BottomBarItem) -> Unit) {
     Column(
         modifier = Modifier
             .height(80.dp)

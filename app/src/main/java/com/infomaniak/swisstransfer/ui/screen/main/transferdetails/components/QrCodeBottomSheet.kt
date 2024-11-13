@@ -32,11 +32,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun QrCodeBottomSheet(
-    isVisible: () -> Boolean,
-    transferUrl: String,
-    closeBottomSheet: () -> Unit,
-) {
+fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottomSheet: () -> Unit) {
 
     if (!isVisible()) return
 
