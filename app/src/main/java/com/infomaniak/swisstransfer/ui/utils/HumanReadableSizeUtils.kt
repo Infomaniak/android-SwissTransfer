@@ -29,7 +29,7 @@ import com.infomaniak.swisstransfer.R
 object HumanReadableSizeUtils {
     private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
-    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String = Formatter.formatFileSize(context, sizeInBytes)
+    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String = Formatter.formatShortFileSize(context, sizeInBytes)
 
     private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
 
