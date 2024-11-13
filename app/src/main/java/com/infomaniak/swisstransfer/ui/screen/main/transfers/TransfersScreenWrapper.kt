@@ -47,7 +47,11 @@ import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? = null) {
+fun TransfersScreenWrapper(
+direction: TransferDirection,
+transferUuid: String? = null,
+    navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit,
+) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold<DestinationContent>(
@@ -173,7 +177,8 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null,             TransfersScreenWrapper(navigateToFilesDetails = { _, _ -> }, TransferDirection.RECEIVED)
+)
         }
     }
 }
