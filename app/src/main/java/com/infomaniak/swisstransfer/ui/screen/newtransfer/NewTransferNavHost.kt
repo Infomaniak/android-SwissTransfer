@@ -79,11 +79,12 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
             FilesDetailsScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
-                navigateToDetails = { fileId ->
-                    navController.navigate(FilesDetailsDestination(fileId))
+                navigateToDetails = { transferUuid, fileId ->
+                    navController.navigate(FilesDetailsDestination(transferUuid, fileId))
                 },
                 fileUuid = filesDetailsDestination.fileUuid,
                 withSpaceLeft = true,
+                withFileDelete = true,
                 onCloseClicked = {},
                 navigateBack = { navController.popBackStack() },
             )
