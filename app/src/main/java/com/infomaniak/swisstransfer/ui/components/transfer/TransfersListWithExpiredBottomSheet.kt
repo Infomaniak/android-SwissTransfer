@@ -27,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
@@ -56,7 +57,7 @@ fun TransfersListWithExpiredBottomSheet(
             when {
                 transfer.expiresInDays < 0 -> {
                     isExpirySheetVisible = true
-                    expirationDate = Date(transfer.expirationDateTimestamp)
+                    expirationDate = transfer.expirationDateTimestamp.toDateFromSeconds()
                 }
                 transfer.downloadLeft == 0 -> {
                     isExpirySheetVisible = true

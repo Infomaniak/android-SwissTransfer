@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core2.FORMAT_DATE_TITLE
 import com.infomaniak.core2.format
+import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TextDotText
@@ -42,7 +43,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.utils.isExpired
-import java.util.Date
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -52,7 +52,7 @@ fun TransferItem(
     onClick: () -> Unit,
 ) {
 
-    val createdDate = Date(transfer.createdDateTimestamp).format(FORMAT_DATE_TITLE)
+    val createdDate = transfer.createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_TITLE)
     val uploadedSize = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, transfer.sizeUploaded)
     val files = transfer.files
     val (expiryText, expiryColor) = if (transfer.isExpired) {
