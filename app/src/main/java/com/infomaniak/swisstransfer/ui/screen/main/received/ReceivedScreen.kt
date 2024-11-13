@@ -23,6 +23,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
@@ -43,9 +44,13 @@ fun ReceivedScreen(
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
 
-    val getTransfers = { transfersViewModel.receivedTransfers.value }
+    val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
 
-    ReceivedScreen(navigateToDetails, getSelectedTransferUuid, getTransfers)
+    ReceivedScreen(
+        navigateToDetails = navigateToDetails,
+        getSelectedTransferUuid = getSelectedTransferUuid,
+        getTransfers = { transfers },
+    )
 }
 
 @Composable
