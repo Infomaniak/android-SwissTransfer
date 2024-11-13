@@ -97,7 +97,6 @@ fun TransferDetailsScreen(
 
 @Composable
 private fun TransferDetailsScreen(
-	transferUuid: String,
     transferUrl: String,
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
@@ -131,7 +130,14 @@ private fun TransferDetailsScreen(
     ) {
         Column {
 
-            FilesList(getTransfer, transferRecipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
+            FilesList(
+getTransfer, 
+transferRecipients, 
+isMultiselectOn, 
+getCheckedFiles, 
+setFileCheckStatus,
+                navigateToFilesDetails,
+)
 
             BottomBar {
                 if (isMultiselectOn) {
@@ -200,6 +206,7 @@ private fun ColumnScope.FilesList(
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
+    navigateToFilesDetails: ((transferUuid: String, fileUuid: String) -> Unit)? = null,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -213,7 +220,12 @@ private fun ColumnScope.FilesList(
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
         isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
-        setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
+        setUidCheckStatus = { fileUid, isChecked ->
+            setFileCheckStatus(fileUid, isChecked)
+        },
+        onClick = { fileUuid ->
+            navigateToFilesDetails?.invoke(transfer.uuid, fileUuid)
+        },
         header = {
             Column {
                 Spacer(Modifier.height(Margin.Large))
@@ -313,7 +325,6 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             TransferDetailsScreen(
-				transferUuid = "",
                 transferUrl = "",
                 direction = TransferDirection.SENT,
                 navigateBack = null,

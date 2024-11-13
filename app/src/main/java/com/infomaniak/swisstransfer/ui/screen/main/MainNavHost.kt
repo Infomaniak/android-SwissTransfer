@@ -46,17 +46,23 @@ fun MainNavHost(
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
+        composable<SentDestination> {
+            TransfersScreenWrapper(
+                navigateToFilesDetails = { transferUuid, fileUuid ->
+                    navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
+                },
+                direction = TransferDirection.SENT
+            )
+        }
         receivedDestination {
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
-TransfersScreenWrapper(
-TransferDirection.RECEIVED,
-navigateToFilesDetails = { transferUuid, fileUuid ->
+            TransfersScreenWrapper(
+                navigateToFilesDetails = { transferUuid, fileUuid ->
                     navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
-                }
-
-)z
+                },
+                direction = TransferDirection.RECEIVED,
+            )
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
         composable<FilesDetailsDestination> {
