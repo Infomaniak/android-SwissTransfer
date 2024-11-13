@@ -21,11 +21,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -65,6 +63,25 @@ fun TransferDetailsScreen(
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
 
+    val getCheckedFiles = { transferDetailsViewModel.checkedFiles }
+    val clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() }
+    val setFileCheckStatus: (String, Boolean) -> Unit = { fileUid, isChecked ->
+        transferDetailsViewModel.checkedFiles[fileUid] = isChecked
+    }
+
+    TransferDetailsScreen(transferUuid, direction, navigateBack, getCheckedFiles, clearCheckedFiles, setFileCheckStatus)
+}
+
+@Composable
+private fun TransferDetailsScreen(
+    transferUuid: String,
+    direction: TransferDirection,
+    navigateBack: (() -> Unit)?,
+    getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
+    clearCheckedFiles: () -> Unit,
+    setFileCheckStatus: (String, Boolean) -> Unit,
+) {
+
     val context = LocalContext.current
     val transfer = transfersPreviewData.first() // TODO: Use real data
     val recipients = if (direction == TransferDirection.SENT) emailsPreviewData else emptyList() // TODO: Use real data
@@ -88,7 +105,7 @@ fun TransferDetailsScreen(
     ) {
         Column {
 
-            FilesList(transfer, recipients, isMultiselectOn, transferDetailsViewModel)
+            FilesList(transfer, recipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
 
             BottomBar(
                 direction = direction,
@@ -104,7 +121,7 @@ fun TransferDetailsScreen(
                         }
                         BottomBarItem.MULTISELECT_DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
-                            transferDetailsViewModel.checkedFiles.clear()
+                            clearCheckedFiles()
                             isMultiselectOn = false
                         }
                     }
@@ -130,7 +147,8 @@ private fun ColumnScope.FilesList(
     transfer: TransferUi,
     recipients: List<String>,
     isMultiselectOn: Boolean,
-    transferDetailsViewModel: TransferDetailsViewModel,
+    getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
+    setFileCheckStatus: (String, Boolean) -> Unit,
 ) {
 
     val shouldDisplayRecipients = recipients.isNotEmpty()
@@ -143,8 +161,8 @@ private fun ColumnScope.FilesList(
         files = transfer.files,
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
-        isUidChecked = { fileUid -> transferDetailsViewModel.checkedFiles[fileUid] ?: false },
-        setUidCheckStatus = { fileUid, isChecked -> transferDetailsViewModel.checkedFiles[fileUid] = isChecked },
+        isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
+        setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
         header = {
             Column {
                 Spacer(modifier = Modifier.height(Margin.Large))
@@ -264,7 +282,7 @@ private enum class BottomBarItem(@StringRes val label: Int, val icon: ImageVecto
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            TransferDetailsScreen("", TransferDirection.SENT, {})
+            TransferDetailsScreen("", TransferDirection.SENT, {}, { mutableStateMapOf() }, {}, { _, _ -> })
         }
     }
 }
