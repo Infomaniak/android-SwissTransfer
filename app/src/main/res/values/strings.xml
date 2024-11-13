@@ -22,7 +22,6 @@
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="buttonAddFiles">Add files</string>
-    <string name="buttonCancel">Cancel</string>
     <string name="buttonConfirm">Confirm</string>
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
@@ -38,7 +37,6 @@
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
     <string name="errorTransferPasswordLength">The password must be between 6 and 25 characters</string>
-    <string name="expiredThe">Expired on %s</string>
     <string name="expiresIn">Expires in %d days</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
@@ -104,7 +102,7 @@
         <item quantity="other">%d days</item>
     </plurals>
     <string name="sharePasswordButton">Copy password</string>
-    <string name="sharePasswordDescription">This is the key to downloading the files!</string>
+    <string name="sharePasswordDescription">Here’s the sesame to download the files!</string>
     <string name="sharePasswordTitle">This transfer is secure</string>
     <string name="shareQrCodeDescription">Scan this QR code around you to share your transfer:</string>
     <string name="shareQrCodeTitle">Quick share</string>
