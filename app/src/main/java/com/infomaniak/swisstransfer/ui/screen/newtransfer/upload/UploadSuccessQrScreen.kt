@@ -58,7 +58,7 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, close
         },
     ) {
         Column {
-            ScreenContent(transferType, transferUrl)
+            SuccessMessage(transferType, transferUrl)
 
             ShareAndCopyButtons(
                 modifier = Modifier.padding(bottom = Margin.Medium, top = Margin.Mini),
@@ -70,10 +70,7 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, close
 }
 
 @Composable
-private fun ColumnScope.ScreenContent(
-    transferType: TransferType,
-    transferUrl: String
-) {
+private fun ColumnScope.SuccessMessage(transferType: TransferType, transferUrl: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,37 +80,32 @@ private fun ColumnScope.ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        SuccessMessage(transferType, transferUrl)
-    }
-}
+        Spacer(modifier = Modifier.height(Margin.Medium))
 
-@Composable
-private fun SuccessMessage(transferType: TransferType, transferUrl: String) {
-    Spacer(modifier = Modifier.height(Margin.Medium))
+        Image(imageVector = AppIllus.Beers.image(), contentDescription = null)
 
-    Image(imageVector = AppIllus.Beers.image(), contentDescription = null)
-
-    Spacer(Modifier.height(Margin.Huge))
-
-    Text(
-        text = stringResource(transferType.titleRes),
-        style = SwissTransferTheme.typography.h1,
-        color = SwissTransferTheme.colors.primaryTextColor,
-    )
-
-    Spacer(Modifier.height(Margin.Huge))
-
-    QrCode(transferUrl)
-
-    transferType.descriptionRes?.let { descriptionRes ->
         Spacer(Modifier.height(Margin.Huge))
+
         Text(
-            text = stringResource(descriptionRes),
-            style = SwissTransferTheme.typography.bodyRegular,
-            textAlign = TextAlign.Center,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
+            text = stringResource(transferType.titleRes),
+            style = SwissTransferTheme.typography.h1,
+            color = SwissTransferTheme.colors.primaryTextColor,
         )
+
+        Spacer(Modifier.height(Margin.Huge))
+
+        QrCode(transferUrl)
+
+        transferType.descriptionRes?.let { descriptionRes ->
+            Spacer(Modifier.height(Margin.Huge))
+            Text(
+                text = stringResource(descriptionRes),
+                style = SwissTransferTheme.typography.bodyRegular,
+                textAlign = TextAlign.Center,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
+            )
+        }
     }
 }
 
