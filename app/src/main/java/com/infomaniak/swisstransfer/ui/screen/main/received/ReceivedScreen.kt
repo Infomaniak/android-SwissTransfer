@@ -45,12 +45,15 @@ fun ReceivedScreen(
 ) {
 
     val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
+    val isLoading by remember { derivedStateOf { transfers == null } }
 
-    ReceivedScreen(
-        navigateToDetails = navigateToDetails,
-        getSelectedTransferUuid = getSelectedTransferUuid,
-        getTransfers = { transfers },
-    )
+    if (!isLoading) {
+        ReceivedScreen(
+            navigateToDetails = navigateToDetails,
+            getSelectedTransferUuid = getSelectedTransferUuid,
+            getTransfers = { transfers!! },
+        )
+    }
 }
 
 @Composable
