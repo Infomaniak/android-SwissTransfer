@@ -30,7 +30,7 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesSwissTransferInjection() = SwissTransferInjection()
+    fun providesSwissTransferInjection() = SwissTransferInjection(userAgent = "Ktor client") // TODO: Waiting for api support
 
     @Provides
     @Singleton

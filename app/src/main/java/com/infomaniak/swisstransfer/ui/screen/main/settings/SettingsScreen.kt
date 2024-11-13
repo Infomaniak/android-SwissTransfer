@@ -173,7 +173,7 @@ private fun ValidityPeriod?.getString(): String {
 }
 
 @Composable
-private fun DownloadLimit?.getString() = this?.value ?: ""
+private fun DownloadLimit?.getString() = this?.value?.toString() ?: ""
 
 @Composable
 private fun EmailLanguage?.getString(): String {

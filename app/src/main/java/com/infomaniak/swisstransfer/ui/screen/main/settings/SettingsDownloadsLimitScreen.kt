@@ -53,7 +53,7 @@ enum class DownloadLimitOption(
     TWENTY(apiValue = DownloadLimit.TWENTY),
     ONE(apiValue = DownloadLimit.ONE);
 
-    override val title: @Composable () -> String = { apiValue.value }
+    override val title: @Composable () -> String = { apiValue.value.toString() }
 
     companion object {
         fun DownloadLimit.toTransferOption() = when (this) {
