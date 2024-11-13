@@ -48,7 +48,7 @@ fun MainNavHost(
         composable<SentDestination> {
             TransfersScreenWrapper(
                 navigateToFilesDetails = { transferUuid, fileUuid ->
-                    navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
+                    navController.navigate(FilesDetailsDestination(transferUuid, fileUuid))
                 },
                 direction = TransferDirection.SENT
             )
@@ -58,7 +58,7 @@ fun MainNavHost(
             TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
             TransfersScreenWrapper(
                 navigateToFilesDetails = { transferUuid, fileUuid ->
-                    navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
+                    navController.navigate(FilesDetailsDestination(transferUuid, fileUuid))
                 },
                 direction = TransferDirection.RECEIVED,
             )
@@ -68,7 +68,7 @@ fun MainNavHost(
             val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
             FilesDetailsScreen(
                 navigateToDetails = { transferUuid, fileUuid ->
-                    navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
+                    navController.navigate(FilesDetailsDestination(transferUuid, fileUuid))
                 },
                 transferUuid = filesDetailsDestination.transferUuid,
                 fileUuid = filesDetailsDestination.fileUuid,
