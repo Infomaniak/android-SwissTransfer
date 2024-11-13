@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -36,12 +37,17 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun TransferItemList(
     modifier: Modifier = Modifier,
+    direction: TransferDirection,
     transfers: List<TransferUi>,
     getSelectedTransferUuid: () -> String?,
     onClick: (TransferUi) -> Unit,
 ) {
 
     val selectedTransferUuid = getSelectedTransferUuid()
+    val titleRes = when (direction) {
+        TransferDirection.SENT -> R.string.sentFilesTitle
+        TransferDirection.RECEIVED -> R.string.receivedFilesTitle
+    }
 
     LazyColumn(
         modifier = modifier,
@@ -49,12 +55,7 @@ fun TransferItemList(
         contentPadding = PaddingValues(top = Margin.Mini),
     ) {
 
-        item {
-            Text(
-                text = stringResource(R.string.receivedFilesTitle),
-                style = SwissTransferTheme.typography.h1,
-            )
-        }
+        item { Text(stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
         items(
             count = transfers.count(),
@@ -79,6 +80,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
         Surface {
             TransferItemList(
                 transfers = transfers,
+                direction = TransferDirection.SENT,
                 getSelectedTransferUuid = { null },
                 onClick = {},
             )

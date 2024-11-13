@@ -25,11 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
-import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreenWrapper
-import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
 @Composable
 fun MainNavHost(
@@ -42,14 +42,8 @@ fun MainNavHost(
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> {
-            SentScreen(navigateToDetails = { navController.navigate(TransferDetailsDestination(it)) })
-        }
-        composable<ReceivedDestination> {
-            ReceivedScreenWrapper()
-        }
-        composable<SettingsDestination> {
-            SettingsScreenWrapper()
-        }
+        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
+        composable<ReceivedDestination> { TransfersScreenWrapper(TransferDirection.RECEIVED) }
+        composable<SettingsDestination> { SettingsScreenWrapper() }
     }
 }

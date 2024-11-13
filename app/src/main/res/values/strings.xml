@@ -57,6 +57,7 @@
     <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
     <string name="sentEmptyTitle">Our story begins here</string>
+    <string name="sentFilesTitle">Shared files</string>
     <string name="sentTitle">Sent</string>
     <string name="settingsAuthorizeTracking">Authorize tracking</string>
     <string name="settingsCategoryAbout">About</string>

@@ -20,12 +20,17 @@ package com.infomaniak.swisstransfer.ui.screen.main.sent
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
+import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
@@ -33,26 +38,40 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 @Composable
 fun SentScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
-    sentViewModel: SentViewModel = hiltViewModel<SentViewModel>(),
+    getSelectedTransferUuid: () -> String?,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
-    val transfers by sentViewModel.transfers.collectAsStateWithLifecycle()
-    SentScreen(transfers)
+    val transfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val areTransfersEmpty by remember { derivedStateOf { transfers?.isEmpty() == true } }
+
+    SentScreen(
+        navigateToDetails = navigateToDetails,
+        getSelectedTransferUuid = getSelectedTransferUuid,
+        areTransfersEmpty = { areTransfersEmpty },
+    )
 }
 
 @Composable
-private fun SentScreen(transfers: List<Any>?) {
+private fun SentScreen(
+    navigateToDetails: (transferUuid: String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
+    areTransfersEmpty: () -> Boolean,
+) {
 
-    if (transfers == null) return
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     BrandTopAppBarScaffold(
         floatingActionButton = {
-            if (windowAdaptiveInfo.isWindowSmall() && transfers.isNotEmpty()) {
+            if (windowAdaptiveInfo.isWindowSmall() && !areTransfersEmpty()) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
             }
         },
     ) {
-        if (transfers.isEmpty()) SentEmptyScreen()
+        if (areTransfersEmpty()) {
+            SentEmptyScreen()
+        } else {
+            TransfersListWithExpiredBottomSheet(TransferDirection.SENT, navigateToDetails, getSelectedTransferUuid)
+        }
     }
 }
 
@@ -61,7 +80,11 @@ private fun SentScreen(transfers: List<Any>?) {
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            SentScreen(transfers = emptyList())
+            SentScreen(
+                navigateToDetails = {},
+                getSelectedTransferUuid = { null },
+                areTransfersEmpty = { true },
+            )
         }
     }
 }
