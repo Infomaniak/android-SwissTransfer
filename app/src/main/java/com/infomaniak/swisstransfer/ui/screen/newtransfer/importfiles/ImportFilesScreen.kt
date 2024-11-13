@@ -104,6 +104,7 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
+        transferMessage = importFilesViewModel.transferMessage,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
             set = importFilesViewModel::selectTransferType,
@@ -137,6 +138,7 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
+    transferMessage: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     removeFileByUid: (uid: String) -> Unit,
@@ -191,7 +193,7 @@ private fun ImportFilesScreen(
                     showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
                     removeFileByUid = removeFileByUid,
                 )
-                ImportTextFields(selectedTransferType.get)
+                ImportTextFields(transferMessage, selectedTransferType.get)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
                 TransferTypeButtons(selectedTransferType)
                 ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
@@ -213,7 +215,7 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferTypeUi) {
+private fun ColumnScope.ImportTextFields(transferMessage: GetSetCallbacks<String>, selectedTransferType: () -> TransferTypeUi) {
 
     EmailAddressesTextFields(selectedTransferType)
 
@@ -222,6 +224,7 @@ private fun ColumnScope.ImportTextFields(selectedTransferType: () -> TransferTyp
         label = stringResource(R.string.transferMessagePlaceholder),
         isRequired = false,
         minLineNumber = 3,
+        onValueChange = transferMessage.set,
     )
 }
 
@@ -375,6 +378,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
+            transferMessage = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.QR_CODE }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             removeFileByUid = {},
