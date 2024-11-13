@@ -27,7 +27,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
@@ -136,12 +135,13 @@ class ImportFilesViewModel @Inject constructor(
 
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
-            duration = "30",
+            duration = selectedValidityPeriodOption.value.apiValue.value,
             authorEmail = "",
-            password = "",
+            password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = "sisi test",
-            numberOfDownload = 20,
-            language = EmailLanguage.ENGLISH,
+            // TODO: Accept enum in kmp instead of parsing toInt()
+            numberOfDownload = selectedDownloadLimitOption.value.apiValue.value.toInt(),
+            language = selectedLanguageOption.value.apiValue,
             recipientsEmails = emptyList(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
@@ -260,5 +260,7 @@ class ImportFilesViewModel @Inject constructor(
         private const val SELECTED_DOWNLOAD_LIMIT_KEY = "SELECTED_DOWNLOAD_LIMIT_KEY"
         private const val SELECTED_PASSWORD_OPTION_KEY = "SELECTED_PASSWORD_OPTION_KEY"
         private const val SELECTED_LANGUAGE_KEY = "SELECTED_TRANSFER_LANGUAGE_KEY"
+
+        private const val NO_PASSWORD = ""
     }
 }
