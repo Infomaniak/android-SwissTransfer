@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -37,11 +38,12 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
+import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(direction: TransferDirection) {
-    TwoPaneScaffold<Pair<TransferDirection, String>>(
+    TwoPaneScaffold<DestinationContent>(
         listPane = { ListPane(direction, navigator = this) },
         detailPane = { DetailPane(navigator = this) },
     )
@@ -49,7 +51,7 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>) {
+private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<DestinationContent>) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
@@ -63,30 +65,30 @@ private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldN
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>.navigateToDetails(
+private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    navigateTo(ListDetailPaneScaffoldRole.Detail, direction to transferUuid)
+    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid))
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>.getSelectedTransferUuid(): String? {
-    return currentDestination?.content?.second
+private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUuid(): String? {
+    return currentDestination?.content?.transferUuid
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<Pair<TransferDirection, String>>) {
+private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>) {
 
-    val (direction, transferUuid) = navigator.safeCurrentContent() ?: (TransferDirection.SENT to null)
+    val destinationContent = navigator.safeCurrentContent()
 
-    if (transferUuid == null) {
+    if (destinationContent == null) {
         NoSelectionEmptyState()
     } else {
         TransferDetailsScreen(
-            transferUuid = transferUuid,
-            direction = direction,
+            transferUuid = destinationContent.transferUuid,
+            direction = destinationContent.direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
         )
     }
@@ -98,6 +100,12 @@ private fun NoSelectionEmptyState() {
         Text("Select an item", color = SwissTransferTheme.colors.secondaryTextColor)
     }
 }
+
+@Parcelize
+private data class DestinationContent(
+    val direction: TransferDirection,
+    val transferUuid: String,
+) : Parcelable
 
 @PreviewAllWindows
 @Composable
