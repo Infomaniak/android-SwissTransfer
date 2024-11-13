@@ -25,6 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -46,12 +48,19 @@ fun SentScreen(
 ) {
 
     val transfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val isLoading by remember { derivedStateOf { transfers == null } }
 
-    SentScreen(
-        navigateToDetails = navigateToDetails,
-        getSelectedTransferUuid = getSelectedTransferUuid,
-        getTransfers = { transfers },
-    )
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        transfersViewModel.fetchPendingTransfers()
+    }
+
+    if (!isLoading) {
+        SentScreen(
+            navigateToDetails = navigateToDetails,
+            getSelectedTransferUuid = getSelectedTransferUuid,
+            getTransfers = { transfers!! },
+        )
+    }
 }
 
 @Composable

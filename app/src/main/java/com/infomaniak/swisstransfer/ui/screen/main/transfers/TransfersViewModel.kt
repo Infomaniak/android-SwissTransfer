@@ -23,23 +23,43 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.sentry.SentryLog
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TransfersViewModel @Inject constructor(transferManager: TransferManager) : ViewModel() {
+class TransfersViewModel @Inject constructor(
+    private val transferManager: TransferManager,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) : ViewModel() {
 
     val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
-        .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyList())
+        .flowOn(ioDispatcher)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
-        .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyList())
+        .flowOn(ioDispatcher)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+
+    fun fetchPendingTransfers() {
+        viewModelScope.launch(ioDispatcher) {
+            runCatching {
+                transferManager.fetchWaitingTransfers()
+            }.onFailure {
+                SentryLog.e(TAG, "Failure for fetchWaitingTransfers", it)
+            }
+        }
+    }
+
+    companion object {
+        private val TAG = TransfersViewModel::class.java.simpleName
+    }
 }
