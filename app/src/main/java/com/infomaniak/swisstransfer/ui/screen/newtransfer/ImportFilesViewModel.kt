@@ -135,12 +135,11 @@ class ImportFilesViewModel @Inject constructor(
 
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
-            duration = selectedValidityPeriodOption.value.apiValue.value,
+            duration = selectedValidityPeriodOption.value.apiValue,
             authorEmail = "",
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = "sisi test",
-            // TODO: Accept enum in kmp instead of parsing toInt()
-            numberOfDownload = selectedDownloadLimitOption.value.apiValue.value.toInt(),
+            numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
             recipientsEmails = emptyList(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
