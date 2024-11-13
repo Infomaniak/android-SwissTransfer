@@ -67,7 +67,7 @@ class UploadProgressViewModel @Inject constructor(
 
         viewModelScope.launch(ioDispatcher) {
             uploadManager.getLastUpload()?.let {
-                uploadManager.deleteUploadSession(it.uuid)
+                uploadManager.removeUploadSession(it.uuid)
             }
         }
     }

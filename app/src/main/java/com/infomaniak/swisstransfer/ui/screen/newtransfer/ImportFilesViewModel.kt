@@ -92,7 +92,7 @@ class ImportFilesViewModel @Inject constructor(
                 isFirstViewModelCreation = false
                 // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required
                 // for already imported files restoration to not pick up old files in some extreme cases.
-                importationFilesManager.removeLocalCopyFolder()
+                removeOldData()
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
@@ -127,6 +127,11 @@ class ImportFilesViewModel @Inject constructor(
                 _sendActionResult.update { SendActionResult.Failure }
             }
         }
+    }
+
+    private suspend fun removeOldData() {
+        importationFilesManager.removeLocalCopyFolder()
+        uploadManager.removeAllUploadSession()
     }
 
     private fun generateNewUploadSession(): NewUploadSession {

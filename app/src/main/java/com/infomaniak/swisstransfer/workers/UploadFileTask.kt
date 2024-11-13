@@ -135,7 +135,7 @@ class UploadFileTask(
     }
 
     private suspend inline fun throwAndDestroyUpload(uploadUuid: String, throwMessage: String): Nothing {
-        uploadManager.deleteUploadSession(uploadUuid)
+        uploadManager.removeUploadSession(uploadUuid)
         error(throwMessage)
     }
 
