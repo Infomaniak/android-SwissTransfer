@@ -30,30 +30,15 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
+import com.infomaniak.swisstransfer.ui.previewparameter.emailsPreviewData
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferType
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
-// TODO: Use correct emails instead of hard-coded values
 @Composable
 fun UploadSuccessEmailScreen(
-    emails: List<String> = listOf(
-        "email@example.com",
-        "firstname.lastname@example.com",
-        "email@subdomain.example.com",
-        "firstname+lastname@example.com",
-        "email@123.123.123.123",
-        "email@[123.123.123.123]",
-        "\"email\"@example.com",
-        "1234567890@example.com",
-        "email@example-one.com",
-        "_______@example.com",
-        "email@example.name",
-        "email@example.museum",
-        "email@example.co.jp",
-        "firstname-lastname@example.com",
-    ),
+    emails: List<String> = emailsPreviewData, // TODO: Use real data
     closeActivity: () -> Unit,
 ) {
     BottomStickyButtonScaffold(
