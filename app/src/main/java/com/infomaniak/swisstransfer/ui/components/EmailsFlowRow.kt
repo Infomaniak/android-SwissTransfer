@@ -15,39 +15,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.sent
+package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
-import com.infomaniak.swisstransfer.ui.components.FileItemList
-import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
-import com.infomaniak.swisstransfer.ui.previewparameter.filesPreviewData
+import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun SentListScreen(transfers: List<Any>) {
-    FileItemList(
-        modifier = Modifier.padding(Margin.Medium),
-        files = filesPreviewData, // TODO: Use real data
-        isRemoveButtonVisible = true,
-        isCheckboxVisible = { false },
-        isUidChecked = { false },
-        setUidCheckStatus = { _, _ -> },
-    )
+fun EmailsFlowRow(
+    emails: List<String>,
+    modifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+) {
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = horizontalArrangement,
+    ) {
+        emails.forEach {
+            EmailAddressChip(
+                text = it,
+                modifier = Modifier.padding(horizontal = Margin.Micro),
+            )
+        }
+    }
 }
 
-@PreviewAllWindows
+@PreviewLightAndDark
 @Composable
-private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
+private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: List<String>) {
     SwissTransferTheme {
         Surface {
-            SentListScreen(transfers)
+            EmailsFlowRow(emails)
         }
     }
 }

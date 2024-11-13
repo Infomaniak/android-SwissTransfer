@@ -17,18 +17,19 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
-import android.text.format.Formatter
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +39,8 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.*
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
+import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.transfersPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
@@ -57,7 +59,7 @@ fun TransferDetailsScreen(
 
     val transfer = transfersPreviewData.first() // TODO: Use real data
     val transferSenderEmail: String? = "john.smith@ik.me" // TODO
-    val transferLink = "https://chk.me/83azQOl" // TODO
+    val transferUrl = "https://chk.me/83azQOl" // TODO
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
@@ -96,7 +98,7 @@ fun TransferDetailsScreen(
                 isMultiselectOn = { isMultiselectOn },
                 onClick = { item ->
                     when (item) {
-                        BottomBarItem.SHARE -> context.shareText(transferLink)
+                        BottomBarItem.SHARE -> context.shareText(transferUrl)
                         BottomBarItem.DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
                             isMultiselectOn = true

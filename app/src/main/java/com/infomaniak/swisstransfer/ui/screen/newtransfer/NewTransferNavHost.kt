@@ -25,7 +25,6 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
@@ -43,9 +42,6 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 },
             )
         }
-        composable<TransferOptionsDestination> {
-            TransferOptionsScreen()
-        }
         composable<ValidateUserEmailDestination> {
             ValidateUserEmailScreen()
         }
@@ -53,9 +49,10 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             val args = it.toRoute<UploadProgressDestination>()
             UploadProgressScreen(
                 totalSizeInBytes = args.totalSize,
-                navigateToUploadSuccess = { transferLink ->
-                    navController.navigate(UploadSuccessDestination(args.transferType, transferLink))
+                navigateToUploadSuccess = { transferUrl ->
+                    navController.navigate(UploadSuccessDestination(args.transferType, transferUrl))
                 },
+                navigateToUploadError = { navController.navigate(UploadErrorDestination) },
                 closeActivity = closeActivity
             )
         }
@@ -63,7 +60,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             val args = it.toRoute<UploadSuccessDestination>()
             UploadSuccessScreen(
                 transferType = args.transferType,
-                transferLink = args.transferLink,
+                transferUrl = args.transferUrl,
                 closeActivity = closeActivity
             )
         }

@@ -56,7 +56,7 @@ enum class EmailLanguageOption(
     SPANISH({ stringResource(R.string.settingsEmailLanguageValueSpanish) }, imageVectorResId = R.drawable.flag_es);
 
     companion object {
-        fun EmailLanguage.toAdvancedOption() = when (this) {
+        fun EmailLanguage.toTransferOption() = when (this) {
             EmailLanguage.ENGLISH -> ENGLISH
             EmailLanguage.FRENCH -> FRENCH
             EmailLanguage.GERMAN -> GERMAN
@@ -68,7 +68,7 @@ enum class EmailLanguageOption(
 
 @PreviewAllWindows
 @Composable
-private fun SettingsThemeScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsEmailLanguageScreen(

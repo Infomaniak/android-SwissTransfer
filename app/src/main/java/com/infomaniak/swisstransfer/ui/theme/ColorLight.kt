@@ -86,11 +86,12 @@ val CustomLightColorScheme = CustomColorScheme(
     transferTypeQrOnContainer = Color(green_main),
     transferTypeProximityContainer = Color(specific3),
     transferTypeProximityOnContainer = Color(specific4),
-    emailAddressChipColor = Color(green_contrast),
+    emailAddressChipColor = Color(green_secondary),
     onEmailAddressChipColor = Color(green_dark),
     qrCodeDarkPixels = Color(green_dark),
     qrCodeLightPixels = Color(white),
     transferFilePreviewOverflow = Color(green_dark),
     onTransferFilePreviewOverflow = Color(green_contrast),
     transferListStroke = Color(green_dark),
+    highlightedColor = Color(green_secondary),
 )

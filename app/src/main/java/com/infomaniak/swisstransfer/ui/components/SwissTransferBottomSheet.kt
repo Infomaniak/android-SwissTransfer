@@ -43,7 +43,6 @@ import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferBottomSheet(
     modifier: Modifier = Modifier,
@@ -55,25 +54,40 @@ fun SwissTransferBottomSheet(
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
-    ModalBottomSheet(
+    SwissTransferBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
-    ) {
-        BottomSheetContent(
-            imageVector = imageVector,
-            titleRes = titleRes,
-            descriptionRes = descriptionRes,
-            content = content,
-            topButton = topButton,
-            bottomButton = bottomButton,
-        )
+        imageVector = imageVector,
+        title = titleRes?.let { stringResource(titleRes) },
+        description = descriptionRes?.let { stringResource(descriptionRes) },
+        topButton = topButton,
+        bottomButton = bottomButton,
+        content = content,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SwissTransferBottomSheet(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    imageVector: ImageVector? = null,
+    title: String? = null,
+    description: String? = null,
+    topButton: @Composable ((Modifier) -> Unit)? = null,
+    bottomButton: @Composable ((Modifier) -> Unit)? = null,
+    content: @Composable (() -> Unit)? = null,
+) {
+    ModalBottomSheet(onDismissRequest, modifier) {
+        BottomSheetContent(imageVector, title, description, content, topButton, bottomButton)
     }
 }
+
 @Composable
 private fun BottomSheetContent(
     imageVector: ImageVector?,
-    @StringRes titleRes: Int?,
-    @StringRes descriptionRes: Int?,
+    title: String?,
+    description: String?,
     content: @Composable (() -> Unit)?,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
@@ -84,14 +98,18 @@ private fun BottomSheetContent(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
+        val paddedModifier = Modifier.padding(horizontal = Margin.Medium)
+
         imageVector?.let {
-            Image(imageVector = imageVector, contentDescription = null)
+            Image(modifier = paddedModifier, imageVector = imageVector, contentDescription = null)
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
-        titleRes?.let {
+        title?.let {
             Text(
-                text = stringResource(it),
+                modifier = paddedModifier,
+                text = it,
                 style = SwissTransferTheme.typography.bodyMedium,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 textAlign = TextAlign.Center,
@@ -99,11 +117,13 @@ private fun BottomSheetContent(
             Spacer(modifier = Modifier.height(Margin.Large))
         }
 
-        descriptionRes?.let {
+        description?.let {
             Text(
-                text = stringResource(it),
+                modifier = paddedModifier,
+                text = it,
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(Margin.Large))
         }
@@ -116,6 +136,7 @@ private fun BottomSheetContent(
         DoubleButtonCombo(topButton = topButton, bottomButton = bottomButton)
     }
 }
+
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
@@ -124,8 +145,8 @@ private fun BottomSheetDefaultsPreview() {
         Surface {
             BottomSheetContent(
                 imageVector = AppIllus.ArrowDownRightCurved,
-                titleRes = R.string.appName,
-                descriptionRes = R.string.sentEmptyTitle,
+                title = stringResource(R.string.appName),
+                description = stringResource(R.string.sentEmptyTitle),
                 content = {
                     Box(
                         modifier = Modifier

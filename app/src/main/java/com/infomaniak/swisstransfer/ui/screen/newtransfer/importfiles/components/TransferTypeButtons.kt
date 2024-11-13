@@ -20,8 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.component
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -41,9 +41,8 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun TransferTypeButtons(transferType: GetSetCallbacks<TransferType>) {
     Row(
-        modifier = Modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = Margin.Mini),
+        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
     ) {
         for (transferTypeEntry in TransferType.entries) {
             TransferTypeButton(

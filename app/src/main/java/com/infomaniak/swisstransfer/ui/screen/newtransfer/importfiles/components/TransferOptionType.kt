@@ -38,21 +38,21 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferAdvancedSetting(
-    settingType: TransferAdvancedSettingType,
+fun TransferOptionType(
+    transferOptionType: TransferOptionType,
     selectedSetting: () -> SettingOption?,
     onClick: () -> Unit,
 ) {
     SharpRippleButton(onClick = onClick, contentPadding = PaddingValues(horizontal = Margin.Large, vertical = Margin.Medium)) {
         Icon(
             modifier = Modifier.size(Dimens.SmallIconSize),
-            imageVector = settingType.buttonIcon,
+            imageVector = transferOptionType.buttonIcon,
             tint = SwissTransferTheme.materialColors.primary,
             contentDescription = null,
         )
         Spacer(modifier = Modifier.width(Margin.Small))
         Text(
-            text = stringResource(settingType.buttonText),
+            text = stringResource(transferOptionType.buttonText),
             color = SwissTransferTheme.materialColors.primary,
             style = SwissTransferTheme.typography.bodySmallMedium,
         )
@@ -79,11 +79,11 @@ private fun SettingValue(selectedSetting: () -> SettingOption?) {
 
 @PreviewLightAndDark
 @Composable
-private fun TransferTypeButtonsPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
-            TransferAdvancedSetting(
-                settingType = TransferAdvancedSettingType.VALIDITY_DURATION,
+            TransferOptionType(
+                transferOptionType = TransferOptionType.VALIDITY_DURATION,
                 selectedSetting = { ValidityPeriodOption.THIRTY },
                 onClick = {},
             )

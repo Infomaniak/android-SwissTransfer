@@ -123,7 +123,6 @@ private data class TransferLazyRowKey(
     }
 }
 
-
 @PreviewLightAndDark
 @Composable
 private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {

@@ -162,7 +162,6 @@ private fun DetailPane(
     }
 }
 
-// Show the detail pane content if selected item is available
 @Composable
 private fun NoSelectionEmptyState() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

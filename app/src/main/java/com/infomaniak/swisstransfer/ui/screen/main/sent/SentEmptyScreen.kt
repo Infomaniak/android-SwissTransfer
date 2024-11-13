@@ -86,7 +86,7 @@ fun SentEmptyScreen() {
 
 @PreviewAllWindows
 @Composable
-private fun SentEmptyScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SentEmptyScreen()

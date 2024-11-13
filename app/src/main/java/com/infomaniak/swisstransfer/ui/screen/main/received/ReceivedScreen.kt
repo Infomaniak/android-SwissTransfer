@@ -17,29 +17,23 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
-import android.util.Log
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.transfer.TransferExpiredBottomSheet
-import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
+import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
-import com.infomaniak.swisstransfer.ui.previewparameter.transfersPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentViewModel
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import java.util.Date
 
 @Composable
 fun ReceivedScreen(
@@ -63,11 +57,6 @@ private fun ReceivedScreen(
     getSelectedTransferUuid: () -> String?,
     areTransfersEmpty: () -> Boolean,
 ) {
-
-    var isVisible: Boolean by rememberSaveable { mutableStateOf(false) }
-    var expirationDate: Date? by rememberSaveable { mutableStateOf(null) }
-    var downloadsLimit: Int? by rememberSaveable { mutableStateOf(null) }
-
     BrandTopAppBarScaffold(
         floatingActionButton = { ReceivedEmptyFab(areTransfersEmpty) },
     ) {
@@ -78,41 +67,7 @@ private fun ReceivedScreen(
                 descriptionRes = R.string.noTransferReceivedDescription,
             )
         } else {
-            TransferItemList(
-                modifier = Modifier.padding(Margin.Medium),
-                transfers = transfersPreviewData, // TODO: Use real data
-                getSelectedTransferUuid = getSelectedTransferUuid,
-                onClick = { transfer ->
-                    when {
-                        transfer.expiresInDays < 0 -> {
-                            isVisible = true
-                            expirationDate = transfer.expirationDateTimestamp.toDateFromSeconds()
-                        }
-                        transfer.downloadLeft == 0 -> {
-                            isVisible = true
-                            downloadsLimit = transfer.downloadLimit
-                        }
-                        else -> {
-                            navigateToDetails(transfer.uuid)
-                        }
-                    }
-                }
-            )
-
-            TransferExpiredBottomSheet(
-                isVisible = { isVisible },
-                expirationDate = { expirationDate },
-                downloadsLimit = { downloadsLimit },
-                onDeleteTransferClicked = {
-                    Log.d("TODO", "Delete expired Transfer")
-                    // TODO
-                },
-                closeBottomSheet = {
-                    isVisible = false
-                    expirationDate = null
-                    downloadsLimit = null
-                },
-            )
+            TransfersListWithExpiredBottomSheet(navigateToDetails, getSelectedTransferUuid)
         }
     }
 }

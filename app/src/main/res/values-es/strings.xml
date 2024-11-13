@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="buttonAddFiles">Añadir archivos</string>
+    <string name="buttonCancel">Cancelar</string>
+    <string name="buttonConfirm">Confirme</string>
     <string name="buttonCopyLink">Copiar enlace</string>
     <string name="buttonDownload">Descargar</string>
     <string name="buttonDownloadSelected">Descargar la selección</string>
@@ -31,13 +33,15 @@
     <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <string name="downloadedTransferLabel">Transferencia descargada : %d/%d</string>
+    <string name="errorTransferPasswordLength">La contraseña debe tener entre 6 y 25 caracteres</string>
+    <string name="expiredThe">Expirado el %s</string>
     <string name="expiresIn">Caduca en %d días</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
         <item quantity="other">%d archivos</item>
     </plurals>
     <string name="firstTransferDescription">Realice su primera transferencia</string>
-    <string name="fromHeader">De :</string>
+    <string name="fromHeader">De:</string>
     <string name="importFilesScreenTitle">Archivos para transferir</string>
     <string name="messageHeader">Mensaje:</string>
     <string name="myFilesTitle">Mis archivos</string>
@@ -80,6 +84,8 @@
     <string name="settingsOptionThemeLight">Luz</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
     <string name="settingsOptionValidityPeriod">Periodo de validez</string>
+    <string name="settingsPasswordDescription">Los destinatarios tendrán que introducir la contraseña para descargar los archivos.</string>
+    <string name="settingsPasswordToggleDescription">Activar la protección</string>
     <string name="settingsSentryDescription">Sentry es una herramienta alojada y gestionada en exclusiva por Infomaniak para supervisar la estabilidad de la aplicación en tiempo real e informar automáticamente de cualquier error técnico a nuestros desarrolladores.\n\nEstos datos permiten a nuestro equipo corregir y optimizar rápidamente la aplicación, lo que se traduce en una mejor experiencia de usuario para usted.</string>
     <string name="settingsThemeTitle">Seleccione un tema</string>
     <string name="settingsTitle">Parámetros</string>
@@ -91,7 +97,7 @@
     <string name="snackbarLinkCopiedToClipboard">Enlace copiado en el portapapeles</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
-    <string name="transferContentHeader">Contenido de la transferencia :</string>
+    <string name="transferContentHeader">Contenido de la transferencia:</string>
     <string name="transferExpired">Transferencia caducada</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
@@ -118,14 +124,17 @@
     <string name="uploadCancelConfirmBottomSheetCancel">Cancelar transferencia</string>
     <string name="uploadCancelConfirmBottomSheetClose">Cerrar y continuar</string>
     <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
+    <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
+    <string name="uploadErrorTitle">¿Pero qué, qué?</string>
     <string name="uploadProgressDescriptionArgumentConfidentiality">una Internet que respeta la confidencialidad y la privacidad.</string>
     <string name="uploadProgressDescriptionArgumentEnergy">nuestros propios centros de datos, sin aire acondicionado</string>
     <string name="uploadProgressDescriptionArgumentIndependence">la independencia tecnológica en Europa.</string>
     <string name="uploadProgressDescriptionTemplateConfidentiality">Somos independientes y contribuimos a %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Diseñamos %s, para superar las normas de eficiencia energética del mercado.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Desarrollamos %s Sin comprometer la ecología, la privacidad ni a las personas.</string>
-    <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
-    <string name="uploadErrorTitle">¿Pero qué, qué?</string>
+    <string name="uploadProgressIndication">Transferencia en curso…</string>
+    <string name="uploadProgressTitleArgument">diferencia</string>
+    <string name="uploadProgressTitleTemplate">¿Qué nos %s?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">El enlace de descarga se ha enviado al siguiente destinatario:</item>
         <item quantity="other">El enlace de descarga se ha enviado a los siguientes destinatarios:</item>
@@ -134,8 +143,6 @@
     <string name="uploadSuccessLinkDescription">Escanea este código QR a tu alrededor para compartir tus archivos o copia el enlace que aparece a continuación.</string>
     <string name="uploadSuccessLinkTitle">Su transferencia está lista</string>
     <string name="uploadSuccessQrTitle">Su código QR está listo</string>
-    <string name="uploadSuccessTitle">¿Qué nos diferencia?</string>
-    <string name="uploadSuccessTransferInProgress">Transferencia en curso…</string>
     <string name="urlAbout">https://www.infomaniak.com/es/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
     <string name="version">Versión</string>

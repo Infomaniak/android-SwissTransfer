@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
+    <string name="buttonCancel">Abbrechen</string>
+    <string name="buttonConfirm">Bestätigen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Auswahl herunterladen</string>
@@ -31,6 +33,8 @@
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
+    <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
+    <string name="expiredThe">Abgelaufen am %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
@@ -39,7 +43,7 @@
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="fromHeader">Von:</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
-    <string name="messageHeader">Nachricht :</string>
+    <string name="messageHeader">Nachricht:</string>
     <string name="myFilesTitle">Meine Dateien</string>
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
@@ -80,6 +84,8 @@
     <string name="settingsOptionThemeLight">Hell</string>
     <string name="settingsOptionThemeSystem">System</string>
     <string name="settingsOptionValidityPeriod">Dauer der Gültigkeit</string>
+    <string name="settingsPasswordDescription">Deine Empfänger müssen das Passwort eingeben, um die Dateien herunterzuladen.</string>
+    <string name="settingsPasswordToggleDescription">Schutz aktivieren</string>
     <string name="settingsSentryDescription">Sentry ist ein Tool, das ausschliesslich von Infomaniak gehostet und verwaltet wird, um die Stabilität der Anwendung in Echtzeit zu überwachen und unseren Entwicklern automatisch alle technischen Fehler zu melden.\n\nAnhand dieser Daten kann unser Team die Anwendung schnell korrigieren und optimieren, was zu einem besseren Nutzererlebnis für Sie führt.</string>
     <string name="settingsThemeTitle">Wähle ein Thema aus</string>
     <string name="settingsTitle">Einstellungen</string>
@@ -91,7 +97,7 @@
     <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Fakultativ)</string>
-    <string name="transferContentHeader">Inhalt der Übertragung :</string>
+    <string name="transferContentHeader">Inhalt der Übertragung:</string>
     <string name="transferExpired">Transfer abgelaufen</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
@@ -118,14 +124,17 @@
     <string name="uploadCancelConfirmBottomSheetCancel">Übertragung abbrechen</string>
     <string name="uploadCancelConfirmBottomSheetClose">Schliessen und weiter</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Überweisung rückgängig machen willst?</string>
+    <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
+    <string name="uploadErrorTitle">Was ist das denn?</string>
     <string name="uploadProgressDescriptionArgumentConfidentiality">einem Internet bei, das den Datenschutz und die Privatsphäre respektiert.</string>
     <string name="uploadProgressDescriptionArgumentEnergy">unsere eigenen Rechenzentren ohne Klimaanlagen</string>
     <string name="uploadProgressDescriptionArgumentIndependence">die technologische Unabhängigkeit in Europa.</string>
     <string name="uploadProgressDescriptionTemplateConfidentiality">Wir sind unabhängig und tragen zu %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Wir entwerfen %s, um die Energieeffizienzstandards der Branche zu übertreffen.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Wir entwickeln %s Ohne Kompromisse bei Ökologie, Privatsphäre und Menschen.</string>
-    <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
-    <string name="uploadErrorTitle">Was ist das denn?</string>
+    <string name="uploadProgressIndication">Transfer wird durchgeführt…</string>
+    <string name="uploadProgressTitleArgument">zeichnet uns aus</string>
+    <string name="uploadProgressTitleTemplate">Was %s?</string>
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Der Download-Link wurde erfolgreich an den folgenden Empfänger gesendet:</item>
         <item quantity="other">Der Download-Link wurde an die folgenden Empfänger gesendet:</item>
@@ -134,8 +143,6 @@
     <string name="uploadSuccessLinkDescription">Lass diesen QR-Code in deiner Umgebung scannen, um deine Dateien weiterzugeben, oder kopiere den untenstehenden Link.</string>
     <string name="uploadSuccessLinkTitle">Deine Überweisung ist fertig!</string>
     <string name="uploadSuccessQrTitle">Dein QR-Code ist fertig!</string>
-    <string name="uploadSuccessTitle">Was zeichnet uns aus?</string>
-    <string name="uploadSuccessTransferInProgress">Transfer wird durchgeführt…</string>
     <string name="urlAbout">https://www.infomaniak.com/de/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/9abc7665-a78e-4fd2-aa41-a47a8b867fcd/#ideas/popular</string>
     <string name="version">Version</string>

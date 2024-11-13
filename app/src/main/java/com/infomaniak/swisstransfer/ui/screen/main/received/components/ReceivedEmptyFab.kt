@@ -77,7 +77,7 @@ fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
 
 @PreviewLightAndDark
 @Composable
-private fun ReceivedEmptyFabPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Bottom) {

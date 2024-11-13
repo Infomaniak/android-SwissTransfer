@@ -42,7 +42,6 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-
 /**
  * Specifying a progress has the priority over specifying showIndeterminateProgress
  */
@@ -69,7 +68,6 @@ fun LargeButton(
         imageVector,
     )
 }
-
 
 /**
  * Specifying a progress has the priority over specifying showIndeterminateProgress

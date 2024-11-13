@@ -52,17 +52,13 @@ private fun SentScreen(transfers: List<Any>?) {
             }
         },
     ) {
-        if (transfers.isEmpty()) {
-            SentEmptyScreen()
-        } else {
-            SentListScreen(transfers)
-        }
+        if (transfers.isEmpty()) SentEmptyScreen()
     }
 }
 
 @PreviewAllWindows
 @Composable
-private fun SentScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         Surface {
             SentScreen(transfers = emptyList())
