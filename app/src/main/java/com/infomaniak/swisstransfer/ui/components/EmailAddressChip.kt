@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -38,6 +39,8 @@ fun EmailAddressChip(
         label = {
             Text(
                 text = text,
+                maxLines = 1,
+                overflow = TextOverflow.MiddleEllipsis,
                 style = SwissTransferTheme.typography.bodyRegular,
             )
         },

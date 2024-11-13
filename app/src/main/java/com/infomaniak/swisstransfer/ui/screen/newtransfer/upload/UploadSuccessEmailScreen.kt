@@ -50,40 +50,29 @@ fun UploadSuccessEmailScreen(
                 onClick = closeActivity,
             )
         },
-        content = { Content(emails) },
-    )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun Content(emails: List<String>) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Margin.Medium),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
-
-        IllustratedMessageBlock(
-            icon = AppIllus.Beers.image(),
-            title = TransferType.MAIL.titleRes,
-            description = pluralStringResource(TransferType.MAIL.descriptionRes!!, emails.count()),
-        )
-
-        Spacer(modifier = Modifier.height(Margin.Medium))
-
-        FlowRow(
-            modifier = Modifier.widthIn(max = 800.dp),
-            horizontalArrangement = Arrangement.Center,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(Margin.Medium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            emails.forEach {
-                EmailAddressChip(
-                    text = it,
-                    modifier = Modifier.padding(horizontal = Margin.Micro),
-                )
-            }
+
+            IllustratedMessageBlock(
+                icon = AppIllus.Beers.image(),
+                title = TransferType.MAIL.titleRes,
+                description = pluralStringResource(TransferType.MAIL.descriptionRes!!, emails.count()),
+            )
+
+            Spacer(modifier = Modifier.height(Margin.Medium))
+
+            EmailsFlowRow(
+                emails = emails,
+                modifier = Modifier.widthIn(max = 800.dp),
+                horizontalArrangement = Arrangement.Center,
+            )
         }
     }
 }
