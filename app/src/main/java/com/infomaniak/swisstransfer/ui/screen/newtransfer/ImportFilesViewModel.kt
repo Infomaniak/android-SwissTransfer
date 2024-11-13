@@ -139,7 +139,7 @@ class ImportFilesViewModel @Inject constructor(
             duration = selectedValidityPeriodOption.value.apiValue,
             authorEmail = "",
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
-            message = "sisi test",
+            message = _transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
             recipientsEmails = emptyList(),
@@ -243,6 +243,12 @@ class ImportFilesViewModel @Inject constructor(
     private var transferPassword by mutableStateOf("")
 
     private val isPasswordValid by derivedStateOf { transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
+    //endregion
+
+
+    //region Transfer Message
+    private var _transferMessage by mutableStateOf("")
+    val transferMessage = GetSetCallbacks(get = { _transferMessage }, set = { _transferMessage = it })
     //endregion
 
     sealed class SendActionResult {
