@@ -44,7 +44,10 @@ fun TransferItemList(
 ) {
 
     val selectedTransferUuid = getSelectedTransferUuid()
-    val titleRes = if (direction == TransferDirection.SENT) R.string.sentFilesTitle else R.string.receivedFilesTitle
+    val titleRes = when (direction) {
+        TransferDirection.SENT -> R.string.sentFilesTitle
+        TransferDirection.RECEIVED -> R.string.receivedFilesTitle
+    }
 
     LazyColumn(
         modifier = modifier,
@@ -52,12 +55,7 @@ fun TransferItemList(
         contentPadding = PaddingValues(top = Margin.Mini),
     ) {
 
-        item {
-            Text(
-                text = stringResource(titleRes),
-                style = SwissTransferTheme.typography.h1,
-            )
-        }
+        item { Text(stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
         items(
             count = transfers.count(),

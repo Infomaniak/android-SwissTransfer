@@ -52,14 +52,24 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<String>) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
-            navigateToDetails = { transferUuid -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid) },
-            getSelectedTransferUuid = { navigator.currentDestination?.content },
+            navigateToDetails = navigator::navigateToDetails,
+            getSelectedTransferUuid = navigator::getSelectedTransferUuid,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
-            navigateToDetails = { transferUuid -> navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid) },
-            getSelectedTransferUuid = { navigator.currentDestination?.content },
+            navigateToDetails = navigator::navigateToDetails,
+            getSelectedTransferUuid = navigator::getSelectedTransferUuid,
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun ThreePaneScaffoldNavigator<String>.navigateToDetails(transferUuid: String) {
+    navigateTo(ListDetailPaneScaffoldRole.Detail, transferUuid)
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun ThreePaneScaffoldNavigator<String>.getSelectedTransferUuid(): String? {
+    return currentDestination?.content
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
