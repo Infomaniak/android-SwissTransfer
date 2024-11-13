@@ -56,7 +56,6 @@ fun ReceivedScreen(
 
     if (!isLoading) {
         ReceivedScreen(
-        	transfers = transfers,
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             getTransfers = { transfers!! },
@@ -67,7 +66,6 @@ fun ReceivedScreen(
 
 @Composable
 private fun ReceivedScreen(
-    transfers: List<TransferUi>,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
