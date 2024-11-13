@@ -45,15 +45,16 @@ fun SettingsValidityPeriodScreen(
 }
 
 enum class ValidityPeriodOption(
-    override val title: @Composable () -> String,
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
     val apiValue: ValidityPeriod,
 ) : SettingOption {
-    THIRTY({ getValidityPeriodTitle(ValidityPeriod.THIRTY) }, apiValue = ValidityPeriod.THIRTY),
-    FIFTEEN({ getValidityPeriodTitle(ValidityPeriod.FIFTEEN) }, apiValue = ValidityPeriod.FIFTEEN),
-    SEVEN({ getValidityPeriodTitle(ValidityPeriod.SEVEN) }, apiValue = ValidityPeriod.SEVEN),
-    ONE({ getValidityPeriodTitle(ValidityPeriod.ONE) }, apiValue = ValidityPeriod.ONE);
+    THIRTY(apiValue = ValidityPeriod.THIRTY),
+    FIFTEEN(apiValue = ValidityPeriod.FIFTEEN),
+    SEVEN(apiValue = ValidityPeriod.SEVEN),
+    ONE(apiValue = ValidityPeriod.ONE);
+
+    override val title: @Composable () -> String = { getValidityPeriodTitle(apiValue) }
 
     companion object {
         fun ValidityPeriod.toTransferOption() = when (this) {
