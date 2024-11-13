@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.utils.isExpired
 
 @Composable
 fun TransfersListWithExpiredBottomSheet(
+    transfers: List<TransferUi>,
     direction: TransferDirection,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
@@ -73,6 +74,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             TransfersListWithExpiredBottomSheet(
+                transfers = transfers,
                 direction = TransferDirection.RECEIVED,
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },

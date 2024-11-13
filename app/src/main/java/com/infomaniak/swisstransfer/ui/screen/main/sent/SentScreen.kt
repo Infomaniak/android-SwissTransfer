@@ -59,6 +59,7 @@ fun SentScreen(
 
     if (!isLoading) {
         SentScreen(
+        	transfers = transfers,
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             getTransfers = { transfers!! },
@@ -69,6 +70,7 @@ fun SentScreen(
 
 @Composable
 private fun SentScreen(
+    transfers: List<TransferUi>,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
@@ -105,6 +107,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             SentScreen(
+                transfers = transfers,
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { transfers },
