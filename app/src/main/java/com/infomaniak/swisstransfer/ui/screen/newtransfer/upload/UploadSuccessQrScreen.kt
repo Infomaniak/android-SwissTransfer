@@ -56,59 +56,68 @@ fun UploadSuccessQrScreen(transferType: TransferType, transferUrl: String, close
                 onClick = closeActivity,
             )
         },
-        content = { Content(snackbarHostState, transferType, transferUrl) },
-    )
+    ) {
+        Column {
+            ScreenContent(transferType, transferUrl)
+
+            ShareAndCopyButtons(
+                modifier = Modifier
+                    .padding(horizontal = Margin.Medium)
+                    .padding(bottom = Margin.Medium, top = Margin.Mini),
+                transferLink = transferUrl,
+                snackbarHostState = snackbarHostState,
+            )
+        }
+    }
 }
 
 @Composable
-private fun Content(snackbarHostState: SnackbarHostState, transferType: TransferType, transferUrl: String) {
-    Column {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = Margin.Medium),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Spacer(modifier = Modifier.height(Margin.Medium))
+private fun ColumnScope.ScreenContent(
+    transferType: TransferType,
+    transferUrl: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Margin.Medium),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        SuccessMessage(transferType, transferUrl)
+    }
+}
 
-            Image(
-                imageVector = AppIllus.Beers.image(),
-                contentDescription = null,
-            )
+@Composable
+private fun SuccessMessage(transferType: TransferType, transferUrl: String) {
+    Spacer(modifier = Modifier.height(Margin.Medium))
 
-            Spacer(Modifier.height(Margin.Huge))
+    Image(
+        imageVector = AppIllus.Beers.image(),
+        contentDescription = null,
+    )
 
-            Text(
-                text = stringResource(transferType.titleRes),
-                style = SwissTransferTheme.typography.h1,
-                color = SwissTransferTheme.colors.primaryTextColor,
-            )
+    Spacer(Modifier.height(Margin.Huge))
 
-            Spacer(Modifier.height(Margin.Huge))
+    Text(
+        text = stringResource(transferType.titleRes),
+        style = SwissTransferTheme.typography.h1,
+        color = SwissTransferTheme.colors.primaryTextColor,
+    )
 
-            QrCode(transferUrl)
+    Spacer(Modifier.height(Margin.Huge))
 
-            transferType.descriptionRes?.let { descriptionRes ->
-                Spacer(Modifier.height(Margin.Huge))
-                Text(
-                    text = stringResource(descriptionRes),
-                    style = SwissTransferTheme.typography.bodyRegular,
-                    textAlign = TextAlign.Center,
-                    color = SwissTransferTheme.colors.secondaryTextColor,
-                    modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
-                )
-            }
-        }
+    QrCode(transferUrl)
 
-        ShareAndCopyButtons(
-            modifier = Modifier
-                .padding(horizontal = Margin.Medium)
-                .padding(bottom = Margin.Medium, top = Margin.Mini),
-            transferLink = transferUrl,
-            snackbarHostState = snackbarHostState,
+    transferType.descriptionRes?.let { descriptionRes ->
+        Spacer(Modifier.height(Margin.Huge))
+        Text(
+            text = stringResource(descriptionRes),
+            style = SwissTransferTheme.typography.bodyRegular,
+            textAlign = TextAlign.Center,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
         )
     }
 }
