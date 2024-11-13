@@ -48,7 +48,9 @@ fun MainScaffold(
         navType,
         currentDestination,
         navController::navigateToSelectedItem,
-        if (navType != NavigationSuiteType.None) largeWindowTopAppBar else { {} },
+        if (navType != NavigationSuiteType.None) largeWindowTopAppBar else {
+            {}
+        },
         content
     )
 }
