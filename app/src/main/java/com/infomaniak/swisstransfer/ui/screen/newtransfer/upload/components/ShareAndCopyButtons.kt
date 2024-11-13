@@ -51,6 +51,7 @@ fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink:
         modifier
             .widthIn(max = Dimens.SingleButtonMaxWidth)
             .fillMaxWidth()
+            .padding(horizontal = Margin.Medium)
             .align(Alignment.CenterHorizontally),
     ) {
         ShareCopyButton(
