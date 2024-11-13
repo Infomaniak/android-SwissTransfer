@@ -62,14 +62,16 @@ fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
-
-    val getCheckedFiles = { transferDetailsViewModel.checkedFiles }
-    val clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() }
-    val setFileCheckStatus: (String, Boolean) -> Unit = { fileUid, isChecked ->
-        transferDetailsViewModel.checkedFiles[fileUid] = isChecked
-    }
-
-    TransferDetailsScreen(transferUuid, direction, navigateBack, getCheckedFiles, clearCheckedFiles, setFileCheckStatus)
+    TransferDetailsScreen(
+        transferUuid = transferUuid,
+        direction = direction,
+        navigateBack = navigateBack,
+        getCheckedFiles = { transferDetailsViewModel.checkedFiles },
+        clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
+        setFileCheckStatus = { fileUid, isChecked ->
+            transferDetailsViewModel.checkedFiles[fileUid] = isChecked
+        },
+    )
 }
 
 @Composable
@@ -90,8 +92,8 @@ private fun TransferDetailsScreen(
     val transferPassword = "toto42" // TODO: Use real data
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
-    var isQrCodeVisible: Boolean by rememberSaveable { mutableStateOf(false) }
-    var isPasswordVisible: Boolean by rememberSaveable { mutableStateOf(false) }
+    var showQrCodeSheet: Boolean by rememberSaveable { mutableStateOf(false) }
+    var showPasswordSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
@@ -113,8 +115,8 @@ private fun TransferDetailsScreen(
                 onClick = { item ->
                     when (item) {
                         BottomBarItem.SHARE -> context.shareText(transferUrl)
-                        BottomBarItem.QR_CODE -> isQrCodeVisible = true
-                        BottomBarItem.PASSWORD -> isPasswordVisible = true
+                        BottomBarItem.QR_CODE -> showQrCodeSheet = true
+                        BottomBarItem.PASSWORD -> showPasswordSheet = true
                         BottomBarItem.DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
                             isMultiselectOn = true
@@ -130,14 +132,14 @@ private fun TransferDetailsScreen(
         }
 
         QrCodeBottomSheet(
-            isVisible = { isQrCodeVisible },
+            isVisible = { showQrCodeSheet },
             transferUrl = transferUrl,
-            closeBottomSheet = { isQrCodeVisible = false },
+            closeBottomSheet = { showQrCodeSheet = false },
         )
         PasswordBottomSheet(
-            isVisible = { isPasswordVisible },
+            isVisible = { showPasswordSheet },
             transferPassword = transferPassword,
-            closeBottomSheet = { isPasswordVisible = false },
+            closeBottomSheet = { showPasswordSheet = false },
         )
     }
 }
