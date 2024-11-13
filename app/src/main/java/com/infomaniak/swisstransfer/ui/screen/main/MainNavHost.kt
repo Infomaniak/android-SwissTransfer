@@ -44,13 +44,20 @@ fun MainNavHost(
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
-        composable<ReceivedDestination> {
+        composable<SentDestination> {
             TransfersScreenWrapper(
-                TransferDirection.RECEIVED,
                 navigateToFilesDetails = { transferUuid, fileUuid ->
                     navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
-                }
+                },
+                direction = TransferDirection.SENT
+            )
+        }
+        composable<ReceivedDestination> {
+            TransfersScreenWrapper(
+                navigateToFilesDetails = { transferUuid, fileUuid ->
+                    navController.navigate(FilesDetailsDestination(transferUuid = transferUuid, fileUuid = fileUuid))
+                },
+                direction = TransferDirection.RECEIVED,
             )
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
