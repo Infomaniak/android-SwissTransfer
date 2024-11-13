@@ -113,7 +113,6 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             ReceivedScreen(
-                transfers = transfers,
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { emptyList() },
