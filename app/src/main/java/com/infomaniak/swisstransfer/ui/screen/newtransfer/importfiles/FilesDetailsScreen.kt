@@ -59,7 +59,9 @@ fun FilesDetailsScreen(
         files = files ?: emptyList(),
         navigateToDetails = navigateToDetails,
         withSpaceLeft = withSpaceLeft,
-        onFileRemoved = if (withFileDelete) { { importFilesViewModel.removeFileByUid(it) } } else null,
+        onFileRemoved = if (withFileDelete) {
+            { importFilesViewModel.removeFileByUid(it) }
+        } else null,
         onCloseClicked = onCloseClicked,
         navigateBack = navigateBack,
     )
