@@ -88,7 +88,7 @@ private fun HandleProgressState(
     LaunchedEffect(uiState()) {
         when (currentUiState) {
             is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferUrl)
-            is UploadProgressUiState.Cancelled -> navigateToUploadError()
+            is UploadProgressUiState.Error -> navigateToUploadError()
             else -> Unit
         }
     }
