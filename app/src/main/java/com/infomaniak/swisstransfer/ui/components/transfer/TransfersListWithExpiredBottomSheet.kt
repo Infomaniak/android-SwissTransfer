@@ -38,9 +38,9 @@ import java.util.Date
 @Composable
 fun TransfersListWithExpiredBottomSheet(
     direction: TransferDirection,
-    transfers: List<TransferUi>,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
+    getTransfers: () -> List<TransferUi>,
 ) {
 
     var isExpirySheetVisible: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -50,8 +50,8 @@ fun TransfersListWithExpiredBottomSheet(
     TransferItemList(
         modifier = Modifier.padding(Margin.Medium),
         direction = direction,
-        transfers = transfers,
         getSelectedTransferUuid = getSelectedTransferUuid,
+        getTransfers = getTransfers,
         onClick = { transfer ->
             when {
                 transfer.expiresInDays < 0 -> {
@@ -89,9 +89,9 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
         Surface {
             TransfersListWithExpiredBottomSheet(
                 direction = TransferDirection.RECEIVED,
-                transfers = transfers,
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
+                getTransfers = { transfers },
             )
         }
     }

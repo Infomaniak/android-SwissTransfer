@@ -25,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
@@ -45,20 +44,19 @@ fun SentScreen(
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
 
-    val transfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
-    val areTransfersEmpty by remember { derivedStateOf { transfers.isEmpty() } }
+    val getTransfers = { transfersViewModel.sentTransfers.value }
 
-    SentScreen(navigateToDetails, getSelectedTransferUuid, transfers, areTransfersEmpty)
+    SentScreen(navigateToDetails, getSelectedTransferUuid, getTransfers)
 }
 
 @Composable
 private fun SentScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    transfers: List<TransferUi>,
-    areTransfersEmpty: Boolean,
+    getTransfers: () -> List<TransferUi>,
 ) {
 
+    val areTransfersEmpty by remember { derivedStateOf { getTransfers().isEmpty() } }
     val windowAdaptiveInfo = currentWindowAdaptiveInfo()
 
     BrandTopAppBarScaffold(
@@ -71,7 +69,12 @@ private fun SentScreen(
         if (areTransfersEmpty) {
             SentEmptyScreen()
         } else {
-            TransfersListWithExpiredBottomSheet(TransferDirection.SENT, transfers, navigateToDetails, getSelectedTransferUuid)
+            TransfersListWithExpiredBottomSheet(
+                direction = TransferDirection.SENT,
+                navigateToDetails = navigateToDetails,
+                getSelectedTransferUuid = getSelectedTransferUuid,
+                getTransfers = getTransfers,
+            )
         }
     }
 }
@@ -84,8 +87,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
             SentScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                transfers = transfers,
-                areTransfersEmpty = false,
+                getTransfers = { transfers },
             )
         }
     }
