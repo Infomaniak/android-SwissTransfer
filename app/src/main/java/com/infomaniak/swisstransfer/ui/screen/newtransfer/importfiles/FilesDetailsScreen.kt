@@ -42,25 +42,24 @@ fun FilesDetailsScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     transferUuid: String? = null,
     fileUuid: String? = null,
-    navigateToDetails: (String) -> Unit,
+    navigateToDetails: (String?, String) -> Unit,
     withSpaceLeft: Boolean,
+    withFileDelete: Boolean,
     onCloseClicked: (() -> Unit),
     navigateBack: (() -> Unit),
 ) {
     // Load of files with transferUuid or fileUuid depending of if we click on a folder or not.
     // If we don't have transferUuid and fileUuid, it means we have to load files from importedFiles in ImportFilesViewModel
-    val files by importFilesViewModel.getImportedFiles().collectAsStateWithLifecycle(null)
+    val files by importFilesViewModel.getFiles(transferUuid, fileUuid).collectAsStateWithLifecycle(null)
 
     if (files?.isEmpty() == true) navigateBack()
 
     FilesDetailsScreen(
-        title = "Title", //TODO Get fileId detail to get the title in case we're in a folder ?
+        transferUuid = transferUuid,
         files = files ?: emptyList(),
         navigateToDetails = navigateToDetails,
         withSpaceLeft = withSpaceLeft,
-        onFileRemoved = {
-            importFilesViewModel.removeFileByUid(it)
-        },
+        onFileRemoved = if (withFileDelete) { { importFilesViewModel.removeFileByUid(it) } } else null,
         onCloseClicked = onCloseClicked,
         navigateBack = navigateBack,
     )
@@ -68,9 +67,10 @@ fun FilesDetailsScreen(
 
 @Composable
 private fun FilesDetailsScreen(
-    title: String,
+    title: String = "",
+    transferUuid: String?,
     files: List<FileUi>,
-    navigateToDetails: (String) -> Unit,
+    navigateToDetails: (String?, String) -> Unit,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
     onCloseClicked: (() -> Unit),
@@ -94,7 +94,7 @@ private fun FilesDetailsScreen(
             onRemoveUid = { onFileRemoved?.invoke(it) },
             onClick = {
                 //TODO Check here if the clicked file is a folder before navigating
-                navigateToDetails(it)
+                navigateToDetails(transferUuid, it)
             }
         )
     }
@@ -107,8 +107,9 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
         Surface {
             FilesDetailsScreen(
                 title = "Title",
+                transferUuid = "",
                 files = files,
-                navigateToDetails = {},
+                navigateToDetails = { _, _ -> },
                 withSpaceLeft = true,
                 onCloseClicked = {},
                 onFileRemoved = {},

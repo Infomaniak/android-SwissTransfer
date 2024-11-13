@@ -63,7 +63,7 @@ fun ImportFilesScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
-    navigateToFilesDetails: (fileUuid: String) -> Unit,
+    navigateToFilesDetails: (fileUuid: String?) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -246,7 +246,7 @@ private fun ImportFilesScreen(
                     removeFileByUid,
                     addFiles,
                     shouldStartByPromptingUserForFiles,
-                    navigateToFilesDetails
+                    navigateToFilesDetails,
                 )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(

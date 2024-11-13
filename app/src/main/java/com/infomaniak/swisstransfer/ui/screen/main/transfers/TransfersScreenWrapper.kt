@@ -68,7 +68,7 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
             )
         },
         detailPane = {
-            DetailPane(navigator = this, hasTransfer = { hasTransfer })
+            DetailPane(navigator = this, hasTransfer = { hasTransfer }, navigateToFilesDetails)
         },
     )
 }
@@ -126,8 +126,9 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun DetailPane(
-    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: () -> Boolean,
+navigator: ThreePaneScaffoldNavigator<DestinationContent>, 
+hasTransfer: Boolean, 
+navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit
 ) {
 
     val destinationContent = navigator.safeCurrentContent()
@@ -139,6 +140,7 @@ private fun DetailPane(
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+            navigateToFilesDetails = navigateToFilesDetails
         )
     }
 }

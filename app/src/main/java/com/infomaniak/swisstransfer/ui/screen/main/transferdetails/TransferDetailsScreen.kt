@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core2.FORMAT_DATE_FULL
 import com.infomaniak.core2.format
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -64,6 +65,7 @@ fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
+    navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -90,6 +92,7 @@ fun TransferDetailsScreen(
 
 @Composable
 private fun TransferDetailsScreen(
+	transferUuid: String,
     transferUrl: String,
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
@@ -298,6 +301,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             TransferDetailsScreen(
+				transferUuid = "",
                 transferUrl = "",
                 direction = TransferDirection.SENT,
                 navigateBack = null,

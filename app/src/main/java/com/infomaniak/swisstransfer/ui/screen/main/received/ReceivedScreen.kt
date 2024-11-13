@@ -27,7 +27,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.Transfer
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
@@ -41,6 +43,8 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
+import java.util.Date
+import javax.inject.Inject
 
 @Composable
 fun ReceivedScreen(
@@ -57,6 +61,7 @@ fun ReceivedScreen(
 
     if (!isLoading) {
         ReceivedScreen(
+        	transfers = transfers,
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             getTransfers = { transfers!! },
@@ -67,6 +72,7 @@ fun ReceivedScreen(
 
 @Composable
 private fun ReceivedScreen(
+    transfers: List<TransferUi>,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
@@ -103,6 +109,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             ReceivedScreen(
+                transfers = emptyList(),
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { emptyList() },
