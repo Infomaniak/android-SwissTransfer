@@ -26,8 +26,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
-import com.infomaniak.swisstransfer.ui.previewparameter.transfersPreviewData
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -38,6 +40,7 @@ fun TransfersListWithExpiredBottomSheet(
     direction: TransferDirection,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
+    getTransfers: () -> List<TransferUi>,
 ) {
 
     var isExpirySheetVisible: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -47,8 +50,8 @@ fun TransfersListWithExpiredBottomSheet(
     TransferItemList(
         modifier = Modifier.padding(Margin.Medium),
         direction = direction,
-        transfers = transfersPreviewData, // TODO: Use real data
         getSelectedTransferUuid = getSelectedTransferUuid,
+        getTransfers = getTransfers,
         onClick = { transfer ->
             when {
                 transfer.expiresInDays < 0 -> {
@@ -81,13 +84,14 @@ fun TransfersListWithExpiredBottomSheet(
 
 @PreviewLightAndDark
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
     SwissTransferTheme {
         Surface {
             TransfersListWithExpiredBottomSheet(
                 direction = TransferDirection.RECEIVED,
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
+                getTransfers = { transfers },
             )
         }
     }

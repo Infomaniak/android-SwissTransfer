@@ -92,8 +92,8 @@ private fun TransferDetailsScreen(
     val transferPassword = "toto42" // TODO: Use real data
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
-    var showQrCodeSheet: Boolean by rememberSaveable { mutableStateOf(false) }
-    var showPasswordSheet: Boolean by rememberSaveable { mutableStateOf(false) }
+    var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
+    var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
@@ -115,8 +115,8 @@ private fun TransferDetailsScreen(
                 onClick = { item ->
                     when (item) {
                         BottomBarItem.SHARE -> context.shareText(transferUrl)
-                        BottomBarItem.QR_CODE -> showQrCodeSheet = true
-                        BottomBarItem.PASSWORD -> showPasswordSheet = true
+                        BottomBarItem.QR_CODE -> showQrCodeBottomSheet = true
+                        BottomBarItem.PASSWORD -> showPasswordBottomSheet = true
                         BottomBarItem.DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
                             isMultiselectOn = true
@@ -132,14 +132,14 @@ private fun TransferDetailsScreen(
         }
 
         QrCodeBottomSheet(
-            isVisible = { showQrCodeSheet },
+            isVisible = { showQrCodeBottomSheet },
             transferUrl = transferUrl,
-            closeBottomSheet = { showQrCodeSheet = false },
+            closeBottomSheet = { showQrCodeBottomSheet = false },
         )
         PasswordBottomSheet(
-            isVisible = { showPasswordSheet },
+            isVisible = { showPasswordBottomSheet },
             transferPassword = transferPassword,
-            closeBottomSheet = { showPasswordSheet = false },
+            closeBottomSheet = { showPasswordBottomSheet = false },
         )
     }
 }

@@ -38,8 +38,8 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 fun TransferItemList(
     modifier: Modifier = Modifier,
     direction: TransferDirection,
-    transfers: List<TransferUi>,
     getSelectedTransferUuid: () -> String?,
+    getTransfers: () -> List<TransferUi>,
     onClick: (TransferUi) -> Unit,
 ) {
 
@@ -58,11 +58,11 @@ fun TransferItemList(
         item { Text(stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
         items(
-            count = transfers.count(),
-            key = { transfers[it].uuid },
-            contentType = { transfers[it] },
+            count = getTransfers().count(),
+            key = { getTransfers()[it].uuid },
+            contentType = { getTransfers()[it] },
             itemContent = {
-                val transfer = transfers[it]
+                val transfer = getTransfers()[it]
                 TransferItem(
                     transfer = transfer,
                     isSelected = { selectedTransferUuid == transfer.uuid },
@@ -79,9 +79,9 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             TransferItemList(
-                transfers = transfers,
                 direction = TransferDirection.SENT,
                 getSelectedTransferUuid = { null },
+                getTransfers = { transfers },
                 onClick = {},
             )
         }
