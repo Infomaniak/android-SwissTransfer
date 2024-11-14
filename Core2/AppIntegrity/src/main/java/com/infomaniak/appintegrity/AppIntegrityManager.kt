@@ -1,5 +1,5 @@
 /*
- * Infomaniak Core - Android
+ * Infomaniak Core2 - Android
  * Copyright (C) 2024 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,73 +18,106 @@
 package com.infomaniak.appintegrity
 
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import com.google.android.play.core.integrity.IntegrityManagerFactory
+import com.google.android.play.core.integrity.IntegrityTokenRequest
 import com.google.android.play.core.integrity.StandardIntegrityManager.*
-import com.infomaniak.appintegrity.exceptions.ApiException
-import kotlinx.coroutines.coroutineScope
+import java.util.UUID
 
-class AppIntegrityManager(private val packageName: String) {
+class AppIntegrityManager(private val appContext: Context) {
 
     private var appIntegrityTokenProvider: StandardIntegrityTokenProvider? = null
+    private val classicIntegrityTokenProvider by lazy { IntegrityManagerFactory.create(appContext) }
 
-    fun warmUpTokenProvider(appContext: Context, appCloudNumber: Long, onFailure: (Exception) -> Unit) {
+    private var challenge = ""
+    private var challengeId = ""
+
+    fun warmUpTokenProvider(appCloudNumber: Long, onFailure: (Exception) -> Unit) {
         val integrityManager = IntegrityManagerFactory.createStandard(appContext)
         integrityManager.prepareIntegrityToken(
             PrepareIntegrityTokenRequest.builder().setCloudProjectNumber(appCloudNumber).build()
         ).addOnSuccessListener { tokenProvider ->
             appIntegrityTokenProvider = tokenProvider
-            Log.e("TOTO", "warmUpTokenProvider: Success")
+            Log.i(APP_INTEGRITY_MANAGER_TAG, "warmUpTokenProvider: Success")
         }.addOnFailureListener(onFailure)
     }
 
-    suspend fun requestIntegrityVerdictToken(
+    fun requestIntegrityVerdictToken(
         requestHash: String,
         onSuccess: (String) -> Unit,
         onFailure: (Exception?) -> Unit,
         onNullTokenProvider: (String) -> Unit,
-    ) = coroutineScope {
+    ) {
         if (appIntegrityTokenProvider == null) {
             onNullTokenProvider("Integrity token provider is null during a verdict request. This should not be possible")
         } else {
-            Log.e("TOTO", "requestIntegrityVerdictToken: b")
             appIntegrityTokenProvider?.request(StandardIntegrityTokenRequest.builder().setRequestHash(requestHash).build())
-                ?.addOnSuccessListener { response ->
-                    onSuccess(response.token())
-                }
+                ?.addOnSuccessListener { response -> onSuccess(response.token()) }
                 ?.addOnFailureListener(onFailure)
         }
     }
 
-    suspend fun requestApiJwtToken(integrityToken: String, targetUrl: String): String? = runCatching {
-        Log.e("TOTO", "requestApiJwtToken: successful integrity call token = $integrityToken")
-        AppIntegrityRepository.getJwtToken(integrityToken, packageName, targetUrl).data?.let { callDemoRoute(it) }
-    }.getOrElse { exception ->
-        exception.printStackTrace()
-        if (exception is ApiException) {
-            when (exception.message) {
-                "invalid_attestation" -> "Integrity is invalid"
-                else -> "unknown ApiError"
-            }
-        } else {
-            null
+    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: (Exception?) -> Unit) {
+
+        val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
+
+        classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
+            ?.addOnSuccessListener { response -> onSuccess(response.token()) }
+            ?.addOnFailureListener(onFailure)
+    }
+
+    suspend fun getApiIntegrityVerdict(
+        integrityToken: String,
+        packageName: String,
+        targetUrl: String,
+        onSuccess: (String) -> Unit,
+        onFailure: (Throwable) -> Unit,
+    ) {
+        runCatching {
+            val apiResponse = AppIntegrityRepository.getJwtToken(
+                integrityToken = integrityToken,
+                packageName = packageName,
+                targetUrl = targetUrl,
+                challengeId = challengeId,
+            )
+            apiResponse.data?.let(onSuccess)
+        }.getOrElse {
+            it.printStackTrace()
+            onFailure(it)
         }
     }
 
-    private suspend fun callDemoRoute(mobileToken: String): String? = runCatching {
-        val apiResponse = AppIntegrityRepository.demo(mobileToken)
-        Log.e("TOTO", "callDemoRoute: success ${apiResponse.data}")
-        apiResponse.data
-    }.getOrElse { exception ->
-        if (exception is ApiException) {
-            when (exception.message) {
-                "already_used_token" -> "The JWT token has been already used"
-                "expired_token" -> "The JWT token has expired"
-                "invalid_mobile_token" -> "Mobile token is missing or invalid"
-                else -> "unknown ApiError"
+    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) = runCatching {
+        generateChallengeId()
+        val apiResponse = AppIntegrityRepository.getChallenge(challengeId)
+        Log.d(APP_INTEGRITY_MANAGER_TAG, "challengeId : $challengeId / challenge: ${apiResponse.data}")
+        apiResponse.data?.let { challenge = it }
+        onSuccess()
+    }.getOrElse {
+        it.printStackTrace()
+        onFailure(it)
+    }
+
+    suspend fun callDemoRoute(mobileToken: String) {
+        runCatching {
+            val apiResponse = AppIntegrityRepository.demo(mobileToken)
+            val logMessage = if (apiResponse.isSuccess()) {
+                "Success demo route response: ${apiResponse.data}"
+            } else {
+                "Error demo route : ${apiResponse.error?.errorCode}"
             }
-        } else {
-            null
+            Log.d(APP_INTEGRITY_MANAGER_TAG, logMessage)
+        }.getOrElse {
+            it.printStackTrace()
         }
+    }
+
+    private fun generateChallengeId() {
+        challengeId = UUID.randomUUID().toString()
+    }
+
+    companion object {
+        const val APP_INTEGRITY_MANAGER_TAG = "App integrity manager"
     }
 }
