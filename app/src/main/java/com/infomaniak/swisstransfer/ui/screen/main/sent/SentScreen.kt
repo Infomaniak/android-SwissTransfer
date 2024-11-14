@@ -64,7 +64,6 @@ fun SentScreen(
 
     if (!isLoading) {
         SentScreen(
-        	transfers = transfers,
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             getTransfers = { transfers!! },
