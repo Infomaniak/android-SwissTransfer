@@ -23,4 +23,7 @@ import kotlinx.serialization.Serializable
 data class ApiResponse<T>(
     val result: ApiResponseStatus = ApiResponseStatus.UNKNOWN,
     val data: T? = null,
-)
+    val error: ApiError? = null,
+) {
+    fun isSuccess() = result == ApiResponseStatus.SUCCESS
+}

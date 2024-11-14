@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.*
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +34,7 @@ import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toTransferOption
@@ -142,9 +142,12 @@ class ImportFilesViewModel @Inject constructor(
                     onSuccess = { token ->
                         viewModelScope.launch(ioDispatcher) {
                             Log.e("TOTO", "requestIntegrityVerdictToken: m<dkosvn")
-                            val result = appIntegrityManager.requestApiJwtToken(
-                                token,
-                                "http://api-core.devd471.dev.infomaniak.ch/1/attest/demo"
+                            val result = appIntegrityManager.getApiIntegrityVerdict(
+                                integrityToken = token,
+                                packageName = BuildConfig.APPLICATION_ID,
+                                targetUrl = "http://api-core.devd471.dev.infomaniak.ch/1/attest/demo",
+                                onSuccess = {},
+                                onFailure = {},
                             )
                             Log.e("TOTO", "result = $result")
                         }
