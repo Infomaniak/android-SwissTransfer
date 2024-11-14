@@ -20,10 +20,16 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,9 +38,20 @@ class TransferDetailsViewModel @Inject constructor(
     private val sharedApiUrlCreator: SharedApiUrlCreator,
 ) : ViewModel() {
 
+    private val _transferUuidFlow = MutableSharedFlow<String>(1)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val transfer = _transferUuidFlow
+        .flatMapLatest { transferManager.getTransferFlow(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
-    fun getTransfer(transferUuid: String): TransferUi? = transferManager.getTransferByUUID(transferUuid)
+    fun loadTransfer(transferUuid: String) {
+        viewModelScope.launch {
+            _transferUuidFlow.emit(transferUuid)
+        }
+    }
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 }
