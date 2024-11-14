@@ -46,9 +46,14 @@ enum class FileType(val icon: ImageVector, private val colorLight: Color, privat
     }
 
     companion object {
+        fun getMimeTypeFromFileName(fileName: String): String? {
+            return fileName.extractExtension()?.let { extension ->
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+            }
+        }
+
         fun guessFromFileName(fileName: String): FileType {
-            val extension = fileName.extractExtension() ?: return UNKNOWN
-            val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: return UNKNOWN
+            val mimeType = getMimeTypeFromFileName(fileName) ?: return UNKNOWN
             return guessFromMimeType(mimeType)
         }
 

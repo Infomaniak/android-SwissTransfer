@@ -23,6 +23,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.core.net.toUri
+import com.infomaniak.library.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
@@ -103,7 +104,7 @@ class ImportationFilesManager @Inject constructor(
                     uid = fileToImport.fileName,
                     fileName = fileToImport.fileName,
                     fileSize = fileToImport.fileSizeInBytes,
-                    mimeType = null,
+                    mimeType = FileType.getMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                 )
             )
