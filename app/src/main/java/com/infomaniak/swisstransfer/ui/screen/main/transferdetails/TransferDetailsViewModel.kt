@@ -17,18 +17,18 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,9 +41,15 @@ class TransferDetailsViewModel @Inject constructor(
     private val _transferUuidFlow = MutableSharedFlow<String>(1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val transfer = _transferUuidFlow
+    val uiState = _transferUuidFlow
         .flatMapLatest { transferManager.getTransferFlow(it) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .map { transfer ->
+            when (transfer) {
+                null -> TransferDetailsUiState.Loading
+                else -> TransferDetailsUiState.Success(transfer)
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, TransferDetailsUiState.Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
@@ -54,4 +60,16 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
+
+    sealed class TransferDetailsUiState {
+
+        @Immutable
+        data class Success(val transfer: TransferUi) : TransferDetailsUiState()
+
+        @Immutable
+        data object Loading : TransferDetailsUiState()
+
+        @Immutable
+        data object Error : TransferDetailsUiState() //TODO Handle error case
+    }
 }

@@ -48,6 +48,8 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
@@ -63,8 +65,8 @@ fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
-    val transfer by transferDetailsViewModel.transfer.collectAsStateWithLifecycle()
-    val isLoading by remember { derivedStateOf { transfer == null } }
+    val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
+    val isLoading by remember { derivedStateOf { uiState is Loading } }
 
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid)
@@ -75,7 +77,7 @@ fun TransferDetailsScreen(
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
             navigateBack = navigateBack,
-            getTransfer = { transfer },
+            getTransfer = { (uiState as Success).transfer },
             getCheckedFiles = { transferDetailsViewModel.checkedFiles },
             clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
             setFileCheckStatus = { fileUid, isChecked ->
@@ -90,14 +92,13 @@ private fun TransferDetailsScreen(
     transferUrl: String,
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
-    getTransfer: () -> TransferUi?,
+    getTransfer: () -> TransferUi,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit,
     setFileCheckStatus: (String, Boolean) -> Unit,
 ) {
 
     val context = LocalContext.current
-    val transfer = getTransfer() ?: return
     val transferRecipients: List<String> = emptyList() // TODO: Use real data
     val transferPassword = "toto42" // TODO: Use real data
 
@@ -108,7 +109,7 @@ private fun TransferDetailsScreen(
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
-                title = transfer.createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
+                title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
                 TopAppBarButton.downloadButton { /* TODO */ },
             )
@@ -117,7 +118,7 @@ private fun TransferDetailsScreen(
     ) {
         Column {
 
-            FilesList(transfer, transferRecipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
+            FilesList(getTransfer, transferRecipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
 
             BottomBar(
                 direction = direction,
@@ -156,7 +157,7 @@ private fun TransferDetailsScreen(
 
 @Composable
 private fun ColumnScope.FilesList(
-    transfer: TransferUi,
+    getTransfer: () -> TransferUi,
     transferRecipients: List<String>,
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
@@ -164,13 +165,13 @@ private fun ColumnScope.FilesList(
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
-    val shouldDisplayMessage = transfer.message != null
+    val shouldDisplayMessage = getTransfer().message != null
 
     FileItemList(
         modifier = Modifier
             .weight(1.0f)
             .padding(horizontal = Margin.Medium),
-        files = transfer.files,
+        files = getTransfer().files,
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
         isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
@@ -178,11 +179,11 @@ private fun ColumnScope.FilesList(
         header = {
             Column {
                 Spacer(Modifier.height(Margin.Large))
-                TransferInfo(transfer)
+                TransferInfo(getTransfer)
                 Spacer(Modifier.height(Margin.Large))
                 if (shouldDisplayRecipients) TransferRecipients(transferRecipients)
                 if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(Modifier.height(Margin.Mini))
-                if (shouldDisplayMessage) TransferMessage(transfer.message!!)
+                if (shouldDisplayMessage) TransferMessage(getTransfer().message!!)
                 if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(Modifier.height(Margin.Large))
                 TransferContentHeader()
             }
@@ -298,7 +299,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 transferUrl = "",
                 direction = TransferDirection.SENT,
                 navigateBack = null,
-                getTransfer = { transfers.first() },
+                getTransfer = { Success(transfers.first()).transfer },
                 getCheckedFiles = { mutableStateMapOf() },
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },

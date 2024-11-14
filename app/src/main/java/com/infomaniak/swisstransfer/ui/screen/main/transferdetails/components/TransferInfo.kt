@@ -48,10 +48,10 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferInfo(transfer: TransferUi) {
+fun TransferInfo(transfer: () -> TransferUi) {
 
-    val filesCount = transfer.files.count()
-    val downloadedCount by remember { derivedStateOf { transfer.downloadLimit - transfer.downloadLeft } }
+    val filesCount by remember { derivedStateOf { transfer().files.count() } }
+    val downloadedCount by remember { derivedStateOf { transfer().downloadLimit - transfer().downloadLeft } }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -62,7 +62,7 @@ fun TransferInfo(transfer: TransferUi) {
         Spacer(Modifier.width(Margin.Mini))
         TextDotText(
             firstText = { pluralStringResource(R.plurals.filesCount, filesCount, filesCount) },
-            secondText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
+            secondText = { Formatter.formatShortFileSize(LocalContext.current, transfer().sizeUploaded) },
             color = SwissTransferTheme.colors.primaryTextColor,
         )
     }
@@ -71,14 +71,14 @@ fun TransferInfo(transfer: TransferUi) {
 
     IconText(
         icon = AppIcons.Clock,
-        text = stringResource(R.string.expiresIn, transfer.expiresInDays),
+        text = stringResource(R.string.expiresIn, transfer().expiresInDays),
     )
 
     HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
 
     IconText(
         icon = AppIcons.ArrowDownFile,
-        text = stringResource(R.string.downloadedTransferLabel, downloadedCount, transfer.downloadLimit),
+        text = stringResource(R.string.downloadedTransferLabel, downloadedCount, transfer().downloadLimit),
     )
 }
 
@@ -106,7 +106,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             Column {
-                TransferInfo(transfers.first())
+                TransferInfo { transfers.first() }
             }
         }
     }
