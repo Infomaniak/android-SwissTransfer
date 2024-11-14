@@ -104,7 +104,7 @@ class ImportationFilesManager @Inject constructor(
                     uid = fileToImport.fileName,
                     fileName = fileToImport.fileName,
                     fileSize = fileToImport.fileSizeInBytes,
-                    mimeType = FileType.getMimeTypeFromFileName(fileToImport.fileName),
+                    mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                 )
             )
