@@ -88,11 +88,10 @@ fun ImportFilesScreen(
                     transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
                     settingState = { downloadLimitState },
                 ),
-                //TODO Transfer is not returned for a password protected transfer. Uncomment this when we get with a password
-                /*TransferOptionState(
+                TransferOptionState(
                     transferOptionType = TransferOptionType.PASSWORD,
                     settingState = { passwordOptionState },
-                ),*/
+                ),
                 TransferOptionState(
                     transferOptionType = TransferOptionType.LANGUAGE,
                     settingState = { emailLanguageState },
