@@ -49,8 +49,8 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun TransferInfo(transfer: TransferUi) {
 
-    val filesCount = transfer.files.count()
-    val downloadedCount by remember { derivedStateOf { transfer.downloadLimit - transfer.downloadLeft } }
+    val filesCount  by remember(transfer) { derivedStateOf { transfer.files.count() } }
+    val downloadedCount by remember(transfer) { derivedStateOf { transfer.downloadLimit - transfer.downloadLeft } }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
