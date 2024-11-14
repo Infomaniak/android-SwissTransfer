@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core2.FORMAT_DATE_FULL
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
@@ -46,7 +47,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
-import com.infomaniak.swisstransfer.ui.previewparameter.emailsPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
@@ -63,17 +63,26 @@ fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
-    TransferDetailsScreen(
-        transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
-        direction = direction,
-        navigateBack = navigateBack,
-        getTransfer = { transferDetailsViewModel.getTransfer(transferUuid) },
-        getCheckedFiles = { transferDetailsViewModel.checkedFiles },
-        clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
-        setFileCheckStatus = { fileUid, isChecked ->
-            transferDetailsViewModel.checkedFiles[fileUid] = isChecked
-        },
-    )
+    val transfer by transferDetailsViewModel.transfer.collectAsStateWithLifecycle()
+    val isLoading by remember { derivedStateOf { transfer == null } }
+
+    LaunchedEffect(transferUuid) {
+        transferDetailsViewModel.loadTransfer(transferUuid)
+    }
+
+    if (!isLoading) {
+        TransferDetailsScreen(
+            transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
+            direction = direction,
+            navigateBack = navigateBack,
+            getTransfer = { transfer },
+            getCheckedFiles = { transferDetailsViewModel.checkedFiles },
+            clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
+            setFileCheckStatus = { fileUid, isChecked ->
+                transferDetailsViewModel.checkedFiles[fileUid] = isChecked
+            },
+        )
+    }
 }
 
 @Composable
