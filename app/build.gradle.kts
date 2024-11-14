@@ -21,8 +21,8 @@ android {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = sharedMinSdk
         targetSdk = sharedTargetSdk
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 1 // 0_00_000_01 TODO: Update when released in prod
+        versionName = "0.0.1-Alpha1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
