@@ -32,24 +32,33 @@ object AppIntegrityRepository {
 
     private val apiClientProvider by lazy { ApiClientProvider() }
 
-    suspend fun getJwtToken(integrityToken: String, packageName: String, targetUrl: String): ApiResponse<String> {
-        val body = mapOf("token" to integrityToken, "package_name" to packageName, "target_url" to targetUrl)
-        return post<ApiResponse<String>>(
-            url = Url("https://api-core.devd471.dev.infomaniak.ch:443/1/attest/integrity"),
-            data = body
+    suspend fun getChallenge(challengeId: String): ApiResponse<String> {
+        val body = mapOf("challenge_id" to challengeId)
+        return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.requestChallenge), data = body)
+    }
+
+    suspend fun getJwtToken(
+        integrityToken: String,
+        packageName: String,
+        targetUrl: String,
+        challengeId: String,
+    ): ApiResponse<String> {
+        val body = mapOf(
+            "token" to integrityToken,
+            "package_name" to packageName,
+            "target_url" to targetUrl,
+            "challenge_id" to challengeId,
         )
+
+        return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.requestApiIntegrityCheck), data = body)
     }
 
     suspend fun demo(mobileToken: String): ApiResponse<String> {
         val body = mapOf("mobile_token" to mobileToken)
-        return post<ApiResponse<String>>(url = Url("http://api-core.devd471.dev.infomaniak.ch/1/attest/demo"), data = body)
+        return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.demo), data = body)
     }
 
-    private suspend inline fun <reified R> post(
-        url: Url,
-        data: Any?,
-        httpClient: HttpClient = apiClientProvider.httpClient
-    ): R {
+    private suspend inline fun <reified R> post(url: Url, data: Any?, httpClient: HttpClient = apiClientProvider.httpClient): R {
         return httpClient.post(url) {
             contentType(ContentType.Application.Json)
             setBody(data)
