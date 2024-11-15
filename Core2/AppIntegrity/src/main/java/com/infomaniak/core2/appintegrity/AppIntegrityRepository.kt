@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity
+package com.infomaniak.core2.appintegrity
 
-import com.infomaniak.appintegrity.exceptions.UnknownException
-import com.infomaniak.appintegrity.models.ApiResponse
-import io.ktor.client.HttpClient
+import com.infomaniak.core2.appintegrity.exceptions.UnknownException
+import com.infomaniak.core2.appintegrity.models.ApiResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -28,7 +27,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.Url
 import io.ktor.http.contentType
 
-object AppIntegrityRepository {
+internal class AppIntegrityRepository {
 
     private val apiClientProvider by lazy { ApiClientProvider() }
 
@@ -58,8 +57,8 @@ object AppIntegrityRepository {
         return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.demo), data = body)
     }
 
-    private suspend inline fun <reified R> post(url: Url, data: Any?, httpClient: HttpClient = apiClientProvider.httpClient): R {
-        return httpClient.post(url) {
+    private suspend inline fun <reified R> post(url: Url, data: Any?): R {
+        return apiClientProvider.httpClient.post(url) {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.decode<R>()

@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity
+package com.infomaniak.core2.appintegrity
 
-import com.infomaniak.appintegrity.exceptions.ApiException
-import com.infomaniak.appintegrity.exceptions.NetworkException
-import com.infomaniak.appintegrity.exceptions.UnexpectedApiErrorFormatException
-import com.infomaniak.appintegrity.exceptions.UnknownException
-import com.infomaniak.appintegrity.models.ApiError
+import com.infomaniak.core2.appintegrity.exceptions.ApiException
+import com.infomaniak.core2.appintegrity.exceptions.NetworkException
+import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
+import com.infomaniak.core2.appintegrity.exceptions.UnknownException
+import com.infomaniak.core2.appintegrity.models.ApiError
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
@@ -36,9 +37,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.json.Json
 
-class ApiClientProvider internal constructor(engine: HttpClientEngineFactory<*>? = null) {
-
-    constructor() : this(null)
+internal class ApiClientProvider(engine: HttpClientEngine = OkHttp.create()) {
 
     val json = Json {
         ignoreUnknownKeys = true
@@ -49,7 +48,7 @@ class ApiClientProvider internal constructor(engine: HttpClientEngineFactory<*>?
 
     val httpClient = createHttpClient(engine)
 
-    fun createHttpClient(engine: HttpClientEngineFactory<*>?): HttpClient {
+    private fun createHttpClient(engine: HttpClientEngine): HttpClient {
         val block: HttpClientConfig<*>.() -> Unit = {
             expectSuccess = true
             install(ContentNegotiation) {
@@ -94,7 +93,7 @@ class ApiClientProvider internal constructor(engine: HttpClientEngineFactory<*>?
             }
         }
 
-        return if (engine != null) HttpClient(engine, block) else HttpClient(block)
+        return HttpClient(engine, block)
     }
 
     private fun Throwable.isNetworkException() = this is IOException

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity
+package com.infomaniak.core2.appintegrity
 
 import android.content.Context
 import android.util.Base64
@@ -29,6 +29,7 @@ class AppIntegrityManager(private val appContext: Context) {
 
     private var appIntegrityTokenProvider: StandardIntegrityTokenProvider? = null
     private val classicIntegrityTokenProvider by lazy { IntegrityManagerFactory.create(appContext) }
+    private val appIntegrityRepository by lazy { AppIntegrityRepository() }
 
     private var challenge = ""
     private var challengeId = ""
@@ -61,6 +62,7 @@ class AppIntegrityManager(private val appContext: Context) {
     fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: (Exception?) -> Unit) {
 
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
+        Log.e("TOTO", "challenge = $challenge / nonce = $nonce")
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
             ?.addOnSuccessListener { response -> onSuccess(response.token()) }
@@ -75,7 +77,7 @@ class AppIntegrityManager(private val appContext: Context) {
         onFailure: (Throwable) -> Unit,
     ) {
         runCatching {
-            val apiResponse = AppIntegrityRepository.getJwtToken(
+            val apiResponse = appIntegrityRepository.getJwtToken(
                 integrityToken = integrityToken,
                 packageName = packageName,
                 targetUrl = targetUrl,
@@ -90,7 +92,7 @@ class AppIntegrityManager(private val appContext: Context) {
 
     suspend fun getChallenge(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) = runCatching {
         generateChallengeId()
-        val apiResponse = AppIntegrityRepository.getChallenge(challengeId)
+        val apiResponse = appIntegrityRepository.getChallenge(challengeId)
         Log.d(APP_INTEGRITY_MANAGER_TAG, "challengeId : $challengeId / challenge: ${apiResponse.data}")
         apiResponse.data?.let { challenge = it }
         onSuccess()
@@ -101,7 +103,7 @@ class AppIntegrityManager(private val appContext: Context) {
 
     suspend fun callDemoRoute(mobileToken: String) {
         runCatching {
-            val apiResponse = AppIntegrityRepository.demo(mobileToken)
+            val apiResponse = appIntegrityRepository.demo(mobileToken)
             val logMessage = if (apiResponse.isSuccess()) {
                 "Success demo route response: ${apiResponse.data}"
             } else {

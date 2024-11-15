@@ -21,7 +21,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.infomaniak.appintegrity.AppIntegrityManager
+import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +31,7 @@ import io.sentry.SentryLevel
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
 
-    private val appIntegrityManager by lazy { AppIntegrityManager(appContext = this) }
+    private val appIntegrityManager by lazy { AppIntegrityManager(applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
