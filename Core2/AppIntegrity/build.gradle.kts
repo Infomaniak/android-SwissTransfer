@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.infomaniak.appintegrity"
+    namespace = "com.infomaniak.core2.appintegrity"
     compileSdk = 34
 
     defaultConfig {
@@ -22,11 +22,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -39,7 +39,8 @@ dependencies {
     implementation(core2.ktor.client.json)
     implementation(core2.ktor.client.encoding)
     implementation(core2.ktor.client.okhttp)
-    api(core2.kotlinx.serialization.json)
-    // testImplementation(core2.junit)
-    // androidTestImplementation(core2.androidx.junit)
+    implementation(core2.kotlinx.serialization.json)
+    testImplementation(core2.junit)
+    testImplementation(core2.ktor.client.mock)
+    androidTestImplementation(core2.androidx.junit)
 }

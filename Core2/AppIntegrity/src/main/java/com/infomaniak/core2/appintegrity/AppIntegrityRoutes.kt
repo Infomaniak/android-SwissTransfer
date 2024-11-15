@@ -1,5 +1,5 @@
 /*
- * Infomaniak SwissTransfer - Multiplatform
+ * Infomaniak SwissTransfer - Android
  * Copyright (C) 2024 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity.exceptions
+package com.infomaniak.core2.appintegrity
 
-/**
- * Thrown when an API call returns an error in an unexpected format that cannot be parsed.
- *
- * This exception indicates that the API response format is different from what was expected,
- * preventing proper parsing of the error details.
- *
- * @param statusCode The HTTP status code returned by the API.
- * @param bodyResponse The raw response body from the API that could not be parsed.
- */
-class UnexpectedApiErrorFormatException(val statusCode: Int, val bodyResponse: String) : Exception(bodyResponse)
+object AppIntegrityRoutes {
+
+    private const val PROD_URL = "https://" // TODO
+    private const val PREPROD_BASE_URL = "https://api-core.devd471.dev.infomaniak.ch/"
+    private const val BASE_URL_V1 = "$PREPROD_BASE_URL/1/attest"
+
+    internal const val requestChallenge = "$BASE_URL_V1/challenge"
+    internal const val requestApiIntegrityCheck = "$BASE_URL_V1/integrity"
+    const val demo = "$BASE_URL_V1/demo"
+}

@@ -1,5 +1,5 @@
 /*
- * Infomaniak SwissTransfer - Android
+ * Infomaniak SwissTransfer - Multiplatform
  * Copyright (C) 2024 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,15 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity
+package com.infomaniak.core2.appintegrity.models
 
-internal object AppIntegrityRoutes {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-    private const val PROD_URL = "https://" // TODO
-    private const val PREPROD_BASE_URL = "https://api-core.devd471.dev.infomaniak.ch/"
-    private const val BASE_URL_V1 = "$PREPROD_BASE_URL/1/attest"
+@Serializable
+internal enum class ApiResponseStatus {
 
-    const val requestChallenge = "${BASE_URL_V1}/challenge"
-    const val requestApiIntegrityCheck = "${BASE_URL_V1}/integrity"
-    const val demo = "${BASE_URL_V1}/demo"
+    @SerialName("error")
+    ERROR,
+
+    @SerialName("success")
+    SUCCESS,
+
+    @SerialName("asynchronous")
+    ASYNCHRONOUS,
+
+    @SerialName("unknown")
+    UNKNOWN;
 }

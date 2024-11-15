@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.appintegrity.AppIntegrityManager
+import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -146,8 +146,8 @@ class ImportFilesViewModel @Inject constructor(
                                 integrityToken = token,
                                 packageName = BuildConfig.APPLICATION_ID,
                                 targetUrl = "http://api-core.devd471.dev.infomaniak.ch/1/attest/demo",
-                                onSuccess = {},
-                                onFailure = {},
+                                onSuccess = { Log.e("TOTO", "sendTransfer: success") },
+                                onFailure = { it.printStackTrace() }
                             )
                             Log.e("TOTO", "result = $result")
                         }

@@ -15,23 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity.models
+package com.infomaniak.core2.appintegrity.exceptions
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
-enum class ApiResponseStatus {
-
-    @SerialName("error")
-    ERROR,
-
-    @SerialName("success")
-    SUCCESS,
-
-    @SerialName("asynchronous")
-    ASYNCHRONOUS,
-
-    @SerialName("unknown")
-    UNKNOWN;
+/**
+ * Represents an unknown exception that can occur during the execution of the application.
+ *
+ * This exception is used to encapsulate unexpected or unknown errors that are not covered
+ * by other specific exception types.
+ *
+ * @property message The detailed message describing the error.
+ * @property cause The underlying cause of this exception, if any.
+ *
+ * @constructor Creates an instance of `UnknownException` with a detailed error message and an optional cause.
+ *
+ * @param cause The underlying exception that caused this exception.
+ */
+internal class UnknownException(cause: Throwable) : Exception(cause) {
+    override val message: String = cause.message ?: cause.toString()
 }

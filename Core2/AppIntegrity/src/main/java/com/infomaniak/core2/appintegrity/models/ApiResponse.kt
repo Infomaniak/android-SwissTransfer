@@ -15,21 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity.exceptions
+package com.infomaniak.core2.appintegrity.models
 
-/**
- * Represents an unknown exception that can occur during the execution of the application.
- *
- * This exception is used to encapsulate unexpected or unknown errors that are not covered
- * by other specific exception types.
- *
- * @property message The detailed message describing the error.
- * @property cause The underlying cause of this exception, if any.
- *
- * @constructor Creates an instance of `UnknownException` with a detailed error message and an optional cause.
- *
- * @param cause The underlying exception that caused this exception.
- */
-class UnknownException(cause: Throwable) : Exception(cause) {
-    override val message: String = cause.message ?: cause.toString()
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class ApiResponse<T>(
+    val result: ApiResponseStatus = ApiResponseStatus.UNKNOWN,
+    val data: T? = null,
+    val error: ApiError? = null,
+) {
+    fun isSuccess() = result == ApiResponseStatus.SUCCESS
 }
