@@ -25,13 +25,11 @@ import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
-import io.sentry.Sentry
-import io.sentry.SentryLevel
 
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
 
-    private val appIntegrityManager by lazy { AppIntegrityManager(applicationContext) }
+    private val appIntegrityManager by lazy { AppIntegrityManager(appContext = this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +39,12 @@ class NewTransferActivity : ComponentActivity() {
                 NewTransferScreen(closeActivity = { finish() }, appIntegrityManager)
             }
         }
-        appIntegrityManager.warmUpTokenProvider(appCloudNumber = 364109398419) { exception ->
-            exception.printStackTrace()
-            Sentry.captureMessage("Exception during AppIntegrityManager's warmup", SentryLevel.ERROR) { scope ->
-                scope.setTag("exception", exception.message.toString())
-                scope.setExtra("stacktrace", exception.printStackTrace().toString())
-            }
-        }
+        // appIntegrityManager.warmUpTokenProvider(appCloudNumber = 364109398419) { exception ->
+        //     exception.printStackTrace()
+        //     Sentry.captureMessage("Exception during AppIntegrityManager's warmup", SentryLevel.ERROR) { scope ->
+        //         scope.setTag("exception", exception.message.toString())
+        //         scope.setExtra("stacktrace", exception.printStackTrace().toString())
+        //     }
+        // }
     }
 }

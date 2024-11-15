@@ -20,7 +20,7 @@ package com.infomaniak.core2.appintegrity
 object AppIntegrityRoutes {
 
     private const val PROD_URL = "https://" // TODO
-    private const val PREPROD_BASE_URL = "https://api-core.devd471.dev.infomaniak.ch/"
+    private const val PREPROD_BASE_URL = "https://api-core.devd471.dev.infomaniak.ch"
     private const val BASE_URL_V1 = "$PREPROD_BASE_URL/1/attest"
 
     internal const val requestChallenge = "$BASE_URL_V1/challenge"

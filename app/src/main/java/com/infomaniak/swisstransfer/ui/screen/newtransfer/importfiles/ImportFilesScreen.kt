@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -25,6 +26,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -74,8 +76,20 @@ fun ImportFilesScreen(
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
+    val integrityCheckResult by importFilesViewModel.integrityCheckResult.collectAsStateWithLifecycle()
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
+    HandleIntegrityCheckResult(
+        getIntegrityCheckResult = { integrityCheckResult },
+        sendTransfer = {
+            Log.e("TOTO", "ImportFilesScreen: sendTransfer")
+            importFilesViewModel.sendTransfer(appIntegrityManager)
+        },
+        errorMessage = stringResource(R.string.uploadErrorDescription),
+        snackbarHostState = { snackbarHostState },
+    )
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
 
@@ -115,7 +129,7 @@ fun ImportFilesScreen(
         removeFileByUid = importFilesViewModel::removeFileByUid,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
-        sendTransfer = { importFilesViewModel.sendTransfer(appIntegrityManager) },
+        sendTransfer = { importFilesViewModel.startTransfer(appIntegrityManager) },
         shouldStartByPromptingUserForFiles = true,
     )
 }
@@ -131,6 +145,20 @@ private fun HandleSendActionResult(
             is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
             is SendActionResult.Failure -> Unit // TODO: Show error
             else -> Unit
+        }
+    }
+}
+
+@Composable
+private fun HandleIntegrityCheckResult(
+    getIntegrityCheckResult: () -> Boolean?,
+    sendTransfer: () -> Unit,
+    errorMessage: String,
+    snackbarHostState: () -> SnackbarHostState,
+) {
+    LaunchedEffect(getIntegrityCheckResult() != null) {
+        getIntegrityCheckResult()?.let {
+            if (it) sendTransfer() else snackbarHostState().showSnackbar(errorMessage)
         }
     }
 }
