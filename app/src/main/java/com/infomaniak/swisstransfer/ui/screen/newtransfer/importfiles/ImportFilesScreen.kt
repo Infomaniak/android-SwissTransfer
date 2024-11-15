@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -76,6 +77,7 @@ fun ImportFilesScreen(
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
+    val integrityCheckResult by importFilesViewModel.integrityCheckResult.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -85,6 +87,16 @@ fun ImportFilesScreen(
         transferType = { selectedTransferType },
         navigateToUploadProgress = navigateToUploadProgress,
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
+    )
+
+    HandleIntegrityCheckResult(
+        getIntegrityCheckResult = { integrityCheckResult },
+        sendTransfer = {
+            Log.e("TOTO", "ImportFilesScreen: sendTransfer")
+            importFilesViewModel.sendTransfer(appIntegrityManager)
+        },
+        errorMessage = stringResource(R.string.uploadErrorDescription),
+        snackbarHostState = { snackbarHostState },
     )
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
@@ -136,7 +148,7 @@ fun ImportFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
-        sendTransfer = { importFilesViewModel.sendTransfer(appIntegrityManager) },
+        sendTransfer = { importFilesViewModel.startTransfer(appIntegrityManager) },
         shouldStartByPromptingUserForFiles = true,
         isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
         snackbarHostState = snackbarHostState,
@@ -161,6 +173,20 @@ private fun HandleSendActionResult(
                 resetSendActionResult()
             }
             else -> Unit
+        }
+    }
+}
+
+@Composable
+private fun HandleIntegrityCheckResult(
+    getIntegrityCheckResult: () -> Boolean?,
+    sendTransfer: () -> Unit,
+    errorMessage: String,
+    snackbarHostState: () -> SnackbarHostState,
+) {
+    LaunchedEffect(getIntegrityCheckResult() != null) {
+        getIntegrityCheckResult()?.let {
+            if (it) sendTransfer() else snackbarHostState().showSnackbar(errorMessage)
         }
     }
 }

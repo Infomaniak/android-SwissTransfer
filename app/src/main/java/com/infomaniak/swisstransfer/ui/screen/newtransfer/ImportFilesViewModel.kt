@@ -27,6 +27,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
+import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
+import com.infomaniak.core2.appintegrity.AppIntegrityRoutes
+import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -71,6 +74,9 @@ class ImportFilesViewModel @Inject constructor(
 
     private val _sendActionResult = MutableStateFlow<SendActionResult?>(SendActionResult.NotStarted)
     val sendActionResult = _sendActionResult.asStateFlow()
+
+    private val _integrityCheckResult = MutableStateFlow<Boolean?>(null)
+    val integrityCheckResult = _integrityCheckResult.asStateFlow()
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -137,37 +143,7 @@ class ImportFilesViewModel @Inject constructor(
         _sendActionResult.update { SendActionResult.Pending }
         viewModelScope.launch(ioDispatcher) {
             runCatching {
-                appIntegrityManager.requestIntegrityVerdictToken(
-                    requestHash = "",
-                    onSuccess = { token ->
-                        viewModelScope.launch(ioDispatcher) {
-                            Log.e("TOTO", "requestIntegrityVerdictToken: m<dkosvn")
-                            val result = appIntegrityManager.getApiIntegrityVerdict(
-                                integrityToken = token,
-                                packageName = BuildConfig.APPLICATION_ID,
-                                targetUrl = "http://api-core.devd471.dev.infomaniak.ch/1/attest/demo",
-                                onSuccess = { Log.e("TOTO", "sendTransfer: success") },
-                                onFailure = { it.printStackTrace() }
-                            )
-                            Log.e("TOTO", "result = $result")
-                        }
-                    },
-                    onFailure = { exception ->
-                        Sentry.captureMessage(
-                            "Error when requiring an integrity token during account creation",
-                            SentryLevel.ERROR,
-                        ) { scope ->
-                            scope.setTag("exception", exception?.message.toString())
-                            scope.setExtra("stacktrace", exception?.printStackTrace().toString())
-                        }
-                        Log.e("TOTO", "sendTransfer: failed ${exception?.message}")
-                    },
-                    onNullTokenProvider = { message ->
-                        Sentry.captureMessage(message, SentryLevel.ERROR)
-                        // TODO: Better error ?
-                        Log.e("TOTO", "sendTransfer: nullTokenprovider : $message")
-                    },
-                )
+                checkAppIntegrity(appIntegrityManager)
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
                 uploadManager.initUploadSession(recaptcha = "Recaptcha")!! // TODO: Handle ContainerErrorsException here
                 uploadWorkerScheduler.scheduleWork(uuid)
@@ -184,6 +160,68 @@ class ImportFilesViewModel @Inject constructor(
 
     fun resetSendActionResult() {
         _sendActionResult.value = SendActionResult.NotStarted
+    }
+
+    fun startTransfer(appIntegrityManager: AppIntegrityManager) {
+        runCatching {
+            checkAppIntegrity(appIntegrityManager)
+        }.onFailure { exception ->
+            SentryLog.e(TAG, "Failed to start the upload", exception)
+            _sendActionResult.update { SendActionResult.Failure }
+        }
+    }
+
+    private fun checkAppIntegrity(appIntegrityManager: AppIntegrityManager) {
+        viewModelScope.launch(ioDispatcher) {
+            appIntegrityManager.getChallenge(
+                onSuccess = { requestAppIntegrityToken(appIntegrityManager) },
+                onFailure = {
+                    _integrityCheckResult.value = false
+                    it.printStackTrace()
+                    Log.e("TOTO", "getChallenge error")
+                },
+            )
+        }
+    }
+
+    private fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager) {
+        appIntegrityManager.requestClassicIntegrityVerdictToken(
+            onSuccess = { token ->
+                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
+                getApiIntegrityVerdict(appIntegrityManager, token)
+            },
+            onFailure = { exception ->
+                exception?.printStackTrace()
+
+                val errorMessage = "Error when requiring an integrity token during account creation"
+                Sentry.captureMessage(errorMessage, SentryLevel.ERROR) { scope ->
+                    scope.setTag("exception", exception?.message.toString())
+                    scope.setExtra("stacktrace", exception?.printStackTrace().toString())
+                }
+                _integrityCheckResult.value = false
+            },
+        )
+    }
+
+    private fun getApiIntegrityVerdict(appIntegrityManager: AppIntegrityManager, appIntegrityToken: String) {
+        viewModelScope.launch(ioDispatcher) {
+            appIntegrityManager.getApiIntegrityVerdict(
+                integrityToken = appIntegrityToken,
+                packageName = BuildConfig.APPLICATION_ID,
+                targetUrl = AppIntegrityRoutes.demo,
+                onSuccess = { mobileToken ->
+                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $mobileToken")
+                    _integrityCheckResult.value = true
+                    viewModelScope.launch(ioDispatcher) {
+                        appIntegrityManager.callDemoRoute(mobileToken)
+                    }
+                },
+                onFailure = {
+                    if (it !is NetworkException) Sentry.captureException(it)
+                    _integrityCheckResult.value = false
+                },
+            )
+        }
     }
 
     private suspend fun removeOldData() {
