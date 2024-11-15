@@ -34,6 +34,6 @@ fun NewTransferScreen(closeActivity: () -> Unit, appIntegrityManager: AppIntegri
 @Composable
 private fun NewTransferPreview() {
     SwissTransferTheme {
-        NewTransferScreen({}, AppIntegrityManager(LocalContext.current))
+        NewTransferScreen({}, AppIntegrityManager(appContext = LocalContext.current))
     }
 }

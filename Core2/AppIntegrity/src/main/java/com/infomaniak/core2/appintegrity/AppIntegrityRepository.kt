@@ -47,6 +47,7 @@ internal class AppIntegrityRepository {
             "package_name" to packageName,
             "target_url" to targetUrl,
             "challenge_id" to challengeId,
+            // "force_integrity_test" to "true",
         )
 
         return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.requestApiIntegrityCheck), data = body)
