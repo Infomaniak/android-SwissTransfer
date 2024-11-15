@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.appintegrity.models
+package com.infomaniak.core2.appintegrity.exceptions
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class ApiResponse<T>(
-    val result: ApiResponseStatus = ApiResponseStatus.UNKNOWN,
-    val data: T? = null,
-    val error: ApiError? = null,
-) {
-    fun isSuccess() = result == ApiResponseStatus.SUCCESS
-}
+/**
+ * Thrown when an API call fails due to an error identified by a specific error code.
+ *
+ * This exception is used to represent errors returned by an API, with an associated error code
+ * and message describing the problem.
+ *
+ * @param errorCode The specific error code returned by the API.
+ * @param errorMessage The detailed error message explaining the cause of the failure.
+ */
+internal open class ApiException(val errorCode: String, errorMessage: String) : Exception(errorMessage)
