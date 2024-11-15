@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -29,10 +30,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -51,15 +54,36 @@ fun SettingsScreenWrapper(
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     appSettings?.let { safeAppSettings ->
-        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
+        val theme = GetSetCallbacks(
+            get = { safeAppSettings.theme },
+            set = { settingsViewModel.setTheme(it) },
+        )
         val validityPeriod =
-            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { settingsViewModel.setValidityPeriod(it) })
+            GetSetCallbacks(
+                get = { safeAppSettings.validityPeriod },
+                set = { settingsViewModel.setValidityPeriod(it) },
+            )
         val downloadLimit =
-            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { settingsViewModel.setDownloadLimit(it) })
-        val emailLanguage =
-            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
+            GetSetCallbacks(
+                get = { safeAppSettings.downloadLimit },
+                set = { settingsViewModel.setDownloadLimit(it) },
+            )
+        val configuration = LocalConfiguration.current
+        val emailLanguage = GetSetCallbacks(
+            get = { getEmailLanguage(safeAppSettings, configuration) },
+            set = { settingsViewModel.setEmailLanguage(it) },
+        )
 
         SettingsScreenWrapper(theme, validityPeriod, downloadLimit, emailLanguage)
+    }
+}
+
+private fun getEmailLanguage(appSettings: AppSettings, configuration: Configuration): EmailLanguage {
+    return if (appSettings.hasCustomEmailLanguage) {
+        appSettings.emailLanguage
+    } else {
+        val locale = configuration.locales[0].toString()
+        EmailLanguage.entries.find { it.code == locale } ?: EmailLanguage.ENGLISH
     }
 }
 
