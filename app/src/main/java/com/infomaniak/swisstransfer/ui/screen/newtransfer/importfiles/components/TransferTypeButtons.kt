@@ -92,7 +92,7 @@ enum class TransferTypeUi(
     );
 
     companion object {
-        fun TransferType.toTransferTypeUi() = when(this) {
+        fun TransferType.toTransferTypeUi() = when (this) {
             TransferType.LINK -> LINK
             TransferType.QR_CODE -> QR_CODE
             TransferType.PROXIMITY -> PROXIMITY

@@ -41,6 +41,7 @@ fun Progress(
         TotalSize(totalSizeInBytes)
     }
 }
+
 @Composable
 private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) {
     val percentageNoDecimals by remember {
@@ -52,6 +53,7 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) 
 
     Text("$percentageNoDecimals%")
 }
+
 @Composable
 private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
     val context = LocalContext.current
@@ -61,6 +63,7 @@ private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
 
     Text(humanReadableSize)
 }
+
 @Composable
 private fun TotalSize(totalSizeInBytes: Long) {
     val context = LocalContext.current

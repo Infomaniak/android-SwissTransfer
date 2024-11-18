@@ -74,7 +74,7 @@ private fun ColumnScope.SuccessMessage(transferType: TransferTypeUi, transferUrl
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)
+            .weight(1.0f)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = Margin.Medium),
         horizontalAlignment = Alignment.CenterHorizontally,

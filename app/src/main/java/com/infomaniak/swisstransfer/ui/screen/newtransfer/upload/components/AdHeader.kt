@@ -40,7 +40,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)
+            .weight(1.0f)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -53,6 +53,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
         )
 
         Spacer(Modifier.height(Margin.Huge))
+
         Text(
             text = adScreenType.description(),
             modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
