@@ -55,12 +55,7 @@ internal val FileTypeIcons.Points: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF9F9F9F)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(13.0f, 5.007f)
                 verticalLineToRelative(6.0f)
@@ -69,12 +64,7 @@ internal val FileTypeIcons.Points: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF9F9F9F)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(11.0f, 7.007f)
                 arcToRelative(6.0f, 6.0f, 0.0f, true, false, 6.0f, 6.0f)
