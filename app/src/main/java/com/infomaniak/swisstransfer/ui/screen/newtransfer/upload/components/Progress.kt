@@ -24,6 +24,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import java.util.Locale
@@ -34,10 +35,23 @@ fun Progress(
     totalSizeInBytes: Long,
 ) {
     Row {
+
         Percentage({ progressState().uploadedSize }, totalSizeInBytes)
-        Text(" - ")
-        UploadedSize({ progressState().uploadedSize })
-        Text(" / ")
+
+        Text(
+            text = " - ",
+            style = SwissTransferTheme.typography.labelRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+        )
+
+        UploadedSize { progressState().uploadedSize }
+
+        Text(
+            text = " / ",
+            style = SwissTransferTheme.typography.labelRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+        )
+
         TotalSize(totalSizeInBytes)
     }
 }
@@ -51,7 +65,11 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) 
         }
     }
 
-    Text("$percentageNoDecimals%")
+    Text(
+        text = "$percentageNoDecimals%",
+        style = SwissTransferTheme.typography.labelRegular,
+        color = SwissTransferTheme.colors.secondaryTextColor,
+    )
 }
 
 @Composable
@@ -61,7 +79,11 @@ private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, uploadedSizeInBytes()) }
     }
 
-    Text(humanReadableSize)
+    Text(
+        text = humanReadableSize,
+        style = SwissTransferTheme.typography.labelRegular,
+        color = SwissTransferTheme.colors.secondaryTextColor,
+    )
 }
 
 @Composable
@@ -71,5 +93,9 @@ private fun TotalSize(totalSizeInBytes: Long) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes) }
     }
 
-    Text(humanReadableTotalSize)
+    Text(
+        text = humanReadableTotalSize,
+        style = SwissTransferTheme.typography.labelRegular,
+        color = SwissTransferTheme.colors.secondaryTextColor,
+    )
 }
