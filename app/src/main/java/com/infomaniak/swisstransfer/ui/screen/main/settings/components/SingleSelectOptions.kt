@@ -67,15 +67,15 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
         ) {
             item.icon?.let {
                 Image(imageVector = it, contentDescription = null)
-                Spacer(modifier = Modifier.width(Margin.Medium))
+                Spacer(Modifier.width(Margin.Medium))
             } ?: run {
                 // Make sure the items with no icons have the same height as the ones with icons
-                Spacer(modifier = Modifier.height(Margin.Large))
+                Spacer(Modifier.height(Margin.Large))
             }
 
             Text(text = item.title(), Modifier.weight(1.0f), style = SwissTransferTheme.typography.bodyRegular)
 
-            if (isSelected) Spacer(modifier = Modifier.width(Margin.Medium))
+            if (isSelected) Spacer(Modifier.width(Margin.Medium))
             AnimatedVisibility(
                 visible = isSelected,
                 enter = scaleIn(),

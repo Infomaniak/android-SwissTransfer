@@ -94,7 +94,7 @@ private fun SettingItemContent(
             } else {
                 Image(imageVector = it, contentDescription = null)
             }
-            Spacer(modifier = Modifier.width(Margin.Medium))
+            Spacer(Modifier.width(Margin.Medium))
         }
 
         Column(modifier = Modifier.weight(1.0f)) {

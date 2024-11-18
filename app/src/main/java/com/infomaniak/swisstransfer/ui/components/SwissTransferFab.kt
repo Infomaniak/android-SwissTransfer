@@ -73,7 +73,7 @@ private fun SwissTransferFabPreview() {
     SwissTransferTheme {
         Row {
             SwissTransferFab(onClick = {})
-            Spacer(modifier = Modifier.width(Margin.Large))
+            Spacer(Modifier.width(Margin.Large))
             SwissTransferFab(fabType = FabType.BIG, onClick = {})
         }
     }

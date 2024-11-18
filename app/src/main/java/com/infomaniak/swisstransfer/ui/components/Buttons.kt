@@ -152,7 +152,7 @@ fun KeepButtonSize(imageVector: ImageVector?, titleRes: Int, content: @Composabl
 private fun ButtonTextContent(imageVector: ImageVector?, titleRes: Int) {
     imageVector?.let {
         Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = it, contentDescription = null)
-        Spacer(modifier = Modifier.width(Margin.Mini))
+        Spacer(Modifier.width(Margin.Mini))
     }
     Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyMedium)
 }
@@ -208,7 +208,7 @@ private fun LargeButtonPreview() {
                 ButtonType.entries.forEach {
                     Row {
                         LargeButton(titleRes = R.string.appName, style = it, onClick = {}, imageVector = AppIcons.Add)
-                        Spacer(modifier = Modifier.width(Margin.Mini))
+                        Spacer(Modifier.width(Margin.Mini))
                         LargeButton(
                             titleRes = R.string.appName,
                             style = it,
@@ -217,10 +217,10 @@ private fun LargeButtonPreview() {
                             imageVector = AppIcons.Add
                         )
 
-                        Spacer(modifier = Modifier.width(Margin.Mini))
+                        Spacer(Modifier.width(Margin.Mini))
 
                         SmallButton(titleRes = R.string.appName, style = it, imageVector = AppIcons.Add, onClick = {})
-                        Spacer(modifier = Modifier.width(Margin.Mini))
+                        Spacer(Modifier.width(Margin.Mini))
                         SmallButton(
                             titleRes = R.string.appName,
                             style = it,
@@ -229,7 +229,7 @@ private fun LargeButtonPreview() {
                             onClick = {}
                         )
                     }
-                    Spacer(modifier = Modifier.height(Margin.Medium))
+                    Spacer(Modifier.height(Margin.Medium))
                 }
             }
         }

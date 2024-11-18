@@ -80,7 +80,7 @@ private fun ColumnScope.SuccessMessage(transferType: TransferTypeUi, transferUrl
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Spacer(modifier = Modifier.height(Margin.Medium))
+        Spacer(Modifier.height(Margin.Medium))
 
         Image(imageVector = AppIllus.Beers.image(), contentDescription = null)
 

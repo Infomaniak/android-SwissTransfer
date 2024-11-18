@@ -87,14 +87,14 @@ fun TransferItem(
                     overflow = TextOverflow.MiddleEllipsis,
                 )
 
-                Spacer(modifier = Modifier.height(Margin.Mini))
+                Spacer(Modifier.height(Margin.Mini))
                 TextDotText(
                     firstText = { uploadedSize },
                     secondText = { expiryText },
                     optionalSecondTextColor = expiryColor,
                 )
 
-                Spacer(modifier = Modifier.height(Margin.Mini))
+                Spacer(Modifier.height(Margin.Mini))
                 ContextualFlowRow(
                     itemCount = files.count(),
                     maxLines = 1,
@@ -105,7 +105,7 @@ fun TransferItem(
                 }
             }
 
-            Spacer(modifier = Modifier.width(Margin.Medium))
+            Spacer(Modifier.width(Margin.Medium))
             Icon(
                 imageVector = AppIcons.ChevronRightThick,
                 contentDescription = null,

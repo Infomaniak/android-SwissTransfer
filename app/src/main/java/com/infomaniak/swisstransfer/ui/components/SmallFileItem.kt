@@ -82,7 +82,7 @@ private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::c
                     onRemove = {}
                 )
 
-                Spacer(modifier = Modifier.height(Margin.Medium))
+                Spacer(Modifier.height(Margin.Medium))
 
                 SmallFileItem(
                     file = file,

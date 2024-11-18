@@ -146,7 +146,7 @@ private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class)
                     onRemove = {},
                 )
 
-                Spacer(modifier = Modifier.height(Margin.Medium))
+                Spacer(Modifier.height(Margin.Medium))
 
                 val imageFile = files[1]
                 FileItem(

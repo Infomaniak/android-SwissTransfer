@@ -49,9 +49,9 @@ fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottom
         descriptionRes = R.string.shareQrCodeDescription,
     ) {
         Column {
-            Spacer(modifier = Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Large))
             QrCode(transferUrl)
-            Spacer(modifier = Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Large))
         }
     }
 }

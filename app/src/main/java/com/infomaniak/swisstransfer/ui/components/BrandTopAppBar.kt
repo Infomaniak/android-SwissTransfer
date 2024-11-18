@@ -46,11 +46,11 @@ fun BrandTopAppBar() {
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(imageVector = AppIllus.LogoInfomaniak, contentDescription = null)
-                Spacer(modifier = Modifier.width(Margin.Medium))
+                Spacer(Modifier.width(Margin.Medium))
                 VerticalDivider(modifier = Modifier.height(Margin.Large), color = SwissTransferTheme.colors.toolbarTextColor)
-                Spacer(modifier = Modifier.width(Margin.Medium))
+                Spacer(Modifier.width(Margin.Medium))
                 Image(imageVector = AppIllus.LogoSwissTransfer, contentDescription = null)
-                Spacer(modifier = Modifier.width(Margin.Mini))
+                Spacer(Modifier.width(Margin.Mini))
                 Text(text = stringResource(id = R.string.appName), color = SwissTransferTheme.colors.toolbarTextColor)
             }
         },

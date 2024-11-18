@@ -59,7 +59,7 @@ fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick:
                 contentDescription = null,
                 tint = SwissTransferTheme.materialColors.primary,
             )
-            Spacer(modifier = Modifier.width(Margin.Large))
+            Spacer(Modifier.width(Margin.Large))
             Text(
                 text = stringResource(id = titleRes),
                 style = SwissTransferTheme.typography.bodyRegular,

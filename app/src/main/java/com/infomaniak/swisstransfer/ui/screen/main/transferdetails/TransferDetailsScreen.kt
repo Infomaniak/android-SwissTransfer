@@ -177,13 +177,13 @@ private fun ColumnScope.FilesList(
         setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
         header = {
             Column {
-                Spacer(modifier = Modifier.height(Margin.Large))
+                Spacer(Modifier.height(Margin.Large))
                 TransferInfo(transfer)
-                Spacer(modifier = Modifier.height(Margin.Large))
+                Spacer(Modifier.height(Margin.Large))
                 if (shouldDisplayRecipients) TransferRecipients(transferRecipients)
-                if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Mini))
+                if (shouldDisplayRecipients && shouldDisplayMessage) Spacer(Modifier.height(Margin.Mini))
                 if (shouldDisplayMessage) TransferMessage(transfer.message!!)
-                if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(modifier = Modifier.height(Margin.Large))
+                if (shouldDisplayRecipients || shouldDisplayMessage) Spacer(Modifier.height(Margin.Large))
                 TransferContentHeader()
             }
         },
@@ -197,7 +197,7 @@ private fun TransferRecipients(recipients: List<String>) {
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
     )
-    Spacer(modifier = Modifier.height(Margin.Mini))
+    Spacer(Modifier.height(Margin.Mini))
     EmailsFlowRow(recipients)
 }
 
@@ -208,7 +208,7 @@ private fun TransferMessage(transferMessage: String) {
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
     )
-    Spacer(modifier = Modifier.height(Margin.Medium))
+    Spacer(Modifier.height(Margin.Medium))
     SwissTransferCard {
         Text(
             text = transferMessage,
@@ -246,14 +246,14 @@ private fun BottomBar(direction: TransferDirection, isMultiselectOn: () -> Boole
 
                 when (direction) {
                     TransferDirection.SENT -> {
-                        Spacer(modifier = Modifier.width(Margin.Medium))
+                        Spacer(Modifier.width(Margin.Medium))
                         BottomBarButton(BottomBarItem.QR_CODE, onClick)
 
-                        Spacer(modifier = Modifier.width(Margin.Medium))
+                        Spacer(Modifier.width(Margin.Medium))
                         BottomBarButton(BottomBarItem.PASSWORD, onClick)
                     }
                     TransferDirection.RECEIVED -> {
-                        Spacer(modifier = Modifier.width(Margin.Medium))
+                        Spacer(Modifier.width(Margin.Medium))
                         BottomBarButton(BottomBarItem.DOWNLOAD, onClick)
                     }
                 }
@@ -275,7 +275,7 @@ private fun RowScope.BottomBarButton(item: BottomBarItem, onClick: (BottomBarIte
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(item.icon, null)
-            Spacer(modifier = Modifier.height(Margin.Micro))
+            Spacer(Modifier.height(Margin.Micro))
             Text(stringResource(item.label))
         }
     }

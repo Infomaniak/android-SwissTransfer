@@ -61,7 +61,7 @@ fun ImportedFilesCard(
                 secondText = { formatSpaceLeft(humanReadableSize) },
                 modifier = Modifier.padding(start = Margin.Medium),
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(Modifier.weight(1.0f))
             Icon(
                 imageVector = AppIcons.ChevronRightThick,
                 contentDescription = null,
