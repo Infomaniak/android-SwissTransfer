@@ -56,9 +56,9 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
 
         Text(
             text = adScreenType.description(),
-            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
-            style = SwissTransferTheme.typography.specificLight18,
             textAlign = TextAlign.Center,
+            style = SwissTransferTheme.typography.specificLight18,
+            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
         )
 
         WeightOneSpacer(minHeight = Margin.Medium)

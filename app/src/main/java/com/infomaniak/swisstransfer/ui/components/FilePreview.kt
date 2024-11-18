@@ -110,12 +110,12 @@ private fun FileIcon(
 
         if (showFileName) {
             Text(
-                fileName,
-                modifier = Modifier.align(Alignment.BottomCenter),
+                text = fileName,
                 style = SwissTransferTheme.typography.labelRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
-                overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
     }

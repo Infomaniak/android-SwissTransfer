@@ -55,7 +55,7 @@ fun TransferItemList(
         contentPadding = PaddingValues(top = Margin.Mini),
     ) {
 
-        item { Text(stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
+        item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
         items(
             count = getTransfers().count(),

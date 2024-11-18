@@ -213,9 +213,9 @@ private fun TransferMessage(transferMessage: String) {
     SwissTransferCard {
         Text(
             text = transferMessage,
-            modifier = Modifier.padding(all = Margin.Large),
             style = SwissTransferTheme.typography.bodySmallRegular,
             color = SwissTransferTheme.colors.primaryTextColor,
+            modifier = Modifier.padding(all = Margin.Large),
         )
     }
 }
@@ -277,7 +277,7 @@ private fun RowScope.BottomBarButton(item: BottomBarItem, onClick: (BottomBarIte
         ) {
             Icon(item.icon, null)
             Spacer(Modifier.height(Margin.Micro))
-            Text(stringResource(item.label))
+            Text(text = stringResource(item.label))
         }
     }
 }

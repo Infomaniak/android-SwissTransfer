@@ -39,9 +39,9 @@ fun EmailAddressChip(
         label = {
             Text(
                 text = text,
+                style = SwissTransferTheme.typography.bodyRegular,
                 maxLines = 1,
                 overflow = TextOverflow.MiddleEllipsis,
-                style = SwissTransferTheme.typography.bodyRegular,
             )
         },
         modifier = modifier,

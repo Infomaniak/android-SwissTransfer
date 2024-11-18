@@ -22,5 +22,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun ValidateUserEmailScreen() {
-    Text("ValidateUserEmailScreen")
+    Text(text = "ValidateUserEmailScreen")
 }

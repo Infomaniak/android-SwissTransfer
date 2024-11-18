@@ -97,7 +97,7 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>
 @Composable
 private fun NoSelectionEmptyState() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Select an item", color = SwissTransferTheme.colors.secondaryTextColor)
+        Text(text = "Select an item", color = SwissTransferTheme.colors.secondaryTextColor)
     }
 }
 

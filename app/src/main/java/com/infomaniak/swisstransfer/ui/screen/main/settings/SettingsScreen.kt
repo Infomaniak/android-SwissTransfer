@@ -67,9 +67,9 @@ fun SettingsScreen(
                 .selectableGroup(),
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
                 text = stringResource(R.string.settingsTitle),
                 style = SwissTransferTheme.typography.h1,
+                modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
             )
 
             SettingTitle(R.string.settingsCategoryGeneral)

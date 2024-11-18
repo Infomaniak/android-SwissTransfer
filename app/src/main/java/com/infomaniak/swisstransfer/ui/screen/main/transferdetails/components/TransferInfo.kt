@@ -95,10 +95,10 @@ private fun IconText(icon: ImageVector, text: String) {
             contentDescription = null,
         )
         Text(
-            modifier = Modifier.padding(start = Margin.Mini),
             text = text,
             style = SwissTransferTheme.typography.bodySmallRegular,
             color = SwissTransferTheme.colors.primaryTextColor,
+            modifier = Modifier.padding(start = Margin.Mini),
         )
     }
 }
