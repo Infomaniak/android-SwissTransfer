@@ -108,7 +108,7 @@ class ImportFilesViewModel @Inject constructor(
         return if (transferUuid == null && fileUuid == null) {
             getImportedFiles()
         } else {
-            transferManager.getFilesFromTransfer(transferUuid!!, fileUuid!!)
+            transferManager.getFilesFromTransfer(fileUuid!!)
         }
     }
 
