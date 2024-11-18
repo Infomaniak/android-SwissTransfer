@@ -18,10 +18,10 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,13 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.infomaniak.library.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.utils.fileType
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
 
@@ -47,6 +53,8 @@ fun FilePreview(
     file: FileUi,
     circleColor: Color,
     circleSize: Dp,
+    showFileName: Boolean,
+    fileIconContentPadding: PaddingValues = PaddingValues(),
 ) {
     var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
     val previewUri = file.localPath
@@ -54,7 +62,7 @@ fun FilePreview(
     if (displayPreview && previewUri != null) {
         FileThumbnail(previewUri, onError = { displayPreview = false })
     } else {
-        FileIcon(file.fileType, circleColor, circleSize)
+        FileIcon(file.fileType, circleColor, circleSize, file.fileName, showFileName, fileIconContentPadding)
     }
 }
 
@@ -73,17 +81,74 @@ private fun FileThumbnail(uri: String, onError: () -> Unit) {
 }
 
 @Composable
-private fun FileIcon(fileType: FileType, color: Color, circleSize: Dp) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+private fun FileIcon(
+    fileType: FileType,
+    color: Color,
+    circleSize: Dp,
+    fileName: String,
+    leaveSpaceForFileName: Boolean,
+    iconContentPadding: PaddingValues
+) {
+    Box(
+        contentAlignment = if (leaveSpaceForFileName) Alignment.TopCenter else Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(if (leaveSpaceForFileName) iconContentPadding else PaddingValues()),
+    ) {
         Canvas(modifier = Modifier.size(circleSize)) {
             drawCircle(color = color)
         }
 
         Icon(
-            modifier = Modifier.size(circleSize / 2),
+            modifier = Modifier
+                .size(circleSize)
+                .padding(circleSize / 4),
             imageVector = fileType.icon,
             contentDescription = null,
             tint = fileType.color(LocalIsDarkMode.current),
         )
+
+        if (leaveSpaceForFileName) {
+            Text(
+                fileName,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                style = SwissTransferTheme.typography.labelRegular,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+        }
+    }
+}
+
+@PreviewLightAndDark
+@Composable
+private fun FileNamePreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
+    SwissTransferTheme {
+        Surface(modifier = Modifier.size(140.dp)) {
+            FilePreview(
+                file = files.first(),
+                circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
+                circleSize = 40.dp,
+                showFileName = true,
+                fileIconContentPadding = PaddingValues(8.dp),
+            )
+        }
+    }
+}
+
+@PreviewLightAndDark
+@Composable
+private fun NoFileNamePreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
+    SwissTransferTheme {
+        Surface(modifier = Modifier.size(140.dp)) {
+            FilePreview(
+                file = files.first(),
+                circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
+                circleSize = 40.dp,
+                showFileName = false,
+                fileIconContentPadding = PaddingValues(8.dp),
+            )
+        }
     }
 }

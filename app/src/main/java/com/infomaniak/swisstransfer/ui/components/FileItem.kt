@@ -59,6 +59,7 @@ fun FileItem(
                 file = file,
                 circleColor = SwissTransferTheme.materialColors.surface,
                 circleSize = 64.dp,
+                showFileName = false,
             )
         },
     )
