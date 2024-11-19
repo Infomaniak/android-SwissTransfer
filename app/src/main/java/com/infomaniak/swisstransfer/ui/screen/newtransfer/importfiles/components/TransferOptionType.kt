@@ -50,15 +50,15 @@ fun TransferOptionType(
             tint = SwissTransferTheme.materialColors.primary,
             contentDescription = null,
         )
-        Spacer(modifier = Modifier.width(Margin.Small))
+        Spacer(Modifier.width(Margin.Small))
         Text(
             text = stringResource(transferOptionType.buttonText),
             color = SwissTransferTheme.materialColors.primary,
             style = SwissTransferTheme.typography.bodySmallMedium,
         )
-        Spacer(modifier = Modifier.weight(1.0f))
+        Spacer(Modifier.weight(1.0f))
         SettingValue(selectedSetting)
-        Spacer(modifier = Modifier.width(Margin.Small))
+        Spacer(Modifier.width(Margin.Small))
         Icon(
             modifier = Modifier.size(Dimens.SmallIconSize),
             imageVector = AppIcons.ChevronRightThick,

@@ -31,11 +31,6 @@ val AppIcons.EyeCrossed: ImageVector
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF9F9F9F)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero,
             ) {
                 moveTo(14.715f, 1.154f)

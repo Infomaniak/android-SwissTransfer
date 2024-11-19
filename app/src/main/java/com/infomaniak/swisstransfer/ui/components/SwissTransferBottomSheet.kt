@@ -103,7 +103,7 @@ private fun BottomSheetContent(
 
         imageVector?.let {
             Image(modifier = paddedModifier, imageVector = imageVector, contentDescription = null)
-            Spacer(modifier = Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Large))
         }
 
         title?.let {
@@ -114,7 +114,7 @@ private fun BottomSheetContent(
                 color = SwissTransferTheme.colors.primaryTextColor,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Large))
         }
 
         description?.let {
@@ -125,12 +125,12 @@ private fun BottomSheetContent(
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Large))
         }
 
         content?.let {
             it()
-            Spacer(modifier = Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Large))
         }
 
         DoubleButtonCombo(topButton = topButton, bottomButton = bottomButton)

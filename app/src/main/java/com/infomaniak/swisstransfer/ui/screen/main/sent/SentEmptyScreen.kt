@@ -51,14 +51,14 @@ fun SentEmptyScreen() {
             style = SwissTransferTheme.typography.specificMedium32,
             textAlign = TextAlign.Center,
         )
-        Spacer(modifier = Modifier.height(Margin.Medium))
+        Spacer(Modifier.height(Margin.Medium))
         Text(
             modifier = Modifier.widthIn(max = maxWidth),
             text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,
         )
-        Spacer(modifier = Modifier.height(Margin.Medium))
+        Spacer(Modifier.height(Margin.Medium))
         ConstraintLayout {
             val (icon, fab) = createRefs()
 

@@ -74,13 +74,13 @@ private fun ColumnScope.SuccessMessage(transferType: TransferTypeUi, transferUrl
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)
+            .weight(1.0f)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = Margin.Medium),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Spacer(modifier = Modifier.height(Margin.Medium))
+        Spacer(Modifier.height(Margin.Medium))
 
         Image(imageVector = AppIllus.Beers.image(), contentDescription = null)
 

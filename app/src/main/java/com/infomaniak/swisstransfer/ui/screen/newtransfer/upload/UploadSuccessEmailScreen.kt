@@ -66,7 +66,7 @@ fun UploadSuccessEmailScreen(
                 description = pluralStringResource(TransferTypeUi.MAIL.descriptionRes!!, emails.count()),
             )
 
-            Spacer(modifier = Modifier.height(Margin.Medium))
+            Spacer(Modifier.height(Margin.Medium))
 
             EmailsFlowRow(
                 emails = emails,

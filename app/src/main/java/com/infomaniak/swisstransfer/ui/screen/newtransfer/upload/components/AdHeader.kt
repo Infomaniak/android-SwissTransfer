@@ -40,11 +40,11 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)
+            .weight(1.0f)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(Margin.Giant))
+        Spacer(Modifier.height(Margin.Giant))
 
         HighlightedText(
             templateRes = R.string.uploadProgressTitleTemplate,
@@ -52,7 +52,8 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
             style = SwissTransferTheme.typography.bodyMedium,
         )
 
-        Spacer(modifier = Modifier.height(Margin.Huge))
+        Spacer(Modifier.height(Margin.Huge))
+
         Text(
             text = adScreenType.description(),
             modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),

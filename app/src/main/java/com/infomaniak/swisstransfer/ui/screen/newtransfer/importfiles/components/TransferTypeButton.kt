@@ -52,7 +52,7 @@ fun TransferTypeButton(
         contentPadding = PaddingValues(Margin.Medium),
     ) {
         Icon(modifier = Modifier.size(Dimens.IconSize), imageVector = transferType.buttonIcon, contentDescription = null)
-        Spacer(modifier = Modifier.width(Margin.Mini))
+        Spacer(Modifier.width(Margin.Mini))
         Text(text = stringResource(transferType.buttonTextRes), style = SwissTransferTheme.typography.bodySmallRegular)
     }
 }

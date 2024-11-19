@@ -24,12 +24,12 @@ import androidx.compose.ui.unit.Dp
 
 @Composable
 fun ColumnScope.WeightOneSpacer(minHeight: Dp) {
-    Spacer(modifier = Modifier.height(minHeight))
-    Spacer(modifier = Modifier.weight(1f))
+    Spacer(Modifier.height(minHeight))
+    Spacer(Modifier.weight(1.0f))
 }
 
 @Composable
 fun RowScope.WeightOneSpacer(minWidth: Dp) {
-    Spacer(modifier = Modifier.width(minWidth))
-    Spacer(modifier = Modifier.weight(1f))
+    Spacer(Modifier.width(minWidth))
+    Spacer(Modifier.weight(1.0f))
 }

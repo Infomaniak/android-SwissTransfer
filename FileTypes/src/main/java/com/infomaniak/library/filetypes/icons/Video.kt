@@ -55,12 +55,7 @@ internal val FileTypeIcons.Video: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF9F9F9F)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                pathFillType = NonZero,
             ) {
                 moveTo(9.488f, 15.667f)
                 arcTo(0.856f, 0.856f, 0.0f, false, true, 8.25f, 14.9f)

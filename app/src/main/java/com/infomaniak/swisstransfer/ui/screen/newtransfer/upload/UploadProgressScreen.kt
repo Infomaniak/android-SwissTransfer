@@ -114,10 +114,10 @@ private fun UploadProgressScreen(
         ) {
             AdHeader(adScreenType)
 
-            Spacer(modifier = Modifier.height(Margin.Medium))
+            Spacer(Modifier.height(Margin.Medium))
             Text(stringResource(R.string.uploadProgressIndication))
             Progress(progressState, totalSizeInBytes)
-            Spacer(modifier = Modifier.height(Margin.Huge))
+            Spacer(Modifier.height(Margin.Huge))
         }
 
         if (showBottomSheet.get()) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet.set(false) })

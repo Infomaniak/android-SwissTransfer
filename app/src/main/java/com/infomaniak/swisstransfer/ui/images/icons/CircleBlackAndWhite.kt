@@ -51,11 +51,6 @@ val AppIcons.CircleBlackAndWhite: ImageVector
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF000000)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
                 pathFillType = NonZero,
             ) {
                 moveTo(12.0f, 0.0f)
@@ -75,11 +70,6 @@ val AppIcons.CircleBlackAndWhite: ImageVector
             }) {
                 path(
                     fill = SolidColor(Color(0xFFF5F5F5)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(-4.5f, 27.5f)

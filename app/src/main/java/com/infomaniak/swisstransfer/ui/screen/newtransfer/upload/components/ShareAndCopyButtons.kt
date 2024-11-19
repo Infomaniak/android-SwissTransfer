@@ -60,7 +60,7 @@ fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink:
             onClick = { context.shareText(transferLink) },
         )
 
-        Spacer(modifier = Modifier.width(Margin.Medium))
+        Spacer(Modifier.width(Margin.Medium))
 
         ShareCopyButton(
             textRes = R.string.buttonCopyLink,
@@ -78,7 +78,7 @@ fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink:
 @Composable
 private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int, onClick: () -> Unit) {
     Button(
-        modifier = Modifier.weight(1f),
+        modifier = Modifier.weight(1.0f),
         shape = CustomShapes.MEDIUM,
         colors = ButtonType.SECONDARY.buttonColors(),
         contentPadding = PaddingValues(vertical = Margin.Medium),
@@ -89,7 +89,7 @@ private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int,
             verticalArrangement = Arrangement.Center,
         ) {
             Icon(icon, contentDescription = null, modifier = Modifier.size(Dimens.SmallIconSize))
-            Spacer(modifier = Modifier.height(Margin.Micro))
+            Spacer(Modifier.height(Margin.Micro))
             Text(stringResource(textRes))
         }
     }

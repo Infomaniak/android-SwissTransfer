@@ -74,9 +74,9 @@ private fun NewTransferFabPreview() {
         Surface {
             Row {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
-                Spacer(modifier = Modifier.width(Margin.Large))
+                Spacer(Modifier.width(Margin.Large))
                 NewTransferFab(newTransferFabType = NewTransferFabType.EMPTY_STATE)
-                Spacer(modifier = Modifier.width(Margin.Large))
+                Spacer(Modifier.width(Margin.Large))
                 NewTransferFab(newTransferFabType = NewTransferFabType.NAVIGATION_RAIL)
             }
         }
