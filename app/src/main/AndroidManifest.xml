@@ -57,7 +57,7 @@
         </provider>
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.LaunchActivity"
             android:exported="true"
             android:theme="@style/Theme.AppStarting">
             <intent-filter>
@@ -66,6 +66,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.MainActivity" />
+
         <activity android:name=".ui.NewTransferActivity" />
     </application>
 
