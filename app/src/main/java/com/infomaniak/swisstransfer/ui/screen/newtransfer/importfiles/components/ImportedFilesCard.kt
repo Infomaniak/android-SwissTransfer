@@ -48,7 +48,7 @@ fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
     humanReadableSize: () -> String,
-    showUploadSourceChoiceBottomSheet: () -> Unit,
+    pickFiles: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
 ) {
     SwissTransferCard(modifier) {
@@ -76,7 +76,7 @@ fun ImportedFilesCard(
             horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
         ) {
             item(key = TransferLazyRowKey(TransferLazyRowKey.Type.ADD_BUTTON)) {
-                AddNewFileButton(Modifier.animateItem()) { showUploadSourceChoiceBottomSheet() }
+                AddNewFileButton(Modifier.animateItem()) { pickFiles() }
             }
 
             items(
@@ -131,7 +131,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
             humanReadableSize = { "20 GB" },
-            showUploadSourceChoiceBottomSheet = {},
+            pickFiles = {},
             removeFileByUid = {},
         )
     }

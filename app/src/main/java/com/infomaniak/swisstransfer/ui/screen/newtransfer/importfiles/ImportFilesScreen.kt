@@ -114,7 +114,7 @@ fun ImportFilesScreen(
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
         sendTransfer = importFilesViewModel::sendTransfer,
-        initialShowUploadSourceChoiceBottomSheet = true,
+        shouldStartByPromptingUserForFiles = true,
     )
 }
 
@@ -144,11 +144,11 @@ private fun ImportFilesScreen(
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
-    initialShowUploadSourceChoiceBottomSheet: Boolean,
+    shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
 ) {
     val context = LocalContext.current
-    var showUploadSourceChoiceBottomSheet by rememberSaveable { mutableStateOf(initialShowUploadSourceChoiceBottomSheet) }
+    var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
     var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
 
     val importedFiles = files()
@@ -164,9 +164,16 @@ private fun ImportFilesScreen(
         addFiles(uris)
     }
 
+    fun pickFiles() {
+        shouldShowInitialFilePick = false
+        filePickerLauncher.launch(arrayOf("*/*"))
+    }
+
     fun closeTransferOption() {
         showTransferOption = null
     }
+
+    LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
     BottomStickyButtonScaffold(
         topBar = {
@@ -190,7 +197,7 @@ private fun ImportFilesScreen(
                     modifier = Modifier.padding(vertical = Margin.Medium),
                     files = files,
                     humanReadableSize = { humanReadableSize },
-                    showUploadSourceChoiceBottomSheet = { showUploadSourceChoiceBottomSheet = true },
+                    pickFiles = ::pickFiles,
                     removeFileByUid = removeFileByUid,
                 )
                 ImportTextFields(transferMessage, selectedTransferType.get)
@@ -204,12 +211,6 @@ private fun ImportFilesScreen(
             }
 
             TransferOptions({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
-
-            UploadSourceChoiceBottomSheet(
-                isVisible = { showUploadSourceChoiceBottomSheet },
-                onFilePickerClicked = { filePickerLauncher.launch(arrayOf("*/*")) },
-                closeBottomSheet = { showUploadSourceChoiceBottomSheet = false },
-            )
         }
     )
 }
@@ -384,7 +385,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             removeFileByUid = {},
             addFiles = {},
             closeActivity = {},
-            initialShowUploadSourceChoiceBottomSheet = false,
+            shouldStartByPromptingUserForFiles = false,
             sendTransfer = {},
         )
     }
