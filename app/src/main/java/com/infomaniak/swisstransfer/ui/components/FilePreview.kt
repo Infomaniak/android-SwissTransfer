@@ -86,14 +86,14 @@ private fun FileIcon(
     color: Color,
     circleSize: Dp,
     fileName: String,
-    leaveSpaceForFileName: Boolean,
-    iconContentPadding: PaddingValues
+    shouldLeaveSpaceForFileName: Boolean,
+    iconContentPadding: PaddingValues,
 ) {
     Box(
-        contentAlignment = if (leaveSpaceForFileName) Alignment.TopCenter else Alignment.Center,
+        contentAlignment = if (shouldLeaveSpaceForFileName) Alignment.TopCenter else Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(if (leaveSpaceForFileName) iconContentPadding else PaddingValues()),
+            .padding(if (shouldLeaveSpaceForFileName) iconContentPadding else PaddingValues()),
     ) {
         Canvas(modifier = Modifier.size(circleSize)) {
             drawCircle(color = color)
@@ -108,14 +108,14 @@ private fun FileIcon(
             tint = fileType.color(LocalIsDarkMode.current),
         )
 
-        if (leaveSpaceForFileName) {
+        if (shouldLeaveSpaceForFileName) {
             Text(
                 fileName,
                 modifier = Modifier.align(Alignment.BottomCenter),
                 style = SwissTransferTheme.typography.labelRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }

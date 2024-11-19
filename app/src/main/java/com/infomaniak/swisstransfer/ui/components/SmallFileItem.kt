@@ -52,7 +52,7 @@ fun SmallFileItem(
             circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
             circleSize = smallFileTileSize.iconCircleSize,
             showFileName = smallFileTileSize.showFileName,
-            fileIconContentPadding = PaddingValues(SmallFileTileSize.fileNameIconPadding)
+            fileIconContentPadding = PaddingValues(SmallFileTileSize.fileNameIconPadding),
         )
 
         onRemove?.let { CrossCircleButton(onClick = it, size = 40.dp) }
