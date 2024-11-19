@@ -113,9 +113,9 @@ private fun UploadProgressScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AdHeader(adScreenType)
-
             Spacer(Modifier.height(Margin.Medium))
-            Text(stringResource(R.string.uploadProgressIndication))
+            Text(text = stringResource(R.string.uploadProgressIndication), style = SwissTransferTheme.typography.h2)
+            Spacer(Modifier.height(Margin.Mini))
             Progress(progressState, totalSizeInBytes)
             Spacer(Modifier.height(Margin.Huge))
         }
