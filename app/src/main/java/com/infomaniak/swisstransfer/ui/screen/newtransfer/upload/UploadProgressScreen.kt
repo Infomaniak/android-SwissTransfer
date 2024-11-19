@@ -35,6 +35,7 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.NetworkUnavailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -52,6 +53,7 @@ fun UploadProgressScreen(
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
+    val isNetworkAvailable by uploadProgressViewModel.isNetworkAvailable.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -68,6 +70,7 @@ fun UploadProgressScreen(
 
     UploadProgressScreen(
         progressState = { uiState },
+        isNetworkAvailable = { isNetworkAvailable },
         totalSizeInBytes = totalSizeInBytes,
         showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
@@ -97,6 +100,7 @@ private fun HandleProgressState(
 @Composable
 private fun UploadProgressScreen(
     progressState: () -> UploadProgressUiState,
+    isNetworkAvailable: () -> Boolean,
     totalSizeInBytes: Long,
     adScreenType: UploadProgressAdType,
     onCancel: () -> Unit,
@@ -113,10 +117,16 @@ private fun UploadProgressScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AdHeader(adScreenType)
+
             Spacer(Modifier.height(Margin.Medium))
+
             Text(text = stringResource(R.string.uploadProgressIndication), style = SwissTransferTheme.typography.h2)
+
             Spacer(Modifier.height(Margin.Mini))
-            Progress(progressState, totalSizeInBytes)
+
+            // TODO: When the network status changes, the AD and the two strings beneath it move upside-down. Why?
+            if (isNetworkAvailable()) Progress(progressState, totalSizeInBytes) else NetworkUnavailable()
+
             Spacer(Modifier.height(Margin.Huge))
         }
 
@@ -155,6 +165,7 @@ private fun UploadProgressScreenPreview() {
     SwissTransferTheme {
         UploadProgressScreen(
             progressState = { UploadProgressUiState.Progress(44_321_654L) },
+            isNetworkAvailable = { true },
             totalSizeInBytes = 76_321_894L,
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},

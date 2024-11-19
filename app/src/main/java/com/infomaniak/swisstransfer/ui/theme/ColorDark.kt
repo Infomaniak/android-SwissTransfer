@@ -41,6 +41,7 @@ private const val specific5 = 0xFF49DEFD
 private const val elephant = 0xFF666666
 private const val white = 0xFFFFFFFF
 private const val black_translucent = 0x80000000
+private const val orange = 0XFFFF8500
 
 private const val error = 0xFFFC8878
 
@@ -93,4 +94,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     onTransferFilePreviewOverflow = Color(green_main),
     transferListStroke = Color(green_main),
     highlightedColor = Color(green_dark),
+    networkUnavailable = Color(orange),
 )

@@ -17,13 +17,16 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.network.NetworkAvailability
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -32,10 +35,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UploadProgressViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
     private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val isNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
+        .mapLatest {
+            SentryLog.d("Internet availability", if (it) "Available" else "Unavailable")
+            it
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = true,
+        )
 
     private val _transferUuidFlow = MutableSharedFlow<String?>()
 

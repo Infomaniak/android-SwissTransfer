@@ -43,6 +43,7 @@
     <string name="importFilesScreenTitle">File da trasferire</string>
     <string name="messageHeader">Messaggio:</string>
     <string name="myFilesTitle">I miei file</string>
+    <string name="networkUnavailable">In attesa della rete…</string>
     <string name="noFileDescription">Aggiungere fino a 50 GB di file</string>
     <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noTransferReceivedDescription">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
