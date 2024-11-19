@@ -84,6 +84,7 @@ dependencies {
     implementation(project(":Core2"))
     implementation(project(":Core2:Sentry"))
     implementation(project(":Core2:Matomo"))
+    implementation(project(":Core2:Network"))
     implementation(project(":FileTypes"))
     implementation(kotlin("reflect"))
 
