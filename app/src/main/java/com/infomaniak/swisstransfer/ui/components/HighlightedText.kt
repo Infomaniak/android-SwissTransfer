@@ -17,11 +17,16 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.annotation.FloatRange
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -60,19 +65,33 @@ fun HighlightedText(
 
     val highlightedColor = SwissTransferTheme.colors.highlightedColor
 
-    var highlightedPath by remember { mutableStateOf<Path?>(null) }
+    var boundingBoxes by remember { mutableStateOf<List<Rect>>(emptyList()) }
+    var animationStarted by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) { animationStarted = true }
+
+    val highlightProgress by animateFloatAsState(
+        targetValue = if (animationStarted) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = 600,
+            easing = FastOutSlowInEasing,
+            delayMillis = 500,
+        ),
+        label = "Highlither progress",
+    )
 
     Text(
         text = text,
         style = style,
-        onTextLayout = { layoutResult ->
-            val boundingBoxes = layoutResult.getArgumentBoundingBoxes(text, argument)
-            highlightedPath = boundingBoxes.transformForHighlightedStyle(verticalPadding, horizontalPadding, angleDegrees)
-        },
+        onTextLayout = { layoutResult -> boundingBoxes = layoutResult.getArgumentBoundingBoxes(text, argument) },
         modifier = Modifier.drawBehind {
-            highlightedPath?.let {
-                drawPath(path = it, style = Fill, color = highlightedColor)
-            }
+            val highlightedPath = boundingBoxes.transformForHighlightedStyle(
+                verticalPadding,
+                horizontalPadding,
+                angleDegrees,
+                highlightProgress,
+            )
+            drawPath(path = highlightedPath, style = Fill, color = highlightedColor)
         },
     )
 }
@@ -86,13 +105,19 @@ private fun List<Rect>.transformForHighlightedStyle(
     verticalPadding: Float,
     horizontalPadding: Float,
     angleDegrees: Float,
+    @FloatRange(0.0, 1.0) progress: Float,
 ): Path = Path().apply {
     forEach { boundingBox ->
-        addPath(boundingBox.transformForHighlightedStyle(verticalPadding, horizontalPadding, angleDegrees))
+        addPath(boundingBox.transformForHighlightedStyle(verticalPadding, horizontalPadding, angleDegrees, progress))
     }
 }
 
-private fun Rect.transformForHighlightedStyle(verticalPadding: Float, horizontalPadding: Float, angleDegrees: Float): Path {
+private fun Rect.transformForHighlightedStyle(
+    verticalPadding: Float,
+    horizontalPadding: Float,
+    angleDegrees: Float,
+    @FloatRange(0.0, 1.0) progress: Float,
+): Path {
     return getRotatedRectanglePath(
         Rect(
             left = left - horizontalPadding,
@@ -101,10 +126,11 @@ private fun Rect.transformForHighlightedStyle(verticalPadding: Float, horizontal
             bottom = bottom + verticalPadding,
         ),
         angleDegrees = angleDegrees,
+        progress = progress,
     )
 }
 
-private fun getRotatedRectanglePath(rect: Rect, angleDegrees: Float): Path {
+private fun getRotatedRectanglePath(rect: Rect, angleDegrees: Float, @FloatRange(0.0, 1.0) progress: Float): Path {
     val centerX = rect.left + (rect.width / 2)
     val centerY = rect.top + (rect.height / 2)
 
@@ -121,9 +147,12 @@ private fun getRotatedRectanglePath(rect: Rect, angleDegrees: Float): Path {
         return Offset(newX, newY)
     }
 
+    val width = rect.right - rect.left
+    val right = rect.left + progress * width
+
     val topLeft = rotatePoint(rect.left, rect.top, centerX, centerY, angleRadians)
-    val topRight = rotatePoint(rect.right, rect.top, centerX, centerY, angleRadians)
-    val bottomRight = rotatePoint(rect.right, rect.bottom, centerX, centerY, angleRadians)
+    val topRight = rotatePoint(right, rect.top, centerX, centerY, angleRadians)
+    val bottomRight = rotatePoint(right, rect.bottom, centerX, centerY, angleRadians)
     val bottomLeft = rotatePoint(rect.left, rect.bottom, centerX, centerY, angleRadians)
 
     return Path().apply {
