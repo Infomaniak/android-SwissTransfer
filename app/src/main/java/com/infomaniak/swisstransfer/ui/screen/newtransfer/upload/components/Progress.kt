@@ -91,14 +91,15 @@ private fun TotalSize(totalSizeInBytes: Long) {
 
     Text(text = humanReadableTotalSize)
 }
+
 @PreviewLightAndDark
 @Composable
 private fun Preview() {
     SwissTransferTheme {
         Surface {
             Progress(
-                progressState = { UploadWorker.UploadProgressUiState.Progress(73614L) },
-                totalSizeInBytes = 3279218L
+                progressState = { UploadWorker.UploadProgressUiState.Progress(73_614L) },
+                totalSizeInBytes = 3_279_218L,
             )
         }
     }
