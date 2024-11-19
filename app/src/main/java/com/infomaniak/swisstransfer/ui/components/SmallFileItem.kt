@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
@@ -51,18 +50,22 @@ fun SmallFileItem(
         FilePreview(
             file = file,
             circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
-            circleSize = smallFileTileSize.iconCircleSize(),
+            circleSize = smallFileTileSize.iconCircleSize,
+            showFileName = smallFileTileSize.showFileName,
+            fileIconContentPadding = PaddingValues(SmallFileTileSize.fileNameIconPadding),
         )
 
         onRemove?.let { CrossCircleButton(onClick = it, size = 40.dp) }
     }
 }
 
-enum class SmallFileTileSize(val size: Dp, val shape: Shape) {
-    SMALL(48.dp, CustomShapes.SMALL),
-    LARGE(80.dp, CustomShapes.MEDIUM);
+enum class SmallFileTileSize(val size: Dp, val shape: Shape, val iconCircleSize: Dp, val showFileName: Boolean) {
+    SMALL(48.dp, CustomShapes.SMALL, 32.dp, false),
+    LARGE(80.dp, CustomShapes.MEDIUM, 40.dp, true);
 
-    fun iconCircleSize(): Dp = 2f / 3 * size
+    companion object {
+        val fileNameIconPadding = Margin.Mini
+    }
 }
 
 @PreviewLightAndDark
