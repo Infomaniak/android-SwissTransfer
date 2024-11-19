@@ -45,7 +45,7 @@ class TransferDetailsViewModel @Inject constructor(
         .flatMapLatest { transferManager.getTransferFlow(it) }
         .map { transfer ->
             when (transfer) {
-                null -> TransferDetailsUiState.Loading
+                null -> TransferDetailsUiState.Error
                 else -> TransferDetailsUiState.Success(transfer)
             }
         }
