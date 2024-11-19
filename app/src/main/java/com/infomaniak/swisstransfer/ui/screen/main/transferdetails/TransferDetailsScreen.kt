@@ -48,8 +48,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.*
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
@@ -67,13 +66,18 @@ fun TransferDetailsScreen(
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { uiState is Loading } }
+    val isDelete by remember { derivedStateOf { uiState is Delete } }
 
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid)
     }
 
-    if (!isLoading) {
+    if (isDelete) {
+        navigateBack?.invoke()
+    } else if (!isLoading) {
         TransferDetailsScreen(
+            transferDetailsViewModel,
+            transferUuid,
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
             navigateBack = navigateBack,

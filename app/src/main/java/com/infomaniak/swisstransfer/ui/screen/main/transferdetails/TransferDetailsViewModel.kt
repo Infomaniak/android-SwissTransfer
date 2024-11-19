@@ -25,7 +25,6 @@ import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -45,7 +44,7 @@ class TransferDetailsViewModel @Inject constructor(
         .flatMapLatest { transferManager.getTransferFlow(it) }
         .map { transfer ->
             when (transfer) {
-                null -> TransferDetailsUiState.Error
+                null -> TransferDetailsUiState.Delete
                 else -> TransferDetailsUiState.Success(transfer)
             }
         }
@@ -61,6 +60,12 @@ class TransferDetailsViewModel @Inject constructor(
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 
+    fun removeTransfer(transferUuid: String) {
+        viewModelScope.launch {
+            transferManager.removeTransfer(transferUuid)
+        }
+    }
+
     sealed class TransferDetailsUiState {
 
         @Immutable
@@ -70,6 +75,6 @@ class TransferDetailsViewModel @Inject constructor(
         data object Loading : TransferDetailsUiState()
 
         @Immutable
-        data object Error : TransferDetailsUiState() //TODO Handle error case
+        data object Delete : TransferDetailsUiState()
     }
 }
