@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Camera
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -53,7 +54,7 @@ fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick:
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                modifier = Modifier.size(Margin.Large),
+                modifier = Modifier.size(Dimens.IconSize),
                 imageVector = imageVector,
                 contentDescription = null,
                 tint = SwissTransferTheme.materialColors.primary,

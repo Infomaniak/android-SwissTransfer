@@ -151,7 +151,7 @@ fun KeepButtonSize(imageVector: ImageVector?, titleRes: Int, content: @Composabl
 @Composable
 private fun ButtonTextContent(imageVector: ImageVector?, titleRes: Int) {
     imageVector?.let {
-        Icon(modifier = Modifier.size(Margin.Medium), imageVector = it, contentDescription = null)
+        Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = it, contentDescription = null)
         Spacer(modifier = Modifier.width(Margin.Mini))
     }
     Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyMedium)

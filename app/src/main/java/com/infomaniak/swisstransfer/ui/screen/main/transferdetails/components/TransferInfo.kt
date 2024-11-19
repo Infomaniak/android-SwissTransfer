@@ -42,6 +42,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Clock
 import com.infomaniak.swisstransfer.ui.images.icons.FileZip
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -85,7 +86,7 @@ fun TransferInfo(transfer: TransferUi) {
 private fun IconText(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
-            modifier = Modifier.size(Margin.Medium),
+            modifier = Modifier.size(Dimens.SmallIconSize),
             imageVector = icon,
             tint = SwissTransferTheme.materialColors.primary,
             contentDescription = null,

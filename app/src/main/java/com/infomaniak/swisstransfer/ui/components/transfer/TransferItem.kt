@@ -109,7 +109,7 @@ fun TransferItem(
             Icon(
                 imageVector = AppIcons.ChevronRightThick,
                 contentDescription = null,
-                modifier = Modifier.size(Margin.Medium),
+                modifier = Modifier.size(Dimens.SmallIconSize),
                 tint = SwissTransferTheme.colors.iconColor,
             )
         }
