@@ -18,6 +18,9 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -26,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import java.util.Locale
 
@@ -34,28 +38,22 @@ fun Progress(
     progressState: () -> UploadWorker.UploadProgressUiState,
     totalSizeInBytes: Long,
 ) {
-    Row {
-
-        Percentage({ progressState().uploadedSize }, totalSizeInBytes)
-
-        Text(
-            text = " - ",
-            style = SwissTransferTheme.typography.labelRegular,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-        )
-
-        UploadedSize { progressState().uploadedSize }
-
-        Text(
-            text = " / ",
-            style = SwissTransferTheme.typography.labelRegular,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-        )
-
-        TotalSize(totalSizeInBytes)
+    ProvideTextStyle(
+        value = SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor)
+    ) {
+        Row {
+            Percentage({ progressState().uploadedSize }, totalSizeInBytes)
+            Text(text = " - ")
+            UploadedSize { progressState().uploadedSize }
+            Text(text = " / ")
+            TotalSize(totalSizeInBytes)
+        }
     }
 }
 
+/**
+ * Text style is provided through [LocalTextStyle] inside [Progress], thanks to [ProvideTextStyle].
+ */
 @Composable
 private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) {
     val percentageNoDecimals by remember {
@@ -65,13 +63,12 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) 
         }
     }
 
-    Text(
-        text = "$percentageNoDecimals%",
-        style = SwissTransferTheme.typography.labelRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
+    Text(text = "$percentageNoDecimals%")
 }
 
+/**
+ * Text style is provided through [LocalTextStyle] inside [Progress], thanks to [ProvideTextStyle].
+ */
 @Composable
 private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
     val context = LocalContext.current
@@ -79,13 +76,12 @@ private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, uploadedSizeInBytes()) }
     }
 
-    Text(
-        text = humanReadableSize,
-        style = SwissTransferTheme.typography.labelRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
+    Text(text = humanReadableSize)
 }
 
+/**
+ * Text style is provided through [LocalTextStyle] inside [Progress], thanks to [ProvideTextStyle].
+ */
 @Composable
 private fun TotalSize(totalSizeInBytes: Long) {
     val context = LocalContext.current
@@ -93,9 +89,18 @@ private fun TotalSize(totalSizeInBytes: Long) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes) }
     }
 
-    Text(
-        text = humanReadableTotalSize,
-        style = SwissTransferTheme.typography.labelRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
+    Text(text = humanReadableTotalSize)
+}
+
+@PreviewLightAndDark
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            Progress(
+                progressState = { UploadWorker.UploadProgressUiState.Progress(73_614L) },
+                totalSizeInBytes = 3_279_218L,
+            )
+        }
+    }
 }
