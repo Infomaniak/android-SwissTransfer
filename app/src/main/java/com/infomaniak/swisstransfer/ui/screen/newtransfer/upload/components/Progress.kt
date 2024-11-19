@@ -52,7 +52,7 @@ fun Progress(
 }
 
 /**
- * Text style is provided through [LocalTextStyle] inside [Progress]
+ * Text style is provided through [LocalTextStyle] inside [Progress], thanks to [ProvideTextStyle].
  */
 @Composable
 private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) {
@@ -67,7 +67,7 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) 
 }
 
 /**
- * Text style is provided through [LocalTextStyle] inside [Progress]
+ * Text style is provided through [LocalTextStyle] inside [Progress], thanks to [ProvideTextStyle].
  */
 @Composable
 private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
@@ -80,7 +80,7 @@ private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
 }
 
 /**
- * Text style is provided through [LocalTextStyle] inside [Progress]
+ * Text style is provided through [LocalTextStyle] inside [Progress], thanks to [ProvideTextStyle].
  */
 @Composable
 private fun TotalSize(totalSizeInBytes: Long) {
