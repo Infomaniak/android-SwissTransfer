@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackScreen
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -49,7 +48,6 @@ class MainActivity : ComponentActivity() {
                 MainScreen()
             }
         }
-        trackScreen()
     }
 }
 
