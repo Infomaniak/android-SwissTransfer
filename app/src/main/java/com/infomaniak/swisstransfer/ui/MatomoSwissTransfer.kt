@@ -24,5 +24,5 @@ import org.matomo.sdk.Tracker
 object MatomoSwissTransfer : Matomo {
 
     override val Context.tracker: Tracker get() = buildTracker() // TODO: Fetch appSettings for opt-out
-    override val siteId: Int = -1 // TODO: Replace with the right site ID when we have one
+    override val siteId: Int = 24
 }
