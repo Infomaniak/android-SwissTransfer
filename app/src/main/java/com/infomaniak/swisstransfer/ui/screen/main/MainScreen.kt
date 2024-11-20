@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackDestination
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
@@ -39,6 +41,8 @@ fun MainScreen() {
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf { navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination }
     }
+
+    navBackStackEntry?.destination?.let { LocalContext.current.trackDestination(it) }
 
     MainScaffold(
         navController = navController,

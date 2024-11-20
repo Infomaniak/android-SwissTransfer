@@ -18,13 +18,22 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackDestination
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun NewTransferScreen(closeActivity: () -> Unit) {
     val navController = rememberNavController()
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    navBackStackEntry?.destination?.let { LocalContext.current.trackDestination(it) }
+
     NewTransferNavHost(navController, closeActivity)
 }
 

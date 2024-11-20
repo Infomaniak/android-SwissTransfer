@@ -17,12 +17,23 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
+import androidx.navigation.NavDestination
 import com.infomaniak.matomo.Matomo
+import com.infomaniak.swisstransfer.BuildConfig
 import org.matomo.sdk.Tracker
 
 object MatomoSwissTransfer : Matomo {
 
     override val Context.tracker: Tracker get() = buildTracker() // TODO: Fetch appSettings for opt-out
     override val siteId: Int = 24
+
+    // This `SuppressLint` is there so the CI can build
+    @SuppressLint("RestrictedApi")
+    fun Context.trackDestination(navDestination: NavDestination) = with(navDestination) {
+        route?.substringAfter("${BuildConfig.APPLICATION_ID}.ui.navigation.")?.let { path ->
+            trackScreen(path)
+        }
+    }
 }
