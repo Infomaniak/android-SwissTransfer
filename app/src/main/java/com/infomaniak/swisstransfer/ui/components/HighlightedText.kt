@@ -77,7 +77,7 @@ fun HighlightedText(
             easing = FastOutSlowInEasing,
             delayMillis = 500,
         ),
-        label = "Highlither progress",
+        label = "Highlighter progress",
     )
 
     Text(
