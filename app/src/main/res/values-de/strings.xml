@@ -125,10 +125,6 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Übertragen</string>
     <string name="transferTypeTitle">Schicken per</string>
-    <string name="transferUploadSourceChoiceCamera">Kamera</string>
-    <string name="transferUploadSourceChoiceFiles">Dateien durchsuchen</string>
-    <string name="transferUploadSourceChoiceGallery">Foto- und Videogalerie</string>
-    <string name="transferUploadSourceChoiceTitle">Herunterladen von</string>
     <string name="uploadCancelConfirmBottomSheetCancel">Übertragung abbrechen</string>
     <string name="uploadCancelConfirmBottomSheetClose">Schliessen und weiter</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Überweisung rückgängig machen willst?</string>

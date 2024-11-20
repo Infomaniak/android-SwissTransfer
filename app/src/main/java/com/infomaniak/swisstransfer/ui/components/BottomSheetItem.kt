@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.Camera
+import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -38,6 +38,8 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 private val BOTTOM_SHEET_ITEM_HEIGHT = 56.dp
 
+// Unused for now, but this is still the official component with the appropriate style of a bottom sheet item so this needs to be
+// used if we ever create a new bottom sheet
 @Composable
 fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick: () -> Unit) {
     SharpRippleButton(
@@ -73,7 +75,7 @@ fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick:
 private fun ChoiceItemPreview() {
     SwissTransferTheme {
         Surface {
-            BottomSheetItem(AppIcons.Camera, R.string.transferUploadSourceChoiceCamera) {}
+            BottomSheetItem(AppIcons.Add, R.string.appName) {}
         }
     }
 }

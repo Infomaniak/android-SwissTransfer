@@ -125,10 +125,6 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transferencia</string>
     <string name="transferTypeTitle">Enviar por</string>
-    <string name="transferUploadSourceChoiceCamera">Cámara</string>
-    <string name="transferUploadSourceChoiceFiles">Examinar archivos</string>
-    <string name="transferUploadSourceChoiceGallery">Galería de fotos y vídeos</string>
-    <string name="transferUploadSourceChoiceTitle">Descargar desde</string>
     <string name="uploadCancelConfirmBottomSheetCancel">Cancelar transferencia</string>
     <string name="uploadCancelConfirmBottomSheetClose">Cerrar y continuar</string>
     <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
