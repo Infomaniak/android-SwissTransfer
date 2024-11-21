@@ -18,15 +18,15 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -124,13 +124,32 @@ private fun UploadProgressScreen(
 
             Spacer(Modifier.height(Margin.Mini))
 
-            // TODO: When the network status changes, the AD and the two strings beneath it move upside-down. Why?
-            if (isNetworkAvailable()) Progress(progressState, totalSizeInBytes) else NetworkUnavailable()
+            SubText(isNetworkAvailable, progressState, totalSizeInBytes)
 
             Spacer(Modifier.height(Margin.Huge))
         }
 
         if (showBottomSheet.get()) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet.set(false) })
+    }
+}
+
+@Composable
+private fun SubText(isNetworkAvailable: () -> Boolean, progressState: () -> UploadProgressUiState, totalSizeInBytes: Long) {
+    Box(
+        modifier = Modifier.height(Margin.Medium),
+        contentAlignment = Alignment.Center,
+    ) {
+        val alpha by animateFloatAsState(
+            targetValue = if (isNetworkAvailable()) 0.0f else 1.0f,
+            animationSpec = tween(),
+            label = "NetworkUnavailable visibility",
+        )
+        Progress(
+            modifier = Modifier.alpha(1 - alpha),
+            progressState = progressState,
+            totalSizeInBytes = totalSizeInBytes,
+        )
+        NetworkUnavailable(modifier = Modifier.alpha(alpha))
     }
 }
 

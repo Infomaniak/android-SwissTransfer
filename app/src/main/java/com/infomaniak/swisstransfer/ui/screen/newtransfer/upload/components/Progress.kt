@@ -22,10 +22,8 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
@@ -37,11 +35,12 @@ import java.util.Locale
 fun Progress(
     progressState: () -> UploadWorker.UploadProgressUiState,
     totalSizeInBytes: Long,
+    modifier: Modifier = Modifier,
 ) {
-    ProvideTextStyle(
-        value = SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor)
+    CompositionLocalProvider(
+        LocalTextStyle provides SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor),
     ) {
-        Row {
+        Row(modifier) {
             Percentage({ progressState().uploadedSize }, totalSizeInBytes)
             Text(text = " - ")
             UploadedSize { progressState().uploadedSize }

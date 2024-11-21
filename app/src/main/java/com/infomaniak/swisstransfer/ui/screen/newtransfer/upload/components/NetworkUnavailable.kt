@@ -34,8 +34,9 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun NetworkUnavailable() {
+fun NetworkUnavailable(modifier: Modifier) {
     Row(
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
         verticalAlignment = Alignment.CenterVertically,
     ) {
