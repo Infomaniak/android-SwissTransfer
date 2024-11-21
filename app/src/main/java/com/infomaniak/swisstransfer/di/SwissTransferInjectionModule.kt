@@ -50,6 +50,10 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
+    fun providesFileManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.fileManager
+
+    @Provides
+    @Singleton
     fun providesAppSettingsManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.appSettingsManager
 
     @Provides
