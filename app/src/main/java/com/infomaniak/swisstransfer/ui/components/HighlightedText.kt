@@ -48,7 +48,7 @@ import kotlin.math.sin
 
 private val VERTICAL_PADDING @Composable get() = with(LocalDensity.current) { 3.sp.toPx() }
 private val HORIZONTAL_PADDING @Composable get() = with(LocalDensity.current) { 10.sp.toPx() }
-private const val ROTATION_ANGLE_DEGREE = -3.0f
+private const val ROTATION_ANGLE_DEGREE = -3.0
 
 @Composable
 fun HighlightedText(
@@ -57,7 +57,7 @@ fun HighlightedText(
     style: TextStyle,
     verticalPadding: Float = VERTICAL_PADDING,
     horizontalPadding: Float = HORIZONTAL_PADDING,
-    angleDegrees: Float = ROTATION_ANGLE_DEGREE,
+    angleDegrees: Double = ROTATION_ANGLE_DEGREE,
 ) {
     val template = stringResource(templateRes)
     val argument = stringResource(argumentRes)
@@ -104,7 +104,7 @@ private fun TextLayoutResult.getArgumentBoundingBoxes(text: String, argument: St
 private fun List<Rect>.transformForHighlightedStyle(
     verticalPadding: Float,
     horizontalPadding: Float,
-    angleDegrees: Float,
+    angleDegrees: Double,
     @FloatRange(0.0, 1.0) progress: Float,
 ): Path = Path().apply {
     forEach { boundingBox ->
@@ -115,7 +115,7 @@ private fun List<Rect>.transformForHighlightedStyle(
 private fun Rect.transformForHighlightedStyle(
     verticalPadding: Float,
     horizontalPadding: Float,
-    angleDegrees: Float,
+    angleDegrees: Double,
     @FloatRange(0.0, 1.0) progress: Float,
 ): Path {
     return getRotatedRectanglePath(
@@ -130,11 +130,11 @@ private fun Rect.transformForHighlightedStyle(
     )
 }
 
-private fun getRotatedRectanglePath(rect: Rect, angleDegrees: Float, @FloatRange(0.0, 1.0) progress: Float): Path {
+private fun getRotatedRectanglePath(rect: Rect, angleDegrees: Double, @FloatRange(0.0, 1.0) progress: Float): Path {
     val centerX = rect.left + (rect.width / 2)
     val centerY = rect.top + (rect.height / 2)
 
-    val angleRadians = Math.toRadians(angleDegrees.toDouble())
+    val angleRadians = Math.toRadians(angleDegrees)
 
     // Function to rotate a point around the center
     fun rotatePoint(x: Float, y: Float, centerX: Float, centerY: Float, angleRadians: Double): Offset {
