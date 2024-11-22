@@ -76,8 +76,6 @@ fun TransferDetailsScreen(
         navigateBack?.invoke()
     } else if (!isLoading) {
         TransferDetailsScreen(
-            transferDetailsViewModel,
-            transferUuid,
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
             navigateBack = navigateBack,

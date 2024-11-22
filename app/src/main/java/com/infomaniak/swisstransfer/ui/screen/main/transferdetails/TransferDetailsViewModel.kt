@@ -60,12 +60,6 @@ class TransferDetailsViewModel @Inject constructor(
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 
-    fun removeTransfer(transferUuid: String) {
-        viewModelScope.launch {
-            transferManager.removeTransfer(transferUuid)
-        }
-    }
-
     sealed class TransferDetailsUiState {
 
         @Immutable
