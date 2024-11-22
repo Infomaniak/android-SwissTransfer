@@ -18,6 +18,9 @@
 package com.infomaniak.swisstransfer.ui.screen.onboarding
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,23 +28,26 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.LargeButton
-import com.infomaniak.swisstransfer.ui.components.SwissTransferFab
+import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
-import com.infomaniak.swisstransfer.ui.images.illus.ArrowRightCurved
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MetallicSafe
 import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.SwissWithFlag
@@ -125,6 +131,11 @@ private fun TitleAndDescription(title: String, description: String) {
     }
 }
 
+private const val BUTTON_ANIM_DURATION = 300
+private const val BUTTON_ANIM_DELAY = BUTTON_ANIM_DURATION / 2
+private const val BUTTON_ANIM_NO_DELAY = 0
+private val FAB_SIZE = 64.dp
+
 @Composable
 private fun BottomContent(
     pagerState: PagerState,
@@ -134,20 +145,64 @@ private fun BottomContent(
     val coroutineScope = rememberCoroutineScope()
     val isLastPage = pagerState.currentPage >= pageCount - 1
 
+    val buttonWidth by animateDpAsState(
+        targetValue = if (isLastPage) Dimens.SingleButtonMaxWidth else FAB_SIZE,
+        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY),
+        label = "Onboarding button width",
+    )
+
+    val buttonHeight by animateDpAsState(
+        targetValue = if (isLastPage) Dimens.LargeButtonHeight else FAB_SIZE,
+        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY),
+        label = "Onboarding button height",
+    )
+
+    val arrowDelay = if (isLastPage) BUTTON_ANIM_NO_DELAY else BUTTON_ANIM_DELAY
+    val arrowVisibility by animateFloatAsState(
+        targetValue = if (isLastPage) 0f else 1f,
+        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY, delayMillis = arrowDelay),
+        label = "Onboarding arrow visibility",
+    )
+
+    val textDelay = if (isLastPage) BUTTON_ANIM_DELAY else BUTTON_ANIM_NO_DELAY
+    val textVisibility by animateFloatAsState(
+        targetValue = if (isLastPage) 1f else 0f,
+        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY, delayMillis = textDelay),
+        label = "Onboarding text visibility",
+    )
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
             .height(136.dp),
     ) {
-        when {
-            isLastPage -> LargeButton(R.string.appName, onClick = startMainActivity)
-            else -> SwissTransferFab(
-                icon = AppImages.AppIllus.ArrowRightCurved,
-                onClick = {
+        SwissTransferButton(
+            modifier = Modifier
+                .height(buttonHeight)
+                .padding(horizontal = Margin.Medium)
+                .width(buttonWidth),
+            onClick = {
+                if (isLastPage) {
+                    startMainActivity()
+                } else {
                     coroutineScope.launch(Dispatchers.IO) { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                 }
-            )
+            },
+            contentPadding = PaddingValues(),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    modifier = Modifier.alpha(arrowVisibility),
+                    imageVector = AppImages.AppIcons.ArrowRight,
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier.alpha(textVisibility),
+                    text = stringResource(id = R.string.appName),
+                    style = SwissTransferTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
