@@ -100,7 +100,7 @@ private fun TransferDetailsScreen(
 
     val context = LocalContext.current
     val transferRecipients: List<String> = emptyList() // TODO: Use real data
-    val transferPassword = "toto42" // TODO: Use real data
+    val transferPassword = transfer.password
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -123,6 +123,7 @@ private fun TransferDetailsScreen(
             BottomBar(
                 direction = direction,
                 isMultiselectOn = { isMultiselectOn },
+                shouldShowPassword = transferPassword != null,
                 onClick = { item ->
                     when (item) {
                         BottomBarItem.SHARE -> context.shareText(transferUrl)
@@ -230,7 +231,12 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-private fun BottomBar(direction: TransferDirection, isMultiselectOn: () -> Boolean, onClick: (BottomBarItem) -> Unit) {
+private fun BottomBar(
+    direction: TransferDirection,
+    isMultiselectOn: () -> Boolean,
+    shouldShowPassword: Boolean,
+    onClick: (BottomBarItem) -> Unit,
+) {
     Column(
         modifier = Modifier
             .height(80.dp)
@@ -250,8 +256,10 @@ private fun BottomBar(direction: TransferDirection, isMultiselectOn: () -> Boole
                         Spacer(Modifier.width(Margin.Medium))
                         BottomBarButton(BottomBarItem.QR_CODE, onClick)
 
-                        Spacer(Modifier.width(Margin.Medium))
-                        BottomBarButton(BottomBarItem.PASSWORD, onClick)
+                        if (shouldShowPassword) {
+                            Spacer(Modifier.width(Margin.Medium))
+                            BottomBarButton(BottomBarItem.PASSWORD, onClick)
+                        }
                     }
                     TransferDirection.RECEIVED -> {
                         Spacer(Modifier.width(Margin.Medium))

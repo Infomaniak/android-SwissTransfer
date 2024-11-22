@@ -40,9 +40,9 @@ import com.infomaniak.swisstransfer.ui.utils.copyText
 import kotlinx.coroutines.launch
 
 @Composable
-fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: String, closeBottomSheet: () -> Unit) {
+fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: String?, closeBottomSheet: () -> Unit) {
 
-    if (!isVisible()) return
+    if (!isVisible() || transferPassword == null) return
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
