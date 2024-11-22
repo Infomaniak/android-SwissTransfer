@@ -15,6 +15,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlin = "2.0.20"
 lifecycleRuntimeKtx = "2.8.7"
+material = "1.8.0-alpha06"
 navigation = "2.8.4"
 qrose = "1.0.1"
 recaptcha = "18.6.1"
@@ -32,9 +33,10 @@ androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constr
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } # TODO: To be removed when compose 1.8.0 is stable
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material3-adaptative-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }

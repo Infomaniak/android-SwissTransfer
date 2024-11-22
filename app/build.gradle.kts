@@ -102,6 +102,8 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
 
+    implementation(libs.androidx.material)
+
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
