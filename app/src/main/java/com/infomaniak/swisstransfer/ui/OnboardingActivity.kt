@@ -17,13 +17,31 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Surface
+import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 class OnboardingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        setContent {
+            SwissTransferTheme {
+                Surface {
+                    OnboardingScreen(
+                        goToMainActivity = {
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
+                    )
+                }
+            }
+        }
     }
 }
