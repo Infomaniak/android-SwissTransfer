@@ -20,9 +20,13 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.getExpiredTransfers
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
@@ -42,6 +46,9 @@ class MainApplication : Application(), Configuration.Provider {
     lateinit var accountUtils: AccountUtils
 
     @Inject
+    lateinit var transferManager: TransferManager
+
+    @Inject
     lateinit var globalCoroutineScope: CoroutineScope
 
     @Inject
@@ -55,6 +62,7 @@ class MainApplication : Application(), Configuration.Provider {
 
         globalCoroutineScope.launch {
             accountUtils.init()
+            collectTransfers()
         }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
@@ -64,5 +72,18 @@ class MainApplication : Application(), Configuration.Provider {
                 if (BuildConfig.DEBUG) null else event
             }
         }
+    }
+
+    private suspend fun collectTransfers() {
+        transferManager.getTransfers(TransferDirection.SENT).collect(::deleteExpiredTransfers)
+        transferManager.getTransfers(TransferDirection.RECEIVED).collect(::deleteExpiredTransfers)
+    }
+
+    private suspend fun deleteExpiredTransfers(transfers: List<TransferUi>) {
+        deleteTransfers(transfers.getExpiredTransfers(since = 15))
+    }
+
+    private suspend fun deleteTransfers(transfers: List<TransferUi>) {
+        transfers.forEach { transferManager.deleteTransfer(it.uuid) }
     }
 }

@@ -20,3 +20,10 @@ package com.infomaniak.swisstransfer.ui.utils
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 
 val TransferUi.isExpired: Boolean get() = expiresInDays < 0 || downloadLeft <= 0
+
+/**
+ * Get Transfers that are expired since a certain amount of days.
+ *
+ * @param since The amount of days since this Transfer is expired.
+ */
+fun List<TransferUi>.getExpiredTransfers(since: Int): List<TransferUi> = filter { it.expiresInDays < -since }
