@@ -29,6 +29,7 @@ import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -45,6 +46,7 @@ fun SwissTransferFab(
     modifier: Modifier = Modifier,
     fabType: FabType = FabType.NORMAL,
     elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
+    icon: ImageVector = AppIcons.Add,
     onClick: () -> Unit,
 ) {
     FloatingActionButton(
@@ -55,7 +57,7 @@ fun SwissTransferFab(
         elevation = elevation,
     ) {
         Icon(
-            imageVector = AppIcons.Add,
+            imageVector = icon,
             contentDescription = stringResource(id = R.string.contentDescriptionCreateNewTransferButton),
         )
     }
