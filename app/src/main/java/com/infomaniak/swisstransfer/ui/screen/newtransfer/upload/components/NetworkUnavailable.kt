@@ -43,13 +43,13 @@ fun NetworkUnavailable(modifier: Modifier) {
         Icon(
             modifier = Modifier.size(Dimens.SmallIconSize),
             imageVector = AppIcons.SignalCrossed,
-            tint = SwissTransferTheme.colors.networkUnavailable,
+            tint = SwissTransferTheme.colors.warning,
             contentDescription = null,
         )
         Text(
             text = stringResource(R.string.networkUnavailable),
             style = SwissTransferTheme.typography.labelRegular,
-            color = SwissTransferTheme.colors.networkUnavailable,
+            color = SwissTransferTheme.colors.warning,
         )
     }
 }

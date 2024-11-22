@@ -124,7 +124,7 @@ private fun UploadProgressScreen(
 
             Spacer(Modifier.height(Margin.Mini))
 
-            SubText(isNetworkAvailable, progressState, totalSizeInBytes)
+            UploadStatus(isNetworkAvailable, progressState, totalSizeInBytes)
 
             Spacer(Modifier.height(Margin.Huge))
         }
@@ -134,9 +134,8 @@ private fun UploadProgressScreen(
 }
 
 @Composable
-private fun SubText(isNetworkAvailable: () -> Boolean, progressState: () -> UploadProgressUiState, totalSizeInBytes: Long) {
+private fun UploadStatus(isNetworkAvailable: () -> Boolean, progressState: () -> UploadProgressUiState, totalSizeInBytes: Long) {
     Box(
-        modifier = Modifier.height(Margin.Medium),
         contentAlignment = Alignment.Center,
     ) {
         val alpha by animateFloatAsState(

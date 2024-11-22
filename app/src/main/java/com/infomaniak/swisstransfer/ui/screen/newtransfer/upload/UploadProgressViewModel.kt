@@ -41,12 +41,8 @@ class UploadProgressViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val isNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
-        .mapLatest {
-            SentryLog.d("Internet availability", if (it) "Available" else "Unavailable")
-            it
-        }
+        .onEach { SentryLog.d("Internet availability", if (it) "Available" else "Unavailable") }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

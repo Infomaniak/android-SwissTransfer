@@ -89,7 +89,7 @@ data class CustomColorScheme(
     val onTransferFilePreviewOverflow: Color = Color.Unspecified,
     val transferListStroke: Color = Color.Unspecified,
     val highlightedColor: Color = Color.Unspecified,
-    val networkUnavailable: Color = Color.Unspecified,
+    val warning: Color = Color.Unspecified,
 )
 
 private val Shapes = Shapes(
