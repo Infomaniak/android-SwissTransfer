@@ -66,7 +66,7 @@ fun FileItemList(
                 onClick = {
                     if (isCheckboxVisible()) {
                         setUidCheckStatus(file.uid, !isUidChecked(file.uid))
-                    } else if (file.isFolder == true) {
+                    } else if (file.isFolder) {
                         onClick?.invoke(file.uid)
                     }
                 },
