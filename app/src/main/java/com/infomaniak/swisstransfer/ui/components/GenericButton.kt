@@ -82,7 +82,7 @@ fun GenericButton(
 }
 
 @Composable
-fun KeepButtonSize(targetSizeContent: @Composable () -> Unit, content: @Composable () -> Unit) {
+private fun KeepButtonSize(targetSizeContent: @Composable () -> Unit, content: @Composable () -> Unit) {
     Box(contentAlignment = Alignment.Center) {
         Row(modifier = Modifier.alpha(0f)) {
             targetSizeContent()
