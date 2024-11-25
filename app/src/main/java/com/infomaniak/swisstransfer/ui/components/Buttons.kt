@@ -51,7 +51,7 @@ fun LargeButton(
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
-    CoreTextButton(
+    CoreButton(
         titleRes,
         modifier,
         ButtonSize.LARGE,
@@ -78,7 +78,7 @@ fun SmallButton(
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
-    CoreTextButton(
+    CoreButton(
         titleRes,
         modifier,
         ButtonSize.SMALL,
@@ -92,7 +92,7 @@ fun SmallButton(
 }
 
 @Composable
-private fun CoreTextButton(
+private fun CoreButton(
     titleRes: Int,
     modifier: Modifier,
     buttonSize: ButtonSize,
