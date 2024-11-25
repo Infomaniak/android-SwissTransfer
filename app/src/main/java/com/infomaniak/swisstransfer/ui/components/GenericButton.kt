@@ -32,6 +32,15 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
+
+/**
+ * Most basic and customizable button component.
+ *
+ * Only needed for exceptional edge cases where [LargeButton] or [SmallButton] are not enough and we need more control over the
+ * button component.
+ *
+ * Specifying a progress has the priority over specifying showIndeterminateProgress.
+ */
 @Composable
 fun GenericButton(
     modifier: Modifier = Modifier,
