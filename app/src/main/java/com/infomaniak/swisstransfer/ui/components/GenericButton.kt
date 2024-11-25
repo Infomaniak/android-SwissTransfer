@@ -80,6 +80,7 @@ fun GenericButton(
         }
     }
 }
+
 @Composable
 fun KeepButtonSize(targetSizeContent: @Composable () -> Unit, content: @Composable () -> Unit) {
     Box(contentAlignment = Alignment.Center) {
@@ -89,6 +90,7 @@ fun KeepButtonSize(targetSizeContent: @Composable () -> Unit, content: @Composab
         content()
     }
 }
+
 @Composable
 private fun getProgressSpecs(buttonColors: ButtonColors): Pair<Color, Modifier> {
     val progressColor = buttonColors.disabledContentColor
