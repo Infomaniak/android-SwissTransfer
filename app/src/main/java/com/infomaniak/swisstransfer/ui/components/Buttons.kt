@@ -56,7 +56,7 @@ fun LargeButton(
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
-    CoreButton(
+    CoreTextButton(
         titleRes,
         modifier,
         ButtonSize.LARGE,
@@ -83,7 +83,7 @@ fun SmallButton(
     onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
-    CoreButton(
+    CoreTextButton(
         titleRes,
         modifier,
         ButtonSize.SMALL,
@@ -97,8 +97,8 @@ fun SmallButton(
 }
 
 @Composable
-private fun CoreButton(
-    @StringRes titleRes: Int,
+private fun CoreTextButton(
+    titleRes: Int,
     modifier: Modifier,
     buttonSize: ButtonSize,
     style: ButtonType,
@@ -108,41 +108,63 @@ private fun CoreButton(
     onClick: () -> Unit,
     imageVector: ImageVector?,
 ) {
+    GenericButton(
+        modifier.height(buttonSize.height),
+        style,
+        enabled,
+        showIndeterminateProgress,
+        progress,
+        onClick,
+    ) {
+        ButtonTextContent(imageVector, titleRes)
+    }
+}
+
+@Composable
+fun GenericButton(
+    modifier: Modifier,
+    style: ButtonType = ButtonType.PRIMARY,
+    enabled: () -> Boolean = { true },
+    showIndeterminateProgress: () -> Boolean = { false },
+    progress: (() -> Float)? = null,
+    onClick: () -> Unit,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    content: @Composable () -> Unit,
+) {
     val isEnabled by remember(progress) { derivedStateOf { enabled() && !showIndeterminateProgress() && progress == null } }
     val buttonColors = style.buttonColors()
 
     Button(
-        modifier = modifier.height(buttonSize.height),
+        modifier = modifier,
         colors = buttonColors,
         shape = CustomShapes.MEDIUM,
         enabled = isEnabled,
+        contentPadding = contentPadding,
         onClick = onClick,
     ) {
         when {
             progress != null -> {
                 val (progressColor, progressModifier) = getProgressSpecs(buttonColors)
-                KeepButtonSize(imageVector, titleRes) {
+                KeepButtonSize(content) {
                     CircularProgressIndicator(modifier = progressModifier, color = progressColor, progress = progress)
                 }
             }
             showIndeterminateProgress() -> {
                 val (progressColor, progressModifier) = getProgressSpecs(buttonColors)
-                KeepButtonSize(imageVector, titleRes) {
+                KeepButtonSize(content) {
                     CircularProgressIndicator(modifier = progressModifier, color = progressColor)
                 }
             }
-            else -> {
-                ButtonTextContent(imageVector, titleRes)
-            }
+            else -> content()
         }
     }
 }
 
 @Composable
-fun KeepButtonSize(imageVector: ImageVector?, titleRes: Int, content: @Composable () -> Unit) {
+fun KeepButtonSize(targetSizeContent: @Composable () -> Unit, content: @Composable () -> Unit) {
     Box(contentAlignment = Alignment.Center) {
         Row(modifier = Modifier.alpha(0f)) {
-            ButtonTextContent(imageVector, titleRes)
+            targetSizeContent()
         }
         content()
     }
