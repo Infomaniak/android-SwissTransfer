@@ -259,7 +259,9 @@ fun OnboardingPageContent(page: OnboardingPage) {
     ) {
         Image(page.background, contentDescription = null, modifier = Modifier.fillMaxSize())
         Column(
-            modifier = Modifier.fillMaxHeight(),
+            modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly,
         ) {
