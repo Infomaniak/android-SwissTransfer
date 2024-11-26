@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +53,7 @@ private const val ROTATION_ANGLE_DEGREE = -3.0
 
 @Composable
 fun HighlightedText(
+    modifier: Modifier = Modifier,
     templateRes: Int,
     argumentRes: Int,
     style: TextStyle,
@@ -83,8 +85,9 @@ fun HighlightedText(
     Text(
         text = text,
         style = style,
+        textAlign = TextAlign.Center,
         onTextLayout = { layoutResult -> boundingBoxes = layoutResult.getArgumentBoundingBoxes(text, argument) },
-        modifier = Modifier.drawBehind {
+        modifier = modifier.drawBehind {
             val highlightedPath = boundingBoxes.transformForHighlightedStyle(
                 verticalPadding,
                 horizontalPadding,
