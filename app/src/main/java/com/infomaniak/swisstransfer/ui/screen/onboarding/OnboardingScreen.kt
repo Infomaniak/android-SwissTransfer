@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.onboarding
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -27,7 +28,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -45,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -70,8 +74,9 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             illustration = { Illustration(AppIllus.StorageBoxPile) },
             text = {
                 TitleAndDescription(
-                    "Salut",
-                    "C'est cool comme app je vous conseil de l'essayer vous verrez que c'est toute une expérience"
+                    R.string.onboardingStorageTitle,
+                    R.string.onboardingStorageSubtitleTemplate,
+                    R.string.onboardingStorageSubtitleArgument,
                 )
             }
         ),
@@ -80,8 +85,9 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             illustration = { Illustration(AppIllus.ThreeCardsTransferType) },
             text = {
                 TitleAndDescription(
-                    "Salut",
-                    "C'est cool comme app je vous conseil de l'essayer vous verrez que c'est toute une expérience"
+                    R.string.onboardingExpirationTitle,
+                    R.string.onboardingExpirationSubtitleTemplate,
+                    R.string.onboardingExpirationSubtitleArgument,
                 )
             }
         ),
@@ -90,8 +96,9 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             illustration = { Illustration(AppIllus.TwoPadlocksIntertwinedStars) },
             text = {
                 TitleAndDescription(
-                    "Salut",
-                    "C'est cool comme app je vous conseil de l'essayer vous verrez que c'est toute une expérience"
+                    R.string.onboardingPasswordTitle,
+                    R.string.onboardingPasswordSubtitleTemplate,
+                    R.string.onboardingPasswordSubtitleArgument,
                 )
             }
         ),
@@ -119,16 +126,21 @@ private fun Illustration(illustration: ThemedImage) {
 }
 
 @Composable
-private fun TitleAndDescription(title: String, description: String) {
+private fun TitleAndDescription(
+    @StringRes titleRes: Int,
+    @StringRes subtitleTemplateRes: Int,
+    @StringRes subtitleArgumentRes: Int,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(textAlign = TextAlign.Center, text = title, style = SwissTransferTheme.typography.h1)
-        Text(
-            modifier = Modifier
-                .widthIn(max = Dimens.DescriptionWidth)
-                .padding(Margin.Medium),
-            textAlign = TextAlign.Center,
-            text = description,
-            style = SwissTransferTheme.typography.specificLight22
+        Text(textAlign = TextAlign.Center, text = stringResource(titleRes), style = SwissTransferTheme.typography.specificLight22)
+
+        Spacer(modifier = Modifier.height(Margin.Mini))
+
+        HighlightedText(
+            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
+            templateRes = subtitleTemplateRes,
+            argumentRes = subtitleArgumentRes,
+            style = SwissTransferTheme.typography.h1,
         )
     }
 }

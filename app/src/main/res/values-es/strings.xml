@@ -52,6 +52,15 @@
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="noTransferSelectedDescription">Selecciona una transferencia o crea una nueva.</string>
     <string name="noTransferSelectedTitle">No hay transferencias que mostrar</string>
+    <string name="onboardingExpirationSubtitleArgument">30 días.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Comparte tus archivos por correo, enlace o código QR. Tus enlaces estarán activos durante %s</string>
+    <string name="onboardingExpirationTitle">¡Juega tus mejores cartas!</string>
+    <string name="onboardingPasswordSubtitleArgument">una contraseña.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Protege tus compartidos con %s</string>
+    <string name="onboardingPasswordTitle">¡Mantén el control!</string>
+    <string name="onboardingStorageSubtitleArgument">Comparte hasta 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s de archivos gratis y sin necesidad de registro.</string>
+    <string name="onboardingStorageTitle">¡Envía a lo grande!</string>
     <string name="receivedFilesTitle">Archivos recibidos</string>
     <string name="receivedTitle">Recibido</string>
     <plurals name="recipientHeader">
