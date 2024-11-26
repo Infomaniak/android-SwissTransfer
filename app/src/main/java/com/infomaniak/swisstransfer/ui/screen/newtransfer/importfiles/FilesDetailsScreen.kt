@@ -85,7 +85,7 @@ private fun FilesDetailsScreen(
             TopAppBarButton.closeButton { onCloseClicked() },
         )
 
-        FilesSize(files, withSpaceLeft)
+        FilesSize(files, withFileSize = false, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
             files = files,
