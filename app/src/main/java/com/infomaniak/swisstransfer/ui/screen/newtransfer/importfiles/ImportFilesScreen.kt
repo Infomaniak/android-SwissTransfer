@@ -148,8 +148,6 @@ private fun ImportFilesScreen(
     sendTransfer: () -> Unit,
 ) {
     val context = LocalContext.current
-    var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
-    var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
 
     val importedFiles = files()
     val humanReadableSize = remember(importedFiles) {
@@ -157,23 +155,6 @@ private fun ImportFilesScreen(
         val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
         getHumanReadableSize(context, spaceLeft)
     }
-
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenMultipleDocuments()
-    ) { uris: List<Uri> ->
-        addFiles(uris)
-    }
-
-    fun pickFiles() {
-        shouldShowInitialFilePick = false
-        filePickerLauncher.launch(arrayOf("*/*"))
-    }
-
-    fun closeTransferOption() {
-        showTransferOption = null
-    }
-
-    LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
     BottomStickyButtonScaffold(
         topBar = {
@@ -192,14 +173,7 @@ private fun ImportFilesScreen(
                     .padding(vertical = Margin.Large)
                     .verticalScroll(rememberScrollState()),
             ) {
-                ImportFilesTitle(modifier = Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.myFilesTitle)
-                ImportedFilesCard(
-                    modifier = Modifier.padding(Margin.Medium),
-                    files = files,
-                    humanReadableSize = { humanReadableSize },
-                    pickFiles = ::pickFiles,
-                    removeFileByUid = removeFileByUid,
-                )
+                FilesToImport(files, humanReadableSize, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
                 ImportTextFields(
                     modifier = Modifier
                         .padding(horizontal = Margin.Medium)
@@ -207,18 +181,42 @@ private fun ImportFilesScreen(
                     transferMessage = transferMessage,
                     selectedTransferType = selectedTransferType.get,
                 )
-                ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.transferTypeTitle)
-                TransferTypeButtons(selectedTransferType)
-                ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.advancedSettingsTitle)
-                TransferOptionsTypes(
-                    modifier = Modifier.padding(horizontal = Margin.Medium),
-                    transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
-                    onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
-                )
+                SendByOptions(selectedTransferType)
+                TransferOptions(transferOptionsCallbacks)
             }
-
-            TransferOptions({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
         }
+    )
+}
+
+@Composable
+private fun FilesToImport(
+    files: () -> List<FileUi>,
+    humanReadableSize: String,
+    removeFileByUid: (uid: String) -> Unit,
+    addFiles: (List<Uri>) -> Unit,
+    shouldStartByPromptingUserForFiles: Boolean,
+) {
+    var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments(),
+        onResult = addFiles,
+    )
+
+    fun pickFiles() {
+        shouldShowInitialFilePick = false
+        filePickerLauncher.launch(arrayOf("*/*"))
+    }
+
+    LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
+
+    ImportFilesTitle(modifier = Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.myFilesTitle)
+    ImportedFilesCard(
+        modifier = Modifier.padding(Margin.Medium),
+        files = files,
+        humanReadableSize = { humanReadableSize },
+        pickFiles = ::pickFiles,
+        removeFileByUid = removeFileByUid,
     )
 }
 
@@ -228,9 +226,7 @@ private fun ColumnScope.ImportTextFields(
     transferMessage: GetSetCallbacks<String>,
     selectedTransferType: () -> TransferTypeUi,
 ) {
-
     EmailAddressesTextFields(modifier, selectedTransferType)
-
     SwissTransferTextField(
         modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
@@ -264,7 +260,31 @@ private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTra
 }
 
 @Composable
-private fun TransferOptions(
+private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
+    ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.transferTypeTitle)
+    TransferTypeButtons(selectedTransferType)
+}
+
+@Composable
+private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks) {
+
+    var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
+
+    fun closeTransferOption() {
+        showTransferOption = null
+    }
+
+    ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.advancedSettingsTitle)
+    TransferOptionsTypes(
+        modifier = Modifier.padding(horizontal = Margin.Medium),
+        transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
+        onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
+    )
+    TransferOptionsDialogs({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
+}
+
+@Composable
+private fun TransferOptionsDialogs(
     selectedOptionType: () -> TransferOptionType?,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     closeTransferOption: () -> Unit,
@@ -299,6 +319,15 @@ private fun TransferOptions(
 }
 
 @Composable
+private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+    Text(
+        modifier = modifier,
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        text = stringResource(titleRes),
+    )
+}
+
+@Composable
 private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
@@ -325,15 +354,6 @@ private fun SendButton(
         enabled = { importedFiles().isNotEmpty() && !isImporting },
         progress = progress,
         onClick = navigateToUploadProgress,
-    )
-}
-
-@Composable
-private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
-    Text(
-        text = stringResource(titleRes),
-        style = SwissTransferTheme.typography.bodySmallRegular,
-        modifier = modifier,
     )
 }
 
