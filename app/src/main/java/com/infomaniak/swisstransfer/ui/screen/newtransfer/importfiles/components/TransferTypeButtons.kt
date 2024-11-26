@@ -22,11 +22,14 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -42,7 +45,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun TransferTypeButtons(transferType: GetSetCallbacks<TransferTypeUi>) {
     Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .windowInsetsPadding(insets = WindowInsets(left = Margin.Medium, top = 0.dp, right = Margin.Medium, bottom = 0.dp)),
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
     ) {
         for (transferTypeEntry in TransferTypeUi.entries) {

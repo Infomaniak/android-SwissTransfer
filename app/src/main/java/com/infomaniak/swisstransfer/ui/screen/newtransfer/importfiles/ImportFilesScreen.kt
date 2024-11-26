@@ -189,22 +189,29 @@ private fun ImportFilesScreen(
         content = {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = Margin.Medium, vertical = Margin.Large)
+                    .padding(vertical = Margin.Large)
                     .verticalScroll(rememberScrollState()),
             ) {
-                ImportFilesTitle(titleRes = R.string.myFilesTitle)
+                ImportFilesTitle(modifier = Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.myFilesTitle)
                 ImportedFilesCard(
-                    modifier = Modifier.padding(vertical = Margin.Medium),
+                    modifier = Modifier.padding(Margin.Medium),
                     files = files,
                     humanReadableSize = { humanReadableSize },
                     pickFiles = ::pickFiles,
                     removeFileByUid = removeFileByUid,
                 )
-                ImportTextFields(transferMessage, selectedTransferType.get)
-                ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
+                ImportTextFields(
+                    modifier = Modifier
+                        .padding(horizontal = Margin.Medium)
+                        .fillMaxWidth(),
+                    transferMessage = transferMessage,
+                    selectedTransferType = selectedTransferType.get,
+                )
+                ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.transferTypeTitle)
                 TransferTypeButtons(selectedTransferType)
-                ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
+                ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.advancedSettingsTitle)
                 TransferOptionsTypes(
+                    modifier = Modifier.padding(horizontal = Margin.Medium),
                     transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
                     onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
                 )
@@ -216,12 +223,16 @@ private fun ImportFilesScreen(
 }
 
 @Composable
-private fun ColumnScope.ImportTextFields(transferMessage: GetSetCallbacks<String>, selectedTransferType: () -> TransferTypeUi) {
+private fun ColumnScope.ImportTextFields(
+    modifier: Modifier,
+    transferMessage: GetSetCallbacks<String>,
+    selectedTransferType: () -> TransferTypeUi,
+) {
 
-    EmailAddressesTextFields(selectedTransferType)
+    EmailAddressesTextFields(modifier, selectedTransferType)
 
     SwissTransferTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
         isRequired = false,
         minLineNumber = 3,
@@ -230,20 +241,20 @@ private fun ColumnScope.ImportTextFields(transferMessage: GetSetCallbacks<String
 }
 
 @Composable
-private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> TransferTypeUi) {
+private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTransferType: () -> TransferTypeUi) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferTypeUi.MAIL } }
 
     AnimatedVisibility(visible = shouldShowEmailAddressesFields) {
         Column {
             SwissTransferTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier,
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
                 onValueChange = { /* TODO */ },
             )
             Spacer(Modifier.height(Margin.Medium))
             SwissTransferTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier,
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 onValueChange = { /* TODO */ },
             )
