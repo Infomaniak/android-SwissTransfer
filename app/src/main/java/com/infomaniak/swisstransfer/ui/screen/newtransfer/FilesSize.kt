@@ -41,16 +41,21 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceL
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 
 @Composable
-fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
+fun FilesSize(files: List<FileUi>, withFileSize: Boolean, withSpaceLeft: Boolean) {
     Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
         Spacer(Modifier.size(Margin.Medium))
         val context = LocalContext.current
+        val secondText = if (withFileSize) {
+            HumanReadableSizeUtils.getHumanReadableSize(context, files.sumOf { it.fileSize })
+        } else {
+            ""
+        }
         TextDotText(
             firstText = {
                 val filesCount = files.count()
                 pluralStringResource(R.plurals.filesCount, filesCount, filesCount)
             },
-            secondText = { HumanReadableSizeUtils.getHumanReadableSize(context, files.sumOf { it.fileSize }) },
+            secondText = { secondText },
         )
         if (withSpaceLeft) {
             val spaceLeft = formatSpaceLeft { context.getSpaceLeft(files) }
@@ -71,7 +76,7 @@ fun FilesSize(files: List<FileUi>, withSpaceLeft: Boolean) {
 fun FileSizePreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         Surface {
-            FilesSize(files, withSpaceLeft = true)
+            FilesSize(files, withFileSize = false, withSpaceLeft = true)
         }
     }
 }
