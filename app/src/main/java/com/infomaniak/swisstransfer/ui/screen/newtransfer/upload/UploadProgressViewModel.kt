@@ -48,7 +48,7 @@ class UploadProgressViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = UploadWorker.UploadProgressUiState.Default,
+        initialValue = UploadWorker.UploadProgressUiState.Default(),
     )
 
     fun trackUploadProgress() {
