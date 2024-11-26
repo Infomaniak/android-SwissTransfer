@@ -39,6 +39,7 @@ val transfersPreviewData = listOf(
         downloadLimit = 1,
         downloadLeft = 1,
         message = "Coucou c'est moi le message de description du transfert.",
+        password = "password",
         files = filesPreviewData,
     ),
     TransferUi(
@@ -52,6 +53,7 @@ val transfersPreviewData = listOf(
         downloadLimit = 20,
         downloadLeft = 0,
         message = null,
+        password = null,
         files = filesPreviewData,
     ),
     TransferUi(
@@ -65,6 +67,7 @@ val transfersPreviewData = listOf(
         downloadLimit = 250,
         downloadLeft = 123,
         message = "3ème transfert. RAS.",
+        password = "my password",
         files = filesPreviewData,
     ),
 )
