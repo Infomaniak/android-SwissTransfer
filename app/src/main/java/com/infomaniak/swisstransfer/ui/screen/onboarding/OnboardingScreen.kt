@@ -47,10 +47,13 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
-import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MetallicSafe
-import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.SwissWithFlag
+import com.infomaniak.swisstransfer.ui.images.illus.onboarding.StorageBoxPile
+import com.infomaniak.swisstransfer.ui.images.illus.onboarding.ThreeCardsTransferType
+import com.infomaniak.swisstransfer.ui.images.illus.onboarding.TwoPadlocksIntertwinedStars
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -63,10 +66,8 @@ import kotlinx.coroutines.launch
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
     val onboardingPages = listOf(
         OnboardingPage(
-            background = AppImages.AppIllus.Matomo.image(),
-            illustration = {
-                Image(AppImages.AppIllus.MetallicSafe.image(), contentDescription = null)
-            },
+            background = AppIllus.Matomo.image(),
+            illustration = { Illustration(AppIllus.StorageBoxPile) },
             text = {
                 TitleAndDescription(
                     "Salut",
@@ -75,10 +76,8 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             }
         ),
         OnboardingPage(
-            background = AppImages.AppIllus.Matomo.image(),
-            illustration = {
-                Image(AppImages.AppIllus.SwissWithFlag.image(), contentDescription = null)
-            },
+            background = AppIllus.Matomo.image(),
+            illustration = { Illustration(AppIllus.ThreeCardsTransferType) },
             text = {
                 TitleAndDescription(
                     "Salut",
@@ -87,10 +86,8 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             }
         ),
         OnboardingPage(
-            background = AppImages.AppIllus.Matomo.image(),
-            illustration = {
-                Image(AppImages.AppIllus.MetallicSafe.image(), contentDescription = null)
-            },
+            background = AppIllus.Matomo.image(),
+            illustration = { Illustration(AppIllus.TwoPadlocksIntertwinedStars) },
             text = {
                 TitleAndDescription(
                     "Salut",
@@ -114,6 +111,11 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
         onboardingPages = onboardingPages,
         bottomContent = { BottomContent(pagerState, onboardingPages.size, goToMainActivity) },
     )
+}
+
+@Composable
+private fun Illustration(illustration: ThemedImage) {
+    Image(illustration.image(), contentDescription = null)
 }
 
 @Composable
