@@ -65,16 +65,14 @@ fun TransferDetailsScreen(
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
-    val isLoading by remember { derivedStateOf { uiState is Loading } }
-    val isDelete by remember { derivedStateOf { uiState is Delete } }
 
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid)
     }
 
-    if (isDelete) {
+    if (uiState is Delete) {
         navigateBack?.invoke()
-    } else if (!isLoading) {
+    } else if (uiState is Success) {
         TransferDetailsScreen(
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
