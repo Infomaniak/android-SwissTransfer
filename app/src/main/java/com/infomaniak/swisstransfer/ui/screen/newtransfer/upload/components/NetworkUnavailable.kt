@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,9 +33,10 @@ import com.infomaniak.swisstransfer.ui.images.icons.SignalCrossed
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun NetworkUnavailable(modifier: Modifier) {
+fun NetworkUnavailable(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
@@ -51,5 +53,15 @@ fun NetworkUnavailable(modifier: Modifier) {
             style = SwissTransferTheme.typography.labelRegular,
             color = SwissTransferTheme.colors.warning,
         )
+    }
+}
+
+@PreviewLightAndDark
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            NetworkUnavailable()
+        }
     }
 }
