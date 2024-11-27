@@ -60,14 +60,6 @@ fun TransferItemList(
 
         item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
-        // item { AnchoredDraggableAnchorsFromCompositionSample() }
-        // item { DraggableAnchorsSample() }
-        // item { AnchoredDraggableCustomAnchoredSample() } // TODO: C'est juste une animation
-        // item { AnchoredDraggableLayoutDependentAnchorsSample() } // TODO: Ça plante
-        // item { AnchoredDraggableWithOverscrollSample() } // TODO: Ça plante
-        // item { AnchoredDraggableProgressSample() } // TODO: Ça plante
-        // item { AnchoredDraggableDynamicAnchorsSample() } // TODO: Ça plante
-
         items(
             count = getTransfers().count(),
             key = { getTransfers()[it].uuid },
