@@ -46,8 +46,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 /**
  * Wrapper for Material's [OutlinedTextField] that enforce our design needs.
+ *
  * By default, this TextField is single lined. You can specify [maxLineNumber] or [minLineNumber] to make it multi-lined
+ *
  * If [isPassword] value is true, the [keyboardType] field will be ignored to force [KeyboardType.Password]
+ *
+ * To set an error message, you need to pass this message as [supportingText] and set [isError] to true
  */
 @Composable
 fun SwissTransferTextField(
@@ -62,8 +66,8 @@ fun SwissTransferTextField(
     imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isReadOnly: Boolean = false,
-    errorMessage: @Composable () -> String? = { null },
-    supportingText: String? = null,
+    isError: Boolean = false,
+    supportingText: @Composable ((Boolean) -> Unit)? = null,
     onValueChange: ((String) -> Unit)? = null,
 ) {
 
@@ -72,6 +76,7 @@ fun SwissTransferTextField(
     var text by rememberSaveable { mutableStateOf(initialValue) }
 
     val displayLabel = if (isRequired) label else "$label ${stringResource(R.string.textFieldOptional)}"
+    val shouldDisplayError = isError && text.isNotEmpty()
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
         unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
@@ -79,17 +84,6 @@ fun SwissTransferTextField(
         unfocusedTrailingIconColor = SwissTransferTheme.colors.iconColor,
         disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
     )
-
-    @Composable
-    fun getSupportingText(): (@Composable () -> Unit)? {
-        val displayText = if (text.isEmpty()) {
-            supportingText
-        } else {
-            errorMessage() ?: supportingText
-        }
-
-        return displayText?.let { @Composable { Text(it) } }
-    }
 
     OutlinedTextField(
         modifier = modifier,
@@ -119,8 +113,8 @@ fun SwissTransferTextField(
             imeAction = imeAction,
         ),
         keyboardActions = keyboardActions,
-        isError = errorMessage() != null && text.isNotEmpty(),
-        supportingText = getSupportingText(),
+        isError = shouldDisplayError,
+        supportingText = supportingText?.let { { it.invoke(shouldDisplayError) } },
     )
 }
 
@@ -139,18 +133,21 @@ private fun getShowPasswordButton(shouldShowPassword: Boolean, onClick: () -> Un
 @Composable
 @Preview
 private fun Preview() {
+    val supportingText = "supporting Text"
+    val initialValue = "initialValue"
+
     SwissTransferTheme {
         Surface {
             Column(Modifier.padding(Margin.Medium)) {
                 SwissTransferTextField(
                     label = stringResource(R.string.transferMessagePlaceholder),
                     initialValue = "test",
-                    errorMessage = { null },
                 )
                 SwissTransferTextField(
                     keyboardType = KeyboardType.Email,
                     initialValue = "a@a@.com",
-                    errorMessage = { "Invalid address" },
+                    supportingText = { Text("Invalid address") },
+                    isError = true,
                     label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 )
                 SwissTransferTextField(
@@ -160,25 +157,25 @@ private fun Preview() {
                 )
                 SwissTransferTextField(
                     maxLineNumber = 10,
-                    initialValue = "initial value",
+                    initialValue = initialValue,
                     isRequired = false,
                     label = stringResource(R.string.transferMessagePlaceholder),
-                    supportingText = "supporting Text",
+                    supportingText = { Text(supportingText) },
                 )
                 SwissTransferTextField(
                     maxLineNumber = 10,
-                    initialValue = "initial value",
+                    initialValue = initialValue,
                     isPassword = true,
                     label = stringResource(R.string.settingsOptionPassword),
-                    supportingText = "supporting Text",
+                    supportingText = { Text(supportingText) },
                 )
                 SwissTransferTextField(
                     maxLineNumber = 10,
-                    initialValue = "initial value",
+                    initialValue = initialValue,
                     isPassword = true,
                     label = stringResource(R.string.settingsOptionPassword),
-                    errorMessage = { "Wrong password" },
-                    supportingText = "supporting Text",
+                    isError = true,
+                    supportingText = { Text("Wrong password") },
                 )
             }
         }

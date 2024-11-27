@@ -77,7 +77,7 @@ private fun BasicAlertDialogContent(
         Spacer(Modifier.height(Margin.Large))
         additionalContent?.let {
             it()
-            Spacer(Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Mini))
         }
         ActionButtons(onDismiss, onConfirmation, shouldEnableConfirmButton)
     }

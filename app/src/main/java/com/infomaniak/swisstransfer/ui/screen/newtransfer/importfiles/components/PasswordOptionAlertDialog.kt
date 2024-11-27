@@ -18,10 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -75,9 +72,10 @@ fun PasswordOptionAlertDialog(
         descriptionRes = R.string.settingsPasswordDescription,
         onDismiss = ::onDismiss,
         onConfirmation = ::onConfirmButtonClicked,
-        shouldEnableConfirmButton = { if (isPasswordActivated) isPasswordValid() else true },
+        shouldEnableConfirmButton = { !isPasswordActivated || isPasswordValid() },
     ) {
         ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
+        Spacer(Modifier.height(Margin.Medium))
         AnimatedPasswordInput(isPasswordActivated, password, isPasswordValid)
     }
 }
@@ -102,13 +100,17 @@ private fun ColumnScope.AnimatedPasswordInput(
     isPasswordValid: () -> Boolean
 ) {
     AnimatedVisibility(isChecked) {
-        Spacer(Modifier.height(Margin.Mini))
         SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
             label = stringResource(R.string.settingsOptionPassword),
             isPassword = true,
             initialValue = password.get(),
             imeAction = ImeAction.Done,
-            errorMessage = { if (isPasswordValid()) null else stringResource(R.string.errorTransferPasswordLength) },
+            isError = !isPasswordValid(),
+            supportingText = { isError ->
+                val errorText = if (isError) stringResource(R.string.errorTransferPasswordLength) else ""
+                Text(text = errorText, minLines = 2)
+            },
             onValueChange = { password.set(it) },
         )
     }

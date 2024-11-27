@@ -102,8 +102,8 @@ val AppIcons.QrCode: ImageVector
                 arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, -1.5f)
                 verticalLineToRelative(-3.75f)
             }
-        }
-            .build()
+        }.build()
+
         return _qrCode!!
     }
 
