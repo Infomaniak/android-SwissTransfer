@@ -44,6 +44,7 @@
     <string name="importFilesScreenTitle">Fichiers à transférer</string>
     <string name="messageHeader">Message :</string>
     <string name="myFilesTitle">Mes fichiers</string>
+    <string name="networkUnavailable">En attente de réseau…</string>
     <string name="noFileDescription">Ajoute jusqu’à 50 Go de fichiers</string>
     <string name="noFileTitle">Pas de fichier, pas de transfert !</string>
     <string name="noTransferReceivedDescription">Tous les transferts que tu recevras sur les 30 derniers jours apparaitront ici.</string>

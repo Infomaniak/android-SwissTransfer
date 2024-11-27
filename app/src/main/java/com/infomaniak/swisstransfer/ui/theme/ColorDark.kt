@@ -42,6 +42,7 @@ private const val elephant = 0xFF666666
 private const val white = 0xFFFFFFFF
 private const val black_translucent = 0x80000000
 
+private const val warning = 0xFFFFAA4C
 private const val error = 0xFFFC8878
 
 val DarkColorScheme = darkColorScheme(
@@ -93,4 +94,5 @@ val CustomDarkColorScheme = CustomColorScheme(
     onTransferFilePreviewOverflow = Color(green_main),
     transferListStroke = Color(green_main),
     highlightedColor = Color(green_dark),
+    warning = Color(warning),
 )

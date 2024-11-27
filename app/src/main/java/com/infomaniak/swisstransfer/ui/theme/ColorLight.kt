@@ -43,6 +43,7 @@ private const val on_primary = 0xFFF7FCFA
 private const val white = 0xFFFFFFFF
 private const val black_translucent = 0x80000000
 
+private const val warning = 0xFFFF8500
 private const val error = 0xFFF44336
 
 val LightColorScheme = lightColorScheme(
@@ -94,4 +95,5 @@ val CustomLightColorScheme = CustomColorScheme(
     onTransferFilePreviewOverflow = Color(green_contrast),
     transferListStroke = Color(green_dark),
     highlightedColor = Color(green_secondary),
+    warning = Color(warning),
 )
