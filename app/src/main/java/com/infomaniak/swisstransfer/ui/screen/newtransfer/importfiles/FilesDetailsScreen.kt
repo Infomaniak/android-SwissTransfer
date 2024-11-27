@@ -43,6 +43,7 @@ fun FilesDetailsScreen(
     transferUuid: String? = null,
     fileUuid: String? = null,
     navigateToDetails: (String?, String) -> Unit,
+    withFileSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     onCloseClicked: (() -> Unit),
@@ -58,6 +59,7 @@ fun FilesDetailsScreen(
         transferUuid = transferUuid,
         files = files ?: emptyList(),
         navigateToDetails = navigateToDetails,
+        withFileSize = withFileSize,
         withSpaceLeft = withSpaceLeft,
         onFileRemoved = if (withFileDelete) {
             { importFilesViewModel.removeFileByUid(it) }
@@ -73,6 +75,7 @@ private fun FilesDetailsScreen(
     transferUuid: String?,
     files: List<FileUi>,
     navigateToDetails: (String?, String) -> Unit,
+    withFileSize: Boolean,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
     onCloseClicked: (() -> Unit),
@@ -85,7 +88,7 @@ private fun FilesDetailsScreen(
             TopAppBarButton.closeButton { onCloseClicked() },
         )
 
-        FilesSize(files, withFileSize = false, withSpaceLeft)
+        FilesSize(files, withFileSize = withFileSize, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
             files = files,
@@ -112,6 +115,7 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
                 transferUuid = "",
                 files = files,
                 navigateToDetails = { _, _ -> },
+                withFileSize = true,
                 withSpaceLeft = true,
                 onCloseClicked = {},
                 onFileRemoved = {},

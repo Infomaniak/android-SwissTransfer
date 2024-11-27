@@ -74,6 +74,7 @@ fun MainNavHost(
                 transferUuid = filesDetailsDestination.transferUuid,
                 fileUuid = filesDetailsDestination.fileUuid,
                 navigateBack = { navController.popBackStack() },
+                withFileSize = false,
                 withSpaceLeft = false,
                 withFileDelete = false,
                 onCloseClicked = {},
