@@ -46,8 +46,8 @@ import kotlinx.parcelize.Parcelize
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(
-    navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit,
-	direction: TransferDirection,
+    navigateToFilesDetails: (folderUuid: String) -> Unit,
+    direction: TransferDirection
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -94,9 +94,8 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun DetailPane(
-	navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-	hasTransfer: Boolean,
-	navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit,
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
 
     val destinationContent = navigator.safeCurrentContent()
@@ -108,7 +107,7 @@ private fun DetailPane(
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
-            navigateToFilesDetails = navigateToFilesDetails
+            navigateToFilesDetails = navigateToFilesDetails,
         )
     }
 }
@@ -141,7 +140,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(navigateToFilesDetails = { _, _ -> }, TransferDirection.RECEIVED)
+            TransfersScreenWrapper(navigateToFilesDetails = { _ -> }, TransferDirection.RECEIVED)
         }
     }
 }
