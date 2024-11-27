@@ -37,9 +37,8 @@ fun Progress(
     totalSizeInBytes: Long,
     modifier: Modifier = Modifier,
 ) {
-    CompositionLocalProvider(
-        LocalTextStyle provides SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor),
-    ) {
+    val style = SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor)
+    CompositionLocalProvider(value = LocalTextStyle provides style) {
         Row(modifier) {
             Percentage({ progressState().uploadedSize }, totalSizeInBytes)
             Text(text = " - ")
