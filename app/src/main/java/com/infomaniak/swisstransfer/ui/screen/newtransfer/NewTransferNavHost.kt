@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.FilesDetailsDestination
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
@@ -44,8 +45,8 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadProgress = { transferType, totalSize ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
-                navigateToFilesDetails = { fileUuid ->
-                    navController.navigate(FilesDetailsDestination(fileUuid))
+                navigateToFilesDetails = {
+                    navController.navigate(FilesDetailsDestination)
                 }
             )
         }
@@ -75,14 +76,11 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadErrorScreen(navigateToImportFiles = { navController.navigate(ImportFilesDestination) })
         }
         composable<FilesDetailsDestination> {
-            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
             val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
             FilesDetailsScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
-                navigateToDetails = { transferUuid, fileId ->
-                    navController.navigate(FilesDetailsDestination(transferUuid, fileId))
-                },
-                fileUuid = filesDetailsDestination.fileUuid,
+                navigateToDetails = { _, _ -> navController.navigate(FilesDetailsDestination) },
+                withFileSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,
                 onCloseClicked = {},
