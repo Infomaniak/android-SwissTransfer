@@ -68,7 +68,6 @@ fun SwipeToDismissComponent(
         //     // TODO: This check triggers twice, why ?? :(
         //     if (shouldDismiss) {
         //         Log.i("TOTO", "SwipeToDismiss state : $value")
-        //         // TODO: We should probably add an animation here
         //         onSwiped()
         //     } else {
         //         Log.d("TOTO", "SwipeToDismiss state : $value")
@@ -81,17 +80,16 @@ fun SwipeToDismissComponent(
     // TODO: Sometimes, this check triggers several times in a row, why ?
     if (state.currentValue == SwipeToDismissBoxValue.EndToStart) {
         Log.i("TOTO", "SwipeToDismiss state : EndToStart")
-        // TODO: We should probably add an animation here
         onSwiped()
     }
 
     // TODO: Red & Gray dark theme background colors need to be handled
     val backgroundColor by animateColorAsState(
-        targetValue = if (state.targetValue == SwipeToDismissBoxValue.Settled) defaultColor else swipedColor,
+        targetValue = if (state.targetValue == SwipeToDismissBoxValue.EndToStart) swipedColor else defaultColor,
         label = "Background color animation",
     )
     val iconScale by animateFloatAsState(
-        targetValue = if (state.targetValue == SwipeToDismissBoxValue.Settled) minIconScale else maxIconScale,
+        targetValue = if (state.targetValue == SwipeToDismissBoxValue.EndToStart) maxIconScale else minIconScale,
         label = "Icon scale animation",
     )
     val contentElevation by animateDpAsState(
