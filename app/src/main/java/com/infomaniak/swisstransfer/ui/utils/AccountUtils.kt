@@ -27,7 +27,15 @@ class AccountUtils @Inject constructor(
     private val accountPreferences: AccountPreferences,
 ) {
 
-    suspend fun init(userId: Int = DEFAULT_USER_ID) {
+    suspend fun init() {
+        accountPreferences.currentUserId?.let {
+            accountManager.loadUser(it)
+        } ?: run {
+            login() // TODO: Move logic for when user needs to connect to the end of the onboarding activity
+        }
+    }
+
+    suspend fun login(userId: Int = DEFAULT_USER_ID) {
         accountPreferences.currentUserId = userId
         accountManager.loadUser(userId)
     }

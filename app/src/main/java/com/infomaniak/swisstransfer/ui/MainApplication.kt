@@ -34,10 +34,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication(private val accountUtils: AccountUtils) : Application(), Configuration.Provider {
+class MainApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var accountManager: AccountManager
+
+    @Inject
+    lateinit var accountUtils: AccountUtils
 
     @Inject
     lateinit var uploadRecaptcha: UploadRecaptcha
@@ -55,7 +58,7 @@ class MainApplication(private val accountUtils: AccountUtils) : Application(), C
         super.onCreate()
 
         globalCoroutineScope.launch {
-            accountUtils.init() // TODO: Move to the end of the onboarding activity
+            accountUtils.init()
             uploadRecaptcha.initializeClient()
         }
 
