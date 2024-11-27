@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
  * Specifying a progress has the priority over specifying showIndeterminateProgress.
  */
 @Composable
-fun GenericButton(
+fun SwissTransferButton(
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
     enabled: () -> Boolean = { true },
@@ -136,7 +136,7 @@ private fun Preview() {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ButtonType.entries.forEach { buttonType ->
                     Row {
-                        GenericButton(
+                        SwissTransferButton(
                             modifier = Modifier.height(40.dp),
                             style = buttonType,
                             onClick = {},
@@ -145,7 +145,7 @@ private fun Preview() {
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        GenericButton(
+                        SwissTransferButton(
                             modifier = Modifier.height(40.dp),
                             style = buttonType,
                             onClick = {},

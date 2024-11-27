@@ -103,7 +103,7 @@ private fun CoreButton(
     onClick: () -> Unit,
     imageVector: ImageVector?,
 ) {
-    GenericButton(
+    SwissTransferButton(
         modifier.height(buttonSize.height),
         style,
         enabled,
