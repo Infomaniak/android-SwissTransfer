@@ -23,7 +23,6 @@ import androidx.work.Configuration
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
-import com.infomaniak.swisstransfer.ui.utils.UploadRecaptcha
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
@@ -43,9 +42,6 @@ class MainApplication : Application(), Configuration.Provider {
     lateinit var accountUtils: AccountUtils
 
     @Inject
-    lateinit var uploadRecaptcha: UploadRecaptcha
-
-    @Inject
     lateinit var globalCoroutineScope: CoroutineScope
 
     @Inject
@@ -59,7 +55,6 @@ class MainApplication : Application(), Configuration.Provider {
 
         globalCoroutineScope.launch {
             accountUtils.init()
-            uploadRecaptcha.initializeClient()
         }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->

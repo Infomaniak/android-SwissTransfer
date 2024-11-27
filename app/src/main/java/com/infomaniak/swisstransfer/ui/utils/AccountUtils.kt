@@ -25,6 +25,7 @@ import javax.inject.Singleton
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     private val accountPreferences: AccountPreferences,
+    private val uploadRecaptcha: UploadRecaptcha,
 ) {
 
     suspend fun init() {
@@ -33,6 +34,8 @@ class AccountUtils @Inject constructor(
         } ?: run {
             login() // TODO: Move logic for when user needs to connect to the end of the onboarding activity
         }
+
+        uploadRecaptcha.initializeClient()
     }
 
     suspend fun login(userId: Int = DEFAULT_USER_ID) {
