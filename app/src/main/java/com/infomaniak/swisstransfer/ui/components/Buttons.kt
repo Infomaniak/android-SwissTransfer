@@ -93,7 +93,7 @@ fun SmallButton(
 
 @Composable
 private fun CoreButton(
-    titleRes: Int,
+    @StringRes titleRes: Int,
     modifier: Modifier,
     buttonSize: ButtonSize,
     style: ButtonType,
