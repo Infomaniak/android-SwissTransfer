@@ -125,13 +125,16 @@ private fun AppNavigationRail(
         containerColor = SwissTransferTheme.colors.navigationItemBackground,
         windowInsets = WindowInsets(left = 0, top = 0, right = 0, bottom = 0),
     ) {
-        navigationItems.forEach { navigationItem ->
+        navigationItems.forEachIndexed { index, navigationItem ->
             NavigationRailItem(
                 icon = { NavigationIcon(false, navigationItem) },
-                label = {}, // Don't remove this seemingly useless label, it changes the icons background.
+                label = { NavigationLabel(navigationItem) },
                 selected = currentDestination == navigationItem.destination,
                 onClick = { onClick(navigationItem.destination) },
             )
+            if (index != navigationItems.lastIndex) {
+                Spacer(modifier = Modifier.height(Margin.Micro))
+            }
         }
     }
 }
