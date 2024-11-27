@@ -17,48 +17,41 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 
 import android.util.Log
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.overscroll
-import androidx.compose.foundation.rememberOverscrollEffect
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import kotlin.math.max
-import kotlin.math.roundToInt
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun SwipeToDismissComponent(
-    shape: Shape,
-    callback: () -> Unit = {},
+    contentShape: Shape,
+    onSwiped: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
 
+    // Configuration
+    val dismissThreshold = 0.5f
     val defaultColor = Color.LightGray
     val swipedColor = SwissTransferTheme.materialColors.error
     val minIconScale = 1.0f
@@ -66,18 +59,28 @@ fun SwipeToDismissComponent(
     val swipedElevation = 4.dp
 
     val state = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            Log.d("TOTO", "SwipeToDismissComponent - : ${value.name}")
-            val shouldDismiss = value == SwipeToDismissBoxValue.EndToStart
-            // TODO: We should probably add an animation here
-            if (shouldDismiss) {
-                // TODO: This check triggers twice, why ?? :(
-                Log.e("TOTO", "SwipeToDismissComponent - DISMISS GOGOGO")
-                callback()
-            }
-            shouldDismiss
-        },
+        // TODO: This block of code is commented for now, while we investigate the multiple triggers of dismiss state
+        // confirmValueChange = { value ->
+        //     val shouldDismiss = value == SwipeToDismissBoxValue.EndToStart
+        //     // TODO: This check triggers twice, why ?? :(
+        //     if (shouldDismiss) {
+        //         Log.i("TOTO", "SwipeToDismiss state : $value")
+        //         // TODO: We should probably add an animation here
+        //         onSwiped()
+        //     } else {
+        //         Log.d("TOTO", "SwipeToDismiss state : $value")
+        //     }
+        //     shouldDismiss
+        // },
+        positionalThreshold = { totalDistance -> totalDistance * dismissThreshold },
     )
+
+    // TODO: Sometimes, this check triggers several times in a row, why ?
+    if (state.currentValue == SwipeToDismissBoxValue.EndToStart) {
+        Log.i("TOTO", "SwipeToDismiss state : EndToStart")
+        // TODO: We should probably add an animation here
+        onSwiped()
+    }
 
     // TODO: Red & Gray dark theme background colors need to be handled
     val backgroundColor by animateColorAsState(
@@ -100,7 +103,7 @@ fun SwipeToDismissComponent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(shape)
+                    .clip(contentShape)
                     .background(backgroundColor),
             ) {
                 Box(
@@ -118,11 +121,28 @@ fun SwipeToDismissComponent(
             }
         }
     ) {
-
         Surface(
-            shape = shape,
+            shape = contentShape,
             shadowElevation = contentElevation,
             content = { content() },
         )
+    }
+}
+
+@PreviewLightAndDark
+@Composable
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
+    val contentShape = CustomShapes.SMALL
+    SwissTransferTheme {
+        Surface {
+            SwipeToDismissComponent(contentShape = contentShape) {
+                TransferItem(
+                    transfer = transfers.first(),
+                    shape = contentShape,
+                    isSelected = { false },
+                    onClick = {},
+                )
+            }
+        }
     }
 }

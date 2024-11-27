@@ -65,7 +65,10 @@ fun TransferItemList(
             key = { getTransfers()[it].uuid },
             contentType = { getTransfers()[it] },
             itemContent = {
-                SwipeToDismissComponent(shape = itemShape) {
+                SwipeToDismissComponent(
+                    contentShape = itemShape,
+                    onSwiped = { /* TODO */ },
+                ) {
                     val transfer = getTransfers()[it]
                     TransferItem(
                         transfer = transfer,
