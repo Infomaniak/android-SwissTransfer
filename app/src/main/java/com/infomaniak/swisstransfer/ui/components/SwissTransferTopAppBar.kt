@@ -62,26 +62,6 @@ fun SwissTransferTopAppBar(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-fun SwissTransferTopAppBar(
-    title: String,
-    navigationMenu: TopAppBarButton? = null,
-    vararg actionMenus: TopAppBarButton,
-) {
-    TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = SwissTransferTheme.materialColors.tertiary,
-            titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
-            actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
-            navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
-        ),
-        title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
-        navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
-        actions = { actionMenus.forEach { actionMenu -> MenuButton(actionMenu) } },
-    )
-}
-
-@Composable
 private fun MenuButton(navigationMenu: TopAppBarButton) {
     IconButton(onClick = navigationMenu.onClick) {
         Icon(imageVector = navigationMenu.icon, contentDescription = stringResource(navigationMenu.contentDescription))
