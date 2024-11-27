@@ -21,7 +21,6 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
-import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import dagger.hilt.android.HiltAndroidApp

@@ -64,7 +64,7 @@ fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
-    navigateToFilesDetails: ((transferUuid: String, fileUuid: String) -> Unit)? = null,
+    navigateToFilesDetails: (folderUuid: String) -> Unit,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -99,7 +99,7 @@ private fun TransferDetailsScreen(
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit,
     setFileCheckStatus: (String, Boolean) -> Unit,
-    navigateToFilesDetails: ((transferUuid: String, fileUuid: String) -> Unit)? = null,
+    navigateToFilesDetails: ((folderUuid: String) -> Unit)? = null,
 ) {
 
     val context = LocalContext.current
@@ -173,7 +173,7 @@ private fun ColumnScope.FilesList(
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
-    navigateToFilesDetails: ((transferUuid: String, fileUuid: String) -> Unit)? = null,
+    navigateToFilesDetails: ((folderUuid: String) -> Unit)? = null,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -191,7 +191,7 @@ private fun ColumnScope.FilesList(
             setFileCheckStatus(fileUid, isChecked)
         },
         onClick = { fileUuid ->
-            navigateToFilesDetails?.invoke(getTransfer().uuid, fileUuid)
+            navigateToFilesDetails?.invoke(fileUuid)
         },
         header = {
             Column {
@@ -321,7 +321,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 getCheckedFiles = { mutableStateMapOf() },
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },
-                navigateToFilesDetails = { _, _ -> },
+                navigateToFilesDetails = { _ -> },
             )
         }
     }

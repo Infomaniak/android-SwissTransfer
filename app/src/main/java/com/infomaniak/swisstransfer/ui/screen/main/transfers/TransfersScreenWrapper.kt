@@ -144,7 +144,7 @@ navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
-            navigateToFilesDetails = navigateToFilesDetails
+            navigateToFilesDetails = navigateToFilesDetails,
         )
     }
 }
@@ -177,7 +177,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null,             TransfersScreenWrapper(navigateToFilesDetails = { _, _ -> }, TransferDirection.RECEIVED)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null, navigateToFilesDetails = { _, _ -> })
 )
         }
     }
