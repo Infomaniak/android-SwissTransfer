@@ -102,7 +102,7 @@ private fun AppNavigationBar(
             NavigationBarItem(
                 icon = { NavigationIcon(true, navigationItem) },
                 label = { NavigationLabel(navigationItem) },
-                selected = currentDestination == navigationItem.destination,
+                selected = currentDestination::class == navigationItem.destination::class,
                 onClick = { onClick(navigationItem.destination) },
             )
         }
@@ -129,7 +129,7 @@ private fun AppNavigationRail(
             NavigationRailItem(
                 icon = { NavigationIcon(false, navigationItem) },
                 label = { NavigationLabel(navigationItem) },
-                selected = currentDestination == navigationItem.destination,
+                selected = currentDestination::class == navigationItem.destination::class,
                 onClick = { onClick(navigationItem.destination) },
             )
             if (index != navigationItems.lastIndex) {
