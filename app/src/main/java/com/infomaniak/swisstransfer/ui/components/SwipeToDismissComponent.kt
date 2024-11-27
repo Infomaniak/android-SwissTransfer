@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -62,26 +61,10 @@ fun SwipeToDismissComponent(
     val swipedElevation = 4.dp
 
     val state = rememberSwipeToDismissBoxState(
-        // TODO: This block of code is commented for now, while we investigate the multiple triggers of dismiss state
-        // confirmValueChange = { value ->
-        //     val shouldDismiss = value == SwipeToDismissBoxValue.EndToStart
-        //     // TODO: This check triggers twice, why ?? :(
-        //     if (shouldDismiss) {
-        //         Log.i("TOTO", "SwipeToDismiss state : $value")
-        //         onSwiped()
-        //     } else {
-        //         Log.d("TOTO", "SwipeToDismiss state : $value")
-        //     }
-        //     shouldDismiss
-        // },
         positionalThreshold = { totalDistance -> totalDistance * dismissThreshold },
     )
 
-    // TODO: Sometimes, this check triggers several times in a row, why ?
-    if (state.currentValue == SwipeToDismissBoxValue.EndToStart) {
-        Log.i("TOTO", "SwipeToDismiss state : EndToStart")
-        onSwiped()
-    }
+    if (state.currentValue == SwipeToDismissBoxValue.EndToStart) onSwiped()
 
     // TODO: Red & Gray dark theme background colors need to be handled
     val backgroundColor by animateColorAsState(
