@@ -59,7 +59,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel,
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
-    navigateToFilesDetails: (fileUuid: String?) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
@@ -150,7 +150,7 @@ private fun ImportFilesScreen(
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
-    navigateToFilesDetails: (fileUuid: String?) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -453,7 +453,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
             sendTransfer = {},
-            navigateToFilesDetails = { _ -> },
+            navigateToFilesDetails = {},
         )
     }
 }
