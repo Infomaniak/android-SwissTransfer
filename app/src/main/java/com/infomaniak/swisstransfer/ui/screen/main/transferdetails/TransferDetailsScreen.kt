@@ -299,7 +299,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 transferUrl = "",
                 direction = TransferDirection.SENT,
                 navigateBack = null,
-                getTransfer = { Success(transfers.first()).transfer },
+                getTransfer = { transfers.first() },
                 getCheckedFiles = { mutableStateMapOf() },
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },
