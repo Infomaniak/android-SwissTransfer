@@ -86,7 +86,6 @@ class NetworkAvailability(private val context: Context, private val ioDispatcher
             // Already fixed in Android S and above.
             // https://issuetracker.google.com/issues/175055271
             SentryLog.e(TAG, "Android 11 exception", exception)
-            Sentry.captureException(exception)
             send(false)
         }
     }
