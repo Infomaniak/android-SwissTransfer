@@ -115,7 +115,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
             ReceivedScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                getTransfers = { emptyList() },
+                getTransfers = { transfers },
                 onDeleteTransfer = {},
             )
         }
