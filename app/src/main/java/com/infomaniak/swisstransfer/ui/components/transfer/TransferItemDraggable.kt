@@ -19,27 +19,36 @@ import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.rememberOverscrollEffect
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -53,45 +62,76 @@ private enum class SwipeToDismissAnchors {
 
 @Composable
 fun SwipeToDismissComponent(
+    shape: Shape,
     callback: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
 
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { dismissValue ->
-            Log.e("TOTO", "SwipeToDismissComponent - : ${dismissValue.name}")
-            val shouldDismiss = dismissValue == SwipeToDismissBoxValue.EndToStart
+    val defaultColor = Color.LightGray
+    val swipedColor = SwissTransferTheme.materialColors.error
+    val minIconScale = 1.0f
+    val maxIconScale = 1.5f
+    val swipedElevation = 4.dp
+
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            Log.d("TOTO", "SwipeToDismissComponent - : ${value.name}")
+            val shouldDismiss = value == SwipeToDismissBoxValue.EndToStart
             // TODO: We should probably add an animation here
-            if (shouldDismiss) callback()
+            if (shouldDismiss) {
+                // TODO: This check triggers twice, why ?? :(
+                Log.e("TOTO", "SwipeToDismissComponent - DISMISS GOGOGO")
+                callback()
+            }
             shouldDismiss
         },
     )
 
+    // TODO: Red & Gray dark theme background colors need to be handled
+    val backgroundColor by animateColorAsState(
+        targetValue = if (state.targetValue == SwipeToDismissBoxValue.Settled) defaultColor else swipedColor,
+        label = "Background color animation",
+    )
+    val iconScale by animateFloatAsState(
+        targetValue = if (state.targetValue == SwipeToDismissBoxValue.Settled) minIconScale else maxIconScale,
+        label = "Icon scale animation",
+    )
+    val contentElevation by animateDpAsState(
+        targetValue = if (state.dismissDirection == SwipeToDismissBoxValue.EndToStart) swipedElevation else 0.dp,
+        label = "Content elevation animation",
+    )
+
     SwipeToDismissBox(
-        state = dismissState,
+        state = state,
         enableDismissFromStartToEnd = false,
         backgroundContent = {
-            val color by animateColorAsState(
-                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) Color.LightGray else Color.Red
-                // when (dismissState.targetValue) {
-                //     SwipeToDismissBoxValue.Settled -> Color.LightGray
-                //     SwipeToDismissBoxValue.StartToEnd -> Color.Green
-                //     SwipeToDismissBoxValue.EndToStart -> Color.Red
-                // }
-            )
             Box(
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
-                    .background(color)
-            )
+                    .clip(shape)
+                    .background(backgroundColor),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = Margin.Large),
+                ) {
+                    // TODO: The dark theme icon color needs to be handled
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        modifier = Modifier.scale(iconScale),
+                        contentDescription = null,
+                    )
+                }
+            }
         }
     ) {
-        OutlinedCard(shape = RectangleShape) {
-            ListItem(
-                headlineContent = { Text("Cupcake") },
-                supportingContent = { Text("Swipe me left or right!") }
-            )
-        }
+
+        Surface(
+            shape = shape,
+            shadowElevation = contentElevation,
+            content = { content() },
+        )
     }
 
     // BoxWithConstraints {

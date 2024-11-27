@@ -30,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -49,6 +50,7 @@ fun TransferItemList(
         TransferDirection.SENT -> R.string.sentFilesTitle
         TransferDirection.RECEIVED -> R.string.receivedFilesTitle
     }
+    val itemShape = CustomShapes.SMALL
 
     LazyColumn(
         modifier = modifier,
@@ -71,10 +73,11 @@ fun TransferItemList(
             key = { getTransfers()[it].uuid },
             contentType = { getTransfers()[it] },
             itemContent = {
-                SwipeToDismissComponent {
+                SwipeToDismissComponent(shape = itemShape) {
                     val transfer = getTransfers()[it]
                     TransferItem(
                         transfer = transfer,
+                        shape = itemShape,
                         isSelected = { selectedTransferUuid == transfer.uuid },
                         onClick = { onClick(transfer) },
                     )
