@@ -18,12 +18,40 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object AccountUtils {
+@Singleton
+class AccountUtils @Inject constructor(
+    private val accountManager: AccountManager,
+    private val accountPreferences: AccountPreferences,
+    private val uploadRecaptcha: UploadRecaptcha,
+) {
 
-    private const val DEFAULT_USER_ID = 0
+    suspend fun init() {
+        accountPreferences.currentUserId?.let {
+            accountManager.loadUser(it)
+        } ?: run {
+            login() // TODO: Move logic for when user needs to connect to the end of the onboarding activity
+        }
 
-    suspend fun init(accountManager: AccountManager) {
-        accountManager.loadUser(userId = DEFAULT_USER_ID)
+        uploadRecaptcha.initializeClient()
+    }
+
+    suspend fun login(userId: Int = DEFAULT_USER_ID) {
+        accountPreferences.currentUserId = userId
+        accountManager.loadUser(userId)
+    }
+
+    suspend fun logout(userId: Int) {
+        accountManager.removeUser(userId)
+        // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
+        accountPreferences.currentUserId = DEFAULT_USER_ID
+    }
+
+    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null
+
+    companion object {
+        const val DEFAULT_USER_ID = 0
     }
 }

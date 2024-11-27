@@ -17,39 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.infomaniak.swisstransfer.ui.utils.AccountUtils
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import androidx.activity.enableEdgeToEdge
 
-@AndroidEntryPoint
-@SuppressLint("CustomSplashScreen")
-class LaunchActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var accountUtils: AccountUtils
-
+class OnboardingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-        startTargetActivity()
-        finish()
     }
-
-    private fun startTargetActivity() {
-        startActivity(Intent(this, chooseTargetActivity()))
-    }
-
-    private fun chooseTargetActivity(): Class<out ComponentActivity> = when {
-        accountUtils.isUserConnected() -> MainActivity::class
-        else -> OnboardingActivity::class
-    }.java
 }
