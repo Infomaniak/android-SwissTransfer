@@ -98,7 +98,7 @@ fun HighlightedText(
 
 private fun TextLayoutResult.getArgumentBoundingBoxes(text: String, argument: String): List<Rect> {
     val startIndex = text.indexOf(argument)
-    return getBoundingBoxesForRange(start = startIndex, end = startIndex + argument.count())
+    return getBoundingBoxesForRange(start = startIndex, end = startIndex + argument.count() - 1)
 }
 
 private fun List<Rect>.transformForHighlightedStyle(
