@@ -1,8 +1,8 @@
 buildscript {
     extra.apply {
-        set("sharedTargetSdk", 35)
+        set("sharedCompileSdk", 35)
         set("sharedMinSdk", 24)
-        set("javaVersion", JavaVersion.VERSION_17)
+        set("sharedJavaVersion", JavaVersion.VERSION_17)
     }
 }
 

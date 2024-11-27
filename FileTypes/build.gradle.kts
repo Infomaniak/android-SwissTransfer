@@ -4,12 +4,16 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+val sharedCompileSdk: Int by rootProject.extra
+val sharedMinSdk: Int by rootProject.extra
+val sharedJavaVersion: JavaVersion by rootProject.extra
+
 android {
     namespace = "com.infomaniak.library.filetypes"
-    compileSdk = 34
+    compileSdk = sharedCompileSdk
 
     defaultConfig {
-        minSdk = 24
+        minSdk = sharedMinSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -22,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = sharedJavaVersion
+        targetCompatibility = sharedJavaVersion
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = sharedJavaVersion.toString()
     }
     buildFeatures {
         compose = true

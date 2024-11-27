@@ -9,18 +9,18 @@ plugins {
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
+val sharedCompileSdk: Int by rootProject.extra
 val sharedMinSdk: Int by rootProject.extra
-val sharedTargetSdk: Int by rootProject.extra
-val javaVersion: JavaVersion by rootProject.extra
+val sharedJavaVersion: JavaVersion by rootProject.extra
 
 android {
     namespace = "com.infomaniak.swisstransfer"
-    compileSdk = sharedTargetSdk
+    compileSdk = sharedCompileSdk
 
     defaultConfig {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = sharedMinSdk
-        targetSdk = sharedTargetSdk
+        targetSdk = sharedCompileSdk
         versionCode = 1 // 0_00_000_01 TODO: Update when released in prod
         versionName = "0.0.1-Alpha1"
 
@@ -45,11 +45,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
+        sourceCompatibility = sharedJavaVersion
+        targetCompatibility = sharedJavaVersion
     }
     kotlinOptions {
-        jvmTarget = javaVersion.toString()
+        jvmTarget = sharedJavaVersion.toString()
     }
     buildFeatures {
         compose = true
