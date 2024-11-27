@@ -61,7 +61,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel,
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
-    navigateToFilesDetails: (fileUuid: String?) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
