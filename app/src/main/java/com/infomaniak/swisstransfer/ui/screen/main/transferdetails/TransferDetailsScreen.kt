@@ -89,6 +89,7 @@ fun TransferDetailsScreen(
             setFileCheckStatus = { fileUid, isChecked ->
                 transferDetailsViewModel.checkedFiles[fileUid] = isChecked
             },
+            navigateToFilesDetails = navigateToFilesDetails,
         )
         TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
     }
@@ -101,11 +102,11 @@ private fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
     downloadFiles: () -> Unit,
-    navigateToFilesDetails: ((transferUuid: String, fileUuid: String) -> Unit)? = null,
     isFileChecked: (String) -> Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
     setFileCheckStatus: (String, Boolean) -> Unit,
+    navigateToFilesDetails: ((transferUuid: String, fileUuid: String) -> Unit)? = null,
 ) {
 
     val context = LocalContext.current
@@ -130,13 +131,13 @@ private fun TransferDetailsScreen(
         Column {
 
             FilesList(
-getTransfer, 
-transferRecipients, 
-isMultiselectOn, 
-getCheckedFiles, 
-setFileCheckStatus,
+                getTransfer,
+                transferRecipients,
+                isMultiselectOn,
+                getCheckedFiles,
+                setFileCheckStatus,
                 navigateToFilesDetails,
-)
+            )
 
             BottomBar {
                 if (isMultiselectOn) {
@@ -223,7 +224,7 @@ private fun ColumnScope.FilesList(
             setFileCheckStatus(fileUid, isChecked)
         },
         onClick = { fileUuid ->
-            navigateToFilesDetails?.invoke(transfer.uuid, fileUuid)
+            navigateToFilesDetails?.invoke(getTransfer().uuid, fileUuid)
         },
         header = {
             Column {
@@ -332,6 +333,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 downloadFiles = {},
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },
+                navigateToFilesDetails = { _, _ -> },
             )
         }
     }
