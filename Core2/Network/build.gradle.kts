@@ -30,6 +30,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":Core2:Sentry"))
+
     implementation(libs.androidx.core.ktx)
-    implementation(core2.sentry.android)
 }

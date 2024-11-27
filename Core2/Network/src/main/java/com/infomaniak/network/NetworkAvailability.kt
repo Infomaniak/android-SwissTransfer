@@ -24,16 +24,17 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
+import com.infomaniak.sentry.SentryLog
 import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 class NetworkAvailability(private val context: Context, private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO) {
 
@@ -49,7 +50,7 @@ class NetworkAvailability(private val context: Context, private val ioDispatcher
                 launch {
                     mutex.withLock {
                         networks.add(network)
-                        sendNetworkAvailability(networks)
+                        send(element = hasAvailableNetwork(networks))
                     }
                 }
             }
@@ -58,7 +59,7 @@ class NetworkAvailability(private val context: Context, private val ioDispatcher
                 launch {
                     mutex.withLock {
                         networks.remove(network)
-                        sendNetworkAvailability(networks)
+                        send(element = hasAvailableNetwork(networks))
                     }
                 }
             }
@@ -68,21 +69,23 @@ class NetworkAvailability(private val context: Context, private val ioDispatcher
             send(getInitialNetworkAvailability(connectivityManager))
         }
 
-        registerNetworkCallback(connectivityManager, callback)
+        registerNetworkCallback(connectivityManager, callback, ::send)
 
         awaitClose { unregisterNetworkCallback(connectivityManager, callback) }
     }
 
-    private suspend fun ProducerScope<Boolean>.registerNetworkCallback(
+    private suspend fun registerNetworkCallback(
         connectivityManager: ConnectivityManager,
         callback: NetworkCallback,
+        send: suspend (Boolean) -> Unit,
     ) {
         runCatching {
             connectivityManager.registerNetworkCallback(networkRequestBuilder(), callback)
         }.onFailure { exception ->
-            // Fix potential Exception thrown by ConnectivityManager on Android 11
-            // Already fixed in Android S and above
+            // Fix potential Exception thrown by ConnectivityManager on Android 11.
+            // Already fixed in Android S and above.
             // https://issuetracker.google.com/issues/175055271
+            SentryLog.e(TAG, "Android 11 exception", exception)
             Sentry.captureException(exception)
             send(false)
         }
@@ -96,17 +99,12 @@ class NetworkAvailability(private val context: Context, private val ioDispatcher
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun getInitialNetworkAvailability(connectivityManager: ConnectivityManager): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             connectivityManager.activeNetwork?.let(::hasInternetConnectivity) ?: false
         } else {
             connectivityManager.activeNetworkInfo?.isConnected ?: false
         }
-    }
-
-    private fun ProducerScope<Boolean>.sendNetworkAvailability(networks: List<Network>) {
-        launch(ioDispatcher) { send(hasAvailableNetwork(networks)) }
     }
 
     private fun networkRequestBuilder(): NetworkRequest {
@@ -119,9 +117,12 @@ class NetworkAvailability(private val context: Context, private val ioDispatcher
         network.getByName(ROOT_SERVER_URL) != null
     }.getOrDefault(false)
 
-    private suspend fun hasAvailableNetwork(networks: List<Network>) = mutex.withLock { networks.any(::hasInternetConnectivity) }
+    private suspend fun hasAvailableNetwork(networks: List<Network>) = withContext(ioDispatcher) {
+        networks.any(::hasInternetConnectivity)
+    }
 
     companion object {
+        private val TAG = NetworkAvailability::class.java.simpleName
         private const val ROOT_SERVER_URL = "a.root-servers.net"
     }
 }
