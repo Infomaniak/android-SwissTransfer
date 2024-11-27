@@ -80,7 +80,7 @@ private fun rememberNavType(
 
     val showNavigation by remember(currentDestination) {
         derivedStateOf {
-            NavigationItem.entries.any { it.destination == currentDestination }
+            NavigationItem.entries.any { it.destination::class == currentDestination::class }
         }
     }
 
