@@ -39,7 +39,7 @@ sealed class MainNavigation : NavigationDestination() {
     data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
 
     @Serializable
-    data class FilesDetailsDestination(val transferUuid: String? = null, val fileUuid: String? = null) : MainNavigation()
+    data class FilesDetailsDestination(val folderUuid: String? = null) : MainNavigation()
 
     @Serializable
     data object SettingsDestination : MainNavigation()
