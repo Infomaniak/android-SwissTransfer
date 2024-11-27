@@ -17,16 +17,26 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.animation.core.exponentialDecay
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.DraggableAnchors
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.infomaniak.core2.FORMAT_DATE_TITLE
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
@@ -43,6 +53,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.utils.isExpired
+import kotlin.math.roundToInt
+
+enum class DragAnchors {
+    Start,
+    End,
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -66,52 +82,90 @@ fun TransferItem(
         null
     }
 
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
-        shape = CustomShapes.SMALL,
-        border = border,
-    ) {
-        Row(
-            modifier = Modifier.padding(Margin.Medium),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-
-            Column(modifier = Modifier.weight(1.0f)) {
-
-                Text(
-                    text = createdDate,
-                    style = SwissTransferTheme.typography.bodyMedium,
-                    color = SwissTransferTheme.colors.primaryTextColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.MiddleEllipsis,
-                )
-
-                Spacer(Modifier.height(Margin.Mini))
-                TextDotText(
-                    firstText = { uploadedSize },
-                    secondText = { expiryText },
-                    optionalSecondTextColor = expiryColor,
-                )
-
-                Spacer(Modifier.height(Margin.Mini))
-                ContextualFlowRow(
-                    itemCount = files.count(),
-                    maxLines = 1,
-                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
-                    overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
-                ) { index ->
-                    TransferFilePreview(file = files[index])
-                }
-            }
-
-            Spacer(Modifier.width(Margin.Medium))
-            Icon(
-                imageVector = AppIcons.ChevronRightThick,
-                contentDescription = null,
-                modifier = Modifier.size(Dimens.SmallIconSize),
-                tint = SwissTransferTheme.colors.iconColor,
+    val density = LocalDensity.current
+    val state = remember {
+        // AnchoredDraggableState(initialValue = DragAnchors.Start)
+        AnchoredDraggableState(
+            initialValue = DragAnchors.Start,
+            positionalThreshold = { it * 0.5f },
+            velocityThreshold = { with(density) { 100.dp.toPx() } },
+            snapAnimationSpec = tween(),
+            decayAnimationSpec = exponentialDecay(),
+            // confirmValueChange =,
+            // anchors = DraggableAnchors {
+            //     DragAnchors.Start to 0.0f
+            //     DragAnchors.End to 400.0f
+            // },
+        ).apply {
+            updateAnchors(
+                newAnchors = DraggableAnchors {
+                    DragAnchors.Start to 0.0f
+                    DragAnchors.End to 400.0f
+                },
             )
+        }
+    }
+    // val anchors = remember(density) {
+    //
+    //     // val replyOffset = with(density) { 48.dp.toPx() }
+    //     // DraggableAnchors {
+    //     //     DragAnchors.Start to 0.0f
+    //     //     DragAnchors.End to replyOffset
+    //     // }
+    // }
+    // SideEffect { state.updateAnchors(anchors) }
+
+    Box(
+        modifier = Modifier.anchoredDraggable(state, Orientation.Horizontal),
+    ) {
+        Card(
+            modifier = Modifier.offset { IntOffset(x = state.requireOffset().roundToInt(), y = 0) },
+            onClick = onClick,
+            colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
+            shape = CustomShapes.SMALL,
+            border = border,
+        ) {
+            Row(
+                modifier = Modifier.padding(Margin.Medium),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+
+                Column(modifier = Modifier.weight(1.0f)) {
+
+                    Text(
+                        text = createdDate,
+                        style = SwissTransferTheme.typography.bodyMedium,
+                        color = SwissTransferTheme.colors.primaryTextColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.MiddleEllipsis,
+                    )
+
+                    Spacer(Modifier.height(Margin.Mini))
+                    TextDotText(
+                        firstText = { uploadedSize },
+                        secondText = { expiryText },
+                        optionalSecondTextColor = expiryColor,
+                    )
+
+                    Spacer(Modifier.height(Margin.Mini))
+                    ContextualFlowRow(
+                        itemCount = files.count(),
+                        maxLines = 1,
+                        horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
+                        overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
+                    ) { index ->
+                        TransferFilePreview(file = files[index])
+                    }
+                }
+
+                Spacer(Modifier.width(Margin.Medium))
+                Icon(
+                    imageVector = AppIcons.ChevronRightThick,
+                    contentDescription = null,
+                    modifier = Modifier.size(Dimens.SmallIconSize),
+                    tint = SwissTransferTheme.colors.iconColor,
+                )
+            }
         }
     }
 }
