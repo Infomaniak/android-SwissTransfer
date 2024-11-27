@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
@@ -42,7 +43,12 @@ fun BottomStickyButtonScaffold(
                 .fillMaxWidth()
                 .padding(contentPaddings),
         ) {
-            Box(modifier = Modifier.weight(1.0f), content = content)
+            Box(
+                modifier = Modifier
+                    .weight(1.0f)
+                    .align(Alignment.CenterHorizontally),
+                content = content,
+            )
             DoubleButtonCombo(topButton, bottomButton)
         }
     }

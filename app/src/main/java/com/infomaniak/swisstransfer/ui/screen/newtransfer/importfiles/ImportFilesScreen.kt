@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOp
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -170,7 +171,8 @@ private fun ImportFilesScreen(
         content = {
             Column(
                 modifier = Modifier
-                    .padding(vertical = Margin.Large)
+                    .widthIn(max = Dimens.MaxSinglePaneScreenWidth)
+                    .padding(vertical = Margin.Small)
                     .verticalScroll(rememberScrollState()),
             ) {
                 FilesToImport(files, humanReadableSize, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
