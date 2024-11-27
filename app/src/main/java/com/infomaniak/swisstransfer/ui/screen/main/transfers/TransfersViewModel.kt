@@ -23,9 +23,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import com.infomaniak.multiplatform_swisstransfer.network.models.transfer.ContainerApi
-import com.infomaniak.multiplatform_swisstransfer.network.models.transfer.FileApi
-import com.infomaniak.multiplatform_swisstransfer.network.models.transfer.TransferApi
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,77 +48,6 @@ class TransfersViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
-
-    init {
-        //TODO Remove that when we'll have real transfers
-        viewModelScope.launch {
-            transferManager.removeAllTransfer()
-            val files = listOf(
-                generateFileApi(fileName = "file1.txt", path = ""),
-                generateFileApi(fileName = "file2.txt", path = ""),
-                generateFileApi(fileName = "file3_in_folder1.txt", path = "folder1"),
-                generateFileApi(fileName = "file3_in_folder2.txt", path = "folder2"),
-                generateFileApi(fileName = "file3_in_folder1_folder2.txt", path = "folder1/folder2/folder1")
-            )
-            val containerApi = generateContainerApi(files)
-            transferManager.addDummyTransfer(
-                transfer = generateTransferApi(containerApi),
-                transferDirection = TransferDirection.RECEIVED
-            )
-        }
-    }
-    //checker containerUUid dossier
-
-    private fun generateTransferApi(containerApi: ContainerApi): TransferApi {
-        return TransferApi(
-            linkUUID = "dummy1",
-            containerUUID = "container1",
-            downloadCounterCredit = 100,
-            createdDateTimestamp = System.currentTimeMillis(),
-            expiredDateTimestamp = System.currentTimeMillis(),
-            hasBeenDownloadedOneTime = false,
-            isMailSent = false,
-            downloadHost = "",
-            container = containerApi,
-        )
-    }
-
-    private fun generateContainerApi(files: List<FileApi>): ContainerApi {
-        return ContainerApi(
-            uuid = "container1",
-            duration = 0L,
-            createdDateTimestamp = 0L,
-            expiredDateTimestamp = 0L,
-            numberOfFiles = 2,
-            message = null,
-            needPassword = false,
-            language = "",
-            sizeUploaded = 0L,
-            deletedDateTimestamp = null,
-            swiftVersion = 0,
-            downloadLimit = 0,
-            source = "ST",
-            files = files,
-        )
-    }
-
-    private fun generateFileApi(fileName: String, path: String): FileApi {
-        return FileApi().apply {
-            uuid = fileName
-            containerUUID = "container1"
-            this.fileName = fileName
-            fileSizeInBytes = 5000000L
-            downloadCounter = 0
-            createdDateTimestamp = System.currentTimeMillis()
-            expiredDateTimestamp = System.currentTimeMillis()
-            eVirus = ""
-            deletedDate = null
-            mimeType = null
-            receivedSizeInBytes = 5000000L
-            this.path = path
-            thumbnailPath = null
-        }
-    }
 
     fun fetchPendingTransfers() {
         viewModelScope.launch(ioDispatcher) {
