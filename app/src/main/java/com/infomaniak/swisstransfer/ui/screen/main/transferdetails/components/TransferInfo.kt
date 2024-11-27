@@ -48,10 +48,13 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferInfo(transfer: TransferUi) {
+fun TransferInfo(getTransfer: () -> TransferUi) {
 
-    val filesCount = transfer.files.count()
-    val downloadedCount by remember { derivedStateOf { transfer.downloadLimit - transfer.downloadLeft } }
+    val filesCount by remember { derivedStateOf { getTransfer().files.count() } }
+    val downloadedCount by remember { derivedStateOf { getTransfer().downloadLimit - getTransfer().downloadLeft } }
+    val expiresInDays by remember { derivedStateOf { getTransfer().expiresInDays } }
+    val downloadLimit by remember { derivedStateOf { getTransfer().downloadLimit } }
+    val sizeUploaded by remember { derivedStateOf { getTransfer().sizeUploaded } }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -62,7 +65,7 @@ fun TransferInfo(transfer: TransferUi) {
         Spacer(Modifier.width(Margin.Mini))
         TextDotText(
             firstText = { pluralStringResource(R.plurals.filesCount, filesCount, filesCount) },
-            secondText = { Formatter.formatShortFileSize(LocalContext.current, transfer.sizeUploaded) },
+            secondText = { Formatter.formatShortFileSize(LocalContext.current, sizeUploaded) },
             color = SwissTransferTheme.colors.primaryTextColor,
         )
     }
@@ -71,14 +74,14 @@ fun TransferInfo(transfer: TransferUi) {
 
     IconText(
         icon = AppIcons.Clock,
-        text = stringResource(R.string.expiresIn, transfer.expiresInDays),
+        text = stringResource(R.string.expiresIn, expiresInDays),
     )
 
     HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
 
     IconText(
         icon = AppIcons.ArrowDownFile,
-        text = stringResource(R.string.downloadedTransferLabel, downloadedCount, transfer.downloadLimit),
+        text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
     )
 }
 
@@ -106,7 +109,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             Column {
-                TransferInfo(transfers.first())
+                TransferInfo { transfers.first() }
             }
         }
     }
