@@ -38,19 +38,15 @@ fun TextDotText(
     optionalSecondTextColor: Color? = null,
 ) {
     Row(modifier) {
-        CustomText(firstText, color, style)
+        CustomText(text = firstText, style = style, color = color)
         Spacer(Modifier.width(Margin.Mini))
-        Text(
-            text = "•",
-            color = color,
-            style = style,
-        )
+        Text(text = "•", style = style, color = color)
         Spacer(Modifier.width(Margin.Mini))
-        CustomText(secondText, optionalSecondTextColor ?: color, style)
+        CustomText(text = secondText, style = style, color = optionalSecondTextColor ?: color)
     }
 }
 
 @Composable
-private fun CustomText(value: @Composable () -> String, color: Color, style: TextStyle) {
-    Text(text = value(), color = color, style = style)
+private fun CustomText(text: @Composable () -> String, style: TextStyle, color: Color) {
+    Text(text = text(), style = style, color = color)
 }

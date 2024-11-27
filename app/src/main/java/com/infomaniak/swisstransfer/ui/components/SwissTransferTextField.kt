@@ -96,7 +96,7 @@ fun SwissTransferTextField(
         readOnly = isReadOnly,
         enabled = !isReadOnly,
         value = text,
-        label = displayLabel?.let { { Text(text = it) } },
+        label = displayLabel?.let { { Text(it) } },
         minLines = minLineNumber,
         maxLines = maxLineNumber,
         colors = textFieldColors,

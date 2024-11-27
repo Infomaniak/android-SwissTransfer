@@ -207,7 +207,7 @@ private fun Preview() {
                 HighlightedText(
                     templateRes = R.string.uploadProgressTitleTemplate,
                     argumentRes = R.string.uploadProgressTitleArgument,
-                    style = SwissTransferTheme.typography.bodyMedium
+                    style = SwissTransferTheme.typography.bodyMedium,
                 )
             }
         }

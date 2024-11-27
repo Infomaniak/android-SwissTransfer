@@ -53,8 +53,8 @@ fun TransferOptionType(
         Spacer(Modifier.width(Margin.Small))
         Text(
             text = stringResource(transferOptionType.buttonText),
-            color = SwissTransferTheme.materialColors.primary,
             style = SwissTransferTheme.typography.bodySmallMedium,
+            color = SwissTransferTheme.materialColors.primary,
         )
         Spacer(Modifier.weight(1.0f))
         SettingValue(selectedSetting)

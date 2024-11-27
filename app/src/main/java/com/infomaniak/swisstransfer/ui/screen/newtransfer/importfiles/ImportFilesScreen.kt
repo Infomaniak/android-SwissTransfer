@@ -318,9 +318,9 @@ private fun SendButton(
 @Composable
 private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
     Text(
-        modifier = modifier,
-        style = SwissTransferTheme.typography.bodySmallRegular,
         text = stringResource(titleRes),
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        modifier = modifier,
     )
 }
 

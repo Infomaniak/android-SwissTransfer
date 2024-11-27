@@ -90,7 +90,7 @@ private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int,
         ) {
             Icon(icon, contentDescription = null, modifier = Modifier.size(Dimens.SmallIconSize))
             Spacer(Modifier.height(Margin.Micro))
-            Text(stringResource(textRes))
+            Text(text = stringResource(textRes))
         }
     }
 }

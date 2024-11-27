@@ -108,22 +108,22 @@ private fun BottomSheetContent(
 
         title?.let {
             Text(
-                modifier = paddedModifier,
                 text = it,
+                textAlign = TextAlign.Center,
                 style = SwissTransferTheme.typography.bodyMedium,
                 color = SwissTransferTheme.colors.primaryTextColor,
-                textAlign = TextAlign.Center,
+                modifier = paddedModifier,
             )
             Spacer(Modifier.height(Margin.Large))
         }
 
         description?.let {
             Text(
-                modifier = paddedModifier,
                 text = it,
+                textAlign = TextAlign.Center,
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
-                textAlign = TextAlign.Center,
+                modifier = paddedModifier,
             )
             Spacer(Modifier.height(Margin.Large))
         }

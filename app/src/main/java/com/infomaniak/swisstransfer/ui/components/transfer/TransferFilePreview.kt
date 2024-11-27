@@ -50,8 +50,8 @@ fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) 
             ) {
                 Text(
                     text = "+$remainingFilesCount",
-                    color = SwissTransferTheme.colors.onTransferFilePreviewOverflow,
                     style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.onTransferFilePreviewOverflow,
                 )
             }
         } else {

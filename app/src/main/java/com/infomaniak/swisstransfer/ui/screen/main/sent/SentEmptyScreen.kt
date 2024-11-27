@@ -46,17 +46,17 @@ fun SentEmptyScreen() {
     ) {
         val maxWidth = Dimens.DescriptionWidth
         Text(
-            modifier = Modifier.widthIn(max = maxWidth),
             text = stringResource(id = R.string.sentEmptyTitle),
-            style = SwissTransferTheme.typography.specificMedium32,
             textAlign = TextAlign.Center,
+            style = SwissTransferTheme.typography.specificMedium32,
+            modifier = Modifier.widthIn(max = maxWidth),
         )
         Spacer(Modifier.height(Margin.Medium))
         Text(
-            modifier = Modifier.widthIn(max = maxWidth),
             text = stringResource(id = R.string.firstTransferDescription),
             style = SwissTransferTheme.typography.bodyRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,
+            modifier = Modifier.widthIn(max = maxWidth),
         )
         Spacer(Modifier.height(Margin.Medium))
         ConstraintLayout {

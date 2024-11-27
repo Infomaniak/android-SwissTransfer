@@ -50,10 +50,10 @@ fun OptionTitle(@StringRes titleRes: Int) {
 @Composable
 private fun UnpaddedTitle(modifier: Modifier, titleRes: Int) {
     Text(
-        modifier = modifier,
         text = stringResource(id = titleRes),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
+        modifier = modifier,
     )
 }
 

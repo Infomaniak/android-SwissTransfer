@@ -100,8 +100,8 @@ private fun ColumnScope.SuccessMessage(transferType: TransferTypeUi, transferUrl
             Spacer(Modifier.height(Margin.Huge))
             Text(
                 text = stringResource(descriptionRes),
-                style = SwissTransferTheme.typography.bodyRegular,
                 textAlign = TextAlign.Center,
+                style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
             )

@@ -55,7 +55,7 @@ fun SwissTransferTopAppBar(
             actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
             navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
         ),
-        title = { Text(title, style = SwissTransferTheme.typography.h2) },
+        title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
         navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
         actions = { actionMenus.forEach { actionMenu -> MenuButton(actionMenu) } },
     )

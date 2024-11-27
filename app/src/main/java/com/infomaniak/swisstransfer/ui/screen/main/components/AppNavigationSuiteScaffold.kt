@@ -144,5 +144,5 @@ private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationI
 
 @Composable
 private fun NavigationLabel(navigationItem: NavigationItem) {
-    Text(stringResource(navigationItem.label))
+    Text(text = stringResource(navigationItem.label))
 }
