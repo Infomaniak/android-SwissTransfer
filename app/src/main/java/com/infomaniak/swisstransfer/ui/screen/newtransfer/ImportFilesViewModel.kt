@@ -133,15 +133,13 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun getFiles(transferUuid: String?, fileUuid: String?): Flow<List<FileUi>?> {
-        return if (transferUuid == null && fileUuid == null) {
-            getImportedFiles()
+    fun getFiles(folderUuid: String?): Flow<List<FileUi>?> {
+        return if (folderUuid == null) {
+            importationFilesManager.importedFiles
         } else {
-            fileManager.getFilesFromTransfer(fileUuid!!)
+            fileManager.getFilesFromTransfer(folderUuid)
         }
     }
-
-    fun getImportedFiles(): Flow<List<FileUi>?> = importationFilesManager.importedFiles
 
     fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(ioDispatcher) {

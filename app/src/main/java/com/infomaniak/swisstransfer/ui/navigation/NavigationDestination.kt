@@ -59,7 +59,7 @@ sealed class MainNavigation : NavigationDestination() {
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class FilesDetailsDestination(val transferUuid: String? = null, val fileUuid: String? = null) : MainNavigation()
+    data class FilesDetailsDestination(val folderUuid: String? = null) : MainNavigation()
 
     @Serializable
     data object SettingsDestination : MainNavigation()

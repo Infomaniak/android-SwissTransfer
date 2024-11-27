@@ -46,14 +46,6 @@ fun FileItem(
     onClick: () -> Unit,
     onRemove: (() -> Unit)? = null,
 ) {
-    val description = if (file.isFolder) {
-        ""
-    } else {
-        HumanReadableSizeUtils.getHumanReadableSize(
-            LocalContext.current,
-            file.fileSize
-        )
-    }
     FileItemContent(
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
@@ -61,7 +53,7 @@ fun FileItem(
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
         title = file.fileName,
-        description = description,
+        description = getDescription(file),
         content = {
             FilePreview(
                 file = file,
@@ -71,6 +63,18 @@ fun FileItem(
             )
         },
     )
+}
+
+@Composable
+private fun getDescription(file: FileUi): String {
+    return if (file.isFolder) {
+        ""
+    } else {
+        HumanReadableSizeUtils.getHumanReadableSize(
+            LocalContext.current,
+            file.fileSize
+        )
+    }
 }
 
 @Composable

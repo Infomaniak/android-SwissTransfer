@@ -22,7 +22,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 
 val FileUi.fileType: FileType
     get() {
-        return if (isFolder == true) {
+        return if (isFolder) {
             FileType.FOLDER
         } else {
             mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
