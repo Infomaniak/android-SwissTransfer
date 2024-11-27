@@ -15,6 +15,8 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import android.util.Log
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animate
 import androidx.compose.foundation.background
@@ -23,24 +25,21 @@ import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.overscroll
 import androidx.compose.foundation.rememberOverscrollEffect
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.ui.theme.CustomShapes
-import com.infomaniak.swisstransfer.ui.theme.Dimens
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -54,67 +53,140 @@ private enum class SwipeToDismissAnchors {
 
 @Composable
 fun SwipeToDismissComponent(
+    callback: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxWidth()
-        // .clip(shape = CustomShapes.SMALL)
-    ) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { dismissValue ->
+            Log.e("TOTO", "SwipeToDismissComponent - : ${dismissValue.name}")
+            val shouldDismiss = dismissValue == SwipeToDismissBoxValue.EndToStart
+            // TODO: We should probably add an animation here
+            if (shouldDismiss) callback()
+            shouldDismiss
+        },
+    )
 
-        val density = LocalDensity.current
-        val draggableWidth = maxWidth
-        val containerWidthPx = with(density) { draggableWidth.toPx() }
-        // val dismissThreshold = with(density) { 56.dp.toPx() }
-        val state = rememberSaveable(saver = AnchoredDraggableState.Saver()) {
-            AnchoredDraggableState(initialValue = SwipeToDismissAnchors.End)
-        }
-
-        SideEffect {
-            state.updateAnchors(
-                newAnchors = DraggableAnchors {
-                    SwipeToDismissAnchors.Start at -containerWidthPx
-                    // SwipeToDismissAnchors.Center at -(containerWidthPx * 0.9f)
-                    SwipeToDismissAnchors.End at 0.0f
-                },
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        backgroundContent = {
+            val color by animateColorAsState(
+                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) Color.LightGray else Color.Red
+                // when (dismissState.targetValue) {
+                //     SwipeToDismissBoxValue.Settled -> Color.LightGray
+                //     SwipeToDismissBoxValue.StartToEnd -> Color.Green
+                //     SwipeToDismissBoxValue.EndToStart -> Color.Red
+                // }
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(color)
             )
         }
-
-        // Box(Modifier.width(draggableWidth)) {
-        Box(
-            modifier = Modifier
-                // .width(draggableWidth)
-                .border(width = Dimens.BorderWidth, color = Color.Black, shape = CustomShapes.SMALL)
-                .clip(shape = CustomShapes.SMALL)
-                // .background(Color.Red)
-                .offset {
-                    IntOffset(
-                        x = state
-                            .requireOffset()
-                            .roundToInt(),
-                        y = 0,
-                    )
-                }
-                .anchoredDraggable(
-                    state = state,
-                    orientation = Orientation.Horizontal,
-                    flingBehavior = AnchoredDraggableDefaults.flingBehavior(
-                        state = state,
-                        // positionalThreshold = {
-                        //     it * 0.2f
-                        //     // private val DISMISS_THRESHOLD = 56.dp
-                        //     // containerWidthPx - dismissThreshold
-                        // },
-                    ),
-                ),
-            // .background(Color.Red),
-            // shape = CustomShapes.SMALL,
-            // colors = CardDefaults.cardColors().copy(containerColor = Color.Red),
-            content = { content() },
-        )
-        // }
+    ) {
+        OutlinedCard(shape = RectangleShape) {
+            ListItem(
+                headlineContent = { Text("Cupcake") },
+                supportingContent = { Text("Swipe me left or right!") }
+            )
+        }
     }
+
+    // BoxWithConstraints {
+    //
+    //     val dismissThreshold = 0.5f
+    //     val minIconScale = 1.0f
+    //     val maxIconScale = 1.5f
+    //
+    //     val containerWidthPx = with(LocalDensity.current) { maxWidth.toPx() }
+    //     val state = rememberSaveable(saver = AnchoredDraggableState.Saver()) {
+    //         AnchoredDraggableState(
+    //             initialValue = SwipeToDismissAnchors.End,
+    //         )
+    //     }
+    //
+    //     LaunchedEffect(state.currentValue) {
+    //         Log.i("TOTO", "SwipeToDismissComponent - state.currentValue: ${state.currentValue}")
+    //         if (state.currentValue == SwipeToDismissAnchors.Start) {
+    //             Log.e("TOTO", "SwipeToDismissComponent - START reached !")
+    //         }
+    //     }
+    //
+    //     val swipeProgress by remember {
+    //         derivedStateOf {
+    //             val progress = state.progress(from = SwipeToDismissAnchors.End, to = SwipeToDismissAnchors.Start)
+    //             // if (toto > 0.5f) callback()
+    //             Log.d("TOTO", "SwipeToDismissComponent | state: ${state.currentValue} | progress: ${progress}")
+    //             progress
+    //         }
+    //     }
+    //
+    //     // TODO: Red & Gray dark theme background colors need to be handled
+    //     val backgroundColor by animateColorAsState(
+    //         targetValue = if (swipeProgress > dismissThreshold) SwissTransferTheme.materialColors.error else Color.LightGray,
+    //         label = "Background color animation",
+    //     )
+    //     val iconScale by animateFloatAsState(
+    //         targetValue = if (swipeProgress > dismissThreshold) {
+    //             maxIconScale
+    //         } else {
+    //             minIconScale + (swipeProgress * 2.0f * (maxIconScale - minIconScale))
+    //         },
+    //         label = "Icon scaling animation",
+    //     )
+    //
+    //     SideEffect {
+    //         state.updateAnchors(
+    //             newAnchors = DraggableAnchors {
+    //                 SwipeToDismissAnchors.Start at -containerWidthPx
+    //                 // SwipeToDismissAnchors.Center at -(containerWidthPx * dismissThreshold)
+    //                 SwipeToDismissAnchors.End at 0.0f
+    //             },
+    //         )
+    //     }
+    //
+    //     Box(
+    //         modifier = Modifier
+    //             .clip(shape = CustomShapes.SMALL)
+    //             .background(backgroundColor),
+    //     ) {
+    //         Box(
+    //             modifier = Modifier
+    //                 .align(Alignment.CenterEnd)
+    //                 .padding(end = Margin.Large),
+    //         ) {
+    //             // TODO: The dark theme icon color needs to be handled
+    //             Icon(
+    //                 imageVector = Icons.Default.Delete,
+    //                 modifier = Modifier.scale(iconScale),
+    //                 contentDescription = null,
+    //             )
+    //         }
+    //
+    //         Box(
+    //             modifier = Modifier
+    //                 .offset {
+    //                     IntOffset(
+    //                         x = state
+    //                             .requireOffset()
+    //                             .roundToInt(),
+    //                         y = 0,
+    //                     )
+    //                 }
+    //                 .anchoredDraggable(
+    //                     state = state,
+    //                     orientation = Orientation.Horizontal,
+    //                     // flingBehavior = AnchoredDraggableDefaults.flingBehavior(
+    //                     //     state = state,
+    //                     //     positionalThreshold = { it * dismissThreshold },
+    //                     // ),
+    //                 ),
+    //             content = { content() },
+    //         )
+    //     }
+    // }
 }
 
 @Preview
