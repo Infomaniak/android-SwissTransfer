@@ -48,6 +48,8 @@
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
     <string name="noTransferReceivedDescription">Alle Überweisungen, die du in den letzten 30 Tagen erhältst, werden hier angezeigt.</string>
     <string name="noTransferReceivedTitle">Keine Überweisungen erhalten</string>
+    <string name="noTransferSelectedDescription">Wähle eine Übertragung aus oder erstelle eine neue.</string>
+    <string name="noTransferSelectedTitle">Keine Transfers zum Anzeigen</string>
     <string name="receivedFilesTitle">Empfangene Dateien</string>
     <string name="receivedTitle">Empfangen</string>
     <plurals name="recipientHeader">

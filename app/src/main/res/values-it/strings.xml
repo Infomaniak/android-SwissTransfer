@@ -48,6 +48,8 @@
     <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noTransferReceivedDescription">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
+    <string name="noTransferSelectedDescription">Selezionare un trasferimento o crearne uno nuovo.</string>
+    <string name="noTransferSelectedTitle">Nessun trasferimento da visualizzare</string>
     <string name="receivedFilesTitle">File ricevuti</string>
     <string name="receivedTitle">Ricevuto</string>
     <plurals name="recipientHeader">
