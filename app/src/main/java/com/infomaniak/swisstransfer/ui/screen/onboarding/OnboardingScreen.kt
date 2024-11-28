@@ -35,9 +35,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -68,6 +67,18 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
+    val pagerState = rememberPagerState(pageCount = { Page.entries.size })
+    val coroutineScope = rememberCoroutineScope()
+
+    val isHighlighted = Page.entries.associateWith { rememberSaveable { mutableStateOf(false) } }
+
+    // Start the highlighting of the text when the associated page is reached in the HorizontalPager
+    LaunchedEffect(pagerState.currentPage) {
+        val currentPage = Page.entries[pagerState.currentPage]
+        val setIsHighlighted = isHighlighted[currentPage]?.component2()
+        setIsHighlighted?.invoke(true)
+    }
+
     val onboardingPages = buildList {
         Page.entries.forEach { page ->
             add(
@@ -75,15 +86,15 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
                     background = page.background.image(),
                     illustration = { Illustration(page.illustration) },
                     text = {
-                        TitleAndDescription(page.titleRes, page.subtitleTemplateRes, page.subtitleArgumentRes, page.angleDegree)
+                        TitleAndDescription(
+                            page,
+                            isHighlighted = { isHighlighted[page]?.value ?: false }
+                        )
                     }
                 )
             )
         }
     }
-
-    val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
-    val coroutineScope = rememberCoroutineScope()
 
     BackHandler(pagerState.currentPage > 0) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -105,22 +116,25 @@ private fun Illustration(illustration: ThemedImage) {
 
 @Composable
 private fun TitleAndDescription(
-    @StringRes titleRes: Int,
-    @StringRes subtitleTemplateRes: Int,
-    @StringRes subtitleArgumentRes: Int,
-    angleDegree: Double,
+    page: Page,
+    isHighlighted: () -> Boolean,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(textAlign = TextAlign.Center, text = stringResource(titleRes), style = SwissTransferTheme.typography.specificLight22)
+        Text(
+            textAlign = TextAlign.Center,
+            text = stringResource(page.titleRes),
+            style = SwissTransferTheme.typography.specificLight22,
+        )
 
         Spacer(modifier = Modifier.height(Margin.Mini))
 
         HighlightedText(
             modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
-            templateRes = subtitleTemplateRes,
-            argumentRes = subtitleArgumentRes,
+            templateRes = page.subtitleTemplateRes,
+            argumentRes = page.subtitleArgumentRes,
             style = SwissTransferTheme.typography.h1,
-            angleDegrees = angleDegree,
+            angleDegrees = page.angleDegree,
+            isHighlighted = isHighlighted,
         )
     }
 }
