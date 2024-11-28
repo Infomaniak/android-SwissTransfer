@@ -60,6 +60,55 @@ fun HighlightedText(
     verticalPadding: Float = VERTICAL_PADDING,
     horizontalPadding: Float = HORIZONTAL_PADDING,
     angleDegrees: Double = ROTATION_ANGLE_DEGREE,
+    isHighlighted: () -> Boolean,
+) {
+    HighlightedTextCore(
+        templateRes,
+        argumentRes,
+        style,
+        modifier,
+        verticalPadding,
+        horizontalPadding,
+        angleDegrees,
+        isHighlighted,
+    )
+}
+
+@Composable
+fun HighlightedText(
+    modifier: Modifier = Modifier,
+    templateRes: Int,
+    argumentRes: Int,
+    style: TextStyle,
+    verticalPadding: Float = VERTICAL_PADDING,
+    horizontalPadding: Float = HORIZONTAL_PADDING,
+    angleDegrees: Double = ROTATION_ANGLE_DEGREE,
+) {
+    var isHighlighted by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) { isHighlighted = true }
+
+    HighlightedTextCore(
+        templateRes,
+        argumentRes,
+        style,
+        modifier,
+        verticalPadding,
+        horizontalPadding,
+        angleDegrees,
+        { isHighlighted },
+    )
+}
+
+@Composable
+private fun HighlightedTextCore(
+    templateRes: Int,
+    argumentRes: Int,
+    style: TextStyle,
+    modifier: Modifier,
+    verticalPadding: Float,
+    horizontalPadding: Float,
+    angleDegrees: Double,
+    isHighlighted: () -> Boolean
 ) {
     val template = stringResource(templateRes)
     val argument = stringResource(argumentRes)
@@ -68,12 +117,9 @@ fun HighlightedText(
     val highlightedColor = SwissTransferTheme.colors.highlightedColor
 
     var boundingBoxes by remember { mutableStateOf<List<Rect>>(emptyList()) }
-    var animationStarted by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) { animationStarted = true }
 
     val highlightProgress by animateFloatAsState(
-        targetValue = if (animationStarted) 1f else 0f,
+        targetValue = if (isHighlighted()) 1f else 0f,
         animationSpec = tween(
             durationMillis = 600,
             easing = FastOutSlowInEasing,
