@@ -68,44 +68,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
-    val onboardingPages = listOf(
-        OnboardingPage(
-            background = AppIllus.RadialGradientCornerTopRight.image(),
-            illustration = { Illustration(AppIllus.StorageBoxPile) },
-            text = {
-                TitleAndDescription(
-                    titleRes = R.string.onboardingStorageTitle,
-                    subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
-                    subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
-                    angleDegree = -3.0,
+    val onboardingPages = buildList {
+        Page.entries.forEach { page ->
+            add(
+                OnboardingPage(
+                    background = page.background.image(),
+                    illustration = { Illustration(page.illustration) },
+                    text = {
+                        TitleAndDescription(page.titleRes, page.subtitleTemplateRes, page.subtitleArgumentRes, page.angleDegree)
+                    }
                 )
-            }
-        ),
-        OnboardingPage(
-            background = AppIllus.RadialGradientCornerTopLeft.image(),
-            illustration = { Illustration(AppIllus.ThreeCardsTransferType) },
-            text = {
-                TitleAndDescription(
-                    titleRes = R.string.onboardingExpirationTitle,
-                    subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
-                    subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
-                    angleDegree = -3.0,
-                )
-            }
-        ),
-        OnboardingPage(
-            background = AppIllus.RadialGradientCornerTopRight.image(),
-            illustration = { Illustration(AppIllus.TwoPadlocksIntertwinedStars) },
-            text = {
-                TitleAndDescription(
-                    titleRes = R.string.onboardingPasswordTitle,
-                    subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
-                    subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
-                    angleDegree = 3.0,
-                )
-            }
-        ),
-    )
+            )
+        }
+    }
 
     val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val coroutineScope = rememberCoroutineScope()
@@ -307,6 +282,40 @@ data class OnboardingPage(
     val illustration: @Composable () -> Unit,
     val text: @Composable () -> Unit,
 )
+
+private enum class Page(
+    val background: ThemedImage,
+    val illustration: ThemedImage,
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleTemplateRes: Int,
+    @StringRes val subtitleArgumentRes: Int,
+    val angleDegree: Double,
+) {
+    STORAGE(
+        background = AppIllus.RadialGradientCornerTopRight,
+        illustration = AppIllus.StorageBoxPile,
+        titleRes = R.string.onboardingStorageTitle,
+        subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
+        subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
+        angleDegree = -3.0,
+    ),
+    EXPIRATION(
+        background = AppIllus.RadialGradientCornerTopLeft,
+        illustration = AppIllus.ThreeCardsTransferType,
+        titleRes = R.string.onboardingExpirationTitle,
+        subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
+        subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
+        angleDegree = -3.0,
+    ),
+    PASSWORD(
+        background = AppIllus.RadialGradientCornerTopRight,
+        illustration = AppIllus.TwoPadlocksIntertwinedStars,
+        titleRes = R.string.onboardingPasswordTitle,
+        subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
+        subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
+        angleDegree = 3.0,
+    ),
+}
 
 @PreviewSmallWindow
 @PreviewLargeWindow
