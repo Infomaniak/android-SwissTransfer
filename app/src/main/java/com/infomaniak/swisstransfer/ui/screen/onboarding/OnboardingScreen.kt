@@ -74,9 +74,10 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             illustration = { Illustration(AppIllus.StorageBoxPile) },
             text = {
                 TitleAndDescription(
-                    R.string.onboardingStorageTitle,
-                    R.string.onboardingStorageSubtitleTemplate,
-                    R.string.onboardingStorageSubtitleArgument,
+                    titleRes = R.string.onboardingStorageTitle,
+                    subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
+                    subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
+                    angleDegree = -3.0,
                 )
             }
         ),
@@ -85,9 +86,10 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             illustration = { Illustration(AppIllus.ThreeCardsTransferType) },
             text = {
                 TitleAndDescription(
-                    R.string.onboardingExpirationTitle,
-                    R.string.onboardingExpirationSubtitleTemplate,
-                    R.string.onboardingExpirationSubtitleArgument,
+                    titleRes = R.string.onboardingExpirationTitle,
+                    subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
+                    subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
+                    angleDegree = -3.0,
                 )
             }
         ),
@@ -96,9 +98,10 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             illustration = { Illustration(AppIllus.TwoPadlocksIntertwinedStars) },
             text = {
                 TitleAndDescription(
-                    R.string.onboardingPasswordTitle,
-                    R.string.onboardingPasswordSubtitleTemplate,
-                    R.string.onboardingPasswordSubtitleArgument,
+                    titleRes = R.string.onboardingPasswordTitle,
+                    subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
+                    subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
+                    angleDegree = 3.0,
                 )
             }
         ),
@@ -130,6 +133,7 @@ private fun TitleAndDescription(
     @StringRes titleRes: Int,
     @StringRes subtitleTemplateRes: Int,
     @StringRes subtitleArgumentRes: Int,
+    angleDegree: Double,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(textAlign = TextAlign.Center, text = stringResource(titleRes), style = SwissTransferTheme.typography.specificLight22)
@@ -141,6 +145,7 @@ private fun TitleAndDescription(
             templateRes = subtitleTemplateRes,
             argumentRes = subtitleArgumentRes,
             style = SwissTransferTheme.typography.h1,
+            angleDegrees = angleDegree,
         )
     }
 }
