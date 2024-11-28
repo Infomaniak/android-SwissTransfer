@@ -48,6 +48,11 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
+private const val DISMISS_THRESHOLD = 0.5f
+private const val MIN_ICON_SCALE = 1.0f
+private const val MAX_ICON_SCALE = 1.5f
+private const val SWIPED_ELEVATION = 4
+
 @Composable
 fun SwipeToDismissComponent(
     contentShape: Shape,
@@ -55,14 +60,8 @@ fun SwipeToDismissComponent(
     content: @Composable () -> Unit,
 ) {
 
-    // Configuration
-    val dismissThreshold = 0.5f
-    val minIconScale = 1.0f
-    val maxIconScale = 1.5f
-    val swipedElevation = 4.dp
-
     val state = rememberSwipeToDismissBoxState(
-        positionalThreshold = { totalDistance -> totalDistance * dismissThreshold },
+        positionalThreshold = { totalDistance -> totalDistance * DISMISS_THRESHOLD },
     )
 
     if (state.currentValue == EndToStart) onSwiped()
@@ -76,11 +75,11 @@ fun SwipeToDismissComponent(
         label = "Background color animation",
     )
     val iconScale by animateFloatAsState(
-        targetValue = if (state.targetValue == EndToStart) maxIconScale else minIconScale,
+        targetValue = if (state.targetValue == EndToStart) MAX_ICON_SCALE else MIN_ICON_SCALE,
         label = "Icon scale animation",
     )
     val contentElevation by animateDpAsState(
-        targetValue = if (state.dismissDirection == EndToStart) swipedElevation else 0.dp,
+        targetValue = if (state.dismissDirection == EndToStart) SWIPED_ELEVATION.dp else 0.dp,
         label = "Content elevation animation",
     )
 
