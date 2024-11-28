@@ -37,6 +37,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.infomaniak.library.onboarding.OnboardingPage
+import com.infomaniak.library.onboarding.OnboardingScaffold
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
