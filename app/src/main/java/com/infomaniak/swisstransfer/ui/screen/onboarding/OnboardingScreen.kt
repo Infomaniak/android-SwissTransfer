@@ -23,16 +23,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -40,14 +34,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
@@ -214,88 +202,6 @@ private fun BottomContent(
         }
     }
 }
-
-@Composable
-private fun OnboardingScaffold(
-    pagerState: PagerState,
-    onboardingPages: List<OnboardingPage>,
-    bottomContent: @Composable () -> Unit,
-) {
-    Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier.padding(
-                bottom = paddingValues.calculateBottomPadding(),
-                start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
-                end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
-            )
-        ) {
-            HorizontalPager(pagerState, modifier = Modifier.weight(1f)) {
-                OnboardingPageContent(page = onboardingPages[it], paddingValues.calculateTopPadding())
-            }
-
-            HorizontalPagerIndicator(Modifier.padding(vertical = 32.dp), pagerState)
-
-            bottomContent()
-        }
-    }
-}
-
-@Composable
-fun ColumnScope.HorizontalPagerIndicator(modifier: Modifier = Modifier, pagerState: PagerState) {
-    Row(
-        modifier
-            .wrapContentHeight()
-            .fillMaxWidth()
-            .align(Alignment.CenterHorizontally)
-            .padding(bottom = 8.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        repeat(pagerState.pageCount) { iteration ->
-            val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
-            Box(
-                modifier = Modifier
-                    .padding(2.dp)
-                    .clip(CircleShape)
-                    .background(color)
-                    .size(16.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun OnboardingPageContent(page: OnboardingPage, calculateTopPadding: Dp) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            page.background,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds,
-        )
-        Column(
-            modifier = Modifier
-                .padding(top = calculateTopPadding)
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            with(page) {
-                illustration()
-                text()
-            }
-        }
-    }
-}
-
-data class OnboardingPage(
-    val background: ImageVector,
-    val illustration: @Composable () -> Unit,
-    val text: @Composable () -> Unit,
-)
 
 private enum class Page(
     val background: ThemedImage,
