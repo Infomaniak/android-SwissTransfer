@@ -40,6 +40,6 @@ enum class NavigationItem(
     val destination: MainNavigation,
 ) {
     SENT(R.string.sentTitle, AppIcons.ArrowUpCircle, SentDestination),
-    RECEIVED(R.string.receivedTitle, AppIcons.ArrowDownCircle, ReceivedDestination),
+    RECEIVED(R.string.receivedTitle, AppIcons.ArrowDownCircle, ReceivedDestination()),
     SETTINGS(R.string.settingsTitle, AppIcons.Settings, SettingsDestination),
 }
