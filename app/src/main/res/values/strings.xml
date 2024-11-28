@@ -52,6 +52,8 @@
     <string name="noFileTitle">No file, no transfer!</string>
     <string name="noTransferReceivedDescription">All transfers you receive over the last 30 days will appear here.</string>
     <string name="noTransferReceivedTitle">No transfers received</string>
+    <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
+    <string name="noTransferSelectedTitle">No transfers to display</string>
     <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
     <plurals name="recipientHeader">
