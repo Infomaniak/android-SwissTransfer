@@ -59,7 +59,7 @@ class TransfersViewModel @Inject constructor(
         }
     }
 
-    fun deleteSwipedTransfer(transferUuid: String) {
+    fun deleteTransfer(transferUuid: String) {
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 transferManager.deleteTransfer(transferUuid)

@@ -47,11 +47,11 @@ fun TransferItemList(
 ) {
 
     val selectedTransferUuid = getSelectedTransferUuid()
+    val itemShape = CustomShapes.SMALL
     val titleRes = when (direction) {
         TransferDirection.SENT -> R.string.sentFilesTitle
         TransferDirection.RECEIVED -> R.string.receivedFilesTitle
     }
-    val itemShape = CustomShapes.SMALL
 
     LazyColumn(
         modifier = modifier,

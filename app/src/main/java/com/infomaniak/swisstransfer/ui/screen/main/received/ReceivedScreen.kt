@@ -52,7 +52,7 @@ fun ReceivedScreen(
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             getTransfers = { transfers!! },
-            onSwiped = transfersViewModel::deleteSwipedTransfer,
+            onSwiped = transfersViewModel::deleteTransfer,
         )
     }
 }

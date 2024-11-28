@@ -24,7 +24,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -61,10 +65,10 @@ fun SwipeToDismissComponent(
         positionalThreshold = { totalDistance -> totalDistance * dismissThreshold },
     )
 
-    if (state.currentValue == SwipeToDismissBoxValue.EndToStart) onSwiped()
+    if (state.currentValue == EndToStart) onSwiped()
 
     val backgroundColor by animateColorAsState(
-        targetValue = if (state.targetValue == SwipeToDismissBoxValue.EndToStart) {
+        targetValue = if (state.targetValue == EndToStart) {
             SwissTransferTheme.colors.swipeDelete
         } else {
             SwissTransferTheme.colors.swipeDefault
@@ -72,11 +76,11 @@ fun SwipeToDismissComponent(
         label = "Background color animation",
     )
     val iconScale by animateFloatAsState(
-        targetValue = if (state.targetValue == SwipeToDismissBoxValue.EndToStart) maxIconScale else minIconScale,
+        targetValue = if (state.targetValue == EndToStart) maxIconScale else minIconScale,
         label = "Icon scale animation",
     )
     val contentElevation by animateDpAsState(
-        targetValue = if (state.dismissDirection == SwipeToDismissBoxValue.EndToStart) swipedElevation else 0.dp,
+        targetValue = if (state.dismissDirection == EndToStart) swipedElevation else 0.dp,
         label = "Content elevation animation",
     )
 
