@@ -98,7 +98,7 @@ fun HighlightedText(
 
 private fun TextLayoutResult.getArgumentBoundingBoxes(text: String, argument: String): List<Rect> {
     val startIndex = text.indexOf(argument)
-    return getBoundingBoxesForRange(start = startIndex, end = startIndex + argument.count())
+    return getBoundingBoxesForRange(start = startIndex, end = startIndex + argument.count() - 1)
 }
 
 private fun List<Rect>.transformForHighlightedStyle(
@@ -165,34 +165,42 @@ private fun getRotatedRectanglePath(rect: Rect, angleDegrees: Double, @FloatRang
 }
 
 private fun TextLayoutResult.getBoundingBoxesForRange(start: Int, end: Int): List<Rect> {
+    // No character case or start > end case
+    if (end - start <= 0) return emptyList()
+
+    // Single character case
+    if (end - start == 1) return listOf(getBoundingBox(0))
+
+    var firstBoundingBoxRect: Rect? = null
     var previousRect: Rect? = null
-    var firstLineCharRect: Rect? = null
     val boundingBoxes = mutableListOf<Rect>()
 
+    // More than one character case
     for (index in start..end) {
-        val rect = getBoundingBox(index)
-        val isLastRect = index == end
+        val currentRect = getBoundingBox(index)
+        val isLastCharacter = index == end
 
-        // Single char case
-        if (isLastRect && firstLineCharRect == null) {
-            firstLineCharRect = rect
-            previousRect = rect
+        // If we haven't seen the first character of the line, set it now
+        if (firstBoundingBoxRect == null) {
+            firstBoundingBoxRect = currentRect
         }
 
-        // `rect.right` is zero for the last space in each line
-        // Might be an issue: https://issuetracker.google.com/issues/197146630
-        if (!isLastRect && rect.right == 0.0f) continue
+        // Check if we reached the end of the current bounding box (i.e. if we reached a new line or the last character in the range)
+        if (previousRect != null && (areOnDifferentLines(previousRect, currentRect) || isLastCharacter)) {
+            val lastBoundingBoxRect = if (isLastCharacter) currentRect else previousRect
+            boundingBoxes.add(firstBoundingBoxRect.copy(right = lastBoundingBoxRect.right))
 
-        if (firstLineCharRect == null) {
-            firstLineCharRect = rect
-        } else if (previousRect != null && (previousRect.bottom != rect.bottom || isLastRect)) {
-            boundingBoxes.add(firstLineCharRect.copy(right = previousRect.right))
-            firstLineCharRect = rect
+            // Start a new line (reset firstBoundingBoxRect to the current character's rect)
+            firstBoundingBoxRect = currentRect
         }
-        previousRect = rect
+
+        previousRect = currentRect
     }
+
     return boundingBoxes
 }
+
+private fun areOnDifferentLines(previousRect: Rect, currentRect: Rect) = previousRect.bottom != currentRect.bottom
 
 @PreviewLightAndDark
 @Preview(locale = "fr")
