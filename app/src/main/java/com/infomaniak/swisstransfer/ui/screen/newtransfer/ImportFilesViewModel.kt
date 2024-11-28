@@ -133,7 +133,7 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun getFiles(folderUuid: String?): Flow<List<FileUi>?> {
+    fun getFiles(folderUuid: String?): Flow<List<FileUi>> {
         return if (folderUuid == null) {
             importationFilesManager.importedFiles
         } else {

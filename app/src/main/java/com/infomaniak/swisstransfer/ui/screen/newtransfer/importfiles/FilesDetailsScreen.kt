@@ -49,18 +49,16 @@ fun FilesDetailsScreen(
     navigateBack: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
-    val files by importFilesViewModel.getFiles(folderUuid).collectAsStateWithLifecycle(null)
+    val files by importFilesViewModel.getFiles(folderUuid).collectAsStateWithLifecycle(emptyList())
 
-    if (files?.isEmpty() == true) navigateBack()
+    if (files.isEmpty() == true) navigateBack()
 
     FilesDetailsScreen(
-        files = files ?: emptyList(),
+        files = files,
         navigateToDetails = navigateToDetails,
         withFileSize = withFileSize,
         withSpaceLeft = withSpaceLeft,
-        onFileRemoved = if (withFileDelete) {
-            { importFilesViewModel.removeFileByUid(it) }
-        } else null,
+        onFileRemoved = getOnFileRemoveCallback(withFileDelete, importFilesViewModel),
         onCloseClicked = onCloseClicked,
         navigateBack = navigateBack,
     )
