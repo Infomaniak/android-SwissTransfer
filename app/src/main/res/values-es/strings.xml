@@ -25,6 +25,7 @@
     <string name="buttonFinished">Acabado</string>
     <string name="buttonNext">Siguiente</string>
     <string name="buttonShare">Compartir</string>
+    <string name="buttonStart">Inicio</string>
     <string name="contentDescriptionButtonBack">Volver</string>
     <string name="contentDescriptionButtonClose">Cerrar</string>
     <string name="contentDescriptionButtonHidePassword">Ocultar contraseña</string>
