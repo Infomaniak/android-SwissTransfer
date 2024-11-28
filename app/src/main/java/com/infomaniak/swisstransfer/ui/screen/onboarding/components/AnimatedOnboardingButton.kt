@@ -87,7 +87,7 @@ fun AnimatedOnboardingButton(isExpanded: () -> Boolean, onClick: () -> Unit) {
             )
             Text(
                 modifier = Modifier.alpha(textVisibility),
-                text = stringResource(id = R.string.appName),
+                text = stringResource(id = R.string.buttonStart),
                 style = SwissTransferTheme.typography.bodyMedium
             )
         }
