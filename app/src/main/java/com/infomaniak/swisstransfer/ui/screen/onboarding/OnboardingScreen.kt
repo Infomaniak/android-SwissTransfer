@@ -44,8 +44,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
@@ -54,10 +57,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
-import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
-import com.infomaniak.swisstransfer.ui.images.illus.onboarding.StorageBoxPile
-import com.infomaniak.swisstransfer.ui.images.illus.onboarding.ThreeCardsTransferType
-import com.infomaniak.swisstransfer.ui.images.illus.onboarding.TwoPadlocksIntertwinedStars
+import com.infomaniak.swisstransfer.ui.images.illus.onboarding.*
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -70,7 +70,7 @@ import kotlinx.coroutines.launch
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
     val onboardingPages = listOf(
         OnboardingPage(
-            background = AppIllus.Matomo.image(),
+            background = AppIllus.RadialGradientCornerTopRight.image(),
             illustration = { Illustration(AppIllus.StorageBoxPile) },
             text = {
                 TitleAndDescription(
@@ -82,7 +82,7 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             }
         ),
         OnboardingPage(
-            background = AppIllus.Matomo.image(),
+            background = AppIllus.RadialGradientCornerTopLeft.image(),
             illustration = { Illustration(AppIllus.ThreeCardsTransferType) },
             text = {
                 TitleAndDescription(
@@ -94,7 +94,7 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
             }
         ),
         OnboardingPage(
-            background = AppIllus.Matomo.image(),
+            background = AppIllus.RadialGradientCornerTopRight.image(),
             illustration = { Illustration(AppIllus.TwoPadlocksIntertwinedStars) },
             text = {
                 TitleAndDescription(
@@ -233,9 +233,15 @@ private fun OnboardingScaffold(
     bottomContent: @Composable () -> Unit,
 ) {
     Scaffold { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(
+            modifier = Modifier.padding(
+                bottom = paddingValues.calculateBottomPadding(),
+                start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
+                end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
+            )
+        ) {
             HorizontalPager(pagerState, modifier = Modifier.weight(1f)) {
-                OnboardingPageContent(page = onboardingPages[it])
+                OnboardingPageContent(page = onboardingPages[it], paddingValues.calculateTopPadding())
             }
 
             HorizontalPagerIndicator(Modifier.padding(vertical = 32.dp), pagerState)
@@ -269,14 +275,20 @@ fun ColumnScope.HorizontalPagerIndicator(modifier: Modifier = Modifier, pagerSta
 }
 
 @Composable
-fun OnboardingPageContent(page: OnboardingPage) {
+fun OnboardingPageContent(page: OnboardingPage, calculateTopPadding: Dp) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Image(page.background, contentDescription = null, modifier = Modifier.fillMaxSize())
+        Image(
+            page.background,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds,
+        )
         Column(
             modifier = Modifier
+                .padding(top = calculateTopPadding)
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
