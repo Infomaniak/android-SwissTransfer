@@ -29,6 +29,7 @@
     <string name="buttonFinished">Finish</string>
     <string name="buttonNext">Next</string>
     <string name="buttonShare">Share</string>
+    <string name="buttonStart">Start</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>
