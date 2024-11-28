@@ -19,21 +19,15 @@ package com.infomaniak.swisstransfer.ui.screen.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,23 +35,21 @@ import com.infomaniak.library.onboarding.OnboardingPage
 import com.infomaniak.library.onboarding.OnboardingScaffold
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
-import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
-import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.*
+import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = { Page.entries.size })
+    val isLastPage by remember { derivedStateOf { pagerState.currentPage >= pagerState.pageCount - 1 } }
     val coroutineScope = rememberCoroutineScope()
 
     val isHighlighted = Page.entries.associateWith { rememberSaveable { mutableStateOf(false) } }
@@ -69,35 +61,42 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
         setIsHighlighted?.invoke(true)
     }
 
-    val onboardingPages = buildList {
-        Page.entries.forEach { page ->
-            add(
-                OnboardingPage(
-                    background = page.background.image(),
-                    illustration = { Illustration(page.illustration) },
-                    text = {
-                        TitleAndDescription(
-                            page,
-                            isHighlighted = { isHighlighted[page]?.value ?: false }
-                        )
-                    }
-                )
-            )
+    BackHandler(pagerState.currentPage > 0) {
+        coroutineScope.launch {
+            pagerState.animateScrollToPage(pagerState.currentPage - 1)
         }
     }
 
-    BackHandler(pagerState.currentPage > 0) {
-        coroutineScope.launch(Dispatchers.IO) {
-            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+    val onboardingPages = buildList {
+        Page.entries.forEach { page ->
+            add(page.toOnboardingPage(isHighlighted))
         }
     }
 
     OnboardingScaffold(
         pagerState = pagerState,
         onboardingPages = onboardingPages,
-        bottomContent = { BottomContent(pagerState, onboardingPages.size, goToMainActivity) },
+        bottomContent = {
+            BottomContent(
+                isLastPage = { isLastPage },
+                startMainActivity = goToMainActivity,
+                goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+            )
+        },
     )
 }
+
+@Composable
+private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>) = OnboardingPage(
+    background = background.image(),
+    illustration = { Illustration(illustration) },
+    text = {
+        TitleAndDescription(
+            page = this,
+            isHighlighted = { isHighlighted[this]?.value ?: false }
+        )
+    }
+)
 
 @Composable
 private fun Illustration(illustration: ThemedImage) {
@@ -105,10 +104,7 @@ private fun Illustration(illustration: ThemedImage) {
 }
 
 @Composable
-private fun TitleAndDescription(
-    page: Page,
-    isHighlighted: () -> Boolean,
-) {
+private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             textAlign = TextAlign.Center,
@@ -129,79 +125,18 @@ private fun TitleAndDescription(
     }
 }
 
-private const val BUTTON_ANIM_DURATION = 300
-private const val BUTTON_ANIM_DELAY = BUTTON_ANIM_DURATION / 2
-private const val BUTTON_ANIM_NO_DELAY = 0
-private val FAB_SIZE = 64.dp
-
 @Composable
-private fun BottomContent(
-    pagerState: PagerState,
-    pageCount: Int,
-    startMainActivity: () -> Unit,
-) {
-    val coroutineScope = rememberCoroutineScope()
-    val isLastPage = pagerState.currentPage >= pageCount - 1
-
-    val buttonWidth by animateDpAsState(
-        targetValue = if (isLastPage) Dimens.SingleButtonMaxWidth else FAB_SIZE,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY),
-        label = "Onboarding button width",
-    )
-
-    val buttonHeight by animateDpAsState(
-        targetValue = if (isLastPage) Dimens.LargeButtonHeight else FAB_SIZE,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY),
-        label = "Onboarding button height",
-    )
-
-    val arrowDelay = if (isLastPage) BUTTON_ANIM_NO_DELAY else BUTTON_ANIM_DELAY
-    val arrowVisibility by animateFloatAsState(
-        targetValue = if (isLastPage) 0f else 1f,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY, delayMillis = arrowDelay),
-        label = "Onboarding arrow visibility",
-    )
-
-    val textDelay = if (isLastPage) BUTTON_ANIM_DELAY else BUTTON_ANIM_NO_DELAY
-    val textVisibility by animateFloatAsState(
-        targetValue = if (isLastPage) 1f else 0f,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY, delayMillis = textDelay),
-        label = "Onboarding text visibility",
-    )
-
+private fun BottomContent(isLastPage: () -> Boolean, startMainActivity: () -> Unit, goToNextPage: () -> Unit) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .height(136.dp),
+            .height(140.dp),
     ) {
-        SwissTransferButton(
-            modifier = Modifier
-                .height(buttonHeight)
-                .padding(horizontal = Margin.Medium)
-                .width(buttonWidth),
-            onClick = {
-                if (isLastPage) {
-                    startMainActivity()
-                } else {
-                    coroutineScope.launch(Dispatchers.IO) { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
-                }
-            },
-            contentPadding = PaddingValues(),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    modifier = Modifier.alpha(arrowVisibility),
-                    imageVector = AppImages.AppIcons.ArrowRight,
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.alpha(textVisibility),
-                    text = stringResource(id = R.string.appName),
-                    style = SwissTransferTheme.typography.bodyMedium
-                )
-            }
-        }
+        AnimatedOnboardingButton(
+            isExpanded = { isLastPage() },
+            onClick = { if (isLastPage()) startMainActivity() else goToNextPage() },
+        )
     }
 }
 
