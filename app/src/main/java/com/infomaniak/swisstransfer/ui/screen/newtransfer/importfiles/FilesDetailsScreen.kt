@@ -64,6 +64,15 @@ fun FilesDetailsScreen(
     )
 }
 
+private fun getOnFileRemoveCallback(
+    withFileDelete: Boolean,
+    importFilesViewModel: ImportFilesViewModel,
+): ((String) -> Unit)? {
+    return if (withFileDelete) {
+        { importFilesViewModel.removeFileByUid(it) }
+    } else null
+}
+
 @Composable
 private fun FilesDetailsScreen(
     title: String = "",
