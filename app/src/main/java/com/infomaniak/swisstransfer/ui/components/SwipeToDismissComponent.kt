@@ -24,8 +24,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,12 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItem
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -54,8 +53,6 @@ fun SwipeToDismissComponent(
 
     // Configuration
     val dismissThreshold = 0.5f
-    val defaultColor = Color.LightGray
-    val swipedColor = SwissTransferTheme.materialColors.error
     val minIconScale = 1.0f
     val maxIconScale = 1.5f
     val swipedElevation = 4.dp
@@ -66,9 +63,12 @@ fun SwipeToDismissComponent(
 
     if (state.currentValue == SwipeToDismissBoxValue.EndToStart) onSwiped()
 
-    // TODO: Red & Gray dark theme background colors need to be handled
     val backgroundColor by animateColorAsState(
-        targetValue = if (state.targetValue == SwipeToDismissBoxValue.EndToStart) swipedColor else defaultColor,
+        targetValue = if (state.targetValue == SwipeToDismissBoxValue.EndToStart) {
+            SwissTransferTheme.colors.swipeDelete
+        } else {
+            SwissTransferTheme.colors.swipeDefault
+        },
         label = "Background color animation",
     )
     val iconScale by animateFloatAsState(
@@ -95,9 +95,9 @@ fun SwipeToDismissComponent(
                         .align(Alignment.CenterEnd)
                         .padding(end = Margin.Large),
                 ) {
-                    // TODO: The dark theme icon color needs to be handled
                     Icon(
-                        imageVector = Icons.Default.Delete,
+                        imageVector = AppIcons.Bin,
+                        tint = SwissTransferTheme.colors.swipeIcon,
                         modifier = Modifier.scale(iconScale),
                         contentDescription = null,
                     )

@@ -25,8 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
-import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
@@ -34,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
+import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
 val AppIcons.Bin: ImageVector
     get() {
@@ -42,88 +42,82 @@ val AppIcons.Bin: ImageVector
 
         _bin = Builder(
             name = "Bin",
-            defaultWidth = 16.0.dp,
-            defaultHeight = 16.0.dp,
-            viewportWidth = 16.0f,
-            viewportHeight = 16.0f,
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f,
         ).apply {
             path(
-                fill = SolidColor(Color(0xFFF7FCFA)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0x00000000)),
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 1.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
-                moveTo(15.502f, 2.115f)
-                horizontalLineTo(11.236f)
-                verticalLineTo(1.621f)
-                curveTo(11.236f, 1.198f, 11.093f, 0.775f, 10.738f, 0.493f)
-                curveTo(10.382f, 0.211f, 10.027f, 0.0f, 9.6f, 0.0f)
-                horizontalLineTo(6.471f)
-                curveTo(5.973f, 0.0f, 5.618f, 0.211f, 5.333f, 0.493f)
-                curveTo(4.978f, 0.775f, 4.836f, 1.198f, 4.836f, 1.621f)
-                verticalLineTo(2.185f)
-                horizontalLineTo(0.569f)
-                curveTo(0.284f, 2.185f, 0.0f, 2.396f, 0.0f, 2.749f)
-                curveTo(0.0f, 3.101f, 0.213f, 3.313f, 0.569f, 3.313f)
-                horizontalLineTo(1.707f)
-                lineTo(2.631f, 14.52f)
-                curveTo(2.631f, 14.943f, 2.844f, 15.295f, 3.129f, 15.577f)
-                curveTo(3.413f, 15.859f, 3.84f, 16.0f, 4.196f, 16.0f)
-                horizontalLineTo(11.804f)
-                curveTo(12.231f, 16.0f, 12.587f, 15.859f, 12.871f, 15.577f)
-                curveTo(13.156f, 15.295f, 13.369f, 14.943f, 13.369f, 14.52f)
-                lineTo(14.293f, 3.313f)
-                horizontalLineTo(15.431f)
-                curveTo(15.716f, 3.313f, 16.0f, 3.101f, 16.0f, 2.749f)
-                curveTo(16.0f, 2.396f, 15.787f, 2.115f, 15.502f, 2.115f)
-                close()
-                moveTo(5.902f, 1.621f)
-                curveTo(5.902f, 1.48f, 5.973f, 1.339f, 6.044f, 1.269f)
-                curveTo(6.116f, 1.198f, 6.258f, 1.128f, 6.4f, 1.128f)
-                horizontalLineTo(9.6f)
-                curveTo(9.742f, 1.128f, 9.884f, 1.198f, 9.956f, 1.269f)
-                curveTo(10.027f, 1.339f, 10.169f, 1.48f, 10.169f, 1.621f)
-                verticalLineTo(2.185f)
-                horizontalLineTo(5.902f)
-                verticalLineTo(1.621f)
-                close()
-                moveTo(12.373f, 14.379f)
-                curveTo(12.373f, 14.52f, 12.302f, 14.661f, 12.231f, 14.731f)
-                curveTo(12.16f, 14.802f, 12.018f, 14.872f, 11.876f, 14.872f)
-                horizontalLineTo(4.196f)
-                curveTo(4.053f, 14.872f, 3.911f, 14.802f, 3.84f, 14.731f)
-                curveTo(3.769f, 14.661f, 3.698f, 14.52f, 3.698f, 14.379f)
-                lineTo(2.773f, 3.172f)
-                horizontalLineTo(13.369f)
-                lineTo(12.373f, 14.379f)
-                close()
+                moveTo(20.609f, 4.826f)
+                lineTo(18.875f, 21.287f)
+                curveTo(18.826f, 21.757f, 18.604f, 22.192f, 18.253f, 22.508f)
+                curveTo(17.902f, 22.825f, 17.447f, 23.0f, 16.974f, 23.0f)
+                horizontalLineTo(7.026f)
+                curveTo(6.553f, 23.0f, 6.097f, 22.825f, 5.746f, 22.509f)
+                curveTo(5.395f, 22.192f, 5.173f, 21.757f, 5.124f, 21.287f)
+                lineTo(3.391f, 4.826f)
             }
             path(
-                fill = SolidColor(Color(0xFFF7FCFA)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0x00000000)),
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 1.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
-                moveTo(6.471f, 5.85f)
-                curveTo(6.116f, 5.85f, 5.902f, 6.062f, 5.902f, 6.414f)
-                verticalLineTo(11.7f)
-                curveTo(5.902f, 11.982f, 6.116f, 12.194f, 6.471f, 12.194f)
-                curveTo(6.827f, 12.194f, 7.04f, 11.982f, 7.04f, 11.63f)
-                verticalLineTo(6.414f)
-                curveTo(6.969f, 6.062f, 6.756f, 5.85f, 6.471f, 5.85f)
-                close()
+                moveTo(1.0f, 4.826f)
+                horizontalLineTo(23.0f)
             }
             path(
-                fill = SolidColor(Color(0xFFF7FCFA)), stroke = null, strokeLineWidth = 0.0f,
-                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0x00000000)),
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 1.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
             ) {
-                moveTo(9.6f, 5.85f)
-                curveTo(9.316f, 5.85f, 9.031f, 6.062f, 9.031f, 6.414f)
-                verticalLineTo(11.7f)
-                curveTo(9.031f, 11.982f, 9.244f, 12.264f, 9.6f, 12.264f)
-                curveTo(9.956f, 12.264f, 10.169f, 12.053f, 10.169f, 11.7f)
-                verticalLineTo(6.414f)
-                curveTo(10.169f, 6.062f, 9.956f, 5.85f, 9.6f, 5.85f)
-                close()
+                moveTo(7.696f, 4.826f)
+                verticalLineTo(1.957f)
+                curveTo(7.696f, 1.703f, 7.796f, 1.46f, 7.976f, 1.28f)
+                curveTo(8.155f, 1.101f, 8.399f, 1.0f, 8.652f, 1.0f)
+                horizontalLineTo(15.348f)
+                curveTo(15.601f, 1.0f, 15.845f, 1.101f, 16.024f, 1.28f)
+                curveTo(16.204f, 1.46f, 16.304f, 1.703f, 16.304f, 1.957f)
+                verticalLineTo(4.826f)
+            }
+            path(
+                fill = SolidColor(Color(0x00000000)),
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 1.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
+            ) {
+                moveTo(10.0f, 9.0f)
+                verticalLineTo(17.8f)
+            }
+            path(
+                fill = SolidColor(Color(0x00000000)),
+                stroke = SolidColor(Color(0xFF9F9F9F)),
+                strokeLineWidth = 1.0f,
+                strokeLineCap = strokeCapRound,
+                strokeLineJoin = strokeJoinRound,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero,
+            ) {
+                moveTo(14.0f, 9.0f)
+                verticalLineTo(17.8f)
             }
         }.build()
 
