@@ -18,18 +18,24 @@
 package com.infomaniak.library.onboarding
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -91,3 +97,45 @@ data class OnboardingPage(
     val illustration: @Composable () -> Unit,
     val text: @Composable () -> Unit,
 )
+
+
+@Preview
+@Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@Composable
+private fun Preview() {
+    val imageVector = Builder(
+        defaultWidth = 24.0.dp,
+        defaultHeight = 24.0.dp,
+        viewportWidth = 24.0f,
+        viewportHeight = 24.0f,
+    ).build()
+
+    val a = OnboardingPage(
+        background = imageVector,
+        illustration = {
+            Box(
+                modifier = Modifier
+                    .size(200.dp)
+                    .background(Color.LightGray)
+            ) {
+                Text("Illustration")
+            }
+        },
+        text = { Text("Long description text of the onboarding page") }
+    )
+
+    OnboardingScaffold(
+        pagerState = rememberPagerState { 3 },
+        onboardingPages = listOf(a, a, a),
+        bottomContent = {
+            Box(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+            ) {
+                Text("Bottom content")
+            }
+        }
+    )
+}
