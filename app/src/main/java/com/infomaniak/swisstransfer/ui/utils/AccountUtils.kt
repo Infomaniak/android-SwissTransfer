@@ -31,8 +31,6 @@ class AccountUtils @Inject constructor(
     suspend fun init() {
         accountPreferences.currentUserId?.let {
             accountManager.loadUser(it)
-        } ?: run {
-            login() // TODO: Move logic for when user needs to connect to the end of the onboarding activity
         }
 
         uploadRecaptcha.initializeClient()

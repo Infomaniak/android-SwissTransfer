@@ -23,21 +23,36 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.rememberCoroutineScope
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var accountUtils: AccountUtils
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         setContent {
+            val scope = rememberCoroutineScope()
+
             SwissTransferTheme {
                 Surface {
                     OnboardingScreen(
                         goToMainActivity = {
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
+                            scope.launch {
+                                accountUtils.login()
+                                startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
+                                finish()
+                            }
                         }
                     )
                 }
