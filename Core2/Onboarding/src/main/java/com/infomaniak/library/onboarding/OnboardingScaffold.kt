@@ -57,7 +57,7 @@ fun OnboardingScaffold(
                 OnboardingPageContent(page = onboardingPages[it], paddingValues.calculateTopPadding())
             }
 
-            HorizontalPagerIndicator(Modifier.padding(vertical = 32.dp), pagerState)
+            HorizontalPagerIndicator(pagerState = pagerState)
 
             bottomContent()
         }
