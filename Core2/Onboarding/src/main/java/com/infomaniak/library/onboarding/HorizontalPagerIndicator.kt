@@ -19,23 +19,23 @@ package com.infomaniak.library.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+// TODO: Simple placeholder code for now. Will be styled correctly in the next PR
 @Composable
-fun ColumnScope.HorizontalPagerIndicator(modifier: Modifier = Modifier, pagerState: PagerState) {
+fun HorizontalPagerIndicator(modifier: Modifier = Modifier, pagerState: PagerState) {
     Row(
         modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .align(Alignment.CenterHorizontally)
             .padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.Center
     ) {
@@ -50,4 +50,10 @@ fun ColumnScope.HorizontalPagerIndicator(modifier: Modifier = Modifier, pagerSta
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    HorizontalPagerIndicator(pagerState = rememberPagerState { 3 })
 }
