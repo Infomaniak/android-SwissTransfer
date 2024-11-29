@@ -59,7 +59,7 @@ class MainApplication : Application(), Configuration.Provider {
 
         globalCoroutineScope.launch {
             accountUtils.init()
-            transferManager.deleteExpiredTransfers()
+            if (accountUtils.isUserConnected()) transferManager.deleteExpiredTransfers()
         }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
