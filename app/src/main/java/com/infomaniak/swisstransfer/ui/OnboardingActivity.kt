@@ -38,8 +38,8 @@ class OnboardingActivity : ComponentActivity() {
     lateinit var accountUtils: AccountUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         setContent {
             val scope = rememberCoroutineScope()
