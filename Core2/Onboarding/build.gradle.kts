@@ -46,4 +46,6 @@ dependencies {
     implementation(core2.androidx.material3.android)
     implementation(core2.androidx.runtime.android)
     implementation(core2.androidx.foundation.android)
+    implementation(core2.androidx.ui.tooling.preview.android)
+    debugImplementation(core2.androidx.ui.tooling)
 }
