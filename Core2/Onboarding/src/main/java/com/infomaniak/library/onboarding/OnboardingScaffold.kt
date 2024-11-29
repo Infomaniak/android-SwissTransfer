@@ -43,29 +43,41 @@ import androidx.compose.ui.unit.dp
 fun OnboardingScaffold(
     pagerState: PagerState,
     onboardingPages: List<OnboardingPage>,
-    bottomContent: @Composable () -> Unit,
+    bottomContent: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier.padding(
-                bottom = paddingValues.calculateBottomPadding(),
-                start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
-                end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
-            )
-        ) {
+        Column {
+            val left = paddingValues.calculateLeftPadding(LocalLayoutDirection.current)
+            val right = paddingValues.calculateRightPadding(LocalLayoutDirection.current)
+
             HorizontalPager(pagerState, modifier = Modifier.weight(1f)) {
-                OnboardingPageContent(page = onboardingPages[it], paddingValues.calculateTopPadding())
+                OnboardingPageContent(
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets(left = left, top = paddingValues.calculateTopPadding(), right = right)
+                    ),
+                    page = onboardingPages[it],
+                    0.dp,
+                )
             }
 
-            HorizontalPagerIndicator(pagerState = pagerState)
+            HorizontalPagerIndicator(
+                modifier = Modifier.windowInsetsPadding(WindowInsets(left = left, right = right)),
+                pagerState = pagerState
+            )
 
-            bottomContent()
+            bottomContent(
+                PaddingValues(
+                    bottom = paddingValues.calculateBottomPadding(),
+                    start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
+                    end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
+                )
+            )
         }
     }
 }
 
 @Composable
-private fun OnboardingPageContent(page: OnboardingPage, calculateTopPadding: Dp) {
+private fun OnboardingPageContent(modifier: Modifier, page: OnboardingPage, calculateTopPadding: Dp) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,

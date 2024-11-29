@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.infomaniak.library.onboarding.OnboardingPage
 import com.infomaniak.library.onboarding.OnboardingScaffold
@@ -78,6 +79,9 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
         onboardingPages = onboardingPages,
         bottomContent = {
             BottomContent(
+                modifier = Modifier
+                    .padding(it)
+                    .consumeWindowInsets(it),
                 isLastPage = { isLastPage },
                 startMainActivity = goToMainActivity,
                 goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
@@ -126,10 +130,15 @@ private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
 }
 
 @Composable
-private fun BottomContent(isLastPage: () -> Boolean, startMainActivity: () -> Unit, goToNextPage: () -> Unit) {
+private fun BottomContent(
+    modifier: Modifier = Modifier,
+    isLastPage: () -> Boolean,
+    startMainActivity: () -> Unit,
+    goToNextPage: () -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(140.dp),
     ) {
