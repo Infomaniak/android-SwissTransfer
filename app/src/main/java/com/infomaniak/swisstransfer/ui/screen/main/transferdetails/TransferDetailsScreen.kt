@@ -149,7 +149,7 @@ private fun TransferDetailsScreen(
         )
         PasswordBottomSheet(
             isVisible = { showPasswordBottomSheet },
-            transferPassword = getTransfer().password,
+            transferPassword = { getTransfer().password },
             closeBottomSheet = { showPasswordBottomSheet = false },
         )
     }
