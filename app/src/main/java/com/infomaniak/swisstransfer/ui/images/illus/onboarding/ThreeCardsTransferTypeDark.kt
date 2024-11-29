@@ -65,21 +65,21 @@ val AppIllus.ThreeCardsTransferTypeDark: ImageVector
             path(
                 fill = SolidColor(Color(0xFF3C4F52)),
                 stroke = SolidColor(Color(0xFFDCE4E5)),
-                strokeLineWidth = 0.5f,
+                strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(148.5f, 49.33f)
-                lineTo(227.49f, 28.16f)
-                arcTo(3.31f, 3.31f, 120.0f, false, true, 231.54f, 30.5f)
-                lineTo(271.11f, 178.18f)
-                arcTo(3.31f, 3.31f, 120.0f, false, true, 268.77f, 182.23f)
-                lineTo(189.78f, 203.39f)
-                arcTo(3.31f, 3.31f, 120.0f, false, true, 185.73f, 201.05f)
-                lineTo(146.16f, 53.38f)
-                arcTo(3.31f, 3.31f, 120.0f, false, true, 148.5f, 49.33f)
+                moveTo(148.56f, 49.57f)
+                lineTo(227.55f, 28.4f)
+                arcTo(3.06f, 3.06f, 120.0f, false, true, 231.3f, 30.56f)
+                lineTo(270.87f, 178.24f)
+                arcTo(3.06f, 3.06f, 120.0f, false, true, 268.71f, 181.99f)
+                lineTo(189.72f, 203.15f)
+                arcTo(3.06f, 3.06f, 120.0f, false, true, 185.97f, 200.99f)
+                lineTo(146.4f, 53.31f)
+                arcTo(3.06f, 3.06f, 120.0f, false, true, 148.56f, 49.57f)
                 close()
             }
             path(
@@ -209,21 +209,21 @@ val AppIllus.ThreeCardsTransferTypeDark: ImageVector
             path(
                 fill = SolidColor(Color(0xFF3C4F52)),
                 stroke = SolidColor(Color(0xFFDCE4E5)),
-                strokeLineWidth = 0.5f,
+                strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(44.78f, 28.16f)
-                lineTo(123.77f, 49.33f)
-                arcTo(3.31f, 3.31f, 60.0f, false, true, 126.11f, 53.38f)
-                lineTo(86.54f, 201.06f)
-                arcTo(3.31f, 3.31f, 60.0f, false, true, 82.49f, 203.39f)
-                lineTo(3.5f, 182.23f)
-                arcTo(3.31f, 3.31f, 60.0f, false, true, 1.16f, 178.18f)
-                lineTo(40.73f, 30.5f)
-                arcTo(3.31f, 3.31f, 60.0f, false, true, 44.78f, 28.16f)
+                moveTo(44.72f, 28.4f)
+                lineTo(123.71f, 49.57f)
+                arcTo(3.06f, 3.06f, 60.0f, false, true, 125.87f, 53.31f)
+                lineTo(86.3f, 200.99f)
+                arcTo(3.06f, 3.06f, 60.0f, false, true, 82.56f, 203.15f)
+                lineTo(3.56f, 181.99f)
+                arcTo(3.06f, 3.06f, 60.0f, false, true, 1.4f, 178.24f)
+                lineTo(40.97f, 30.56f)
+                arcTo(3.06f, 3.06f, 60.0f, false, true, 44.72f, 28.4f)
                 close()
             }
             path(
@@ -1844,21 +1844,21 @@ val AppIllus.ThreeCardsTransferTypeDark: ImageVector
             path(
                 fill = SolidColor(Color(0xFF2B383B)),
                 stroke = SolidColor(Color(0xFFDCE4E5)),
-                strokeLineWidth = 0.5f,
+                strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(91.0f, 13.25f)
-                lineTo(183.0f, 13.25f)
-                arcTo(3.75f, 3.75f, 0.0f, false, true, 186.75f, 17.0f)
-                lineTo(186.75f, 189.0f)
-                arcTo(3.75f, 3.75f, 0.0f, false, true, 183.0f, 192.75f)
-                lineTo(91.0f, 192.75f)
-                arcTo(3.75f, 3.75f, 0.0f, false, true, 87.25f, 189.0f)
-                lineTo(87.25f, 17.0f)
-                arcTo(3.75f, 3.75f, 0.0f, false, true, 91.0f, 13.25f)
+                moveTo(91.0f, 13.5f)
+                lineTo(183.0f, 13.5f)
+                arcTo(3.5f, 3.5f, 0.0f, false, true, 186.5f, 17.0f)
+                lineTo(186.5f, 189.0f)
+                arcTo(3.5f, 3.5f, 0.0f, false, true, 183.0f, 192.5f)
+                lineTo(91.0f, 192.5f)
+                arcTo(3.5f, 3.5f, 0.0f, false, true, 87.5f, 189.0f)
+                lineTo(87.5f, 17.0f)
+                arcTo(3.5f, 3.5f, 0.0f, false, true, 91.0f, 13.5f)
                 close()
             }
             path(
