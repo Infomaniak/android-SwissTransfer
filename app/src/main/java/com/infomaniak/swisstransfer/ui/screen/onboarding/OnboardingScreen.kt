@@ -119,7 +119,7 @@ private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
             templateRes = page.subtitleTemplateRes,
             argumentRes = page.subtitleArgumentRes,
             style = SwissTransferTheme.typography.h1,
-            angleDegrees = page.angleDegree,
+            angleDegrees = page.highlightAngleDegree,
             isHighlighted = isHighlighted,
         )
     }
@@ -146,7 +146,7 @@ private enum class Page(
     @StringRes val titleRes: Int,
     @StringRes val subtitleTemplateRes: Int,
     @StringRes val subtitleArgumentRes: Int,
-    val angleDegree: Double,
+    val highlightAngleDegree: Double,
 ) {
     STORAGE(
         background = AppIllus.RadialGradientCornerTopRight,
@@ -154,7 +154,7 @@ private enum class Page(
         titleRes = R.string.onboardingStorageTitle,
         subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
-        angleDegree = -3.0,
+        highlightAngleDegree = -3.0,
     ),
     EXPIRATION(
         background = AppIllus.RadialGradientCornerTopLeft,
@@ -162,7 +162,7 @@ private enum class Page(
         titleRes = R.string.onboardingExpirationTitle,
         subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
-        angleDegree = -3.0,
+        highlightAngleDegree = -3.0,
     ),
     PASSWORD(
         background = AppIllus.RadialGradientCornerTopRight,
@@ -170,7 +170,7 @@ private enum class Page(
         titleRes = R.string.onboardingPasswordTitle,
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
-        angleDegree = 3.0,
+        highlightAngleDegree = 3.0,
     ),
 }
 
