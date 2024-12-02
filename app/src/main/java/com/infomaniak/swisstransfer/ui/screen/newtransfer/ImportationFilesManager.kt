@@ -118,7 +118,7 @@ class ImportationFilesManager @Inject constructor(
     }
 
     private fun openInputStream(uri: Uri): InputStream? {
-        return appContext.contentResolver.openInputStream(uri) ?: run {
+        return runCatching { appContext.contentResolver.openInputStream(uri) }.getOrNull() ?: run {
             SentryLog.w(ImportLocalStorage.TAG, "During local copy of the file openInputStream returned null")
             null
         }
