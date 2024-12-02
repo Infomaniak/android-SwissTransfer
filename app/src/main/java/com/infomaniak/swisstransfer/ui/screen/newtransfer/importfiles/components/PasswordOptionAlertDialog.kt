@@ -99,6 +99,8 @@ private fun ColumnScope.AnimatedPasswordInput(
     password: GetSetCallbacks<String>,
     isPasswordValid: () -> Boolean
 ) {
+
+    val isError = !isPasswordValid() && password.get().isNotEmpty()
     AnimatedVisibility(isChecked) {
         SwissTransferTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -106,8 +108,8 @@ private fun ColumnScope.AnimatedPasswordInput(
             isPassword = true,
             initialValue = password.get(),
             imeAction = ImeAction.Done,
-            isError = !isPasswordValid(),
-            supportingText = { isError ->
+            isError = isError,
+            supportingText = {
                 val errorText = if (isError) stringResource(R.string.errorTransferPasswordLength) else ""
                 Text(text = errorText, minLines = 2)
             },

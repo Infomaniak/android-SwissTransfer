@@ -67,7 +67,7 @@ fun SwissTransferTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isReadOnly: Boolean = false,
     isError: Boolean = false,
-    supportingText: @Composable ((Boolean) -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
     onValueChange: ((String) -> Unit)? = null,
 ) {
 
@@ -76,7 +76,6 @@ fun SwissTransferTextField(
     var text by rememberSaveable { mutableStateOf(initialValue) }
 
     val displayLabel = if (isRequired) label else "$label ${stringResource(R.string.textFieldOptional)}"
-    val shouldDisplayError = isError && text.isNotEmpty()
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
         unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
@@ -113,8 +112,8 @@ fun SwissTransferTextField(
             imeAction = imeAction,
         ),
         keyboardActions = keyboardActions,
-        isError = shouldDisplayError,
-        supportingText = supportingText?.let { { it.invoke(shouldDisplayError) } },
+        isError = isError,
+        supportingText = supportingText,
     )
 }
 
