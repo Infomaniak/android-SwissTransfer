@@ -71,7 +71,7 @@ private fun VerticallyStackedButtons(
         bottomButton(
             Modifier
                 .fillMaxWidth()
-                .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Small),
+                .padding(horizontal = Margin.Medium),
         )
     }
 }
@@ -84,7 +84,7 @@ private fun HorizontallyStackedButtons(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
+            .padding(horizontal = Margin.Medium),
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -99,7 +99,7 @@ private fun SingleButton(button: @Composable (Modifier) -> Unit) {
         button(
             Modifier
                 .fillMaxWidth()
-                .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
+                .padding(horizontal = Margin.Medium),
         )
     }
 }
