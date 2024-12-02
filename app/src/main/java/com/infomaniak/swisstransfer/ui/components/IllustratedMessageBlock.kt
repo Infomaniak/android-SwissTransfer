@@ -42,34 +42,40 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun IllustratedMessageBlock(
-    icon: ImageVector,
-    @StringRes title: Int,
-    description: String,
+    icon: ImageVector?,
+    @StringRes title: Int?,
+    description: String?,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(imageVector = icon, contentDescription = null)
+        icon?.let {
+            Image(imageVector = it, contentDescription = null)
 
-        Spacer(Modifier.height(Margin.Huge))
+            Spacer(Modifier.height(Margin.Huge))
+        }
 
-        Text(
-            text = stringResource(title),
-            textAlign = TextAlign.Center,
-            style = SwissTransferTheme.typography.h1,
-        )
+        title?.let {
+            Text(
+                text = stringResource(it),
+                textAlign = TextAlign.Center,
+                style = SwissTransferTheme.typography.h1,
+            )
+        }
 
-        Spacer(Modifier.height(Margin.Medium))
+        description?.let {
+            Spacer(Modifier.height(Margin.Medium))
 
-        Text(
-            text = description,
-            textAlign = TextAlign.Center,
-            style = SwissTransferTheme.typography.bodyRegular,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
-        )
+            Text(
+                text = description,
+                textAlign = TextAlign.Center,
+                style = SwissTransferTheme.typography.bodyRegular,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
+            )
+        }
     }
 }
 

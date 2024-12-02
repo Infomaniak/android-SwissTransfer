@@ -39,17 +39,17 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun EmptyState(
-    icon: ImageVector,
-    @StringRes titleRes: Int,
-    @StringRes descriptionRes: Int,
+    icon: ImageVector? = null,
+    @StringRes titleRes: Int? = null,
+    @StringRes descriptionRes: Int? = null,
     modifier: Modifier = Modifier,
-) = EmptyState(icon, titleRes, stringResource(descriptionRes), modifier)
+) = EmptyState(icon, titleRes, descriptionRes?.let { stringResource(it) }, modifier)
 
 @Composable
 fun EmptyState(
-    icon: ImageVector,
-    @StringRes titleRes: Int,
-    description: String,
+    icon: ImageVector?,
+    @StringRes titleRes: Int?,
+    description: String?,
     modifier: Modifier = Modifier,
 ) {
     Box(
