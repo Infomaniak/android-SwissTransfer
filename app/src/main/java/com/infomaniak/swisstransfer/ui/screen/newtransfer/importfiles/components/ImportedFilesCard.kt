@@ -25,7 +25,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -40,17 +44,30 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
+
+private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
-    humanReadableSize: () -> String,
     pickFiles: () -> Unit,
     removeFileByUid: (uid: String) -> Unit,
 ) {
+
+    val context = LocalContext.current
+
+    val humanReadableSize by remember {
+        derivedStateOf {
+            val usedSpace = files().sumOf { it.fileSize }
+            val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
+            getHumanReadableSize(context, spaceLeft)
+        }
+    }
+
     SwissTransferCard(modifier) {
         SharpRippleButton(onClick = { /* TODO */ }) {
             TextDotText(
@@ -58,7 +75,7 @@ fun ImportedFilesCard(
                     val fileCount = files().count()
                     pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
                 },
-                secondText = { formatSpaceLeft(humanReadableSize) },
+                secondText = { formatSpaceLeft { humanReadableSize } },
                 modifier = Modifier.padding(start = Margin.Medium),
             )
             Spacer(Modifier.weight(1.0f))
@@ -130,7 +147,6 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
         ImportedFilesCard(
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
-            humanReadableSize = { "20 GB" },
             pickFiles = {},
             removeFileByUid = {},
         )

@@ -30,7 +30,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,14 +45,10 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOp
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
-import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-
-private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportFilesScreen(
@@ -148,15 +143,6 @@ private fun ImportFilesScreen(
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
 ) {
-    val context = LocalContext.current
-
-    val importedFiles = files()
-    val humanReadableSize = remember(importedFiles) {
-        val usedSpace = importedFiles.sumOf { it.fileSize }
-        val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-        getHumanReadableSize(context, spaceLeft)
-    }
-
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -169,13 +155,8 @@ private fun ImportFilesScreen(
             SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, sendTransfer)
         },
         content = {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = Dimens.MaxSinglePaneScreenWidth)
-                    .padding(vertical = Margin.Small)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                FilesToImport(files, humanReadableSize, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                FilesToImport(files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
                 ImportTextFields(
                     modifier = Modifier
                         .padding(horizontal = Margin.Medium)
@@ -193,7 +174,6 @@ private fun ImportFilesScreen(
 @Composable
 private fun FilesToImport(
     files: () -> List<FileUi>,
-    humanReadableSize: String,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
@@ -216,7 +196,6 @@ private fun FilesToImport(
     ImportedFilesCard(
         modifier = Modifier.padding(Margin.Medium),
         files = files,
-        humanReadableSize = { humanReadableSize },
         pickFiles = ::pickFiles,
         removeFileByUid = removeFileByUid,
     )
