@@ -55,6 +55,7 @@ class TransferDetailsViewModel @Inject constructor(
     fun loadTransfer(transferUuid: String) {
         viewModelScope.launch {
             _transferUuidFlow.emit(transferUuid)
+            transferManager.fetchTransfer(transferUuid)
         }
     }
 
