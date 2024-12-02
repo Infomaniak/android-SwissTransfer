@@ -40,9 +40,11 @@ import com.infomaniak.swisstransfer.ui.utils.copyText
 import kotlinx.coroutines.launch
 
 @Composable
-fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: String, closeBottomSheet: () -> Unit) {
+fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String?, closeBottomSheet: () -> Unit) {
 
-    if (!isVisible()) return
+    val password = transferPassword()
+
+    if (!isVisible() || password == null) return
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -57,7 +59,7 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: String, clos
                 imageVector = AppIcons.DocumentOnDocument,
                 onClick = {
                     context.copyText(
-                        text = transferPassword,
+                        text = password,
                         showSnackbar = { scope.launch { snackbarHostState.showSnackbar(it) } },
                     )
                     closeBottomSheet()
@@ -79,7 +81,7 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: String, clos
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Margin.Medium),
-            initialValue = transferPassword,
+            initialValue = password,
             isPassword = true,
             isReadOnly = true,
         )
@@ -93,7 +95,7 @@ private fun Preview() {
         Surface {
             PasswordBottomSheet(
                 isVisible = { true },
-                transferPassword = "toto42",
+                transferPassword = { "toto42" },
                 closeBottomSheet = {},
             )
         }
