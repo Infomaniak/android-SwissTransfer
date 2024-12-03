@@ -32,7 +32,6 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
-
 /**
  * Most basic and customizable button component.
  *
@@ -126,7 +125,6 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
         )
     }),
 }
-
 
 @PreviewLightAndDark
 @Composable

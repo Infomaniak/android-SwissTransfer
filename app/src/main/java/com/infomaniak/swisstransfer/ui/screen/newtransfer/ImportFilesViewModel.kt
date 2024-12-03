@@ -246,7 +246,6 @@ class ImportFilesViewModel @Inject constructor(
     private val isPasswordValid by derivedStateOf { transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
     //endregion
 
-
     //region Transfer Message
     private var _transferMessage by mutableStateOf("")
     val transferMessage = GetSetCallbacks(get = { _transferMessage }, set = { _transferMessage = it })
