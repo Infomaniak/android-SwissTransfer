@@ -49,7 +49,7 @@ fun MainNavHost(
                 navigateToFilesDetails = { folderUuid ->
                     navController.navigate(FilesDetailsDestination(folderUuid))
                 },
-                direction = TransferDirection.SENT
+                direction = TransferDirection.SENT,
             )
         }
         composable<ReceivedDestination> {
