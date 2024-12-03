@@ -187,7 +187,7 @@ private fun UploadProgressScreenPreview() {
             totalSizeInBytes = 76_321_894L,
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
-            showBottomSheet = GetSetCallbacks(get = { false }, set = { }),
+            showBottomSheet = GetSetCallbacks(get = { false }, set = {}),
         )
     }
 }
