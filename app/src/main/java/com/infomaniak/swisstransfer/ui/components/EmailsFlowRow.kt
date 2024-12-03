@@ -42,7 +42,7 @@ fun EmailsFlowRow(
         horizontalArrangement = horizontalArrangement,
     ) {
         emails.forEach {
-            EmailAddressChip(
+            SwissTransferSuggestionChip(
                 text = it,
                 modifier = Modifier.padding(horizontal = Margin.Micro),
             )
