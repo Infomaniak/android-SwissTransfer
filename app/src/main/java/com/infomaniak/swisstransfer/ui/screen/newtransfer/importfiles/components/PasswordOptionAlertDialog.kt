@@ -26,10 +26,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.toFloat
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
@@ -110,8 +112,10 @@ private fun ColumnScope.AnimatedPasswordInput(
             imeAction = ImeAction.Done,
             isError = isError,
             supportingText = {
-                val errorText = if (isError) stringResource(R.string.errorTransferPasswordLength) else ""
-                Text(text = errorText, minLines = 2)
+                Text(
+                    modifier = Modifier.alpha(isError.toFloat()),
+                    text = stringResource(R.string.errorTransferPasswordLength),
+                )
             },
             onValueChange = { password.set(it) },
         )

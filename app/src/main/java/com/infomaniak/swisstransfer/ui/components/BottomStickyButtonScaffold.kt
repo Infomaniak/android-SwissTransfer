@@ -17,15 +17,21 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
+import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
+
+private val STICKY_BUTTON_VERTICAL_PADDING = Margin.Small
 
 @Composable
 fun BottomStickyButtonScaffold(
@@ -44,17 +50,54 @@ fun BottomStickyButtonScaffold(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(contentPaddings)
-                .padding(vertical = Margin.Small),
+                .padding(vertical = STICKY_BUTTON_VERTICAL_PADDING),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 modifier = Modifier
-                    .padding(bottom = Margin.Small)
+                    .padding(bottom = STICKY_BUTTON_VERTICAL_PADDING)
                     .weight(1.0f)
                     .widthIn(max = Dimens.MaxSinglePaneScreenWidth),
                 content = content,
             )
             DoubleButtonCombo(topButton, bottomButton)
+        }
+    }
+}
+
+@PreviewSmallWindow
+@PreviewLargeWindow
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            BottomStickyButtonScaffold(
+                topBar = {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.DarkGray),
+                        text = "topBar",
+                        textAlign = TextAlign.Center,
+                    )
+                },
+                topButton = { modifier ->
+                    SwissTransferButton(
+                        modifier = modifier,
+                        style = ButtonType.PRIMARY,
+                        onClick = {},
+                        content = { Text("sticky button") },
+                    )
+                },
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray),
+                    text = "content",
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

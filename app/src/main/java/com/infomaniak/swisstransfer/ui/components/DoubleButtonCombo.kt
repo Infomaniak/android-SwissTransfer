@@ -125,6 +125,7 @@ private fun DoubleButtonComboPreview() {
                     )
                 },
             )
+            Spacer(Modifier.height(Margin.Medium))
             DoubleButtonCombo(
                 bottomButton = {
                     LargeButton(
