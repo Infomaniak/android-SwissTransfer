@@ -32,11 +32,12 @@ private val WIDTH_THRESHOLD = 500.dp
 
 @Composable
 fun ColumnScope.DoubleButtonCombo(
+    modifier: Modifier = Modifier,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null
 ) {
     BoxWithConstraints(
-        modifier = Modifier
+        modifier = modifier
             .widthIn(max = Dimens.DoubleButtonMaxWidth)
             .align(Alignment.CenterHorizontally),
     ) {

@@ -157,10 +157,9 @@ private fun ImportFilesScreen(
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 FilesToImport(files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
+                Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
-                    modifier = Modifier
-                        .padding(horizontal = Margin.Medium)
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(horizontal = Margin.Medium),
                     transferMessage = transferMessage,
                     selectedTransferType = selectedTransferType.get,
                 )
@@ -194,7 +193,7 @@ private fun FilesToImport(
 
     ImportFilesTitle(modifier = Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.myFilesTitle)
     ImportedFilesCard(
-        modifier = Modifier.padding(Margin.Medium),
+        modifier = Modifier.padding(horizontal = Margin.Medium),
         files = files,
         pickFiles = ::pickFiles,
         removeFileByUid = removeFileByUid,
@@ -202,19 +201,21 @@ private fun FilesToImport(
 }
 
 @Composable
-private fun ColumnScope.ImportTextFields(
+private fun ImportTextFields(
     modifier: Modifier,
     transferMessage: GetSetCallbacks<String>,
     selectedTransferType: () -> TransferTypeUi,
 ) {
-    EmailAddressesTextFields(modifier, selectedTransferType)
-    SwissTransferTextField(
-        modifier = modifier,
-        label = stringResource(R.string.transferMessagePlaceholder),
-        isRequired = false,
-        minLineNumber = 3,
-        onValueChange = transferMessage.set,
-    )
+    Column(modifier) {
+        EmailAddressesTextFields(Modifier.fillMaxWidth(), selectedTransferType)
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferMessagePlaceholder),
+            isRequired = false,
+            minLineNumber = 3,
+            onValueChange = transferMessage.set,
+        )
+    }
 }
 
 @Composable
@@ -242,7 +243,7 @@ private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTra
 
 @Composable
 private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
-    ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.transferTypeTitle)
+    ImportFilesTitle(Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.transferTypeTitle)
     TransferTypeButtons(selectedTransferType)
 }
 
@@ -255,7 +256,7 @@ private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks) 
         showTransferOption = null
     }
 
-    ImportFilesTitle(Modifier.padding(Margin.Medium), titleRes = R.string.advancedSettingsTitle)
+    ImportFilesTitle(Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
     TransferOptionsTypes(
         modifier = Modifier.padding(horizontal = Margin.Medium),
         transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
@@ -302,7 +303,7 @@ private fun TransferOptionsDialogs(
 @Composable
 private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
     Text(
-        modifier = modifier,
+        modifier = modifier.padding(vertical = Margin.Medium),
         style = SwissTransferTheme.typography.bodySmallRegular,
         text = stringResource(titleRes),
     )
@@ -394,7 +395,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
             transferMessage = GetSetCallbacks(get = { "" }, set = {}),
-            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.QR_CODE }, set = {}),
+            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             removeFileByUid = {},
             addFiles = {},
