@@ -58,6 +58,7 @@ val filesPreviewData = listOf(
     FileUi(
         uid = UUID.randomUUID().toString(),
         fileName = "Learning to Copy and Paste: A Complete Guide.docx",
+        isFolder = false,
         fileSize = 237_866_728L,
         mimeType = null,
         localPath = null,
@@ -66,6 +67,7 @@ val filesPreviewData = listOf(
     FileUi(
         uid = UUID.randomUUID().toString(),
         fileName = "Introduction to Turning It Off and On Again.pptx",
+        isFolder = false,
         fileSize = 98_723_143L,
         mimeType = null,
         localPath = null,
@@ -74,6 +76,7 @@ val filesPreviewData = listOf(
     FileUi(
         uid = UUID.randomUUID().toString(),
         fileName = "The 5-Step Guide to Not Breaking Your Code.txt",
+        isFolder = false,
         fileSize = 57_689_032L,
         mimeType = null,
         localPath = null,
