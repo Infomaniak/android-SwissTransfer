@@ -19,14 +19,16 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
@@ -41,7 +43,7 @@ fun BottomStickyButtonScaffold(
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    Scaffold(
+    SinglePaneScaffold(
         snackbarHost = { snackbarHostState?.let { SnackbarHost(hostState = it) } },
         topBar = topBar,
     ) { contentPaddings ->
@@ -53,8 +55,7 @@ fun BottomStickyButtonScaffold(
         ) {
             Box(
                 modifier = Modifier
-                    .weight(1.0f)
-                    .widthIn(max = Dimens.MaxSinglePaneScreenWidth),
+                    .weight(1.0f),
                 content = content,
             )
             DoubleButtonCombo(
