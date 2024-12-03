@@ -72,7 +72,7 @@ fun PasswordOptionAlertDialog(
         descriptionRes = R.string.settingsPasswordDescription,
         onDismiss = ::onDismiss,
         onConfirmation = ::onConfirmButtonClicked,
-        shouldEnableConfirmButton = { !isPasswordActivated || isPasswordValid() },
+        isConfirmButtonEnabled = { !isPasswordActivated || isPasswordValid() },
     ) {
         ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
         Spacer(Modifier.height(Margin.Medium))
