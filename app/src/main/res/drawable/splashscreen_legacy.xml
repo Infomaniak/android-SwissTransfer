@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/splashscreen_gradient_legacy" />
+
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/splashscreen_icon_legacy" />
+    </item>
+
+    <item android:bottom="60dp">
+        <bitmap
+            android:gravity="bottom"
+            android:src="@drawable/splashscreen_branding_image_legacy" />
+    </item>
+
+</layer-list>

@@ -1,0 +1,57 @@
+<!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2024 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="375dp"
+    android:height="832dp"
+    android:viewportWidth="375"
+    android:viewportHeight="832">
+    <path android:pathData="M0,0h375v832h-375z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="483.81"
+                android:endY="69"
+                android:startX="0"
+                android:startY="0"
+                android:type="linear">
+                <item
+                    android:color="#FF004757"
+                    android:offset="0" />
+                <item
+                    android:color="#FF3CB572"
+                    android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M0,0h375v832h-375z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="188"
+                android:centerY="859.5"
+                android:gradientRadius="488"
+                android:type="radial">
+                <item
+                    android:color="#FFCAF769"
+                    android:offset="0" />
+                <item
+                    android:color="#00156E61"
+                    android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

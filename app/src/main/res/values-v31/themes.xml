@@ -18,7 +18,7 @@
 <resources>
 
     <style name="Theme.App.Starting31" parent="Theme.App.Starting">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splashscreen_icon_tmp</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splashscreen_icon</item>
         <item name="windowSplashScreenBackground">@color/splashscreen_background_color</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/splashscreen_branding_image</item>
     </style>
