@@ -64,7 +64,7 @@
     <string name="onboardingPasswordSubtitleTemplate">Protect your shares with %s</string>
     <string name="onboardingPasswordTitle">Stay in Control!</string>
     <string name="onboardingStorageSubtitleArgument">Share up to 50 GB</string>
-    <string name="onboardingStorageSubtitleTemplate">%s of files for free—no sign-up needed.</string>
+    <string name="onboardingStorageSubtitleTemplate">%s of files for free without any registration.</string>
     <string name="onboardingStorageTitle">Send Big!</string>
     <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
