@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -47,29 +46,30 @@ fun OnboardingScaffold(
 ) {
     Scaffold { paddingValues ->
         Column {
-            val left = paddingValues.calculateLeftPadding(LocalLayoutDirection.current)
-            val right = paddingValues.calculateRightPadding(LocalLayoutDirection.current)
+            val startPadding = paddingValues.calculateStartPadding(LocalLayoutDirection.current)
+            val endPadding = paddingValues.calculateEndPadding(LocalLayoutDirection.current)
 
             HorizontalPager(pagerState, modifier = Modifier.weight(1f)) {
                 OnboardingPageContent(
-                    modifier = Modifier.windowInsetsPadding(
-                        WindowInsets(left = left, top = paddingValues.calculateTopPadding(), right = right)
-                    ),
                     page = onboardingPages[it],
-                    0.dp,
+                    contentPadding = PaddingValues(
+                        top = paddingValues.calculateTopPadding(),
+                        start = startPadding,
+                        end = endPadding,
+                    ),
                 )
             }
 
             HorizontalPagerIndicator(
-                modifier = Modifier.windowInsetsPadding(WindowInsets(left = left, right = right)),
-                pagerState = pagerState
+                modifier = Modifier.padding(PaddingValues(start = startPadding, end = endPadding)),
+                pagerState = pagerState,
             )
 
             bottomContent(
                 PaddingValues(
                     bottom = paddingValues.calculateBottomPadding(),
-                    start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
-                    end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
+                    start = startPadding,
+                    end = endPadding,
                 )
             )
         }
@@ -77,7 +77,7 @@ fun OnboardingScaffold(
 }
 
 @Composable
-private fun OnboardingPageContent(modifier: Modifier, page: OnboardingPage, calculateTopPadding: Dp) {
+private fun OnboardingPageContent(page: OnboardingPage, contentPadding: PaddingValues) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -90,9 +90,9 @@ private fun OnboardingPageContent(modifier: Modifier, page: OnboardingPage, calc
         )
         Column(
             modifier = Modifier
-                .padding(top = calculateTopPadding)
                 .fillMaxHeight()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(contentPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly,
         ) {
