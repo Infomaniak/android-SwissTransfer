@@ -50,7 +50,7 @@ fun PasswordOptionAlertDialog(
 ) {
 
     var isPasswordActivated by rememberSaveable { mutableStateOf(password.get().isNotEmpty()) }
-    var lastValidPassword by remember { mutableStateOf("") }
+    var lastValidPassword by remember { mutableStateOf(password.get()) }
 
     fun onDismiss() {
         isPasswordActivated = lastValidPassword.isNotEmpty()
