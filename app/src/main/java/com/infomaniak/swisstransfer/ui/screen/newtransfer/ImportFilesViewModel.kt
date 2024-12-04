@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +28,6 @@ import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
 import com.infomaniak.core2.appintegrity.AppIntegrityRoutes
-import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -54,8 +52,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.sentry.Sentry
-import io.sentry.SentryLevel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -139,11 +135,10 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun sendTransfer(appIntegrityManager: AppIntegrityManager) {
+    fun sendTransfer() {
         _sendActionResult.update { SendActionResult.Pending }
         viewModelScope.launch(ioDispatcher) {
             runCatching {
-                checkAppIntegrity(appIntegrityManager)
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
                 uploadManager.initUploadSession(recaptcha = "Recaptcha")!! // TODO: Handle ContainerErrorsException here
                 uploadWorkerScheduler.scheduleWork(uuid)
@@ -171,16 +166,17 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    private fun checkAppIntegrity(appIntegrityManager: AppIntegrityManager) {
+    fun checkAppIntegrity(appIntegrityManager: AppIntegrityManager) {
         viewModelScope.launch(ioDispatcher) {
-            appIntegrityManager.getChallenge(
-                onSuccess = { requestAppIntegrityToken(appIntegrityManager) },
-                onFailure = {
-                    _integrityCheckResult.value = false
-                    it.printStackTrace()
-                    Log.e("TOTO", "getChallenge error")
-                },
-            )
+            runCatching {
+                appIntegrityManager.getChallenge(
+                    onSuccess = { requestAppIntegrityToken(appIntegrityManager) },
+                    onFailure = { _integrityCheckResult.value = false },
+                )
+            }.onFailure { exception ->
+                SentryLog.e(TAG, "Failed to start the upload", exception)
+                _sendActionResult.update { SendActionResult.Failure }
+            }
         }
     }
 
@@ -190,16 +186,7 @@ class ImportFilesViewModel @Inject constructor(
                 SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
                 getApiIntegrityVerdict(appIntegrityManager, token)
             },
-            onFailure = { exception ->
-                exception?.printStackTrace()
-
-                val errorMessage = "Error when requiring an integrity token during account creation"
-                Sentry.captureMessage(errorMessage, SentryLevel.ERROR) { scope ->
-                    scope.setTag("exception", exception?.message.toString())
-                    scope.setExtra("stacktrace", exception?.printStackTrace().toString())
-                }
-                _integrityCheckResult.value = false
-            },
+            onFailure = { _integrityCheckResult.value = false },
         )
     }
 
@@ -216,10 +203,7 @@ class ImportFilesViewModel @Inject constructor(
                         appIntegrityManager.callDemoRoute(mobileToken)
                     }
                 },
-                onFailure = {
-                    if (it !is NetworkException) Sentry.captureException(it)
-                    _integrityCheckResult.value = false
-                },
+                onFailure = { _integrityCheckResult.value = false },
             )
         }
     }

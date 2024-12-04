@@ -32,7 +32,8 @@ android {
 
 dependencies {
 
-    // implementation(libs.androidx.core.ktx)
+    implementation(project(":Core2:Sentry"))
+    
     implementation(core2.integrity)
     implementation(core2.ktor.client.core)
     implementation(core2.ktor.client.content.negociation)
