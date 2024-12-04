@@ -26,7 +26,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
-import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.FilesDetailsDestination
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
