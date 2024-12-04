@@ -239,11 +239,13 @@ private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> Tra
             SwissTransferTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
+                onValueChange = { /* TODO */ },
             )
             Spacer(Modifier.height(Margin.Medium))
             SwissTransferTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
+                onValueChange = { /* TODO */ },
             )
             Spacer(Modifier.height(Margin.Medium))
         }
