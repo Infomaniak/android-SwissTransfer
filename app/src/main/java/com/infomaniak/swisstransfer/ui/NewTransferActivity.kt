@@ -39,12 +39,5 @@ class NewTransferActivity : ComponentActivity() {
                 NewTransferScreen(closeActivity = { finish() }, appIntegrityManager)
             }
         }
-        // appIntegrityManager.warmUpTokenProvider(appCloudNumber = 364109398419) { exception ->
-        //     exception.printStackTrace()
-        //     Sentry.captureMessage("Exception during AppIntegrityManager's warmup", SentryLevel.ERROR) { scope ->
-        //         scope.setTag("exception", exception.message.toString())
-        //         scope.setExtra("stacktrace", exception.printStackTrace().toString())
-        //     }
-        // }
     }
 }

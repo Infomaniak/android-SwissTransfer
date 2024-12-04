@@ -27,7 +27,7 @@ class ExampleUnitTest {
                 respond(
                     content = ByteReadChannel("""{"ip":"127.0.0.1"}"""),
                     status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json")
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
         )
@@ -45,14 +45,12 @@ class ExampleUnitTest {
         }
     }
 
-
     private suspend inline fun <reified R> post(url: Url, data: Any?): R {
         return apiClientProvider.httpClient.post(url) {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.decode<R>()
     }
-
 
     private suspend inline fun <reified R> HttpResponse.decode(): R {
         return runCatching { body<R>() }.getOrElse { throw UnknownException(it) }

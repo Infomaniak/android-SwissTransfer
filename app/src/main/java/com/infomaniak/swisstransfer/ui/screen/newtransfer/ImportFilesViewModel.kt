@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -197,7 +198,8 @@ class ImportFilesViewModel @Inject constructor(
                 packageName = BuildConfig.APPLICATION_ID,
                 targetUrl = AppIntegrityRoutes.demo,
                 onSuccess = { mobileToken ->
-                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $mobileToken")
+                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
+                    Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $mobileToken")
                     _integrityCheckResult.value = true
                     viewModelScope.launch(ioDispatcher) {
                         appIntegrityManager.callDemoRoute(mobileToken)
