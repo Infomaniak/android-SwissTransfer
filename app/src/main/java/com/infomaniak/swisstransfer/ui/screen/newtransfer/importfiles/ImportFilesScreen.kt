@@ -198,7 +198,7 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
-                navigateToUploadProgress = sendTransfer,
+                checkIntegrityAndNavigateToUploadProgress = sendTransfer,
             )
         },
         content = {
@@ -374,9 +374,10 @@ private fun SendButton(
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
+    checkIntegrityAndNavigateToUploadProgress: () -> Unit,
     transferAuthorEmail: GetSetCallbacks<String>,
-    navigateToUploadProgress: () -> Unit,
 ) {
+    var isCheckingAppIntegrity by remember { mutableStateOf(false) }
     val remainingFilesCount = filesToImportCount()
     val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
 
@@ -396,9 +397,13 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
+        showIndeterminateProgress = { isCheckingAppIntegrity },
         enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
         progress = progress,
-        onClick = navigateToUploadProgress,
+        onClick = {
+            isCheckingAppIntegrity = true
+            checkIntegrityAndNavigateToUploadProgress()
+        },
     )
 }
 
