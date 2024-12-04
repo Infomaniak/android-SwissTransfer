@@ -152,7 +152,7 @@ private enum class Page(
 ) {
     STORAGE(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustration = AppIllus.StorageBoxPile,
+        illustration = AppIllus.StorageCardboardBoxPile,
         titleRes = R.string.onboardingStorageTitle,
         subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
@@ -168,7 +168,7 @@ private enum class Page(
     ),
     PASSWORD(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustration = AppIllus.TwoPadlocksIntertwinedStars,
+        illustration = AppIllus.TwoLocksIntertwinedStars,
         titleRes = R.string.onboardingPasswordTitle,
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,

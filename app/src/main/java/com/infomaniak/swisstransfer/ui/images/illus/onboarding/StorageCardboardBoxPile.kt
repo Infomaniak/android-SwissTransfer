@@ -32,13 +32,13 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-val AppIllus.StorageBoxPile: ThemedImage
-    get() = _storageBoxPile ?: object : ThemedImage {
-        override val light = AppIllus.StorageBoxPileLight
-        override val dark = AppIllus.StorageBoxPileDark
-    }.also { _storageBoxPile = it }
+val AppIllus.StorageCardboardBoxPile: ThemedImage
+    get() = _storageCardboardBoxPile ?: object : ThemedImage {
+        override val light = AppIllus.StorageCardboardBoxPileLight
+        override val dark = AppIllus.StorageCardboardBoxPileDark
+    }.also { _storageCardboardBoxPile = it }
 
-private var _storageBoxPile: ThemedImage? = null
+private var _storageCardboardBoxPile: ThemedImage? = null
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
@@ -46,7 +46,7 @@ private var _storageBoxPile: ThemedImage? = null
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            val imageVector = AppIllus.StorageBoxPile.image()
+            val imageVector = AppIllus.StorageCardboardBoxPile.image()
             Box {
                 Image(
                     imageVector = imageVector,

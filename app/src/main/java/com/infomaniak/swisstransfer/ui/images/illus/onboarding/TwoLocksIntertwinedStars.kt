@@ -32,13 +32,13 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-val AppIllus.TwoPadlocksIntertwinedStars: ThemedImage
-    get() = _twoPadlocksIntertwinedStars ?: object : ThemedImage {
-        override val light = AppIllus.TwoPadlocksIntertwinedStarsLight
-        override val dark = AppIllus.TwoPadlocksIntertwinedStarsDark
-    }.also { _twoPadlocksIntertwinedStars = it }
+val AppIllus.TwoLocksIntertwinedStars: ThemedImage
+    get() = _twoLocksIntertwinedStars ?: object : ThemedImage {
+        override val light = AppIllus.TwoLocksIntertwinedStarsLight
+        override val dark = AppIllus.TwoLocksIntertwinedStarsDark
+    }.also { _twoLocksIntertwinedStars = it }
 
-private var _twoPadlocksIntertwinedStars: ThemedImage? = null
+private var _twoLocksIntertwinedStars: ThemedImage? = null
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
@@ -46,7 +46,7 @@ private var _twoPadlocksIntertwinedStars: ThemedImage? = null
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            val imageVector = AppIllus.TwoPadlocksIntertwinedStars.image()
+            val imageVector = AppIllus.TwoLocksIntertwinedStars.image()
             Box {
                 Image(
                     imageVector = imageVector,
