@@ -34,7 +34,7 @@ val filesPreviewData = listOf(
         fileSize = 10_302_130L,
         mimeType = null,
         localPath = "",
-        path = null,
+        path = "",
     ),
     FileUi(
         // Preview file (i.e. png, jpg, etc.)
@@ -44,7 +44,7 @@ val filesPreviewData = listOf(
         fileSize = 456_782L,
         mimeType = null,
         localPath = "https://picsum.photos/200/300",
-        path = null,
+        path = "",
     ),
     FileUi(
         uid = "The 5 step guide to turning it off and on again.docx",
@@ -53,7 +53,7 @@ val filesPreviewData = listOf(
         fileSize = 89_723_143L,
         mimeType = null,
         localPath = "",
-        path = null,
+        path = "",
     ),
     FileUi(
         uid = UUID.randomUUID().toString(),
@@ -62,7 +62,7 @@ val filesPreviewData = listOf(
         fileSize = 237_866_728L,
         mimeType = null,
         localPath = null,
-        path = null,
+        path = "",
     ),
     FileUi(
         uid = UUID.randomUUID().toString(),
@@ -71,7 +71,7 @@ val filesPreviewData = listOf(
         fileSize = 98_723_143L,
         mimeType = null,
         localPath = null,
-        path = null,
+        path = "",
     ),
     FileUi(
         uid = UUID.randomUUID().toString(),
@@ -80,6 +80,6 @@ val filesPreviewData = listOf(
         fileSize = 57_689_032L,
         mimeType = null,
         localPath = null,
-        path = null,
+        path = "",
     ),
 )
