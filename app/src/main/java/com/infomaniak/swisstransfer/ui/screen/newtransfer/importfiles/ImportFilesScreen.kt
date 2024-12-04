@@ -85,7 +85,7 @@ fun ImportFilesScreen(
         getIntegrityCheckResult = { integrityCheckResult },
         sendTransfer = {
             Log.e("TOTO", "ImportFilesScreen: sendTransfer")
-            importFilesViewModel.sendTransfer(appIntegrityManager)
+            importFilesViewModel.sendTransfer()
         },
         errorMessage = stringResource(R.string.uploadErrorDescription),
         snackbarHostState = { snackbarHostState },
@@ -129,7 +129,7 @@ fun ImportFilesScreen(
         removeFileByUid = importFilesViewModel::removeFileByUid,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
-        sendTransfer = { importFilesViewModel.startTransfer(appIntegrityManager) },
+        checkAppIntegrity = { importFilesViewModel.checkAppIntegrity(appIntegrityManager) },
         shouldStartByPromptingUserForFiles = true,
     )
 }
@@ -175,7 +175,7 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
-    sendTransfer: () -> Unit,
+    checkAppIntegrity: () -> Unit,
 ) {
     val context = LocalContext.current
     var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
@@ -213,9 +213,7 @@ private fun ImportFilesScreen(
                 TopAppBarButton.closeButton { closeActivity() },
             )
         },
-        topButton = { modifier ->
-            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, sendTransfer)
-        },
+        topButton = { modifier -> SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, checkAppIntegrity) },
         content = {
             Column(
                 modifier = Modifier
@@ -323,7 +321,7 @@ private fun SendButton(
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
     modifier: Modifier,
-    checkIntegrityAndNavigateToUploadProgress: () -> Unit,
+    checkAppIntegrityBeforeSendingTransfer: () -> Unit,
 ) {
     var isCheckingAppIntegrity by remember { mutableStateOf(false) }
     val remainingFilesCount = filesToImportCount()
@@ -347,7 +345,7 @@ private fun SendButton(
         progress = progress,
         onClick = {
             isCheckingAppIntegrity = true
-            checkIntegrityAndNavigateToUploadProgress()
+            checkAppIntegrityBeforeSendingTransfer()
         },
     )
 }
@@ -423,7 +421,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
-            sendTransfer = {},
+            checkAppIntegrity = {},
         )
     }
 }
