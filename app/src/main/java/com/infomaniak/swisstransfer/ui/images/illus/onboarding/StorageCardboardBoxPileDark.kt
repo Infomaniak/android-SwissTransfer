@@ -1,3 +1,20 @@
+/*
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2024 Infomaniak Network SA
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.infomaniak.swisstransfer.ui.images.illus.onboarding
 
 import androidx.compose.foundation.Image
@@ -22,172 +39,156 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 
-val AppIllus.StorageBoxPileDark: ImageVector
+val AppIllus.StorageCardboardBoxPileDark: ImageVector
     get() {
-        if (_storageBoxPileDark != null) {
-            return _storageBoxPileDark!!
+        if (_storageCardboardBoxPileDark != null) {
+            return _storageCardboardBoxPileDark!!
         }
-        _storageBoxPileDark = Builder(
-            name = "StorageBoxPileDark",
-            defaultWidth = 289.0.dp,
+        _storageCardboardBoxPileDark = Builder(
+            name = "StorageCardboardBoxPileDark",
+            defaultWidth = 375.0.dp,
             defaultHeight = 258.0.dp,
-            viewportWidth = 289.0f,
+            viewportWidth = 375.0f,
             viewportHeight = 258.0f
         ).apply {
-            path(
-                fill = SolidColor(Color(0xFFA98116)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
-                pathFillType = EvenOdd
-            ) {
-                moveTo(97.98f, 94.05f)
-                curveToRelative(0.78f, 0.68f, 3.34f, 1.72f, 4.57f, 1.98f)
-                curveToRelative(-1.29f, -0.57f, -3.01f, -1.2f, -3.95f, -1.99f)
-                curveToRelative(-4.49f, -3.76f, -1.84f, -10.04f, 3.95f, -9.12f)
-                curveToRelative(1.06f, 0.17f, 2.86f, 1.02f, 4.31f, 1.73f)
-                curveToRelative(-0.97f, -0.69f, -3.81f, -2.05f, -4.84f, -2.28f)
-                curveToRelative(-4.83f, -1.07f, -9.7f, 4.74f, -4.04f, 9.68f)
+            group {
+                path(
+                    fill = SolidColor(Color(0xFFA98116)),
+                    pathFillType = EvenOdd
+                ) {
+                    moveTo(140.98f, 94.2f)
+                    curveToRelative(0.78f, 0.68f, 3.34f, 1.73f, 4.57f, 1.98f)
+                    curveToRelative(-1.29f, -0.57f, -3.01f, -1.2f, -3.95f, -1.99f)
+                    curveToRelative(-4.49f, -3.77f, -1.84f, -10.06f, 3.95f, -9.14f)
+                    curveToRelative(1.06f, 0.17f, 2.86f, 1.02f, 4.31f, 1.73f)
+                    curveToRelative(-0.97f, -0.69f, -3.81f, -2.05f, -4.84f, -2.28f)
+                    curveToRelative(-4.83f, -1.08f, -9.7f, 4.74f, -4.04f, 9.69f)
+                }
             }
             group {
                 path(
                     fill = SolidColor(Color(0xFFFFFFFF)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveToRelative(97.98f, 94.05f)
+                    moveToRelative(140.98f, 94.2f)
                     lineToRelative(0.66f, -0.75f)
+                    horizontalLineToRelative(-0.0f)
                     close()
-                    moveTo(102.55f, 96.03f)
-                    lineTo(102.34f, 97.01f)
-                    lineTo(102.95f, 95.12f)
+                    moveTo(145.55f, 96.18f)
+                    lineTo(145.35f, 97.16f)
+                    lineTo(145.95f, 95.27f)
                     close()
-                    moveTo(98.6f, 94.04f)
-                    lineToRelative(-0.64f, 0.77f)
-                    horizontalLineToRelative(0.0f)
+                    moveTo(141.6f, 94.19f)
+                    lineTo(140.96f, 94.96f)
+                    lineTo(140.96f, 94.96f)
                     close()
-                    moveTo(102.56f, 84.92f)
-                    lineTo(102.71f, 83.93f)
+                    moveTo(145.55f, 85.06f)
+                    lineTo(145.71f, 84.07f)
                     close()
-                    moveTo(106.86f, 86.65f)
-                    lineTo(106.42f, 87.55f)
-                    lineTo(107.44f, 85.84f)
+                    moveTo(149.86f, 86.79f)
+                    lineTo(149.42f, 87.69f)
+                    lineTo(150.44f, 85.98f)
                     close()
-                    moveTo(102.02f, 84.37f)
-                    lineTo(101.81f, 85.35f)
+                    moveTo(145.02f, 84.51f)
+                    lineTo(144.81f, 85.48f)
                     close()
-                    moveTo(97.32f, 94.8f)
+                    moveTo(140.32f, 94.96f)
                     curveToRelative(0.52f, 0.46f, 1.5f, 0.94f, 2.38f, 1.32f)
                     curveToRelative(0.92f, 0.39f, 1.93f, 0.74f, 2.64f, 0.89f)
                     lineToRelative(0.41f, -1.96f)
                     curveToRelative(-0.52f, -0.11f, -1.4f, -0.41f, -2.27f, -0.77f)
                     curveToRelative(-0.9f, -0.38f, -1.59f, -0.76f, -1.85f, -0.98f)
                     close()
-                    moveTo(102.95f, 95.12f)
+                    moveTo(145.95f, 95.27f)
                     curveToRelative(-0.7f, -0.31f, -1.38f, -0.58f, -2.09f, -0.9f)
                     curveToRelative(-0.69f, -0.32f, -1.26f, -0.63f, -1.62f, -0.94f)
                     lineToRelative(-1.28f, 1.53f)
-                    curveToRelative(0.58f, 0.48f, 1.34f, 0.88f, 2.07f, 1.22f)
+                    curveToRelative(0.58f, 0.48f, 1.34f, 0.88f, 2.06f, 1.22f)
                     curveToRelative(0.71f, 0.33f, 1.53f, 0.66f, 2.12f, 0.92f)
                     close()
-                    moveTo(99.24f, 93.28f)
-                    curveToRelative(-1.94f, -1.63f, -2.24f, -3.67f, -1.6f, -5.16f)
-                    curveToRelative(0.63f, -1.47f, 2.27f, -2.61f, 4.76f, -2.21f)
-                    lineToRelative(0.31f, -1.97f)
-                    curveToRelative(-3.31f, -0.52f, -5.89f, 1.02f, -6.91f, 3.4f)
-                    curveToRelative(-1.01f, 2.37f, -0.4f, 5.34f, 2.15f, 7.48f)
+                    moveTo(142.24f, 93.43f)
+                    curveToRelative(-1.94f, -1.63f, -2.24f, -3.68f, -1.6f, -5.17f)
+                    curveToRelative(0.63f, -1.47f, 2.27f, -2.61f, 4.76f, -2.22f)
+                    lineToRelative(0.31f, -1.98f)
+                    curveToRelative(-3.31f, -0.53f, -5.89f, 1.02f, -6.91f, 3.4f)
+                    curveToRelative(-1.01f, 2.37f, -0.4f, 5.35f, 2.15f, 7.49f)
                     close()
-                    moveTo(102.4f, 85.91f)
-                    curveToRelative(0.4f, 0.06f, 1.02f, 0.28f, 1.77f, 0.59f)
-                    curveToRelative(0.74f, 0.31f, 1.53f, 0.69f, 2.24f, 1.05f)
+                    moveTo(145.4f, 86.04f)
+                    curveToRelative(0.4f, 0.06f, 1.02f, 0.28f, 1.78f, 0.6f)
+                    arcToRelative(43.0f, 43.0f, 0.0f, false, true, 2.24f, 1.05f)
                     lineToRelative(0.89f, -1.79f)
                     arcToRelative(45.0f, 45.0f, 0.0f, false, false, -2.35f, -1.1f)
-                    curveToRelative(-0.77f, -0.32f, -1.58f, -0.62f, -2.24f, -0.73f)
+                    curveToRelative(-0.77f, -0.33f, -1.58f, -0.62f, -2.24f, -0.73f)
                     close()
-                    moveTo(107.44f, 85.84f)
+                    moveTo(150.44f, 85.98f)
                     curveToRelative(-0.56f, -0.4f, -1.58f, -0.94f, -2.55f, -1.4f)
                     curveToRelative(-0.95f, -0.45f, -2.02f, -0.9f, -2.65f, -1.04f)
                     lineToRelative(-0.43f, 1.95f)
                     curveToRelative(0.39f, 0.09f, 1.26f, 0.44f, 2.23f, 0.89f)
-                    curveToRelative(0.95f, 0.45f, 1.84f, 0.93f, 2.25f, 1.22f)
+                    curveToRelative(0.95f, 0.45f, 1.84f, 0.94f, 2.25f, 1.23f)
                     close()
-                    moveTo(102.24f, 83.4f)
-                    curveToRelative(-2.85f, -0.63f, -5.71f, 0.76f, -7.04f, 3.06f)
-                    arcToRelative(5.65f, 5.65f, 0.0f, false, false, -0.63f, 4.06f)
-                    curveToRelative(0.32f, 1.48f, 1.21f, 2.94f, 2.76f, 4.29f)
+                    moveTo(145.24f, 83.53f)
+                    curveToRelative(-2.85f, -0.63f, -5.71f, 0.76f, -7.04f, 3.07f)
+                    arcToRelative(5.67f, 5.67f, 0.0f, false, false, -0.63f, 4.06f)
+                    curveToRelative(0.32f, 1.48f, 1.21f, 2.95f, 2.75f, 4.3f)
                     lineToRelative(1.31f, -1.51f)
-                    curveToRelative(-1.29f, -1.13f, -1.91f, -2.23f, -2.12f, -3.21f)
-                    arcToRelative(3.66f, 3.66f, 0.0f, false, true, 0.41f, -2.64f)
+                    curveToRelative(-1.29f, -1.13f, -1.91f, -2.24f, -2.12f, -3.21f)
+                    arcToRelative(3.67f, 3.67f, 0.0f, false, true, 0.41f, -2.64f)
                     curveToRelative(0.9f, -1.57f, 2.9f, -2.55f, 4.87f, -2.11f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFFA98116)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = EvenOdd
                 ) {
-                    moveTo(113.15f, 103.25f)
-                    curveToRelative(-0.14f, -0.05f, -10.5f, 3.16f, -7.58f, 7.85f)
-                    curveToRelative(-0.47f, -2.07f, 0.5f, -4.47f, 7.58f, -7.85f)
+                    moveTo(156.15f, 103.41f)
+                    curveToRelative(-0.14f, -0.05f, -10.5f, 3.16f, -7.58f, 7.87f)
+                    curveToRelative(-0.47f, -2.07f, 0.5f, -4.48f, 7.58f, -7.87f)
                 }
             }
             group {
                 path(
                     fill = SolidColor(Color(0xFFFFFFFF)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveToRelative(113.15f, 103.25f)
+                    moveToRelative(156.15f, 103.41f)
                     lineToRelative(0.43f, 0.9f)
                     lineToRelative(2.04f, -0.97f)
-                    lineToRelative(-2.09f, -0.85f)
+                    lineToRelative(-2.09f, -0.86f)
                     close()
-                    moveTo(105.56f, 111.1f)
-                    lineTo(104.71f, 111.63f)
-                    lineTo(106.54f, 110.88f)
+                    moveTo(148.56f, 111.27f)
+                    lineTo(147.71f, 111.8f)
+                    lineTo(149.54f, 111.05f)
                     close()
-                    moveTo(113.53f, 102.32f)
-                    curveToRelative(-0.18f, -0.08f, -0.34f, -0.08f, -0.37f, -0.08f)
-                    arcToRelative(1.15f, 1.15f, 0.0f, false, false, -0.24f, 0.02f)
-                    quadToRelative(-0.08f, 0.02f, -0.16f, 0.04f)
-                    arcToRelative(8.0f, 8.0f, 0.0f, false, false, -0.39f, 0.12f)
+                    moveTo(156.53f, 102.48f)
+                    curveToRelative(-0.18f, -0.08f, -0.34f, -0.07f, -0.37f, -0.08f)
+                    curveToRelative(-0.06f, 0.0f, -0.1f, 0.0f, -0.13f, 0.01f)
+                    curveToRelative(-0.05f, 0.0f, -0.09f, 0.01f, -0.12f, 0.02f)
+                    lineToRelative(-0.16f, 0.04f)
+                    curveToRelative(-0.1f, 0.03f, -0.24f, 0.07f, -0.39f, 0.12f)
                     curveToRelative(-0.31f, 0.1f, -0.74f, 0.25f, -1.23f, 0.44f)
-                    curveToRelative(-0.98f, 0.38f, -2.26f, 0.95f, -3.45f, 1.68f)
+                    curveToRelative(-0.98f, 0.38f, -2.26f, 0.95f, -3.44f, 1.68f)
                     curveToRelative(-1.17f, 0.72f, -2.36f, 1.67f, -3.05f, 2.84f)
-                    curveToRelative(-0.35f, 0.6f, -0.58f, 1.28f, -0.59f, 2.02f)
-                    curveToRelative(-0.01f, 0.75f, 0.22f, 1.5f, 0.67f, 2.22f)
+                    curveToRelative(-0.35f, 0.6f, -0.58f, 1.28f, -0.59f, 2.03f)
+                    curveToRelative(-0.01f, 0.75f, 0.22f, 1.5f, 0.67f, 2.23f)
                     lineToRelative(1.7f, -1.05f)
                     curveToRelative(-0.28f, -0.45f, -0.37f, -0.83f, -0.37f, -1.15f)
                     curveToRelative(0.0f, -0.33f, 0.1f, -0.67f, 0.32f, -1.03f)
-                    curveToRelative(0.44f, -0.75f, 1.3f, -1.49f, 2.37f, -2.15f)
+                    curveToRelative(0.44f, -0.75f, 1.3f, -1.49f, 2.38f, -2.15f)
                     curveToRelative(1.05f, -0.65f, 2.21f, -1.17f, 3.12f, -1.52f)
                     curveToRelative(0.45f, -0.18f, 0.84f, -0.31f, 1.11f, -0.39f)
                     quadToRelative(0.2f, -0.06f, 0.3f, -0.09f)
                     lineToRelative(0.04f, -0.01f)
-                    curveToRelative(-0.0f, 0.0f, -0.03f, 0.0f, -0.06f, 0.01f)
-                    arcToRelative(1.0f, 1.0f, 0.0f, false, true, -0.11f, 0.0f)
+                    reflectiveCurveToRelative(-0.02f, 0.0f, -0.06f, 0.01f)
+                    curveToRelative(-0.02f, 0.0f, -0.06f, 0.0f, -0.11f, 0.0f)
                     curveToRelative(-0.02f, 0.0f, -0.18f, 0.0f, -0.36f, -0.07f)
                     close()
-                    moveTo(106.54f, 110.88f)
+                    moveTo(149.54f, 111.05f)
                     arcToRelative(2.5f, 2.5f, 0.0f, false, true, -0.01f, -1.17f)
                     curveToRelative(0.09f, -0.39f, 0.31f, -0.86f, 0.76f, -1.4f)
-                    curveToRelative(0.93f, -1.12f, 2.79f, -2.49f, 6.29f, -4.16f)
+                    curveToRelative(0.93f, -1.12f, 2.79f, -2.49f, 6.29f, -4.17f)
                     lineToRelative(-0.86f, -1.8f)
-                    curveToRelative(-3.58f, 1.71f, -5.75f, 3.23f, -6.96f, 4.68f)
+                    curveToRelative(-3.58f, 1.71f, -5.75f, 3.24f, -6.96f, 4.69f)
                     curveToRelative(-0.62f, 0.74f, -1.0f, 1.48f, -1.17f, 2.22f)
                     arcToRelative(4.5f, 4.5f, 0.0f, false, false, 0.01f, 2.08f)
                     close()
@@ -201,10 +202,10 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(106.44f, 145.42f)
+                    moveTo(149.44f, 145.65f)
                     verticalLineTo(0.5f)
                     horizontalLineToRelative(105.94f)
-                    verticalLineToRelative(144.92f)
+                    verticalLineToRelative(145.15f)
                     close()
                 }
                 path(
@@ -216,38 +217,28 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(70.46f, 145.42f)
+                    moveTo(113.46f, 145.65f)
                     verticalLineTo(0.5f)
                     horizontalLineToRelative(105.94f)
-                    verticalLineToRelative(144.92f)
+                    verticalLineToRelative(145.15f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF014958)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(155.12f, 46.3f)
-                    horizontalLineTo(81.01f)
-                    verticalLineTo(68.47f)
+                    moveTo(198.12f, 46.37f)
+                    horizontalLineToRelative(-74.11f)
+                    verticalLineToRelative(22.21f)
                     horizontalLineToRelative(74.11f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFFFFFFFF)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(104.53f, 58.89f)
-                    curveToRelative(0.0f, -1.56f, -1.09f, -2.24f, -2.12f, -2.24f)
+                    moveTo(147.52f, 58.97f)
+                    curveToRelative(0.0f, -1.56f, -1.09f, -2.23f, -2.12f, -2.23f)
                     curveToRelative(-0.97f, 0.0f, -1.61f, 0.57f, -1.82f, 1.04f)
                     lineToRelative(-1.18f, -0.06f)
                     lineToRelative(0.61f, -5.07f)
@@ -280,7 +271,7 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     curveToRelative(1.26f, 0.0f, 2.78f, -0.52f, 2.78f, -2.47f)
                     verticalLineToRelative(-0.25f)
                     horizontalLineToRelative(-2.49f)
-                    verticalLineToRelative(-1.14f)
+                    lineTo(166.32f, 57.25f)
                     horizontalLineToRelative(3.74f)
                     verticalLineToRelative(4.81f)
                     horizontalLineToRelative(-1.04f)
@@ -297,29 +288,24 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     curveToRelative(0.0f, 2.0f, -1.49f, 2.78f, -3.38f, 2.78f)
                     horizontalLineToRelative(-3.72f)
                     close()
-                    moveTo(130.5f, 56.59f)
+                    moveTo(173.5f, 56.67f)
                     horizontalLineToRelative(2.27f)
                     curveToRelative(1.08f, 0.0f, 1.77f, -0.41f, 1.77f, -1.52f)
                     curveToRelative(0.0f, -0.96f, -0.71f, -1.39f, -1.77f, -1.39f)
                     horizontalLineToRelative(-2.27f)
                     close()
-                    moveTo(130.5f, 60.86f)
+                    moveTo(173.5f, 60.94f)
                     horizontalLineToRelative(2.4f)
                     curveToRelative(1.34f, 0.0f, 2.0f, -0.58f, 2.0f, -1.65f)
-                    curveToRelative(0.0f, -1.11f, -0.66f, -1.57f, -2.08f, -1.57f)
+                    curveToRelative(0.0f, -1.1f, -0.66f, -1.57f, -2.08f, -1.57f)
                     horizontalLineToRelative(-2.33f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF67DD95)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(75.86f, 57.21f)
+                    moveTo(118.86f, 57.31f)
                     verticalLineToRelative(1.71f)
                     horizontalLineToRelative(1.56f)
                     verticalLineToRelative(1.22f)
@@ -334,7 +320,7 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     horizontalLineToRelative(-1.56f)
                     verticalLineToRelative(1.71f)
                     horizontalLineToRelative(15.31f)
-                    verticalLineTo(66.0f)
+                    verticalLineToRelative(-1.71f)
                     horizontalLineToRelative(-1.56f)
                     verticalLineToRelative(-1.22f)
                     horizontalLineToRelative(1.56f)
@@ -348,7 +334,7 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     horizontalLineToRelative(1.56f)
                     verticalLineToRelative(-1.71f)
                     close()
-                    moveTo(144.31f, 52.14f)
+                    moveTo(187.31f, 52.22f)
                     verticalLineToRelative(1.71f)
                     horizontalLineToRelative(1.56f)
                     verticalLineToRelative(1.22f)
@@ -357,15 +343,15 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     horizontalLineToRelative(1.56f)
                     verticalLineToRelative(1.22f)
                     horizontalLineToRelative(-1.56f)
-                    verticalLineToRelative(1.71f)
+                    verticalLineTo(59.8f)
                     horizontalLineToRelative(1.56f)
                     verticalLineToRelative(1.22f)
                     horizontalLineToRelative(-1.56f)
                     verticalLineToRelative(1.71f)
                     horizontalLineToRelative(15.31f)
-                    verticalLineToRelative(-1.71f)
+                    verticalLineTo(61.02f)
                     horizontalLineToRelative(-1.56f)
-                    verticalLineToRelative(-1.22f)
+                    verticalLineTo(59.8f)
                     horizontalLineToRelative(1.56f)
                     verticalLineToRelative(-1.71f)
                     horizontalLineToRelative(-1.56f)
@@ -387,10 +373,10 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(54.61f, 244.98f)
-                    verticalLineTo(145.14f)
+                    moveTo(97.61f, 245.37f)
+                    verticalLineTo(145.37f)
                     horizontalLineToRelative(104.72f)
-                    verticalLineToRelative(99.84f)
+                    verticalLineToRelative(100.0f)
                     close()
                 }
                 path(
@@ -402,59 +388,44 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(18.74f, 244.98f)
-                    verticalLineTo(145.14f)
+                    moveTo(61.74f, 245.37f)
+                    verticalLineTo(145.37f)
                     horizontalLineToRelative(104.72f)
-                    verticalLineToRelative(99.84f)
+                    verticalLineToRelative(100.0f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF152123)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(123.0f, 183.0f)
-                    horizontalLineTo(19.0f)
-                    verticalLineToRelative(17.0f)
+                    moveTo(166.0f, 183.29f)
+                    horizontalLineTo(62.0f)
+                    verticalLineToRelative(17.03f)
                     horizontalLineToRelative(104.0f)
                     close()
-                    moveTo(146.0f, 183.0f)
+                    moveTo(189.0f, 183.29f)
                     horizontalLineToRelative(-22.0f)
-                    verticalLineToRelative(17.0f)
+                    verticalLineToRelative(17.03f)
                     horizontalLineToRelative(22.0f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF67DD95)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(46.26f, 157.37f)
-                    horizontalLineTo(27.23f)
-                    verticalLineToRelative(9.16f)
+                    moveTo(89.26f, 157.61f)
+                    horizontalLineTo(70.23f)
+                    verticalLineToRelative(9.18f)
                     horizontalLineToRelative(19.02f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF152123)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(46.26f, 157.37f)
-                    horizontalLineTo(30.01f)
-                    verticalLineToRelative(9.16f)
+                    moveTo(89.26f, 157.61f)
+                    horizontalLineTo(73.01f)
+                    verticalLineToRelative(9.18f)
                     horizontalLineToRelative(16.24f)
                     close()
                 }
@@ -467,39 +438,29 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(146.41f, 135.66f)
+                    moveTo(189.41f, 135.87f)
                     horizontalLineToRelative(69.04f)
-                    verticalLineToRelative(120.83f)
+                    verticalLineToRelative(121.03f)
                     horizontalLineToRelative(-69.04f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF67DD95)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(210.15f, 151.46f)
+                    moveTo(253.15f, 151.7f)
                     horizontalLineToRelative(-20.47f)
-                    verticalLineToRelative(9.36f)
+                    verticalLineToRelative(9.38f)
                     horizontalLineToRelative(20.47f)
                     close()
                 }
                 path(
                     fill = SolidColor(Color(0xFF152123)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(210.15f, 151.46f)
+                    moveTo(253.15f, 151.7f)
                     horizontalLineToRelative(-15.24f)
-                    verticalLineToRelative(9.36f)
+                    verticalLineToRelative(9.38f)
                     horizontalLineToRelative(15.24f)
                     close()
                 }
@@ -512,9 +473,9 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(215.72f, 135.66f)
+                    moveTo(258.72f, 135.87f)
                     horizontalLineToRelative(34.75f)
-                    verticalLineToRelative(120.83f)
+                    verticalLineToRelative(121.03f)
                     horizontalLineToRelative(-34.75f)
                     close()
                 }
@@ -527,10 +488,10 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(7.8f, 203.5f)
+                    moveTo(50.79f, 203.83f)
                     horizontalLineToRelative(109.89f)
-                    verticalLineToRelative(52.99f)
-                    horizontalLineTo(7.8f)
+                    verticalLineToRelative(53.07f)
+                    horizontalLineTo(50.79f)
                     close()
                 }
                 path(
@@ -542,10 +503,10 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveToRelative(0.69f, 224.39f)
-                    lineToRelative(6.96f, -20.89f)
+                    moveToRelative(43.69f, 224.75f)
+                    lineToRelative(6.96f, -20.92f)
                     horizontalLineToRelative(109.84f)
-                    lineToRelative(-6.96f, 20.89f)
+                    lineToRelative(-6.96f, 20.92f)
                     close()
                 }
                 path(
@@ -557,9 +518,9 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(117.96f, 203.5f)
+                    moveTo(160.96f, 203.83f)
                     horizontalLineToRelative(48.61f)
-                    verticalLineToRelative(52.99f)
+                    verticalLineToRelative(53.07f)
                     horizontalLineToRelative(-48.61f)
                     close()
                 }
@@ -572,10 +533,10 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveToRelative(125.11f, 224.39f)
-                    lineToRelative(-6.96f, -20.89f)
+                    moveToRelative(168.11f, 224.75f)
+                    lineToRelative(-6.96f, -20.92f)
                     horizontalLineToRelative(48.56f)
-                    lineToRelative(6.96f, 20.89f)
+                    lineToRelative(6.96f, 20.92f)
                     close()
                 }
                 path(
@@ -587,10 +548,10 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(219.15f, 257.09f)
-                    verticalLineToRelative(-23.72f)
+                    moveTo(262.15f, 257.5f)
+                    verticalLineToRelative(-23.76f)
                     horizontalLineToRelative(69.35f)
-                    verticalLineToRelative(23.72f)
+                    verticalLineToRelative(23.76f)
                     close()
                 }
                 path(
@@ -602,23 +563,23 @@ val AppIllus.StorageBoxPileDark: ImageVector
                     strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(195.29f, 257.09f)
-                    verticalLineToRelative(-23.72f)
+                    moveTo(238.29f, 257.5f)
+                    verticalLineToRelative(-23.76f)
                     horizontalLineToRelative(69.35f)
-                    verticalLineToRelative(23.72f)
+                    verticalLineToRelative(23.76f)
                     close()
                 }
             }
         }.build()
-        return _storageBoxPileDark!!
+        return _storageCardboardBoxPileDark!!
     }
 
-private var _storageBoxPileDark: ImageVector? = null
+private var _storageCardboardBoxPileDark: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
-    val imageVector = AppIllus.StorageBoxPileDark
+    val imageVector = AppIllus.StorageCardboardBoxPileDark
     Box {
         Image(
             imageVector = imageVector,

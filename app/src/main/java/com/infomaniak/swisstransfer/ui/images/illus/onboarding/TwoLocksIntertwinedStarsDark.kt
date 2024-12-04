@@ -1,3 +1,20 @@
+/*
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2024 Infomaniak Network SA
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.infomaniak.swisstransfer.ui.images.illus.onboarding
 
 import androidx.compose.foundation.Image
@@ -20,125 +37,123 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 
-val AppIllus.TwoPadlocksIntertwinedStarsLight: ImageVector
+val AppIllus.TwoLocksIntertwinedStarsDark: ImageVector
     get() {
-        if (_twoPadlocksIntertwinedStarsLight != null) {
-            return _twoPadlocksIntertwinedStarsLight!!
+        if (_twoLocksIntertwinedStarsDark != null) {
+            return _twoLocksIntertwinedStarsDark!!
         }
-        _twoPadlocksIntertwinedStarsLight = Builder(
-            name = "TwoPadlocksIntertwinedStarsLight",
-            defaultWidth = 240.0.dp,
-            defaultHeight = 192.0.dp,
-            viewportWidth = 240.0f,
-            viewportHeight = 192.0f
+        _twoLocksIntertwinedStarsDark = Builder(
+            name = "TwoLocksIntertwinedStarsDark",
+            defaultWidth = 375.0.dp,
+            defaultHeight = 258.0.dp,
+            viewportWidth = 375.0f,
+            viewportHeight = 258.0f
         ).apply {
             path(
                 fill = SolidColor(Color(0x00000000)),
-                stroke = SolidColor(Color(0xFF3CB572)),
+                stroke = SolidColor(Color(0xFF67DD95)),
                 strokeLineWidth = 9.78f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(124.45f, 89.52f)
-                lineTo(124.45f, 89.52f)
-                arcTo(27.3f, 27.3f, 56.26f, false, true, 116.99f, 127.39f)
-                lineTo(90.87f, 144.91f)
-                arcTo(27.3f, 27.3f, 56.26f, false, true, 53.0f, 137.45f)
-                lineTo(53.0f, 137.45f)
-                arcTo(27.3f, 27.3f, 56.26f, false, true, 60.46f, 99.58f)
-                lineTo(86.58f, 82.06f)
-                arcTo(27.3f, 27.3f, 56.26f, false, true, 124.45f, 89.52f)
+                moveTo(194.45f, 121.52f)
+                lineTo(194.45f, 121.52f)
+                arcTo(27.3f, 27.3f, 56.26f, false, true, 186.99f, 159.39f)
+                lineTo(160.87f, 176.91f)
+                arcTo(27.3f, 27.3f, 56.26f, false, true, 123.0f, 169.45f)
+                lineTo(123.0f, 169.45f)
+                arcTo(27.3f, 27.3f, 56.26f, false, true, 130.46f, 131.58f)
+                lineTo(156.58f, 114.06f)
+                arcTo(27.3f, 27.3f, 56.26f, false, true, 194.45f, 121.52f)
                 close()
             }
             path(
                 fill = SolidColor(Color(0x00000000)),
-                stroke = SolidColor(Color(0xFF014958)),
+                stroke = SolidColor(Color(0xFF3C4F52)),
                 strokeLineWidth = 9.776f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(183.29f, 139.5f)
-                lineTo(183.29f, 139.5f)
-                arcTo(27.3f, 27.3f, 120.47f, false, true, 145.94f, 149.26f)
-                lineTo(118.8f, 133.36f)
-                arcTo(27.3f, 27.3f, 120.47f, false, true, 109.04f, 96.02f)
-                lineTo(109.04f, 96.02f)
-                arcTo(27.3f, 27.3f, 120.47f, false, true, 146.39f, 86.26f)
-                lineTo(173.53f, 102.15f)
-                arcTo(27.3f, 27.3f, 120.47f, false, true, 183.29f, 139.5f)
+                moveTo(253.29f, 171.5f)
+                lineTo(253.29f, 171.5f)
+                arcTo(27.3f, 27.3f, 120.47f, false, true, 215.94f, 181.26f)
+                lineTo(188.8f, 165.36f)
+                arcTo(27.3f, 27.3f, 120.47f, false, true, 179.04f, 128.02f)
+                lineTo(179.04f, 128.02f)
+                arcTo(27.3f, 27.3f, 120.47f, false, true, 216.39f, 118.26f)
+                lineTo(243.53f, 134.15f)
+                arcTo(27.3f, 27.3f, 120.47f, false, true, 253.29f, 171.5f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFF67DD95)),
                 pathFillType = NonZero
             ) {
-                moveToRelative(117.85f, 121.01f)
+                moveToRelative(187.85f, 153.01f)
                 lineToRelative(4.43f, 8.51f)
                 lineToRelative(-16.53f, 11.3f)
                 lineToRelative(-5.41f, -8.06f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = SolidColor(Color(0xFF014958)),
+                fill = SolidColor(Color(0xFF3C4F52)),
+                stroke = SolidColor(Color(0xFFDCE4E5)),
                 strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(55.47f, 87.07f)
+                moveTo(125.47f, 119.07f)
                 arcToRelative(7.65f, 7.65f, 0.0f, false, true, 10.61f, 2.09f)
                 lineToRelative(36.56f, 54.5f)
                 arcToRelative(7.65f, 7.65f, 0.0f, false, true, -2.09f, 10.61f)
                 lineToRelative(-48.43f, 32.49f)
                 arcToRelative(7.65f, 7.65f, 0.0f, false, true, -10.61f, -2.09f)
-                lineTo(4.95f, 130.17f)
+                lineToRelative(-36.56f, -54.5f)
                 arcToRelative(7.65f, 7.65f, 0.0f, false, true, 2.09f, -10.61f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFE3F6DC)),
-                stroke = SolidColor(Color(0xFF014958)),
+                fill = SolidColor(Color(0xFF152123)),
+                stroke = SolidColor(Color(0xFFDCE4E5)),
                 strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveToRelative(49.01f, 135.59f)
+                moveToRelative(117.45f, 167.59f)
                 lineToRelative(0.01f, 0.3f)
                 lineToRelative(-0.26f, 0.15f)
-                lineToRelative(-5.6f, 3.23f)
-                arcToRelative(3.32f, 3.32f, 0.0f, false, false, 3.32f, 5.76f)
-                lineToRelative(5.6f, -3.23f)
-                lineToRelative(0.26f, -0.15f)
-                lineToRelative(0.25f, 0.16f)
-                arcToRelative(7.76f, 7.76f, 0.0f, true, false, 0.28f, -13.27f)
+                lineToRelative(-5.53f, 3.23f)
+                curveToRelative(-1.57f, 0.92f, -2.11f, 2.95f, -1.2f, 4.54f)
+                arcToRelative(3.25f, 3.25f, 0.0f, false, false, 4.47f, 1.22f)
+                lineToRelative(5.53f, -3.23f)
+                lineToRelative(0.26f, -0.16f)
+                lineToRelative(0.26f, 0.17f)
+                arcToRelative(7.56f, 7.56f, 0.0f, false, false, 7.93f, 0.17f)
+                curveToRelative(3.66f, -2.14f, 4.92f, -6.89f, 2.8f, -10.61f)
+                curveToRelative(-2.12f, -3.71f, -6.79f, -4.98f, -10.45f, -2.84f)
                 lineToRelative(-0.25f, -0.43f)
                 lineToRelative(0.25f, 0.43f)
-                arcToRelative(7.76f, 7.76f, 0.0f, false, false, -3.88f, 7.05f)
+                curveToRelative(-2.55f, 1.49f, -3.94f, 4.26f, -3.82f, 7.05f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFFFFFFF)),
-                stroke = SolidColor(Color(0xFF014958)),
+                fill = SolidColor(Color(0xFF3C4F52)),
+                stroke = SolidColor(Color(0xFFDCE4E5)),
                 strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveTo(232.7f, 117.28f)
+                moveTo(302.7f, 149.28f)
                 arcToRelative(7.65f, 7.65f, 0.0f, false, true, 2.77f, 10.45f)
                 lineToRelative(-32.96f, 56.75f)
                 arcToRelative(7.65f, 7.65f, 0.0f, false, true, -10.45f, 2.77f)
@@ -149,39 +164,36 @@ val AppIllus.TwoPadlocksIntertwinedStarsLight: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFFE3F6DC)),
-                stroke = SolidColor(Color(0xFF014958)),
+                fill = SolidColor(Color(0xFF152123)),
+                stroke = SolidColor(Color(0xFFDCE4E5)),
                 strokeLineWidth = 1.0f,
                 strokeLineCap = Butt,
                 strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f,
                 pathFillType = NonZero
             ) {
-                moveToRelative(189.02f, 134.59f)
+                moveToRelative(255.61f, 166.59f)
                 lineToRelative(-0.01f, 0.3f)
                 lineToRelative(0.26f, 0.15f)
-                lineToRelative(5.6f, 3.23f)
-                arcToRelative(3.32f, 3.32f, 0.0f, false, true, -3.32f, 5.76f)
-                lineToRelative(-5.6f, -3.23f)
-                lineToRelative(-0.26f, -0.15f)
-                lineToRelative(-0.26f, 0.16f)
-                arcToRelative(7.76f, 7.76f, 0.0f, false, true, -10.89f, -10.43f)
-                arcToRelative(7.76f, 7.76f, 0.0f, false, true, 10.6f, -2.84f)
+                lineToRelative(5.53f, 3.23f)
+                curveToRelative(1.57f, 0.92f, 2.11f, 2.95f, 1.2f, 4.54f)
+                arcToRelative(3.25f, 3.25f, 0.0f, false, true, -4.47f, 1.22f)
+                lineToRelative(-5.53f, -3.23f)
+                lineToRelative(-0.26f, -0.16f)
+                lineToRelative(-0.26f, 0.17f)
+                arcToRelative(7.56f, 7.56f, 0.0f, false, true, -7.93f, 0.17f)
+                curveToRelative(-3.66f, -2.14f, -4.92f, -6.89f, -2.8f, -10.61f)
+                curveToRelative(2.12f, -3.71f, 6.79f, -4.98f, 10.45f, -2.84f)
                 lineToRelative(0.25f, -0.43f)
                 lineToRelative(-0.25f, 0.43f)
-                arcToRelative(7.76f, 7.76f, 0.0f, false, true, 3.88f, 7.05f)
+                curveToRelative(2.55f, 1.49f, 3.94f, 4.26f, 3.82f, 7.05f)
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF3CB572)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFF67DD95)),
                 pathFillType = NonZero
             ) {
-                moveToRelative(109.05f, 14.08f)
+                moveToRelative(179.05f, 46.08f)
                 lineToRelative(2.95f, -9.28f)
                 lineToRelative(-4.76f, -1.51f)
                 lineToRelative(-2.95f, 9.28f)
@@ -199,15 +211,10 @@ val AppIllus.TwoPadlocksIntertwinedStarsLight: ImageVector
                 close()
             }
             path(
-                fill = SolidColor(Color(0xFF014958)),
-                stroke = null,
-                strokeLineWidth = 0.0f,
-                strokeLineCap = Butt,
-                strokeLineJoin = Miter,
-                strokeLineMiter = 4.0f,
+                fill = SolidColor(Color(0xFFDCE4E5)),
                 pathFillType = NonZero
             ) {
-                moveToRelative(80.06f, 52.37f)
+                moveToRelative(150.06f, 84.37f)
                 lineToRelative(1.02f, -3.23f)
                 lineToRelative(-1.65f, -0.52f)
                 lineToRelative(-1.03f, 3.23f)
@@ -220,16 +227,16 @@ val AppIllus.TwoPadlocksIntertwinedStarsLight: ImageVector
                 lineToRelative(1.14f, 3.38f)
                 lineToRelative(1.55f, -0.55f)
                 lineToRelative(-1.04f, -3.23f)
-                lineToRelative(3.46f, -0.09f)
+                lineToRelative(3.47f, -0.09f)
                 lineToRelative(-0.14f, -1.72f)
                 close()
-                moveTo(148.2f, 33.79f)
+                moveTo(218.2f, 65.79f)
                 lineToRelative(1.53f, -4.82f)
                 lineToRelative(-2.47f, -0.79f)
                 lineToRelative(-1.53f, 4.82f)
                 lineToRelative(-4.03f, -3.2f)
                 lineToRelative(-1.53f, 2.01f)
-                lineToRelative(4.06f, 3.07f)
+                lineToRelative(4.06f, 3.08f)
                 lineToRelative(-4.1f, 3.07f)
                 lineToRelative(1.71f, 2.06f)
                 lineToRelative(4.05f, -3.22f)
@@ -241,15 +248,15 @@ val AppIllus.TwoPadlocksIntertwinedStarsLight: ImageVector
                 close()
             }
         }.build()
-        return _twoPadlocksIntertwinedStarsLight!!
+        return _twoLocksIntertwinedStarsDark!!
     }
 
-private var _twoPadlocksIntertwinedStarsLight: ImageVector? = null
+private var _twoLocksIntertwinedStarsDark: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
-    val imageVector = AppIllus.TwoPadlocksIntertwinedStarsLight
+    val imageVector = AppIllus.TwoLocksIntertwinedStarsDark
     Box {
         Image(
             imageVector = imageVector,
