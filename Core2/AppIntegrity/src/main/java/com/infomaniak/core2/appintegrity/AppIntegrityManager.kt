@@ -23,6 +23,10 @@ import android.util.Log
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.IntegrityTokenRequest
 import com.google.android.play.core.integrity.StandardIntegrityManager.*
+import com.infomaniak.core2.appintegrity.exceptions.NetworkException
+import com.infomaniak.sentry.SentryLog
+import io.sentry.Sentry
+import io.sentry.SentryLevel
 import java.util.UUID
 
 class AppIntegrityManager(private val appContext: Context) {
@@ -34,20 +38,20 @@ class AppIntegrityManager(private val appContext: Context) {
     private var challenge = ""
     private var challengeId = ""
 
-    fun warmUpTokenProvider(appCloudNumber: Long, onFailure: (Exception) -> Unit) {
+    fun warmUpTokenProvider(appCloudNumber: Long, onFailure: (Throwable) -> Unit) {
         val integrityManager = IntegrityManagerFactory.createStandard(appContext)
         integrityManager.prepareIntegrityToken(
             PrepareIntegrityTokenRequest.builder().setCloudProjectNumber(appCloudNumber).build()
         ).addOnSuccessListener { tokenProvider ->
             appIntegrityTokenProvider = tokenProvider
-            Log.i(APP_INTEGRITY_MANAGER_TAG, "warmUpTokenProvider: Success")
-        }.addOnFailureListener(onFailure)
+            SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "warmUpTokenProvider: Success")
+        }.addOnFailureListener { manageException(it, "Error during warmup", onFailure) }
     }
 
     fun requestIntegrityVerdictToken(
         requestHash: String,
         onSuccess: (String) -> Unit,
-        onFailure: (Exception?) -> Unit,
+        onFailure: (Throwable?) -> Unit,
         onNullTokenProvider: (String) -> Unit,
     ) {
         if (appIntegrityTokenProvider == null) {
@@ -55,18 +59,16 @@ class AppIntegrityManager(private val appContext: Context) {
         } else {
             appIntegrityTokenProvider?.request(StandardIntegrityTokenRequest.builder().setRequestHash(requestHash).build())
                 ?.addOnSuccessListener { response -> onSuccess(response.token()) }
-                ?.addOnFailureListener(onFailure)
+                ?.addOnFailureListener { manageException(it, "Error when requiring a standard integrity token", onFailure) }
         }
     }
 
-    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: (Exception?) -> Unit) {
-
+    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: (Throwable?) -> Unit) {
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
-        Log.e("TOTO", "challenge = $challenge / nonce = $nonce")
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
             ?.addOnSuccessListener { response -> onSuccess(response.token()) }
-            ?.addOnFailureListener(onFailure)
+            ?.addOnFailureListener { manageException(it, "Error when requiring a classic integrity token", onFailure) }
     }
 
     suspend fun getApiIntegrityVerdict(
@@ -85,22 +87,26 @@ class AppIntegrityManager(private val appContext: Context) {
             )
             apiResponse.data?.let(onSuccess)
         }.getOrElse {
-            it.printStackTrace()
-            onFailure(it)
+            manageException(it, "Error during Integrity check by API", onFailure)
         }
     }
 
     suspend fun getChallenge(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) = runCatching {
         generateChallengeId()
         val apiResponse = appIntegrityRepository.getChallenge(challengeId)
-        Log.d(APP_INTEGRITY_MANAGER_TAG, "challengeId : $challengeId / challenge: ${apiResponse.data}")
+        SentryLog.d(
+            tag = APP_INTEGRITY_MANAGER_TAG,
+            msg = "challengeId hash : ${challengeId.hashCode()} / challenge hash: ${apiResponse.data.hashCode()}",
+        )
         apiResponse.data?.let { challenge = it }
         onSuccess()
     }.getOrElse {
-        it.printStackTrace()
-        onFailure(it)
+        manageException(it, "Error fetching challenge", onFailure)
     }
 
+    /**
+     *  Only used to test App Integrity in Apps before their real backend implementation
+     */
     suspend fun callDemoRoute(mobileToken: String) {
         runCatching {
             val apiResponse = appIntegrityRepository.demo(mobileToken)
@@ -117,6 +123,17 @@ class AppIntegrityManager(private val appContext: Context) {
 
     private fun generateChallengeId() {
         challengeId = UUID.randomUUID().toString()
+    }
+
+    private fun manageException(exception: Throwable, errorMessage: String, onFailure: (Throwable) -> Unit) {
+        if (exception !is NetworkException) {
+            Sentry.captureMessage(errorMessage, SentryLevel.ERROR) { scope ->
+                scope.setTag("exception", exception.message.toString())
+                scope.setExtra("stacktrace", exception.printStackTrace().toString())
+            }
+        }
+        exception.printStackTrace()
+        onFailure(exception)
     }
 
     companion object {
