@@ -62,7 +62,7 @@ fun SwissTransferInputChip(
     var enabled by remember { mutableStateOf(false) }
 
     InputChip(
-        modifier = modifier,
+        modifier = modifier.widthIn(min = Dimens.InputChipMinWidth),
         selected = enabled,
         onClick = {
             onDismiss()
@@ -82,7 +82,7 @@ fun SwissTransferInputChip(
         trailingIcon = {
             IconButton(modifier = Modifier.size(Dimens.IconSize), onClick = {}) {
                 Icon(
-                    modifier = Modifier.size(Dimens.MiniIconSize),
+                    modifier = Modifier.size(Dimens.MicroIconSize),
                     imageVector = AppImages.AppIcons.CrossThick,
                     contentDescription = "Localized description", // TODO
                 )
