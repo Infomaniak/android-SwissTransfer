@@ -132,9 +132,9 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun DetailPane(
-navigator: ThreePaneScaffoldNavigator<DestinationContent>, 
-hasTransfer: Boolean, 
-navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    hasTransfer: Boolean,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
 
     val destinationContent = navigator.safeCurrentContent()

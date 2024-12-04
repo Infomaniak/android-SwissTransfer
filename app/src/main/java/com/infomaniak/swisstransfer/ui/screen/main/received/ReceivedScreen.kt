@@ -35,6 +35,8 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
@@ -43,7 +45,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
-import java.util.Date
 
 @Composable
 fun ReceivedScreen(
