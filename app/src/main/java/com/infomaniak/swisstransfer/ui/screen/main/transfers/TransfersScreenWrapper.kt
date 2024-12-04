@@ -50,8 +50,8 @@ import kotlinx.parcelize.Parcelize
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(
-direction: TransferDirection,
-transferUuid: String? = null,
+	direction: TransferDirection,
+	transferUuid: String? = null,
     navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
