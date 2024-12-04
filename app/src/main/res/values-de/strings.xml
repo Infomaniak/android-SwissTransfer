@@ -23,7 +23,6 @@
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Auswahl herunterladen</string>
     <string name="buttonFinished">Beenden</string>
-    <string name="buttonNext">Weiter zu</string>
     <string name="buttonShare">Teilen</string>
     <string name="buttonStart">Starten</string>
     <string name="contentDescriptionButtonBack">Zurück</string>
@@ -32,7 +31,7 @@
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
-    <string name="downloadedTransferLabel">Heruntergeladene Übertragung : %d/%d</string>
+    <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
