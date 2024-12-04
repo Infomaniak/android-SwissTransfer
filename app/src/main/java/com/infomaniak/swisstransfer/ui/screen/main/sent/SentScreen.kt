@@ -45,10 +45,13 @@ fun SentScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
+    hasTransfer: (Boolean) -> Unit,
 ) {
 
     val transfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { transfers == null } }
+
+    hasTransfer(transfers?.isNotEmpty() == true)
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         transfersViewModel.fetchPendingTransfers()

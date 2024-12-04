@@ -24,13 +24,17 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
@@ -42,23 +46,31 @@ import kotlinx.parcelize.Parcelize
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(direction: TransferDirection) {
+    var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
+
     TwoPaneScaffold<DestinationContent>(
-        listPane = { ListPane(direction, navigator = this) },
-        detailPane = { DetailPane(navigator = this) },
+        listPane = { ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }) },
+        detailPane = { DetailPane(navigator = this, hasTransfer) },
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun ListPane(direction: TransferDirection, navigator: ThreePaneScaffoldNavigator<DestinationContent>) {
+private fun ListPane(
+    direction: TransferDirection,
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    hasTransfer: (Boolean) -> Unit
+) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
+            hasTransfer = hasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
+            hasTransfer = hasTransfer,
         )
     }
 }
@@ -78,12 +90,12 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>) {
+private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>, hasTransfer: Boolean) {
 
     val destinationContent = navigator.safeCurrentContent()
 
     if (destinationContent == null) {
-        NoSelectionEmptyState()
+        NoSelectionEmptyState(hasTransfer)
     } else {
         TransferDetailsScreen(
             transferUuid = destinationContent.transferUuid,
@@ -94,12 +106,18 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>
 }
 
 @Composable
-private fun NoSelectionEmptyState() {
+private fun NoSelectionEmptyState(hasTransfers: Boolean) {
+    val (titleRes, descriptionRes) = if (hasTransfers) {
+        R.string.noTransferSelectedTitle to R.string.noTransferSelectedDescription
+    } else {
+        null to null
+    }
+
     Surface {
         EmptyState(
-            icon = AppIllus.MascotSearching,
-            titleRes = R.string.noTransferSelectedTitle,
-            descriptionRes = R.string.noTransferSelectedDescription,
+            icon = AppIllus.MascotWithMagnifyingGlass,
+            titleRes = titleRes,
+            descriptionRes = descriptionRes
         )
     }
 }

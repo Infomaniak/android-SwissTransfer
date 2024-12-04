@@ -30,22 +30,27 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
+    hasTransfer: (Boolean) -> Unit,
 ) {
 
     val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { transfers == null } }
+
+    hasTransfer(transfers?.isNotEmpty() == true)
 
     if (!isLoading) {
         ReceivedScreen(
@@ -71,8 +76,9 @@ private fun ReceivedScreen(
         floatingActionButton = { ReceivedEmptyFab { areTransfersEmpty } },
     ) {
         if (areTransfersEmpty) {
+            val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
             EmptyState(
-                icon = AppIllus.MascotSearching,
+                icon = if (shouldDisplayIcon) AppIllus.MascotWithMagnifyingGlass else null,
                 titleRes = R.string.noTransferReceivedTitle,
                 descriptionRes = R.string.noTransferReceivedDescription,
             )

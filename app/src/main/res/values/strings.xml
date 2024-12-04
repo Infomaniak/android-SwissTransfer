@@ -50,6 +50,7 @@
     <string name="networkUnavailable">Waiting for network…</string>
     <string name="noFileDescription">Add up to 50 GB of files</string>
     <string name="noFileTitle">No file, no transfer!</string>
+    <string name="noSettingsSelectedDescription">Select a parameter to display it</string>
     <string name="noTransferReceivedDescription">All transfers you receive over the last 30 days will appear here.</string>
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>

@@ -17,18 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,8 +33,11 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.*
@@ -164,8 +162,11 @@ private fun DetailPane(
 
 @Composable
 private fun NoSelectionEmptyState() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Select a setting item", color = SwissTransferTheme.colors.secondaryTextColor)
+    Surface {
+        EmptyState(
+            icon = AppIllus.MascotWithMagnifyingGlass,
+            descriptionRes = R.string.noSettingsSelectedDescription
+        )
     }
 }
 

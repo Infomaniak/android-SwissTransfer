@@ -46,6 +46,7 @@
     <string name="networkUnavailable">Esperando la red…</string>
     <string name="noFileDescription">Añade hasta 50 GB de archivos</string>
     <string name="noFileTitle">Si no hay archivo, no hay transferencia.</string>
+    <string name="noSettingsSelectedDescription">Selecciona un parámetro para su visualización</string>
     <string name="noTransferReceivedDescription">Aquí aparecerán todas las transferencias recibidas en los últimos 30 días.</string>
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="noTransferSelectedDescription">Selecciona una transferencia o crea una nueva.</string>
