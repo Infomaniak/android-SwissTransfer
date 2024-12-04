@@ -17,5 +17,6 @@
   -->
 <resources>
     <string name="buttonCancel">Annuler</string>
+    <string name="buttonNext">Suivant</string>
     <string name="buttonRetry">Réessayer</string>
 </resources>
