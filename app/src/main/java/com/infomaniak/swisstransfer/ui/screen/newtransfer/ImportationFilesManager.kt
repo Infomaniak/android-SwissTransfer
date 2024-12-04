@@ -107,6 +107,7 @@ class ImportationFilesManager @Inject constructor(
                     fileSize = fileToImport.fileSizeInBytes,
                     mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
+                    path = null,
                 )
             )
         }
@@ -138,6 +139,7 @@ class ImportationFilesManager @Inject constructor(
                 fileSize = fileSizeInBytes,
                 mimeType = null,
                 localPath = localFile.toUri().toString(),
+                path = null,
             )
         }
     }

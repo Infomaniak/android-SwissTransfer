@@ -145,6 +145,7 @@ class ImportFilesViewModel @Inject constructor(
             recipientsEmails = emptyList(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
+                    override val path: String? = null
                     override val localPath: String = fileUi.localPath ?: ""
                     override val mimeType: String = fileUi.mimeType ?: ""
                     override val name: String = fileUi.fileName
