@@ -70,7 +70,7 @@ private fun ListPane(
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
-            hasTransfer = { hasTransfer(it) }
+            hasTransfer = hasTransfer,
         )
     }
 }
