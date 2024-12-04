@@ -1,0 +1,39 @@
+<!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2024 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <path
+        android:fillAlpha="0.5"
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M122.06,63.72C116.85,62.13 111.57,65.99 111.57,71.39V158.19L113.28,161.08L129.12,131.93C130.31,130.09 133.05,130.11 135.24,131.96C136,132.6 136.63,133.42 137.04,134.3L148.85,176.23L206.46,193.78C211.68,195.37 216.95,191.51 216.95,186.11V98.56C216.95,95.03 214.63,91.92 211.23,90.89L122.06,63.72Z"
+        android:strokeAlpha="0.5" />
+    <path
+        android:fillAlpha="0.7"
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M101.79,78.97C96.58,77.38 91.3,81.24 91.3,86.64V172.26L100.24,150.31C101.34,148.4 104.05,148.29 106.28,150.07C107.17,150.78 107.89,151.71 108.33,152.73L113.28,161.08L129.12,131.93C130.31,130.09 133.05,130.11 135.24,131.96C136,132.6 136.63,133.42 137.04,134.3L153.01,191.01C154.21,193.56 153.4,196.07 151.21,196.6C150.55,196.77 149.81,196.74 149.05,196.51L134.55,192.16L135.24,172.28L122.13,188.69L95.2,180.35C94.42,180.12 93.68,179.7 93.03,179.15C94.03,180.4 95.4,181.37 97.02,181.86L186.2,209.03C191.41,210.62 196.69,206.76 196.69,201.36V113.81C196.69,110.29 194.37,107.17 190.97,106.14L101.79,78.97Z"
+        android:strokeAlpha="0.7" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M81.53,94.22C76.31,92.63 71.04,96.49 71.04,101.89V189.44C71.04,192.96 73.36,196.08 76.76,197.11L165.93,224.28C171.15,225.87 176.42,222.01 176.42,216.61V129.06C176.42,125.54 174.1,122.42 170.7,121.39L81.53,94.22ZM137.04,134.3C136.63,133.42 136,132.6 135.24,131.96C133.05,130.11 130.31,130.09 129.12,131.93L113.28,161.08L108.33,152.73C107.89,151.71 107.17,150.78 106.28,150.07C104.05,148.29 101.34,148.4 100.24,150.31L91.16,172.61C90.85,173.14 90.69,173.78 90.69,174.48C90.69,176.98 92.71,179.61 95.2,180.35L122.13,188.69L135.24,172.28L134.55,192.16L149.05,196.51C149.81,196.74 150.55,196.77 151.21,196.6C153.4,196.06 154.21,193.56 153.01,191.01L137.04,134.3Z" />
+</vector>
