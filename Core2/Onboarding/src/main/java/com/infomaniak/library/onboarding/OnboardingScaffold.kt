@@ -49,9 +49,9 @@ fun OnboardingScaffold(
             val startPadding = paddingValues.calculateStartPadding(LocalLayoutDirection.current)
             val endPadding = paddingValues.calculateEndPadding(LocalLayoutDirection.current)
 
-            HorizontalPager(pagerState, modifier = Modifier.weight(1f)) {
+            HorizontalPager(pagerState, modifier = Modifier.weight(1f)) { pageIndex ->
                 OnboardingPageContent(
-                    page = onboardingPages[it],
+                    page = onboardingPages[pageIndex],
                     contentPadding = PaddingValues(
                         top = paddingValues.calculateTopPadding(),
                         start = startPadding,
@@ -83,7 +83,7 @@ private fun OnboardingPageContent(page: OnboardingPage, contentPadding: PaddingV
         contentAlignment = Alignment.Center,
     ) {
         Image(
-            page.background,
+            imageVector = page.background,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds,
@@ -122,7 +122,7 @@ private fun Preview() {
         viewportHeight = 24.0f,
     ).build()
 
-    val a = OnboardingPage(
+    val onboardingPage = OnboardingPage(
         background = imageVector,
         illustration = {
             Box(
@@ -138,7 +138,7 @@ private fun Preview() {
 
     OnboardingScaffold(
         pagerState = rememberPagerState { 3 },
-        onboardingPages = listOf(a, a, a),
+        onboardingPages = listOf(onboardingPage, onboardingPage, onboardingPage),
         bottomContent = {
             Box(
                 modifier = Modifier
