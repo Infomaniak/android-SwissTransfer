@@ -62,29 +62,6 @@ fun HighlightedText(
     angleDegrees: Double = ROTATION_ANGLE_DEGREE,
     isHighlighted: () -> Boolean,
 ) {
-    HighlightedTextCore(
-        templateRes,
-        argumentRes,
-        style,
-        modifier,
-        verticalPadding,
-        horizontalPadding,
-        angleDegrees,
-        isHighlighted,
-    )
-}
-
-@Composable
-private fun HighlightedTextCore(
-    templateRes: Int,
-    argumentRes: Int,
-    style: TextStyle,
-    modifier: Modifier,
-    verticalPadding: Float,
-    horizontalPadding: Float,
-    angleDegrees: Double,
-    isHighlighted: () -> Boolean,
-) {
     val template = stringResource(templateRes)
     val argument = stringResource(argumentRes)
     val text = String.format(template, argument)
