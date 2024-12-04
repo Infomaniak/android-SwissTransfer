@@ -37,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import com.infomaniak.core2.R as RCore2
 
 private const val BUTTON_ANIM_DURATION = 300
 private const val BUTTON_ANIM_DELAY = BUTTON_ANIM_DURATION / 2
@@ -83,12 +84,12 @@ fun AnimatedOnboardingButton(isExpanded: () -> Boolean, onClick: () -> Unit) {
             Icon(
                 modifier = Modifier.alpha(arrowVisibility),
                 imageVector = AppImages.AppIcons.ArrowRight,
-                contentDescription = null
+                contentDescription = stringResource(RCore2.string.buttonNext),
             )
             Text(
                 modifier = Modifier.alpha(textVisibility),
                 text = stringResource(id = R.string.buttonStart),
-                style = SwissTransferTheme.typography.bodyMedium
+                style = SwissTransferTheme.typography.bodyMedium,
             )
         }
     }
