@@ -131,12 +131,12 @@ private fun TransferDetailsScreen(
                         BottomBarItem.PASSWORD -> showPasswordBottomSheet = true
                         BottomBarItem.DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
-                            isMultiselectOn = true
+                            // isMultiselectOn = true // Disabled for now because it's not the correct spot to do this
                         }
                         BottomBarItem.MULTISELECT_DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
-                            clearCheckedFiles()
-                            isMultiselectOn = false
+                            // clearCheckedFiles() // Disabled for now because it's not the correct spot to do this
+                            // isMultiselectOn = false // Disabled for now because it's not the correct spot to do this
                         }
                     }
                 },

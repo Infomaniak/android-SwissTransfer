@@ -55,20 +55,6 @@ fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) 
                 )
             }
         } else {
-            // TODO: Temporary code to be able to test the view, while waiting real Transfers data
-            // AsyncImage(
-            //     model = ImageRequest.Builder(LocalContext.current)
-            //         .data(randomTestImageUrl()) // TODO: Use the `fileUi.localPath` (probably?) to generate file's preview instead of this hard-coded value
-            //         .crossfade(true)
-            //         .build(),
-            //     contentDescription = null,
-            //     contentScale = ContentScale.Crop,
-            //     onError = {}, // TODO ?
-            //     modifier = Modifier
-            //         .size(Margin.Giant)
-            //         .clip(CustomShapes.SMALL)
-            //         .background(SwissTransferTheme.colors.transferFilePreviewOverflow),
-            // )
             SmallFileItem(file = file, smallFileTileSize = SmallFileTileSize.SMALL)
         }
     }
