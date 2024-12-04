@@ -323,8 +323,9 @@ private fun SendButton(
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
     modifier: Modifier,
-    navigateToUploadProgress: () -> Unit,
+    checkIntegrityAndNavigateToUploadProgress: () -> Unit,
 ) {
+    var isCheckingAppIntegrity by remember { mutableStateOf(false) }
     val remainingFilesCount = filesToImportCount()
     val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
 
@@ -341,9 +342,13 @@ private fun SendButton(
         modifier = modifier,
         titleRes = R.string.transferSendButton,
         style = ButtonType.PRIMARY,
-        enabled = { importedFiles().isNotEmpty() && !isImporting },
+        showIndeterminateProgress = { isCheckingAppIntegrity },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && !isCheckingAppIntegrity },
         progress = progress,
-        onClick = navigateToUploadProgress,
+        onClick = {
+            isCheckingAppIntegrity = true
+            checkIntegrityAndNavigateToUploadProgress()
+        },
     )
 }
 
