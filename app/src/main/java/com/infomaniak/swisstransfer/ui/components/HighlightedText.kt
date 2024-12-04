@@ -75,31 +75,6 @@ fun HighlightedText(
 }
 
 @Composable
-fun HighlightedText(
-    modifier: Modifier = Modifier,
-    templateRes: Int,
-    argumentRes: Int,
-    style: TextStyle,
-    verticalPadding: Float = VERTICAL_PADDING,
-    horizontalPadding: Float = HORIZONTAL_PADDING,
-    angleDegrees: Double = ROTATION_ANGLE_DEGREE,
-) {
-    var isHighlighted by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(Unit) { isHighlighted = true }
-
-    HighlightedTextCore(
-        templateRes,
-        argumentRes,
-        style,
-        modifier,
-        verticalPadding,
-        horizontalPadding,
-        angleDegrees,
-        { isHighlighted },
-    )
-}
-
-@Composable
 private fun HighlightedTextCore(
     templateRes: Int,
     argumentRes: Int,
@@ -108,7 +83,7 @@ private fun HighlightedTextCore(
     verticalPadding: Float,
     horizontalPadding: Float,
     angleDegrees: Double,
-    isHighlighted: () -> Boolean
+    isHighlighted: () -> Boolean,
 ) {
     val template = stringResource(templateRes)
     val argument = stringResource(argumentRes)
@@ -259,12 +234,16 @@ private fun areOnDifferentLines(previousRect: Rect, currentRect: Rect) = previou
 @Composable
 private fun Preview() {
     SwissTransferTheme {
+        var isHighlighted by rememberSaveable { mutableStateOf(false) }
+        LaunchedEffect(Unit) { isHighlighted = true }
+
         Surface {
             Box(modifier = Modifier.padding(20.dp)) {
                 HighlightedText(
                     templateRes = R.string.uploadProgressTitleTemplate,
                     argumentRes = R.string.uploadProgressTitleArgument,
                     style = SwissTransferTheme.typography.bodyMedium,
+                    isHighlighted = { isHighlighted }
                 )
             }
         }
