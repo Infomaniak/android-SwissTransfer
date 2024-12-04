@@ -20,8 +20,11 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core2.FORMAT_DATE_SIMPLE
 import com.infomaniak.core2.format
+import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
@@ -29,29 +32,29 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import java.util.Date
 
 @Composable
 fun TransferExpiredBottomSheet(
-    isVisible: () -> Boolean,
-    expirationDate: () -> Date?,
-    downloadsLimit: () -> Int?,
+    expiredTransfer: () -> TransferUi?,
     onDeleteTransferClicked: () -> Unit,
     closeBottomSheet: () -> Unit,
 ) {
 
-    if (!isVisible()) return
+    val transfer = expiredTransfer() ?: return
 
-    val date = expirationDate()
-    val descriptionText = if (date != null) {
+    val descriptionText = if (transfer.expiresInDays < 0) {
         stringResource(
             R.string.transferExpiredDateReachedDescription,
-            date.format(FORMAT_DATE_SIMPLE),
+            transfer.expirationDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_SIMPLE),
         )
     } else {
-        stringResource(R.string.transferExpiredLimitReachedDescription, downloadsLimit()!!)
+        stringResource(
+            R.string.transferExpiredLimitReachedDescription,
+            transfer.downloadLimit,
+        )
     }
 
     SwissTransferBottomSheet(
@@ -61,7 +64,10 @@ fun TransferExpiredBottomSheet(
                 modifier = it,
                 titleRes = R.string.transferExpiredButton,
                 imageVector = AppIcons.Bin,
-                onClick = onDeleteTransferClicked,
+                onClick = {
+                    onDeleteTransferClicked()
+                    closeBottomSheet()
+                },
             )
         },
         imageVector = AppIllus.MascotDead.image(),
@@ -72,13 +78,11 @@ fun TransferExpiredBottomSheet(
 
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
     SwissTransferTheme {
         Surface {
             TransferExpiredBottomSheet(
-                isVisible = { true },
-                expirationDate = { Date() },
-                downloadsLimit = { 42 },
+                expiredTransfer = { transfers.first() },
                 onDeleteTransferClicked = {},
                 closeBottomSheet = {},
             )

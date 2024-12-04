@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -27,14 +26,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
-import java.util.Date
+import com.infomaniak.swisstransfer.ui.utils.isExpired
 
 @Composable
 fun TransfersListWithExpiredBottomSheet(
@@ -42,46 +40,30 @@ fun TransfersListWithExpiredBottomSheet(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
-    onSwiped: (String) -> Unit,
+    onDeleteTransfer: (String) -> Unit,
 ) {
 
-    var isExpirySheetVisible: Boolean by rememberSaveable { mutableStateOf(false) }
-    var expirationDate: Date? by rememberSaveable { mutableStateOf(null) }
-    var downloadsLimit: Int? by rememberSaveable { mutableStateOf(null) }
+    var expiredTransfer: TransferUi? by rememberSaveable { mutableStateOf(null) }
 
     TransferItemList(
         modifier = Modifier.padding(Margin.Medium),
         direction = direction,
         getSelectedTransferUuid = getSelectedTransferUuid,
         getTransfers = getTransfers,
-        onSwiped = onSwiped,
+        onSwiped = onDeleteTransfer,
         onClick = { transfer ->
-            when {
-                transfer.expiresInDays < 0 -> {
-                    isExpirySheetVisible = true
-                    expirationDate = transfer.expirationDateTimestamp.toDateFromSeconds()
-                }
-                transfer.downloadLeft == 0 -> {
-                    isExpirySheetVisible = true
-                    downloadsLimit = transfer.downloadLimit
-                }
-                else -> {
-                    navigateToDetails(transfer.uuid)
-                }
+            if (transfer.isExpired) {
+                expiredTransfer = transfer
+            } else {
+                navigateToDetails(transfer.uuid)
             }
         }
     )
 
     TransferExpiredBottomSheet(
-        isVisible = { isExpirySheetVisible },
-        expirationDate = { expirationDate },
-        downloadsLimit = { downloadsLimit },
-        onDeleteTransferClicked = { Log.d("TODO", "Delete expired Transfer") }, // TODO
-        closeBottomSheet = {
-            isExpirySheetVisible = false
-            expirationDate = null
-            downloadsLimit = null
-        },
+        expiredTransfer = { expiredTransfer },
+        onDeleteTransferClicked = { expiredTransfer?.uuid?.let(onDeleteTransfer) },
+        closeBottomSheet = { expiredTransfer = null },
     )
 }
 
@@ -95,7 +77,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { transfers },
-                onSwiped = {},
+                onDeleteTransfer = {},
             )
         }
     }
