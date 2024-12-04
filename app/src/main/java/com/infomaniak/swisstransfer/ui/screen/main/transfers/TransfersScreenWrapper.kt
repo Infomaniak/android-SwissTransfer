@@ -47,7 +47,7 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     navigateToFilesDetails: (folderUuid: String) -> Unit,
-    direction: TransferDirection
+    direction: TransferDirection,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
