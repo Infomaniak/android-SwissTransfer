@@ -57,8 +57,7 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
     // Start the highlighting of the text when the associated page is reached in the HorizontalPager
     LaunchedEffect(pagerState.currentPage) {
         val currentPage = Page.entries[pagerState.currentPage]
-        val setIsHighlighted = isHighlighted[currentPage]?.component2()
-        setIsHighlighted?.invoke(true)
+        isHighlighted[currentPage]?.value = true
     }
 
     BackHandler(pagerState.currentPage > 0) {
