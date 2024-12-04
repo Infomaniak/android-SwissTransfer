@@ -67,19 +67,17 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
     }
 
     val onboardingPages = buildList {
-        Page.entries.forEach { page ->
-            add(page.toOnboardingPage(isHighlighted))
-        }
+        Page.entries.forEach { page -> add(page.toOnboardingPage(isHighlighted)) }
     }
 
     OnboardingScaffold(
         pagerState = pagerState,
         onboardingPages = onboardingPages,
-        bottomContent = {
+        bottomContent = { paddingValues ->
             BottomContent(
                 modifier = Modifier
-                    .padding(it)
-                    .consumeWindowInsets(it),
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
                 isLastPage = { isLastPage },
                 startMainActivity = goToMainActivity,
                 goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
@@ -91,7 +89,7 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
 @Composable
 private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>) = OnboardingPage(
     background = background.image(),
-    illustration = { Illustration(illustration) },
+    illustration = { Image(illustration.image(), contentDescription = null) },
     text = {
         TitleAndDescription(
             page = this,
@@ -99,11 +97,6 @@ private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>
         )
     }
 )
-
-@Composable
-private fun Illustration(illustration: ThemedImage) {
-    Image(illustration.image(), contentDescription = null)
-}
 
 @Composable
 private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
@@ -132,7 +125,7 @@ private fun BottomContent(
     modifier: Modifier = Modifier,
     isLastPage: () -> Boolean,
     startMainActivity: () -> Unit,
-    goToNextPage: () -> Unit
+    goToNextPage: () -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -146,6 +139,8 @@ private fun BottomContent(
         )
     }
 }
+
+private const val HIGHLIGHT_ANGLE = 3.0
 
 private enum class Page(
     val background: ThemedImage,
@@ -161,7 +156,7 @@ private enum class Page(
         titleRes = R.string.onboardingStorageTitle,
         subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
-        highlightAngleDegree = -3.0,
+        highlightAngleDegree = -HIGHLIGHT_ANGLE,
     ),
     EXPIRATION(
         background = AppIllus.RadialGradientCornerTopLeft,
@@ -169,7 +164,7 @@ private enum class Page(
         titleRes = R.string.onboardingExpirationTitle,
         subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
-        highlightAngleDegree = -3.0,
+        highlightAngleDegree = -HIGHLIGHT_ANGLE,
     ),
     PASSWORD(
         background = AppIllus.RadialGradientCornerTopRight,
@@ -177,7 +172,7 @@ private enum class Page(
         titleRes = R.string.onboardingPasswordTitle,
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
-        highlightAngleDegree = 3.0,
+        highlightAngleDegree = HIGHLIGHT_ANGLE,
     ),
 }
 
