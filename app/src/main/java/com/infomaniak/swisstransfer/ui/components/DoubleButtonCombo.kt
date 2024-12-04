@@ -99,7 +99,7 @@ private fun SingleButton(button: @Composable (Modifier) -> Unit) {
         button(
             Modifier
                 .fillMaxWidth()
-                .padding(bottom = Margin.Small, start = Margin.Medium, end = Margin.Medium),
+                .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
         )
     }
 }

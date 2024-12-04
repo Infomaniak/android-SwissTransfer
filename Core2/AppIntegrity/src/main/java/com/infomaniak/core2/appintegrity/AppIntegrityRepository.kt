@@ -17,6 +17,9 @@
  */
 package com.infomaniak.core2.appintegrity
 
+import com.infomaniak.core2.appintegrity.exceptions.ApiException
+import com.infomaniak.core2.appintegrity.exceptions.NetworkException
+import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
 import com.infomaniak.core2.appintegrity.exceptions.UnknownException
 import com.infomaniak.core2.appintegrity.models.ApiResponse
 import io.ktor.client.call.body
@@ -65,8 +68,12 @@ internal class AppIntegrityRepository {
         }.decode<R>()
     }
 
-
     private suspend inline fun <reified R> HttpResponse.decode(): R {
-        return runCatching { body<R>() }.getOrElse { throw UnknownException(it) }
+        return runCatching { body<R>() }.getOrElse { exception ->
+            when (exception) {
+                is ApiException, is NetworkException, is UnexpectedApiErrorFormatException -> throw exception
+                else -> throw UnknownException(exception)
+            }
+        }
     }
 }

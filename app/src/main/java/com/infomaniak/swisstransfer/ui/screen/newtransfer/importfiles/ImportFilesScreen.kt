@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -83,10 +82,7 @@ fun ImportFilesScreen(
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
     HandleIntegrityCheckResult(
         getIntegrityCheckResult = { integrityCheckResult },
-        sendTransfer = {
-            Log.e("TOTO", "ImportFilesScreen: sendTransfer")
-            importFilesViewModel.sendTransfer()
-        },
+        sendTransfer = { importFilesViewModel.sendTransfer() },
         errorMessage = stringResource(R.string.uploadErrorDescription),
         snackbarHostState = { snackbarHostState },
     )
@@ -157,8 +153,8 @@ private fun HandleIntegrityCheckResult(
     snackbarHostState: () -> SnackbarHostState,
 ) {
     LaunchedEffect(getIntegrityCheckResult() != null) {
-        getIntegrityCheckResult()?.let {
-            if (it) sendTransfer() else snackbarHostState().showSnackbar(errorMessage)
+        getIntegrityCheckResult()?.let { isSuccess ->
+            if (isSuccess) sendTransfer() else snackbarHostState().showSnackbar(errorMessage)
         }
     }
 }
@@ -217,7 +213,7 @@ private fun ImportFilesScreen(
         content = {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = Margin.Medium, vertical = Margin.Small)
+                    .padding(horizontal = Margin.Medium, vertical = Margin.Large)
                     .verticalScroll(rememberScrollState()),
             ) {
                 ImportFilesTitle(titleRes = R.string.myFilesTitle)
