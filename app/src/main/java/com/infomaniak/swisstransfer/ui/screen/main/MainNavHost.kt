@@ -76,7 +76,6 @@ fun MainNavHost(
                 withFileSize = false,
                 withSpaceLeft = false,
                 withFileDelete = false,
-                onCloseClicked = {},
             )
         }
     }

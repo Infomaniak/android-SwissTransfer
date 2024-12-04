@@ -126,7 +126,6 @@ fun NewTransferNavHost(
                 withFileSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,
-                onCloseClicked = {},
                 navigateBack = { navController.popBackStack() },
             )
         }

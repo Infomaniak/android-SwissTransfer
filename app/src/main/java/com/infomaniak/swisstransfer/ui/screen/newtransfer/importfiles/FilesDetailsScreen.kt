@@ -45,7 +45,6 @@ fun FilesDetailsScreen(
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
-    onCloseClicked: (() -> Unit),
     navigateBack: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
@@ -60,8 +59,6 @@ fun FilesDetailsScreen(
             withFileSize = withFileSize,
             withSpaceLeft = withSpaceLeft,
             onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
-            onCloseClicked = onCloseClicked,
-            navigateBack = navigateBack,
         )
     }
 }
@@ -77,21 +74,13 @@ private fun getOnFileRemoveCallback(
 
 @Composable
 private fun FilesDetailsScreen(
-    title: String = "",
     files: List<FileUi>,
     navigateToDetails: (String) -> Unit,
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
-    onCloseClicked: (() -> Unit),
-    navigateBack: (() -> Unit),
 ) {
     Column {
-        SwissTransferTopAppBar(
-            title = title,
-            navigationMenu = TopAppBarButton.backButton { navigateBack() },
-            TopAppBarButton.closeButton { onCloseClicked() },
-        )
 
         FilesSize(files, withFileSize = withFileSize, withSpaceLeft)
         FileItemList(
@@ -116,14 +105,11 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
     SwissTransferTheme {
         Surface {
             FilesDetailsScreen(
-                title = "Title",
                 files = files,
                 navigateToDetails = { _ -> },
                 withFileSize = true,
                 withSpaceLeft = true,
-                onCloseClicked = {},
                 onFileRemoved = {},
-                navigateBack = {},
             )
         }
     }
