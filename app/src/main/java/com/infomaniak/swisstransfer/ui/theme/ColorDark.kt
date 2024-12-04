@@ -38,8 +38,10 @@ private const val specific4 = 0xFFEAC35D
 private const val specific5 = 0xFF49DEFD
 
 // Extra palette
+private const val grey = 0xFFCFCFCF
 private const val elephant = 0xFF666666
 private const val white = 0xFFFFFFFF
+private const val black = 0xFF000000
 private const val black_translucent = 0x80000000
 
 private const val warning = 0xFFFFAA4C
@@ -95,4 +97,7 @@ val CustomDarkColorScheme = CustomColorScheme(
     transferListStroke = Color(green_main),
     highlightedColor = Color(green_dark),
     warning = Color(warning),
+    swipeDefault = Color(grey),
+    swipeDelete = Color(error),
+    swipeIcon = Color(black),
 )

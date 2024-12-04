@@ -59,6 +59,16 @@ class TransfersViewModel @Inject constructor(
         }
     }
 
+    fun deleteTransfer(transferUuid: String) {
+        viewModelScope.launch(ioDispatcher) {
+            runCatching {
+                transferManager.deleteTransfer(transferUuid)
+            }.onFailure {
+                SentryLog.e(TAG, "Failure for deleteTransfer", it)
+            }
+        }
+    }
+
     companion object {
         private val TAG = TransfersViewModel::class.java.simpleName
     }

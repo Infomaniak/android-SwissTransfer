@@ -52,6 +52,7 @@ fun ReceivedScreen(
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             getTransfers = { transfers!! },
+            onSwiped = transfersViewModel::deleteTransfer,
         )
     }
 }
@@ -61,6 +62,7 @@ private fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
+    onSwiped: (String) -> Unit,
 ) {
 
     val areTransfersEmpty by remember { derivedStateOf { getTransfers().isEmpty() } }
@@ -80,6 +82,7 @@ private fun ReceivedScreen(
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferUuid = getSelectedTransferUuid,
                 getTransfers = getTransfers,
+                onSwiped = onSwiped,
             )
         }
     }
@@ -94,6 +97,7 @@ private fun Preview() {
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { emptyList() },
+                onSwiped = {},
             )
         }
     }

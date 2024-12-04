@@ -23,6 +23,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,6 +49,7 @@ import com.infomaniak.swisstransfer.ui.utils.isExpired
 @Composable
 fun TransferItem(
     transfer: TransferUi,
+    shape: Shape = CustomShapes.SMALL,
     isSelected: () -> Boolean,
     onClick: () -> Unit,
 ) {
@@ -69,7 +71,7 @@ fun TransferItem(
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
-        shape = CustomShapes.SMALL,
+        shape = shape,
         border = border,
     ) {
         Row(

@@ -90,6 +90,9 @@ data class CustomColorScheme(
     val transferListStroke: Color = Color.Unspecified,
     val highlightedColor: Color = Color.Unspecified,
     val warning: Color = Color.Unspecified,
+    val swipeDefault: Color = Color.Unspecified,
+    val swipeDelete: Color = Color.Unspecified,
+    val swipeIcon: Color = Color.Unspecified,
 )
 
 private val Shapes = Shapes(

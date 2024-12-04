@@ -96,4 +96,7 @@ val CustomLightColorScheme = CustomColorScheme(
     transferListStroke = Color(green_dark),
     highlightedColor = Color(green_secondary),
     warning = Color(warning),
+    swipeDefault = Color(shark),
+    swipeDelete = Color(error),
+    swipeIcon = Color(white),
 )

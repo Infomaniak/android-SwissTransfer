@@ -42,6 +42,7 @@ fun TransfersListWithExpiredBottomSheet(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
+    onSwiped: (String) -> Unit,
 ) {
 
     var isExpirySheetVisible: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -53,6 +54,7 @@ fun TransfersListWithExpiredBottomSheet(
         direction = direction,
         getSelectedTransferUuid = getSelectedTransferUuid,
         getTransfers = getTransfers,
+        onSwiped = onSwiped,
         onClick = { transfer ->
             when {
                 transfer.expiresInDays < 0 -> {
@@ -93,6 +95,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { transfers },
+                onSwiped = {},
             )
         }
     }

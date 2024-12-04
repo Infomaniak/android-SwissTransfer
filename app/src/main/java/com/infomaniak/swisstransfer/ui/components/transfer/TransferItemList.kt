@@ -29,7 +29,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -40,10 +42,12 @@ fun TransferItemList(
     direction: TransferDirection,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
+    onSwiped: (String) -> Unit,
     onClick: (TransferUi) -> Unit,
 ) {
 
     val selectedTransferUuid = getSelectedTransferUuid()
+    val itemShape = CustomShapes.SMALL
     val titleRes = when (direction) {
         TransferDirection.SENT -> R.string.sentFilesTitle
         TransferDirection.RECEIVED -> R.string.receivedFilesTitle
@@ -63,11 +67,17 @@ fun TransferItemList(
             contentType = { getTransfers()[it] },
             itemContent = {
                 val transfer = getTransfers()[it]
-                TransferItem(
-                    transfer = transfer,
-                    isSelected = { selectedTransferUuid == transfer.uuid },
-                    onClick = { onClick(transfer) },
-                )
+                SwipeToDismissComponent(
+                    contentShape = itemShape,
+                    onSwiped = { onSwiped(transfer.uuid) },
+                ) {
+                    TransferItem(
+                        transfer = transfer,
+                        shape = itemShape,
+                        isSelected = { selectedTransferUuid == transfer.uuid },
+                        onClick = { onClick(transfer) },
+                    )
+                }
             },
         )
     }
@@ -82,6 +92,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 direction = TransferDirection.SENT,
                 getSelectedTransferUuid = { null },
                 getTransfers = { transfers },
+                onSwiped = {},
                 onClick = {},
             )
         }
