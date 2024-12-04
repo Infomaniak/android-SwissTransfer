@@ -110,7 +110,6 @@ data class OnboardingPage(
     val text: @Composable () -> Unit,
 )
 
-
 @Preview
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable

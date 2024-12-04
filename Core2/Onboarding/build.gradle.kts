@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(core2.androidx.core.ktx)
     implementation(core2.androidx.material3.android)
     implementation(core2.androidx.runtime.android)
