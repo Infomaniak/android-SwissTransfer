@@ -4,12 +4,16 @@ plugins {
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
+val sharedCompileSdk: Int by rootProject.extra
+val sharedMinSdk: Int by rootProject.extra
+val sharedJavaVersion: JavaVersion by rootProject.extra
+
 android {
     namespace = "com.infomaniak.core2.appintegrity"
-    compileSdk = 34
+    compileSdk = sharedCompileSdk
 
     defaultConfig {
-        minSdk = 21
+        minSdk = sharedMinSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -21,12 +25,14 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = sharedJavaVersion
+        targetCompatibility = sharedJavaVersion
     }
+
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = sharedJavaVersion.toString()
     }
 }
 
