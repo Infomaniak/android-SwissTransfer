@@ -62,7 +62,7 @@ fun TransfersScreenWrapper(
 private fun ListPane(
     direction: TransferDirection,
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: (Boolean) -> Unit
+    hasTransfer: (Boolean) -> Unit,
 ) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
@@ -95,6 +95,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 @Composable
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    hasTransfer: Boolean,
     navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
 
