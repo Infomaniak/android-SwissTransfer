@@ -80,7 +80,9 @@ private fun computeIndicatorProperties(
 }
 
 private fun computePageProgresses(index: Int, pagerState: PagerState): Pair<Float, Float> {
-    // Extended offset fraction of the current page relative to the screen
+    // Extended offset fraction of the current page relative to the screen. It's as if pagerState.currentPageOffsetFraction went
+    // beyond -0.5 up to -1 and beyond 0.5 up to 1
+    //
     // Range: [-1, 1]
     //  0: Page is centered on the screen
     // -1: Page is completely off-screen to the left
@@ -100,10 +102,10 @@ private fun computePageProgresses(index: Int, pagerState: PagerState): Pair<Floa
         else -> 1f
     }
 
-    // Progress of the page visibility
+    // Progress of the page visibility i.e. what fraction of the page is currently visible
     // Range: [0, 1]
     //  0: Page is completely off-screen
-    //  1: Page is fully centered on the screen
+    //  1: Page is fully centered on the screen and therefore fully visible
     val pageVisibilityProgress = 1 - abs(extendedCurrentPageOffsetFraction)
 
     return extendedCurrentPageOffsetFraction to pageVisibilityProgress
