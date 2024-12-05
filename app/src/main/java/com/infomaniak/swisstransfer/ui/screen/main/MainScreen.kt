@@ -45,14 +45,14 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        largeWindowTopAppBar = {
+        windowTopAppBar = { isWindowLarge ->
             // This is temporary to fix an issue with the animation when displaying the FilesDetailsScreen
             if (currentDestination is MainNavigation.FilesDetailsDestination) {
                 SwissTransferTopAppBar(
                     navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
                     actionMenus = arrayOf(TopAppBarButton.closeButton { }),
                 )
-            } else {
+            } else if (isWindowLarge) {
                 BrandTopAppBar()
             }
         },

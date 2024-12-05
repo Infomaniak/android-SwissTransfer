@@ -18,16 +18,21 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.FilesSize
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
@@ -57,6 +62,7 @@ fun FilesDetailsScreen(
             withFileSize = withFileSize,
             withSpaceLeft = withSpaceLeft,
             onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+            navigateBack = navigateBack,
         )
     }
 }
@@ -77,9 +83,65 @@ private fun FilesDetailsScreen(
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
+    navigateBack: (() -> Unit),
 ) {
-    Column {
+    Scaffold(
+        topBar = {
+            SwissTransferTopAppBar(
+                navigationMenu = TopAppBarButton.backButton { navigateBack() },
+                actionMenus = arrayOf(TopAppBarButton.closeButton { }), // TODO Implement this later
+            )
+        }
+    ) { paddingValues ->
+        FilesDetailsComponent(
+            paddingValues = paddingValues,
+            files = files,
+            navigateToDetails = navigateToDetails,
+            withFileSize = withFileSize,
+            withSpaceLeft = withSpaceLeft,
+            onFileRemoved = onFileRemoved
+        )
+    }
+}
 
+@Composable
+fun FilesDetailsComponent(
+    paddingValues: PaddingValues = PaddingValues(0.dp),
+    importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
+    folderUuid: String? = null,
+    navigateToDetails: (String) -> Unit,
+    withFileSize: Boolean,
+    withSpaceLeft: Boolean,
+    withFileDelete: Boolean,
+    navigateBack: (() -> Unit),
+) {
+    // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
+    val files by importFilesViewModel.getFiles(folderUuid).collectAsStateWithLifecycle(null)
+
+    if (files?.isEmpty() == true) navigateBack()
+
+    files?.let {
+        FilesDetailsComponent(
+            paddingValues = paddingValues,
+            files = it,
+            navigateToDetails = navigateToDetails,
+            withFileSize = withFileSize,
+            withSpaceLeft = withSpaceLeft,
+            onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+        )
+    }
+}
+
+@Composable
+fun FilesDetailsComponent(
+    paddingValues: PaddingValues,
+    files: List<FileUi>,
+    navigateToDetails: (String) -> Unit,
+    withFileSize: Boolean,
+    withSpaceLeft: Boolean,
+    onFileRemoved: ((uuid: String) -> Unit)? = null,
+) {
+    Column(modifier = Modifier.padding(paddingValues)) {
         FilesSize(files, withFileSize = withFileSize, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
@@ -90,7 +152,6 @@ private fun FilesDetailsScreen(
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
             onClick = {
-                //TODO Check here if the clicked file is a folder before navigating
                 navigateToDetails(it)
             }
         )
@@ -108,6 +169,7 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},
+                navigateBack = {},
             )
         }
     }
