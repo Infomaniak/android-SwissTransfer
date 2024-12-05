@@ -17,16 +17,19 @@
  */
 package com.infomaniak.core2.appintegrity
 
+import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.MOBILE_TOKEN_HEADER
 import com.infomaniak.core2.appintegrity.exceptions.ApiException
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
 import com.infomaniak.core2.appintegrity.exceptions.UnknownException
 import com.infomaniak.core2.appintegrity.models.ApiResponse
 import io.ktor.client.call.body
+import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.HeadersBuilder
 import io.ktor.http.Url
 import io.ktor.http.contentType
 
@@ -57,13 +60,21 @@ internal class AppIntegrityRepository {
     }
 
     suspend fun demo(mobileToken: String): ApiResponse<String> {
-        val body = mapOf("mobile_token" to mobileToken)
-        return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.demo), data = body)
+        return post<ApiResponse<String>>(
+            url = Url(AppIntegrityRoutes.demo),
+            data = mapOf<String, String>(),
+            appendHeaders = { append(MOBILE_TOKEN_HEADER, mobileToken) }
+        )
     }
 
-    private suspend inline fun <reified R> post(url: Url, data: Any?): R {
+    private suspend inline fun <reified R> post(
+        url: Url,
+        data: Any?,
+        crossinline appendHeaders: HeadersBuilder.() -> Unit = {},
+    ): R {
         return apiClientProvider.httpClient.post(url) {
             contentType(ContentType.Application.Json)
+            headers { appendHeaders() }
             setBody(data)
         }.decode<R>()
     }
