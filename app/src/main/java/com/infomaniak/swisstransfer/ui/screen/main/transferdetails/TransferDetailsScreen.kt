@@ -244,7 +244,8 @@ private fun BottomBar(
     ) {
         HorizontalDivider()
         Row(
-            modifier = Modifier.padding(horizontal = Margin.Medium),
+            modifier = Modifier.padding(horizontal = Margin.Micro),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             if (isMultiselectOn()) {
                 BottomBarButton(BottomBarItem.MULTISELECT_DOWNLOAD, onClick)
@@ -253,18 +254,11 @@ private fun BottomBar(
 
                 when (direction) {
                     TransferDirection.SENT -> {
-                        Spacer(Modifier.width(Margin.Medium))
                         BottomBarButton(BottomBarItem.QR_CODE, onClick)
 
-                        if (shouldShowPassword()) {
-                            Spacer(Modifier.width(Margin.Medium))
-                            BottomBarButton(BottomBarItem.PASSWORD, onClick)
-                        }
+                        if (shouldShowPassword()) BottomBarButton(BottomBarItem.PASSWORD, onClick)
                     }
-                    TransferDirection.RECEIVED -> {
-                        Spacer(Modifier.width(Margin.Medium))
-                        BottomBarButton(BottomBarItem.DOWNLOAD, onClick)
-                    }
+                    TransferDirection.RECEIVED -> BottomBarButton(BottomBarItem.DOWNLOAD, onClick)
                 }
             }
         }
