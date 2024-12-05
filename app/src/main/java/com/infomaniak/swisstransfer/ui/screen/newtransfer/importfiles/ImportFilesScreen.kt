@@ -241,12 +241,21 @@ private fun ColumnScope.EmailAddressesTextFields(
 ) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
+
+            val isError = transferAuthorEmail.get().isNotEmpty() && !transferAuthorEmail.get().isEmail()
+            val supportingText: @Composable (() -> Unit)? = if (isError) {
+                { Text(stringResource(R.string.invalidAddress)) }
+            } else {
+                null
+            }
+
             SwissTransferTextField(
                 modifier = modifier,
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
                 initialValue = transferAuthorEmail.get(),
                 keyboardType = KeyboardType.Email,
-                errorMessage = { if (transferAuthorEmail.get().isEmail()) null else stringResource(R.string.invalidAddress) },
+                isError = isError,
+                supportingText = supportingText,
                 onValueChange = transferAuthorEmail.set,
             )
             Spacer(Modifier.height(Margin.Medium))
