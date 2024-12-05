@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
@@ -53,15 +53,11 @@ fun BottomStickyButtonScaffold(
                 .padding(contentPaddings),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1.0f),
-                content = content,
-            )
+            Box(modifier = Modifier.weight(1.0f), content = content)
             DoubleButtonCombo(
-                modifier = Modifier.padding(vertical = Margin.Small),
+                modifier = Modifier.padding(vertical = Dimens.ButtonComboVerticalPadding),
                 topButton = topButton,
-                bottomButton = bottomButton
+                bottomButton = bottomButton,
             )
         }
     }

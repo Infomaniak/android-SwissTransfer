@@ -30,4 +30,5 @@ object Dimens {
     val SmallIconSize = 16.dp
     val IconSize = 24.dp
     val BorderWidth = 1.dp
+    val ButtonComboVerticalPadding = Margin.Small
 }
