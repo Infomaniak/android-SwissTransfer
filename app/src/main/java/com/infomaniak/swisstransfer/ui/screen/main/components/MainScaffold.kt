@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    largeWindowTopAppBar: @Composable () -> Unit = {},
+    windowTopAppBar: @Composable (isWindowLarge: Boolean) -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     val navType by rememberNavType(currentDestination)
@@ -50,7 +50,7 @@ fun MainScaffold(
         navType = navType,
         currentDestination = currentDestination,
         navigateToSelectedItem = navController::navigateToSelectedItem,
-        largeWindowTopAppBar = largeWindowTopAppBar,
+        windowTopAppBar = windowTopAppBar,
         content = content
     )
 }
@@ -60,13 +60,13 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    largeWindowTopAppBar: @Composable () -> Unit,
+    windowTopAppBar: @Composable (isWindowLarge: Boolean) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     Column {
-        if (windowAdaptiveInfo.isWindowLarge()) largeWindowTopAppBar()
+        windowTopAppBar(windowAdaptiveInfo.isWindowLarge())
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
             if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
@@ -140,7 +140,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            largeWindowTopAppBar = { BrandTopAppBar() },
+            windowTopAppBar = { isWindowLarge -> if (isWindowLarge) BrandTopAppBar() },
             content = {},
         )
     }
@@ -154,7 +154,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            largeWindowTopAppBar = { BrandTopAppBar() },
+            windowTopAppBar = { isWindowLarge -> if (isWindowLarge) BrandTopAppBar() },
             content = {},
         )
     }

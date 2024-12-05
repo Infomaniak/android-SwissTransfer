@@ -82,4 +82,13 @@ val filesPreviewData = listOf(
         localPath = null,
         path = "",
     ),
+    FileUi(
+        uid = UUID.randomUUID().toString(),
+        fileName = "Secret foldert",
+        isFolder = true,
+        fileSize = 57_689_032L,
+        mimeType = null,
+        localPath = null,
+        path = "",
+    ),
 )
