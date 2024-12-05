@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
@@ -32,7 +31,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressS
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
 
 @Composable
-fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit, appIntegrityManager: AppIntegrityManager) {
+fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit) {
 
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
@@ -41,7 +40,6 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadProgress = { transferType, totalSize ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
-                appIntegrityManager = appIntegrityManager
             )
         }
         composable<ValidateUserEmailDestination> {

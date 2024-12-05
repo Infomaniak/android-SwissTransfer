@@ -62,8 +62,10 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
-    appIntegrityManager: AppIntegrityManager,
 ) {
+    val appContext = LocalContext.current.applicationContext
+    val appIntegrityManager by lazy { AppIntegrityManager(appContext) }
+
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by importFilesViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()

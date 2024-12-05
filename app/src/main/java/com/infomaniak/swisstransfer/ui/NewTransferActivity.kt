@@ -21,22 +21,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
-
-    private val appIntegrityManager by lazy { AppIntegrityManager(appContext = this) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SwissTransferTheme {
-                NewTransferScreen(closeActivity = { finish() }, appIntegrityManager)
+                NewTransferScreen(closeActivity = { finish() })
             }
         }
     }
