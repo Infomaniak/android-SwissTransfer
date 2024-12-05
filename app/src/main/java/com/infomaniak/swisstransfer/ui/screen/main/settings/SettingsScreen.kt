@@ -48,6 +48,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import android.os.Build
 
 @Composable
 fun SettingsScreen(
@@ -73,14 +74,18 @@ fun SettingsScreen(
             )
 
             SettingTitle(R.string.settingsCategoryGeneral)
-            SettingItem(
-                titleRes = R.string.settingsOptionTheme,
-                isSelected = { selectedSetting == THEME },
-                icon = AppIcons.PaintbrushPalette,
-                description = theme.get().getString(),
-                endIcon = CHEVRON,
-                onClick = { onItemClick(THEME) },
-            )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                SettingItem(
+                    titleRes = R.string.settingsOptionTheme,
+                    isSelected = { selectedSetting == THEME },
+                    icon = AppIcons.PaintbrushPalette,
+                    description = theme.get().getString(),
+                    endIcon = CHEVRON,
+                    onClick = { onItemClick(THEME) },
+                )
+            }
+
             SettingItem(
                 titleRes = R.string.settingsOptionNotifications,
                 isSelected = { false },
