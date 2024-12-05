@@ -15,25 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui
+package com.infomaniak.core2.appintegrity
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import dagger.hilt.android.AndroidEntryPoint
+object AppIntegrityRoutes {
 
-@AndroidEntryPoint
-class NewTransferActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SwissTransferTheme {
-                NewTransferScreen(closeActivity = { finish() })
-            }
-        }
-    }
+    private const val PROD_URL = "https://" // TODO
+    private const val PREPROD_BASE_URL = "https://api-core.devd471.dev.infomaniak.ch"
+    private const val BASE_URL_V1 = "$PREPROD_BASE_URL/1/attest"
+
+    internal const val requestChallenge = "$BASE_URL_V1/challenge"
+    internal const val requestApiIntegrityCheck = "$BASE_URL_V1/integrity"
+    const val demo = "$BASE_URL_V1/demo"
 }
