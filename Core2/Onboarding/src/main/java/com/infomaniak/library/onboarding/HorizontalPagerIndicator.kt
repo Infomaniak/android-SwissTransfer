@@ -37,64 +37,48 @@ import kotlin.math.abs
 fun HorizontalPagerIndicator(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    inactiveIndicatorColor: Color = Color.LightGray,
-    activeIndicatorColor: Color = Color.Green,
-    inactiveIndicatorSize: Dp = 8.dp,
-    activeIndicatorWidth: Dp = 16.dp,
-    indicatorPadding: Dp = 8.dp,
+    indicatorStyle: IndicatorStyle,
 ) {
     Row(modifier, horizontalArrangement = Arrangement.Center) {
         repeat(pagerState.pageCount) { index ->
-            val (indicatorWidth, indicatorColor: Color) = computeIndicatorProperties(
-                index,
-                pagerState,
-                inactiveIndicatorSize,
-                activeIndicatorWidth,
-                inactiveIndicatorColor,
-                activeIndicatorColor
-            )
+            val (indicatorWidth, indicatorColor: Color) = computeIndicatorProperties(index, pagerState, indicatorStyle)
 
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
                     .background(indicatorColor)
-                    .size(height = inactiveIndicatorSize, width = indicatorWidth)
+                    .size(height = indicatorStyle.inactiveSize, width = indicatorWidth)
             )
 
-            if (index < pagerState.pageCount - 1) Spacer(modifier = Modifier.width(indicatorPadding))
+            if (index < pagerState.pageCount - 1) Spacer(modifier = Modifier.width(indicatorStyle.indicatorSpacing))
         }
     }
 }
 
-@Composable
 private fun computeIndicatorProperties(
     index: Int,
     pagerState: PagerState,
-    inactiveIndicatorSize: Dp,
-    activeIndicatorWidth: Dp,
-    inactiveIndicatorColor: Color,
-    activeIndicatorColor: Color
-): Pair<Dp, Color> {
+    indicatorStyle: IndicatorStyle,
+): Pair<Dp, Color> = with(indicatorStyle) {
     val (extendedCurrentPageOffsetFraction, pageVisibilityProgress) = computePageProgresses(index, pagerState)
 
-    val indicatorWidth = lerp(inactiveIndicatorSize, activeIndicatorWidth, pageVisibilityProgress)
+    val indicatorWidth = lerp(inactiveSize, activeWidth, pageVisibilityProgress)
 
     val isTransitioningToSelected = extendedCurrentPageOffsetFraction < 0
     val indicatorColor: Color = when {
         index == pagerState.currentPage && isTransitioningToSelected -> {
-            lerp(inactiveIndicatorColor, activeIndicatorColor, pageVisibilityProgress)
+            lerp(inactiveColor, activeColor, pageVisibilityProgress)
         }
         index == pagerState.currentPage + 1 && isTransitioningToSelected -> {
-            lerp(inactiveIndicatorColor, activeIndicatorColor, pageVisibilityProgress)
+            lerp(inactiveColor, activeColor, pageVisibilityProgress)
         }
-        index <= pagerState.currentPage -> activeIndicatorColor
-        else -> inactiveIndicatorColor
+        index <= pagerState.currentPage -> activeColor
+        else -> inactiveColor
     }
 
     return indicatorWidth to indicatorColor
 }
 
-@Composable
 private fun computePageProgresses(index: Int, pagerState: PagerState): Pair<Float, Float> {
     // Extended offset fraction of the current page relative to the screen
     // Range: [-1, 1]
@@ -125,8 +109,25 @@ private fun computePageProgresses(index: Int, pagerState: PagerState): Pair<Floa
     return extendedCurrentPageOffsetFraction to pageVisibilityProgress
 }
 
+data class IndicatorStyle(
+    val inactiveColor: Color,
+    val activeColor: Color,
+    val inactiveSize: Dp,
+    val activeWidth: Dp,
+    val indicatorSpacing: Dp,
+)
+
 @Preview
 @Composable
 private fun Preview() {
-    HorizontalPagerIndicator(pagerState = rememberPagerState { 3 })
+    HorizontalPagerIndicator(
+        pagerState = rememberPagerState(pageCount = { 3 }, initialPage = 1),
+        indicatorStyle = IndicatorStyle(
+            inactiveColor = Color.LightGray,
+            activeColor = Color.DarkGray,
+            inactiveSize = 8.dp,
+            activeWidth = 16.dp,
+            indicatorSpacing = 8.dp,
+        ),
+    )
 }
