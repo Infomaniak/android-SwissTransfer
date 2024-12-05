@@ -27,11 +27,12 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
+        android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidSwissTransfer"
         android:usesCleartextTraffic="false"
-        tools:targetApi="31">
+        tools:targetApi="35">
 
         <meta-data
             android:name="io.sentry.anr.enable"
