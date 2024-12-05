@@ -43,6 +43,7 @@ fun OnboardingScaffold(
     pagerState: PagerState,
     onboardingPages: List<OnboardingPage>,
     bottomContent: @Composable (PaddingValues) -> Unit,
+    indicatorStyle: IndicatorStyle,
 ) {
     Scaffold { paddingValues ->
         Column {
@@ -61,8 +62,12 @@ fun OnboardingScaffold(
             }
 
             HorizontalPagerIndicator(
-                modifier = Modifier.padding(PaddingValues(start = startPadding, end = endPadding)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .padding(PaddingValues(start = startPadding, end = endPadding)),
                 pagerState = pagerState,
+                indicatorStyle = indicatorStyle,
             )
 
             bottomContent(
@@ -147,6 +152,13 @@ private fun Preview() {
             ) {
                 Text("Bottom content")
             }
-        }
+        },
+        indicatorStyle = IndicatorStyle(
+            inactiveColor = Color.LightGray,
+            activeColor = Color.DarkGray,
+            inactiveSize = 8.dp,
+            activeWidth = 16.dp,
+            indicatorSpacing = 8.dp,
+        )
     )
 }
