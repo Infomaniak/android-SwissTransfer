@@ -137,7 +137,7 @@ class ImportFilesViewModel @Inject constructor(
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
-            authorEmail = "",
+            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail else "",
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = _transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
@@ -238,6 +238,11 @@ class ImportFilesViewModel @Inject constructor(
             is EmailLanguageOption -> selectTransferLanguage(option)
         }
     }
+    //endregion
+
+    //region Transfer Author Email
+    private var _transferAuthorEmail by mutableStateOf("")
+    val transferAuthorEmail = GetSetCallbacks(get = { _transferAuthorEmail }, set = { _transferAuthorEmail = it })
     //endregion
 
     //region Transfer Message

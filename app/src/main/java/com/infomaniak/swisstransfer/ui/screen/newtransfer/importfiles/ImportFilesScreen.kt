@@ -31,9 +31,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core2.isEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -102,6 +104,7 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
+        transferAuthorEmail = importFilesViewModel.transferAuthorEmail,
         transferMessage = importFilesViewModel.transferMessage,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
@@ -136,6 +139,7 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
+    transferAuthorEmail: GetSetCallbacks<String>,
     transferMessage: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
@@ -145,6 +149,9 @@ private fun ImportFilesScreen(
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
 ) {
+
+    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
+
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -154,14 +161,27 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            SendButton(modifier, filesToImportCount, currentSessionFilesCount, files, sendTransfer)
+            SendButton(
+                modifier = modifier,
+                filesToImportCount = filesToImportCount,
+                currentSessionFilesCount = currentSessionFilesCount,
+                importedFiles = files,
+                shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
+                transferAuthorEmail = transferAuthorEmail,
+                navigateToUploadProgress = sendTransfer,
+            )
         },
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 FilesToImport(modifier, files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
                 Spacer(Modifier.height(Margin.Medium))
-                ImportTextFields(modifier, transferMessage, selectedTransferType.get)
+                ImportTextFields(
+                    horizontalPaddingModifier = modifier,
+                    transferAuthorEmail = transferAuthorEmail,
+                    transferMessage = transferMessage,
+                    shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
+                )
                 SendByOptions(modifier, selectedTransferType)
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
@@ -198,11 +218,12 @@ private fun FilesToImport(
 @Composable
 private fun ColumnScope.ImportTextFields(
     horizontalPaddingModifier: Modifier,
+    transferAuthorEmail: GetSetCallbacks<String>,
     transferMessage: GetSetCallbacks<String>,
-    selectedTransferType: () -> TransferTypeUi,
+    shouldShowEmailAddressesFields: () -> Boolean,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
-    EmailAddressesTextFields(modifier, selectedTransferType)
+    EmailAddressesTextFields(modifier, transferAuthorEmail, shouldShowEmailAddressesFields)
     SwissTransferTextField(
         modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
@@ -213,16 +234,29 @@ private fun ColumnScope.ImportTextFields(
 }
 
 @Composable
-private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTransferType: () -> TransferTypeUi) {
-
-    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferTypeUi.MAIL } }
-
-    AnimatedVisibility(visible = shouldShowEmailAddressesFields) {
+private fun ColumnScope.EmailAddressesTextFields(
+    modifier: Modifier,
+    transferAuthorEmail: GetSetCallbacks<String>,
+    shouldShowEmailAddressesFields: () -> Boolean,
+) {
+    AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
+
+            val isError = transferAuthorEmail.get().isNotEmpty() && !transferAuthorEmail.get().isEmail()
+            val supportingText: @Composable (() -> Unit)? = if (isError) {
+                { Text(stringResource(R.string.invalidAddress)) }
+            } else {
+                null
+            }
+
             SwissTransferTextField(
                 modifier = modifier,
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
-                onValueChange = { /* TODO */ },
+                initialValue = transferAuthorEmail.get(),
+                keyboardType = KeyboardType.Email,
+                isError = isError,
+                supportingText = supportingText,
+                onValueChange = transferAuthorEmail.set,
             )
             Spacer(Modifier.height(Margin.Medium))
             SwissTransferTextField(
@@ -309,6 +343,8 @@ private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
+    shouldShowEmailAddressesFields: () -> Boolean,
+    transferAuthorEmail: GetSetCallbacks<String>,
     navigateToUploadProgress: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
@@ -316,18 +352,21 @@ private fun SendButton(
 
     val total = currentSessionFilesCount()
     val importProgress = remember(remainingFilesCount, total) { 1 - (remainingFilesCount.toFloat() / total) }
-
     val progress: (() -> Float)? = if (isImporting) {
         { importProgress }
     } else {
         null
     }
 
+    val isSenderEmailCorrect by remember {
+        derivedStateOf { if (shouldShowEmailAddressesFields()) transferAuthorEmail.get().isEmail() else true }
+    }
+
     LargeButton(
         modifier = modifier,
         titleRes = R.string.transferSendButton,
         style = ButtonType.PRIMARY,
-        enabled = { importedFiles().isNotEmpty() && !isImporting },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
         progress = progress,
         onClick = navigateToUploadProgress,
     )
@@ -388,6 +427,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
+            transferAuthorEmail = GetSetCallbacks(get = { "" }, set = {}),
             transferMessage = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,

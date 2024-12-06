@@ -41,6 +41,7 @@
     <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
     <string name="fromHeader">Von:</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
+    <string name="invalidAddress">Ungültige Adresse</string>
     <string name="messageHeader">Nachricht:</string>
     <string name="myFilesTitle">Meine Dateien</string>
     <string name="networkUnavailable">Auf Netzwerk warten…</string>
