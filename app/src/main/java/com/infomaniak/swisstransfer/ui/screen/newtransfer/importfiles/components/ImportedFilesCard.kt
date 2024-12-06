@@ -58,11 +58,7 @@ fun ImportedFilesCard(
 ) {
 
     val context = LocalContext.current
-    val humanReadableSize by remember(files()) {
-        derivedStateOf {
-            context.getSpaceLeft(files())
-        }
-    }
+    val humanReadableSize by remember { derivedStateOf { context.getSpaceLeft(files()) } }
 
     SwissTransferCard(modifier) {
         SharpRippleButton(onClick = { navigateToFilesDetails() }) {
