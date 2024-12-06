@@ -23,53 +23,98 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.TextUtils
 
 private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 
 @Composable
 fun ValidateUserEmailScreen() {
-    Scaffold { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            var otp by rememberSaveable { mutableStateOf("123") }
-            var isError by rememberSaveable { mutableStateOf(false) }
+    BottomStickyButtonScaffold(
+        topBar = {
+            SwissTransferTopAppBar(
+                title = "Transfert",
+                navigationMenu = TopAppBarButton.backButton {},
+                TopAppBarButton.closeButton {}
+            )
+        },
+        topButton = { LargeButton(modifier = it, titleRes = R.string.appName, onClick = { }) },
+        bottomButton = { LargeButton(modifier = it, titleRes = R.string.appName, style = ButtonType.TERTIARY, onClick = {}) },
+    ) {
+        Column(
+            modifier = Modifier.padding(Margin.Medium),
+            verticalArrangement = Arrangement.spacedBy(Margin.Large)
+        ) {
+            Text("Vérifie ton mail", style = SwissTransferTheme.typography.h1)
 
-            OtpTextField(
-                otpText = otp,
-                otpCount = 6,
-                onOtpTextChange = { text, isFilled ->
-                    Log.e("gibran", "ValidateUserEmailScreen - text: ${text}, isFilled: $isFilled")
-                    otp = text.filter { it in VALID_CHARACTERS }
-                    isError = isFilled && otp != "111111"
-                },
-                isError = { isError },
-                otpTextFieldStyle = OtpTextFieldStyle.default(
-                    textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
+            Text(
+                TextUtils.assembleWithBoldArgument(
+                    stringResource(R.string.uploadProgressDescriptionTemplateIndependence),
+                    stringResource(R.string.uploadProgressDescriptionArgumentIndependence),
                 ),
+                color = SwissTransferTheme.colors.secondaryTextColor,
             )
 
-            var text by remember { mutableStateOf("") }
-            OutlinedTextField(
-                value = text,
-                onValueChange = {
-                    text = it
-                }
+            CodeVerification()
+
+            Text(
+                text = "Pense à vérifier le dossier spam de ton adresse mail.",
+                style = SwissTransferTheme.typography.labelRegular,
+                color = SwissTransferTheme.colors.secondaryTextColor,
             )
         }
+    }
+}
+
+@Composable
+private fun CodeVerification() {
+    var otp by rememberSaveable { mutableStateOf("123") }
+    var isError by rememberSaveable { mutableStateOf(false) }
+
+    Column {
+        OtpTextField(
+            otpText = otp,
+            otpCount = 6,
+            onOtpTextChange = { text, isFilled ->
+                Log.e("gibran", "ValidateUserEmailScreen - text: ${text}, isFilled: $isFilled")
+                otp = text.filter { it in VALID_CHARACTERS }
+                isError = isFilled && otp != "111111"
+            },
+            isError = { isError },
+            otpTextFieldStyle = OtpTextFieldStyle.default(
+                textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(Margin.Micro))
+
+        Text(
+            modifier = Modifier.alpha(if (isError) 1f else 0f),
+            text = "Le code saisie est incorrecte.",
+            style = SwissTransferTheme.typography.labelRegular,
+            color = SwissTransferTheme.materialColors.error,
+        )
     }
 }
 
