@@ -50,7 +50,12 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
             if (currentDestination is MainNavigation.FilesDetailsDestination) {
                 SwissTransferTopAppBar(
                     navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
-                    actionMenus = arrayOf(TopAppBarButton.closeButton { }),
+                    actionMenus = arrayOf(TopAppBarButton.closeButton {
+                        navController.popBackStack(
+                            MainNavigation.ReceivedDestination,
+                            false
+                        )
+                    }),
                 )
             } else if (isWindowLarge) {
                 BrandTopAppBar()

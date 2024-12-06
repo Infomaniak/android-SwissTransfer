@@ -87,10 +87,7 @@ private fun FilesDetailsScreen(
 ) {
     Scaffold(
         topBar = {
-            SwissTransferTopAppBar(
-                navigationMenu = TopAppBarButton.backButton { navigateBack() },
-                actionMenus = arrayOf(TopAppBarButton.closeButton { }), // TODO Implement this later
-            )
+            SwissTransferTopAppBar(navigationMenu = TopAppBarButton.backButton { navigateBack() })
         }
     ) { paddingValues ->
         FilesDetailsComponent(
