@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -47,6 +48,7 @@ fun FileItem(
     onRemove: (() -> Unit)? = null,
 ) {
     FileItemContent(
+        isClickEnable = file.isFolder,
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
@@ -79,6 +81,7 @@ private fun getDescription(file: FileUi): String {
 
 @Composable
 private fun FileItemContent(
+    isClickEnable: Boolean,
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
@@ -89,8 +92,7 @@ private fun FileItemContent(
     content: @Composable () -> Unit,
 ) {
     Card(
-        onClick = onClick,
-        modifier = Modifier.aspectRatio(164.0f / 152.0f),
+        modifier = getCardModifier(isClickEnable, onClick),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -132,6 +134,18 @@ private fun FileItemContent(
                 overflow = TextOverflow.MiddleEllipsis,
             )
         }
+    }
+}
+
+private fun getCardModifier(isClickEnable: Boolean, onClick: () -> Unit): Modifier {
+    val modifier = Modifier.aspectRatio(164.0f / 152.0f)
+    return if (isClickEnable) {
+        modifier
+            .clickable(
+                onClick = onClick
+            )
+    } else {
+        modifier
     }
 }
 
