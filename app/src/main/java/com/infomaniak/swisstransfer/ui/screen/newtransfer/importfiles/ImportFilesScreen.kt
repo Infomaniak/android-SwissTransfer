@@ -197,13 +197,14 @@ private fun FilesToImport(
 
 @Composable
 private fun ColumnScope.ImportTextFields(
-    modifier: Modifier,
+    horizontalPaddingModifier: Modifier,
     transferMessage: GetSetCallbacks<String>,
     selectedTransferType: () -> TransferTypeUi,
 ) {
-    EmailAddressesTextFields(modifier.fillMaxWidth(), selectedTransferType)
+    val modifier = horizontalPaddingModifier.fillMaxWidth()
+    EmailAddressesTextFields(modifier, selectedTransferType)
     SwissTransferTextField(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
         isRequired = false,
         minLineNumber = 3,
