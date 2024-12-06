@@ -103,6 +103,7 @@ private fun FilesDetailsScreen(
 
 @Composable
 fun FilesDetailsComponent(
+    shouldDisplayTopAppBar: Boolean,
     paddingValues: PaddingValues = PaddingValues(0.dp),
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     folderUuid: String? = null,
@@ -111,6 +112,7 @@ fun FilesDetailsComponent(
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     navigateBack: (() -> Unit),
+    close: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
     val files by importFilesViewModel.getFiles(folderUuid).collectAsStateWithLifecycle(null)
@@ -118,14 +120,23 @@ fun FilesDetailsComponent(
     if (files?.isEmpty() == true) navigateBack()
 
     files?.let {
-        FilesDetailsComponent(
-            paddingValues = paddingValues,
-            files = it,
-            navigateToDetails = navigateToDetails,
-            withFileSize = withFileSize,
-            withSpaceLeft = withSpaceLeft,
-            onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
-        )
+        Column {
+            if (shouldDisplayTopAppBar) {
+                SwissTransferTopAppBar(
+                    navigationMenu = TopAppBarButton.backButton { navigateBack() },
+                    actionMenus = arrayOf(TopAppBarButton.closeButton { close() }),
+                )
+            }
+
+            FilesDetailsComponent(
+                paddingValues = paddingValues,
+                files = it,
+                navigateToDetails = navigateToDetails,
+                withFileSize = withFileSize,
+                withSpaceLeft = withSpaceLeft,
+                onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+            )
+        }
     }
 }
 

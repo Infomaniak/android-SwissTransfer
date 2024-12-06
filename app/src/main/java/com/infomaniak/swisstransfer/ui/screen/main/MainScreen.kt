@@ -29,8 +29,10 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toMainDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainScreen(isTransferDeeplink: Boolean = false) {
@@ -47,21 +49,25 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
         currentDestination = currentDestination,
         windowTopAppBar = { isWindowLarge ->
             // This is temporary to fix an issue with the animation when displaying the FilesDetailsScreen
-            if (currentDestination is MainNavigation.FilesDetailsDestination) {
-                SwissTransferTopAppBar(
-                    navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
-                    actionMenus = arrayOf(TopAppBarButton.closeButton {
-                        navController.popBackStack(
-                            MainNavigation.ReceivedDestination,
-                            false
-                        )
-                    }),
-                )
-            } else if (isWindowLarge) {
-                BrandTopAppBar()
+            if (isWindowLarge) {
+                if (currentDestination is MainNavigation.FilesDetailsDestination) {
+                    SwissTransferTopAppBar(
+                        navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
+                        actionMenus = arrayOf(TopAppBarButton.closeButton {
+                            navController.popBackStack(
+                                route = MainNavigation.ReceivedDestination,
+                                inclusive = false,
+                            )
+                        }),
+                    )
+                } else {
+                    BrandTopAppBar()
+                }
             }
         },
-        content = { MainNavHost(navController, currentDestination, isTransferDeeplink) },
+        content = {
+            MainNavHost(navController, currentDestination, LocalWindowAdaptiveInfo.current.isWindowSmall(), isTransferDeeplink)
+        },
     )
 }
 
