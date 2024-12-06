@@ -67,7 +67,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object UploadErrorDestination : NewTransferNavigation()
 
     companion object {
-        val startDestination = ImportFilesDestination
+        val startDestination = ValidateUserEmailDestination
     }
 }
 
