@@ -50,6 +50,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+private val HORIZONTAL_MARGIN = Margin.Medium
+
 @Composable
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
@@ -156,15 +158,21 @@ private fun ImportFilesScreen(
         },
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                FilesToImport(files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
+                FilesToImport(
+                    modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN),
+                    files = files,
+                    removeFileByUid = removeFileByUid,
+                    addFiles = addFiles,
+                    shouldStartByPromptingUserForFiles = shouldStartByPromptingUserForFiles,
+                )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
-                    modifier = Modifier.padding(horizontal = Margin.Medium),
+                    modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN),
                     transferMessage = transferMessage,
                     selectedTransferType = selectedTransferType.get,
                 )
                 SendByOptions(selectedTransferType)
-                TransferOptions(transferOptionsCallbacks)
+                TransferOptions(Modifier.padding(horizontal = HORIZONTAL_MARGIN), transferOptionsCallbacks)
             }
         }
     )
@@ -172,6 +180,7 @@ private fun ImportFilesScreen(
 
 @Composable
 private fun FilesToImport(
+    modifier: Modifier,
     files: () -> List<FileUi>,
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
@@ -191,31 +200,24 @@ private fun FilesToImport(
 
     LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
-    ImportFilesTitle(modifier = Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.myFilesTitle)
-    ImportedFilesCard(
-        modifier = Modifier.padding(horizontal = Margin.Medium),
-        files = files,
-        pickFiles = ::pickFiles,
-        removeFileByUid = removeFileByUid,
-    )
+    ImportFilesTitle(modifier, R.string.myFilesTitle)
+    ImportedFilesCard(modifier, files, ::pickFiles, removeFileByUid)
 }
 
 @Composable
-private fun ImportTextFields(
+private fun ColumnScope.ImportTextFields(
     modifier: Modifier,
     transferMessage: GetSetCallbacks<String>,
     selectedTransferType: () -> TransferTypeUi,
 ) {
-    Column(modifier) {
-        EmailAddressesTextFields(Modifier.fillMaxWidth(), selectedTransferType)
-        SwissTransferTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.transferMessagePlaceholder),
-            isRequired = false,
-            minLineNumber = 3,
-            onValueChange = transferMessage.set,
-        )
-    }
+    EmailAddressesTextFields(modifier.fillMaxWidth(), selectedTransferType)
+    SwissTransferTextField(
+        modifier = modifier.fillMaxWidth(),
+        label = stringResource(R.string.transferMessagePlaceholder),
+        isRequired = false,
+        minLineNumber = 3,
+        onValueChange = transferMessage.set,
+    )
 }
 
 @Composable
@@ -243,12 +245,12 @@ private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTra
 
 @Composable
 private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
-    ImportFilesTitle(Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.transferTypeTitle)
+    ImportFilesTitle(Modifier.padding(horizontal = HORIZONTAL_MARGIN), R.string.transferTypeTitle)
     TransferTypeButtons(selectedTransferType)
 }
 
 @Composable
-private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks) {
+private fun TransferOptions(modifier: Modifier, transferOptionsCallbacks: TransferOptionsCallbacks) {
 
     var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
 
@@ -256,9 +258,9 @@ private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks) 
         showTransferOption = null
     }
 
-    ImportFilesTitle(Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
+    ImportFilesTitle(modifier, R.string.advancedSettingsTitle)
     TransferOptionsTypes(
-        modifier = Modifier.padding(horizontal = Margin.Medium),
+        modifier = modifier,
         transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
         onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
     )
