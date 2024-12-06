@@ -78,8 +78,15 @@ class UploadProgressViewModel @Inject constructor(
         uploadWorkerScheduler.cancelWork()
 
         viewModelScope.launch(ioDispatcher) {
-            uploadManager.getLastUpload()?.let {
-                uploadManager.removeUploadSession(it.uuid)
+            runCatching {
+                val uploadSession = uploadManager.getLastUpload()
+                if (uploadSession == null) {
+                    uploadManager.removeAllUploadSession()
+                } else {
+                    uploadManager.cancelUploadSession(uploadSession.uuid)
+                }
+            }.onFailure { exception ->
+                SentryLog.e(TAG, "Failure on cancel upload", exception)
             }
         }
     }
