@@ -43,7 +43,6 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
@@ -251,12 +250,12 @@ private fun ImportFilesScreen(
                 SendByOptions(modifier, selectedTransferType)
                 FilesToImport(modifier, files, navigateToFileDetails = { /*TODO*/ }, addFiles, shouldStartByPromptingUserForFiles)
                 FilesToImport(
-                    modifier,
-                    files,
-                    removeFileByUid,
-                    addFiles,
-                    shouldStartByPromptingUserForFiles,
-                    navigateToFilesDetails,
+                    modifier = modifier,
+                    files = files,
+                    removeFileByUid = removeFileByUid,
+                    addFiles = addFiles,
+                    shouldStartByPromptingUserForFiles = shouldStartByPromptingUserForFiles,
+                    navigateToFilesDetails = navigateToFilesDetails,
                 )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
@@ -279,7 +278,7 @@ private fun FilesToImport(
     navigateToFileDetails: () -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
-    navigateToFilesDetails: (String) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
     var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
 
