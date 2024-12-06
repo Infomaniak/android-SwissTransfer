@@ -20,13 +20,15 @@ package com.infomaniak.swisstransfer.ui.theme
 import androidx.compose.ui.unit.dp
 
 object Dimens {
+    val MaxSinglePaneScreenWidth = 800.dp
     val SettingHorizontalMargin = Margin.Medium
     val SettingVerticalMargin = Margin.Small
     val DescriptionWidth = 300.dp
     val LargeButtonHeight = 56.dp
-    val DoubleButtonMaxWidth = 800.dp
+    val DoubleButtonMaxWidth = MaxSinglePaneScreenWidth
     val SingleButtonMaxWidth = DoubleButtonMaxWidth / 2
     val SmallIconSize = 16.dp
     val IconSize = 24.dp
     val BorderWidth = 1.dp
+    val ButtonComboVerticalPadding = Margin.Small
 }

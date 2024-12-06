@@ -30,7 +30,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,10 +48,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-
-private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportFilesScreen(
@@ -147,34 +143,6 @@ private fun ImportFilesScreen(
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
 ) {
-    val context = LocalContext.current
-    var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
-    var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
-
-    val importedFiles = files()
-    val humanReadableSize = remember(importedFiles) {
-        val usedSpace = importedFiles.sumOf { it.fileSize }
-        val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-        getHumanReadableSize(context, spaceLeft)
-    }
-
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenMultipleDocuments()
-    ) { uris: List<Uri> ->
-        addFiles(uris)
-    }
-
-    fun pickFiles() {
-        shouldShowInitialFilePick = false
-        filePickerLauncher.launch(arrayOf("*/*"))
-    }
-
-    fun closeTransferOption() {
-        showTransferOption = null
-    }
-
-    LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
-
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -187,63 +155,84 @@ private fun ImportFilesScreen(
             SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, sendTransfer)
         },
         content = {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = Margin.Medium, vertical = Margin.Large)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                ImportFilesTitle(titleRes = R.string.myFilesTitle)
-                ImportedFilesCard(
-                    modifier = Modifier.padding(vertical = Margin.Medium),
-                    files = files,
-                    humanReadableSize = { humanReadableSize },
-                    pickFiles = ::pickFiles,
-                    removeFileByUid = removeFileByUid,
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                FilesToImport(files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
+                Spacer(Modifier.height(Margin.Medium))
+                ImportTextFields(
+                    modifier = Modifier.padding(horizontal = Margin.Medium),
+                    transferMessage = transferMessage,
+                    selectedTransferType = selectedTransferType.get,
                 )
-                ImportTextFields(transferMessage, selectedTransferType.get)
-                ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.transferTypeTitle)
-                TransferTypeButtons(selectedTransferType)
-                ImportFilesTitle(Modifier.padding(vertical = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
-                TransferOptionsTypes(
-                    transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
-                    onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
-                )
+                SendByOptions(selectedTransferType)
+                TransferOptions(transferOptionsCallbacks)
             }
-
-            TransferOptions({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
         }
     )
 }
 
 @Composable
-private fun ColumnScope.ImportTextFields(transferMessage: GetSetCallbacks<String>, selectedTransferType: () -> TransferTypeUi) {
+private fun FilesToImport(
+    files: () -> List<FileUi>,
+    removeFileByUid: (uid: String) -> Unit,
+    addFiles: (List<Uri>) -> Unit,
+    shouldStartByPromptingUserForFiles: Boolean,
+) {
+    var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
 
-    EmailAddressesTextFields(selectedTransferType)
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments(),
+        onResult = addFiles,
+    )
 
-    SwissTransferTextField(
-        modifier = Modifier.fillMaxWidth(),
-        label = stringResource(R.string.transferMessagePlaceholder),
-        isRequired = false,
-        minLineNumber = 3,
-        onValueChange = transferMessage.set,
+    fun pickFiles() {
+        shouldShowInitialFilePick = false
+        filePickerLauncher.launch(arrayOf("*/*"))
+    }
+
+    LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
+
+    ImportFilesTitle(modifier = Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.myFilesTitle)
+    ImportedFilesCard(
+        modifier = Modifier.padding(horizontal = Margin.Medium),
+        files = files,
+        pickFiles = ::pickFiles,
+        removeFileByUid = removeFileByUid,
     )
 }
 
 @Composable
-private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> TransferTypeUi) {
+private fun ImportTextFields(
+    modifier: Modifier,
+    transferMessage: GetSetCallbacks<String>,
+    selectedTransferType: () -> TransferTypeUi,
+) {
+    Column(modifier) {
+        EmailAddressesTextFields(Modifier.fillMaxWidth(), selectedTransferType)
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferMessagePlaceholder),
+            isRequired = false,
+            minLineNumber = 3,
+            onValueChange = transferMessage.set,
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTransferType: () -> TransferTypeUi) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType() == TransferTypeUi.MAIL } }
 
     AnimatedVisibility(visible = shouldShowEmailAddressesFields) {
         Column {
             SwissTransferTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier,
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
                 onValueChange = { /* TODO */ },
             )
             Spacer(Modifier.height(Margin.Medium))
             SwissTransferTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier,
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 onValueChange = { /* TODO */ },
             )
@@ -253,7 +242,31 @@ private fun ColumnScope.EmailAddressesTextFields(selectedTransferType: () -> Tra
 }
 
 @Composable
-private fun TransferOptions(
+private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
+    ImportFilesTitle(Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.transferTypeTitle)
+    TransferTypeButtons(selectedTransferType)
+}
+
+@Composable
+private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks) {
+
+    var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
+
+    fun closeTransferOption() {
+        showTransferOption = null
+    }
+
+    ImportFilesTitle(Modifier.padding(horizontal = Margin.Medium), titleRes = R.string.advancedSettingsTitle)
+    TransferOptionsTypes(
+        modifier = Modifier.padding(horizontal = Margin.Medium),
+        transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
+        onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
+    )
+    TransferOptionsDialogs({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
+}
+
+@Composable
+private fun TransferOptionsDialogs(
     selectedOptionType: () -> TransferOptionType?,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     closeTransferOption: () -> Unit,
@@ -288,6 +301,15 @@ private fun TransferOptions(
 }
 
 @Composable
+private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+    Text(
+        modifier = modifier.padding(vertical = Margin.Medium),
+        style = SwissTransferTheme.typography.bodySmallRegular,
+        text = stringResource(titleRes),
+    )
+}
+
+@Composable
 private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
@@ -314,15 +336,6 @@ private fun SendButton(
         enabled = { importedFiles().isNotEmpty() && !isImporting },
         progress = progress,
         onClick = navigateToUploadProgress,
-    )
-}
-
-@Composable
-private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
-    Text(
-        text = stringResource(titleRes),
-        style = SwissTransferTheme.typography.bodySmallRegular,
-        modifier = modifier,
     )
 }
 
@@ -382,7 +395,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
             transferMessage = GetSetCallbacks(get = { "" }, set = {}),
-            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.QR_CODE }, set = {}),
+            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             removeFileByUid = {},
             addFiles = {},

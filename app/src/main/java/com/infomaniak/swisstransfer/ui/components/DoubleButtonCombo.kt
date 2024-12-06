@@ -32,11 +32,12 @@ private val WIDTH_THRESHOLD = 500.dp
 
 @Composable
 fun ColumnScope.DoubleButtonCombo(
+    modifier: Modifier = Modifier,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null
 ) {
     BoxWithConstraints(
-        modifier = Modifier
+        modifier = modifier
             .widthIn(max = Dimens.DoubleButtonMaxWidth)
             .align(Alignment.CenterHorizontally),
     ) {
@@ -71,7 +72,7 @@ private fun VerticallyStackedButtons(
         bottomButton(
             Modifier
                 .fillMaxWidth()
-                .padding(start = Margin.Medium, end = Margin.Medium, bottom = Margin.Large),
+                .padding(horizontal = Margin.Medium),
         )
     }
 }
@@ -84,7 +85,7 @@ private fun HorizontallyStackedButtons(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
+            .padding(horizontal = Margin.Medium),
         horizontalArrangement = Arrangement.spacedBy(Margin.Medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -99,7 +100,7 @@ private fun SingleButton(button: @Composable (Modifier) -> Unit) {
         button(
             Modifier
                 .fillMaxWidth()
-                .padding(bottom = Margin.Large, start = Margin.Medium, end = Margin.Medium),
+                .padding(horizontal = Margin.Medium),
         )
     }
 }
@@ -125,6 +126,7 @@ private fun DoubleButtonComboPreview() {
                     )
                 },
             )
+            Spacer(Modifier.height(Margin.Medium))
             DoubleButtonCombo(
                 bottomButton = {
                     LargeButton(

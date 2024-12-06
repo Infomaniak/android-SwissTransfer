@@ -39,7 +39,7 @@ fun SwissTransferAlertDialog(
     @StringRes descriptionRes: Int,
     onDismiss: () -> Unit,
     onConfirmation: () -> Unit,
-    shouldEnableConfirmButton: () -> Boolean = { true },
+    isConfirmButtonEnabled: () -> Boolean = { true },
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     BasicAlertDialog(
@@ -56,7 +56,7 @@ fun SwissTransferAlertDialog(
                 additionalContent = content,
                 onDismiss = onDismiss,
                 onConfirmation = onConfirmation,
-                shouldEnableConfirmButton = shouldEnableConfirmButton,
+                isConfirmButtonEnabled = isConfirmButtonEnabled,
             )
         }
     }
@@ -70,16 +70,16 @@ private fun BasicAlertDialogContent(
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
     onDismiss: () -> Unit,
     onConfirmation: () -> Unit,
-    shouldEnableConfirmButton: () -> Boolean = { true },
+    isConfirmButtonEnabled: () -> Boolean = { true },
 ) {
     Column(modifier.padding(Margin.Large)) {
         TitleAndDescription(titleRes, descriptionRes)
         Spacer(Modifier.height(Margin.Large))
         additionalContent?.let {
             it()
-            Spacer(Modifier.height(Margin.Large))
+            Spacer(Modifier.height(Margin.Mini))
         }
-        ActionButtons(onDismiss, onConfirmation, shouldEnableConfirmButton)
+        ActionButtons(onDismiss, onConfirmation, isConfirmButtonEnabled)
     }
 }
 
@@ -99,7 +99,7 @@ private fun TitleAndDescription(titleRes: Int, descriptionRes: Int) {
 }
 
 @Composable
-private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Unit, shouldEnable: () -> Boolean) {
+private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Unit, isEnabled: () -> Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
@@ -114,7 +114,7 @@ private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Un
         SmallButton(
             titleRes = R.string.buttonConfirm,
             onClick = onConfirmation,
-            enabled = shouldEnable
+            enabled = isEnabled
         )
     }
 }
