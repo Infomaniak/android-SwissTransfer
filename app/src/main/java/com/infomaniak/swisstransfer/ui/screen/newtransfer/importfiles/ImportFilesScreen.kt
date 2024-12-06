@@ -154,7 +154,7 @@ private fun ImportFilesScreen(
             )
         },
         topButton = { modifier ->
-            SendButton(filesToImportCount, currentSessionFilesCount, files, modifier, sendTransfer)
+            SendButton(modifier, filesToImportCount, currentSessionFilesCount, files, sendTransfer)
         },
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -304,10 +304,10 @@ private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes:
 
 @Composable
 private fun SendButton(
+    modifier: Modifier,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
-    modifier: Modifier,
     navigateToUploadProgress: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
