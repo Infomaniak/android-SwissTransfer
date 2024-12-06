@@ -37,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetai
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
+    isWindowSmall: Boolean,
 ) {
     NavHost(
         navController = navController,
@@ -69,9 +70,16 @@ fun MainNavHost(
                 },
                 folderUuid = filesDetailsDestination.folderUuid,
                 navigateBack = { navController.popBackStack() },
+                close = {
+                    navController.popBackStack(
+                        ReceivedDestination,
+                        false
+                    )
+                },
                 withFileSize = false,
                 withSpaceLeft = false,
                 withFileDelete = false,
+                shouldDisplayTopAppBar = isWindowSmall,
             )
         }
     }

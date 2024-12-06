@@ -141,7 +141,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             files = { files },
             pickFiles = {},
             removeFileByUid = {},
-            navigateToFilesDetails = {}
+            navigateToFilesDetails = {},
         )
     }
 }
