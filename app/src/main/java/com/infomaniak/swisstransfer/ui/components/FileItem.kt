@@ -138,15 +138,9 @@ private fun FileItemContent(
 }
 
 private fun getCardModifier(isClickEnable: Boolean, onClick: () -> Unit): Modifier {
-    val modifier = Modifier.aspectRatio(164.0f / 152.0f)
-    return if (isClickEnable) {
-        modifier
-            .clickable(
-                onClick = onClick
-            )
-    } else {
-        modifier
-    }
+    return Modifier
+        .aspectRatio(164.0f / 152.0f)
+        .then(if (isClickEnable) Modifier.clickable(onClick = onClick) else Modifier)
 }
 
 @PreviewLightAndDark
