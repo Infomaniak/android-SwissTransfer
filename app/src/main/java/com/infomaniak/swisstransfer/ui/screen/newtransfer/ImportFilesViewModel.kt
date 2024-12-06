@@ -25,11 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -59,6 +61,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
+    private val fileManager: FileManager,
     private val uploadManager: UploadManager,
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -98,6 +101,14 @@ class ImportFilesViewModel @Inject constructor(
             }
 
             importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+        }
+    }
+
+    fun getFiles(folderUuid: String?): Flow<List<FileUi>> {
+        return if (folderUuid == null) {
+            importationFilesManager.importedFiles
+        } else {
+            fileManager.getFilesFromTransfer(folderUuid)
         }
     }
 

@@ -24,11 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainScreen() {
@@ -43,8 +47,27 @@ fun MainScreen() {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        largeWindowTopAppBar = { BrandTopAppBar() },
-        content = { MainNavHost(navController, currentDestination) },
+        windowTopAppBar = { isWindowLarge ->
+            // This is temporary to fix an issue with the animation when displaying the FilesDetailsScreen
+            if (isWindowLarge) {
+                if (currentDestination is MainNavigation.FilesDetailsDestination) {
+                    SwissTransferTopAppBar(
+                        navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
+                        actionMenus = arrayOf(TopAppBarButton.closeButton {
+                            navController.popBackStack(
+                                route = MainNavigation.ReceivedDestination,
+                                inclusive = false,
+                            )
+                        }),
+                    )
+                } else {
+                    BrandTopAppBar()
+                }
+            }
+        },
+        content = {
+            MainNavHost(navController, currentDestination, LocalWindowAdaptiveInfo.current.isWindowSmall())
+        },
     )
 }
 

@@ -44,7 +44,7 @@ fun SwissTransferTopAppBar(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
-    title: String,
+    title: String = "",
     navigationMenu: TopAppBarButton? = null,
     vararg actionMenus: TopAppBarButton,
 ) {
