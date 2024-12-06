@@ -39,7 +39,6 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
@@ -163,12 +162,12 @@ private fun ImportFilesScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 FilesToImport(
-                    modifier,
-                    files,
-                    removeFileByUid,
-                    addFiles,
-                    shouldStartByPromptingUserForFiles,
-                    navigateToFilesDetails,
+                    modifier = modifier,
+                    files = files,
+                    removeFileByUid = removeFileByUid,
+                    addFiles = addFiles,
+                    shouldStartByPromptingUserForFiles = shouldStartByPromptingUserForFiles,
+                    navigateToFilesDetails = navigateToFilesDetails,
                 )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(modifier, transferMessage, selectedTransferType.get)
@@ -186,7 +185,7 @@ private fun FilesToImport(
     removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
-    navigateToFilesDetails: (String) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
     var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
 
@@ -203,13 +202,7 @@ private fun FilesToImport(
     LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
     ImportFilesTitle(modifier, R.string.myFilesTitle)
-    ImportedFilesCard(
-        modifier,
-        files,
-        ::pickFiles,
-        removeFileByUid,
-        navigateToFilesDetails = { navigateToFilesDetails("fileUuid") }
-    )
+    ImportedFilesCard(modifier, files, ::pickFiles, removeFileByUid, navigateToFilesDetails)
 }
 
 @Composable
