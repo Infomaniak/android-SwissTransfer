@@ -45,6 +45,8 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = sharedJavaVersion
         targetCompatibility = sharedJavaVersion
     }
@@ -105,6 +107,8 @@ dependencies {
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
+
+    coreLibraryDesugaring(libs.desugar.jdk)
 
     implementation(libs.swisstransfer.core)
     implementation(libs.swisstransfer.network)

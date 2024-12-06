@@ -8,6 +8,7 @@ composeBom = "2024.10.01"
 constraintlayoutCompose = "1.1.0"
 coreKtx = "1.15.0"
 coreSplashscreen = "1.0.1"
+desugarJDK = "2.1.3"
 hiltAndroid = "2.52"
 hiltAndroidx = "1.2.0"
 hiltNavigationCompose = "1.2.0"
@@ -41,6 +42,7 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJDK" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-androidx-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltAndroidx" }
