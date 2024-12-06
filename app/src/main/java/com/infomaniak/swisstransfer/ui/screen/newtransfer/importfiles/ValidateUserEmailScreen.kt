@@ -54,24 +54,31 @@ fun ValidateUserEmailScreen() {
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                title = "Transfert",
+                titleRes = R.string.transferTypeScreenTitle,
                 navigationMenu = TopAppBarButton.backButton {},
                 TopAppBarButton.closeButton {}
             )
         },
-        topButton = { LargeButton(modifier = it, titleRes = R.string.appName, onClick = { }) },
-        bottomButton = { LargeButton(modifier = it, titleRes = R.string.appName, style = ButtonType.TERTIARY, onClick = {}) },
+        topButton = { LargeButton(modifier = it, titleRes = R.string.buttonOpenMailApp, onClick = { }) },
+        bottomButton = {
+            LargeButton(
+                modifier = it,
+                titleRes = R.string.validateMailCodeNotReceived,
+                style = ButtonType.TERTIARY,
+                onClick = {},
+            )
+        },
     ) {
         Column(
             modifier = Modifier.padding(Margin.Medium),
             verticalArrangement = Arrangement.spacedBy(Margin.Large)
         ) {
-            Text("Vérifie ton mail", style = SwissTransferTheme.typography.h1)
+            Text(stringResource(R.string.validateMailTitle), style = SwissTransferTheme.typography.h1)
 
             Text(
                 TextUtils.assembleWithBoldArgument(
-                    stringResource(R.string.uploadProgressDescriptionTemplateIndependence),
-                    stringResource(R.string.uploadProgressDescriptionArgumentIndependence),
+                    stringResource(R.string.validateMailDescription),
+                    "example@example.com",
                 ),
                 color = SwissTransferTheme.colors.secondaryTextColor,
             )
@@ -79,7 +86,7 @@ fun ValidateUserEmailScreen() {
             CodeVerification()
 
             Text(
-                text = "Pense à vérifier le dossier spam de ton adresse mail.",
+                text = stringResource(R.string.validateMailInfo),
                 style = SwissTransferTheme.typography.labelRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
             )
@@ -111,7 +118,7 @@ private fun CodeVerification() {
 
         Text(
             modifier = Modifier.alpha(if (isError) 1f else 0f),
-            text = "Le code saisie est incorrecte.",
+            text = stringResource(R.string.validateMailCodeIncorrectError),
             style = SwissTransferTheme.typography.labelRegular,
             color = SwissTransferTheme.materialColors.error,
         )

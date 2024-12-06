@@ -24,6 +24,7 @@
     <string name="buttonDownloadSelected">Descargar la selección</string>
     <string name="buttonFinished">Acabado</string>
     <string name="buttonNext">Siguiente</string>
+    <string name="buttonOpenMailApp">Abrir la aplicación de correo</string>
     <string name="buttonShare">Compartir</string>
     <string name="contentDescriptionButtonBack">Volver</string>
     <string name="contentDescriptionButtonClose">Cerrar</string>
@@ -154,5 +155,11 @@
     <string name="uploadSuccessQrTitle">Su código QR está listo</string>
     <string name="urlAbout">https://www.infomaniak.com/es/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
+    <string name="validateMailCodeIncorrectError">El código introducido es incorrecto</string>
+    <string name="validateMailCodeNotReceived">No he recibido el código</string>
+    <string name="validateMailDescription">Hemos enviado un código a %s. Introdúcelo a continuación para verificar tu dirección de correo electrónico en la aplicación:</string>
+    <string name="validateMailInfo">Recuerda comprobar la carpeta de correo no deseado de tu dirección de correo electrónico.</string>
+    <string name="validateMailResendCode">Reenviar código en %ds</string>
+    <string name="validateMailTitle">Consulta tu correo electrónico</string>
     <string name="version">Versión</string>
 </resources>
