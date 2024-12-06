@@ -50,7 +50,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
-private val HORIZONTAL_MARGIN = Margin.Medium
+private val HORIZONTAL_PADDING = Margin.Medium
 
 @Composable
 fun ImportFilesScreen(
@@ -158,21 +158,12 @@ private fun ImportFilesScreen(
         },
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                FilesToImport(
-                    modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN),
-                    files = files,
-                    removeFileByUid = removeFileByUid,
-                    addFiles = addFiles,
-                    shouldStartByPromptingUserForFiles = shouldStartByPromptingUserForFiles,
-                )
+                val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
+                FilesToImport(modifier, files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
                 Spacer(Modifier.height(Margin.Medium))
-                ImportTextFields(
-                    modifier = Modifier.padding(horizontal = HORIZONTAL_MARGIN),
-                    transferMessage = transferMessage,
-                    selectedTransferType = selectedTransferType.get,
-                )
-                SendByOptions(selectedTransferType)
-                TransferOptions(Modifier.padding(horizontal = HORIZONTAL_MARGIN), transferOptionsCallbacks)
+                ImportTextFields(modifier, transferMessage, selectedTransferType.get)
+                SendByOptions(modifier, selectedTransferType)
+                TransferOptions(modifier, transferOptionsCallbacks)
             }
         }
     )
@@ -244,9 +235,9 @@ private fun ColumnScope.EmailAddressesTextFields(modifier: Modifier, selectedTra
 }
 
 @Composable
-private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
-    ImportFilesTitle(Modifier.padding(horizontal = HORIZONTAL_MARGIN), R.string.transferTypeTitle)
-    TransferTypeButtons(selectedTransferType)
+private fun SendByOptions(modifier: Modifier, selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
+    ImportFilesTitle(modifier, R.string.transferTypeTitle)
+    TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
 @Composable
