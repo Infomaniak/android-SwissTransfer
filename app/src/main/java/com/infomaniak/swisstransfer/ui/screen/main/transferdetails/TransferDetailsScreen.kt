@@ -166,7 +166,7 @@ private fun ColumnScope.FilesList(
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
-    val shouldDisplayMessage = getTransfer().message != null
+    val shouldDisplayMessage = getTransfer().message.isNullOrEmpty().not()
 
     FileItemList(
         modifier = Modifier
