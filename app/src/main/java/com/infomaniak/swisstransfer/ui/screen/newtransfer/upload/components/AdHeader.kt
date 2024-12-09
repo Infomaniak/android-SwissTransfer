@@ -54,7 +54,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
             templateRes = R.string.uploadProgressTitleTemplate,
             argumentRes = R.string.uploadProgressTitleArgument,
             style = SwissTransferTheme.typography.bodyMedium,
-            isHighlighted = { isHighlighted }
+            isHighlighted = { isHighlighted },
         )
 
         Spacer(Modifier.height(Margin.Huge))
