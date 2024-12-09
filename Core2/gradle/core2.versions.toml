@@ -6,11 +6,11 @@ sentry-android = "7.15.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation-android" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3-android" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime-android" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview-android" }
-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 matomo = { module = "com.github.matomo-org:matomo-sdk-android", version.ref = "matomo" }
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
