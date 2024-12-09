@@ -32,7 +32,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -303,12 +302,22 @@ private fun ColumnScope.EmailAddressesTextFields(
                 onValueChange = transferAuthorEmail.set,
             )
             Spacer(Modifier.height(Margin.Medium))
-            EmailAddressTextFieldTOTO(
+            EmailAddressTextField(
                 modifier = modifier,
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 onValueChange = { /* TODO */ },
-                emails = emptyList(),
-                text = { "" },
+                emails = { listOf("test.test@ik.me", "aaaaaaaaaaa") },
+                initialValue = "",
+                focusManager = LocalFocusManager.current,
+                focusRequester = FocusRequester.Default,
+            )
+            Spacer(Modifier.height(Margin.Medium))
+            EmailAddressTextField(
+                modifier = modifier,
+                label = stringResource(R.string.transferRecipientAddressPlaceholder),
+                onValueChange = { /* TODO */ },
+                emails = { emptyList() },
+                initialValue = "",
                 focusManager = LocalFocusManager.current,
                 focusRequester = FocusRequester.Default,
             )
