@@ -27,10 +27,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.rememberCoroutineScope
-import com.infomaniak.core2.lockOrientationForSmallScreens
+import androidx.compose.ui.platform.LocalContext
+import com.infomaniak.core2.compose.core.LockScreenOrientation
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,8 +45,6 @@ class OnboardingActivity : ComponentActivity() {
     lateinit var accountUtils: AccountUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        lockOrientationForSmallScreens()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT))
 
@@ -53,6 +54,8 @@ class OnboardingActivity : ComponentActivity() {
             val scope = rememberCoroutineScope()
 
             SwissTransferTheme {
+                LockScreenOrientation(isLocked = LocalWindowAdaptiveInfo.current.isWindowSmall())
+
                 Surface {
                     OnboardingScreen(
                         goToMainActivity = {
