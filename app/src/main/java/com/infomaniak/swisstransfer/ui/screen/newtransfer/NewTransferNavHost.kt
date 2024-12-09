@@ -79,7 +79,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             FilesDetailsScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
                 navigateToDetails = { _ -> navController.navigate(FilesDetailsDestination) },
-                withFileSize = true,
+                withFilesSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,
                 navigateBack = { navController.popBackStack() },
