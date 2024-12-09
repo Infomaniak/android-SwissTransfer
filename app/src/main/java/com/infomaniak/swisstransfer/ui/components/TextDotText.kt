@@ -39,10 +39,12 @@ fun TextDotText(
 ) {
     Row(modifier) {
         CustomText(text = firstText, style = style, color = color)
-        Spacer(Modifier.width(Margin.Mini))
-        Text(text = "•", style = style, color = color)
-        Spacer(Modifier.width(Margin.Mini))
-        CustomText(text = secondText, style = style, color = optionalSecondTextColor ?: color)
+        if (secondText().isNotEmpty()) {
+            Spacer(Modifier.width(Margin.Mini))
+            Text(text = "•", style = style, color = color)
+            Spacer(Modifier.width(Margin.Mini))
+            CustomText(text = secondText, style = style, color = optionalSecondTextColor ?: color)
+        }
     }
 }
 
