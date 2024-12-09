@@ -80,6 +80,21 @@ class ImportFilesViewModel @Inject constructor(
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
+    //region Transfer Author Email
+    private var _transferAuthorEmail by mutableStateOf("")
+    val transferAuthorEmail = GetSetCallbacks(get = { _transferAuthorEmail }, set = { _transferAuthorEmail = it })
+    //endregion
+
+    //region Transfer Message
+    private var _transferMessage by mutableStateOf("")
+    val transferMessage = GetSetCallbacks(get = { _transferMessage }, set = { _transferMessage = it })
+    //endregion
+
+    //region Password
+    private var transferPassword by mutableStateOf("")
+    private val isPasswordValid by derivedStateOf { transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
+    //endregion
+
     private var isFirstViewModelCreation: Boolean
         get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
         set(value) {
@@ -238,21 +253,6 @@ class ImportFilesViewModel @Inject constructor(
             is EmailLanguageOption -> selectTransferLanguage(option)
         }
     }
-    //endregion
-
-    //region Transfer Author Email
-    private var _transferAuthorEmail by mutableStateOf("")
-    val transferAuthorEmail = GetSetCallbacks(get = { _transferAuthorEmail }, set = { _transferAuthorEmail = it })
-    //endregion
-
-    //region Transfer Message
-    private var _transferMessage by mutableStateOf("")
-    val transferMessage = GetSetCallbacks(get = { _transferMessage }, set = { _transferMessage = it })
-    //endregion
-
-    //region Password
-    private var transferPassword by mutableStateOf("")
-    private val isPasswordValid by derivedStateOf { transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
     //endregion
 
     sealed class SendActionResult {
