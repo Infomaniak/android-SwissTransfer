@@ -55,7 +55,7 @@ class OnboardingActivity : ComponentActivity() {
                         goToMainActivity = {
                             scope.launch {
                                 accountUtils.login()
-                                startActivity(Intent(this@OnboardingActivity, MainActivity::class.java))
+                                Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
                                 finish()
                             }
                         }
