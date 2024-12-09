@@ -64,10 +64,7 @@ fun SwissTransferInputChip(
     InputChip(
         modifier = modifier.widthIn(min = Dimens.InputChipMinWidth),
         selected = enabled,
-        onClick = {
-            onDismiss()
-            enabled = !enabled
-        },
+        onClick = { enabled = !enabled },
         label = { ChipLabel(text) },
         shape = CustomShapes.ROUNDED,
         colors = InputChipDefaults.inputChipColors(
@@ -80,7 +77,7 @@ fun SwissTransferInputChip(
         ),
         border = null,
         trailingIcon = {
-            IconButton(modifier = Modifier.size(Dimens.IconSize), onClick = {}) {
+            IconButton(modifier = Modifier.size(Dimens.IconSize), onClick = onDismiss) {
                 Icon(
                     modifier = Modifier.size(Dimens.MicroIconSize),
                     imageVector = AppImages.AppIcons.CrossThick,
