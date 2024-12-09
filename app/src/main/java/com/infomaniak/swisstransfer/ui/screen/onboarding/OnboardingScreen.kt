@@ -79,7 +79,7 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
                     .padding(paddingValues)
                     .consumeWindowInsets(paddingValues),
                 isLastPage = { isLastPage },
-                startMainActivity = goToMainActivity,
+                goToMainActivity = goToMainActivity,
                 goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
             )
         },
@@ -124,7 +124,7 @@ private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
 private fun BottomContent(
     modifier: Modifier = Modifier,
     isLastPage: () -> Boolean,
-    startMainActivity: () -> Unit,
+    goToMainActivity: () -> Unit,
     goToNextPage: () -> Unit,
 ) {
     Box(
@@ -135,7 +135,7 @@ private fun BottomContent(
     ) {
         AnimatedOnboardingButton(
             isExpanded = { isLastPage() },
-            onClick = { if (isLastPage()) startMainActivity() else goToNextPage() },
+            onClick = { if (isLastPage()) goToMainActivity() else goToNextPage() },
         )
     }
 }
