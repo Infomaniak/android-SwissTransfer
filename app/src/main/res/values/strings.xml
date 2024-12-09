@@ -27,8 +27,8 @@
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
     <string name="buttonFinished">Finish</string>
-    <string name="buttonNext">Next</string>
     <string name="buttonShare">Share</string>
+    <string name="buttonStart">Start</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>
@@ -56,6 +56,15 @@
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
     <string name="noTransferSelectedTitle">No transfers to display</string>
+    <string name="onboardingExpirationSubtitleArgument">30 days.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Share your files via email, link, or QR code. Your links stay active for %s</string>
+    <string name="onboardingExpirationTitle">Play Your Best Cards!</string>
+    <string name="onboardingPasswordSubtitleArgument">a password.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Protect your shares with %s</string>
+    <string name="onboardingPasswordTitle">Stay in Control!</string>
+    <string name="onboardingStorageSubtitleArgument">Share up to 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s of files for free without any registration.</string>
+    <string name="onboardingStorageTitle">Send Big!</string>
     <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
     <plurals name="recipientHeader">
