@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
-import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,24 +49,22 @@ val AppIllus.RadialGradientCornerTopRightDark: ImageVector
             viewportWidth = 375.0f,
             viewportHeight = 832.0f
         ).apply {
-            group {
-                path(
-                    fill = radialGradient(
-                        0.0f to Color(0xFF67DD95), 1.0f to Color(0x0067DD95), center = Offset(375.0f, -0.0f), radius = 234.0f
-                    ),
-                    stroke = null,
-                    fillAlpha = 0.6f,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
-                    pathFillType = NonZero
-                ) {
-                    moveTo(375.0f, 0.0f)
-                    moveToRelative(-251.0f, 0.0f)
-                    arcToRelative(251.0f, 251.0f, 0.0f, true, true, 502.0f, 0.0f)
-                    arcToRelative(251.0f, 251.0f, 0.0f, true, true, -502.0f, 0.0f)
-                }
+            path(
+                fill = radialGradient(
+                    0.0f to Color(0xFF67DD95), 1.0f to Color(0x0067DD95), center = Offset(375.0f, -0.0f), radius = 234.0f
+                ),
+                stroke = null,
+                fillAlpha = 0.6f,
+                strokeLineWidth = 0.0f,
+                strokeLineCap = Butt,
+                strokeLineJoin = Miter,
+                strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
+                moveTo(375.0f, 0.0f)
+                moveToRelative(-251.0f, 0.0f)
+                arcToRelative(251.0f, 251.0f, 0.0f, true, true, 502.0f, 0.0f)
+                arcToRelative(251.0f, 251.0f, 0.0f, true, true, -502.0f, 0.0f)
             }
         }.build()
         return _radialGradientCornerTopRightDark!!
