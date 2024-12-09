@@ -76,7 +76,7 @@ fun MainNavHost(
                         false
                     )
                 },
-                withFileSize = false,
+                withFilesSize = false,
                 withSpaceLeft = false,
                 withFileDelete = false,
                 shouldDisplayTopAppBar = isWindowSmall,

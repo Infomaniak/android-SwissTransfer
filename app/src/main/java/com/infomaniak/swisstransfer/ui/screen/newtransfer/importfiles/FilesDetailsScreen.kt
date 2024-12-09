@@ -45,7 +45,7 @@ fun FilesDetailsScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     folderUuid: String? = null,
     navigateToDetails: (String) -> Unit,
-    withFileSize: Boolean,
+    withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     navigateBack: (() -> Unit),
@@ -59,7 +59,7 @@ fun FilesDetailsScreen(
         FilesDetailsScreen(
             files = it,
             navigateToDetails = navigateToDetails,
-            withFileSize = withFileSize,
+            withFilesSize = withFilesSize,
             withSpaceLeft = withSpaceLeft,
             onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
             navigateBack = navigateBack,
@@ -80,7 +80,7 @@ private fun getOnFileRemoveCallback(
 private fun FilesDetailsScreen(
     files: List<FileUi>,
     navigateToDetails: (String) -> Unit,
-    withFileSize: Boolean,
+    withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
     navigateBack: (() -> Unit),
@@ -94,7 +94,7 @@ private fun FilesDetailsScreen(
             paddingValues = paddingValues,
             files = files,
             navigateToDetails = navigateToDetails,
-            withFileSize = withFileSize,
+            withFileSize = withFilesSize,
             withSpaceLeft = withSpaceLeft,
             onFileRemoved = onFileRemoved
         )
@@ -108,7 +108,7 @@ fun FilesDetailsComponent(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     folderUuid: String? = null,
     navigateToDetails: (String) -> Unit,
-    withFileSize: Boolean,
+    withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     navigateBack: (() -> Unit),
@@ -132,7 +132,7 @@ fun FilesDetailsComponent(
                 paddingValues = paddingValues,
                 files = it,
                 navigateToDetails = navigateToDetails,
-                withFileSize = withFileSize,
+                withFileSize = withFilesSize,
                 withSpaceLeft = withSpaceLeft,
                 onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
             )
@@ -150,7 +150,7 @@ fun FilesDetailsComponent(
     onFileRemoved: ((uuid: String) -> Unit)? = null,
 ) {
     Column(modifier = Modifier.padding(paddingValues)) {
-        FilesSize(files, withFileSize = withFileSize, withSpaceLeft)
+        FilesSize(files, withFilesSize = withFileSize, withSpaceLeft)
         FileItemList(
             modifier = Modifier.padding(horizontal = Margin.Medium),
             files = files,
@@ -174,7 +174,7 @@ private fun FilesDetailsScreenPreview(@PreviewParameter(FileUiListPreviewParamet
             FilesDetailsScreen(
                 files = files,
                 navigateToDetails = { _ -> },
-                withFileSize = true,
+                withFilesSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},
                 navigateBack = {},
