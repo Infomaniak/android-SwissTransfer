@@ -53,20 +53,6 @@ val AppIllus.StorageCardboardBoxPileDark: ImageVector
         ).apply {
             group {
                 path(
-                    fill = SolidColor(Color(0xFFA98116)),
-                    pathFillType = EvenOdd
-                ) {
-                    moveTo(140.98f, 94.2f)
-                    curveToRelative(0.78f, 0.68f, 3.34f, 1.73f, 4.57f, 1.98f)
-                    curveToRelative(-1.29f, -0.57f, -3.01f, -1.2f, -3.95f, -1.99f)
-                    curveToRelative(-4.49f, -3.77f, -1.84f, -10.06f, 3.95f, -9.14f)
-                    curveToRelative(1.06f, 0.17f, 2.86f, 1.02f, 4.31f, 1.73f)
-                    curveToRelative(-0.97f, -0.69f, -3.81f, -2.05f, -4.84f, -2.28f)
-                    curveToRelative(-4.83f, -1.08f, -9.7f, 4.74f, -4.04f, 9.69f)
-                }
-            }
-            group {
-                path(
                     fill = SolidColor(Color(0xFFFFFFFF)),
                     pathFillType = NonZero
                 ) {
