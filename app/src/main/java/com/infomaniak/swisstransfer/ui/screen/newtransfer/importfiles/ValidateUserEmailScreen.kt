@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -113,13 +112,12 @@ private fun CodeVerification() {
             OtpTextField(
                 modifier = Modifier.fillMaxWidth(),
                 otpText = otp,
-                otpCount = OPT_LENGTH,
+                otpLength = OPT_LENGTH,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                onOtpTextChange = { text, _ ->
-                    Log.e("gibran", "ValidateUserEmailScreen - text: ${text}")
-                    otp = text.filter { it in VALID_CHARACTERS }
+                onOtpTextChange = { text, isFilled ->
+                    otp = text
 
-                    if (otp.length == OPT_LENGTH) {
+                    if (isFilled) {
                         scope.launch {
                             isLoading = true
                             delay(2000)
@@ -131,6 +129,7 @@ private fun CodeVerification() {
                         isError = false
                     }
                 },
+                isCharacterValid = { it in VALID_CHARACTERS },
                 isError = { isError },
                 otpTextFieldStyle = OtpTextFieldStyle.default(
                     textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
@@ -192,7 +191,7 @@ data class OtpTextFieldStyle(
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int,
+    otpLength: Int,
     horizontalArrangement: Arrangement.Horizontal,
     onOtpTextChange: (String, Boolean) -> Unit,
     isCharacterValid: ((Char) -> Boolean)? = null,
@@ -201,8 +200,8 @@ fun OtpTextField(
     isEnabled: () -> Boolean = { true },
 ) {
     LaunchedEffect(Unit) {
-        if (otpText.length > otpCount) {
-            error("Otp text value must not have more than otpCount: $otpCount characters")
+        if (otpText.length > otpLength) {
+            error("Otp text value must not have more than otpCount: $otpLength characters")
         }
     }
 
@@ -213,11 +212,15 @@ fun OtpTextField(
             modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
             value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
             onValueChange = { textFieldValue ->
-                Log.v("gibran", "OtpTextField - textFieldValue.text: ${textFieldValue.text}")
                 val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
 
-                if (text.length <= otpCount) {
-                    onOtpTextChange.invoke(text, text.length == otpCount)
+                if (text.length <= otpLength) {
+                    onOtpTextChange.invoke(text, text.length == otpLength)
+                } else {
+                    val truncatedText = text.take(otpLength)
+                    if (truncatedText != otpText) {
+                        onOtpTextChange.invoke(truncatedText, true)
+                    }
                 }
             },
             keyboardOptions = KeyboardOptions(
@@ -226,11 +229,11 @@ fun OtpTextField(
             ),
             decorationBox = {
                 Row(horizontalArrangement = horizontalArrangement) {
-                    repeat(otpCount) { index ->
+                    repeat(otpLength) { index ->
                         CharView(
                             index = index,
                             text = otpText,
-                            otpCount = otpCount,
+                            otpCount = otpLength,
                             isTextFieldFocused = { isTextFieldFocused },
                             isError = isError,
                             otpTextFieldStyle = otpTextFieldStyle,
