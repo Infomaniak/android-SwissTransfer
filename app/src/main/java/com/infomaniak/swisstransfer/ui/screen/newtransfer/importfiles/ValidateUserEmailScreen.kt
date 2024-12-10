@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
@@ -47,8 +49,11 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+private const val OPT_LENGTH = 6
 
 @Composable
 fun ValidateUserEmailScreen() {
@@ -99,23 +104,44 @@ fun ValidateUserEmailScreen() {
 private fun CodeVerification() {
     var otp by rememberSaveable { mutableStateOf("123") }
     var isError by rememberSaveable { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
 
     Column {
-        OtpTextField(
-            modifier = Modifier.fillMaxWidth(),
-            otpText = otp,
-            otpCount = 6,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            onOtpTextChange = { text, isFilled ->
-                Log.e("gibran", "ValidateUserEmailScreen - text: ${text}, isFilled: $isFilled")
-                otp = text.filter { it in VALID_CHARACTERS }
-                isError = isFilled && otp != "111111"
-            },
-            isError = { isError },
-            otpTextFieldStyle = OtpTextFieldStyle.default(
-                textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
-            ),
-        )
+        Box(contentAlignment = Alignment.Center) {
+            OtpTextField(
+                modifier = Modifier.fillMaxWidth(),
+                otpText = otp,
+                otpCount = OPT_LENGTH,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                onOtpTextChange = { text, _ ->
+                    Log.e("gibran", "ValidateUserEmailScreen - text: ${text}")
+                    otp = text.filter { it in VALID_CHARACTERS }
+
+                    if (otp.length == OPT_LENGTH) {
+                        scope.launch {
+                            isLoading = true
+                            delay(2000)
+                            isLoading = false
+
+                            isError = otp != "111111"
+                        }
+                    } else {
+                        isError = false
+                    }
+                },
+                isError = { isError },
+                otpTextFieldStyle = OtpTextFieldStyle.default(
+                    textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
+                ),
+                isEnabled = { !isLoading }
+            )
+
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier, color = SwissTransferTheme.materialColors.primary)
+            }
+        }
 
         Spacer(modifier = Modifier.height(Margin.Micro))
 
@@ -194,7 +220,10 @@ fun OtpTextField(
                     onOtpTextChange.invoke(text, text.length == otpCount)
                 }
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.NumberPassword,
+                imeAction = ImeAction.Done,
+            ),
             decorationBox = {
                 Row(horizontalArrangement = horizontalArrangement) {
                     repeat(otpCount) { index ->
