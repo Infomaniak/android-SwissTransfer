@@ -4,7 +4,7 @@ adaptiveLayout = "1.0.0"
 agp = "8.7.2"
 coilCompose = "3.0.2"
 composeAlpha = "1.8.0-alpha06"
-composeBom = "2024.10.01"
+composeBom = "2024.11.00"
 constraintlayoutCompose = "1.1.0"
 coreKtx = "1.15.0"
 coreSplashscreen = "1.0.1"
@@ -23,6 +23,7 @@ sentry = "4.12.0"
 serialization = "1.7.3"
 swisstransfer = "0.9.5"
 workmanager = "2.10.0"
+material3Jvmstubs = "1.4.0-alpha04"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -36,7 +37,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Jvmstubs" }
 compose-material3-adaptative-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
