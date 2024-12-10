@@ -198,6 +198,7 @@ fun OtpTextField(
                     CharView(
                         index = index,
                         text = otpText,
+                        otpCount = otpCount,
                         isTextFieldFocused = { isTextFieldFocused },
                         isError = isError,
                         otpTextFieldStyle = otpTextFieldStyle,
@@ -212,6 +213,7 @@ fun OtpTextField(
 private fun CharView(
     index: Int,
     text: String,
+    otpCount: Int,
     isTextFieldFocused: () -> Boolean,
     isError: () -> Boolean,
     otpTextFieldStyle: OtpTextFieldStyle,
@@ -228,11 +230,11 @@ private fun CharView(
         }
     }
 
-    val isFirstEmptyChar = text.length == index
-    val borderThickness = if (isTextFieldFocused() && isFirstEmptyChar) activeBorderThickness else inactiveBorderThickness
+    val isCharFocused = text.length == index || (text.length == otpCount && index == otpCount - 1)
+    val borderThickness = if (isTextFieldFocused() && isCharFocused) activeBorderThickness else inactiveBorderThickness
     val borderColor = when {
         isError() -> errorColor
-        isTextFieldFocused() && isFirstEmptyChar -> activeColor
+        isTextFieldFocused() && isCharFocused -> activeColor
         else -> inactiveColor
     }
 
