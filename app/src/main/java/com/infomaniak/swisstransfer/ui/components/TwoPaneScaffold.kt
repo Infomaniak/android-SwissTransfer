@@ -25,15 +25,13 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import kotlinx.coroutines.launch
 
 /**
  * A composable function that sets up a List-Detail interface using a three-pane scaffold navigator.
@@ -56,6 +54,9 @@ fun <T> TwoPaneScaffold(
     detailPane: @Composable ThreePaneScaffoldNavigator<T>.() -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val paneScaffoldDirective = calculatePaneScaffoldDirective(windowAdaptiveInfo)
     val maxHorizontalPartitions = if (windowAdaptiveInfo.isWindowLarge()) 2 else 1
@@ -66,7 +67,7 @@ fun <T> TwoPaneScaffold(
         ),
     )
 
-    BackHandler(navigator.canNavigateBack()) { navigator.navigateBack() }
+    BackHandler(navigator.canNavigateBack()) { coroutineScope.launch { navigator.navigateBack() } }
 
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
@@ -86,8 +87,8 @@ fun <T> TwoPaneScaffold(
 fun <T> ThreePaneScaffoldNavigator<T>.safeCurrentContent(): T? {
     var oldContent by rememberSaveable { mutableStateOf<T?>(null) }
 
-    val newContent = currentDestination?.content ?: oldContent
-    currentDestination?.content?.let { oldContent = it }
+    val newContent = currentDestination?.contentKey ?: oldContent
+    currentDestination?.contentKey?.let { oldContent = it }
 
     return newContent
 }

@@ -24,6 +24,7 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,6 +42,8 @@ import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreenWrapper(
@@ -69,15 +72,19 @@ fun SettingsScreenWrapper(
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = { ListPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
-        detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        listPane = { ListPane(coroutineScope, navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        detailPane = { DetailPane(coroutineScope, navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun ListPane(
+    coroutineScope: CoroutineScope,
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
     theme: GetSetCallbacks<Theme>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
@@ -101,17 +108,18 @@ private fun ListPane(
                 GIVE_FEEDBACK -> context.goToPlayStore()
                 else -> {
                     // Navigate to the detail pane with the passed item
-                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                    navigateToItem(coroutineScope, navigator, item)
                 }
             }
         },
-        getSelectedSetting = { navigator.currentDestination?.content },
+        getSelectedSetting = { navigator.currentDestination?.contentKey },
     )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun DetailPane(
+    coroutineScope: CoroutineScope,
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
     theme: GetSetCallbacks<Theme>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
@@ -120,7 +128,7 @@ private fun DetailPane(
 ) {
 
     val destination = navigator.safeCurrentContent()
-    val navigateBack = ScreenWrapperUtils.getBackNavigation(navigator)
+    val navigateBack = ScreenWrapperUtils.getBackNavigation(coroutineScope, navigator)
 
     when (destination) {
         THEME -> SettingsThemeScreen(
@@ -147,7 +155,7 @@ private fun DetailPane(
             navigateBack = navigateBack,
             onItemClick = { item ->
                 // Navigate to the detail pane with the passed item
-                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                navigateToItem(coroutineScope, navigator, item)
             },
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
@@ -168,6 +176,15 @@ private fun NoSelectionEmptyState() {
             descriptionRes = R.string.noSettingsSelectedDescription
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun navigateToItem(
+    coroutineScope: CoroutineScope,
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    item: SettingsOptionScreens,
+) {
+    coroutineScope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
 }
 
 @PreviewAllWindows
