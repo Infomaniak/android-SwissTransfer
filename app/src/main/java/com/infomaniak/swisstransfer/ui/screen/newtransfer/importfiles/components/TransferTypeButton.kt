@@ -31,11 +31,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferTypeButton(
-    transferType: TransferTypeUi,
-    isActive: () -> Boolean,
-    onClick: () -> Unit,
-) {
+fun TransferTypeButton(transferType: TransferTypeUi, isActive: () -> Boolean, onClick: () -> Unit) {
+
     val (borderColor, contentColor) = if (isActive()) {
         SwissTransferTheme.materialColors.primary to SwissTransferTheme.materialColors.primary
     } else {
