@@ -39,6 +39,8 @@ fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
     isWindowSmall: Boolean,
+    onStartDestinationChanged: (MainNavigation) -> Unit,
+    closeFilesDetails: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -47,6 +49,7 @@ fun MainNavHost(
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
         composable<SentDestination> {
+            onStartDestinationChanged(SentDestination)
             TransfersScreenWrapper(
                 navigateToFilesDetails = { folderUuid ->
                     navController.navigate(FilesDetailsDestination(folderUuid))
@@ -55,6 +58,7 @@ fun MainNavHost(
             )
         }
         receivedDestination {
+            onStartDestinationChanged(ReceivedDestination)
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
             TransfersScreenWrapper(
@@ -74,10 +78,7 @@ fun MainNavHost(
                 folderUuid = filesDetailsDestination.folderUuid,
                 navigateBack = { navController.popBackStack() },
                 close = {
-                    navController.popBackStack(
-                        ReceivedDestination,
-                        false
-                    )
+                    closeFilesDetails()
                 },
                 withFilesSize = false,
                 withSpaceLeft = false,
