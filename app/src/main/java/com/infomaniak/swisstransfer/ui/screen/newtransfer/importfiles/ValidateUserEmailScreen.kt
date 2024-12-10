@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -40,19 +42,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 private const val OPT_LENGTH = 6
+
+private val MAX_LAYOUT_WIDTH = 400.dp
 
 @Composable
 fun ValidateUserEmailScreen() {
@@ -74,11 +81,21 @@ fun ValidateUserEmailScreen() {
             )
         },
     ) {
+        val layoutStyle = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) LayoutStyle.Centered else LayoutStyle.TopLeft
+
         Column(
-            modifier = Modifier.padding(Margin.Medium),
-            verticalArrangement = Arrangement.spacedBy(Margin.Large)
+            modifier = Modifier
+                .padding(Margin.Medium)
+                .then(layoutStyle.columnMaxWidthModifier)
+                .align(layoutStyle.verticalAlignment),
+            verticalArrangement = Arrangement.spacedBy(Margin.Large),
+            horizontalAlignment = layoutStyle.horizontalAlignment,
         ) {
-            Text(stringResource(R.string.validateMailTitle), style = SwissTransferTheme.typography.h1)
+            Text(
+                text = stringResource(id = R.string.validateMailTitle),
+                style = SwissTransferTheme.typography.h1,
+                textAlign = layoutStyle.textAlign,
+            )
 
             Text(
                 TextUtils.assembleWithBoldArgument(
@@ -86,6 +103,7 @@ fun ValidateUserEmailScreen() {
                     "example@example.com",
                 ),
                 color = SwissTransferTheme.colors.secondaryTextColor,
+                textAlign = layoutStyle.textAlign,
             )
 
             CodeVerification()
@@ -94,23 +112,46 @@ fun ValidateUserEmailScreen() {
                 text = stringResource(R.string.validateMailInfo),
                 style = SwissTransferTheme.typography.labelRegular,
                 color = SwissTransferTheme.colors.secondaryTextColor,
+                textAlign = layoutStyle.textAlign,
             )
         }
     }
 }
 
+private enum class LayoutStyle(
+    val horizontalAlignment: Alignment.Horizontal,
+    val textAlign: TextAlign,
+    val verticalAlignment: Alignment,
+    val columnMaxWidthModifier: Modifier,
+) {
+    TopLeft(
+        horizontalAlignment = Alignment.Start,
+        textAlign = TextAlign.Start,
+        verticalAlignment = Alignment.TopCenter,
+        columnMaxWidthModifier = Modifier,
+    ),
+    Centered(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        textAlign = TextAlign.Center,
+        verticalAlignment = Alignment.Center,
+        columnMaxWidthModifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
+    ),
+}
+
 @Composable
-private fun CodeVerification() {
+private fun ColumnScope.CodeVerification() {
     var otp by rememberSaveable { mutableStateOf("123") }
     var isError by rememberSaveable { mutableStateOf(false) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
-    Column {
+    Column(Modifier.align(Alignment.CenterHorizontally)) {
         Box(contentAlignment = Alignment.Center) {
             OtpTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = MAX_LAYOUT_WIDTH)
+                    .fillMaxWidth(),
                 otpText = otp,
                 otpLength = OPT_LENGTH,
                 horizontalArrangement = Arrangement.SpaceBetween,
