@@ -19,11 +19,17 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -31,11 +37,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun TransferTypeButton(
-    transferType: TransferTypeUi,
-    isActive: () -> Boolean,
-    onClick: () -> Unit,
-) {
+fun TransferTypeButton(transferType: TransferTypeUi, isActive: () -> Boolean, onClick: () -> Unit) {
+
     val (borderColor, contentColor) = if (isActive()) {
         SwissTransferTheme.materialColors.primary to SwissTransferTheme.materialColors.primary
     } else {

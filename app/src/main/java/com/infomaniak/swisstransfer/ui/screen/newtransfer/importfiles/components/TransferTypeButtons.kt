@@ -19,14 +19,10 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.component
 
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType
@@ -40,22 +36,31 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import kotlinx.coroutines.launch
 
 @Composable
 fun TransferTypeButtons(horizontalPadding: Dp, transferType: GetSetCallbacks<TransferTypeUi>) {
-    Row(
-        modifier = Modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = horizontalPadding),
-        horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
-    ) {
-        for (transferTypeEntry in TransferTypeUi.entries) {
-            TransferTypeButton(
-                transferType = transferTypeEntry,
-                isActive = { transferTypeEntry == transferType.get() },
-                onClick = { transferType.set(transferTypeEntry) },
-            )
+
+    val coroutineScope = rememberCoroutineScope()
+
+    BringIntoViewRow(
+        horizontalPadding = horizontalPadding,
+        spaceBy = Margin.Mini,
+        items = TransferTypeUi.entries,
+    ) { transferTypeItem, bringIntoViewRequester ->
+
+        LaunchedEffect(null) {
+            coroutineScope.launch { if (transferTypeItem == transferType.get()) bringIntoViewRequester.bringIntoView() }
         }
+
+        TransferTypeButton(
+            transferType = transferTypeItem,
+            isActive = { transferTypeItem == transferType.get() },
+            onClick = {
+                transferType.set(transferTypeItem)
+                coroutineScope.launch { bringIntoViewRequester.bringIntoView() }
+            },
+        )
     }
 }
 
