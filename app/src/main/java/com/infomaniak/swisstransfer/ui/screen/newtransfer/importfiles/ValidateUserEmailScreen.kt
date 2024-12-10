@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -171,6 +172,7 @@ fun OtpTextField(
     isCharacterValid: ((Char) -> Boolean)? = null,
     otpTextFieldStyle: OtpTextFieldStyle,
     isError: () -> Boolean = { false },
+    isEnabled: () -> Boolean = { true },
 ) {
     LaunchedEffect(Unit) {
         if (otpText.length > otpCount) {
@@ -180,33 +182,45 @@ fun OtpTextField(
 
     var isTextFieldFocused by remember { mutableStateOf(false) }
 
-    BasicTextField(
-        modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
-        value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
-        onValueChange = { textFieldValue ->
-            Log.v("gibran", "OtpTextField - textFieldValue.text: ${textFieldValue.text}")
-            val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
+    Box(contentAlignment = Alignment.Center) {
+        BasicTextField(
+            modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
+            value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
+            onValueChange = { textFieldValue ->
+                Log.v("gibran", "OtpTextField - textFieldValue.text: ${textFieldValue.text}")
+                val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
 
-            if (text.length <= otpCount) {
-                onOtpTextChange.invoke(text, text.length == otpCount)
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-        decorationBox = {
-            Row(horizontalArrangement = horizontalArrangement) {
-                repeat(otpCount) { index ->
-                    CharView(
-                        index = index,
-                        text = otpText,
-                        otpCount = otpCount,
-                        isTextFieldFocused = { isTextFieldFocused },
-                        isError = isError,
-                        otpTextFieldStyle = otpTextFieldStyle,
-                    )
+                if (text.length <= otpCount) {
+                    onOtpTextChange.invoke(text, text.length == otpCount)
                 }
-            }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+            decorationBox = {
+                Row(horizontalArrangement = horizontalArrangement) {
+                    repeat(otpCount) { index ->
+                        CharView(
+                            index = index,
+                            text = otpText,
+                            otpCount = otpCount,
+                            isTextFieldFocused = { isTextFieldFocused },
+                            isError = isError,
+                            otpTextFieldStyle = otpTextFieldStyle,
+                        )
+                    }
+                }
+            },
+            enabled = isEnabled(),
+        )
+
+        if (!isEnabled()) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(SwissTransferTheme.materialColors.background.copy(alpha = 0.8f)) // Change Color.Blue to any color you want
+            )
         }
-    )
+    }
+
 }
 
 @Composable
