@@ -101,8 +101,10 @@ private fun CodeVerification() {
 
     Column {
         OtpTextField(
+            modifier = Modifier.fillMaxWidth(),
             otpText = otp,
             otpCount = 6,
+            horizontalArrangement = Arrangement.SpaceBetween,
             onOtpTextChange = { text, isFilled ->
                 Log.e("gibran", "ValidateUserEmailScreen - text: ${text}, isFilled: $isFilled")
                 otp = text.filter { it in VALID_CHARACTERS }
@@ -164,6 +166,7 @@ fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
     otpCount: Int,
+    horizontalArrangement: Arrangement.Horizontal,
     onOtpTextChange: (String, Boolean) -> Unit,
     isCharacterValid: ((Char) -> Boolean)? = null,
     otpTextFieldStyle: OtpTextFieldStyle,
@@ -190,10 +193,8 @@ fun OtpTextField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         decorationBox = {
-            Row(horizontalArrangement = Arrangement.Center) {
+            Row(horizontalArrangement = horizontalArrangement) {
                 repeat(otpCount) { index ->
-                    if (index > 0) Spacer(modifier = Modifier.width(8.dp))
-
                     CharView(
                         index = index,
                         text = otpText,
