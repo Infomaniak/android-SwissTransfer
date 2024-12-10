@@ -17,10 +17,9 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import android.util.Log
+import androidx.compose.runtime.*
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -41,8 +40,12 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember(navBackStackEntry) {
-        derivedStateOf { navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination }
+        derivedStateOf {
+            navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination
+        }
     }
+
+    var lastStartDestination: MainNavigation by remember { mutableStateOf(MainNavigation.startDestination) }
 
     MainScaffold(
         navController = navController,
@@ -54,10 +57,7 @@ fun MainScreen() {
                     SwissTransferTopAppBar(
                         navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
                         actionMenus = arrayOf(TopAppBarButton.closeButton {
-                            navController.popBackStack(
-                                route = MainNavigation.ReceivedDestination,
-                                inclusive = false,
-                            )
+                            goBackToStartScreen(navController, lastStartDestination)
                         }),
                     )
                 } else {
@@ -66,8 +66,21 @@ fun MainScreen() {
             }
         },
         content = {
-            MainNavHost(navController, currentDestination, LocalWindowAdaptiveInfo.current.isWindowSmall())
+            MainNavHost(
+                navController = navController,
+                currentDestination = currentDestination,
+                isWindowSmall = LocalWindowAdaptiveInfo.current.isWindowSmall(),
+                onStartDestinationChanged = { lastStartDestination = it },
+                closeFilesDetails = { goBackToStartScreen(navController, lastStartDestination) }
+            )
         },
+    )
+}
+
+private fun goBackToStartScreen(navController: NavController, lastStartDestination: MainNavigation) {
+    navController.popBackStack(
+        route = lastStartDestination,
+        inclusive = false,
     )
 }
 
