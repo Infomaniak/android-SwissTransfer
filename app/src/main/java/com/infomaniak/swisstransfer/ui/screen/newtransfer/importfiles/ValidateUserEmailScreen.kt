@@ -227,7 +227,15 @@ fun OtpTextField(
                 keyboardType = KeyboardType.NumberPassword,
                 imeAction = ImeAction.Done,
             ),
-            decorationBox = {
+            decorationBox = { innerTextField ->
+                CompositionLocalProvider(
+                    LocalTextSelectionColors provides TextSelectionColors(Color.Transparent, Color.Transparent)
+                ) {
+                    Box(modifier = Modifier.alpha(0f)) {
+                        innerTextField()
+                    }
+                }
+
                 Row(horizontalArrangement = horizontalArrangement) {
                     repeat(otpLength) { index ->
                         CharView(
