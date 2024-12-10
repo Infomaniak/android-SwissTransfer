@@ -49,7 +49,7 @@ fun TransferTypeButtons(horizontalPadding: Dp, transferType: GetSetCallbacks<Tra
         items = TransferTypeUi.entries,
     ) { transferTypeItem, bringIntoViewRequester ->
 
-        LaunchedEffect(null) {
+        LaunchedEffect(Unit) {
             coroutineScope.launch { if (transferTypeItem == transferType.get()) bringIntoViewRequester.bringIntoView() }
         }
 
