@@ -24,7 +24,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.sentry.SentryLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -52,14 +54,31 @@ class TransferDetailsViewModel @Inject constructor(
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
-    fun loadTransfer(transferUuid: String) {
+    fun loadTransfer(transferUuid: String, isDeeplink: Boolean) {
         viewModelScope.launch {
+            if (isDeeplink) handleTransferDeeplink(transferUuid)
             _transferUuidFlow.emit(transferUuid)
-            transferManager.fetchTransfer(transferUuid)
+            if (!isDeeplink) transferManager.fetchTransfer(transferUuid)
         }
     }
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
+
+    private suspend fun handleTransferDeeplink(transferUuid: String) {
+        runCatching {
+            val transfer = transferManager.getTransferFlow(transferUuid).first()
+            if (transfer == null) {
+                transferManager.addTransferByLinkUUID(
+                    linkUUID = transferUuid,
+                    password = null,
+                    transferDirection = TransferDirection.RECEIVED,
+                )
+            }
+        }.onFailure { exception ->
+            SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
+            // TODO: Handle errors
+        }
+    }
 
     sealed class TransferDetailsUiState {
 
@@ -71,5 +90,9 @@ class TransferDetailsViewModel @Inject constructor(
 
         @Immutable
         data object Delete : TransferDetailsUiState()
+    }
+
+    companion object {
+        private val TAG = TransferDetailsViewModel::class.java.simpleName
     }
 }

@@ -28,6 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
@@ -45,12 +47,24 @@ import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun TransfersScreenWrapper(direction: TransferDirection) {
+fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? = null) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
+    var isDeepLink = false
 
     TwoPaneScaffold<DestinationContent>(
-        listPane = { ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }) },
-        detailPane = { DetailPane(navigator = this, hasTransfer) },
+        listPane = {
+            val transfersViewModel = hiltViewModel<TransfersViewModel>()
+            val isDeepLinkConsumed by transfersViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
+            if (transferUuid != null && !isDeepLinkConsumed) {
+                transfersViewModel.consumeDeepLink()
+                isDeepLink = true
+                navigateToDetails(direction, transferUuid)
+            }
+            ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }, transfersViewModel = transfersViewModel)
+        },
+        detailPane = {
+            DetailPane(navigator = this, hasTransfer, isDeepLink)
+        },
     )
 }
 
@@ -59,17 +73,20 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 private fun ListPane(
     direction: TransferDirection,
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: (Boolean) -> Unit
+    transfersViewModel: TransfersViewModel,
+    hasTransfer: (Boolean) -> Unit,
 ) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
+            transfersViewModel = transfersViewModel,
             hasTransfer = hasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
+            transfersViewModel = transfersViewModel,
             hasTransfer = hasTransfer,
         )
     }
@@ -90,7 +107,11 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>, hasTransfer: Boolean) {
+private fun DetailPane(
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    hasTransfer: Boolean,
+    isDeepLink: Boolean,
+) {
 
     val destinationContent = navigator.safeCurrentContent()
 
@@ -100,6 +121,7 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>
         TransferDetailsScreen(
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
+            isDeepLink = isDeepLink,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
         )
     }
@@ -133,7 +155,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null)
         }
     }
 }
