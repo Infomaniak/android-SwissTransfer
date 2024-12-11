@@ -23,14 +23,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.OtpTextField
@@ -41,8 +46,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 private const val OPT_LENGTH = 6
@@ -50,7 +53,51 @@ private const val OPT_LENGTH = 6
 private val MAX_LAYOUT_WIDTH = 400.dp
 
 @Composable
-fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit, emailToValidate: String) {
+fun ValidateUserEmailScreen(
+    closeActivity: () -> Unit,
+    navigateBack: () -> Unit,
+    emailToValidate: String,
+    validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel<ValidateUserEmailViewModel>(),
+) {
+    val isLoading by validateUserEmailViewModel.isLoading.collectAsStateWithLifecycle()
+    val isError by validateUserEmailViewModel.isError.collectAsStateWithLifecycle()
+
+    var otpCode by rememberSaveable { mutableStateOf("") }
+
+    ValidateUserEmailScreen(
+        otpCode = { otpCode },
+        updateOtpCode = { code, isFilled ->
+            otpCode = code
+
+            if (isFilled) {
+                validateUserEmailViewModel.validateEmailWithOtpCode(
+                    email = emailToValidate,
+                    otpCode = otpCode,
+                    onSuccess = {}, // TODO: Navigate to the next step
+                    onUnknownError = {}, // TODO: Snackbar an error has occurred?
+                )
+            } else {
+                validateUserEmailViewModel.resetErrorState()
+            }
+        },
+        emailToValidate = emailToValidate,
+        isLoading = { isLoading },
+        isError = { isError },
+        navigateBack = navigateBack,
+        closeActivity = closeActivity,
+    )
+}
+
+@Composable
+private fun ValidateUserEmailScreen(
+    otpCode: () -> String,
+    updateOtpCode: (String, Boolean) -> Unit,
+    emailToValidate: String,
+    isLoading: () -> Boolean,
+    isError: () -> Boolean,
+    navigateBack: () -> Unit,
+    closeActivity: () -> Unit,
+) {
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -59,14 +106,11 @@ fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit,
                 TopAppBarButton.closeButton(closeActivity)
             )
         },
-        topButton = { LargeButton(modifier = it, titleRes = R.string.buttonOpenMailApp, onClick = { }) },
+        topButton = {
+            LargeButton(modifier = it, titleRes = R.string.buttonOpenMailApp, onClick = {})
+        },
         bottomButton = {
-            LargeButton(
-                modifier = it,
-                titleRes = R.string.validateMailCodeNotReceived,
-                style = ButtonType.TERTIARY,
-                onClick = {},
-            )
+            LargeButton(modifier = it, titleRes = R.string.validateMailCodeNotReceived, style = ButtonType.TERTIARY, onClick = {})
         },
     ) {
         val layoutStyle = LayoutStyle.getCurrentLayoutStyle()
@@ -92,7 +136,7 @@ fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit,
                 textAlign = layoutStyle.textAlign,
             )
 
-            CodeVerification()
+            CodeVerification(otpCode, updateOtpCode, isLoading, isError)
 
             Text(
                 text = stringResource(R.string.validateMailInfo),
@@ -105,46 +149,33 @@ fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit,
 }
 
 @Composable
-private fun ColumnScope.CodeVerification() {
-    var otpCode by rememberSaveable { mutableStateOf("") }
-    var isError by rememberSaveable { mutableStateOf(false) }
-    var isLoading by rememberSaveable { mutableStateOf(false) }
-
-    val scope = rememberCoroutineScope()
-
+private fun ColumnScope.CodeVerification(
+    otpCode: () -> String,
+    updateOtpCode: (String, Boolean) -> Unit,
+    isLoading: () -> Boolean,
+    isError: () -> Boolean,
+) {
     Column(Modifier.align(Alignment.CenterHorizontally)) {
         Box(contentAlignment = Alignment.Center) {
             OtpTextField(
                 modifier = Modifier
                     .widthIn(max = MAX_LAYOUT_WIDTH)
                     .fillMaxWidth(),
-                otpText = otpCode,
+                otpText = otpCode(),
                 otpLength = OPT_LENGTH,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 onOtpTextChange = { text, isFilled ->
-                    otpCode = text
-
-                    if (isFilled) {
-                        scope.launch {
-                            isLoading = true
-                            delay(2000)
-                            isLoading = false
-
-                            isError = otpCode != "111111"
-                        }
-                    } else {
-                        isError = false
-                    }
+                    updateOtpCode(text, isFilled)
                 },
                 isCharacterValid = { it in VALID_CHARACTERS },
-                isError = { isError },
+                isError = isError,
                 otpTextFieldStyle = OtpTextFieldStyle.default(
                     textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
                 ),
-                isEnabled = { !isLoading }
+                isEnabled = { !isLoading() }
             )
 
-            if (isLoading) {
+            if (isLoading()) {
                 CircularProgressIndicator(modifier = Modifier, color = SwissTransferTheme.materialColors.primary)
             }
         }
@@ -152,7 +183,7 @@ private fun ColumnScope.CodeVerification() {
         Spacer(modifier = Modifier.height(Margin.Micro))
 
         Text(
-            modifier = Modifier.alpha(if (isError) 1f else 0f),
+            modifier = Modifier.alpha(if (isError()) 1f else 0f),
             text = stringResource(R.string.validateMailCodeIncorrectError),
             style = SwissTransferTheme.typography.labelRegular,
             color = SwissTransferTheme.materialColors.error,
@@ -191,9 +222,13 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             ValidateUserEmailScreen(
+                otpCode = { "123" },
+                updateOtpCode = { _, _ -> },
+                emailToValidate = "example@example.com",
+                isLoading = { false },
+                isError = { false },
                 closeActivity = {},
                 navigateBack = {},
-                emailToValidate = "example@example.com",
             )
         }
     }
