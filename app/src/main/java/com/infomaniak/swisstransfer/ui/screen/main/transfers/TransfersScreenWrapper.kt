@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import kotlinx.parcelize.Parcelize
@@ -55,17 +56,35 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val isDeepLinkConsumed by transfersViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
-            if (transferUuid != null && !isDeepLinkConsumed) {
-                transfersViewModel.consumeDeepLink()
-                isDeepLink = true
-                navigateToDetails(direction, transferUuid)
-            }
+            HandleDeepLink(
+                transferUuid = transferUuid,
+                isDeepLinkConsumed = { isDeepLinkConsumed },
+                consumeDeepLink = transfersViewModel::consumeDeepLink,
+                isDeepLink = GetSetCallbacks(get = { isDeepLink }, set = { isDeepLink = it }),
+                direction = direction
+            )
             ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }, transfersViewModel = transfersViewModel)
         },
         detailPane = {
             DetailPane(navigator = this, hasTransfer, isDeepLink)
         },
     )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
+    transferUuid: String?,
+    isDeepLinkConsumed: () -> Boolean,
+    consumeDeepLink: () -> Unit,
+    isDeepLink: GetSetCallbacks<Boolean>,
+    direction: TransferDirection
+) {
+    if (transferUuid != null && !isDeepLinkConsumed()) {
+        consumeDeepLink()
+        isDeepLink.set(true)
+        navigateToDetails(direction, transferUuid)
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
