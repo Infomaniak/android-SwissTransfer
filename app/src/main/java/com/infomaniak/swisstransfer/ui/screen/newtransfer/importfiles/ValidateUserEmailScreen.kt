@@ -50,13 +50,13 @@ private const val OPT_LENGTH = 6
 private val MAX_LAYOUT_WIDTH = 400.dp
 
 @Composable
-fun ValidateUserEmailScreen() {
+fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit) {
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.transferTypeScreenTitle,
-                navigationMenu = TopAppBarButton.backButton {},
-                TopAppBarButton.closeButton {}
+                navigationMenu = TopAppBarButton.backButton(navigateBack),
+                TopAppBarButton.closeButton(closeActivity)
             )
         },
         topButton = { LargeButton(modifier = it, titleRes = R.string.buttonOpenMailApp, onClick = { }) },
@@ -193,7 +193,7 @@ private fun ColumnScope.CodeVerification() {
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            ValidateUserEmailScreen()
+            ValidateUserEmailScreen({}) { }
         }
     }
 }
