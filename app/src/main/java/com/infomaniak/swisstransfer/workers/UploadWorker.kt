@@ -65,9 +65,7 @@ class UploadWorker @AssistedInject constructor(
             return Result.failure()
         }
 
-        val uploadSessionUuid = inputData.getString(UPLOAD_SESSION_UUID) ?: return Result.failure()
-
-        val uploadSession = uploadManager.getUploadByUUID(uploadSessionUuid) ?: return Result.failure()
+        val uploadSession = uploadManager.getLastUpload() ?: return Result.failure()
 
         val totalSize = uploadSession.files.sumOf { it.size }
 
@@ -109,7 +107,6 @@ class UploadWorker @AssistedInject constructor(
             val workRequest = OneTimeWorkRequestBuilder<UploadWorker>()
                 .addTag(uploadSessionUuid)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                .setInputData(workDataOf(UPLOAD_SESSION_UUID to uploadSessionUuid))
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
         }
@@ -166,8 +163,6 @@ class UploadWorker @AssistedInject constructor(
 
     companion object {
         private const val TAG = "UploadWorker"
-        private const val UPLOAD_SESSION_UUID = "upload_session_uuid"
-
         private const val EXPECTED_CHUNK_SIZE = 50L * 1024 * 1024 // 50Mo
         private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
         private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
