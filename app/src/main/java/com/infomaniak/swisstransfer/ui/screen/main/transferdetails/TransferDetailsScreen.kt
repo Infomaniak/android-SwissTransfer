@@ -63,13 +63,12 @@ fun TransferDetailsScreen(
     transferUuid: String,
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
-    isDeepLink: Boolean = false,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(transferUuid) {
-        transferDetailsViewModel.loadTransfer(transferUuid, isDeepLink)
+        transferDetailsViewModel.loadTransfer(transferUuid)
     }
 
     if (uiState is Delete) {

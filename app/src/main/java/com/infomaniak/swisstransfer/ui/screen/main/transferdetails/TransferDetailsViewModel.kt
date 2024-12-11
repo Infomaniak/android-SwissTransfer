@@ -54,11 +54,16 @@ class TransferDetailsViewModel @Inject constructor(
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
-    fun loadTransfer(transferUuid: String, isDeeplink: Boolean) {
+    fun loadTransfer(transferUuid: String) {
         viewModelScope.launch {
-            if (isDeeplink) handleTransferDeeplink(transferUuid)
-            _transferUuidFlow.emit(transferUuid)
-            if (!isDeeplink) transferManager.fetchTransfer(transferUuid)
+            runCatching {
+                val transfer = transferManager.getTransferFlow(transferUuid).first()
+                if (transfer == null) handleTransferDeeplink(transferUuid)
+                _transferUuidFlow.emit(transferUuid)
+                if (transfer != null) transferManager.fetchTransfer(transferUuid)
+            }.onFailure { exception ->
+                SentryLog.e(TAG, "Failure on load a transfer", exception)
+            }
         }
     }
 
@@ -66,14 +71,11 @@ class TransferDetailsViewModel @Inject constructor(
 
     private suspend fun handleTransferDeeplink(transferUuid: String) {
         runCatching {
-            val transfer = transferManager.getTransferFlow(transferUuid).first()
-            if (transfer == null) {
-                transferManager.addTransferByLinkUUID(
-                    linkUUID = transferUuid,
-                    password = null,
-                    transferDirection = TransferDirection.RECEIVED,
-                )
-            }
+            transferManager.addTransferByLinkUUID(
+                linkUUID = transferUuid,
+                password = null,
+                transferDirection = TransferDirection.RECEIVED,
+            )
         }.onFailure { exception ->
             SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             // TODO: Handle errors
