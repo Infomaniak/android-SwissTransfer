@@ -107,31 +107,6 @@ fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit)
     }
 }
 
-private enum class LayoutStyle(
-    val horizontalAlignment: Alignment.Horizontal,
-    val textAlign: TextAlign,
-    val verticalAlignment: Alignment,
-    val columnMaxWidthModifier: Modifier,
-) {
-    TopLeft(
-        horizontalAlignment = Alignment.Start,
-        textAlign = TextAlign.Start,
-        verticalAlignment = Alignment.TopCenter,
-        columnMaxWidthModifier = Modifier,
-    ),
-    Centered(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        textAlign = TextAlign.Center,
-        verticalAlignment = Alignment.Center,
-        columnMaxWidthModifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
-    );
-
-    companion object {
-        @Composable
-        fun getCurrentLayoutStyle() = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) Centered else TopLeft
-    }
-}
-
 @Composable
 private fun ColumnScope.CodeVerification() {
     var otp by rememberSaveable { mutableStateOf("123") }
@@ -185,6 +160,31 @@ private fun ColumnScope.CodeVerification() {
             style = SwissTransferTheme.typography.labelRegular,
             color = SwissTransferTheme.materialColors.error,
         )
+    }
+}
+
+private enum class LayoutStyle(
+    val horizontalAlignment: Alignment.Horizontal,
+    val textAlign: TextAlign,
+    val verticalAlignment: Alignment,
+    val columnMaxWidthModifier: Modifier,
+) {
+    TopLeft(
+        horizontalAlignment = Alignment.Start,
+        textAlign = TextAlign.Start,
+        verticalAlignment = Alignment.TopCenter,
+        columnMaxWidthModifier = Modifier,
+    ),
+    Centered(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        textAlign = TextAlign.Center,
+        verticalAlignment = Alignment.Center,
+        columnMaxWidthModifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
+    );
+
+    companion object {
+        @Composable
+        fun getCurrentLayoutStyle() = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) Centered else TopLeft
     }
 }
 
