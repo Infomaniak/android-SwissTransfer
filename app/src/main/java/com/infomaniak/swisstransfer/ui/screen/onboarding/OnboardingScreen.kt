@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.infomaniak.library.onboarding.IndicatorStyle
 import com.infomaniak.library.onboarding.OnboardingPage
 import com.infomaniak.library.onboarding.OnboardingScaffold
 import com.infomaniak.swisstransfer.R
@@ -83,6 +84,13 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
                 goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
             )
         },
+        indicatorStyle = IndicatorStyle(
+            inactiveColor = SwissTransferTheme.materialColors.outlineVariant,
+            activeColor = SwissTransferTheme.materialColors.primary,
+            inactiveSize = 8.dp,
+            activeWidth = 16.dp,
+            indicatorSpacing = Margin.Mini,
+        )
     )
 }
 
