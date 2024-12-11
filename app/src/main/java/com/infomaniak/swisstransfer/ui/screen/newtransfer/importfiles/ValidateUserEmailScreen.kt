@@ -17,18 +17,10 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.LocalTextSelectionColors
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -36,19 +28,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.OtpTextField
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.OtpTextFieldStyle
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -139,7 +125,7 @@ private enum class LayoutStyle(
         verticalAlignment = Alignment.Center,
         columnMaxWidthModifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
     );
-    
+
     companion object {
         @Composable
         fun getCurrentLayoutStyle() = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) Centered else TopLeft
@@ -200,154 +186,6 @@ private fun ColumnScope.CodeVerification() {
             color = SwissTransferTheme.materialColors.error,
         )
     }
-}
-
-data class OtpTextFieldStyle(
-    val activeColor: Color,
-    val inactiveColor: Color,
-    val errorColor: Color,
-    val activeBorderThickness: Dp,
-    val inactiveBorderThickness: Dp,
-    val shape: RoundedCornerShape,
-    val size: Dp,
-    val textStyle: TextStyle,
-) {
-    companion object {
-        @Composable
-        fun default(
-            activeColor: Color = MaterialTheme.colorScheme.primary,
-            inactiveColor: Color = MaterialTheme.colorScheme.outline,
-            errorColor: Color = MaterialTheme.colorScheme.error,
-            activeBorderThickness: Dp = 2.dp,
-            inactiveBorderThickness: Dp = 1.dp,
-            shape: RoundedCornerShape = RoundedCornerShape(8.dp),
-            size: Dp = 48.dp,
-            textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-        ) = OtpTextFieldStyle(
-            activeColor = activeColor,
-            inactiveColor = inactiveColor,
-            errorColor = errorColor,
-            activeBorderThickness = activeBorderThickness,
-            inactiveBorderThickness = inactiveBorderThickness,
-            shape = shape,
-            size = size,
-            textStyle = textStyle,
-        )
-    }
-}
-
-@Composable
-fun OtpTextField(
-    modifier: Modifier = Modifier,
-    otpText: String,
-    otpLength: Int,
-    horizontalArrangement: Arrangement.Horizontal,
-    onOtpTextChange: (String, Boolean) -> Unit,
-    isCharacterValid: ((Char) -> Boolean)? = null,
-    otpTextFieldStyle: OtpTextFieldStyle,
-    isError: () -> Boolean = { false },
-    isEnabled: () -> Boolean = { true },
-) {
-    LaunchedEffect(Unit) {
-        if (otpText.length > otpLength) {
-            error("Otp text value must not have more than otpCount: $otpLength characters")
-        }
-    }
-
-    var isTextFieldFocused by remember { mutableStateOf(false) }
-
-    Box(contentAlignment = Alignment.Center) {
-        BasicTextField(
-            modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
-            value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
-            onValueChange = { textFieldValue ->
-                val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
-
-                if (text.length <= otpLength) {
-                    onOtpTextChange.invoke(text, text.length == otpLength)
-                } else {
-                    val truncatedText = text.take(otpLength)
-                    if (truncatedText != otpText) {
-                        onOtpTextChange.invoke(truncatedText, true)
-                    }
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword,
-                imeAction = ImeAction.Done,
-            ),
-            decorationBox = { innerTextField ->
-                CompositionLocalProvider(
-                    LocalTextSelectionColors provides TextSelectionColors(Color.Transparent, Color.Transparent)
-                ) {
-                    Box(modifier = Modifier.alpha(0f)) {
-                        innerTextField()
-                    }
-                }
-
-                Row(horizontalArrangement = horizontalArrangement) {
-                    repeat(otpLength) { index ->
-                        CharView(
-                            index = index,
-                            text = otpText,
-                            otpCount = otpLength,
-                            isTextFieldFocused = { isTextFieldFocused },
-                            isError = isError,
-                            otpTextFieldStyle = otpTextFieldStyle,
-                        )
-                    }
-                }
-            },
-            enabled = isEnabled(),
-        )
-
-        if (!isEnabled()) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(SwissTransferTheme.materialColors.background.copy(alpha = 0.8f)) // Change Color.Blue to any color you want
-            )
-        }
-    }
-
-}
-
-@Composable
-private fun CharView(
-    index: Int,
-    text: String,
-    otpCount: Int,
-    isTextFieldFocused: () -> Boolean,
-    isError: () -> Boolean,
-    otpTextFieldStyle: OtpTextFieldStyle,
-) = with(otpTextFieldStyle) {
-    val content: @Composable BoxScope.() -> Unit = when {
-        index == text.length -> {
-            {}
-        }
-        index > text.length -> {
-            {}
-        }
-        else -> {
-            { Text(text[index].toString(), style = textStyle) }
-        }
-    }
-
-    val isCharFocused = text.length == index || (text.length == otpCount && index == otpCount - 1)
-    val borderThickness = if (isTextFieldFocused() && isCharFocused) activeBorderThickness else inactiveBorderThickness
-    val borderColor = when {
-        isError() -> errorColor
-        isTextFieldFocused() && isCharFocused -> activeColor
-        else -> inactiveColor
-    }
-
-    Box(
-        modifier = Modifier
-            .size(size)
-            .border(borderThickness, borderColor, shape),
-        contentAlignment = Alignment.Center,
-        content = content
-    )
 }
 
 @PreviewAllWindows
