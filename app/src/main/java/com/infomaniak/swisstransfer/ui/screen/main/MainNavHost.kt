@@ -47,7 +47,7 @@ fun MainNavHost(
         composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
         receivedDestination {
             val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(TransferDirection.RECEIVED)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
     }

@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -28,6 +29,7 @@ import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -37,6 +39,7 @@ import javax.inject.Inject
 class TransfersViewModel @Inject constructor(
     private val transferManager: TransferManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
@@ -48,6 +51,14 @@ class TransfersViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+
+    val isDeepLinkConsumed = savedStateHandle.getStateFlow(isDeepLinkConsumedKey, false)
+
+    fun consumeDeepLink() {
+        viewModelScope.launch {
+            if (!isDeepLinkConsumed.first()) savedStateHandle[isDeepLinkConsumedKey] = true
+        }
+    }
 
     fun fetchPendingTransfers() {
         viewModelScope.launch(ioDispatcher) {
@@ -71,5 +82,7 @@ class TransfersViewModel @Inject constructor(
 
     companion object {
         private val TAG = TransfersViewModel::class.java.simpleName
+
+        private const val isDeepLinkConsumedKey = "isDeepLinkConsumed"
     }
 }
