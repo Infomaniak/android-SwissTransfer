@@ -50,7 +50,7 @@ private const val OPT_LENGTH = 6
 private val MAX_LAYOUT_WIDTH = 400.dp
 
 @Composable
-fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit) {
+fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit, emailToValidate: String) {
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -87,10 +87,7 @@ fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit)
             )
 
             Text(
-                TextUtils.assembleWithBoldArgument(
-                    stringResource(R.string.validateMailDescription),
-                    "example@example.com",
-                ),
+                TextUtils.assembleWithBoldArgument(stringResource(R.string.validateMailDescription), emailToValidate),
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 textAlign = layoutStyle.textAlign,
             )
@@ -109,7 +106,7 @@ fun ValidateUserEmailScreen(closeActivity: () -> Unit, navigateBack: () -> Unit)
 
 @Composable
 private fun ColumnScope.CodeVerification() {
-    var otp by rememberSaveable { mutableStateOf("123") }
+    var otpCode by rememberSaveable { mutableStateOf("") }
     var isError by rememberSaveable { mutableStateOf(false) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
@@ -121,11 +118,11 @@ private fun ColumnScope.CodeVerification() {
                 modifier = Modifier
                     .widthIn(max = MAX_LAYOUT_WIDTH)
                     .fillMaxWidth(),
-                otpText = otp,
+                otpText = otpCode,
                 otpLength = OPT_LENGTH,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 onOtpTextChange = { text, isFilled ->
-                    otp = text
+                    otpCode = text
 
                     if (isFilled) {
                         scope.launch {
@@ -133,7 +130,7 @@ private fun ColumnScope.CodeVerification() {
                             delay(2000)
                             isLoading = false
 
-                            isError = otp != "111111"
+                            isError = otpCode != "111111"
                         }
                     } else {
                         isError = false
@@ -193,7 +190,11 @@ private enum class LayoutStyle(
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            ValidateUserEmailScreen({}) { }
+            ValidateUserEmailScreen(
+                closeActivity = {},
+                navigateBack = {},
+                emailToValidate = "example@example.com",
+            )
         }
     }
 }

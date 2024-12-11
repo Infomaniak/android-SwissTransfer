@@ -43,7 +43,11 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             )
         }
         composable<ValidateUserEmailDestination> {
-            ValidateUserEmailScreen(closeActivity = closeActivity, navigateBack = { navController.popBackStack() })
+            ValidateUserEmailScreen(
+                closeActivity = closeActivity,
+                navigateBack = { navController.popBackStack() },
+                emailToValidate = "example@example.com", // TODO
+            )
         }
         composable<UploadProgressDestination> {
             val args = it.toRoute<UploadProgressDestination>()
