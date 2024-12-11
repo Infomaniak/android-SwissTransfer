@@ -113,8 +113,9 @@ fun EmailAddressTextField(
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                if (text.isEmail()) {
-                    validatedEmails.set(validatedEmails.get() + text)
+                val trimmedText = text.trim()
+                if (trimmedText.isEmail()) {
+                    validatedEmails.set(validatedEmails.get() + trimmedText)
                     text = ""
                 }
             },

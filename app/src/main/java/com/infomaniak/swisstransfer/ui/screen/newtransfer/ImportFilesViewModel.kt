@@ -87,12 +87,14 @@ class ImportFilesViewModel @Inject constructor(
 
     //region Transfer Author Email
     private var _transferAuthorEmail by mutableStateOf("")
-    private val isAuthorEmailInvalid by derivedStateOf { _transferAuthorEmail.isNotEmpty() && !_transferAuthorEmail.isEmail() }
+    private val isAuthorEmailInvalid by derivedStateOf {
+        _transferAuthorEmail.isNotEmpty() && !_transferAuthorEmail.trim().isEmail()
+    }
     //endregion
 
     //region Recipient Email
     private var _recipientEmail by mutableStateOf("")
-    private val isRecipientEmailInvalid by derivedStateOf { _recipientEmail.isNotEmpty() && !_recipientEmail.isEmail() }
+    private val isRecipientEmailInvalid by derivedStateOf { _recipientEmail.isNotEmpty() && !_recipientEmail.trim().isEmail() }
     private var _validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
@@ -157,7 +159,7 @@ class ImportFilesViewModel @Inject constructor(
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
-            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail else "",
+            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail.trim() else "",
             authorEmailToken = null,
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) _transferPassword else NO_PASSWORD,
             message = _transferMessage,
