@@ -20,11 +20,13 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -85,6 +87,7 @@ fun ValidateUserEmailScreen() {
 
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .padding(Margin.Medium)
                 .then(layoutStyle.columnMaxWidthModifier)
                 .align(layoutStyle.verticalAlignment),
