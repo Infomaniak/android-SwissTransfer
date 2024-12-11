@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

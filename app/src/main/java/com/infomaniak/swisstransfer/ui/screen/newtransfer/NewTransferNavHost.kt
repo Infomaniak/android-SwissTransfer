@@ -25,7 +25,7 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen

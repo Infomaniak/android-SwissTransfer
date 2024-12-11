@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -33,8 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.OtpTextField
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.OtpTextFieldStyle
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.OtpTextField
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.OtpTextFieldStyle
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
