@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,8 +41,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+
+/**
+ * @throws IllegalStateException if the first otpText is bigger than the maximum specified number of characters specified by
+ * [otpLength] or if it has invalid characters according to [isCharacterValid].
+ */
 @Composable
 fun OtpTextField(
     modifier: Modifier = Modifier,
@@ -50,13 +58,15 @@ fun OtpTextField(
     horizontalArrangement: Arrangement.Horizontal,
     onOtpTextChange: (String, Boolean) -> Unit,
     isCharacterValid: ((Char) -> Boolean)? = null,
-    otpTextFieldStyle: OtpTextFieldStyle,
+    otpTextFieldStyle: OtpTextFieldStyle = OtpTextFieldStyle.default(),
     isError: () -> Boolean = { false },
     isEnabled: () -> Boolean = { true },
 ) {
     LaunchedEffect(Unit) {
         if (otpText.length > otpLength) {
             error("Otp text value must not have more than otpCount: $otpLength characters")
+        } else if (isCharacterValid != null && otpText.any { !isCharacterValid(it) }) {
+            error("Otp text value must not have invalid characters based on the isCharacterValid rule")
         }
     }
 
@@ -83,12 +93,12 @@ fun OtpTextField(
                 imeAction = ImeAction.Done,
             ),
             decorationBox = { innerTextField ->
+                // Draw innerTextField but hides it and its text selection handles. This is needed to have the system copy/paste
+                // context menu place correctly on the screen
                 CompositionLocalProvider(
                     LocalTextSelectionColors provides TextSelectionColors(Color.Transparent, Color.Transparent)
                 ) {
-                    Box(modifier = Modifier.alpha(0f)) {
-                        innerTextField()
-                    }
+                    Box(modifier = Modifier.alpha(0f)) { innerTextField() }
                 }
 
                 Row(horizontalArrangement = horizontalArrangement) {
@@ -128,10 +138,7 @@ private fun CharView(
     otpTextFieldStyle: OtpTextFieldStyle,
 ) = with(otpTextFieldStyle) {
     val content: @Composable BoxScope.() -> Unit = when {
-        index == text.length -> {
-            {}
-        }
-        index > text.length -> {
+        index >= text.length -> {
             {}
         }
         else -> {
@@ -187,5 +194,30 @@ data class OtpTextFieldStyle(
             size = size,
             textStyle = textStyle,
         )
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun Preview() {
+    SwissTransferTheme {
+        Surface {
+            Column(verticalArrangement = Arrangement.spacedBy(Margin.Medium)) {
+                OtpTextField(
+                    otpText = "123",
+                    otpLength = 6,
+                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
+                    onOtpTextChange = { _, _ -> },
+                )
+
+                OtpTextField(
+                    otpText = "123456",
+                    otpLength = 6,
+                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
+                    onOtpTextChange = { _, _ -> },
+                    isError = { true },
+                )
+            }
+        }
     }
 }
