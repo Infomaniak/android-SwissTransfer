@@ -30,8 +30,12 @@ android {
         }
 
         //TODO: Remove preprod url when api is in prod
-        buildConfigField("String", "PREPROD_URL", "\"https://swisstransfer.preprod.dev.infomaniak.ch\"")
-        buildConfigField("String", "PROD_URL", "\"https://swisstransfer.com\"")
+        val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
+        val prodHost = "swisstransfer.com"
+        resValue("string", "preprod_host", preprodHost)
+        resValue("string", "prod_host", prodHost)
+        buildConfigField("String", "PREPROD_URL", "\"https://$preprodHost\"")
+        buildConfigField("String", "PROD_URL", "\"https://$prodHost\"")
 
         buildConfigField("String", "RECAPTCHA_API_SITE_KEY", "\"6LfaxOgpAAAAAI3Sj4rtB2oAFjkRJILiGEt-LUsc\"")
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
