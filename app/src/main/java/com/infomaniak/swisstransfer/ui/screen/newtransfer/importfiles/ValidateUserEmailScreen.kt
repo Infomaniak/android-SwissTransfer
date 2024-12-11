@@ -83,7 +83,7 @@ fun ValidateUserEmailScreen() {
             )
         },
     ) {
-        val layoutStyle = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) LayoutStyle.Centered else LayoutStyle.TopLeft
+        val layoutStyle = LayoutStyle.getCurrentLayoutStyle()
 
         Column(
             modifier = Modifier
@@ -138,7 +138,12 @@ private enum class LayoutStyle(
         textAlign = TextAlign.Center,
         verticalAlignment = Alignment.Center,
         columnMaxWidthModifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
-    ),
+    );
+    
+    companion object {
+        @Composable
+        fun getCurrentLayoutStyle() = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) Centered else TopLeft
+    }
 }
 
 @Composable
