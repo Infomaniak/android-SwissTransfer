@@ -41,7 +41,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import kotlinx.parcelize.Parcelize
@@ -50,7 +49,6 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? = null) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
-    var isDeepLink = false
 
     TwoPaneScaffold<DestinationContent>(
         listPane = {
@@ -60,13 +58,17 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
                 transferUuid = transferUuid,
                 isDeepLinkConsumed = { isDeepLinkConsumed },
                 consumeDeepLink = transfersViewModel::consumeDeepLink,
-                isDeepLink = GetSetCallbacks(get = { isDeepLink }, set = { isDeepLink = it }),
-                direction = direction
+                direction = direction,
             )
-            ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }, transfersViewModel = transfersViewModel)
+            ListPane(
+                direction,
+                navigator = this,
+                updateHasTransfer = { hasTransfer = it },
+                transfersViewModel = transfersViewModel
+            )
         },
         detailPane = {
-            DetailPane(navigator = this, hasTransfer, isDeepLink)
+            DetailPane(navigator = this, hasTransfer = { hasTransfer })
         },
     )
 }
@@ -77,12 +79,10 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
     transferUuid: String?,
     isDeepLinkConsumed: () -> Boolean,
     consumeDeepLink: () -> Unit,
-    isDeepLink: GetSetCallbacks<Boolean>,
-    direction: TransferDirection
+    direction: TransferDirection,
 ) {
     if (transferUuid != null && !isDeepLinkConsumed()) {
         consumeDeepLink()
-        isDeepLink.set(true)
         navigateToDetails(direction, transferUuid)
     }
 }
@@ -93,20 +93,20 @@ private fun ListPane(
     direction: TransferDirection,
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     transfersViewModel: TransfersViewModel,
-    hasTransfer: (Boolean) -> Unit,
+    updateHasTransfer: (Boolean) -> Unit,
 ) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
-            hasTransfer = hasTransfer,
+            hasTransfer = updateHasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
-            hasTransfer = hasTransfer,
+            hasTransfer = updateHasTransfer,
         )
     }
 }
@@ -128,19 +128,17 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 @Composable
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: Boolean,
-    isDeepLink: Boolean,
+    hasTransfer: () -> Boolean,
 ) {
 
     val destinationContent = navigator.safeCurrentContent()
 
     if (destinationContent == null) {
-        NoSelectionEmptyState(hasTransfer)
+        NoSelectionEmptyState(hasTransfer())
     } else {
         TransferDetailsScreen(
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
-            isDeepLink = isDeepLink,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
         )
     }
