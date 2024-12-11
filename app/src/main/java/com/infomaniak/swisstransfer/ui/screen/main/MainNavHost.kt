@@ -25,16 +25,21 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsComponent
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
+    isWindowSmall: Boolean,
+    onStartDestinationChanged: (MainNavigation) -> Unit,
+    closeFilesDetails: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -42,8 +47,41 @@ fun MainNavHost(
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
-        composable<ReceivedDestination> { TransfersScreenWrapper(TransferDirection.RECEIVED) }
+        composable<SentDestination> {
+            onStartDestinationChanged(SentDestination)
+            TransfersScreenWrapper(
+                navigateToFilesDetails = { folderUuid ->
+                    navController.navigate(FilesDetailsDestination(folderUuid))
+                },
+                direction = TransferDirection.SENT,
+            )
+        }
+        composable<ReceivedDestination> {
+            onStartDestinationChanged(ReceivedDestination)
+            TransfersScreenWrapper(
+                navigateToFilesDetails = { folderUuid ->
+                    navController.navigate(FilesDetailsDestination(folderUuid))
+                },
+                direction = TransferDirection.RECEIVED,
+            )
+        }
         composable<SettingsDestination> { SettingsScreenWrapper() }
+        composable<FilesDetailsDestination> {
+            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
+            FilesDetailsComponent(
+                navigateToDetails = { folderUuid ->
+                    navController.navigate(FilesDetailsDestination(folderUuid))
+                },
+                folderUuid = filesDetailsDestination.folderUuid,
+                navigateBack = { navController.popBackStack() },
+                close = {
+                    closeFilesDetails()
+                },
+                withFilesSize = false,
+                withSpaceLeft = false,
+                withFileDelete = false,
+                shouldDisplayTopAppBar = isWindowSmall,
+            )
+        }
     }
 }

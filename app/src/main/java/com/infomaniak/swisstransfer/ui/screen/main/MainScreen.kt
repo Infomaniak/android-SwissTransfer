@@ -17,18 +17,21 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import android.util.Log
+import androidx.compose.runtime.*
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainScreen() {
@@ -37,14 +40,47 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember(navBackStackEntry) {
-        derivedStateOf { navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination }
+        derivedStateOf {
+            navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination
+        }
     }
+
+    var lastStartDestination: MainNavigation by remember { mutableStateOf(MainNavigation.startDestination) }
 
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        largeWindowTopAppBar = { BrandTopAppBar() },
-        content = { MainNavHost(navController, currentDestination) },
+        windowTopAppBar = { isWindowLarge ->
+            // This is temporary to fix an issue with the animation when displaying the FilesDetailsScreen
+            if (isWindowLarge) {
+                if (currentDestination is MainNavigation.FilesDetailsDestination) {
+                    SwissTransferTopAppBar(
+                        navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
+                        actionMenus = arrayOf(TopAppBarButton.closeButton {
+                            goBackToStartScreen(navController, lastStartDestination)
+                        }),
+                    )
+                } else {
+                    BrandTopAppBar()
+                }
+            }
+        },
+        content = {
+            MainNavHost(
+                navController = navController,
+                currentDestination = currentDestination,
+                isWindowSmall = LocalWindowAdaptiveInfo.current.isWindowSmall(),
+                onStartDestinationChanged = { lastStartDestination = it },
+                closeFilesDetails = { goBackToStartScreen(navController, lastStartDestination) }
+            )
+        },
+    )
+}
+
+private fun goBackToStartScreen(navController: NavController, lastStartDestination: MainNavigation) {
+    navController.popBackStack(
+        route = lastStartDestination,
+        inclusive = false,
     )
 }
 

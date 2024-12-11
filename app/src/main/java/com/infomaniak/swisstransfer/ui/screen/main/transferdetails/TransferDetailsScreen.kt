@@ -64,6 +64,7 @@ fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
+    navigateToFilesDetails: (folderUuid: String) -> Unit,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -84,6 +85,7 @@ fun TransferDetailsScreen(
             setFileCheckStatus = { fileUid, isChecked ->
                 transferDetailsViewModel.checkedFiles[fileUid] = isChecked
             },
+            navigateToFilesDetails = navigateToFilesDetails,
         )
     }
 }
@@ -97,6 +99,7 @@ private fun TransferDetailsScreen(
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit,
     setFileCheckStatus: (String, Boolean) -> Unit,
+    navigateToFilesDetails: ((folderUuid: String) -> Unit)? = null,
 ) {
 
     val context = LocalContext.current
@@ -118,7 +121,14 @@ private fun TransferDetailsScreen(
     ) {
         Column {
 
-            FilesList(getTransfer, transferRecipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
+            FilesList(
+                getTransfer,
+                transferRecipients,
+                isMultiselectOn,
+                getCheckedFiles,
+                setFileCheckStatus,
+                navigateToFilesDetails,
+            )
 
             BottomBar(
                 direction = direction,
@@ -163,6 +173,7 @@ private fun ColumnScope.FilesList(
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
+    navigateToFilesDetails: ((folderUuid: String) -> Unit)? = null,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -176,7 +187,12 @@ private fun ColumnScope.FilesList(
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
         isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
-        setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
+        setUidCheckStatus = { fileUid, isChecked ->
+            setFileCheckStatus(fileUid, isChecked)
+        },
+        onClick = { fileUuid ->
+            navigateToFilesDetails?.invoke(fileUuid)
+        },
         header = {
             Column {
                 Spacer(Modifier.height(Margin.Large))
@@ -305,6 +321,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 getCheckedFiles = { mutableStateMapOf() },
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },
+                navigateToFilesDetails = { _ -> },
             )
         }
     }

@@ -45,12 +45,15 @@ import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun TransfersScreenWrapper(direction: TransferDirection) {
+fun TransfersScreenWrapper(
+    navigateToFilesDetails: (folderUuid: String) -> Unit,
+    direction: TransferDirection,
+) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold<DestinationContent>(
         listPane = { ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }) },
-        detailPane = { DetailPane(navigator = this, hasTransfer) },
+        detailPane = { DetailPane(navigator = this, hasTransfer, navigateToFilesDetails) },
     )
 }
 
@@ -59,7 +62,7 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 private fun ListPane(
     direction: TransferDirection,
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: (Boolean) -> Unit
+    hasTransfer: (Boolean) -> Unit,
 ) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
@@ -90,7 +93,11 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>, hasTransfer: Boolean) {
+private fun DetailPane(
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    hasTransfer: Boolean,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
+) {
 
     val destinationContent = navigator.safeCurrentContent()
 
@@ -101,6 +108,7 @@ private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>
             transferUuid = destinationContent.transferUuid,
             direction = destinationContent.direction,
             navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+            navigateToFilesDetails = navigateToFilesDetails,
         )
     }
 }
@@ -133,7 +141,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED)
+            TransfersScreenWrapper(navigateToFilesDetails = { _ -> }, TransferDirection.RECEIVED)
         }
     }
 }
