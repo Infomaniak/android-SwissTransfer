@@ -33,10 +33,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -45,11 +42,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core2.isEmail
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -58,7 +57,7 @@ fun EmailAddressTextField(
     modifier: Modifier = Modifier,
     label: String,
     initialValue: String,
-    emails: () -> List<String>,
+    validatedEmails: GetSetCallbacks<Set<String>>,
     onValueChange: (String) -> Unit,
     focusManager: FocusManager,
     focusRequester: FocusRequester,
@@ -112,7 +111,17 @@ fun EmailAddressTextField(
             imeAction = ImeAction.Done,
             showKeyboardOnFocus = true,
         ),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                if (text.isEmail()) {
+                    validatedEmails.set(validatedEmails.get() + text)
+                    text = ""
+                }
+            },
+            onPrevious = {
+                focusManager.moveFocus(FocusDirection.Enter)
+            }
+        ),
         singleLine = true,
         cursorBrush = SolidColor(cursorColor),
         decorationBox = { innerTextField ->
@@ -123,8 +132,11 @@ fun EmailAddressTextField(
                         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                         itemVerticalAlignment = Alignment.CenterVertically,
                     ) {
-                        emails().forEach {
-                            SwissTransferInputChip(text = it, onDismiss = { TODO() })
+                        validatedEmails.get().forEach {
+                            SwissTransferInputChip(
+                                text = it,
+                                onDismiss = { validatedEmails.set(validatedEmails.get().minus(it)) },
+                            )
                         }
                         Box(
                             modifier = Modifier
@@ -137,7 +149,7 @@ fun EmailAddressTextField(
                 },
                 enabled = true,
                 singleLine = true,
-                visualTransformation = if (emails().isNotEmpty() && !isFocused) {
+                visualTransformation = if (validatedEmails.get().isNotEmpty() && !isFocused) {
                     // TODO: Remove this hack to make the label always in "above" position when the labelPosition will be
                     //  available in the DecorationBox's API
                     VisualTransformation { TransformedText(AnnotatedString(label), OffsetMapping.Identity) }
@@ -170,7 +182,7 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
         Surface {
             Column(Modifier.padding(Margin.Medium)) {
                 EmailAddressTextField(
-                    emails = { emails.take(5) },
+                    validatedEmails = GetSetCallbacks(get = { emails.take(5).toSet() }, set = {}),
                     label = label,
                     initialValue = "test.test@ik.me",
                     onValueChange = {},
@@ -179,7 +191,7 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
-                    emails = { emptyList() },
+                    validatedEmails = GetSetCallbacks(get = { emptySet() }, set = {}),
                     label = label,
                     initialValue = "",
                     onValueChange = {},
@@ -188,7 +200,7 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
-                    emails = { emails.take(1) },
+                    validatedEmails = GetSetCallbacks(get = { emails.take(1).toSet() }, set = {}),
                     label = label,
                     initialValue = "test",
                     onValueChange = {},
@@ -197,7 +209,7 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
-                    emails = { emails.take(1) },
+                    validatedEmails = GetSetCallbacks(get = { emails.take(1).toSet() }, set = {}),
                     label = label,
                     initialValue = "test",
                     onValueChange = {},
