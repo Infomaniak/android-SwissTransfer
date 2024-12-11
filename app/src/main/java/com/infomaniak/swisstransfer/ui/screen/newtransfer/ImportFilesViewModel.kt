@@ -132,6 +132,7 @@ class ImportFilesViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
+                uploadManager.initUploadSession(recaptcha = "Recaptcha")!! // TODO Handle ContainerErrorsException here
                 uploadWorkerScheduler.scheduleWork(uuid)
                 _sendActionResult.update {
                     val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
