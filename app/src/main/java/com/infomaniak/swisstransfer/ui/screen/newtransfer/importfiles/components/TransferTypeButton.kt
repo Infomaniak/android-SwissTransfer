@@ -42,7 +42,7 @@ fun TransferTypeButton(transferType: TransferTypeUi, isActive: () -> Boolean, on
     Button(
         modifier = Modifier
             .height(Dimens.LargeButtonHeight)
-            .border(width = Dimens.BorderWidth, color = borderColor, shape = CustomShapes.SMALL),
+            .border(width = Dimens.BorderWidth, color = borderColor, shape = CustomShapes.EXTRA_SMALL),
         shape = CustomShapes.SMALL,
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = contentColor),
         onClick = onClick,

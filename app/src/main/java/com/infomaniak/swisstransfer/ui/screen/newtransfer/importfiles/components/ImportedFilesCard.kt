@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import android.os.Parcelable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -35,7 +37,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.components.SmallFileItem
+import com.infomaniak.swisstransfer.ui.components.SmallFileTileSize
+import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
+import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
@@ -55,7 +60,7 @@ fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
     pickFiles: () -> Unit,
-    removeFileByUid: (uid: String) -> Unit,
+    navigateToFileDetails: () -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -68,8 +73,8 @@ fun ImportedFilesCard(
         }
     }
 
-    SwissTransferCard(modifier) {
-        SharpRippleButton(onClick = { /* TODO */ }) {
+    SwissTransferCard(modifier.clickable { navigateToFileDetails() }) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
                 firstText = {
                     val fileCount = files().count()
@@ -104,7 +109,6 @@ fun ImportedFilesCard(
                     modifier = Modifier.animateItem(),
                     file = file,
                     smallFileTileSize = SmallFileTileSize.LARGE,
-                    onRemove = { removeFileByUid(file.uid) },
                 )
             }
         }
@@ -148,7 +152,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
             pickFiles = {},
-            removeFileByUid = {},
+            navigateToFileDetails = {},
         )
     }
 }
