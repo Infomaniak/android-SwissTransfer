@@ -65,7 +65,8 @@ class UploadWorker @AssistedInject constructor(
             return Result.failure()
         }
 
-        val uploadSession = uploadManager.initUploadSession(recaptcha = "Recaptcha")!!
+        val uploadSession = uploadManager.getLastUpload() ?: return Result.failure()
+
         val totalSize = uploadSession.files.sumOf { it.size }
 
         SentryLog.d(TAG, "Work started with ${uploadSession.files.count()} files of $totalSize bytes")
