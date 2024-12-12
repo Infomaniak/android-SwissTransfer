@@ -72,7 +72,7 @@ class ImportFilesViewModel @Inject constructor(
     private val _sendActionResult = MutableStateFlow<SendActionResult?>(SendActionResult.NotStarted)
     val sendActionResult = _sendActionResult.asStateFlow()
 
-    private val _integrityCheckResult = MutableStateFlow<Boolean?>(null)
+    private val _integrityCheckResult = MutableStateFlow(AppIntegrityResult.Idle)
     val integrityCheckResult = _integrityCheckResult.asStateFlow()
 
     @OptIn(FlowPreview::class)
@@ -167,12 +167,14 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
+    //region App Integrity
     fun checkAppIntegrity(appIntegrityManager: AppIntegrityManager) {
+        _integrityCheckResult.value = AppIntegrityResult.Ongoing
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 appIntegrityManager.getChallenge(
                     onSuccess = { requestAppIntegrityToken(appIntegrityManager) },
-                    onFailure = { _integrityCheckResult.value = false },
+                    onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
                 )
             }.onFailure { exception ->
                 SentryLog.e(TAG, "Failed to start the upload", exception)
@@ -187,7 +189,7 @@ class ImportFilesViewModel @Inject constructor(
                 SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
                 getApiIntegrityVerdict(appIntegrityManager, token)
             },
-            onFailure = { _integrityCheckResult.value = false },
+            onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
         )
     }
 
@@ -200,15 +202,20 @@ class ImportFilesViewModel @Inject constructor(
                 onSuccess = { mobileToken ->
                     SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
                     Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $mobileToken")
-                    _integrityCheckResult.value = true
+                    _integrityCheckResult.value = AppIntegrityResult.Success
                     viewModelScope.launch(ioDispatcher) {
                         appIntegrityManager.callDemoRoute(mobileToken)
                     }
                 },
-                onFailure = { _integrityCheckResult.value = false },
+                onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
             )
         }
     }
+
+    fun resetIntegrityCheckResult() {
+        _integrityCheckResult.value = AppIntegrityResult.Idle
+    }
+    //endregion
 
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
@@ -326,6 +333,10 @@ class ImportFilesViewModel @Inject constructor(
         data object Pending : SendActionResult()
         data class Success(val totalSize: Long) : SendActionResult()
         data object Failure : SendActionResult()
+    }
+
+    enum class AppIntegrityResult {
+        Idle, Ongoing, Success, Fail
     }
 
     companion object {
