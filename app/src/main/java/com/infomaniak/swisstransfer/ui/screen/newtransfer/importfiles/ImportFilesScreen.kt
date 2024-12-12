@@ -364,7 +364,7 @@ private fun SendButton(
 
     LargeButton(
         modifier = modifier,
-        titleRes = R.string.transferSendButton,
+        title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
         enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
         progress = progress,

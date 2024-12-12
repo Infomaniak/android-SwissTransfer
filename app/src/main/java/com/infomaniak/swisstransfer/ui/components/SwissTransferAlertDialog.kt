@@ -107,12 +107,12 @@ private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Un
     ) {
         SmallButton(
             style = ButtonType.TERTIARY,
-            titleRes = RCore2.string.buttonCancel,
+            title = stringResource(RCore2.string.buttonCancel),
             onClick = onDismissRequest,
         )
         Spacer(Modifier.width(Margin.Micro))
         SmallButton(
-            titleRes = R.string.buttonConfirm,
+            title = stringResource(R.string.buttonConfirm),
             onClick = onConfirmation,
             enabled = isEnabled
         )

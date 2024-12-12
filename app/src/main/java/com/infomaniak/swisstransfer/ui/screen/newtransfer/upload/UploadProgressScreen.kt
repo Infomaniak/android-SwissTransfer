@@ -109,7 +109,7 @@ private fun UploadProgressScreen(
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(RCore2.string.buttonCancel, modifier = it, onClick = { showBottomSheet.set(true) })
+            LargeButton(stringResource(RCore2.string.buttonCancel), modifier = it, onClick = { showBottomSheet.set(true) })
         },
     ) {
         Column(
@@ -159,7 +159,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
         imageVector = AppIllus.RedCrossPaperPlanes.image(),
         topButton = {
             LargeButton(
-                titleRes = R.string.uploadCancelConfirmBottomSheetCancel,
+                title = stringResource(R.string.uploadCancelConfirmBottomSheetCancel),
                 modifier = it,
                 style = ButtonType.ERROR,
                 onClick = onCancel,
@@ -167,7 +167,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
         },
         bottomButton = {
             LargeButton(
-                titleRes = R.string.uploadCancelConfirmBottomSheetClose,
+                title = stringResource(R.string.uploadCancelConfirmBottomSheetClose),
                 modifier = it,
                 style = ButtonType.TERTIARY,
                 onClick = closeButtonSheet,

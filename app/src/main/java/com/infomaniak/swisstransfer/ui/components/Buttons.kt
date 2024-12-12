@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -26,11 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.theme.Dimens
@@ -42,7 +39,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
  */
 @Composable
 fun LargeButton(
-    @StringRes titleRes: Int,
+    title: String,
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
     enabled: () -> Boolean = { true },
@@ -52,7 +49,7 @@ fun LargeButton(
     imageVector: ImageVector? = null,
 ) {
     CoreButton(
-        titleRes,
+        title,
         modifier,
         ButtonSize.LARGE,
         style,
@@ -69,7 +66,7 @@ fun LargeButton(
  */
 @Composable
 fun SmallButton(
-    @StringRes titleRes: Int,
+    title: String,
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.PRIMARY,
     enabled: () -> Boolean = { true },
@@ -79,7 +76,7 @@ fun SmallButton(
     imageVector: ImageVector? = null,
 ) {
     CoreButton(
-        titleRes,
+        title,
         modifier,
         ButtonSize.SMALL,
         style,
@@ -93,7 +90,7 @@ fun SmallButton(
 
 @Composable
 private fun CoreButton(
-    @StringRes titleRes: Int,
+    title: String,
     modifier: Modifier,
     buttonSize: ButtonSize,
     style: ButtonType,
@@ -111,17 +108,17 @@ private fun CoreButton(
         progress,
         onClick,
     ) {
-        ButtonTextContent(imageVector, titleRes)
+        ButtonTextContent(imageVector, title)
     }
 }
 
 @Composable
-private fun ButtonTextContent(imageVector: ImageVector?, titleRes: Int) {
+private fun ButtonTextContent(imageVector: ImageVector?, title: String) {
     imageVector?.let {
         Icon(modifier = Modifier.size(Dimens.SmallIconSize), imageVector = it, contentDescription = null)
         Spacer(Modifier.width(Margin.Mini))
     }
-    Text(text = stringResource(id = titleRes), style = SwissTransferTheme.typography.bodyMedium)
+    Text(text = title, style = SwissTransferTheme.typography.bodyMedium)
 }
 
 private enum class ButtonSize(val height: Dp) {
@@ -138,10 +135,10 @@ private fun LargeButtonPreview() {
             Column {
                 ButtonType.entries.forEach {
                     Row {
-                        LargeButton(titleRes = R.string.appName, style = it, onClick = {}, imageVector = AppIcons.Add)
+                        LargeButton(title = "SwissTransfer", style = it, onClick = {}, imageVector = AppIcons.Add)
                         Spacer(Modifier.width(Margin.Mini))
                         LargeButton(
-                            titleRes = R.string.appName,
+                            title = "SwissTransfer",
                             style = it,
                             progress = { 0.3f },
                             onClick = {},
@@ -150,10 +147,10 @@ private fun LargeButtonPreview() {
 
                         Spacer(Modifier.width(Margin.Mini))
 
-                        SmallButton(titleRes = R.string.appName, style = it, imageVector = AppIcons.Add, onClick = {})
+                        SmallButton(title = "SwissTransfer", style = it, imageVector = AppIcons.Add, onClick = {})
                         Spacer(Modifier.width(Margin.Mini))
                         SmallButton(
-                            titleRes = R.string.appName,
+                            title = "SwissTransfer",
                             style = it,
                             progress = { 0.3f },
                             imageVector = AppIcons.Add,
