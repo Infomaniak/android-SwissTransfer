@@ -109,10 +109,14 @@ private fun ValidateUserEmailScreen(
             )
         },
         topButton = {
-            LargeButton(modifier = it, title = stringResource(R.string.buttonOpenMailApp), onClick = {})
+            LargeButton(
+                modifier = it,
+                title = stringResource(R.string.buttonOpenMailApp),
+                onClick = {},
+                enabled = { !isLoading() })
         },
         bottomButton = { modifier ->
-            ResendCodeCountDownButton(modifier, onResendEmailCode)
+            ResendCodeCountDownButton(modifier, onResendEmailCode, enabled = { !isLoading() })
         },
     ) {
         val layoutStyle = LayoutStyle.getCurrentLayoutStyle()
@@ -151,7 +155,7 @@ private fun ValidateUserEmailScreen(
 }
 
 @Composable
-private fun ResendCodeCountDownButton(modifier: Modifier, onResendEmailCode: () -> Unit) {
+private fun ResendCodeCountDownButton(modifier: Modifier, onResendEmailCode: () -> Unit, enabled: () -> Boolean) {
     var timeLeft by rememberSaveable { mutableIntStateOf(0) }
     var isRunning by rememberSaveable { mutableStateOf(false) }
 
@@ -179,6 +183,7 @@ private fun ResendCodeCountDownButton(modifier: Modifier, onResendEmailCode: () 
                 startTimer()
                 onResendEmailCode()
             },
+            enabled = enabled
         )
     } else {
         LargeButton(
