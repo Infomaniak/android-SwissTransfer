@@ -18,20 +18,47 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SmallButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun NewTransferScreen(closeActivity: () -> Unit) {
     val navController = rememberNavController()
-    NewTransferNavHost(navController, closeActivity)
+    var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
+
+    NewTransferNavHost(navController, closeActivity = { displayConfirmationDialog = true })
+
+    if (displayConfirmationDialog) ConfirmLeavingDialog(onLeave = closeActivity, onCancel = { displayConfirmationDialog = false })
+}
+
+@Composable
+fun ConfirmLeavingDialog(onLeave: () -> Unit, onCancel: () -> Unit) {
+    SwissTransferAlertDialog(
+        titleRes = R.string.newTransferConfirmLeavingDialogTitle,
+        descriptionRes = R.string.newTransferLeavingDialogDescription,
+        positiveButton = { onClick ->
+            SmallButton(title = stringResource(R.string.newTransferLeavingDialogPositiveButton), onClick = onLeave)
+        },
+        negativeButton = {
+            SmallButton(title = stringResource(R.string.newTransferLeavingDialogNegativeButton), onClick = onCancel)
+        },
+        onDismiss = onCancel,
+    )
 }
 
 @PreviewAllWindows
 @Composable
 private fun NewTransferPreview() {
     SwissTransferTheme {
-        NewTransferScreen {}
+        ConfirmLeavingDialog({}, {})
     }
 }
