@@ -25,7 +25,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.AppIntegrityResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -80,15 +80,13 @@ fun ImportFilesScreen(
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
     val integrityCheckResult by importFilesViewModel.integrityCheckResult.collectAsStateWithLifecycle()
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    HandleIntegrityCheckResult(
+        integrityCheckResult = { integrityCheckResult },
+        resetResult = { importFilesViewModel.resetIntegrityCheckResult() },
+        sendTransfer = { importFilesViewModel.sendTransfer() },
+    )
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
-    HandleIntegrityCheckResult(
-        getIntegrityCheckResult = { integrityCheckResult },
-        sendTransfer = { importFilesViewModel.sendTransfer() },
-        errorMessage = stringResource(R.string.uploadErrorDescription),
-        snackbarHostState = { snackbarHostState },
-    )
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
 
@@ -129,6 +127,7 @@ fun ImportFilesScreen(
         removeFileByUid = importFilesViewModel::removeFileByUid,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
+        integrityCheckResult = { integrityCheckResult },
         checkAppIntegrity = { importFilesViewModel.checkAppIntegrity(appIntegrityManager) },
         shouldStartByPromptingUserForFiles = true,
     )
@@ -151,15 +150,18 @@ private fun HandleSendActionResult(
 
 @Composable
 private fun HandleIntegrityCheckResult(
-    getIntegrityCheckResult: () -> Boolean?,
+    integrityCheckResult: () -> AppIntegrityResult,
+    resetResult: () -> Unit,
     sendTransfer: () -> Unit,
-    errorMessage: String,
-    snackbarHostState: () -> SnackbarHostState,
 ) {
-    LaunchedEffect(getIntegrityCheckResult() != null) {
-        getIntegrityCheckResult()?.let { isSuccess ->
-            if (isSuccess) sendTransfer() else snackbarHostState().showSnackbar(errorMessage)
+    val result = integrityCheckResult()
+    LaunchedEffect(result == AppIntegrityResult.Success || result == AppIntegrityResult.Fail) {
+        when (integrityCheckResult()) {
+            AppIntegrityResult.Success -> sendTransfer()
+            AppIntegrityResult.Fail -> Unit // TODO: Show error
+            else -> Unit
         }
+        resetResult()
     }
 }
 
@@ -176,6 +178,7 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
+    integrityCheckResult: () -> AppIntegrityResult,
     checkAppIntegrity: () -> Unit,
 ) {
 
@@ -197,6 +200,7 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
+                integrityCheckResult = integrityCheckResult,
                 checkAppIntegrityBeforeSendingTransfer = checkAppIntegrity,
             )
         },
@@ -374,9 +378,9 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
+    integrityCheckResult: () -> AppIntegrityResult,
     checkAppIntegrityBeforeSendingTransfer: () -> Unit,
 ) {
-    var isCheckingAppIntegrity by remember { mutableStateOf(false) }
     val remainingFilesCount = filesToImportCount()
     val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
 
@@ -396,11 +400,10 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
-        showIndeterminateProgress = { isCheckingAppIntegrity },
+        showIndeterminateProgress = { integrityCheckResult() == AppIntegrityResult.Ongoing },
         enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
         progress = progress,
         onClick = {
-            isCheckingAppIntegrity = true
             checkAppIntegrityBeforeSendingTransfer()
         },
     )
@@ -469,6 +472,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
+            integrityCheckResult = { AppIntegrityResult.Idle },
             checkAppIntegrity = {},
         )
     }
