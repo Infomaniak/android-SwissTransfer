@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
@@ -71,7 +70,7 @@ private fun Preview() {
         Surface {
             BottomStickyButtonScaffold(
                 topBar = { BrandTopAppBar() },
-                topButton = { modifier -> LargeButton(R.string.appName, onClick = {}, modifier = modifier) },
+                topButton = { modifier -> LargeButton("Top button", onClick = {}, modifier = modifier) },
             ) {
                 Text(
                     modifier = Modifier

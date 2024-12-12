@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -55,7 +56,7 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String
         topButton = {
             LargeButton(
                 modifier = it,
-                titleRes = R.string.sharePasswordButton,
+                title = stringResource(R.string.sharePasswordButton),
                 imageVector = AppIcons.DocumentOnDocument,
                 onClick = {
                     context.copyText(
@@ -69,7 +70,7 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String
         bottomButton = {
             LargeButton(
                 modifier = it,
-                titleRes = R.string.contentDescriptionButtonClose,
+                title = stringResource(R.string.contentDescriptionButtonClose),
                 style = ButtonType.SECONDARY,
                 onClick = closeBottomSheet,
             )

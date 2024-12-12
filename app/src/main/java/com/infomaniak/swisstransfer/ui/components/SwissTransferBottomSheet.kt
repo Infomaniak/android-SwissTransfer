@@ -162,7 +162,7 @@ private fun BottomSheetDefaultsPreview() {
                 topButton = {
                     LargeButton(
                         modifier = it,
-                        titleRes = R.string.appName,
+                        title = "Top button",
                         style = ButtonType.ERROR,
                         onClick = {},
                     )
@@ -170,7 +170,7 @@ private fun BottomSheetDefaultsPreview() {
                 bottomButton = {
                     LargeButton(
                         modifier = it,
-                        titleRes = R.string.appName,
+                        title = "Bottom button",
                         style = ButtonType.TERTIARY,
                         onClick = {},
                     )

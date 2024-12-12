@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -114,14 +113,14 @@ private fun DoubleButtonComboPreview() {
                 topButton = {
                     LargeButton(
                         modifier = it,
-                        titleRes = R.string.appName,
+                        title = "Top button",
                         onClick = {},
                     )
                 },
                 bottomButton = {
                     LargeButton(
                         modifier = it,
-                        titleRes = R.string.appName,
+                        title = "Bottom button",
                         onClick = {},
                     )
                 },
@@ -131,7 +130,7 @@ private fun DoubleButtonComboPreview() {
                 bottomButton = {
                     LargeButton(
                         modifier = it,
-                        titleRes = R.string.appName,
+                        title = "Single button",
                         onClick = {},
                     )
                 },
