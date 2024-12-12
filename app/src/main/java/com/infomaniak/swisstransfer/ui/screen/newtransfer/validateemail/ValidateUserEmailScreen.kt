@@ -107,10 +107,15 @@ private fun ValidateUserEmailScreen(
             )
         },
         topButton = {
-            LargeButton(modifier = it, titleRes = R.string.buttonOpenMailApp, onClick = {})
+            LargeButton(modifier = it, title = stringResource(R.string.buttonOpenMailApp), onClick = {})
         },
         bottomButton = {
-            LargeButton(modifier = it, titleRes = R.string.validateMailCodeNotReceived, style = ButtonType.TERTIARY, onClick = {})
+            LargeButton(
+                modifier = it,
+                title = stringResource(R.string.validateMailCodeNotReceived),
+                style = ButtonType.TERTIARY,
+                onClick = {},
+            )
         },
     ) {
         val layoutStyle = LayoutStyle.getCurrentLayoutStyle()
