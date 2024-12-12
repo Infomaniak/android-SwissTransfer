@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core2.appintegrity.AppIntegrityManager
+import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
+import com.infomaniak.core2.appintegrity.AppIntegrityRoutes
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -32,6 +36,7 @@ import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toTransferOption
@@ -66,6 +71,9 @@ class ImportFilesViewModel @Inject constructor(
 
     private val _sendActionResult = MutableStateFlow<SendActionResult?>(null)
     val sendActionResult = _sendActionResult.asStateFlow()
+
+    private val _integrityCheckResult = MutableStateFlow(AppIntegrityResult.Idle)
+    val integrityCheckResult = _integrityCheckResult.asStateFlow()
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -143,6 +151,56 @@ class ImportFilesViewModel @Inject constructor(
             }
         }
     }
+
+    //region App Integrity
+    fun checkAppIntegrity(appIntegrityManager: AppIntegrityManager) {
+        _integrityCheckResult.value = AppIntegrityResult.Ongoing
+        viewModelScope.launch(ioDispatcher) {
+            runCatching {
+                appIntegrityManager.getChallenge(
+                    onSuccess = { requestAppIntegrityToken(appIntegrityManager) },
+                    onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+                )
+            }.onFailure { exception ->
+                SentryLog.e(TAG, "Failed to start the upload", exception)
+                _sendActionResult.update { SendActionResult.Failure }
+            }
+        }
+    }
+
+    private fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager) {
+        appIntegrityManager.requestClassicIntegrityVerdictToken(
+            onSuccess = { token ->
+                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
+                getApiIntegrityVerdict(appIntegrityManager, token)
+            },
+            onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+        )
+    }
+
+    private fun getApiIntegrityVerdict(appIntegrityManager: AppIntegrityManager, appIntegrityToken: String) {
+        viewModelScope.launch(ioDispatcher) {
+            appIntegrityManager.getApiIntegrityVerdict(
+                integrityToken = appIntegrityToken,
+                packageName = BuildConfig.APPLICATION_ID,
+                targetUrl = AppIntegrityRoutes.demo,
+                onSuccess = { mobileToken ->
+                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
+                    Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $mobileToken")
+                    _integrityCheckResult.value = AppIntegrityResult.Success
+                    viewModelScope.launch(ioDispatcher) {
+                        appIntegrityManager.callDemoRoute(mobileToken)
+                    }
+                },
+                onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+            )
+        }
+    }
+
+    fun resetIntegrityCheckResult() {
+        _integrityCheckResult.value = AppIntegrityResult.Idle
+    }
+    //endregion
 
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
@@ -258,6 +316,10 @@ class ImportFilesViewModel @Inject constructor(
     sealed class SendActionResult {
         data class Success(val totalSize: Long) : SendActionResult()
         data object Failure : SendActionResult()
+    }
+
+    enum class AppIntegrityResult {
+        Idle, Ongoing, Success, Fail
     }
 
     companion object {

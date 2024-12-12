@@ -30,11 +30,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.isEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
@@ -45,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.AppIntegrityResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -60,6 +63,9 @@ fun ImportFilesScreen(
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
 ) {
+    val appContext = LocalContext.current.applicationContext
+    val appIntegrityManager by lazy { AppIntegrityManager(appContext) }
+
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
     val currentSessionFilesCount by importFilesViewModel.currentSessionFilesCount.collectAsStateWithLifecycle()
@@ -72,6 +78,13 @@ fun ImportFilesScreen(
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
+    val integrityCheckResult by importFilesViewModel.integrityCheckResult.collectAsStateWithLifecycle()
+
+    HandleIntegrityCheckResult(
+        integrityCheckResult = { integrityCheckResult },
+        resetResult = { importFilesViewModel.resetIntegrityCheckResult() },
+        sendTransfer = { importFilesViewModel.sendTransfer() },
+    )
 
     HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
 
@@ -114,7 +127,8 @@ fun ImportFilesScreen(
         removeFileByUid = importFilesViewModel::removeFileByUid,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
-        sendTransfer = importFilesViewModel::sendTransfer,
+        integrityCheckResult = { integrityCheckResult },
+        checkAppIntegrity = { importFilesViewModel.checkAppIntegrity(appIntegrityManager) },
         shouldStartByPromptingUserForFiles = true,
     )
 }
@@ -135,6 +149,23 @@ private fun HandleSendActionResult(
 }
 
 @Composable
+private fun HandleIntegrityCheckResult(
+    integrityCheckResult: () -> AppIntegrityResult,
+    resetResult: () -> Unit,
+    sendTransfer: () -> Unit,
+) {
+    val result = integrityCheckResult()
+    LaunchedEffect(result == AppIntegrityResult.Success || result == AppIntegrityResult.Fail) {
+        when (integrityCheckResult()) {
+            AppIntegrityResult.Success -> sendTransfer()
+            AppIntegrityResult.Fail -> Unit // TODO: Show error
+            else -> Unit
+        }
+        resetResult()
+    }
+}
+
+@Composable
 private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
@@ -147,7 +178,8 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
-    sendTransfer: () -> Unit,
+    integrityCheckResult: () -> AppIntegrityResult,
+    checkAppIntegrity: () -> Unit,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -168,7 +200,8 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
-                navigateToUploadProgress = sendTransfer,
+                integrityCheckResult = integrityCheckResult,
+                checkAppIntegrityBeforeSendingTransfer = checkAppIntegrity,
             )
         },
         content = {
@@ -345,7 +378,8 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
-    navigateToUploadProgress: () -> Unit,
+    integrityCheckResult: () -> AppIntegrityResult,
+    checkAppIntegrityBeforeSendingTransfer: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
     val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
@@ -366,9 +400,12 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
+        showIndeterminateProgress = { integrityCheckResult() == AppIntegrityResult.Ongoing },
         enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
         progress = progress,
-        onClick = navigateToUploadProgress,
+        onClick = {
+            checkAppIntegrityBeforeSendingTransfer()
+        },
     )
 }
 
@@ -435,7 +472,8 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
-            sendTransfer = {},
+            integrityCheckResult = { AppIntegrityResult.Idle },
+            checkAppIntegrity = {},
         )
     }
 }
