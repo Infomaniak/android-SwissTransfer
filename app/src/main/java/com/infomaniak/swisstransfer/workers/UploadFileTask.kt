@@ -102,7 +102,9 @@ class UploadFileTask(
 
                 launch {
                     try {
-                        waitForOthersIfLastChunk(isLastChunk, completableJob, completedChunks, lastChunkIndex)
+                        if (totalChunks > 1) {
+                            waitForOthersIfLastChunk(isLastChunk, completableJob, completedChunks, lastChunkIndex)
+                        }
                         startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
                     } finally {
                         byteArrayPool.offer(dataByteArray)
