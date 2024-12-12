@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -37,7 +38,7 @@ fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
         bottomButton = {
             LargeButton(
                 modifier = it,
-                titleRes = RCore2.string.buttonRetry,
+                title = stringResource(RCore2.string.buttonRetry),
                 onClick = navigateToImportFiles,
             )
         }

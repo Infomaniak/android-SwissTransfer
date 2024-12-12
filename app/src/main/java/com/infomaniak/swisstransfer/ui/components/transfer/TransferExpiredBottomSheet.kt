@@ -62,7 +62,7 @@ fun TransferExpiredBottomSheet(
         bottomButton = {
             LargeButton(
                 modifier = it,
-                titleRes = R.string.transferExpiredButton,
+                title = stringResource(R.string.transferExpiredButton),
                 imageVector = AppIcons.Bin,
                 onClick = {
                     onDeleteTransferClicked()

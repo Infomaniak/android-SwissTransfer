@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.QrCode
@@ -41,7 +42,7 @@ fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottom
         bottomButton = {
             LargeButton(
                 modifier = it,
-                titleRes = R.string.contentDescriptionButtonClose,
+                title = stringResource(R.string.contentDescriptionButtonClose),
                 onClick = closeBottomSheet,
             )
         },
