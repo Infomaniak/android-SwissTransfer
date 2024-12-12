@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.toFloat
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.WeightOneSpacer
@@ -72,9 +73,14 @@ fun PasswordOptionAlertDialog(
     SwissTransferAlertDialog(
         titleRes = R.string.settingsOptionPassword,
         descriptionRes = R.string.settingsPasswordDescription,
+        positiveButton = {
+            SwissTransferAlertDialogDefaults.confirmButton(
+                isEnabled = { !isPasswordActivated || isPasswordValid() },
+                onClick = ::onConfirmButtonClicked,
+            )
+        },
+        negativeButton = { SwissTransferAlertDialogDefaults.cancelButton(onClick = ::onDismiss) },
         onDismiss = ::onDismiss,
-        onConfirmation = ::onConfirmButtonClicked,
-        isConfirmButtonEnabled = { !isPasswordActivated || isPasswordValid() },
     ) {
         ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
         Spacer(Modifier.height(Margin.Medium))
