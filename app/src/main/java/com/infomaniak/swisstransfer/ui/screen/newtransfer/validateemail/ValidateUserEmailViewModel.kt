@@ -70,4 +70,10 @@ class ValidateUserEmailViewModel @Inject constructor(
     fun resetErrorState() {
         _isError.value = false
     }
+
+    fun resendEmailCode(email: String) {
+        viewModelScope.launch(ioDispatcher) {
+            // TODO //uploadRepository.resendEmailCode(ResendEmailCodeBody(email, ))
+        }
+    }
 }

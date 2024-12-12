@@ -160,10 +160,10 @@
     <string name="urlAbout">https://www.infomaniak.com/en/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/f12466ad-db5b-4f5c-b24c-a54b0a5117ca/#ideas/popular</string>
     <string name="validateMailCodeIncorrectError">The code entered is incorrect</string>
-    <string name="validateMailCodeNotReceived">I did not receive the code</string>
     <string name="validateMailDescription">We’ve sent a code to %s. Enter it below to have your email address verified in the app:</string>
     <string name="validateMailInfo">Remember to check the spam folder of your email address.</string>
-    <string name="validateMailResendCode">Send the code again in %ds</string>
+    <string name="validateMailResendCode">Resend a code</string>
+    <string name="validateMailResendCodeTemplate">Resend a code (%ds)</string>
     <string name="validateMailTitle">Check your email</string>
     <string name="version">Version</string>
 </resources>

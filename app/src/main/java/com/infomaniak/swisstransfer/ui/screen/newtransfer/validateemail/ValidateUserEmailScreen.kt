@@ -23,11 +23,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,9 +43,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 private const val OPT_LENGTH = 6
+private const val RESEND_EMAIL_CODE_COOLDOWN = 30
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 
@@ -85,6 +85,7 @@ fun ValidateUserEmailScreen(
         isError = { isError },
         navigateBack = navigateBack,
         closeActivity = closeActivity,
+        onResendEmailCode = { validateUserEmailViewModel.resendEmailCode(emailToValidate) }
     )
 }
 
@@ -97,6 +98,7 @@ private fun ValidateUserEmailScreen(
     isError: () -> Boolean,
     navigateBack: () -> Unit,
     closeActivity: () -> Unit,
+    onResendEmailCode: () -> Unit,
 ) {
     BottomStickyButtonScaffold(
         topBar = {
@@ -109,13 +111,8 @@ private fun ValidateUserEmailScreen(
         topButton = {
             LargeButton(modifier = it, title = stringResource(R.string.buttonOpenMailApp), onClick = {})
         },
-        bottomButton = {
-            LargeButton(
-                modifier = it,
-                title = stringResource(R.string.validateMailCodeNotReceived),
-                style = ButtonType.TERTIARY,
-                onClick = {},
-            )
+        bottomButton = { modifier ->
+            ResendCodeCountDownButton(modifier, onResendEmailCode)
         },
     ) {
         val layoutStyle = LayoutStyle.getCurrentLayoutStyle()
@@ -150,6 +147,47 @@ private fun ValidateUserEmailScreen(
                 textAlign = layoutStyle.textAlign,
             )
         }
+    }
+}
+
+@Composable
+private fun ResendCodeCountDownButton(modifier: Modifier, onResendEmailCode: () -> Unit) {
+    var timeLeft by rememberSaveable { mutableIntStateOf(0) }
+    var isRunning by rememberSaveable { mutableStateOf(false) }
+
+    fun startTimer() {
+        timeLeft = RESEND_EMAIL_CODE_COOLDOWN
+        isRunning = true
+    }
+
+    LaunchedEffect(isRunning) {
+        if (isRunning) {
+            while (timeLeft > 0) {
+                delay(1.seconds)
+                timeLeft--
+            }
+            isRunning = false
+        }
+    }
+
+    if (timeLeft == 0) {
+        LargeButton(
+            modifier = modifier,
+            title = stringResource(R.string.validateMailResendCode),
+            style = ButtonType.TERTIARY,
+            onClick = {
+                startTimer()
+                onResendEmailCode()
+            },
+        )
+    } else {
+        LargeButton(
+            modifier = modifier,
+            title = stringResource(R.string.validateMailResendCodeTemplate, timeLeft),
+            style = ButtonType.TERTIARY,
+            onClick = {},
+            enabled = { false }
+        )
     }
 }
 
@@ -234,6 +272,7 @@ private fun Preview() {
                 isError = { false },
                 closeActivity = {},
                 navigateBack = {},
+                onResendEmailCode = {},
             )
         }
     }
