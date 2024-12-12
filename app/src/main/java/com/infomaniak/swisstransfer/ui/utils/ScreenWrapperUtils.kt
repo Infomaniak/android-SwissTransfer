@@ -19,12 +19,14 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 object ScreenWrapperUtils {
 
     @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-    fun getBackNavigation(navigator: ThreePaneScaffoldNavigator<*>): (() -> Unit)? {
-        val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
+    fun getBackNavigation(coroutineScope: CoroutineScope, navigator: ThreePaneScaffoldNavigator<*>): (() -> Unit)? {
+        val navigateBackCallback: () -> Unit = { coroutineScope.launch { navigator.navigateBack() } }
         val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
         return navigateBack
     }
