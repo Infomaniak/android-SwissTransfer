@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -284,6 +285,7 @@ private fun ColumnScope.EmailAddressesTextFields(
     shouldShowEmailAddressesFields: () -> Boolean,
 ) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
+        val focusManager = LocalFocusManager.current
         Column {
             val isAuthorError = isAuthorEmailInvalid()
             val isRecipientError = isRecipientEmailInvalid()
@@ -293,6 +295,8 @@ private fun ColumnScope.EmailAddressesTextFields(
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
                 initialValue = transferAuthorEmail.get(),
                 keyboardType = KeyboardType.Email,
+                maxLineNumber = 1,
+                imeAction = ImeAction.Next,
                 isError = isAuthorError,
                 supportingText = getEmailError(isAuthorError),
                 onValueChange = transferAuthorEmail.set,
@@ -306,8 +310,8 @@ private fun ColumnScope.EmailAddressesTextFields(
                 onValueChange = recipientEmail.set,
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
-                focusManager = LocalFocusManager.current,
                 focusRequester = FocusRequester.Default,
+                focusManager = focusManager,
             )
             Spacer(Modifier.height(Margin.Medium))
         }
