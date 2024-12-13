@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -310,7 +309,6 @@ private fun ColumnScope.EmailAddressesTextFields(
                 onValueChange = recipientEmail.set,
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
-                focusRequester = FocusRequester.Default,
                 focusManager = focusManager,
             )
             Spacer(Modifier.height(Margin.Medium))
