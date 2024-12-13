@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -74,15 +75,18 @@ fun SwissTransferInputChip(
             .focusRequester(focusRequester)
             .widthIn(min = Dimens.InputChipMinWidth)
             .onFocusChanged { focusState ->
-                isFocused = focusState.isFocused
+                isFocused = focusState.isFocused || focusState.hasFocus
+                Log.e("TOTO", "focusChanged ${focusState.isFocused} / ${focusState.hasFocus} / ${focusState.isCaptured}")
                 if (!isFocused) {
+                    Log.e("TOTO", "enabled = false")
                     enabled = false
-                    focusManager.moveFocus(FocusDirection.Exit)
                 }
             }
             .focusable()
             .onKeyEvent { event ->
+                Log.e("TOTO", "key event $event")
                 if (event.type == KeyEventType.KeyUp && event.key == Key.Backspace) {
+                    Log.e("TOTO", "key event: inside $enabled / $isFocused")
                     when {
                         enabled -> onDismiss()
                         isFocused -> enabled = true
@@ -94,6 +98,7 @@ fun SwissTransferInputChip(
         selected = isFocused,
         onClick = {
             focusRequester.requestFocus()
+            enabled = true
         },
         label = { ChipLabel(text) },
         shape = CustomShapes.ROUNDED,
