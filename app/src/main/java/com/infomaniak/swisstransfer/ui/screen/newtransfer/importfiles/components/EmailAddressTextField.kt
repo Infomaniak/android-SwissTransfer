@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.FocusInteraction.Focus
@@ -89,12 +90,14 @@ fun EmailAddressTextField(
         disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
     )
 
+    fun updateUiTextValue(newValue: String) {
+        text = newValue
+        onValueChange(newValue)
+    }
+
     BasicTextField(
         value = text,
-        onValueChange = {
-            text = it
-            onValueChange(it)
-        },
+        onValueChange = ::updateUiTextValue,
         modifier = modifier
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused
@@ -108,7 +111,10 @@ fun EmailAddressTextField(
             .fillMaxWidth()
             .onPreviewKeyEvent { event ->
                 if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace) {
-                    focusManager.moveFocus(FocusDirection.Enter)
+                    if (isFocused) {
+                        Log.e("TOTO", "ENTER FOCUS")
+                        focusManager.moveFocus(FocusDirection.Enter)
+                    }
                     return@onPreviewKeyEvent true
                 }
                 false
@@ -124,7 +130,7 @@ fun EmailAddressTextField(
                 val trimmedText = text.trim()
                 if (trimmedText.isEmail()) {
                     validatedEmails.set(validatedEmails.get() + trimmedText)
-                    text = ""
+                    updateUiTextValue("")
                 }
             },
         ),
@@ -144,7 +150,7 @@ fun EmailAddressTextField(
                                 focusManager = focusManager,
                                 onDismiss = {
                                     validatedEmails.set(validatedEmails.get().minus(it))
-                                    if (validatedEmails.get().isEmpty()) focusManager.moveFocus(FocusDirection.Exit)
+                                    focusManager.moveFocus(FocusDirection.Exit)
                                 },
                             )
                         }
