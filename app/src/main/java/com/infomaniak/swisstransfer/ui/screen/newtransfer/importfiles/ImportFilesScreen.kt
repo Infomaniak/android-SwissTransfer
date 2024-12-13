@@ -79,24 +79,35 @@ fun ImportFilesScreen(
 
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
-            listOf(
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.VALIDITY_DURATION,
-                    settingState = { validityPeriodState },
-                ),
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
-                    settingState = { downloadLimitState },
-                ),
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.PASSWORD,
-                    settingState = { passwordOptionState },
-                ),
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.LANGUAGE,
-                    settingState = { emailLanguageState },
-                ),
-            )
+            buildList {
+                add(
+                    TransferOptionState(
+                        transferOptionType = TransferOptionType.VALIDITY_DURATION,
+                        settingState = { validityPeriodState },
+                    )
+                )
+                add(
+                    TransferOptionState(
+                        transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
+                        settingState = { downloadLimitState },
+                    )
+                )
+                add(
+                    TransferOptionState(
+                        transferOptionType = TransferOptionType.PASSWORD,
+                        settingState = { passwordOptionState },
+                    )
+                )
+
+                if (selectedTransferType == TransferTypeUi.MAIL) {
+                    add(
+                        TransferOptionState(
+                            transferOptionType = TransferOptionType.LANGUAGE,
+                            settingState = { emailLanguageState },
+                        )
+                    )
+                }
+            }
         },
     )
 
