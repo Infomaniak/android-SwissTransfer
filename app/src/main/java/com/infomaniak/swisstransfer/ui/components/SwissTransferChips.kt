@@ -18,12 +18,17 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.*
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -57,14 +62,39 @@ fun SwissTransferSuggestionChip(
 fun SwissTransferInputChip(
     modifier: Modifier = Modifier,
     text: String,
+    focusManager: FocusManager,
     onDismiss: () -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
     var enabled by remember { mutableStateOf(false) }
+    var isFocused by rememberSaveable { mutableStateOf(false) }
 
     InputChip(
-        modifier = modifier.widthIn(min = Dimens.InputChipMinWidth),
-        selected = enabled,
-        onClick = { enabled = !enabled },
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .widthIn(min = Dimens.InputChipMinWidth)
+            .onFocusChanged { focusState ->
+                isFocused = focusState.isFocused
+                if (!isFocused) {
+                    enabled = false
+                    focusManager.moveFocus(FocusDirection.Exit)
+                }
+            }
+            .focusable()
+            .onKeyEvent { event ->
+                if (event.type == KeyEventType.KeyUp && event.key == Key.Backspace) {
+                    when {
+                        enabled -> onDismiss()
+                        isFocused -> enabled = true
+                    }
+                    return@onKeyEvent true
+                }
+                false
+            },
+        selected = isFocused,
+        onClick = {
+            focusRequester.requestFocus()
+        },
         label = { ChipLabel(text) },
         shape = CustomShapes.ROUNDED,
         colors = InputChipDefaults.inputChipColors(
@@ -111,10 +141,23 @@ private fun EmailAddressChipPreview() {
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini)
                 ) {
-                    SwissTransferInputChip(text = LoremIpsum(2).values.joinToString(separator = " ")) { }
-                    SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " ")) { }
-                    SwissTransferInputChip(text = LoremIpsum(4).values.joinToString(separator = " ")) { }
-                    SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " ")) { }
+                    val focusManager = LocalFocusManager.current
+                    SwissTransferInputChip(
+                        text = LoremIpsum(2).values.joinToString(separator = " "),
+                        focusManager = focusManager,
+                    ) { }
+                    SwissTransferInputChip(
+                        text = LoremIpsum(1).values.joinToString(separator = " "),
+                        focusManager = focusManager,
+                    ) { }
+                    SwissTransferInputChip(
+                        text = LoremIpsum(4).values.joinToString(separator = " "),
+                        focusManager = focusManager,
+                    ) { }
+                    SwissTransferInputChip(
+                        text = LoremIpsum(1).values.joinToString(separator = " "),
+                        focusManager = focusManager,
+                    ) { }
                 }
             }
         }
