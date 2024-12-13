@@ -45,23 +45,23 @@ annotation class PreviewSmallWindow
 
 // Large window (ex: tablet)
 @Preview(
-    name = "(1) Large window portrait light",
+    name = "(5) Large window portrait light",
     group = "LargeWindow",
     device = "spec:width=1280dp,height=800dp,dpi=240,orientation=portrait",
 )
 @Preview(
-    name = "(2) Large window portrait dark",
+    name = "(6) Large window portrait dark",
     group = "LargeWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
     device = "spec:width=1280dp,height=800dp,dpi=240,orientation=portrait",
 )
 @Preview(
-    name = "(3) Large window landscape light",
+    name = "(7) Large window landscape light",
     group = "LargeWindow",
     device = "spec:width=1280dp,height=800dp,dpi=240",
 )
 @Preview(
-    name = "(4) Large window landscape dark",
+    name = "(8) Large window landscape dark",
     group = "LargeWindow",
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
     device = "spec:width=1280dp,height=800dp,dpi=240",
