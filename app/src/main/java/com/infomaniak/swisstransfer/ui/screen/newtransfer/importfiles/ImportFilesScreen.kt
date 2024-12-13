@@ -126,6 +126,7 @@ fun ImportFilesScreen(
         closeActivity = closeActivity,
         shouldStartByPromptingUserForFiles = true,
         sendTransfer = importFilesViewModel::sendTransfer,
+        isTransferPending = { sendActionResult == SendActionResult.Pending },
     )
 }
 
@@ -157,6 +158,7 @@ private fun ImportFilesScreen(
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
+    isTransferPending: () -> Boolean,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -177,6 +179,7 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
+                isTransferPending = isTransferPending,
                 navigateToUploadProgress = sendTransfer,
             )
         },
@@ -354,6 +357,7 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
+    isTransferPending: () -> Boolean,
     navigateToUploadProgress: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
@@ -375,7 +379,7 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferPending() },
         progress = progress,
         onClick = navigateToUploadProgress,
     )
@@ -443,6 +447,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
+            isTransferPending = { false },
             sendTransfer = {},
         )
     }

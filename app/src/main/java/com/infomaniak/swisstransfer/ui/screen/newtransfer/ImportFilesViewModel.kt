@@ -129,6 +129,7 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     fun sendTransfer() {
+        _sendActionResult.update{ SendActionResult.Pending }
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
@@ -258,6 +259,7 @@ class ImportFilesViewModel @Inject constructor(
 
     sealed class SendActionResult {
         data class Success(val totalSize: Long) : SendActionResult()
+        data object Pending : SendActionResult()
         data object Failure : SendActionResult()
     }
 
