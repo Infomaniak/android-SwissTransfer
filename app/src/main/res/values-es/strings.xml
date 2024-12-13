@@ -44,7 +44,7 @@
     <string name="invalidAddress">Dirección no válida</string>
     <string name="messageHeader">Mensaje:</string>
     <string name="myFilesTitle">Mis archivos</string>
-    <string name="networkUnavailable">Esperando la red…</string>
+    <string name="networkUnavailable">Esperando la red</string>
     <string name="noFileDescription">Añade hasta 50 GB de archivos</string>
     <string name="noFileTitle">Si no hay archivo, no hay transferencia.</string>
     <string name="noSettingsSelectedDescription">Selecciona un parámetro para su visualización</string>

@@ -48,7 +48,7 @@
     <string name="invalidAddress">Invalid address</string>
     <string name="messageHeader">Message:</string>
     <string name="myFilesTitle">My files</string>
-    <string name="networkUnavailable">Waiting for network…</string>
+    <string name="networkUnavailable">Waiting for network</string>
     <string name="noFileDescription">Add up to 50 GB of files</string>
     <string name="noFileTitle">No file, no transfer!</string>
     <string name="noSettingsSelectedDescription">Select a parameter to display it</string>
