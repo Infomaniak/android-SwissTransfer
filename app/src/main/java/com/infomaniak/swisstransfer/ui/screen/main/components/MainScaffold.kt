@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
@@ -24,8 +25,10 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.infomaniak.core2.extensions.parcelableExtra
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
@@ -104,13 +107,17 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
     navigate(destination) {
         // Pop up to the start destination of the graph to avoid building up a large stack of destinations
         // on the back stack as users select items
-        popUpTo(this@navigateToSelectedItem.graph.findStartDestination().id) {
+        val startDestination = this@navigateToSelectedItem.graph.findStartDestination()
+        popUpTo(startDestination.id) {
             saveState = true
         }
         // Avoid multiple copies of the same destination when re-selecting the same item
         launchSingleTop = true
         // Restore state when re-selecting a previously selected item
-        restoreState = true
+        val currentBackStackEntry = this@navigateToSelectedItem.currentBackStackEntry
+        val hasDeepLink = currentBackStackEntry?.arguments?.parcelableExtra<Intent>(NavController.KEY_DEEP_LINK_INTENT) != null
+        val isNavigateToStartDestination = startDestination.route == destination::class.qualifiedName
+        restoreState = !hasDeepLink || !isNavigateToStartDestination
     }
 }
 
