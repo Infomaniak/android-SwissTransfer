@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,12 +53,14 @@ private const val ROTATION_ANGLE_DEGREE = -3.0
 
 @Composable
 fun HighlightedText(
+    modifier: Modifier = Modifier,
     templateRes: Int,
     argumentRes: Int,
     style: TextStyle,
     verticalPadding: Float = VERTICAL_PADDING,
     horizontalPadding: Float = HORIZONTAL_PADDING,
     angleDegrees: Double = ROTATION_ANGLE_DEGREE,
+    isHighlighted: () -> Boolean,
 ) {
     val template = stringResource(templateRes)
     val argument = stringResource(argumentRes)
@@ -66,12 +69,9 @@ fun HighlightedText(
     val highlightedColor = SwissTransferTheme.colors.highlightedColor
 
     var boundingBoxes by remember { mutableStateOf<List<Rect>>(emptyList()) }
-    var animationStarted by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) { animationStarted = true }
 
     val highlightProgress by animateFloatAsState(
-        targetValue = if (animationStarted) 1f else 0f,
+        targetValue = if (isHighlighted()) 1f else 0f,
         animationSpec = tween(
             durationMillis = 600,
             easing = FastOutSlowInEasing,
@@ -83,8 +83,9 @@ fun HighlightedText(
     Text(
         text = text,
         style = style,
+        textAlign = TextAlign.Center,
         onTextLayout = { layoutResult -> boundingBoxes = layoutResult.getArgumentBoundingBoxes(text, argument) },
-        modifier = Modifier.drawBehind {
+        modifier = modifier.drawBehind {
             val highlightedPath = boundingBoxes.transformForHighlightedStyle(
                 verticalPadding,
                 horizontalPadding,
@@ -210,12 +211,16 @@ private fun areOnDifferentLines(previousRect: Rect, currentRect: Rect) = previou
 @Composable
 private fun Preview() {
     SwissTransferTheme {
+        var isHighlighted by rememberSaveable { mutableStateOf(false) }
+        LaunchedEffect(Unit) { isHighlighted = true }
+
         Surface {
             Box(modifier = Modifier.padding(20.dp)) {
                 HighlightedText(
                     templateRes = R.string.uploadProgressTitleTemplate,
                     argumentRes = R.string.uploadProgressTitleArgument,
                     style = SwissTransferTheme.typography.bodyMedium,
+                    isHighlighted = { isHighlighted }
                 )
             }
         }
