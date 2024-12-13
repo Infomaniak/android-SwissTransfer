@@ -213,8 +213,7 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    private fun setFailedIntegrityResult(exception: Throwable?) {
-        SentryLog.e(APP_INTEGRITY_MANAGER_TAG, "Failed integrity check", exception)
+    private fun setFailedIntegrityResult() {
         _integrityCheckResult.value = AppIntegrityResult.Fail
     }
 

@@ -38,7 +38,7 @@ class AppIntegrityManager(private val appContext: Context) {
     private var challenge = ""
     private var challengeId = ""
 
-    fun warmUpTokenProvider(appCloudNumber: Long, onFailure: (Throwable) -> Unit) {
+    fun warmUpTokenProvider(appCloudNumber: Long, onFailure: () -> Unit) {
         val integrityManager = IntegrityManagerFactory.createStandard(appContext)
         integrityManager.prepareIntegrityToken(
             PrepareIntegrityTokenRequest.builder().setCloudProjectNumber(appCloudNumber).build()
@@ -51,7 +51,7 @@ class AppIntegrityManager(private val appContext: Context) {
     fun requestIntegrityVerdictToken(
         requestHash: String,
         onSuccess: (String) -> Unit,
-        onFailure: (Throwable?) -> Unit,
+        onFailure: () -> Unit,
         onNullTokenProvider: (String) -> Unit,
     ) {
         if (appIntegrityTokenProvider == null) {
@@ -63,7 +63,7 @@ class AppIntegrityManager(private val appContext: Context) {
         }
     }
 
-    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: (Throwable?) -> Unit) {
+    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: () -> Unit) {
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
@@ -76,7 +76,7 @@ class AppIntegrityManager(private val appContext: Context) {
         packageName: String,
         targetUrl: String,
         onSuccess: (String) -> Unit,
-        onFailure: (Throwable) -> Unit,
+        onFailure: () -> Unit,
     ) {
         runCatching {
             val apiResponse = appIntegrityRepository.getJwtToken(
@@ -91,7 +91,7 @@ class AppIntegrityManager(private val appContext: Context) {
         }
     }
 
-    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit) = runCatching {
+    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: () -> Unit) = runCatching {
         generateChallengeId()
         val apiResponse = appIntegrityRepository.getChallenge(challengeId)
         SentryLog.d(
@@ -125,7 +125,7 @@ class AppIntegrityManager(private val appContext: Context) {
         challengeId = UUID.randomUUID().toString()
     }
 
-    private fun manageException(exception: Throwable, errorMessage: String, onFailure: (Throwable) -> Unit) {
+    private fun manageException(exception: Throwable, errorMessage: String, onFailure: () -> Unit) {
         if (exception !is NetworkException) {
             Sentry.captureMessage(errorMessage, SentryLevel.ERROR) { scope ->
                 scope.setTag("exception", exception.message.toString())
@@ -133,7 +133,7 @@ class AppIntegrityManager(private val appContext: Context) {
             }
         }
         exception.printStackTrace()
-        onFailure(exception)
+        onFailure()
     }
 
     companion object {

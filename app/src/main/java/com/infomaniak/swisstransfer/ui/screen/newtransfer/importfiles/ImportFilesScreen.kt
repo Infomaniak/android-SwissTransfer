@@ -430,9 +430,7 @@ private fun SendButton(
         showIndeterminateProgress = { integrityCheckResult() == AppIntegrityResult.Ongoing && isTransferStarted() },
         enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && isTransferStarted() },
         progress = progress,
-        onClick = {
-            checkAppIntegrityBeforeSendingTransfer()
-        },
+        onClick = { checkAppIntegrityBeforeSendingTransfer() },
     )
 }
 

@@ -11,7 +11,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.*
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
@@ -34,12 +33,7 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
-
-    @Test
-    fun toto() {
+    fun apiClientProviderTest() {
         runBlocking {
             post<ApiResponse<String>>(Url("toto"), data = mapOf("toto" to 1))
         }

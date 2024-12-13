@@ -63,7 +63,7 @@ internal class AppIntegrityRepository {
         return post<ApiResponse<String>>(
             url = Url(AppIntegrityRoutes.demo),
             data = mapOf<String, String>(),
-            appendHeaders = { append(ATTESTATION_TOKEN_HEADER, mobileToken) }
+            appendHeaders = { append(ATTESTATION_TOKEN_HEADER, mobileToken) },
         )
     }
 
