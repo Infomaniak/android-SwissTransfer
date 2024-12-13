@@ -28,13 +28,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
-import com.infomaniak.core2.appintegrity.AppIntegrityRoutes
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.utils.SharedApiRoutes
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -136,12 +136,15 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun sendTransfer() {
+    private fun sendTransfer(attestationToken: String) {
         _sendActionResult.update { SendActionResult.Pending }
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
-                uploadManager.initUploadSession(recaptcha = "Recaptcha")!! // TODO: Handle ContainerErrorsException here
+                uploadManager.initUploadSession(
+                    attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
+                    attestationToken = attestationToken,
+                )!! // TODO: Handle ContainerErrorsException here
                 uploadWorkerScheduler.scheduleWork(uuid)
                 _sendActionResult.update {
                     val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
@@ -174,7 +177,7 @@ class ImportFilesViewModel @Inject constructor(
             runCatching {
                 appIntegrityManager.getChallenge(
                     onSuccess = { requestAppIntegrityToken(appIntegrityManager) },
-                    onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+                    onFailure = ::setFailedIntegrityResult,
                 )
             }.onFailure { exception ->
                 SentryLog.e(TAG, "Failed to start the upload", exception)
@@ -189,7 +192,7 @@ class ImportFilesViewModel @Inject constructor(
                 SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
                 getApiIntegrityVerdict(appIntegrityManager, token)
             },
-            onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+            onFailure = ::setFailedIntegrityResult,
         )
     }
 
@@ -198,18 +201,21 @@ class ImportFilesViewModel @Inject constructor(
             appIntegrityManager.getApiIntegrityVerdict(
                 integrityToken = appIntegrityToken,
                 packageName = BuildConfig.APPLICATION_ID,
-                targetUrl = AppIntegrityRoutes.demo,
-                onSuccess = { mobileToken ->
+                targetUrl = SharedApiRoutes.createUploadContainer,
+                onSuccess = { attestationToken ->
                     SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
-                    Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $mobileToken")
+                    Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $attestationToken")
                     _integrityCheckResult.value = AppIntegrityResult.Success
-                    viewModelScope.launch(ioDispatcher) {
-                        appIntegrityManager.callDemoRoute(mobileToken)
-                    }
+                    sendTransfer(attestationToken)
                 },
-                onFailure = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+                onFailure = ::setFailedIntegrityResult,
             )
         }
+    }
+
+    private fun setFailedIntegrityResult(exception: Throwable?) {
+        SentryLog.e(APP_INTEGRITY_MANAGER_TAG, "Failed integrity check", exception)
+        _integrityCheckResult.value = AppIntegrityResult.Fail
     }
 
     fun resetIntegrityCheckResult() {
@@ -226,6 +232,7 @@ class ImportFilesViewModel @Inject constructor(
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
             authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail else "",
+            authorEmailToken = null,
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = _transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
@@ -240,7 +247,7 @@ class ImportFilesViewModel @Inject constructor(
                     override val remoteUploadFile: RemoteUploadFile? = null
                     override val size: Long = fileUi.fileSize
                 }
-            }
+            },
         )
     }
 

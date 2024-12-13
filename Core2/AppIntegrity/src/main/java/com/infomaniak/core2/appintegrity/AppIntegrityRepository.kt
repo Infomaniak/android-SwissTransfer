@@ -17,7 +17,7 @@
  */
 package com.infomaniak.core2.appintegrity
 
-import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.MOBILE_TOKEN_HEADER
+import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.ATTESTATION_TOKEN_HEADER
 import com.infomaniak.core2.appintegrity.exceptions.ApiException
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
@@ -63,7 +63,7 @@ internal class AppIntegrityRepository {
         return post<ApiResponse<String>>(
             url = Url(AppIntegrityRoutes.demo),
             data = mapOf<String, String>(),
-            appendHeaders = { append(MOBILE_TOKEN_HEADER, mobileToken) }
+            appendHeaders = { append(ATTESTATION_TOKEN_HEADER, mobileToken) }
         )
     }
 

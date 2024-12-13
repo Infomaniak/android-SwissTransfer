@@ -86,7 +86,6 @@ fun ImportFilesScreen(
     HandleIntegrityCheckResult(
         integrityCheckResult = { integrityCheckResult },
         resetResult = { importFilesViewModel.resetIntegrityCheckResult() },
-        sendTransfer = { importFilesViewModel.sendTransfer() },
     )
 
     HandleSendActionResult(
@@ -181,15 +180,10 @@ private fun HandleSendActionResult(
 private fun HandleIntegrityCheckResult(
     integrityCheckResult: () -> AppIntegrityResult,
     resetResult: () -> Unit,
-    sendTransfer: () -> Unit,
 ) {
     val result = integrityCheckResult()
     LaunchedEffect(result == AppIntegrityResult.Success || result == AppIntegrityResult.Fail) {
-        when (integrityCheckResult()) {
-            AppIntegrityResult.Success -> sendTransfer()
-            AppIntegrityResult.Fail -> Unit // TODO: Show error
-            else -> Unit
-        }
+        if (integrityCheckResult() == AppIntegrityResult.Fail) Unit // TODO: Show error
         resetResult()
     }
 }

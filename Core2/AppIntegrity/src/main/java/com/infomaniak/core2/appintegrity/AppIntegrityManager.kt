@@ -138,6 +138,6 @@ class AppIntegrityManager(private val appContext: Context) {
 
     companion object {
         const val APP_INTEGRITY_MANAGER_TAG = "App integrity manager"
-        const val MOBILE_TOKEN_HEADER = "Ik-mobile-token"
+        const val ATTESTATION_TOKEN_HEADER = "Ik-mobile-token"
     }
 }
