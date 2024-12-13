@@ -52,11 +52,11 @@ class TransfersViewModel @Inject constructor(
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
-    val isDeepLinkConsumed = savedStateHandle.getStateFlow(isDeepLinkConsumedKey, false)
+    val isDeepLinkConsumed = savedStateHandle.getStateFlow(IS_DEEP_LINK_CONSUMED_KEY, false)
 
     fun consumeDeepLink() {
         viewModelScope.launch {
-            if (!isDeepLinkConsumed.first()) savedStateHandle[isDeepLinkConsumedKey] = true
+            if (!isDeepLinkConsumed.first()) savedStateHandle[IS_DEEP_LINK_CONSUMED_KEY] = true
         }
     }
 
@@ -83,6 +83,6 @@ class TransfersViewModel @Inject constructor(
     companion object {
         private val TAG = TransfersViewModel::class.java.simpleName
 
-        private const val isDeepLinkConsumedKey = "isDeepLinkConsumed"
+        private const val IS_DEEP_LINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }
 }
