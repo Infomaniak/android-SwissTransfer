@@ -1,0 +1,33 @@
+<!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2024 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="38dp"
+    android:height="38dp"
+    android:viewportWidth="38"
+    android:viewportHeight="38">
+    <path
+        android:fillColor="#000000"
+        android:pathData="M13.601,0.085C12.414,-0.289 11.213,0.619 11.213,1.891V2.723L30.21,8.712C31.506,9.12 32.388,10.323 32.388,11.682V30.564L32.817,30.7C34.004,31.073 35.206,30.165 35.206,28.894V8.285C35.206,7.456 34.677,6.724 33.903,6.48L13.601,0.085Z" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M9,3.71C7.813,3.336 6.611,4.244 6.611,5.516V6.12L25.594,12.105C26.891,12.513 27.772,13.715 27.772,15.075V34.185L28.216,34.325C29.402,34.699 30.604,33.79 30.604,32.519V11.91C30.604,11.081 30.076,10.349 29.301,10.105L9,3.71Z" />
+    <path
+        android:fillColor="#000000"
+        android:fillType="evenOdd"
+        android:pathData="M4.388,7.3C3.202,6.926 2,7.834 2,9.106V29.714C2,30.543 2.528,31.276 3.303,31.52L23.604,37.915C24.791,38.288 25.993,37.38 25.993,36.109V15.5C25.993,14.671 25.464,13.938 24.69,13.694L4.388,7.3ZM17.024,16.733C16.93,16.524 16.788,16.333 16.615,16.181C16.117,15.745 15.493,15.741 15.221,16.173L11.615,23.035L10.488,21.071C10.388,20.83 10.224,20.61 10.022,20.444C9.513,20.025 8.897,20.05 8.646,20.499L6.578,25.75C6.508,25.875 6.472,26.025 6.472,26.189C6.472,26.777 6.932,27.396 7.499,27.573L13.629,29.535L16.615,25.672L16.458,30.351L19.759,31.375C19.931,31.429 20.1,31.436 20.251,31.398C20.749,31.271 20.933,30.681 20.661,30.08L17.024,16.733Z" />
+</vector>

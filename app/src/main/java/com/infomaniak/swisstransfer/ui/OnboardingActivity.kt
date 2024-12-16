@@ -17,13 +17,57 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import com.infomaniak.core2.compose.core.LockScreenOrientation
+import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var accountUtils: AccountUtils
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge(navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) window.isNavigationBarContrastEnforced = false
+
+        setContent {
+            val scope = rememberCoroutineScope()
+
+            SwissTransferTheme {
+                LockScreenOrientation(isLocked = LocalWindowAdaptiveInfo.current.isWindowSmall())
+
+                Surface {
+                    OnboardingScreen(
+                        goToMainActivity = {
+                            scope.launch {
+                                accountUtils.login()
+                                Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
+                                finish()
+                            }
+                        }
+                    )
+                }
+            }
+        }
     }
 }
