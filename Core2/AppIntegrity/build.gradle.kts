@@ -23,7 +23,16 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("String", "APP_INTEGRITY_BASE_URL", "\"https://api.infomaniak.com\"")
         }
+
+        debug {
+            buildConfigField("String", "APP_INTEGRITY_BASE_URL", "\"https://api.preprod.dev.infomaniak.ch\"")
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {
@@ -39,7 +48,7 @@ android {
 dependencies {
 
     implementation(project(":Core2:Sentry"))
-    
+
     implementation(core2.integrity)
     implementation(core2.ktor.client.core)
     implementation(core2.ktor.client.content.negociation)
