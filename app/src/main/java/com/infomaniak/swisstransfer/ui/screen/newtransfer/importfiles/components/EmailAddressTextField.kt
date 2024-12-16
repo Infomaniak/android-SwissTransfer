@@ -21,6 +21,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.FocusInteraction.Focus
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -69,10 +70,11 @@ fun EmailAddressTextField(
 ) {
 
     var text by rememberSaveable { mutableStateOf(initialValue) }
-    var isFocused by rememberSaveable { mutableStateOf(false) }
     var currentFocus: Focus? by remember { mutableStateOf(null) }
     val interactionSource = remember { MutableInteractionSource() }
-    val focusRequester = remember { FocusRequester() }
+    val lastChipFocusRequester = remember { FocusRequester() }
+
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     val cursorColor by animateColorAsState(
         targetValue = if (isError) {
@@ -101,7 +103,6 @@ fun EmailAddressTextField(
         onValueChange = ::updateUiTextValue,
         modifier = modifier
             .onFocusChanged { focusState ->
-                isFocused = focusState.isFocused
                 if (focusState.isFocused) {
                     val newFocus = Focus()
                     if (interactionSource.tryEmit(newFocus)) currentFocus = newFocus
@@ -114,7 +115,7 @@ fun EmailAddressTextField(
                 val shouldFocusLastChip = isFocused && validatedEmails.get().isNotEmpty()
                 if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace && shouldFocusLastChip) {
                     runCatching {
-                        focusRequester.requestFocus()
+                        lastChipFocusRequester.requestFocus()
                     }.onFailure {
                         SentryLog.e(EMAIL_FIELD_TAG, "The focusRequested wasn't registered with a non empty Chip list", it)
                     }
@@ -149,7 +150,11 @@ fun EmailAddressTextField(
                         itemVerticalAlignment = Alignment.CenterVertically,
                     ) {
                         validatedEmails.get().forEach { email ->
-                            val chipModifier = if (email == validatedEmails.get().lastOrNull()) Modifier.focusRequester(focusRequester) else Modifier
+                            val chipModifier = if (email == validatedEmails.get().lastOrNull()) {
+                                Modifier.focusRequester(lastChipFocusRequester)
+                            } else {
+                                Modifier
+                            }
                             SwissTransferInputChip(
                                 modifier = chipModifier,
                                 text = email,
