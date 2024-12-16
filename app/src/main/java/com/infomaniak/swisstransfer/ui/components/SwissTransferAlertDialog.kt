@@ -116,15 +116,17 @@ private fun TitleAndDescription(titleRes: Int, descriptionRes: Int) {
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ActionButtons(
     positiveButton: @Composable () -> Unit,
     negativeButton: @Composable () -> Unit,
 ) {
-    Row(
+    FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Margin.Micro, Alignment.End),
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Margin.Mini, Alignment.End),
+        verticalArrangement = Arrangement.spacedBy(Margin.Mini),
+        itemVerticalAlignment = Alignment.CenterVertically,
     ) {
         negativeButton()
         positiveButton()
@@ -140,6 +142,22 @@ private fun PreviewAlertDialog() {
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsPasswordDescription,
                 positiveButton = { SwissTransferAlertDialogDefaults.confirmButton { } },
+                negativeButton = { SwissTransferAlertDialogDefaults.cancelButton { } },
+                onDismiss = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun WideButtonsPreview() {
+    SwissTransferTheme {
+        Surface {
+            SwissTransferAlertDialog(
+                titleRes = R.string.settingsOptionPassword,
+                descriptionRes = R.string.settingsPasswordDescription,
+                positiveButton = { SmallButton("A very looong and wide button", onClick = {}) },
                 negativeButton = { SwissTransferAlertDialogDefaults.cancelButton { } },
                 onDismiss = {},
             )
