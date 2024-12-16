@@ -55,9 +55,7 @@ class TransfersViewModel @Inject constructor(
     val isDeepLinkConsumed = savedStateHandle.getStateFlow(IS_DEEP_LINK_CONSUMED_KEY, false)
 
     fun consumeDeepLink() {
-        viewModelScope.launch {
-            if (!isDeepLinkConsumed.first()) savedStateHandle[IS_DEEP_LINK_CONSUMED_KEY] = true
-        }
+        if (!isDeepLinkConsumed.value) savedStateHandle[IS_DEEP_LINK_CONSUMED_KEY] = true
     }
 
     fun fetchPendingTransfers() {
