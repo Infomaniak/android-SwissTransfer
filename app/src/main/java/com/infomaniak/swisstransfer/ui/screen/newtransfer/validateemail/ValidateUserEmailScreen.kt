@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,7 +27,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -38,8 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.OtpTextField
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.OtpTextFieldStyle
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -51,8 +48,6 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 import com.infomaniak.core2.R as RCore2
 
-private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-private const val OPT_LENGTH = 6
 private const val RESEND_EMAIL_CODE_COOLDOWN = 30
 
 private val MAX_LAYOUT_WIDTH = 400.dp
@@ -142,6 +137,7 @@ private fun ValidateUserEmailScreen(
             )
 
             CodeVerification(
+                modifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
                 otpCode = { otpCode },
                 updateOtpCode = { code, isFilled ->
                     otpCode = code
@@ -216,49 +212,6 @@ private fun ResendCodeCountDownButton(modifier: Modifier, onResendEmailCode: () 
             style = ButtonType.TERTIARY,
             onClick = {},
             enabled = { false }
-        )
-    }
-}
-
-@Composable
-private fun ColumnScope.CodeVerification(
-    otpCode: () -> String,
-    updateOtpCode: (String, Boolean) -> Unit,
-    isLoading: () -> Boolean,
-    isError: () -> Boolean,
-) {
-    Column(Modifier.align(Alignment.CenterHorizontally)) {
-        Box(contentAlignment = Alignment.Center) {
-            OtpTextField(
-                modifier = Modifier
-                    .widthIn(max = MAX_LAYOUT_WIDTH)
-                    .fillMaxWidth(),
-                otpText = otpCode(),
-                otpLength = OPT_LENGTH,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                onOtpTextChange = { text, isFilled ->
-                    updateOtpCode(text, isFilled)
-                },
-                isCharacterValid = { it in VALID_CHARACTERS },
-                isError = isError,
-                otpTextFieldStyle = OtpTextFieldStyle.default(
-                    textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
-                ),
-                isEnabled = { !isLoading() }
-            )
-
-            if (isLoading()) {
-                CircularProgressIndicator(modifier = Modifier, color = SwissTransferTheme.materialColors.primary)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(Margin.Micro))
-
-        Text(
-            modifier = Modifier.alpha(if (isError()) 1f else 0f),
-            text = stringResource(R.string.validateMailCodeIncorrectError),
-            style = SwissTransferTheme.typography.labelRegular,
-            color = SwissTransferTheme.materialColors.error,
         )
     }
 }
