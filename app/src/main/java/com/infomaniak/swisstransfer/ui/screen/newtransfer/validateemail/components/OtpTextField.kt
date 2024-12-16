@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.HideSelectAllTextToolbar
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -73,49 +75,51 @@ fun OtpTextField(
     var isTextFieldFocused by remember { mutableStateOf(false) }
 
     Box(contentAlignment = Alignment.Center) {
-        BasicTextField(
-            modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
-            value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
-            onValueChange = { textFieldValue ->
-                val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
+        ProvideNoSelectAllTextToolbar {
+            BasicTextField(
+                modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
+                value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
+                onValueChange = { textFieldValue ->
+                    val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
 
-                if (text.length <= otpLength) {
-                    onOtpTextChange.invoke(text, text.length == otpLength)
-                } else {
-                    val truncatedText = text.take(otpLength)
-                    if (truncatedText != otpText) {
-                        onOtpTextChange.invoke(truncatedText, true)
+                    if (text.length <= otpLength) {
+                        onOtpTextChange.invoke(text, text.length == otpLength)
+                    } else {
+                        val truncatedText = text.take(otpLength)
+                        if (truncatedText != otpText) {
+                            onOtpTextChange.invoke(truncatedText, true)
+                        }
                     }
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword,
-                imeAction = ImeAction.Done,
-            ),
-            decorationBox = { innerTextField ->
-                // Draw innerTextField but hides it and its text selection handles. This is needed to have the system copy/paste
-                // context menu place correctly on the screen
-                CompositionLocalProvider(
-                    LocalTextSelectionColors provides TextSelectionColors(Color.Transparent, Color.Transparent)
-                ) {
-                    Box(modifier = Modifier.alpha(0f)) { innerTextField() }
-                }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                    imeAction = ImeAction.Done,
+                ),
+                decorationBox = { innerTextField ->
+                    // Draw innerTextField but hides it and its text selection handles. This is needed to have the system copy/paste
+                    // context menu place correctly on the screen
+                    CompositionLocalProvider(
+                        LocalTextSelectionColors provides TextSelectionColors(Color.Transparent, Color.Transparent)
+                    ) {
+                        Box(modifier = Modifier.alpha(0f)) { innerTextField() }
+                    }
 
-                Row(horizontalArrangement = horizontalArrangement) {
-                    repeat(otpLength) { index ->
-                        CharView(
-                            index = index,
-                            text = otpText,
-                            otpCount = otpLength,
-                            isTextFieldFocused = { isTextFieldFocused },
-                            isError = isError,
-                            otpTextFieldStyle = otpTextFieldStyle,
-                        )
+                    Row(horizontalArrangement = horizontalArrangement) {
+                        repeat(otpLength) { index ->
+                            CharView(
+                                index = index,
+                                text = otpText,
+                                otpCount = otpLength,
+                                isTextFieldFocused = { isTextFieldFocused },
+                                isError = isError,
+                                otpTextFieldStyle = otpTextFieldStyle,
+                            )
+                        }
                     }
-                }
-            },
-            enabled = isEnabled(),
-        )
+                },
+                enabled = isEnabled(),
+            )
+        }
 
         if (!isEnabled()) {
             Box(
@@ -125,7 +129,12 @@ fun OtpTextField(
             )
         }
     }
+}
 
+@Composable
+fun ProvideNoSelectAllTextToolbar(content: @Composable () -> Unit) {
+    val previousToolbar = LocalTextToolbar.current
+    CompositionLocalProvider(LocalTextToolbar provides HideSelectAllTextToolbar(previousToolbar), content)
 }
 
 @Composable
