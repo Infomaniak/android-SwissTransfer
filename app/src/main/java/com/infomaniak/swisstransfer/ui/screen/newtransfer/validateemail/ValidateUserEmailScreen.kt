@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -28,11 +29,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.OtpTextField
@@ -44,7 +47,9 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
+import com.infomaniak.core2.R as RCore2
 
 private val VALID_CHARACTERS = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 private const val OPT_LENGTH = 6
@@ -64,7 +69,12 @@ fun ValidateUserEmailScreen(
 
     var otpCode by rememberSaveable { mutableStateOf("") }
 
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
     ValidateUserEmailScreen(
+        snackbarHostState = snackbarHostState,
         otpCode = { otpCode },
         updateOtpCode = { code, isFilled ->
             otpCode = code
@@ -74,7 +84,12 @@ fun ValidateUserEmailScreen(
                     email = emailToValidate,
                     otpCode = otpCode,
                     onSuccess = {}, // TODO: Navigate to the next step
-                    onUnknownError = {}, // TODO: Snackbar an error has occurred?
+                    onUnknownError = {
+                        scope.launch {
+                            SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
+                            snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred))
+                        }
+                    }, // TODO: Snackbar an error has occurred?
                 )
             } else {
                 validateUserEmailViewModel.resetErrorState()
@@ -91,6 +106,7 @@ fun ValidateUserEmailScreen(
 
 @Composable
 private fun ValidateUserEmailScreen(
+    snackbarHostState: SnackbarHostState,
     otpCode: () -> String,
     updateOtpCode: (String, Boolean) -> Unit,
     emailToValidate: String,
@@ -101,6 +117,7 @@ private fun ValidateUserEmailScreen(
     onResendEmailCode: () -> Unit,
 ) {
     BottomStickyButtonScaffold(
+        snackbarHostState = snackbarHostState,
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.transferTypeScreenTitle,
@@ -269,7 +286,9 @@ private enum class LayoutStyle(
 private fun Preview() {
     SwissTransferTheme {
         Surface {
+            val snackbarHostState = remember { SnackbarHostState() }
             ValidateUserEmailScreen(
+                snackbarHostState = snackbarHostState,
                 otpCode = { "123" },
                 updateOtpCode = { _, _ -> },
                 emailToValidate = "example@example.com",
