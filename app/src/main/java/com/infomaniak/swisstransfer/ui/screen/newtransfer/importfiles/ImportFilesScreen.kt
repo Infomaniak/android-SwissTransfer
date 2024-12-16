@@ -79,24 +79,35 @@ fun ImportFilesScreen(
 
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
-            listOf(
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.VALIDITY_DURATION,
-                    settingState = { validityPeriodState },
-                ),
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
-                    settingState = { downloadLimitState },
-                ),
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.PASSWORD,
-                    settingState = { passwordOptionState },
-                ),
-                TransferOptionState(
-                    transferOptionType = TransferOptionType.LANGUAGE,
-                    settingState = { emailLanguageState },
-                ),
-            )
+            buildList {
+                add(
+                    TransferOptionState(
+                        transferOptionType = TransferOptionType.VALIDITY_DURATION,
+                        settingState = { validityPeriodState },
+                    )
+                )
+                add(
+                    TransferOptionState(
+                        transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
+                        settingState = { downloadLimitState },
+                    )
+                )
+                add(
+                    TransferOptionState(
+                        transferOptionType = TransferOptionType.PASSWORD,
+                        settingState = { passwordOptionState },
+                    )
+                )
+
+                if (selectedTransferType == TransferTypeUi.MAIL) {
+                    add(
+                        TransferOptionState(
+                            transferOptionType = TransferOptionType.LANGUAGE,
+                            settingState = { emailLanguageState },
+                        )
+                    )
+                }
+            }
         },
     )
 
@@ -111,11 +122,11 @@ fun ImportFilesScreen(
             set = importFilesViewModel::selectTransferType,
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
-        removeFileByUid = importFilesViewModel::removeFileByUid,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
-        sendTransfer = importFilesViewModel::sendTransfer,
         shouldStartByPromptingUserForFiles = true,
+        sendTransfer = importFilesViewModel::sendTransfer,
+        isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
     )
 }
 
@@ -143,11 +154,11 @@ private fun ImportFilesScreen(
     transferMessage: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
-    removeFileByUid: (uid: String) -> Unit,
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
+    isTransferStarted: () -> Boolean,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -168,13 +179,15 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
+                isTransferStarted = isTransferStarted,
                 navigateToUploadProgress = sendTransfer,
             )
         },
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
-                FilesToImport(modifier, files, removeFileByUid, addFiles, shouldStartByPromptingUserForFiles)
+                SendByOptions(modifier, selectedTransferType)
+                FilesToImport(modifier, files, navigateToFileDetails = { /*TODO*/ }, addFiles, shouldStartByPromptingUserForFiles)
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
@@ -182,7 +195,6 @@ private fun ImportFilesScreen(
                     transferMessage = transferMessage,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 )
-                SendByOptions(modifier, selectedTransferType)
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
         }
@@ -193,7 +205,7 @@ private fun ImportFilesScreen(
 private fun FilesToImport(
     modifier: Modifier,
     files: () -> List<FileUi>,
-    removeFileByUid: (uid: String) -> Unit,
+    navigateToFileDetails: () -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
 ) {
@@ -212,7 +224,7 @@ private fun FilesToImport(
     LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
     ImportFilesTitle(modifier, R.string.myFilesTitle)
-    ImportedFilesCard(modifier, files, ::pickFiles, removeFileByUid)
+    ImportedFilesCard(modifier, files, ::pickFiles, navigateToFileDetails)
 }
 
 @Composable
@@ -345,6 +357,7 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
+    isTransferStarted: () -> Boolean,
     navigateToUploadProgress: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
@@ -366,7 +379,8 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferStarted() },
+        showIndeterminateProgress = { isTransferStarted() },
         progress = progress,
         onClick = navigateToUploadProgress,
     )
@@ -431,10 +445,10 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             transferMessage = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
-            removeFileByUid = {},
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
+            isTransferStarted = { false },
             sendTransfer = {},
         )
     }

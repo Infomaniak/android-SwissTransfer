@@ -64,7 +64,7 @@ class ImportFilesViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    private val _sendActionResult = MutableStateFlow<SendActionResult?>(null)
+    private val _sendActionResult = MutableStateFlow<SendActionResult?>(SendActionResult.NotStarted)
     val sendActionResult = _sendActionResult.asStateFlow()
 
     @OptIn(FlowPreview::class)
@@ -129,9 +129,11 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     fun sendTransfer() {
+        _sendActionResult.update { SendActionResult.Pending }
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 val uuid = uploadManager.createAndGetUpload(generateNewUploadSession()).uuid
+                uploadManager.initUploadSession(recaptcha = "Recaptcha")!! // TODO: Handle ContainerErrorsException here
                 uploadWorkerScheduler.scheduleWork(uuid)
                 _sendActionResult.update {
                     val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
@@ -256,6 +258,8 @@ class ImportFilesViewModel @Inject constructor(
     //endregion
 
     sealed class SendActionResult {
+        data object NotStarted : SendActionResult()
+        data object Pending : SendActionResult()
         data class Success(val totalSize: Long) : SendActionResult()
         data object Failure : SendActionResult()
     }
