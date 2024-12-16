@@ -126,7 +126,7 @@ fun ImportFilesScreen(
         closeActivity = closeActivity,
         shouldStartByPromptingUserForFiles = true,
         sendTransfer = importFilesViewModel::sendTransfer,
-        isTransferPending = { sendActionResult == SendActionResult.Pending },
+        isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
     )
 }
 
@@ -158,7 +158,7 @@ private fun ImportFilesScreen(
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
-    isTransferPending: () -> Boolean,
+    isTransferStarted: () -> Boolean,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -179,7 +179,7 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
-                isTransferPending = isTransferPending,
+                isTransferStarted = isTransferStarted,
                 navigateToUploadProgress = sendTransfer,
             )
         },
@@ -357,7 +357,7 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
-    isTransferPending: () -> Boolean,
+    isTransferStarted: () -> Boolean,
     navigateToUploadProgress: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
@@ -379,7 +379,8 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferPending() },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferStarted() },
+        showIndeterminateProgress = { isTransferStarted() },
         progress = progress,
         onClick = navigateToUploadProgress,
     )
@@ -447,7 +448,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
-            isTransferPending = { false },
+            isTransferStarted = { false },
             sendTransfer = {},
         )
     }
