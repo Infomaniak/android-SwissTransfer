@@ -35,6 +35,7 @@ object SwissTransferAlertDialogDefaults {
     @Composable
     fun confirmButton(isEnabled: () -> Boolean = { true }, onClick: () -> Unit) {
         SmallButton(
+            style = ButtonType.TERTIARY,
             title = stringResource(R.string.buttonConfirm),
             enabled = isEnabled,
             onClick = onClick,
@@ -124,8 +125,7 @@ private fun ActionButtons(
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Margin.Mini, Alignment.End),
-        verticalArrangement = Arrangement.spacedBy(Margin.Mini),
+        horizontalArrangement = Arrangement.End,
         itemVerticalAlignment = Alignment.CenterVertically,
     ) {
         negativeButton()
@@ -157,7 +157,7 @@ private fun WideButtonsPreview() {
             SwissTransferAlertDialog(
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsPasswordDescription,
-                positiveButton = { SmallButton("A very looong and wide button", onClick = {}) },
+                positiveButton = { SmallButton("A very looong and wide button", onClick = {}, style = ButtonType.TERTIARY) },
                 negativeButton = { SwissTransferAlertDialogDefaults.cancelButton { } },
                 onDismiss = {},
             )

@@ -124,6 +124,12 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
             contentColor = SwissTransferTheme.materialColors.onError,
         )
     }),
+    ERROR_TEXT({
+        ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = SwissTransferTheme.materialColors.error,
+        )
+    }),
 }
 
 @PreviewLightAndDark
