@@ -34,7 +34,11 @@ import io.sentry.Sentry
 import io.sentry.SentryLevel
 
 @Composable
-fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit) {
+fun NewTransferNavHost(
+    navController: NavHostController,
+    closeActivity: () -> Unit,
+    closeActivityAndPromptForValidation: () -> Unit,
+) {
 
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
@@ -51,7 +55,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<ValidateUserEmailDestination> {
             val args = it.toRoute<ValidateUserEmailDestination>()
             ValidateUserEmailScreen(
-                closeActivity = closeActivity,
+                closeActivity = closeActivityAndPromptForValidation,
                 navigateBack = { navController.popBackStack() },
                 navigateToUploadInProgress = { totalSize ->
                     navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize, args.recipients))

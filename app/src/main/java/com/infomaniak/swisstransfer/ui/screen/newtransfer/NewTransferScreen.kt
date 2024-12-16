@@ -36,7 +36,11 @@ fun NewTransferScreen(closeActivity: () -> Unit) {
     val navController = rememberNavController()
     var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
 
-    NewTransferNavHost(navController, closeActivity = { displayConfirmationDialog = true })
+    NewTransferNavHost(
+        navController,
+        closeActivity = closeActivity,
+        closeActivityAndPromptForValidation = { displayConfirmationDialog = true },
+    )
 
     if (displayConfirmationDialog) ConfirmLeavingDialog(onLeave = closeActivity, onCancel = { displayConfirmationDialog = false })
 }
