@@ -17,7 +17,10 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SnackbarHostState
@@ -35,20 +38,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
+import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 import com.infomaniak.core2.R as RCore2
-
-private const val RESEND_EMAIL_CODE_COOLDOWN = 30
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 
@@ -171,48 +174,6 @@ private fun ValidateUserEmailScreen(
                 textAlign = layoutStyle.textAlign,
             )
         }
-    }
-}
-
-@Composable
-private fun ResendCodeCountDownButton(modifier: Modifier, onResendEmailCode: () -> Unit, enabled: () -> Boolean) {
-    var timeLeft by rememberSaveable { mutableIntStateOf(0) }
-    var isRunning by rememberSaveable { mutableStateOf(false) }
-
-    fun startTimer() {
-        timeLeft = RESEND_EMAIL_CODE_COOLDOWN
-        isRunning = true
-    }
-
-    LaunchedEffect(isRunning) {
-        if (isRunning) {
-            while (timeLeft > 0) {
-                delay(1.seconds)
-                timeLeft--
-            }
-            isRunning = false
-        }
-    }
-
-    if (timeLeft == 0) {
-        LargeButton(
-            modifier = modifier,
-            title = stringResource(R.string.validateMailResendCode),
-            style = ButtonType.TERTIARY,
-            onClick = {
-                startTimer()
-                onResendEmailCode()
-            },
-            enabled = enabled
-        )
-    } else {
-        LargeButton(
-            modifier = modifier,
-            title = stringResource(R.string.validateMailResendCodeTemplate, timeLeft),
-            style = ButtonType.TERTIARY,
-            onClick = {},
-            enabled = { false }
-        )
     }
 }
 
