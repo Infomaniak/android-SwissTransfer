@@ -54,7 +54,7 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val isDeepLinkConsumed by transfersViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
-            HandleDeepLink(
+            handleDeepLink(
                 transferUuid = transferUuid,
                 isDeepLinkConsumed = { isDeepLinkConsumed },
                 consumeDeepLink = transfersViewModel::consumeDeepLink,
@@ -74,8 +74,7 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
+private fun ThreePaneScaffoldNavigator<DestinationContent>.handleDeepLink(
     transferUuid: String?,
     isDeepLinkConsumed: () -> Boolean,
     consumeDeepLink: () -> Unit,
