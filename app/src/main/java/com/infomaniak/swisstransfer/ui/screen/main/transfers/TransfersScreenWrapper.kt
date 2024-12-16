@@ -71,16 +71,12 @@ private fun ListPane(
 ) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
-            navigateToDetails = { transferUuid ->
-                coroutineScope.launch { navigator.navigateToDetails(direction, transferUuid) }
-            },
+            navigateToDetails = { transferUuid -> navigator.navigateToDetails(coroutineScope, direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             hasTransfer = hasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
-            navigateToDetails = { transferUuid ->
-                coroutineScope.launch { navigator.navigateToDetails(direction, transferUuid) }
-            },
+            navigateToDetails = { transferUuid -> navigator.navigateToDetails(coroutineScope, direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             hasTransfer = hasTransfer,
         )
@@ -88,11 +84,12 @@ private fun ListPane(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
+private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
+    coroutineScope: CoroutineScope,
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid))
+    coroutineScope.launch { navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid)) }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
