@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.FocusInteraction.Focus
@@ -34,9 +33,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
@@ -47,6 +44,7 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core2.isEmail
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
@@ -54,6 +52,8 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+
+const val EMAIL_FIELD_TAG = "EmailAddressTextField"
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +72,7 @@ fun EmailAddressTextField(
     var isFocused by rememberSaveable { mutableStateOf(false) }
     var currentFocus: Focus? by remember { mutableStateOf(null) }
     val interactionSource = remember { MutableInteractionSource() }
+    val focusRequester = remember { FocusRequester() }
 
     val cursorColor by animateColorAsState(
         targetValue = if (isError) {
@@ -110,11 +111,14 @@ fun EmailAddressTextField(
             }
             .fillMaxWidth()
             .onPreviewKeyEvent { event ->
-                if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace) {
-                    if (isFocused) {
-                        Log.e("TOTO", "ENTER FOCUS")
-                        focusManager.moveFocus(FocusDirection.Enter)
+                val shouldFocusLastChip = isFocused && validatedEmails.get().isNotEmpty()
+                if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace && shouldFocusLastChip) {
+                    runCatching {
+                        focusRequester.requestFocus()
+                    }.onFailure {
+                        SentryLog.e(EMAIL_FIELD_TAG, "The focusRequested wasn't registered with a non empty Chip list", it)
                     }
+
                     return@onPreviewKeyEvent true
                 }
                 false
@@ -144,12 +148,14 @@ fun EmailAddressTextField(
                         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                         itemVerticalAlignment = Alignment.CenterVertically,
                     ) {
-                        validatedEmails.get().forEach {
+                        validatedEmails.get().forEach { email ->
+                            val chipModifier = if (email == validatedEmails.get().lastOrNull()) Modifier.focusRequester(focusRequester) else Modifier
                             SwissTransferInputChip(
-                                text = it,
+                                modifier = chipModifier,
+                                text = email,
                                 focusManager = focusManager,
                                 onDismiss = {
-                                    validatedEmails.set(validatedEmails.get().minus(it))
+                                    validatedEmails.set(validatedEmails.get().minus(email))
                                     focusManager.moveFocus(FocusDirection.Exit)
                                 },
                             )

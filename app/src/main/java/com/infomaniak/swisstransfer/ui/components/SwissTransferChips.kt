@@ -82,19 +82,30 @@ fun SwissTransferInputChip(
                     enabled = false
                 }
             }
-            .focusable()
             .onKeyEvent { event ->
-                Log.e("TOTO", "key event $event")
-                if (event.type == KeyEventType.KeyUp && event.key == Key.Backspace) {
-                    Log.e("TOTO", "key event: inside $enabled / $isFocused")
-                    when {
-                        enabled -> onDismiss()
-                        isFocused -> enabled = true
+                Log.i("TOTO", "chip key event $event")
+                if (event.type != KeyEventType.KeyUp) return@onKeyEvent false
+
+                when {
+                    isDirectionalKey(event.key) && isFocused -> {
+                        enabled = true
+                        true
                     }
-                    return@onKeyEvent true
+                    event.key == Key.Backspace -> {
+                        when {
+                            enabled -> onDismiss()
+                            isFocused -> enabled = true
+                        }
+                        true
+                    }
+                    event.key == Key.NavigateOut -> {
+                        focusManager.moveFocus(FocusDirection.Exit)
+                        true
+                    }
+                    else -> false
                 }
-                false
-            },
+            }
+            .focusable(),
         selected = isFocused,
         onClick = {
             focusRequester.requestFocus()
@@ -131,6 +142,15 @@ private fun ChipLabel(text: String) {
         maxLines = 1,
         overflow = TextOverflow.MiddleEllipsis,
     )
+}
+
+private fun isDirectionalKey(key: Key): Boolean {
+    return key == Key.DirectionLeft || key == Key.DirectionRight || key == Key.DirectionUpLeft || key == Key.DirectionUp
+            || key == Key.DirectionDown || key == Key.DirectionCenter || key == Key.DirectionDownLeft || key == Key.DirectionDownRight
+            || key == Key.DirectionUpRight
+            || key == Key.SystemNavigationLeft || key == Key.SystemNavigationRight
+            || key == Key.SystemNavigationUp || key == Key.SystemNavigationDown
+            || key == Key.NavigatePrevious || key == Key.NavigateNext
 }
 
 @Preview(name = "Light mode")
