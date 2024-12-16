@@ -40,6 +40,9 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadProgress = { transferType, totalSize ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
+                navigateToEmailValidation = { email ->
+                    navController.navigate(ValidateUserEmailDestination(email))
+                }
             )
         }
         composable<ValidateUserEmailDestination> {

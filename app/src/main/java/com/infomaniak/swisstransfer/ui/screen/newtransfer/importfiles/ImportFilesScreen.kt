@@ -59,6 +59,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToEmailValidation: (email: String) -> Unit,
 ) {
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
@@ -73,7 +74,13 @@ fun ImportFilesScreen(
 
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
 
-    HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
+    HandleSendActionResult(
+        getSendActionResult = { sendActionResult },
+        setDefaultActionResult = { importFilesViewModel.setDefaultActionResult() },
+        transferType = { selectedTransferType },
+        navigateToUploadProgress = navigateToUploadProgress,
+        navigateToEmailValidation = { navigateToEmailValidation(importFilesViewModel.transferAuthorEmail.get()) },
+    )
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
 
@@ -133,13 +140,22 @@ fun ImportFilesScreen(
 @Composable
 private fun HandleSendActionResult(
     getSendActionResult: () -> SendActionResult?,
+    setDefaultActionResult: () -> Unit,
     transferType: () -> TransferTypeUi,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToEmailValidation: () -> Unit,
 ) {
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
+            is SendActionResult.Success -> {
+                navigateToUploadProgress(transferType(), actionResult.totalSize)
+                setDefaultActionResult()
+            }
             is SendActionResult.Failure -> Unit // TODO: Show error
+            is SendActionResult.RequireEmailValidation -> {
+                navigateToEmailValidation()
+                setDefaultActionResult()
+            }
             else -> Unit
         }
     }

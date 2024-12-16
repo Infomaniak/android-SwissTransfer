@@ -31,6 +31,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
@@ -141,9 +142,17 @@ class ImportFilesViewModel @Inject constructor(
                 }
             }.onFailure { exception ->
                 SentryLog.e(TAG, "Failed to start the upload", exception)
-                _sendActionResult.update { SendActionResult.Failure }
+                val result = when (exception) {
+                    is ContainerErrorsException.EmailValidationRequired -> SendActionResult.RequireEmailValidation
+                    else -> SendActionResult.Failure
+                }
+                _sendActionResult.update { result }
             }
         }
+    }
+
+    fun setDefaultActionResult() {
+        _sendActionResult.value = SendActionResult.NotStarted
     }
 
     private suspend fun removeOldData() {
@@ -262,6 +271,7 @@ class ImportFilesViewModel @Inject constructor(
         data object Pending : SendActionResult()
         data class Success(val totalSize: Long) : SendActionResult()
         data object Failure : SendActionResult()
+        data object RequireEmailValidation : SendActionResult()
     }
 
     companion object {
