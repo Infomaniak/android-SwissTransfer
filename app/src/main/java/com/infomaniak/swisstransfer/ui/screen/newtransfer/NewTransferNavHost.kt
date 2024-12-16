@@ -31,7 +31,11 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessSc
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 
 @Composable
-fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit) {
+fun NewTransferNavHost(
+    navController: NavHostController,
+    closeActivity: () -> Unit,
+    closeActivityAndPromptForValidation: () -> Unit,
+) {
 
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
@@ -48,7 +52,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<ValidateUserEmailDestination> {
             val args = it.toRoute<ValidateUserEmailDestination>()
             ValidateUserEmailScreen(
-                closeActivity = closeActivity,
+                closeActivity = closeActivityAndPromptForValidation,
                 navigateBack = { navController.popBackStack() },
                 emailToValidate = args.userEmail,
             )
