@@ -46,7 +46,7 @@ fun MainScaffold(
     largeWindowTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
-    val navType by rememberNavType(currentDestination)
+    val navType = rememberNavType(currentDestination)
     MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, largeWindowTopAppBar, content)
 }
 
@@ -79,23 +79,23 @@ private fun MainScaffold(
 private fun rememberNavType(
     currentDestination: MainNavigation,
     windowAdaptiveInfo: WindowAdaptiveInfo = LocalWindowAdaptiveInfo.current,
-): State<NavigationSuiteType> {
+): NavigationSuiteType {
 
-    val showNavigation by remember(currentDestination) {
-        derivedStateOf {
-            NavigationItem.entries.any { it.destination::class == currentDestination::class }
-        }
+    val showNavigation = remember(currentDestination) {
+        isDestinationInTopLevelNav(currentDestination)
     }
 
     return remember(showNavigation, windowAdaptiveInfo) {
-        derivedStateOf {
-            if (showNavigation) {
-                calculateFromAdaptiveInfo(windowAdaptiveInfo)
-            } else {
-                NavigationSuiteType.None
-            }
+        if (showNavigation) {
+            calculateFromAdaptiveInfo(windowAdaptiveInfo)
+        } else {
+            NavigationSuiteType.None
         }
     }
+}
+
+private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
+    return NavigationItem.entries.any { it.destination::class == destination::class }
 }
 
 private fun calculateFromAdaptiveInfo(windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
