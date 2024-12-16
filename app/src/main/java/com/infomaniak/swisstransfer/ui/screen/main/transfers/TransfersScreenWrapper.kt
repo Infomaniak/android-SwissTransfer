@@ -61,7 +61,7 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
                 direction = direction,
             )
             ListPane(
-                direction,
+                direction = direction,
                 navigator = this,
                 updateHasTransfer = { hasTransfer = it },
                 transfersViewModel = transfersViewModel
