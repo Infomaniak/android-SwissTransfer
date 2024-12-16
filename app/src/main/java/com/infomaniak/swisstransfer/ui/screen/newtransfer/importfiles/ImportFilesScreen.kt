@@ -126,6 +126,7 @@ fun ImportFilesScreen(
         closeActivity = closeActivity,
         shouldStartByPromptingUserForFiles = true,
         sendTransfer = importFilesViewModel::sendTransfer,
+        isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
     )
 }
 
@@ -157,6 +158,7 @@ private fun ImportFilesScreen(
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
+    isTransferStarted: () -> Boolean,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -177,6 +179,7 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
+                isTransferStarted = isTransferStarted,
                 navigateToUploadProgress = sendTransfer,
             )
         },
@@ -354,6 +357,7 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
+    isTransferStarted: () -> Boolean,
     navigateToUploadProgress: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
@@ -375,7 +379,8 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferStarted() },
+        showIndeterminateProgress = { isTransferStarted() },
         progress = progress,
         onClick = navigateToUploadProgress,
     )
@@ -443,6 +448,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
+            isTransferStarted = { false },
             sendTransfer = {},
         )
     }
