@@ -69,7 +69,7 @@ fun ValidateUserEmailScreen(
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
-        validateEmailWithOtpCode = { code, onSuccess, onUnknownError ->
+        validateEmailWithOtpCode = { (code, onSuccess, onUnknownError) ->
             validateUserEmailViewModel.validateEmailWithOtpCode(emailToValidate, code, onSuccess, onUnknownError)
         },
         resetErrorState = validateUserEmailViewModel::resetErrorState,
@@ -84,7 +84,7 @@ fun ValidateUserEmailScreen(
 @Composable
 private fun ValidateUserEmailScreen(
     emailToValidate: String,
-    validateEmailWithOtpCode: (otpCode: String, onSuccess: () -> Unit, onUnknownError: () -> Unit) -> Unit,
+    validateEmailWithOtpCode: (ValidateEmailPayload) -> Unit,
     resetErrorState: () -> Unit,
     isLoading: () -> Boolean,
     isError: () -> Boolean,
@@ -148,13 +148,17 @@ private fun ValidateUserEmailScreen(
 
                     if (isFilled) {
                         validateEmailWithOtpCode(
-                            /* otpCode = */ code,
-                            /* onSuccess = */ {}, // TODO: Navigate to the next step
-                            /* onUnknownError = */
-                            {
-                                SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
-                                scope.launch { snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred)) }
-                            },
+                            ValidateEmailPayload(
+                                otpCode = code,
+                                onSuccess = {}, // TODO: Navigate to the next step
+                                onUnknownError = {
+                                    SentryLog.e(
+                                        "Email validation",
+                                        "An unknown API error has occurred when validating the OTP code"
+                                    )
+                                    scope.launch { snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred)) }
+                                },
+                            )
                         )
                     } else {
                         resetErrorState()
@@ -284,6 +288,12 @@ private enum class LayoutStyle(
     }
 }
 
+private data class ValidateEmailPayload(
+    val otpCode: String,
+    val onSuccess: () -> Unit,
+    val onUnknownError: () -> Unit,
+)
+
 @PreviewAllWindows
 @Composable
 private fun Preview() {
@@ -291,7 +301,7 @@ private fun Preview() {
         Surface {
             ValidateUserEmailScreen(
                 emailToValidate = "example@example.com",
-                validateEmailWithOtpCode = { _, _, _ -> },
+                validateEmailWithOtpCode = {},
                 resetErrorState = {},
                 isLoading = { false },
                 isError = { false },
