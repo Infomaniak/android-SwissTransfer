@@ -48,6 +48,7 @@ fun TransferOptionsTypes(
     transferOptionsStates: () -> List<TransferOptionState>,
     onClick: (TransferOptionType) -> Unit,
 ) {
+    // TODO: Animate the addition or removal when the list of transferOptionsStates changes
     SwissTransferCard(modifier = modifier) {
         transferOptionsStates().forEach {
             val title by remember { derivedStateOf { it.settingState } }

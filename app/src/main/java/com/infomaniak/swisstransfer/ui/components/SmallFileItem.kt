@@ -39,7 +39,6 @@ fun SmallFileItem(
     modifier: Modifier = Modifier,
     file: FileUi,
     smallFileTileSize: SmallFileTileSize,
-    onRemove: (() -> Unit)? = null,
 ) {
     Box(
         modifier
@@ -54,8 +53,6 @@ fun SmallFileItem(
             showFileName = smallFileTileSize.showFileName,
             fileIconContentPadding = PaddingValues(SmallFileTileSize.fileNameIconPadding),
         )
-
-        onRemove?.let { CrossCircleButton(onClick = it, size = 40.dp) }
     }
 }
 
@@ -79,7 +76,6 @@ private fun SmallFileItemPreview(@PreviewParameter(FileUiListPreviewParameter::c
                 SmallFileItem(
                     file = file,
                     smallFileTileSize = SmallFileTileSize.LARGE,
-                    onRemove = {}
                 )
 
                 Spacer(Modifier.height(Margin.Medium))
