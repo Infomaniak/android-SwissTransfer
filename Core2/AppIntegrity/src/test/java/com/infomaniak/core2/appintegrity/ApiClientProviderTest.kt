@@ -18,7 +18,7 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class ApiClientProviderTest {
 
     private val apiClientProvider by lazy {
         ApiClientProvider(
