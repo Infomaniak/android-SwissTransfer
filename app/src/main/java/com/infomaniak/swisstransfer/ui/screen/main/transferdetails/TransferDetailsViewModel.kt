@@ -73,7 +73,7 @@ class TransferDetailsViewModel @Inject constructor(
         runCatching {
             transferManager.addTransferByLinkUUID(
                 linkUUID = transferUuid,
-                password = null,
+                password = null, // TODO: Handle password for deeplinks
                 transferDirection = TransferDirection.RECEIVED,
             )
         }.onFailure { exception ->
