@@ -49,7 +49,7 @@ fun ConfirmLeavingDialog(onLeave: () -> Unit, onCancel: () -> Unit) {
         positiveButton = {
             SmallButton(
                 title = stringResource(R.string.newTransferLeavingDialogPositiveButton),
-                style = ButtonType.ERROR,
+                style = ButtonType.ERROR_TEXT,
                 onClick = onLeave,
             )
         },
