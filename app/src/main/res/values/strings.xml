@@ -33,6 +33,7 @@
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>
     <string name="contentDescriptionButtonRemove">Remove file</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Remove %s</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
