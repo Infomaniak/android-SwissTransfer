@@ -29,6 +29,11 @@ jobs:
           token: ${{ github.token }}
           submodules: recursive
 
+      - name: Create test env.properties
+        run: |
+          touch env.properties
+          echo "sentryAuthToken=DummyToken" > env.properties
+
       # Setup Gradle and Run tests
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
