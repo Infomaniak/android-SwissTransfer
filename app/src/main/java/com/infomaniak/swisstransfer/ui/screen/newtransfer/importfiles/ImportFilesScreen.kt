@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -179,8 +180,11 @@ private fun HandleIntegrityCheckResult(
     resetResult: () -> Unit,
 ) {
     val result = integrityCheckResult()
+    val context = LocalContext.current
     LaunchedEffect(result == AppIntegrityResult.Success || result == AppIntegrityResult.Fail) {
-        if (integrityCheckResult() == AppIntegrityResult.Fail) Unit // TODO: Show error
+        if (integrityCheckResult() == AppIntegrityResult.Fail) { // TODO: Better error management
+            Toast.makeText(context, R.string.errorAppIntegrity, Toast.LENGTH_LONG).show()
+        }
         resetResult()
     }
 }
