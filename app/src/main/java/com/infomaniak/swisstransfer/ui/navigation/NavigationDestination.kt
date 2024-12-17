@@ -39,8 +39,10 @@ sealed class MainNavigation : NavigationDestination() {
 
     @Serializable
     data object SentDestination : MainNavigation()
+
     @Serializable
     data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
+
         companion object {
             fun NavGraphBuilder.receivedDestination(
                 content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
@@ -55,6 +57,7 @@ sealed class MainNavigation : NavigationDestination() {
             }
         }
     }
+    
     @Serializable
     data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
 
