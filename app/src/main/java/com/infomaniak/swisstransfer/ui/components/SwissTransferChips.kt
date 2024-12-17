@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -27,7 +26,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.*
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -55,22 +57,19 @@ fun SwissTransferSuggestionChip(
         shape = CustomShapes.ROUNDED,
         colors = SuggestionChipDefaults.suggestionChipColors(
             disabledContainerColor = SwissTransferTheme.colors.emailAddressChipColor,
-            disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor
+            disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor,
         ),
         border = null,
     )
 }
 
 @Composable
-fun SwissTransferInputChip(
-    modifier: Modifier = Modifier,
-    text: String,
-    focusManager: FocusManager,
-    onDismiss: () -> Unit,
-) {
+fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, onDismiss: () -> Unit) {
     val focusRequester = remember { FocusRequester() }
-    var enabled by remember { mutableStateOf(false) }
+    var isSelected by rememberSaveable { mutableStateOf(false) }
     var isFocused by rememberSaveable { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
 
     InputChip(
         modifier = modifier
@@ -78,25 +77,20 @@ fun SwissTransferInputChip(
             .widthIn(min = Dimens.InputChipMinWidth)
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused || focusState.hasFocus
-                Log.e("TOTO", "focusChanged ${focusState.isFocused} / ${focusState.hasFocus} / ${focusState.isCaptured}")
-                if (!isFocused) {
-                    Log.e("TOTO", "enabled = false")
-                    enabled = false
-                }
+                if (!isFocused) isSelected = false
             }
             .onKeyEvent { event ->
-                Log.i("TOTO", "chip key event $event")
                 if (event.type != KeyEventType.KeyUp) return@onKeyEvent false
 
                 when {
                     isDirectionalKey(event.key) && isFocused -> {
-                        enabled = true
+                        isSelected = true
                         true
                     }
-                    event.key == Key.Backspace -> {
+                    event.key == Key.Backspace || event.key == Key.Delete -> {
                         when {
-                            enabled -> onDismiss()
-                            isFocused -> enabled = true
+                            isSelected -> onDismiss()
+                            isFocused -> isSelected = true
                         }
                         true
                     }
@@ -111,7 +105,7 @@ fun SwissTransferInputChip(
         selected = isFocused,
         onClick = {
             focusRequester.requestFocus()
-            enabled = true
+            isSelected = true
         },
         label = { ChipLabel(text) },
         shape = CustomShapes.ROUNDED,
@@ -164,27 +158,15 @@ private fun EmailAddressChipPreview() {
         Surface {
             Column(Modifier.padding(Margin.Small)) {
                 SwissTransferSuggestionChip(text = LoremIpsum(2).values.joinToString(separator = " "))
+
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini)
+                    horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                 ) {
-                    val focusManager = LocalFocusManager.current
-                    SwissTransferInputChip(
-                        text = LoremIpsum(2).values.joinToString(separator = " "),
-                        focusManager = focusManager,
-                    ) { }
-                    SwissTransferInputChip(
-                        text = LoremIpsum(1).values.joinToString(separator = " "),
-                        focusManager = focusManager,
-                    ) { }
-                    SwissTransferInputChip(
-                        text = LoremIpsum(4).values.joinToString(separator = " "),
-                        focusManager = focusManager,
-                    ) { }
-                    SwissTransferInputChip(
-                        text = LoremIpsum(1).values.joinToString(separator = " "),
-                        focusManager = focusManager,
-                    ) { }
+                    SwissTransferInputChip(text = LoremIpsum(2).values.joinToString(separator = " ")) { }
+                    SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " ")) { }
+                    SwissTransferInputChip(text = LoremIpsum(4).values.joinToString(separator = " ")) { }
+                    SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " ")) { }
                 }
             }
         }

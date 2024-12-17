@@ -34,7 +34,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.*
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
@@ -64,10 +67,11 @@ fun EmailAddressTextField(
     initialValue: String,
     validatedEmails: GetSetCallbacks<Set<String>>,
     onValueChange: (String) -> Unit,
-    focusManager: FocusManager,
     isError: Boolean = false,
     supportingText: (@Composable () -> Unit)? = null,
 ) {
+
+    val focusManager = LocalFocusManager.current
 
     var text by rememberSaveable { mutableStateOf(initialValue) }
     var currentFocus: Focus? by remember { mutableStateOf(null) }
@@ -112,7 +116,9 @@ fun EmailAddressTextField(
             }
             .fillMaxWidth()
             .onPreviewKeyEvent { event ->
-                val shouldFocusLastChip = isFocused && validatedEmails.get().isNotEmpty()
+                val shouldFocusLastChip = isFocused && validatedEmails
+                    .get()
+                    .isNotEmpty()
                 if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace && shouldFocusLastChip) {
                     runCatching {
                         lastChipFocusRequester.requestFocus()
@@ -158,7 +164,6 @@ fun EmailAddressTextField(
                             SwissTransferInputChip(
                                 modifier = chipModifier,
                                 text = email,
-                                focusManager = focusManager,
                                 onDismiss = {
                                     validatedEmails.set(validatedEmails.get().minus(email))
                                     focusManager.moveFocus(FocusDirection.Exit)
@@ -213,7 +218,6 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                     label = label,
                     initialValue = "test.test@ik.me",
                     onValueChange = {},
-                    focusManager = LocalFocusManager.current,
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
@@ -221,7 +225,6 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                     label = label,
                     initialValue = "",
                     onValueChange = {},
-                    focusManager = LocalFocusManager.current,
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
@@ -229,7 +232,6 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                     label = label,
                     initialValue = "test",
                     onValueChange = {},
-                    focusManager = LocalFocusManager.current,
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
@@ -237,7 +239,6 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
                     label = label,
                     initialValue = "test",
                     onValueChange = {},
-                    focusManager = LocalFocusManager.current,
                     isError = true,
                     supportingText = { Text(stringResource(R.string.invalidAddress)) }
                 )
