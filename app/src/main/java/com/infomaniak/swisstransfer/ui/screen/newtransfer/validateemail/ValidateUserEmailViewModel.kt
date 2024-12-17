@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
 import com.infomaniak.multiplatform_swisstransfer.network.models.upload.request.VerifyEmailCodeBody
 import com.infomaniak.multiplatform_swisstransfer.network.repositories.UploadRepository
@@ -33,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val uploadManager: UploadManager
 ) : ViewModel() {
 
     private val uploadRepository: UploadRepository by lazy { UploadRepository() }
@@ -66,7 +68,7 @@ class ValidateUserEmailViewModel @Inject constructor(
 
     fun resendEmailCode(email: String) {
         viewModelScope.launch(ioDispatcher) {
-            // TODO //uploadRepository.resendEmailCode(ResendEmailCodeBody(email, ))
+            uploadManager.resendEmailCode(email)
         }
     }
 
