@@ -31,7 +31,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -301,7 +300,6 @@ private fun ColumnScope.EmailAddressesTextFields(
     shouldShowEmailAddressesFields: () -> Boolean,
 ) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
-        val focusManager = LocalFocusManager.current
         Column {
             val isAuthorError = isAuthorEmailInvalid()
             val isRecipientError = isRecipientEmailInvalid()
@@ -326,7 +324,6 @@ private fun ColumnScope.EmailAddressesTextFields(
                 onValueChange = recipientEmail.set,
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
-                focusManager = focusManager,
             )
             Spacer(Modifier.height(Margin.Medium))
         }
