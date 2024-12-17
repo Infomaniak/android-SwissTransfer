@@ -29,6 +29,13 @@ import io.sentry.Sentry
 import io.sentry.SentryLevel
 import java.util.UUID
 
+/**
+ * Manager used to verify that the device used is real and doesn't have integrity problems
+ *
+ * There is 2 types of Request:
+ * - the standard request ([requestIntegrityVerdictToken]) that need a warm-up first ([warmUpTokenProvider])
+ * - the classic request ([requestClassicIntegrityVerdictToken]) that need additional Api checks
+ */
 class AppIntegrityManager(private val appContext: Context) {
 
     private var appIntegrityTokenProvider: StandardIntegrityTokenProvider? = null
@@ -38,6 +45,10 @@ class AppIntegrityManager(private val appContext: Context) {
     private var challenge = ""
     private var challengeId = ""
 
+    /**
+     * This function is needed in case of standard verdict request by [requestIntegrityVerdictToken].
+     * It must be called once at the initialisation because it can take a long time (up to several minutes)
+     */
     fun warmUpTokenProvider(appCloudNumber: Long, onFailure: () -> Unit) {
         val integrityManager = IntegrityManagerFactory.createStandard(appContext)
         integrityManager.prepareIntegrityToken(
@@ -48,6 +59,10 @@ class AppIntegrityManager(private val appContext: Context) {
         }.addOnFailureListener { manageException(it, "Error during warmup", onFailure) }
     }
 
+    /**
+     * Standard verdict request for Integrity token
+     * It should protect automatically from replay attack, but for now this protection seemed to not be working
+     */
     fun requestIntegrityVerdictToken(
         requestHash: String,
         onSuccess: (String) -> Unit,
@@ -63,6 +78,12 @@ class AppIntegrityManager(private val appContext: Context) {
         }
     }
 
+    /**
+     * Classic verdict request for Integrity token
+     *
+     * This doesn't automatically protect from replay attack, thus the use of challenge/challengeId pair with our API to add this
+     * layer of protection.
+     */
     fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: () -> Unit) {
 
         // You can comment this if you want to test the App Integrity (also see getJwtToken in AppIntegrityRepository)
@@ -76,6 +97,19 @@ class AppIntegrityManager(private val appContext: Context) {
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
             ?.addOnSuccessListener { response -> onSuccess(response.token()) }
             ?.addOnFailureListener { manageException(it, "Error when requiring a classic integrity token", onFailure) }
+    }
+
+    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: () -> Unit) = runCatching {
+        generateChallengeId()
+        val apiResponse = appIntegrityRepository.getChallenge(challengeId)
+        SentryLog.d(
+            tag = APP_INTEGRITY_MANAGER_TAG,
+            msg = "challengeId hash : ${challengeId.hashCode()} / challenge hash: ${apiResponse.data.hashCode()}",
+        )
+        apiResponse.data?.let { challenge = it }
+        onSuccess()
+    }.getOrElse {
+        manageException(it, "Error fetching challenge", onFailure)
     }
 
     suspend fun getApiIntegrityVerdict(
@@ -96,19 +130,6 @@ class AppIntegrityManager(private val appContext: Context) {
         }.getOrElse {
             manageException(it, "Error during Integrity check by API", onFailure)
         }
-    }
-
-    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: () -> Unit) = runCatching {
-        generateChallengeId()
-        val apiResponse = appIntegrityRepository.getChallenge(challengeId)
-        SentryLog.d(
-            tag = APP_INTEGRITY_MANAGER_TAG,
-            msg = "challengeId hash : ${challengeId.hashCode()} / challenge hash: ${apiResponse.data.hashCode()}",
-        )
-        apiResponse.data?.let { challenge = it }
-        onSuccess()
-    }.getOrElse {
-        manageException(it, "Error fetching challenge", onFailure)
     }
 
     /**
