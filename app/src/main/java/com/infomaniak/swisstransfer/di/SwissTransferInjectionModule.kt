@@ -19,8 +19,10 @@ package com.infomaniak.swisstransfer.di
 
 import android.app.Application
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
+import com.infomaniak.core2.buildUserAgent
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment
+import com.infomaniak.swisstransfer.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +36,12 @@ object SwissTransferInjectionModule {
     @Provides
     @Singleton
     fun providesSwissTransferInjection(): SwissTransferInjection {
-        return SwissTransferInjection(environment = ApiEnvironment.Prod, userAgent = "Ktor client")
+        val userAgent = buildUserAgent(
+            appId = BuildConfig.APPLICATION_ID,
+            appVersionCode = BuildConfig.VERSION_CODE,
+            appVersionName = BuildConfig.VERSION_NAME,
+        )
+        return SwissTransferInjection(environment = ApiEnvironment.Prod, userAgent = userAgent)
     }
 
     @Provides
