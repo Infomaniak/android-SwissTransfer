@@ -25,9 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
@@ -43,7 +45,10 @@ fun MainNavHost(
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
         composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
-        composable<ReceivedDestination> { TransfersScreenWrapper(TransferDirection.RECEIVED) }
+        receivedDestination {
+            val args = it.toRoute<ReceivedDestination>()
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
+        }
         composable<SettingsDestination> { SettingsScreenWrapper() }
     }
 }
