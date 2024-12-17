@@ -37,7 +37,9 @@
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
+    <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorTransferPasswordLength">The password must be between 6 and 25 characters</string>
+    <string name="errorUnknown">An error has occurred</string>
     <string name="expiresIn">Expires in %d days</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>

@@ -1,6 +1,11 @@
 [versions]
 coreKtx = "1.15.0"
 composeBom = "2024.11.00"
+integrity = "1.4.0"
+junitAndroidxVersion = "1.2.1"
+junitVersion = "4.13.2"
+kotlinxSerializationJson = "1.7.1"
+ktor = "3.0.1"
 matomo = "4.1.4"
 sentry-android = "7.15.0"
 
@@ -12,5 +17,16 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3-an
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime-android" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview-android" }
+integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-client-content-negociation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-encoding = { module = "io.ktor:ktor-client-encoding", version.ref = "ktor" }
+ktor-client-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 matomo = { module = "com.github.matomo-org:matomo-sdk-android", version.ref = "matomo" }
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
+# Tests
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitAndroidxVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junitVersion" }

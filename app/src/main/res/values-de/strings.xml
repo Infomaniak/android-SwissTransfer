@@ -33,7 +33,9 @@
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
+    <string name="errorAppIntegrity">Ihr Gerät wird nicht als sicher erkannt</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
+    <string name="errorUnknown">Ein Fehler ist aufgetreten</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
