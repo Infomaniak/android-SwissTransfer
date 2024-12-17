@@ -49,7 +49,7 @@ fun UploadProgressScreen(
     totalSizeInBytes: Long,
     navigateToUploadSuccess: (String) -> Unit,
     navigateToUploadError: () -> Unit,
-    closeActivity: () -> Unit,
+    navigateBackToImportFiles: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
@@ -66,7 +66,7 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError)
+    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles)
 
     UploadProgressScreen(
         progressState = { uiState },
@@ -74,10 +74,7 @@ fun UploadProgressScreen(
         totalSizeInBytes = totalSizeInBytes,
         showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
-        onCancel = {
-            uploadProgressViewModel.cancelUpload()
-            closeActivity()
-        }
+        onCancel = { uploadProgressViewModel.cancelUpload() }
     )
 }
 
@@ -86,12 +83,14 @@ private fun HandleProgressState(
     uiState: () -> UploadProgressUiState,
     navigateToUploadSuccess: (String) -> Unit,
     navigateToUploadError: () -> Unit,
+    navigateBackToImportFiles: () -> Unit,
 ) {
     val currentUiState = uiState()
     LaunchedEffect(uiState()) {
         when (currentUiState) {
             is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferUrl)
             is UploadProgressUiState.Error -> navigateToUploadError()
+            is UploadProgressUiState.Cancel -> navigateBackToImportFiles()
             else -> Unit
         }
     }
@@ -129,7 +128,15 @@ private fun UploadProgressScreen(
             Spacer(Modifier.height(Margin.Huge))
         }
 
-        if (showBottomSheet.get()) CancelUploadBottomSheet(onCancel = onCancel, closeButtonSheet = { showBottomSheet.set(false) })
+        if (showBottomSheet.get()) {
+            CancelUploadBottomSheet(
+                onCancel = {
+                    onCancel()
+                    showBottomSheet.set(false)
+                },
+                closeButtonSheet = { showBottomSheet.set(false) },
+            )
+        }
     }
 }
 

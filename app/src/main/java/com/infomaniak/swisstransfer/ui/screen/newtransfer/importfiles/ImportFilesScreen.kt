@@ -161,7 +161,10 @@ private fun HandleSendActionResult(
     val errorMessage = stringResource(R.string.errorUnknown)
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
+            is SendActionResult.Success -> {
+                resetSendActionResult()
+                navigateToUploadProgress(transferType(), actionResult.totalSize)
+            }
             is SendActionResult.Failure -> {
                 snackbarHostState.showSnackbar(errorMessage)
                 resetSendActionResult()

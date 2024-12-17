@@ -124,7 +124,8 @@ class UploadWorker @AssistedInject constructor(
                 return@mapLatest when (workInfo.state) {
                     State.RUNNING -> UploadProgressUiState.Progress(workInfo.progress).also { lastUploadedSize = it.uploadedSize }
                     State.SUCCEEDED -> UploadProgressUiState.Success.create(workInfo.outputData, sharedApiUrlCreator)
-                    State.FAILED, State.CANCELLED -> UploadProgressUiState.Error(lastUploadedSize)
+                    State.FAILED -> UploadProgressUiState.Error(lastUploadedSize)
+                    State.CANCELLED -> UploadProgressUiState.Cancel()
                     else -> UploadProgressUiState.Default(lastUploadedSize)
                 } ?: UploadProgressUiState.Error(lastUploadedSize)
             }.filterNotNull()
@@ -160,6 +161,9 @@ class UploadWorker @AssistedInject constructor(
 
         @Immutable
         data class Error(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+
+        @Immutable
+        data class Cancel(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
     }
 
     companion object {
