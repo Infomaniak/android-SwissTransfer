@@ -139,7 +139,7 @@ class UploadWorker @AssistedInject constructor(
 
     sealed class UploadProgressUiState(open val uploadedSize: Long) {
         @Immutable
-        data class Default(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+        data class Default(override val uploadedSize: Long = 0L) : UploadProgressUiState(uploadedSize)
 
         @Immutable
         data class Progress(override val uploadedSize: Long) : UploadProgressUiState(uploadedSize) {
@@ -160,10 +160,10 @@ class UploadWorker @AssistedInject constructor(
         }
 
         @Immutable
-        data class Error(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+        data class Error(override val uploadedSize: Long = 0L) : UploadProgressUiState(uploadedSize)
 
         @Immutable
-        data class Cancel(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+        data class Cancel(override val uploadedSize: Long = 0L) : UploadProgressUiState(uploadedSize)
     }
 
     companion object {
