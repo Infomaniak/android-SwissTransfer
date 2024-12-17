@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
@@ -25,7 +24,6 @@ import com.infomaniak.multiplatform_swisstransfer.network.models.upload.request.
 import com.infomaniak.multiplatform_swisstransfer.network.repositories.UploadRepository
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,46 +32,45 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
-    @ApplicationContext private val appContext: Context,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val uploadRepository: UploadRepository by lazy { UploadRepository() }
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
-
-    private val _isError = MutableStateFlow(false)
-    val isError = _isError.asStateFlow()
+    private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
+    val uiState = _uiState.asStateFlow()
 
     fun validateEmailWithOtpCode(email: String, otpCode: String, onSuccess: () -> Unit, onUnknownError: () -> Unit) {
         viewModelScope.launch(ioDispatcher) {
-            _isLoading.value = true
+            _uiState.value = ValidateEmailUiState.Loading
 
             runCatching {
                 uploadRepository.verifyEmailCode(VerifyEmailCodeBody(otpCode, email))
             }.onFailure {
                 when (it) {
-                    is EmailValidationException.InvalidPasswordException -> _isError.value = true
+                    is EmailValidationException.InvalidPasswordException -> _uiState.value = ValidateEmailUiState.Error
                     else -> onUnknownError()
                 }
             }.onSuccess { token ->
                 // TODO: Save token for this email in DB
 
                 onSuccess()
+                _uiState.value = ValidateEmailUiState.Default
             }
-
-            _isLoading.value = false
         }
     }
 
     fun resetErrorState() {
-        _isError.value = false
+        _uiState.compareAndSet(ValidateEmailUiState.Error, ValidateEmailUiState.Default)
     }
 
     fun resendEmailCode(email: String) {
         viewModelScope.launch(ioDispatcher) {
             // TODO //uploadRepository.resendEmailCode(ResendEmailCodeBody(email, ))
         }
+    }
+
+    enum class ValidateEmailUiState {
+        Default, Loading, Error,
     }
 }

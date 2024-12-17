@@ -44,6 +44,7 @@ import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -65,8 +66,9 @@ fun ValidateUserEmailScreen(
     emailToValidate: String,
     validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel<ValidateUserEmailViewModel>(),
 ) {
-    val isLoading by validateUserEmailViewModel.isLoading.collectAsStateWithLifecycle()
-    val isError by validateUserEmailViewModel.isError.collectAsStateWithLifecycle()
+    val uiState by validateUserEmailViewModel.uiState.collectAsStateWithLifecycle()
+    val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
+    val isError by remember { derivedStateOf { uiState == ValidateEmailUiState.Error } }
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
