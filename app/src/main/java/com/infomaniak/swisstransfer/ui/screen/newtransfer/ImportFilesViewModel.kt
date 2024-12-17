@@ -62,6 +62,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
+    private val appIntegrityManager: AppIntegrityManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
     private val uploadManager: UploadManager,
@@ -171,7 +172,7 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     //region App Integrity
-    fun checkAppIntegrity(appIntegrityManager: AppIntegrityManager) {
+    fun checkAppIntegrity() {
         _integrityCheckResult.value = AppIntegrityResult.Ongoing
         viewModelScope.launch(ioDispatcher) {
             runCatching {

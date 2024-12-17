@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import android.app.Application
+import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import dagger.Module
 import dagger.Provides
@@ -51,4 +53,8 @@ object SwissTransferInjectionModule {
     @Provides
     @Singleton
     fun providesSharedApiUrlCreator(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.sharedApiUrlCreator
+
+    @Provides
+    @Singleton
+    fun providesAppIntegrityManger(application: Application) = AppIntegrityManager(application)
 }

@@ -66,9 +66,7 @@ internal class ApiClientProvider(engine: HttpClientEngine = OkHttp.create()) {
                 retryOnExceptionIf(maxRetries = MAX_RETRY) { _, cause ->
                     cause.isNetworkException()
                 }
-                delayMillis { retry ->
-                    retry * 500L
-                }
+                delayMillis { retry -> retry * RETRY_DELAY }
             }
             HttpResponseValidator {
                 validateResponse { response: HttpResponse ->
@@ -101,6 +99,6 @@ internal class ApiClientProvider(engine: HttpClientEngine = OkHttp.create()) {
     companion object {
         private const val REQUEST_TIMEOUT = 10_000L
         private const val MAX_RETRY = 3
-        const val REQUEST_LONG_TIMEOUT = 60_000L
+        private const val RETRY_DELAY = 500L
     }
 }

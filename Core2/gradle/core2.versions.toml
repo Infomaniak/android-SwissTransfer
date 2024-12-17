@@ -2,8 +2,8 @@
 coreKtx = "1.15.0"
 composeBom = "2024.11.00"
 integrity = "1.4.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
+junitAndroidxVersion = "1.2.1"
+junitVersion = "4.13.2"
 kotlinxSerializationJson = "1.7.1"
 ktor = "3.0.1"
 matomo = "4.1.4"
@@ -28,5 +28,5 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 matomo = { module = "com.github.matomo-org:matomo-sdk-android", version.ref = "matomo" }
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
 # Tests
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitAndroidxVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
