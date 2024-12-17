@@ -71,6 +71,29 @@ fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, onDismis
 
     val focusManager = LocalFocusManager.current
 
+    fun onKeyEvent(event: KeyEvent): Boolean {
+        if (event.type != KeyEventType.KeyUp) return false
+
+        return when {
+            isDirectionalKey(event.key) && isFocused -> {
+                isSelected = true
+                true
+            }
+            event.key == Key.Backspace || event.key == Key.Delete -> {
+                when {
+                    isSelected -> onDismiss()
+                    isFocused -> isSelected = true
+                }
+                true
+            }
+            event.key == Key.NavigateOut -> {
+                focusManager.moveFocus(FocusDirection.Exit)
+                true
+            }
+            else -> false
+        }
+    }
+
     InputChip(
         modifier = modifier
             .focusRequester(focusRequester)
@@ -79,28 +102,7 @@ fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, onDismis
                 isFocused = focusState.isFocused || focusState.hasFocus
                 if (!isFocused) isSelected = false
             }
-            .onKeyEvent { event ->
-                if (event.type != KeyEventType.KeyUp) return@onKeyEvent false
-
-                when {
-                    isDirectionalKey(event.key) && isFocused -> {
-                        isSelected = true
-                        true
-                    }
-                    event.key == Key.Backspace || event.key == Key.Delete -> {
-                        when {
-                            isSelected -> onDismiss()
-                            isFocused -> isSelected = true
-                        }
-                        true
-                    }
-                    event.key == Key.NavigateOut -> {
-                        focusManager.moveFocus(FocusDirection.Exit)
-                        true
-                    }
-                    else -> false
-                }
-            }
+            .onKeyEvent { event -> onKeyEvent(event) }
             .focusable(),
         selected = isFocused,
         onClick = {

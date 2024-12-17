@@ -26,10 +26,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -59,7 +56,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 const val EMAIL_FIELD_TAG = "EmailAddressTextField"
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EmailAddressTextField(
     modifier: Modifier = Modifier,
@@ -71,8 +67,6 @@ fun EmailAddressTextField(
     supportingText: (@Composable () -> Unit)? = null,
 ) {
 
-    val focusManager = LocalFocusManager.current
-
     var text by rememberSaveable { mutableStateOf(initialValue) }
     var currentFocus: Focus? by remember { mutableStateOf(null) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -81,11 +75,7 @@ fun EmailAddressTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
 
     val cursorColor by animateColorAsState(
-        targetValue = if (isError) {
-            SwissTransferTheme.materialColors.error
-        } else {
-            SwissTransferTheme.materialColors.primary
-        },
+        targetValue = if (isError) SwissTransferTheme.materialColors.error else SwissTransferTheme.materialColors.primary,
         label = "CursorColor",
     )
 
@@ -102,107 +92,154 @@ fun EmailAddressTextField(
         onValueChange(newValue)
     }
 
+    fun onKeyEvent(event: KeyEvent): Boolean {
+        val shouldFocusLastChip = isFocused && validatedEmails.get().isNotEmpty()
+        if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace && shouldFocusLastChip) {
+            runCatching {
+                lastChipFocusRequester.requestFocus()
+            }.onFailure {
+                SentryLog.e(EMAIL_FIELD_TAG, "The focusRequested wasn't registered with a non empty Chip list", it)
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    val keyboardActions = KeyboardActions(
+        onDone = {
+            val trimmedText = text.trim()
+            if (trimmedText.isEmail()) {
+                validatedEmails.set(validatedEmails.get() + trimmedText)
+                updateUiTextValue("")
+            }
+        },
+    )
+
+    val keyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Email,
+        imeAction = ImeAction.Done,
+        showKeyboardOnFocus = true,
+    )
+
+    val emailAddressTextFieldModifier = modifier
+        .onFocusChanged { focusState ->
+            if (focusState.isFocused) {
+                val newFocus = Focus()
+                if (interactionSource.tryEmit(newFocus)) currentFocus = newFocus
+            } else {
+                currentFocus?.let { interactionSource.tryEmit(FocusInteraction.Unfocus(it)) }
+            }
+        }
+        .fillMaxWidth()
+        .onPreviewKeyEvent(::onKeyEvent)
+
     BasicTextField(
+        modifier = emailAddressTextFieldModifier,
         value = text,
         onValueChange = ::updateUiTextValue,
-        modifier = modifier
-            .onFocusChanged { focusState ->
-                if (focusState.isFocused) {
-                    val newFocus = Focus()
-                    if (interactionSource.tryEmit(newFocus)) currentFocus = newFocus
-                } else {
-                    currentFocus?.let { interactionSource.tryEmit(FocusInteraction.Unfocus(it)) }
-                }
-            }
-            .fillMaxWidth()
-            .onPreviewKeyEvent { event ->
-                val shouldFocusLastChip = isFocused && validatedEmails
-                    .get()
-                    .isNotEmpty()
-                if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace && shouldFocusLastChip) {
-                    runCatching {
-                        lastChipFocusRequester.requestFocus()
-                    }.onFailure {
-                        SentryLog.e(EMAIL_FIELD_TAG, "The focusRequested wasn't registered with a non empty Chip list", it)
-                    }
-
-                    return@onPreviewKeyEvent true
-                }
-                false
-            },
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email,
-            imeAction = ImeAction.Done,
-            showKeyboardOnFocus = true,
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                val trimmedText = text.trim()
-                if (trimmedText.isEmail()) {
-                    validatedEmails.set(validatedEmails.get() + trimmedText)
-                    updateUiTextValue("")
-                }
-            },
-        ),
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         singleLine = true,
         cursorBrush = SolidColor(cursorColor),
         decorationBox = { innerTextField ->
-            OutlinedTextFieldDefaults.DecorationBox(
-                value = text,
-                innerTextField = {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
-                        itemVerticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        validatedEmails.get().forEach { email ->
-                            val chipModifier = if (email == validatedEmails.get().lastOrNull()) {
-                                Modifier.focusRequester(lastChipFocusRequester)
-                            } else {
-                                Modifier
-                            }
-                            SwissTransferInputChip(
-                                modifier = chipModifier,
-                                text = email,
-                                onDismiss = {
-                                    validatedEmails.set(validatedEmails.get().minus(email))
-                                    focusManager.moveFocus(FocusDirection.Exit)
-                                },
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .widthIn(min = 80.dp)
-                                .weight(1f)
-                        ) {
-                            innerTextField()
-                        }
-                    }
-                },
-                enabled = true,
-                singleLine = true,
-                visualTransformation = if (validatedEmails.get().isNotEmpty() && !isFocused) {
-                    // TODO: Remove this hack to make the label always in "above" position when the labelPosition will be
-                    //  available in the DecorationBox's API
-                    VisualTransformation { TransformedText(AnnotatedString(label), OffsetMapping.Identity) }
-                } else {
-                    VisualTransformation.None
-                },
+            EmailAddressDecorationBox(
+                text = text,
+                validatedEmails = validatedEmails,
+                lastChipFocusRequester = lastChipFocusRequester,
+                innerTextField = innerTextField,
+                isFocused = isFocused,
+                label = label,
                 interactionSource = interactionSource,
                 isError = isError,
                 supportingText = supportingText,
-                label = { Text(label) },
-                colors = textFieldColors,
-            ) {
-                OutlinedTextFieldDefaults.Container(
-                    enabled = true,
-                    isError = isError,
-                    interactionSource = interactionSource,
-                    colors = textFieldColors,
-                )
-            }
+                textFieldColors = textFieldColors,
+            )
         }
     )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun EmailAddressDecorationBox(
+    text: String,
+    validatedEmails: GetSetCallbacks<Set<String>>,
+    lastChipFocusRequester: FocusRequester,
+    innerTextField: @Composable () -> Unit,
+    isFocused: Boolean,
+    label: String,
+    interactionSource: MutableInteractionSource,
+    isError: Boolean,
+    supportingText: @Composable (() -> Unit)?,
+    textFieldColors: TextFieldColors,
+) {
+    OutlinedTextFieldDefaults.DecorationBox(
+        value = text,
+        innerTextField = { EmailChipsAndInnerTextField(validatedEmails, lastChipFocusRequester, innerTextField) },
+        enabled = true,
+        singleLine = true,
+        visualTransformation = if (validatedEmails.get().isNotEmpty() && !isFocused) {
+            // TODO: Remove this hack to make the label always in "above" position when the labelPosition will be
+            //  available in the DecorationBox's API
+            VisualTransformation { TransformedText(AnnotatedString(label), OffsetMapping.Identity) }
+        } else {
+            VisualTransformation.None
+        },
+        interactionSource = interactionSource,
+        isError = isError,
+        supportingText = supportingText,
+        label = { Text(label) },
+        colors = textFieldColors,
+    ) {
+        OutlinedTextFieldDefaults.Container(
+            enabled = true,
+            isError = isError,
+            interactionSource = interactionSource,
+            colors = textFieldColors,
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalLayoutApi::class)
+private fun EmailChipsAndInnerTextField(
+    validatedEmails: GetSetCallbacks<Set<String>>,
+    lastChipFocusRequester: FocusRequester,
+    innerTextField: @Composable () -> Unit,
+) {
+    val focusManager = LocalFocusManager.current
+
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
+        itemVerticalAlignment = Alignment.CenterVertically,
+    ) {
+        validatedEmails.get().forEach { email ->
+            val chipModifier = if (email == validatedEmails.get().lastOrNull()) {
+                Modifier.focusRequester(lastChipFocusRequester)
+            } else {
+                Modifier
+            }
+
+            SwissTransferInputChip(
+                modifier = chipModifier,
+                text = email,
+                onDismiss = {
+                    validatedEmails.set(validatedEmails.get().minus(email))
+                    focusManager.moveFocus(FocusDirection.Exit)
+                },
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .widthIn(min = 80.dp)
+                .weight(1f)
+        ) {
+            innerTextField()
+        }
+    }
 }
 
 @PreviewLightAndDark
