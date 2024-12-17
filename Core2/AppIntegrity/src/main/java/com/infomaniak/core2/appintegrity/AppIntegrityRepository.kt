@@ -48,13 +48,15 @@ internal class AppIntegrityRepository {
         targetUrl: String,
         challengeId: String,
     ): ApiResponse<String> {
-        val body = mapOf(
+        val body = mutableMapOf(
             "token" to integrityToken,
             "package_name" to packageName,
             "target_url" to targetUrl,
             "challenge_id" to challengeId,
-            "force_integrity_test" to "true",
         )
+
+        // Add this line to test validation by api
+        // body["force_integrity_test"] = "true"
 
         return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.requestApiIntegrityCheck), data = body)
     }

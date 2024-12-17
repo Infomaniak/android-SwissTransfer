@@ -64,6 +64,13 @@ class AppIntegrityManager(private val appContext: Context) {
     }
 
     fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: () -> Unit) {
+
+        // You can comment this if you want to test the App Integrity (also see getJwtToken in AppIntegrityRepository)
+        if (BuildConfig.DEBUG) {
+            onSuccess("Basic app integrity token")
+            return
+        }
+
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
