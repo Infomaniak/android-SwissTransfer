@@ -146,6 +146,10 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
+    fun resetSendActionResult() {
+        _sendActionResult.value = SendActionResult.NotStarted
+    }
+
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
         uploadManager.removeAllUploadSession()

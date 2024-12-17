@@ -33,6 +33,7 @@
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
     <string name="errorTransferPasswordLength">Le mot de passe doit comporter entre 6 et 25 caractères</string>
+    <string name="errorUnknown">Une erreur est survenue</string>
     <string name="expiresIn">Expire dans %d jours</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
