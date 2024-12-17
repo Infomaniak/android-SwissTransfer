@@ -162,15 +162,6 @@ class ImportFilesViewModel @Inject constructor(
         _sendActionResult.value = SendActionResult.NotStarted
     }
 
-    fun startTransfer(appIntegrityManager: AppIntegrityManager) {
-        runCatching {
-            checkAppIntegrity(appIntegrityManager)
-        }.onFailure { exception ->
-            SentryLog.e(TAG, "Failed to start the upload", exception)
-            _sendActionResult.update { SendActionResult.Failure }
-        }
-    }
-
     //region App Integrity
     fun checkAppIntegrity() {
         _integrityCheckResult.value = AppIntegrityResult.Ongoing

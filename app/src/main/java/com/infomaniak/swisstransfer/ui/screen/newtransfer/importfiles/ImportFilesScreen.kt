@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -32,7 +31,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -82,6 +80,7 @@ fun ImportFilesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleIntegrityCheckResult(
+        snackbarHostState = snackbarHostState,
         integrityCheckResult = { integrityCheckResult },
         resetResult = { importFilesViewModel.resetIntegrityCheckResult() },
     )
@@ -160,13 +159,12 @@ private fun HandleSendActionResult(
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
     resetSendActionResult: () -> Unit,
 ) {
-    val context = LocalContext.current
-
+    val errorMessage = stringResource(R.string.errorUnknown)
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
             is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
             is SendActionResult.Failure -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
+                snackbarHostState.showSnackbar(errorMessage)
                 resetSendActionResult()
             }
             else -> Unit
@@ -176,14 +174,16 @@ private fun HandleSendActionResult(
 
 @Composable
 private fun HandleIntegrityCheckResult(
+    snackbarHostState: SnackbarHostState,
     integrityCheckResult: () -> AppIntegrityResult,
     resetResult: () -> Unit,
 ) {
     val result = integrityCheckResult()
-    val context = LocalContext.current
+    val errorMessage = stringResource(R.string.errorAppIntegrity)
+
     LaunchedEffect(result == AppIntegrityResult.Success || result == AppIntegrityResult.Fail) {
         if (integrityCheckResult() == AppIntegrityResult.Fail) { // TODO: Better error management
-            Toast.makeText(context, R.string.errorAppIntegrity, Toast.LENGTH_LONG).show()
+            snackbarHostState.showSnackbar(errorMessage)
         }
         resetResult()
     }
