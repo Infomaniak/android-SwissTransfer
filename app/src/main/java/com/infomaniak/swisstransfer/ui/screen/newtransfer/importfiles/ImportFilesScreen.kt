@@ -25,11 +25,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -73,7 +75,15 @@ fun ImportFilesScreen(
 
     val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
 
-    HandleSendActionResult({ sendActionResult }, { selectedTransferType }, navigateToUploadProgress)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    HandleSendActionResult(
+        snackbarHostState = snackbarHostState,
+        getSendActionResult = { sendActionResult },
+        transferType = { selectedTransferType },
+        navigateToUploadProgress = navigateToUploadProgress,
+        resetSendActionResult = importFilesViewModel::resetSendActionResult,
+    )
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
 
@@ -127,19 +137,27 @@ fun ImportFilesScreen(
         shouldStartByPromptingUserForFiles = true,
         sendTransfer = importFilesViewModel::sendTransfer,
         isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
+        snackbarHostState = snackbarHostState,
     )
 }
 
 @Composable
 private fun HandleSendActionResult(
+    snackbarHostState: SnackbarHostState,
     getSendActionResult: () -> SendActionResult?,
     transferType: () -> TransferTypeUi,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    resetSendActionResult: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
             is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
-            is SendActionResult.Failure -> Unit // TODO: Show error
+            is SendActionResult.Failure -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
+                resetSendActionResult()
+            }
             else -> Unit
         }
     }
@@ -159,6 +177,7 @@ private fun ImportFilesScreen(
     shouldStartByPromptingUserForFiles: Boolean,
     sendTransfer: () -> Unit,
     isTransferStarted: () -> Boolean,
+    snackbarHostState: SnackbarHostState? = null,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -197,7 +216,8 @@ private fun ImportFilesScreen(
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
-        }
+        },
+        snackbarHostState = snackbarHostState,
     )
 }
 
