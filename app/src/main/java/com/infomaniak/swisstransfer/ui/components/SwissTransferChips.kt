@@ -71,6 +71,13 @@ fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, onDismis
 
     val focusManager = LocalFocusManager.current
 
+    fun handleBackspaceKey() {
+        when {
+            isSelected -> onDismiss()
+            isFocused -> isSelected = true
+        }
+    }
+
     fun onKeyEvent(event: KeyEvent): Boolean {
         if (event.type != KeyEventType.KeyUp) return false
 
@@ -80,10 +87,7 @@ fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, onDismis
                 true
             }
             event.key == Key.Backspace || event.key == Key.Delete -> {
-                when {
-                    isSelected -> onDismiss()
-                    isFocused -> isSelected = true
-                }
+                handleBackspaceKey()
                 true
             }
             event.key == Key.NavigateOut -> {
@@ -143,9 +147,9 @@ private fun ChipLabel(text: String) {
 }
 
 private fun isDirectionalKey(key: Key): Boolean {
-    return key == Key.DirectionLeft || key == Key.DirectionRight || key == Key.DirectionUpLeft || key == Key.DirectionUp
-            || key == Key.DirectionDown || key == Key.DirectionCenter || key == Key.DirectionDownLeft || key == Key.DirectionDownRight
-            || key == Key.DirectionUpRight
+    return key == Key.DirectionLeft || key == Key.DirectionCenter || key == Key.DirectionRight
+            || key == Key.DirectionUpLeft || key == Key.DirectionUp || key == Key.DirectionUpRight
+            || key == Key.DirectionDownLeft || key == Key.DirectionDown || key == Key.DirectionDownRight
             || key == Key.SystemNavigationLeft || key == Key.SystemNavigationRight
             || key == Key.SystemNavigationUp || key == Key.SystemNavigationDown
             || key == Key.NavigatePrevious || key == Key.NavigateNext
