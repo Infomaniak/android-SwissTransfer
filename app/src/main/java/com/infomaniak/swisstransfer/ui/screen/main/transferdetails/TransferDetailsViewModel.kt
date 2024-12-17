@@ -62,7 +62,7 @@ class TransferDetailsViewModel @Inject constructor(
                 _transferUuidFlow.emit(transferUuid)
                 if (transfer != null) transferManager.fetchTransfer(transferUuid)
             }.onFailure { exception ->
-                SentryLog.e(TAG, "Failure on load a transfer", exception)
+                SentryLog.e(TAG, "Failure loading a transfer", exception)
             }
         }
     }
