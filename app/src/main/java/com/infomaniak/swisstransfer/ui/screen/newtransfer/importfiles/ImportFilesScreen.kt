@@ -82,7 +82,7 @@ fun ImportFilesScreen(
         getSendActionResult = { sendActionResult },
         transferType = { selectedTransferType },
         navigateToUploadProgress = navigateToUploadProgress,
-        resetSendActionResult = { importFilesViewModel.resetSendActionResult() },
+        resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
