@@ -32,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Chain
 import com.infomaniak.swisstransfer.ui.images.icons.Envelope
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -46,7 +47,7 @@ fun TransferTypeButtons(horizontalPadding: Dp, transferType: GetSetCallbacks<Tra
     BringIntoViewRow(
         horizontalPadding = horizontalPadding,
         spaceBy = Margin.Mini,
-        items = TransferTypeUi.entries,
+        items = TransferType.entries.map { it.toTransferTypeUi() },
     ) { transferTypeItem, bringIntoViewRequester ->
 
         LaunchedEffect(Unit) {
@@ -78,6 +79,13 @@ enum class TransferTypeUi(
         descriptionRes = null,
         dbValue = TransferType.QR_CODE,
     ),
+    MAIL(
+        buttonIcon = AppIcons.Envelope,
+        buttonTextRes = R.string.transferTypeEmail,
+        titleRes = R.string.uploadSuccessEmailTitle,
+        descriptionRes = R.plurals.uploadSuccessEmailDescription,
+        dbValue = TransferType.MAIL,
+    ),
     LINK(
         buttonIcon = AppIcons.Chain,
         buttonTextRes = R.string.transferTypeLink,
@@ -91,13 +99,6 @@ enum class TransferTypeUi(
         titleRes = R.string.uploadSuccessLinkTitle,
         descriptionRes = R.string.uploadSuccessLinkDescription,
         dbValue = TransferType.PROXIMITY,
-    ),
-    MAIL(
-        buttonIcon = AppIcons.Envelope,
-        buttonTextRes = R.string.transferTypeEmail,
-        titleRes = R.string.uploadSuccessEmailTitle,
-        descriptionRes = R.plurals.uploadSuccessEmailDescription,
-        dbValue = TransferType.MAIL,
     );
 
     companion object {
