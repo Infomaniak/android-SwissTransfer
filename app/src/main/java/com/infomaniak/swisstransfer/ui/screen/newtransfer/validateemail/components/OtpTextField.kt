@@ -96,8 +96,8 @@ fun OtpTextField(
                     imeAction = ImeAction.Done,
                 ),
                 decorationBox = { innerTextField ->
-                    // Draw innerTextField but hides it and its text selection handles. This is needed to have the system copy/paste
-                    // context menu place correctly on the screen
+                    // Draw innerTextField but hides it and its text selection handles. This is needed to have the system
+                    // copy/paste context menu place correctly on the screen
                     CompositionLocalProvider(
                         LocalTextSelectionColors provides TextSelectionColors(Color.Transparent, Color.Transparent)
                     ) {

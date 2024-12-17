@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -54,9 +55,7 @@ fun ColumnScope.CodeVerification(
                 },
                 isCharacterValid = { it in VALID_CHARACTERS },
                 isError = isError,
-                otpTextFieldStyle = OtpTextFieldStyle.default(
-                    textStyle = SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor),
-                ),
+                otpTextFieldStyle = OtpTextFieldStyle.default(textStyle = computeOtpTextStyle()),
                 isEnabled = { !isLoading() }
             )
 
@@ -74,6 +73,11 @@ fun ColumnScope.CodeVerification(
             color = SwissTransferTheme.materialColors.error,
         )
     }
+}
+
+@Composable
+private fun computeOtpTextStyle(): TextStyle {
+    return SwissTransferTheme.typography.bodyMedium.copy(color = SwissTransferTheme.colors.secondaryTextColor)
 }
 
 @PreviewLightAndDark

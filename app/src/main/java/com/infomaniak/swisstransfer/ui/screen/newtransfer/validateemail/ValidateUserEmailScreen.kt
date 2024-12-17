@@ -160,7 +160,9 @@ private fun ValidateUserEmailScreen(
                                         "Email validation",
                                         "An unknown API error has occurred when validating the OTP code"
                                     )
-                                    scope.launch { snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred)) }
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred))
+                                    }
                                 },
                             )
                         )
