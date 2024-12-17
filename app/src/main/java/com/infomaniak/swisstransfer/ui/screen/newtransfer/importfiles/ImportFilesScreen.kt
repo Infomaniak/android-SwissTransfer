@@ -162,6 +162,10 @@ private fun HandleSendActionResult(
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
             is SendActionResult.Success -> {
+                // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
+                // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
+                // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
+                // TODO: Maybe merging the 2 screens state machines into 1 could help simplify this ?
                 resetSendActionResult()
                 navigateToUploadProgress(transferType(), actionResult.totalSize)
             }
