@@ -31,8 +31,8 @@ class NavigationDestinationUnitTest {
         val sent = MainNavigation.SentDestination::class.simpleName
         val received = MainNavigation.ReceivedDestination::class.simpleName
         val settings = MainNavigation.SettingsDestination::class.simpleName
-        assertEquals(MainNavigation.Companion.entries.find { it == sent }, sent)
-        assertEquals(MainNavigation.Companion.entries.find { it == received }, received)
-        assertEquals(MainNavigation.Companion.entries.find { it == settings }, settings)
+        assertEquals(MainNavigation.Companion.destinationsNames.find { it == sent }, sent)
+        assertEquals(MainNavigation.Companion.destinationsNames.find { it == received }, received)
+        assertEquals(MainNavigation.Companion.destinationsNames.find { it == settings }, settings)
     }
 }

@@ -71,12 +71,12 @@ sealed class MainNavigation : NavigationDestination() {
         val sentDestinationName = "SentDestination"
         val receivedDestinationName = "ReceivedDestination"
         val settingsDestinationName = "SettingsDestination"
-        val entries = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
+        val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
                 val destinationRoute = destination.route ?: error("Destination route cannot be empty")
-                when (entries.firstOrNull { destinationRoute.contains(it) }) {
+                when (destinationsNames.firstOrNull { destinationRoute.contains(it) }) {
                     sentDestinationName -> this.toRoute<SentDestination>()
                     receivedDestinationName -> this.toRoute<ReceivedDestination>()
                     settingsDestinationName -> this.toRoute<SettingsDestination>()
