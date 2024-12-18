@@ -63,6 +63,7 @@ private val MAX_LAYOUT_WIDTH = 400.dp
 fun ValidateUserEmailScreen(
     closeActivity: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToUploadInProgress: () -> Unit,
     emailToValidate: String,
     validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel<ValidateUserEmailViewModel>(),
 ) {
@@ -72,8 +73,13 @@ fun ValidateUserEmailScreen(
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
-        validateEmailWithOtpCode = { (code, onSuccess, onUnknownError) ->
-            validateUserEmailViewModel.validateEmailWithOtpCode(emailToValidate, code, onSuccess, onUnknownError)
+        validateEmailWithOtpCode = { (code, _, onUnknownError) ->
+            validateUserEmailViewModel.validateEmailWithOtpCode(
+                email = emailToValidate,
+                otpCode = code,
+                onSuccess = { navigateToUploadInProgress() },
+                onUnknownError = onUnknownError
+            )
         },
         resetErrorState = validateUserEmailViewModel::resetErrorState,
         isLoading = { isLoading },

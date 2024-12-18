@@ -98,7 +98,12 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object ImportFilesDestination : NewTransferNavigation()
 
     @Serializable
-    data class ValidateUserEmailDestination(val userEmail: String) : NewTransferNavigation()
+    data class ValidateUserEmailDestination(
+        val userEmail: String,
+        val totalSize: Long,
+        val recipients: List<String>,
+    ) : NewTransferNavigation()
+
     @Serializable
     data class UploadProgressDestination(
         val transferType: TransferTypeUi,
