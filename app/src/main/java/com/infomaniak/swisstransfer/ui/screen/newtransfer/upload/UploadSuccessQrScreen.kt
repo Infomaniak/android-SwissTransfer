@@ -48,6 +48,13 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, clo
     BottomStickyButtonScaffold(
         snackbarHostState = snackbarHostState,
         topBar = { BrandTopAppBar() },
+        topButton = {
+            ShareAndCopyButtons(
+                modifier = Modifier.padding(bottom = Margin.Medium, top = Margin.Mini),
+                transferLink = transferUrl,
+                snackbarHostState = snackbarHostState,
+            )
+        },
         bottomButton = {
             LargeButton(
                 modifier = it,
@@ -59,12 +66,6 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, clo
     ) {
         Column {
             SuccessMessage(transferType, transferUrl)
-
-            ShareAndCopyButtons(
-                modifier = Modifier.padding(bottom = Margin.Medium, top = Margin.Mini),
-                transferLink = transferUrl,
-                snackbarHostState = snackbarHostState,
-            )
         }
     }
 }
