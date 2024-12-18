@@ -28,6 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.EmptyState
@@ -45,13 +47,43 @@ import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun TransfersScreenWrapper(direction: TransferDirection) {
+fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? = null) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold<DestinationContent>(
-        listPane = { ListPane(direction, navigator = this, hasTransfer = { hasTransfer = it }) },
-        detailPane = { DetailPane(navigator = this, hasTransfer) },
+        listPane = {
+            val transfersViewModel = hiltViewModel<TransfersViewModel>()
+            val isDeepLinkConsumed by transfersViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
+            handleDeepLink(
+                transferUuid = transferUuid,
+                isDeepLinkConsumed = { isDeepLinkConsumed },
+                consumeDeepLink = transfersViewModel::consumeDeepLink,
+                direction = direction,
+            )
+            ListPane(
+                direction = direction,
+                navigator = this,
+                updateHasTransfer = { hasTransfer = it },
+                transfersViewModel = transfersViewModel
+            )
+        },
+        detailPane = {
+            DetailPane(navigator = this, hasTransfer = { hasTransfer })
+        },
     )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun ThreePaneScaffoldNavigator<DestinationContent>.handleDeepLink(
+    transferUuid: String?,
+    isDeepLinkConsumed: () -> Boolean,
+    consumeDeepLink: () -> Unit,
+    direction: TransferDirection,
+) {
+    if (transferUuid != null && !isDeepLinkConsumed()) {
+        consumeDeepLink()
+        navigateToDetails(direction, transferUuid)
+    }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -59,18 +91,21 @@ fun TransfersScreenWrapper(direction: TransferDirection) {
 private fun ListPane(
     direction: TransferDirection,
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: (Boolean) -> Unit
+    transfersViewModel: TransfersViewModel,
+    updateHasTransfer: (Boolean) -> Unit,
 ) {
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
-            hasTransfer = hasTransfer,
+            transfersViewModel = transfersViewModel,
+            hasTransfer = updateHasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
-            hasTransfer = hasTransfer,
+            transfersViewModel = transfersViewModel,
+            hasTransfer = updateHasTransfer,
         )
     }
 }
@@ -90,12 +125,15 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun DetailPane(navigator: ThreePaneScaffoldNavigator<DestinationContent>, hasTransfer: Boolean) {
+private fun DetailPane(
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    hasTransfer: () -> Boolean,
+) {
 
     val destinationContent = navigator.safeCurrentContent()
 
     if (destinationContent == null) {
-        NoSelectionEmptyState(hasTransfer)
+        NoSelectionEmptyState(hasTransfer())
     } else {
         TransferDetailsScreen(
             transferUuid = destinationContent.transferUuid,
@@ -133,7 +171,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null)
         }
     }
 }

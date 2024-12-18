@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -35,7 +36,6 @@ import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
-import com.infomaniak.multiplatform_swisstransfer.network.utils.SharedApiRoutes
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -66,6 +66,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appIntegrityManager: AppIntegrityManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
+    private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val uploadManager: UploadManager,
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -198,7 +199,7 @@ class ImportFilesViewModel @Inject constructor(
             appIntegrityManager.getApiIntegrityVerdict(
                 integrityToken = appIntegrityToken,
                 packageName = BuildConfig.APPLICATION_ID,
-                targetUrl = SharedApiRoutes.createUploadContainer,
+                targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
                 onSuccess = { attestationToken ->
                     SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
                     Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $attestationToken")

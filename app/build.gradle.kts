@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.loadProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,6 +14,10 @@ plugins {
 val sharedCompileSdk: Int by rootProject.extra
 val sharedMinSdk: Int by rootProject.extra
 val sharedJavaVersion: JavaVersion by rootProject.extra
+
+val envProperties = loadProperties("env.properties")
+val sentryAuthToken = envProperties.getProperty("sentryAuthToken").takeIf { it.isNotEmpty() }
+    ?: error("The `sentryAuthToken` property in `env.properties` must be defined and not empty (see `env.example.properties`).")
 
 android {
     namespace = "com.infomaniak.swisstransfer"
@@ -29,13 +35,22 @@ android {
             useSupportLibrary = true
         }
 
+        //TODO: Remove preprod url when api is in prod
+        val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
+        val prodHost = "swisstransfer.com"
+        resValue("string", "preprod_host", preprodHost)
+        resValue("string", "prod_host", prodHost)
+        buildConfigField("String", "PREPROD_URL", "\"https://$preprodHost\"")
+        buildConfigField("String", "PROD_URL", "\"https://$prodHost\"")
+
         buildConfigField("String", "RECAPTCHA_API_SITE_KEY", "\"6LfaxOgpAAAAAI3Sj4rtB2oAFjkRJILiGEt-LUsc\"")
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -71,15 +86,13 @@ kapt {
 }
 
 sentry {
-    // Enables or disables the automatic upload of mapping files during a build.
-    // If you disable this, you'll need to manually upload the mapping files with sentry-cli when you do a release.
-    // Default is enabled.
-    autoUploadProguardMapping = true
-
-    // Does or doesn't include the source code of native code for Sentry.
-    // This executes sentry-cli with the --include-sources param. automatically so you don't need to do it manually.
-    // Default is disabled.
+    org = "sentry"
+    projectName = "swisstransfer-android"
+    authToken = sentryAuthToken
+    url = "https://sentry-mobile.infomaniak.com"
+    uploadNativeSymbols = true
     includeNativeSources = true
+    includeSourceContext = true
 }
 
 dependencies {

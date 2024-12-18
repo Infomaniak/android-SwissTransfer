@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# The TransferTypeUi class is removed when minifying, we don't want that.
+-keep class com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi{*;}

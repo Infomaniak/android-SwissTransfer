@@ -18,7 +18,13 @@
 package com.infomaniak.swisstransfer.ui.navigation
 
 import android.os.Bundle
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
@@ -33,8 +39,25 @@ sealed class MainNavigation : NavigationDestination() {
 
     @Serializable
     data object SentDestination : MainNavigation()
+
     @Serializable
-    data object ReceivedDestination : MainNavigation()
+    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
+
+        companion object {
+            fun NavGraphBuilder.receivedDestination(
+                content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
+            ) {
+                val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
+                val prodBasePath = "${BuildConfig.PROD_URL}/d/${ReceivedDestination::transferUuid.name}"
+                val deepLinks = listOf(
+                    navDeepLink<ReceivedDestination>(preprodBasePath),
+                    navDeepLink<ReceivedDestination>(prodBasePath),
+                )
+                composable<ReceivedDestination>(deepLinks = deepLinks, content = content)
+            }
+        }
+    }
+    
     @Serializable
     data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
 

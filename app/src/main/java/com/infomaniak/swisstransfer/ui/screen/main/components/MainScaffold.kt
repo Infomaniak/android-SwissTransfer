@@ -17,15 +17,19 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.infomaniak.core2.extensions.parcelableExtra
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
@@ -43,7 +47,7 @@ fun MainScaffold(
     largeWindowTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
-    val navType by rememberNavType(currentDestination)
+    val navType = rememberNavType(currentDestination)
     MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, largeWindowTopAppBar, content)
 }
 
@@ -76,23 +80,23 @@ private fun MainScaffold(
 private fun rememberNavType(
     currentDestination: MainNavigation,
     windowAdaptiveInfo: WindowAdaptiveInfo = LocalWindowAdaptiveInfo.current,
-): State<NavigationSuiteType> {
+): NavigationSuiteType {
 
-    val showNavigation by remember(currentDestination) {
-        derivedStateOf {
-            NavigationItem.entries.any { it.destination == currentDestination }
-        }
+    val showNavigation = remember(currentDestination) {
+        isDestinationInTopLevelNav(currentDestination)
     }
 
     return remember(showNavigation, windowAdaptiveInfo) {
-        derivedStateOf {
-            if (showNavigation) {
-                calculateFromAdaptiveInfo(windowAdaptiveInfo)
-            } else {
-                NavigationSuiteType.None
-            }
+        if (showNavigation) {
+            calculateFromAdaptiveInfo(windowAdaptiveInfo)
+        } else {
+            NavigationSuiteType.None
         }
     }
+}
+
+private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
+    return NavigationItem.entries.any { it.destination::class == destination::class }
 }
 
 private fun calculateFromAdaptiveInfo(windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
@@ -104,13 +108,23 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
     navigate(destination) {
         // Pop up to the start destination of the graph to avoid building up a large stack of destinations
         // on the back stack as users select items
-        popUpTo(this@navigateToSelectedItem.graph.findStartDestination().id) {
+        val startDestination = this@navigateToSelectedItem.graph.findStartDestination()
+        popUpTo(startDestination.id) {
             saveState = true
         }
         // Avoid multiple copies of the same destination when re-selecting the same item
         launchSingleTop = true
+
         // Restore state when re-selecting a previously selected item
         restoreState = true
+
+        // The commented code below was supposed to be an improvement on the line above,
+        // but it doesn't behave the way we'd like. TODO: Find a better solution that works
+
+        // val currentBackStackEntry = this@navigateToSelectedItem.currentBackStackEntry
+        // val hasDeepLink = currentBackStackEntry?.arguments?.parcelableExtra<Intent>(NavController.KEY_DEEP_LINK_INTENT) != null
+        // val isNavigatingToStartDestination = startDestination.route == destination::class.qualifiedName
+        // restoreState = !hasDeepLink || !isNavigatingToStartDestination
     }
 }
 
