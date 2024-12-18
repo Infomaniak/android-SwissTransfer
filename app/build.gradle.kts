@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.konan.properties.loadProperties
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -15,9 +15,12 @@ val sharedCompileSdk: Int by rootProject.extra
 val sharedMinSdk: Int by rootProject.extra
 val sharedJavaVersion: JavaVersion by rootProject.extra
 
-val envProperties = loadProperties("env.properties")
-val sentryAuthToken = envProperties.getProperty("sentryAuthToken").takeIf { it.isNotEmpty() }
-    ?: error("The `sentryAuthToken` property in `env.properties` must be defined and not empty (see `env.example.properties`).")
+val envProperties = rootProject.file("env.properties").takeIf { it.exists() }?.let { file ->
+    Properties().also { it.load(file.reader()) }
+}
+
+val sentryAuthToken = envProperties?.getProperty("sentryAuthToken").takeUnless { it.isNullOrBlank() }
+    ?: error("The `sentryAuthToken` property in `env.properties` must be specified (see `env.example.properties`).")
 
 android {
     namespace = "com.infomaniak.swisstransfer"
@@ -27,8 +30,8 @@ android {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = sharedMinSdk
         targetSdk = sharedCompileSdk
-        versionCode = 1 // 0_00_000_01 TODO: Update when released in prod
-        versionName = "0.0.1-Alpha1"
+        versionCode = 1_00_000_00
+        versionName = "1.0.0-Alpha2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

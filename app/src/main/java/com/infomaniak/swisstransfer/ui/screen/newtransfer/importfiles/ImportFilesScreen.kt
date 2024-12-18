@@ -145,7 +145,7 @@ fun ImportFilesScreen(
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
         integrityCheckResult = { integrityCheckResult },
-        checkAppIntegrity = importFilesViewModel::checkAppIntegrity,
+        sendTransfer = importFilesViewModel::sendTransfer,
         shouldStartByPromptingUserForFiles = true,
         isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
         snackbarHostState = snackbarHostState,
@@ -211,7 +211,7 @@ private fun ImportFilesScreen(
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
     integrityCheckResult: () -> AppIntegrityResult,
-    checkAppIntegrity: () -> Unit,
+    sendTransfer: () -> Unit,
     isTransferStarted: () -> Boolean,
     snackbarHostState: SnackbarHostState? = null,
 ) {
@@ -235,7 +235,7 @@ private fun ImportFilesScreen(
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
                 integrityCheckResult = integrityCheckResult,
-                checkAppIntegrityThenSendTransfer = checkAppIntegrity,
+                sendTransfer = sendTransfer,
                 isTransferStarted = isTransferStarted,
             )
         },
@@ -415,7 +415,7 @@ private fun SendButton(
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
     integrityCheckResult: () -> AppIntegrityResult,
-    checkAppIntegrityThenSendTransfer: () -> Unit,
+    sendTransfer: () -> Unit,
     isTransferStarted: () -> Boolean,
 ) {
     val remainingFilesCount = filesToImportCount()
@@ -440,7 +440,7 @@ private fun SendButton(
         showIndeterminateProgress = { integrityCheckResult() == AppIntegrityResult.Ongoing || isTransferStarted() },
         enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferStarted() },
         progress = progress,
-        onClick = { checkAppIntegrityThenSendTransfer() },
+        onClick = { sendTransfer() },
     )
 }
 
@@ -507,7 +507,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
             integrityCheckResult = { AppIntegrityResult.Idle },
-            checkAppIntegrity = {},
+            sendTransfer = {},
             isTransferStarted = { false },
         )
     }

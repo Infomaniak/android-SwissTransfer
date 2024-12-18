@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -34,10 +36,17 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
-fun SwissTransferCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun SwissTransferCard(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
     Card(
-        modifier = modifier,
-        shape = CustomShapes.MEDIUM,
+        modifier = modifier
+            .clip(shape = CustomShapes.MEDIUM)
+            .then(
+                other = if (onClick == null) {
+                    Modifier
+                } else {
+                    Modifier.clickable(onClick = onClick)
+                }
+            ),
         colors = CardDefaults.cardColors(contentColor = SwissTransferTheme.colors.secondaryTextColor),
         content = content,
     )
@@ -51,7 +60,7 @@ private fun SwissTransferCardPreview() {
             SwissTransferCard(
                 modifier = Modifier
                     .size(300.dp, 200.dp)
-                    .padding(Margin.Medium)
+                    .padding(Margin.Medium),
             ) {
                 Column(Modifier.padding(Margin.Large)) {
                     Text("Hello World!")

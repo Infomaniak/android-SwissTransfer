@@ -25,7 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
-import com.infomaniak.swisstransfer.ui.navigation.NavigationDestination.Companion.toDestination
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toMainDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -37,7 +37,7 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember(navBackStackEntry) {
-        derivedStateOf { navBackStackEntry?.toDestination<MainNavigation>() ?: MainNavigation.startDestination }
+        derivedStateOf { navBackStackEntry?.toMainDestination() ?: MainNavigation.startDestination }
     }
 
     MainScaffold(
