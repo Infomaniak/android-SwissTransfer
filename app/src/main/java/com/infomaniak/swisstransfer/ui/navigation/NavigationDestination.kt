@@ -33,7 +33,7 @@ import kotlinx.serialization.Serializable
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 @Serializable
-sealed class MainNavigation() : NavigationDestination() {
+sealed class MainNavigation : NavigationDestination() {
     var enableTransition = true
 
     @Serializable
