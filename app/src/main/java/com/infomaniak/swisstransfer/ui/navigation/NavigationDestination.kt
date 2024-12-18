@@ -58,9 +58,6 @@ sealed class MainNavigation : NavigationDestination() {
     }
 
     @Serializable
-    data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
-
-    @Serializable
     data object SettingsDestination : MainNavigation()
 
     companion object {
@@ -70,7 +67,6 @@ sealed class MainNavigation : NavigationDestination() {
         val entries = listOf(
             SentDestination::class,
             ReceivedDestination::class,
-            TransferDetailsDestination::class,
             SettingsDestination::class,
         )
 
@@ -80,7 +76,6 @@ sealed class MainNavigation : NavigationDestination() {
                 when (entries.firstOrNull { destinationRoute.contains(it.qualifiedName.toString()) }) {
                     SentDestination::class -> this.toRoute<SentDestination>()
                     ReceivedDestination::class -> this.toRoute<ReceivedDestination>()
-                    TransferDetailsDestination::class -> this.toRoute<TransferDetailsDestination>()
                     SettingsDestination::class -> this.toRoute<SettingsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
