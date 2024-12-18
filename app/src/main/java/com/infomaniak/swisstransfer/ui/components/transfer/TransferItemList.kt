@@ -19,6 +19,8 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,6 +46,7 @@ fun TransferItemList(
     getTransfers: () -> List<TransferUi>,
     onSwiped: (String) -> Unit,
     onClick: (TransferUi) -> Unit,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
 
     val selectedTransferUuid = getSelectedTransferUuid()
@@ -56,10 +59,12 @@ fun TransferItemList(
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Medium),
-        contentPadding = PaddingValues(top = Margin.Mini),
+        contentPadding = contentPadding,
     ) {
-
-        item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
+        item {
+            Spacer(Modifier.height(Margin.Mini))
+            Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1)
+        }
 
         items(
             count = getTransfers().count(),
