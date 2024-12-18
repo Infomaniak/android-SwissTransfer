@@ -25,6 +25,7 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
@@ -41,7 +42,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
                 navigateToEmailValidation = { email ->
-                    navController.navigate(ValidateUserEmailDestination(email))
+                    navController.navigate(ValidateUserEmailDestination(email, 1000L)) // TODO: Get actual size
                 }
             )
         }
@@ -50,6 +51,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             ValidateUserEmailScreen(
                 closeActivity = closeActivity,
                 navigateBack = { navController.popBackStack() },
+                navigateToUploadInProgress = { navController.navigate(UploadProgressDestination(TransferTypeUi.MAIL, args.totalSize)) },
                 emailToValidate = args.userEmail,
             )
         }
