@@ -17,7 +17,7 @@ val sharedJavaVersion: JavaVersion by rootProject.extra
 
 val envProperties = loadProperties("env.properties")
 val sentryAuthToken = envProperties.getProperty("sentryAuthToken").takeIf { it.isNotEmpty() }
-    ?: error("The property must be defined and not empty")
+    ?: error("The `sentryAuthToken` property in `env.properties` must be defined and not empty (see `env.example.properties`).")
 
 android {
     namespace = "com.infomaniak.swisstransfer"
@@ -49,7 +49,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
