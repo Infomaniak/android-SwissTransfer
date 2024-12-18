@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer
 
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class NavigationDestinationUnitTest {
@@ -28,11 +28,9 @@ class NavigationDestinationUnitTest {
      */
     @Test
     fun check_destinations_names_are_correct() {
-        val sent = MainNavigation.SentDestination::class.simpleName
-        val received = MainNavigation.ReceivedDestination::class.simpleName
-        val settings = MainNavigation.SettingsDestination::class.simpleName
-        assertEquals(MainNavigation.Companion.destinationsNames.find { it == sent }, sent)
-        assertEquals(MainNavigation.Companion.destinationsNames.find { it == received }, received)
-        assertEquals(MainNavigation.Companion.destinationsNames.find { it == settings }, settings)
+        val destinationsNames = MainNavigation.Companion.destinationsNames
+        assertNotNull(destinationsNames.find { it == MainNavigation.SentDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == MainNavigation.ReceivedDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == MainNavigation.SettingsDestination::class.simpleName })
     }
 }
