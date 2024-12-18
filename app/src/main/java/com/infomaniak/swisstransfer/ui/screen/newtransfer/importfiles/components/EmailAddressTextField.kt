@@ -18,8 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.interaction.FocusInteraction
-import androidx.compose.foundation.interaction.FocusInteraction.Focus
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
@@ -34,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
@@ -68,7 +65,6 @@ fun EmailAddressTextField(
 ) {
 
     var text by rememberSaveable { mutableStateOf(initialValue) }
-    var currentFocus: Focus? by remember { mutableStateOf(null) }
     val interactionSource = remember { MutableInteractionSource() }
     val lastChipFocusRequester = remember { FocusRequester() }
 
@@ -124,14 +120,6 @@ fun EmailAddressTextField(
     )
 
     val emailAddressTextFieldModifier = modifier
-        .onFocusChanged { focusState ->
-            if (focusState.isFocused) {
-                val newFocus = Focus()
-                if (interactionSource.tryEmit(newFocus)) currentFocus = newFocus
-            } else {
-                currentFocus?.let { interactionSource.tryEmit(FocusInteraction.Unfocus(it)) }
-            }
-        }
         .fillMaxWidth()
         .onPreviewKeyEvent(::onKeyEvent)
 
@@ -143,6 +131,7 @@ fun EmailAddressTextField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = true,
+        interactionSource = interactionSource,
         cursorBrush = SolidColor(cursorColor),
         decorationBox = { innerTextField ->
             EmailAddressDecorationBox(
