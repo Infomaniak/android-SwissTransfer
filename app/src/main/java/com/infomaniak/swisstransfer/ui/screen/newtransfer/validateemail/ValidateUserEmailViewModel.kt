@@ -21,8 +21,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
-import com.infomaniak.multiplatform_swisstransfer.network.models.upload.request.VerifyEmailCodeBody
-import com.infomaniak.multiplatform_swisstransfer.network.repositories.UploadRepository
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -37,8 +35,6 @@ class ValidateUserEmailViewModel @Inject constructor(
     private val uploadManager: UploadManager
 ) : ViewModel() {
 
-    private val uploadRepository: UploadRepository by lazy { UploadRepository() }
-
     private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
     val uiState = _uiState.asStateFlow()
 
@@ -47,7 +43,7 @@ class ValidateUserEmailViewModel @Inject constructor(
             _uiState.value = ValidateEmailUiState.Loading
 
             runCatching {
-                uploadRepository.verifyEmailCode(VerifyEmailCodeBody(otpCode, email))
+                uploadManager.verifyEmailCode(otpCode, email)
             }.onFailure {
                 when (it) {
                     is EmailValidationException.InvalidPasswordException -> _uiState.value = ValidateEmailUiState.Error
