@@ -32,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val uploadManager: UploadManager
+    private val uploadManager: UploadManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
@@ -50,8 +50,8 @@ class ValidateUserEmailViewModel @Inject constructor(
                     else -> onUnknownError()
                 }
             }.onSuccess { token ->
-                // TODO: Save token for this email in DB
-
+                uploadManager.updateAuthorEmailToken(email, token)
+                // TODO: Start upload worker (and does it need to initUploadSession again?)
                 onSuccess()
                 _uiState.value = ValidateEmailUiState.Default
             }

@@ -148,16 +148,15 @@ class ImportFilesViewModel @Inject constructor(
         uploadManager.removeAllUploadSession()
     }
 
-    private fun generateNewUploadSession(): NewUploadSession {
-        return NewUploadSession(
+    private suspend fun generateNewUploadSession(): NewUploadSession {
+        return uploadManager.generateNewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
             authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail else "",
-            authorEmailToken = null,
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = _transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
-            recipientsEmails = emptyList(),
+            recipientsEmails = setOf("gibran.chevalley@infomaniak.com"),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
                     override val path: String? = null

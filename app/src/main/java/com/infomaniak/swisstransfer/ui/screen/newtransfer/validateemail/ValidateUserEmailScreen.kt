@@ -72,8 +72,15 @@ fun ValidateUserEmailScreen(
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
-        validateEmailWithOtpCode = { (code, onSuccess, onUnknownError) ->
-            validateUserEmailViewModel.validateEmailWithOtpCode(emailToValidate, code, onSuccess, onUnknownError)
+        validateEmailWithOtpCode = { (code, _, onUnknownError) ->
+            validateUserEmailViewModel.validateEmailWithOtpCode(
+                email = emailToValidate,
+                otpCode = code,
+                onSuccess = {
+                    navigateToUploadInProgress()
+                },
+                onUnknownError = onUnknownError
+            )
         },
         resetErrorState = validateUserEmailViewModel::resetErrorState,
         isLoading = { isLoading },
