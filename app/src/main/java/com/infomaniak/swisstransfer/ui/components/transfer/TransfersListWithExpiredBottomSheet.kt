@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -46,7 +47,6 @@ fun TransfersListWithExpiredBottomSheet(
     var expiredTransfer: TransferUi? by rememberSaveable { mutableStateOf(null) }
 
     TransferItemList(
-        modifier = Modifier.padding(Margin.Medium),
         direction = direction,
         getSelectedTransferUuid = getSelectedTransferUuid,
         getTransfers = getTransfers,
@@ -57,7 +57,8 @@ fun TransfersListWithExpiredBottomSheet(
             } else {
                 navigateToDetails(transfer.uuid)
             }
-        }
+        },
+        contentPadding = PaddingValues(Margin.Medium),
     )
 
     TransferExpiredBottomSheet(
