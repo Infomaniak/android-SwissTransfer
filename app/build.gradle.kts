@@ -15,7 +15,7 @@ val sharedCompileSdk: Int by rootProject.extra
 val sharedMinSdk: Int by rootProject.extra
 val sharedJavaVersion: JavaVersion by rootProject.extra
 
-val envProperties = file("env.properties").takeIf { it.exists() }?.let { file ->
+val envProperties = rootProject.file("env.properties").takeIf { it.exists() }?.let { file ->
     Properties().also { it.load(file.reader()) }
 }
 
