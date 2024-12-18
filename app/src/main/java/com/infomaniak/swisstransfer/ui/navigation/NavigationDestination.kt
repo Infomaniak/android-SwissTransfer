@@ -36,9 +36,19 @@ import kotlinx.serialization.Serializable
 sealed class MainNavigation : NavigationDestination() {
     var enableTransition = true
 
+    /**
+     * DO NOT RENAME THIS.
+     * EVER.
+     * Because of the minification, it will break the `toMainDestination()` function.
+     */
     @Serializable
     data object SentDestination : MainNavigation()
 
+    /**
+     * DO NOT RENAME THIS.
+     * EVER.
+     * Because of the minification, it will break the `toMainDestination()` function.
+     */
     @Serializable
     data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
 
@@ -57,6 +67,11 @@ sealed class MainNavigation : NavigationDestination() {
         }
     }
 
+    /**
+     * DO NOT RENAME THIS.
+     * EVER.
+     * Because of the minification, it will break the `toMainDestination()` function.
+     */
     @Serializable
     data object SettingsDestination : MainNavigation()
 
@@ -64,19 +79,25 @@ sealed class MainNavigation : NavigationDestination() {
         private val TAG = MainNavigation::class.java.simpleName
         val startDestination = SentDestination
 
+        /**
+         * If these classes have to be renamed, they need to be renamed in this `list` too.
+         */
         val entries = listOf(
-            SentDestination::class,
-            ReceivedDestination::class,
-            SettingsDestination::class,
+            "SentDestination",
+            "ReceivedDestination",
+            "SettingsDestination",
         )
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
                 val destinationRoute = destination.route ?: error("Destination route cannot be empty")
-                when (entries.firstOrNull { destinationRoute.contains(it.qualifiedName.toString()) }) {
-                    SentDestination::class -> this.toRoute<SentDestination>()
-                    ReceivedDestination::class -> this.toRoute<ReceivedDestination>()
-                    SettingsDestination::class -> this.toRoute<SettingsDestination>()
+                /**
+                 * If these classes have to be renamed, they need to be renamed in this `when` too.
+                 */
+                when (entries.firstOrNull { destinationRoute.contains(it) }) {
+                    "SentDestination" -> this.toRoute<SentDestination>()
+                    "ReceivedDestination" -> this.toRoute<ReceivedDestination>()
+                    "SettingsDestination" -> this.toRoute<SettingsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
