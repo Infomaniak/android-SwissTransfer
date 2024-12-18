@@ -206,7 +206,7 @@ private fun ImportFilesScreen(
     sendTransfer: () -> Unit,
     isTransferStarted: () -> Boolean,
     snackbarHostState: SnackbarHostState? = null,
-    navigateToFilesDetails: (fileUuid: String) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -236,14 +236,12 @@ private fun ImportFilesScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 SendByOptions(modifier, selectedTransferType)
-                FilesToImport(modifier, files, navigateToFileDetails = { /*TODO*/ }, addFiles, shouldStartByPromptingUserForFiles)
                 FilesToImport(
                     modifier = modifier,
                     files = files,
-                    removeFileByUid = removeFileByUid,
+                    navigateToFilesDetails = navigateToFilesDetails,
                     addFiles = addFiles,
                     shouldStartByPromptingUserForFiles = shouldStartByPromptingUserForFiles,
-                    navigateToFilesDetails = navigateToFilesDetails,
                 )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
@@ -263,10 +261,9 @@ private fun ImportFilesScreen(
 private fun FilesToImport(
     modifier: Modifier,
     files: () -> List<FileUi>,
-    navigateToFileDetails: () -> Unit,
+    navigateToFilesDetails: () -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
-    navigateToFilesDetails: () -> Unit,
 ) {
     var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
 
@@ -287,7 +284,7 @@ private fun FilesToImport(
         modifier,
         files,
         ::pickFiles,
-        navigateToFilesDetails = { navigateToFilesDetails("fileUuid") }
+        navigateToFilesDetails = { navigateToFilesDetails() }
     )
 }
 
@@ -516,7 +513,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             integrityCheckResult = { AppIntegrityResult.Idle },
             sendTransfer = {},
             isTransferStarted = { false },
-            navigateToFilesDetails = { _ -> },
+            navigateToFilesDetails = {},
         )
     }
 }

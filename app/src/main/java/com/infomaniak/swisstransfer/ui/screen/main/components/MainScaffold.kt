@@ -44,7 +44,7 @@ fun MainScaffold(
     windowTopAppBar: @Composable (isWindowLarge: Boolean) -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
-    val navType by rememberNavType(currentDestination)
+    val navType = rememberNavType(currentDestination)
 
     MainScaffold(
         navType = navType,
