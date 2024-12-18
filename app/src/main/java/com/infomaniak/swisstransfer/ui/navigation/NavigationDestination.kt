@@ -17,24 +17,23 @@
  */
 package com.infomaniak.swisstransfer.ui.navigation
 
-import android.os.Bundle
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
-import kotlin.reflect.full.primaryConstructor
 
 /**
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 @Serializable
-sealed class MainNavigation : NavigationDestination() {
+sealed class MainNavigation() : NavigationDestination() {
     var enableTransition = true
 
     @Serializable
@@ -57,7 +56,7 @@ sealed class MainNavigation : NavigationDestination() {
             }
         }
     }
-    
+
     @Serializable
     data class TransferDetailsDestination(val transferUuid: String) : MainNavigation()
 
@@ -65,7 +64,31 @@ sealed class MainNavigation : NavigationDestination() {
     data object SettingsDestination : MainNavigation()
 
     companion object {
+        private val TAG = MainNavigation::class.java.simpleName
         val startDestination = SentDestination
+
+        val entries = listOf(
+            SentDestination::class,
+            ReceivedDestination::class,
+            TransferDetailsDestination::class,
+            SettingsDestination::class,
+        )
+
+        fun NavBackStackEntry.toMainDestination(): MainNavigation? {
+            return runCatching {
+                val destinationRoute = destination.route ?: error("Destination route cannot be empty")
+                when (entries.firstOrNull { destinationRoute.contains(it.qualifiedName.toString()) }) {
+                    SentDestination::class -> this.toRoute<SentDestination>()
+                    ReceivedDestination::class -> this.toRoute<ReceivedDestination>()
+                    TransferDetailsDestination::class -> this.toRoute<TransferDetailsDestination>()
+                    SettingsDestination::class -> this.toRoute<SettingsDestination>()
+                    else -> error("Destination $destinationRoute is not handled")
+                }
+            }.getOrElse { exception ->
+                SentryLog.e(TAG, "toMainDestination: Failure", exception)
+                null
+            }
+        }
     }
 }
 
@@ -98,34 +121,4 @@ sealed class NewTransferNavigation : NavigationDestination() {
  * Sealed class representing navigation arguments with a title resource.
  */
 @Serializable
-sealed class NavigationDestination {
-
-    companion object {
-
-        inline fun <reified T : NavigationDestination> NavBackStackEntry.toDestination(): T? {
-            return toDestination(T::class, backStackEntry = this)
-        }
-
-        fun <T : NavigationDestination> toDestination(kClass: KClass<T>, backStackEntry: NavBackStackEntry?): T? {
-
-            fun kClassFromRoute(route: String) = kClass.sealedSubclasses.firstOrNull {
-                route.contains(it.qualifiedName.toString())
-            }
-
-            if (backStackEntry == null) return null
-
-            val route = backStackEntry.destination.route ?: ""
-            val args = backStackEntry.arguments
-            val subclass = kClassFromRoute(route) ?: return null
-
-            return createInstance(subclass, args)
-        }
-
-        private fun <T : NavigationDestination> createInstance(kClass: KClass<T>, bundle: Bundle?): T? {
-            return kClass.primaryConstructor?.let {
-                val args = it.parameters.associateWith { parameter -> bundle?.get(parameter.name) }
-                it.callBy(args)
-            } ?: kClass.objectInstance
-        }
-    }
-}
+sealed class NavigationDestination
