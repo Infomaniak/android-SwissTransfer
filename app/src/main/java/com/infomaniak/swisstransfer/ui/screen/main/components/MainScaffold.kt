@@ -42,7 +42,7 @@ fun MainScaffold(
     currentDestination: MainNavigation,
     content: @Composable () -> Unit = {},
 ) {
-    val navType by rememberNavType(currentDestination)
+    val navType = rememberNavType(currentDestination)
 
     MainScaffold(
         navType = navType,

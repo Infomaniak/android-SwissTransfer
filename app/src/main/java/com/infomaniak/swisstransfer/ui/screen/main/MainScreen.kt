@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,6 +26,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toMainDestination
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toRoute
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -78,7 +78,7 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
 
 private fun goBackToStartScreen(navController: NavController, lastStartDestination: MainNavigation) {
     navController.popBackStack(
-        route = lastStartDestination,
+        route = lastStartDestination.toRoute(),
         inclusive = false,
     )
 }

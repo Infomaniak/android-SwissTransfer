@@ -50,9 +50,9 @@ import kotlinx.parcelize.Parcelize
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(
-	direction: TransferDirection,
-	transferUuid: String? = null,
-    navigateToFilesDetails: (transferUuid: String, fileUuid: String) -> Unit,
+    direction: TransferDirection,
+    transferUuid: String? = null,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -133,7 +133,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 @Composable
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
-    hasTransfer: Boolean,
+    hasTransfer: () -> Boolean,
     navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
 
@@ -181,8 +181,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null, navigateToFilesDetails = { _, _ -> })
-)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null, navigateToFilesDetails = { _ -> })
         }
     }
 }

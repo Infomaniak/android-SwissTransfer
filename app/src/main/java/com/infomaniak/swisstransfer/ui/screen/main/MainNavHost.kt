@@ -52,21 +52,21 @@ fun MainNavHost(
         composable<SentDestination> {
             onStartDestinationChanged(SentDestination)
             TransfersScreenWrapper(
+                direction = TransferDirection.SENT,
                 navigateToFilesDetails = { folderUuid ->
                     navController.navigate(FilesDetailsDestination(folderUuid))
                 },
-                direction = TransferDirection.SENT,
             )
         }
         receivedDestination {
-            onStartDestinationChanged(ReceivedDestination)
+            onStartDestinationChanged(ReceivedDestination())
             val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
             TransfersScreenWrapper(
+                direction = TransferDirection.RECEIVED,
+                transferUuid = args.transferUuid,
                 navigateToFilesDetails = { folderUuid ->
                     navController.navigate(FilesDetailsDestination(folderUuid))
                 },
-                direction = TransferDirection.RECEIVED,
             )
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }

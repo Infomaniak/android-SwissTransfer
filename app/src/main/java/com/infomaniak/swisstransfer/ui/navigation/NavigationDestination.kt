@@ -74,7 +74,13 @@ sealed class MainNavigation : NavigationDestination() {
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
         private const val settingsDestinationName = "SettingsDestination"
-        val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
+        private const val filesDetailsDestinationName = "FilesDetailsDestination"
+        val destinationsNames = listOf(
+			sentDestinationName,
+			receivedDestinationName,
+			settingsDestinationName,
+			filesDetailsDestinationName,
+		)
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
@@ -83,6 +89,7 @@ sealed class MainNavigation : NavigationDestination() {
                     sentDestinationName -> this.toRoute<SentDestination>()
                     receivedDestinationName -> this.toRoute<ReceivedDestination>()
                     settingsDestinationName -> this.toRoute<SettingsDestination>()
+                    filesDetailsDestinationName -> this.toRoute<FilesDetailsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
@@ -90,6 +97,8 @@ sealed class MainNavigation : NavigationDestination() {
                 null
             }
         }
+
+        fun MainNavigation.toRoute() = javaClass.canonicalName?.toString() ?: ""
     }
 }
 

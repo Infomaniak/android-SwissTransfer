@@ -58,7 +58,7 @@ fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
     pickFiles: () -> Unit,
-    navigateToFileDetails: () -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -70,7 +70,7 @@ fun ImportedFilesCard(
         }
     }
 
-    SwissTransferCard(modifier = modifier, onClick = navigateToFileDetails) {
+    SwissTransferCard(modifier = modifier, onClick = navigateToFilesDetails) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
                 firstText = {
@@ -149,7 +149,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
             pickFiles = {},
-            navigateToFileDetails = {},
+            navigateToFilesDetails = {},
         )
     }
 }
