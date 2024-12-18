@@ -46,6 +46,7 @@ class TransferSendManager @Inject constructor(
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
 ) {
 
+    // TODO: Merge these two ui states in a single one for the whole flow of logic
     private val _sendActionResult = MutableStateFlow<SendActionResult?>(SendActionResult.NotStarted)
     val sendActionResult = _sendActionResult.asStateFlow()
 
