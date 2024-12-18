@@ -36,19 +36,11 @@ import kotlinx.serialization.Serializable
 sealed class MainNavigation : NavigationDestination() {
     var enableTransition = true
 
-    /**
-     * DO NOT RENAME THIS.
-     * EVER.
-     * Because of the minification, it will break the `toMainDestination()` function.
-     */
+    // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
     data object SentDestination : MainNavigation()
 
-    /**
-     * DO NOT RENAME THIS.
-     * EVER.
-     * Because of the minification, it will break the `toMainDestination()` function.
-     */
+    // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
     data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
 
@@ -67,11 +59,7 @@ sealed class MainNavigation : NavigationDestination() {
         }
     }
 
-    /**
-     * DO NOT RENAME THIS.
-     * EVER.
-     * Because of the minification, it will break the `toMainDestination()` function.
-     */
+    // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
     data object SettingsDestination : MainNavigation()
 
@@ -79,25 +67,19 @@ sealed class MainNavigation : NavigationDestination() {
         private val TAG = MainNavigation::class.java.simpleName
         val startDestination = SentDestination
 
-        /**
-         * If these classes have to be renamed, they need to be renamed in this `list` too.
-         */
-        val entries = listOf(
-            "SentDestination",
-            "ReceivedDestination",
-            "SettingsDestination",
-        )
+        // If these classes have to be renamed, they need to be renamed here too.
+        val sentDestinationName = "SentDestination"
+        val receivedDestinationName = "ReceivedDestination"
+        val settingsDestinationName = "SettingsDestination"
+        val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
                 val destinationRoute = destination.route ?: error("Destination route cannot be empty")
-                /**
-                 * If these classes have to be renamed, they need to be renamed in this `when` too.
-                 */
-                when (entries.firstOrNull { destinationRoute.contains(it) }) {
-                    "SentDestination" -> this.toRoute<SentDestination>()
-                    "ReceivedDestination" -> this.toRoute<ReceivedDestination>()
-                    "SettingsDestination" -> this.toRoute<SettingsDestination>()
+                when (destinationsNames.firstOrNull { destinationRoute.contains(it) }) {
+                    sentDestinationName -> this.toRoute<SentDestination>()
+                    receivedDestinationName -> this.toRoute<ReceivedDestination>()
+                    settingsDestinationName -> this.toRoute<SettingsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
