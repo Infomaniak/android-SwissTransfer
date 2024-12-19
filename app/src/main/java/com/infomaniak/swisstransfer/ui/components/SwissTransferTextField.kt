@@ -76,13 +76,6 @@ fun SwissTransferTextField(
     var text by rememberSaveable { mutableStateOf(initialValue) }
 
     val displayLabel = if (isRequired) label else "$label ${stringResource(R.string.textFieldOptional)}"
-    val textFieldColors = OutlinedTextFieldDefaults.colors(
-        unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
-        unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
-        disabledBorderColor = SwissTransferTheme.materialColors.outline,
-        unfocusedTrailingIconColor = SwissTransferTheme.colors.iconColor,
-        disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
-    )
 
     OutlinedTextField(
         modifier = modifier,
@@ -92,7 +85,7 @@ fun SwissTransferTextField(
         label = displayLabel?.let { { Text(it) } },
         minLines = minLineNumber,
         maxLines = maxLineNumber,
-        colors = textFieldColors,
+        colors = SwissTransferTextFieldDefaults.colors(),
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
         onValueChange = {
             text = it
@@ -127,6 +120,18 @@ private fun getShowPasswordButton(shouldShowPassword: Boolean, onClick: () -> Un
 
         Icon(icon, contentDescription, Modifier.size(Dimens.SmallIconSize))
     }
+}
+
+object SwissTransferTextFieldDefaults {
+
+    @Composable
+    fun colors() = OutlinedTextFieldDefaults.colors(
+        unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
+        unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
+        disabledBorderColor = SwissTransferTheme.materialColors.outline,
+        unfocusedTrailingIconColor = SwissTransferTheme.colors.iconColor,
+        disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
+    )
 }
 
 @Composable

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.core2.isEmail
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTextFieldDefaults
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -65,14 +66,6 @@ fun EmailAddressTextField(
     val cursorColor by animateColorAsState(
         targetValue = if (isError) SwissTransferTheme.materialColors.error else SwissTransferTheme.materialColors.primary,
         label = "CursorColor",
-    )
-
-    val textFieldColors = OutlinedTextFieldDefaults.colors(
-        unfocusedLabelColor = SwissTransferTheme.colors.tertiaryTextColor,
-        unfocusedSupportingTextColor = SwissTransferTheme.colors.tertiaryTextColor,
-        disabledBorderColor = SwissTransferTheme.materialColors.outline,
-        unfocusedTrailingIconColor = SwissTransferTheme.colors.iconColor,
-        disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
     )
 
     fun updateUiTextValue(newValue: TextFieldValue) {
@@ -159,7 +152,7 @@ fun EmailAddressTextField(
                 interactionSource = interactionSource,
                 isError = isError,
                 supportingText = supportingText,
-                textFieldColors = textFieldColors,
+                textFieldColors = SwissTransferTextFieldDefaults.colors(),
             )
         }
     )
