@@ -85,14 +85,12 @@ class ImportFilesViewModel @Inject constructor(
 
     //region Transfer Author Email
     private var _transferAuthorEmail by mutableStateOf("")
-    private val isAuthorEmailInvalid by derivedStateOf {
-        _transferAuthorEmail.isNotEmpty() && !_transferAuthorEmail.trim().isEmail()
-    }
+    private val isAuthorEmailInvalid by derivedStateOf { _transferAuthorEmail.isValidEmail() }
     //endregion
 
     //region Recipient Email
     private var _recipientEmail by mutableStateOf("")
-    private val isRecipientEmailInvalid by derivedStateOf { _recipientEmail.isNotEmpty() && !_recipientEmail.trim().isEmail() }
+    private val isRecipientEmailInvalid by derivedStateOf { _recipientEmail.isValidEmail() }
     private var _validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
@@ -277,6 +275,8 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
     //endregion
+
+    private fun String.isValidEmail() = isNotEmpty() && !trim().isEmail()
 
     sealed class SendActionResult {
         data object NotStarted : SendActionResult()
