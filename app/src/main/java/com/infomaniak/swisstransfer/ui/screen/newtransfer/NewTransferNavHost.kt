@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +27,7 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.NewTransferFilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
@@ -36,10 +39,14 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
     NavHost(navController, NewTransferNavigation.startDestination) {
         composable<ImportFilesDestination> {
             ImportFilesScreen(
+                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
                 closeActivity = closeActivity,
                 navigateToUploadProgress = { transferType, totalSize ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
+                navigateToFilesDetails = {
+                    navController.navigate(NewTransferFilesDetailsDestination)
+                }
             )
         }
         composable<ValidateUserEmailDestination> {
@@ -66,6 +73,17 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         }
         composable<UploadErrorDestination> {
             UploadErrorScreen(navigateToImportFiles = { navController.navigate(ImportFilesDestination) })
+        }
+        composable<NewTransferFilesDetailsDestination> {
+            val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
+            NewTransferFilesDetailsScreen(
+                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
+                navigateToDetails = { _ -> navController.navigate(NewTransferFilesDetailsDestination) },
+                withFilesSize = true,
+                withSpaceLeft = true,
+                withFileDelete = true,
+                navigateBack = { navController.popBackStack() },
+            )
         }
     }
 }

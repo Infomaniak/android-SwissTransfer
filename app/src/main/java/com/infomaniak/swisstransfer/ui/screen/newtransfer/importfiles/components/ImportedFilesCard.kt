@@ -48,31 +48,22 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
-
-private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
 
 @Composable
 fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
     pickFiles: () -> Unit,
-    navigateToFileDetails: () -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val context = LocalContext.current
+    val humanReadableSize by remember { derivedStateOf { context.getSpaceLeft(files()) } }
 
-    val humanReadableSize by remember {
-        derivedStateOf {
-            val usedSpace = files().sumOf { it.fileSize }
-            val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
-            getHumanReadableSize(context, spaceLeft)
-        }
-    }
-
-    SwissTransferCard(modifier = modifier, onClick = navigateToFileDetails) {
+    SwissTransferCard(modifier = modifier, onClick = navigateToFilesDetails) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
                 firstText = {
@@ -151,7 +142,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
             pickFiles = {},
-            navigateToFileDetails = {},
+            navigateToFilesDetails = {},
         )
     }
 }
