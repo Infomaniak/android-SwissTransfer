@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import FilesDetailsScreen
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -32,11 +33,15 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
+    onStartDestinationChanged: (MainNavigation) -> Unit,
+    closeFilesDetails: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -44,11 +49,43 @@ fun MainNavHost(
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
+        composable<SentDestination> {
+            onStartDestinationChanged(SentDestination)
+            TransfersScreenWrapper(
+                direction = TransferDirection.SENT,
+                navigateToFilesDetails = { folderUuid ->
+                    navController.navigate(FilesDetailsDestination(folderUuid))
+                },
+            )
+        }
         receivedDestination {
+            onStartDestinationChanged(ReceivedDestination())
             val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
+            TransfersScreenWrapper(
+                direction = TransferDirection.RECEIVED,
+                transferUuid = args.transferUuid,
+                navigateToFilesDetails = { folderUuid ->
+                    navController.navigate(FilesDetailsDestination(folderUuid))
+                },
+            )
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
+        composable<FilesDetailsDestination> {
+            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
+            FilesDetailsScreen(
+                navigateToDetails = { folderUuid ->
+                    navController.navigate(FilesDetailsDestination(folderUuid))
+                },
+                folderUuid = filesDetailsDestination.folderUuid,
+                navigateBack = { navController.popBackStack() },
+                close = {
+                    closeFilesDetails()
+                },
+                withFilesSize = false,
+                withSpaceLeft = false,
+                withFileDelete = false,
+                shouldDisplayTopAppBar = LocalWindowAdaptiveInfo.current.isWindowSmall(),
+            )
+        }
     }
 }
