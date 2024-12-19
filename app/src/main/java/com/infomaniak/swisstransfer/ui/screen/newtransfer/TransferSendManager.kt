@@ -29,7 +29,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.A
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,53 +53,87 @@ class TransferSendManager @Inject constructor(
     val integrityCheckResult = _integrityCheckResult.asStateFlow()
 
     //region App Integrity
-    suspend fun sendTransfer(newUploadSession: NewUploadSession) {
-        _integrityCheckResult.value = AppIntegrityResult.Ongoing
+    private suspend inline fun withIntegrityToken(block: (attestationToken: String?) -> Unit) {
+        var attestationToken: String? = null
+
         coroutineScope {
-            runCatching {
-                appIntegrityManager.getChallenge(
-                    onSuccess = { requestAppIntegrityToken(appIntegrityManager, newUploadSession) },
-                    onFailure = ::setFailedIntegrityResult,
-                )
-            }.onFailure { exception ->
-                SentryLog.e(TAG, "Failed to start the upload", exception)
-                _sendActionResult.update { SendActionResult.Failure }
-            }
-        }
-    }
-
-    private fun CoroutineScope.requestAppIntegrityToken(
-        appIntegrityManager: AppIntegrityManager,
-        newUploadSession: NewUploadSession,
-    ) {
-        appIntegrityManager.requestClassicIntegrityVerdictToken(
-            onSuccess = { token ->
-                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
-                getApiIntegrityVerdict(appIntegrityManager, token, newUploadSession)
-            },
-            onFailure = ::setFailedIntegrityResult,
-        )
-    }
-
-    private fun CoroutineScope.getApiIntegrityVerdict(
-        appIntegrityManager: AppIntegrityManager,
-        appIntegrityToken: String,
-        newUploadSession: NewUploadSession,
-    ) {
-        launch {
-            appIntegrityManager.getApiIntegrityVerdict(
-                integrityToken = appIntegrityToken,
-                packageName = BuildConfig.APPLICATION_ID,
-                targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
-                onSuccess = { attestationToken ->
-                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
-                    Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $attestationToken")
-                    _integrityCheckResult.value = AppIntegrityResult.Success
-                    sendTransfer(attestationToken, newUploadSession)
-                },
-                onFailure = ::setFailedIntegrityResult,
+            appIntegrityManager.getChallenge(
+                onSuccess = { launch { attestationToken = requestAppIntegrityToken(appIntegrityManager) } },
+                onFailure = {},
             )
         }
+
+        block(attestationToken)
+    }
+
+    suspend fun sendTransfer(newUploadSession: NewUploadSession) {
+        _integrityCheckResult.value = AppIntegrityResult.Ongoing
+
+        runCatching {
+            withIntegrityToken { attestationToken ->
+                if (attestationToken == null) {
+                    _integrityCheckResult.value = AppIntegrityResult.Fail
+                } else {
+                    _integrityCheckResult.value = AppIntegrityResult.Success
+                    _sendActionResult.update { SendActionResult.Pending }
+                    runCatching {
+                        val uuid = uploadManager.createAndGetUpload(newUploadSession).uuid
+                        uploadManager.initUploadSession(
+                            attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
+                            attestationToken = attestationToken,
+                        )!! // TODO: Handle ContainerErrorsException here
+                        uploadWorkerScheduler.scheduleWork(uuid)
+                        _sendActionResult.update {
+                            val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
+                            SendActionResult.Success(totalSize)
+                        }
+                    }.onFailure { exception ->
+                        SentryLog.e(TAG, "Failed to start the upload", exception)
+                        _sendActionResult.update { SendActionResult.Failure }
+                    }
+                }
+            }
+        }.onFailure { exception ->
+            SentryLog.e(TAG, "Failed to start the upload", exception)
+            _sendActionResult.update { SendActionResult.Failure }
+        }
+    }
+
+    private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? {
+        var attestationToken: String? = null
+
+        coroutineScope {
+            appIntegrityManager.requestClassicIntegrityVerdictToken(
+                onSuccess = { token ->
+                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
+                    launch { attestationToken = getApiIntegrityVerdict(appIntegrityManager, token) }
+                },
+                onFailure = {},
+            )
+        }
+
+        return attestationToken
+    }
+
+    private suspend fun getApiIntegrityVerdict(
+        appIntegrityManager: AppIntegrityManager,
+        appIntegrityToken: String,
+    ): String? {
+        var token: String? = null
+
+        appIntegrityManager.getApiIntegrityVerdict(
+            integrityToken = appIntegrityToken,
+            packageName = BuildConfig.APPLICATION_ID,
+            targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
+            onSuccess = { attestationToken ->
+                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
+                Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $attestationToken")
+                token = attestationToken
+            },
+            onFailure = {},
+        )
+
+        return token
     }
 
     private fun setFailedIntegrityResult() {
@@ -114,27 +147,6 @@ class TransferSendManager @Inject constructor(
 
     fun resetSendActionResult() {
         _sendActionResult.value = SendActionResult.NotStarted
-    }
-
-    private fun CoroutineScope.sendTransfer(attestationToken: String, newUploadSession: NewUploadSession) {
-        _sendActionResult.update { SendActionResult.Pending }
-        launch {
-            runCatching {
-                val uuid = uploadManager.createAndGetUpload(newUploadSession).uuid
-                uploadManager.initUploadSession(
-                    attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
-                    attestationToken = attestationToken,
-                )!! // TODO: Handle ContainerErrorsException here
-                uploadWorkerScheduler.scheduleWork(uuid)
-                _sendActionResult.update {
-                    val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
-                    SendActionResult.Success(totalSize)
-                }
-            }.onFailure { exception ->
-                SentryLog.e(TAG, "Failed to start the upload", exception)
-                _sendActionResult.update { SendActionResult.Failure }
-            }
-        }
     }
 
     companion object {
