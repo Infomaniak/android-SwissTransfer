@@ -35,6 +35,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SmallFileItem
 import com.infomaniak.swisstransfer.ui.components.SmallFileTileSize
@@ -52,8 +53,6 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanRead
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
 
-private const val TOTAL_FILE_SIZE: Long = 50_000_000_000L
-
 @Composable
 fun ImportedFilesCard(
     modifier: Modifier = Modifier,
@@ -67,7 +66,7 @@ fun ImportedFilesCard(
     val humanReadableSize by remember {
         derivedStateOf {
             val usedSpace = files().sumOf { it.fileSize }
-            val spaceLeft = (TOTAL_FILE_SIZE - usedSpace).coerceAtLeast(0)
+            val spaceLeft = (FileUtils.MAX_FILES_SIZE - usedSpace).coerceAtLeast(0)
             getHumanReadableSize(context, spaceLeft)
         }
     }
