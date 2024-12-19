@@ -186,7 +186,8 @@ private fun TextLayoutResult.getBoundingBoxesForRange(start: Int, end: Int): Lis
             firstBoundingBoxRect = currentRect
         }
 
-        // Check if we reached the end of the current bounding box (i.e. if we reached a new line or the last character in the range)
+        // Check if we reached the end of the current bounding box
+        // (i.e. if we reached a new line or the last character in the range)
         if (previousRect != null && (areOnDifferentLines(previousRect, currentRect) || isLastCharacter)) {
             val lastBoundingBoxRect = if (isLastCharacter) currentRect else previousRect
             boundingBoxes.add(firstBoundingBoxRect.copy(right = lastBoundingBoxRect.right))
