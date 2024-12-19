@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -51,9 +52,13 @@ fun FilesDetailsScreen(
     navigateBack: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
-    val files by importFilesViewModel.getFiles(folderUuid).collectAsStateWithLifecycle(null)
+    val files by importFilesViewModel.files.collectAsStateWithLifecycle()
 
     if (files?.isEmpty() == true) navigateBack()
+
+    LaunchedEffect(Unit) {
+        importFilesViewModel.loadFiles(folderUuid)
+    }
 
     files?.let {
         FilesDetailsScreen(
@@ -115,9 +120,13 @@ fun FilesDetailsComponent(
     close: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
-    val files by importFilesViewModel.getFiles(folderUuid).collectAsStateWithLifecycle(null)
+    val files by importFilesViewModel.files.collectAsStateWithLifecycle()
 
     if (files?.isEmpty() == true) navigateBack()
+
+    LaunchedEffect(Unit) {
+        importFilesViewModel.loadFiles(folderUuid)
+    }
 
     files?.let {
         Column {
