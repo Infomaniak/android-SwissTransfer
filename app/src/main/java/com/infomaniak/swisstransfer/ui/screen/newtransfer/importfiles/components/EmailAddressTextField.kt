@@ -89,35 +89,33 @@ fun EmailAddressTextField(
         onValueChange(newValue)
     }
 
-    fun onKeyEvent(event: KeyEvent): Boolean {
-        return when {
-            event.type != KeyEventType.KeyDown -> false
-            event.key == Key.Backspace && text.isEmpty() -> {
-                validatedEmails.get().apply {
-                    if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
-                        currentSelectedChip = toList().lastIndex
-                    } else {
-                        elementAtOrNull(currentSelectedChip)?.let { email ->
-                            validatedEmails.set(minusElement(email))
-                        }
-                        currentSelectedChip = UNSELECTED_CHIP_INDEX
+    fun onKeyEvent(event: KeyEvent): Boolean = when {
+        event.type != KeyEventType.KeyUp -> false
+        event.key == Key.Backspace && text.isEmpty() -> {
+            validatedEmails.get().apply {
+                if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
+                    currentSelectedChip = toList().lastIndex
+                } else {
+                    elementAtOrNull(currentSelectedChip)?.let { email ->
+                        validatedEmails.set(minusElement(email))
                     }
+                    currentSelectedChip = UNSELECTED_CHIP_INDEX
                 }
+            }
 
-                true
-            }
-            event.isNavigatingLeft() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
-                currentSelectedChip--
-                true
-            }
-            event.isNavigatingRight() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
-                currentSelectedChip++
-                true
-            }
-            else -> {
-                currentSelectedChip = UNSELECTED_CHIP_INDEX
-                false
-            }
+            true
+        }
+        event.isNavigatingLeft() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
+            currentSelectedChip--
+            true
+        }
+        event.isNavigatingRight() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
+            currentSelectedChip++
+            true
+        }
+        else -> {
+            currentSelectedChip = UNSELECTED_CHIP_INDEX
+            false
         }
     }
 
@@ -139,7 +137,7 @@ fun EmailAddressTextField(
 
     val emailAddressTextFieldModifier = modifier
         .fillMaxWidth()
-        .onPreviewKeyEvent(::onKeyEvent)
+        .onKeyEvent(::onKeyEvent)
 
     BasicTextField(
         modifier = emailAddressTextFieldModifier,
