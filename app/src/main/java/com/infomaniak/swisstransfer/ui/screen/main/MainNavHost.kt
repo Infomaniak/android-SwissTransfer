@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import FilesDetailsScreen
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -32,7 +33,6 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsComponent
 
 @Composable
 fun MainNavHost(
@@ -71,7 +71,7 @@ fun MainNavHost(
         composable<SettingsDestination> { SettingsScreenWrapper() }
         composable<FilesDetailsDestination> {
             val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
-            FilesDetailsComponent(
+            FilesDetailsScreen(
                 navigateToDetails = { folderUuid ->
                     navController.navigate(FilesDetailsDestination(folderUuid))
                 },
