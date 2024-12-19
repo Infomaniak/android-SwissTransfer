@@ -123,7 +123,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object UploadErrorDestination : NewTransferNavigation()
 
     @Serializable
-    data object FilesDetailsDestination : NewTransferNavigation()
+    data object NewTransferFilesDetailsDestination : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination

@@ -42,23 +42,25 @@ fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolea
     Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
         Spacer(Modifier.size(Margin.Medium))
 
-        val filesInfo = getFilesInfo(files, withFilesSize, withSpaceLeft)
+        val filesInfo = getFilesInfo(files, withFilesSize)
         TextDotText(
             firstText = { filesInfo.filesCountText },
             secondText = { filesInfo.filesSizeText },
         )
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            modifier = Modifier.padding(horizontal = Margin.Medium),
-            text = filesInfo.spaceLeftText,
-            color = SwissTransferTheme.colors.secondaryTextColor,
-            style = SwissTransferTheme.typography.bodySmallRegular,
-        )
+        if (withSpaceLeft) {
+            Text(
+                modifier = Modifier.padding(horizontal = Margin.Medium),
+                text = filesInfo.spaceLeftText,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                style = SwissTransferTheme.typography.bodySmallRegular,
+            )
+        }
     }
 }
 
 @Composable
-private fun getFilesInfo(files: List<FileUi>, withFileSize: Boolean, withSpaceLeft: Boolean): FileInfo {
+private fun getFilesInfo(files: List<FileUi>, withFileSize: Boolean): FileInfo {
     val filesCount = files.count()
     val filesCountText = pluralStringResource(
         R.plurals.filesCount,
@@ -73,11 +75,7 @@ private fun getFilesInfo(files: List<FileUi>, withFileSize: Boolean, withSpaceLe
         ""
     }
 
-    val spaceLeftText = if (withSpaceLeft) {
-        formatSpaceLeft { context.getSpaceLeft(files) }
-    } else {
-        ""
-    }
+    val spaceLeftText = formatSpaceLeft { context.getSpaceLeft(files) }
 
     return FileInfo(filesCountText, fileSizeText, spaceLeftText)
 }

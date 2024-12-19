@@ -26,8 +26,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.NewTransferFilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
@@ -45,7 +45,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
                 navigateToFilesDetails = {
-                    navController.navigate(FilesDetailsDestination)
+                    navController.navigate(NewTransferFilesDetailsDestination)
                 }
             )
         }
@@ -74,11 +74,11 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<UploadErrorDestination> {
             UploadErrorScreen(navigateToImportFiles = { navController.navigate(ImportFilesDestination) })
         }
-        composable<FilesDetailsDestination> {
+        composable<NewTransferFilesDetailsDestination> {
             val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
-            FilesDetailsScreen(
+            NewTransferFilesDetailsScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
-                navigateToDetails = { _ -> navController.navigate(FilesDetailsDestination) },
+                navigateToDetails = { _ -> navController.navigate(NewTransferFilesDetailsDestination) },
                 withFilesSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,

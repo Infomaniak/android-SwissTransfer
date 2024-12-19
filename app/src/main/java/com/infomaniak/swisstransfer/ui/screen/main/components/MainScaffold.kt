@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    windowTopAppBar: @Composable (isWindowLarge: Boolean) -> Unit = {},
+    windowTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
@@ -60,13 +60,13 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    windowTopAppBar: @Composable (isWindowLarge: Boolean) -> Unit = {},
+    windowTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     Column {
-        windowTopAppBar(windowAdaptiveInfo.isWindowLarge())
+        windowTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
             if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
@@ -140,7 +140,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            windowTopAppBar = { isWindowLarge -> if (isWindowLarge) BrandTopAppBar() },
+            windowTopAppBar = { BrandTopAppBar() },
             content = {},
         )
     }
@@ -154,7 +154,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            windowTopAppBar = { isWindowLarge -> if (isWindowLarge) BrandTopAppBar() },
+            windowTopAppBar = { BrandTopAppBar() },
             content = {},
         )
     }
