@@ -31,6 +31,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
@@ -48,9 +49,9 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        windowTopAppBar = { isWindowLarge ->
+        windowTopAppBar = {
             // This is temporary to fix an issue with the animation when displaying the FilesDetailsScreen
-            if (isWindowLarge) {
+            if (LocalWindowAdaptiveInfo.current.isWindowLarge()) {
                 if (currentDestination is MainNavigation.FilesDetailsDestination) {
                     SwissTransferTopAppBar(
                         navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
@@ -67,7 +68,6 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
             MainNavHost(
                 navController = navController,
                 currentDestination = currentDestination,
-                isWindowSmall = LocalWindowAdaptiveInfo.current.isWindowSmall(),
                 onStartDestinationChanged = { lastStartDestination = it },
                 closeFilesDetails = { goBackToStartScreen(navController, lastStartDestination) },
 				isTransferDeepink = isTransferDeeplink,
