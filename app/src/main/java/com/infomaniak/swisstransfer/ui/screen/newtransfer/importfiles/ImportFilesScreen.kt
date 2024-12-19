@@ -61,6 +61,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToEmailValidation: (email: String) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -88,11 +89,11 @@ fun ImportFilesScreen(
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
         getSendActionResult = { sendActionResult },
+        setDefaultSendActionResult = { importFilesViewModel.setDefaultSendActionResult() },
         transferType = { selectedTransferType },
         navigateToUploadProgress = navigateToUploadProgress,
-        resetSendActionResult = importFilesViewModel::resetSendActionResult,
+        navigateToEmailValidation = { navigateToEmailValidation(importFilesViewModel.transferAuthorEmail.get()) },
     )
-
 
     LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
 
@@ -155,17 +156,25 @@ fun ImportFilesScreen(
 private fun HandleSendActionResult(
     snackbarHostState: SnackbarHostState,
     getSendActionResult: () -> SendActionResult?,
+    setDefaultSendActionResult: () -> Unit,
     transferType: () -> TransferTypeUi,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
-    resetSendActionResult: () -> Unit,
+    navigateToEmailValidation: () -> Unit,
 ) {
     val errorMessage = stringResource(R.string.errorUnknown)
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
+            is SendActionResult.Success -> {
+                navigateToUploadProgress(transferType(), actionResult.totalSize)
+                setDefaultSendActionResult()
+            }
             is SendActionResult.Failure -> {
                 snackbarHostState.showSnackbar(errorMessage)
-                resetSendActionResult()
+                setDefaultSendActionResult()
+            }
+            is SendActionResult.RequireEmailValidation -> {
+                navigateToEmailValidation()
+                setDefaultSendActionResult()
             }
             else -> Unit
         }

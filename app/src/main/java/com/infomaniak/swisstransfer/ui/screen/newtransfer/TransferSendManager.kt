@@ -23,6 +23,7 @@ import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEG
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.AppIntegrityResult
@@ -64,7 +65,11 @@ class TransferSendManager @Inject constructor(
                 )
             }.onFailure { exception ->
                 SentryLog.e(TAG, "Failed to start the upload", exception)
-                _sendActionResult.update { SendActionResult.Failure }
+                val result = when (exception) {
+                    is ContainerErrorsException.EmailValidationRequired -> SendActionResult.RequireEmailValidation
+                    else -> SendActionResult.Failure
+                }
+                _sendActionResult.update { result }
             }
         }
     }
@@ -112,7 +117,7 @@ class TransferSendManager @Inject constructor(
     }
     //endregion
 
-    fun resetSendActionResult() {
+    fun setDefaultSendActionResult() {
         _sendActionResult.value = SendActionResult.NotStarted
     }
 
