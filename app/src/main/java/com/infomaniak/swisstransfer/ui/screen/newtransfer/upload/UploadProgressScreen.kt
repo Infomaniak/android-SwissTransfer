@@ -66,7 +66,19 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles)
+    HandleProgressState(
+        uiState = { uiState },
+        navigateToUploadSuccess = navigateToUploadSuccess,
+        navigateToUploadError = {
+            // If the transfer fails, we need to remove the upload session
+            // before going back to ImportFilesScreen to edit the transfer.
+            // TODO: This is possibly only mandatory for editing the transfer, and not retrying it.
+            //  This needs to be checked when implementing the "Retry" feature.
+            uploadProgressViewModel.removeAllUploadSession()
+            navigateToUploadError()
+        },
+        navigateBackToImportFiles = navigateBackToImportFiles,
+    )
 
     UploadProgressScreen(
         progressState = { uiState },
