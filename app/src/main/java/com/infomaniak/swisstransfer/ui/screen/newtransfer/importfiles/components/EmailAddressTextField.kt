@@ -77,9 +77,11 @@ fun EmailAddressTextField(
     fun getLastEmailIndex() = validatedEmails.get().toList().lastIndex
 
     fun handleBackspace() = if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
+        // If no chip is currently selected, we select the last one
         currentSelectedChip = getLastEmailIndex()
         false
     } else {
+        // If any chip is already selected, pressing on backspace deletes it and reset the selection
         validatedEmails.get().elementAtOrNull(currentSelectedChip)?.let { email ->
             validatedEmails.set(validatedEmails.get().minusElement(email))
         }
@@ -87,24 +89,37 @@ fun EmailAddressTextField(
         true
     }
 
+    fun handlePreviousNavigation(): Boolean = when {
+        currentSelectedChip == UNSELECTED_CHIP_INDEX && textFieldValue.selection.start == 0 -> {
+            // If we go left when the cursor is already at the start of the textField, we select the last chip
+            currentSelectedChip = getLastEmailIndex()
+            true
+        }
+        currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
+            currentSelectedChip--
+            true
+        }
+        else -> false
+    }
+
+    fun handleForwardNavigation(): Boolean = when {
+        currentSelectedChip == UNSELECTED_CHIP_INDEX -> false
+        currentSelectedChip < getLastEmailIndex() -> {
+            currentSelectedChip++
+            true
+        }
+        else -> {
+            // The currently selected chip is the last one, so going right should deselect it and come back to the text
+            currentSelectedChip = UNSELECTED_CHIP_INDEX
+            true
+        }
+    }
+
     fun onKeyEvent(event: KeyEvent): Boolean = when {
         event.type != KeyEventType.KeyDown -> false
         event.key == Key.Backspace -> handleBackspace()
-        event.isNavigatingLeft() -> {
-            if (currentSelectedChip == UNSELECTED_CHIP_INDEX && textFieldValue.selection.start == 0) {
-                currentSelectedChip = getLastEmailIndex()
-                true
-            } else if (currentSelectedChip != UNSELECTED_CHIP_INDEX) {
-                currentSelectedChip--
-                true
-            } else {
-                false
-            }
-        }
-        event.isNavigatingRight() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
-            if (++currentSelectedChip > getLastEmailIndex()) currentSelectedChip = UNSELECTED_CHIP_INDEX
-            true
-        }
+        event.isNavigatingLeft() -> handlePreviousNavigation()
+        event.isNavigatingRight() -> handleForwardNavigation()
         else -> {
             currentSelectedChip = UNSELECTED_CHIP_INDEX
             false
