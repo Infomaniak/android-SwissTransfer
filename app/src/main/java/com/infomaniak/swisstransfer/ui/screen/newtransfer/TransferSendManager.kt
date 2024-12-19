@@ -46,45 +46,55 @@ class TransferSendManager @Inject constructor(
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
 ) {
 
-    // TODO: Merge these two ui states in a single one for the whole flow of logic
+    // TODO: Merge these two UI states in a single one for the whole flow of logic
     private val _sendActionResult = MutableStateFlow<SendActionResult?>(SendActionResult.NotStarted)
     val sendActionResult = _sendActionResult.asStateFlow()
 
     private val _integrityCheckResult = MutableStateFlow(AppIntegrityResult.Idle)
     val integrityCheckResult = _integrityCheckResult.asStateFlow()
 
-    suspend fun sendTransfer(newUploadSession: NewUploadSession) {
-        _integrityCheckResult.value = AppIntegrityResult.Ongoing
-
-        withIntegrityToken(
-            onSuccess = { attestationToken -> sendTransfer(newUploadSession, attestationToken) },
-            onRefused = { _integrityCheckResult.value = AppIntegrityResult.Fail },
-            onFailure = { exception ->
-                if (exception !is CancellationException) {
-                    SentryLog.e(TAG, "Integrity token received an exception", exception)
-                } else {
-                    SentryLog.i(TAG, "Integrity token received an exception", exception)
-                }
-                _sendActionResult.update { SendActionResult.Failure }
-            }
-        )
+    suspend fun sendNewTransfer(newUploadSession: NewUploadSession) {
+        val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
+        sendTransfer(uploadSession.uuid)
     }
 
-    private suspend fun sendTransfer(newUploadSession: NewUploadSession, attestationToken: String) {
-        _integrityCheckResult.value = AppIntegrityResult.Success
-        _sendActionResult.update { SendActionResult.Pending }
+    suspend fun resendLastTransfer() {
+        val uploadSessionUuid = uploadManager.getLastUpload()?.uuid ?: run {
+            SentryLog.e(TAG, "No last upload found")
+            return
+        }
+        sendTransfer(uploadSessionUuid)
+    }
 
+    private suspend fun sendTransfer(uploadSessionUuid: String) {
         runCatching {
-            val uuid = uploadManager.createAndGetUpload(newUploadSession).uuid
-            uploadManager.initUploadSession(
-                attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
-                attestationToken = attestationToken,
-            )!! // TODO: Handle ContainerErrorsException here
-            uploadWorkerScheduler.scheduleWork(uuid)
-            _sendActionResult.update {
-                val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
-                SendActionResult.Success(totalSize)
-            }
+            _integrityCheckResult.value = AppIntegrityResult.Ongoing
+
+            withIntegrityToken(
+                onSuccess = { attestationToken ->
+                    _integrityCheckResult.value = AppIntegrityResult.Success
+                    _sendActionResult.update { SendActionResult.Pending }
+
+                    uploadManager.initUploadSession(
+                        attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
+                        attestationToken = attestationToken,
+                    )!! // TODO: Handle ContainerErrorsException here
+                    uploadWorkerScheduler.scheduleWork(uploadSessionUuid)
+                    _sendActionResult.update {
+                        val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
+                        SendActionResult.Success(totalSize)
+                    }
+                },
+                onRefused = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+                onFailure = { exception ->
+                    if (exception !is CancellationException) {
+                        SentryLog.e(TAG, "Integrity token received an exception", exception)
+                    } else {
+                        SentryLog.i(TAG, "Integrity token received an exception", exception)
+                    }
+                    _sendActionResult.update { SendActionResult.Failure }
+                },
+            )
         }.onFailure { exception ->
             SentryLog.e(TAG, "Failed to start the upload", exception)
             _sendActionResult.update { SendActionResult.Failure }

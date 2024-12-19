@@ -131,7 +131,7 @@ class ImportFilesViewModel @Inject constructor(
 
     fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
-            transferSendManager.sendTransfer(generateNewUploadSession())
+            transferSendManager.sendNewTransfer(generateNewUploadSession())
         }
     }
 
