@@ -26,7 +26,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -54,12 +53,12 @@ fun EmailAddressTextField(
     label: String,
     initialValue: String,
     validatedEmails: GetSetCallbacks<Set<String>>,
-    onValueChange: (String) -> Unit,
+    onValueChange: (TextFieldValue) -> Unit,
     isError: Boolean = false,
     supportingText: (@Composable () -> Unit)? = null,
 ) {
 
-    var text by rememberSaveable { mutableStateOf(initialValue) }
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(initialValue)) }
     var currentSelectedChip by remember { mutableIntStateOf(UNSELECTED_CHIP_INDEX) }
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -78,31 +77,38 @@ fun EmailAddressTextField(
         disabledTrailingIconColor = SwissTransferTheme.colors.iconColor,
     )
 
-    fun updateUiTextValue(newValue: String) {
+    fun updateUiTextValue(newValue: TextFieldValue) {
         currentSelectedChip = UNSELECTED_CHIP_INDEX
-        text = newValue
+        textFieldValue = newValue
         onValueChange(newValue)
+    }
+
+    fun getLastEmailIndex() = validatedEmails.get().toList().lastIndex
+
+    fun handleBackspace() = if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
+        currentSelectedChip = getLastEmailIndex()
+        false
+    } else {
+        validatedEmails.get().elementAtOrNull(currentSelectedChip)?.let { email ->
+            validatedEmails.set(validatedEmails.get().minusElement(email))
+        }
+        currentSelectedChip = UNSELECTED_CHIP_INDEX
+        true
     }
 
     fun onKeyEvent(event: KeyEvent): Boolean = when {
         event.type != KeyEventType.KeyDown -> false
-        event.key == Key.Backspace && text.isEmpty() -> {
-            validatedEmails.get().apply {
-                if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
-                    currentSelectedChip = toList().lastIndex
-                } else {
-                    elementAtOrNull(currentSelectedChip)?.let { email ->
-                        validatedEmails.set(minusElement(email))
-                    }
-                    currentSelectedChip = UNSELECTED_CHIP_INDEX
-                }
+        event.key == Key.Backspace -> handleBackspace()
+        event.isNavigatingLeft() -> {
+            if (currentSelectedChip == UNSELECTED_CHIP_INDEX && textFieldValue.selection.start == 0) {
+                currentSelectedChip = getLastEmailIndex()
+                true
+            } else if (currentSelectedChip != UNSELECTED_CHIP_INDEX) {
+                currentSelectedChip--
+                true
+            } else {
+                false
             }
-
-            true
-        }
-        event.isNavigatingLeft() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
-            currentSelectedChip--
-            true
         }
         event.isNavigatingRight() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
             currentSelectedChip++
@@ -116,10 +122,10 @@ fun EmailAddressTextField(
 
     val keyboardActions = KeyboardActions(
         onDone = {
-            val trimmedText = text.trim()
+            val trimmedText = textFieldValue.text.trim()
             if (trimmedText.isEmail()) {
                 validatedEmails.set(validatedEmails.get() + trimmedText)
-                updateUiTextValue("")
+                updateUiTextValue(TextFieldValue())
             }
         },
     )
@@ -136,7 +142,7 @@ fun EmailAddressTextField(
 
     BasicTextField(
         modifier = emailAddressTextFieldModifier,
-        value = text,
+        value = textFieldValue,
         onValueChange = ::updateUiTextValue,
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
         keyboardOptions = keyboardOptions,
@@ -146,7 +152,7 @@ fun EmailAddressTextField(
         cursorBrush = SolidColor(cursorColor),
         decorationBox = { innerTextField ->
             EmailAddressDecorationBox(
-                text = text,
+                text = textFieldValue.text,
                 validatedEmails = validatedEmails,
                 currentSelectedChip = GetSetCallbacks(get = { currentSelectedChip }, set = { currentSelectedChip = it }),
                 innerTextField = innerTextField,
