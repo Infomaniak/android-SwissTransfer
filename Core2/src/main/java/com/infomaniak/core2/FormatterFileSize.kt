@@ -96,6 +96,7 @@ object FormatterFileSize {
             isGroupingUsed = false
             // We do this only for DecimalFormat, since in the general NumberFormat case,
             // calling setRoundingMode may throw an exception.
+            @Suppress("DEPRECATION")
             if (this is DecimalFormat) setRoundingMode(BigDecimal.ROUND_HALF_UP)
         }
     }

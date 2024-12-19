@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components
 
-import android.text.format.Formatter
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -45,6 +44,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewPar
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
@@ -65,7 +65,7 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
         Spacer(Modifier.width(Margin.Mini))
         TextDotText(
             firstText = { pluralStringResource(R.plurals.filesCount, filesCount, filesCount) },
-            secondText = { Formatter.formatShortFileSize(LocalContext.current, sizeUploaded) },
+            secondText = { HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded) },
             color = SwissTransferTheme.colors.primaryTextColor,
         )
     }

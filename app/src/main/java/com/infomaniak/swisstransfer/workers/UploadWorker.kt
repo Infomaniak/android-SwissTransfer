@@ -24,6 +24,7 @@ import androidx.work.*
 import androidx.work.WorkInfo.State
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import dagger.assisted.Assisted
@@ -163,9 +164,8 @@ class UploadWorker @AssistedInject constructor(
 
     companion object {
         private const val TAG = "UploadWorker"
-        private const val EXPECTED_CHUNK_SIZE = 50L * 1024 * 1024 // 50Mo
-        private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
-        private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
+        private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
+        private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
         private const val TRANSFER_UUID_TAG = "transfer_uuid_tag"
