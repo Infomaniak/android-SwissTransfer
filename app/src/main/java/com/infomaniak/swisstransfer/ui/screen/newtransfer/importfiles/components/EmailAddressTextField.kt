@@ -42,7 +42,6 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core2.isEmail
-import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
@@ -51,7 +50,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
-const val EMAIL_FIELD_TAG = "EmailAddressTextField"
+private const val UNSELECTED_CHIP_INDEX = -1
 
 @Composable
 fun EmailAddressTextField(
@@ -65,6 +64,7 @@ fun EmailAddressTextField(
 ) {
 
     var text by rememberSaveable { mutableStateOf(initialValue) }
+    var currentSelectedChip by remember { mutableIntStateOf(UNSELECTED_CHIP_INDEX) }
     val interactionSource = remember { MutableInteractionSource() }
     val lastChipFocusRequester = remember { FocusRequester() }
 
@@ -84,23 +84,41 @@ fun EmailAddressTextField(
     )
 
     fun updateUiTextValue(newValue: String) {
+        currentSelectedChip = UNSELECTED_CHIP_INDEX
         text = newValue
         onValueChange(newValue)
     }
 
     fun onKeyEvent(event: KeyEvent): Boolean {
-        val shouldFocusLastChip = isFocused && validatedEmails.get().isNotEmpty()
-        if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace && shouldFocusLastChip) {
-            runCatching {
-                lastChipFocusRequester.requestFocus()
-            }.onFailure {
-                SentryLog.e(EMAIL_FIELD_TAG, "The focusRequested wasn't registered with a non empty Chip list", it)
+        return when {
+            event.type != KeyEventType.KeyDown -> false
+            event.key == Key.Backspace && text.isEmpty() -> {
+                validatedEmails.get().apply {
+                    if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
+                        currentSelectedChip = toList().lastIndex
+                    } else {
+                        elementAtOrNull(currentSelectedChip)?.let { email ->
+                            validatedEmails.set(minusElement(email))
+                        }
+                        currentSelectedChip = UNSELECTED_CHIP_INDEX
+                    }
+                }
+
+                true
             }
-
-            return true
+            event.isNavigatingLeft() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
+                currentSelectedChip--
+                true
+            }
+            event.isNavigatingRight() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
+                currentSelectedChip++
+                true
+            }
+            else -> {
+                currentSelectedChip = UNSELECTED_CHIP_INDEX
+                false
+            }
         }
-
-        return false
     }
 
     val keyboardActions = KeyboardActions(
@@ -137,6 +155,7 @@ fun EmailAddressTextField(
             EmailAddressDecorationBox(
                 text = text,
                 validatedEmails = validatedEmails,
+                currentSelectedChip = { currentSelectedChip },
                 lastChipFocusRequester = lastChipFocusRequester,
                 innerTextField = innerTextField,
                 isFocused = isFocused,
@@ -155,6 +174,7 @@ fun EmailAddressTextField(
 private fun EmailAddressDecorationBox(
     text: String,
     validatedEmails: GetSetCallbacks<Set<String>>,
+    currentSelectedChip: () -> Int?,
     lastChipFocusRequester: FocusRequester,
     innerTextField: @Composable () -> Unit,
     isFocused: Boolean,
@@ -166,7 +186,14 @@ private fun EmailAddressDecorationBox(
 ) {
     OutlinedTextFieldDefaults.DecorationBox(
         value = text,
-        innerTextField = { EmailChipsAndInnerTextField(validatedEmails, lastChipFocusRequester, innerTextField) },
+        innerTextField = {
+            EmailChipsAndInnerTextField(
+                validatedEmails = validatedEmails,
+                currentSelectedChip = currentSelectedChip,
+                lastChipFocusRequester = lastChipFocusRequester,
+                innerTextField = innerTextField,
+            )
+        },
         enabled = true,
         singleLine = true,
         visualTransformation = if (validatedEmails.get().isNotEmpty() && !isFocused) {
@@ -195,6 +222,7 @@ private fun EmailAddressDecorationBox(
 @OptIn(ExperimentalLayoutApi::class)
 private fun EmailChipsAndInnerTextField(
     validatedEmails: GetSetCallbacks<Set<String>>,
+    currentSelectedChip: () -> Int?,
     lastChipFocusRequester: FocusRequester,
     innerTextField: @Composable () -> Unit,
 ) {
@@ -204,7 +232,7 @@ private fun EmailChipsAndInnerTextField(
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
         itemVerticalAlignment = Alignment.CenterVertically,
     ) {
-        validatedEmails.get().forEach { email ->
+        validatedEmails.get().forEachIndexed { index, email ->
             val chipModifier = if (email == validatedEmails.get().lastOrNull()) {
                 Modifier.focusRequester(lastChipFocusRequester)
             } else {
@@ -214,6 +242,7 @@ private fun EmailChipsAndInnerTextField(
             SwissTransferInputChip(
                 modifier = chipModifier,
                 text = email,
+                isSelected = { currentSelectedChip() == index },
                 onDismiss = {
                     validatedEmails.set(validatedEmails.get().minus(email))
                     focusManager.moveFocus(FocusDirection.Exit)
@@ -230,6 +259,9 @@ private fun EmailChipsAndInnerTextField(
         }
     }
 }
+
+private fun KeyEvent.isNavigatingLeft() = key == Key.DirectionLeft || key == Key.NavigatePrevious
+private fun KeyEvent.isNavigatingRight() = key == Key.DirectionRight || key == Key.NavigateNext
 
 @PreviewLightAndDark
 @Composable
