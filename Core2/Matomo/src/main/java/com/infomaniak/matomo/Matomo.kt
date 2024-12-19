@@ -66,8 +66,8 @@ interface Matomo {
         TrackHelper.track().screen(this).title(this::class.java.simpleName).with(tracker)
     }
 
-    fun Context.trackScreen(path: String, title: String) {
-        TrackHelper.track().screen(path).title(title).with(tracker)
+    fun Context.trackScreen(path: String) {
+        TrackHelper.track().screen(path).with(tracker)
     }
     //endregion
 
