@@ -27,8 +27,11 @@ object Dimens {
     val LargeButtonHeight = 56.dp
     val DoubleButtonMaxWidth = MaxSinglePaneScreenWidth
     val SingleButtonMaxWidth = DoubleButtonMaxWidth / 2
+    val MicroIconSize = 8.dp
+    val MiniIconSize = 12.dp
     val SmallIconSize = 16.dp
     val IconSize = 24.dp
     val BorderWidth = 1.dp
     val ButtonComboVerticalPadding = Margin.Small
+    val InputChipMinWidth = 88.dp
 }
