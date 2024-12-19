@@ -284,8 +284,8 @@ private fun ColumnScope.EmailAddressesTextFields(
 ) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
-            val isAuthorError = isAuthorEmailInvalid()
-            val isRecipientError = isRecipientEmailInvalid()
+            val isAuthorError = emailTextFieldCallbacks.checkEmailError(isAuthor = true)
+            val isRecipientError = emailTextFieldCallbacks.checkEmailError(isAuthor = false)
 
             SwissTransferTextField(
                 modifier = modifier,
@@ -440,8 +440,17 @@ data class EmailTextFieldCallbacks(
     val isAuthorEmailInvalid: () -> Boolean,
     val recipientEmail: GetSetCallbacks<String>,
     val isRecipientEmailInvalid: () -> Boolean,
-    val validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
-)
+    val validatedRecipientsEmails: GetSetCallbacks<Set<String>>
+) {
+
+    fun checkEmailError(isAuthor: Boolean): Boolean {
+        return if (isAuthor) {
+            isAuthorEmailInvalid() && transferAuthorEmail.get().isNotEmpty()
+        } else {
+            isRecipientEmailInvalid() && recipientEmail.get().isNotEmpty()
+        }
+    }
+}
 
 data class TransferOptionsCallbacks(
     val transferOptionsStates: () -> List<TransferOptionState>,
