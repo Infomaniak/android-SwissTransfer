@@ -61,7 +61,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadSuccessScreen(
                 transferType = args.transferType,
                 transferUrl = args.transferUrl,
-                closeActivity = closeActivity
+                closeActivity = closeActivity,
             )
         }
         composable<UploadErrorDestination> {

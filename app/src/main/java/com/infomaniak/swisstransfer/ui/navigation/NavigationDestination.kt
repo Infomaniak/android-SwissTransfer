@@ -45,9 +45,7 @@ sealed class MainNavigation : NavigationDestination() {
     data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
 
         companion object {
-            fun NavGraphBuilder.receivedDestination(
-                content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
-            ) {
+            fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
                 val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
                 val prodBasePath = "${BuildConfig.PROD_URL}/d/${ReceivedDestination::transferUuid.name}"
                 val deepLinks = listOf(
@@ -99,10 +97,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
     @Serializable
     data object ImportFilesDestination : NewTransferNavigation()
     @Serializable
-    data object TransferTypeDestination : NewTransferNavigation()
-    @Serializable
     data object ValidateUserEmailDestination : NewTransferNavigation()
-
     @Serializable
     data class UploadProgressDestination(val transferType: TransferTypeUi, val totalSize: Long) : NewTransferNavigation()
     @Serializable

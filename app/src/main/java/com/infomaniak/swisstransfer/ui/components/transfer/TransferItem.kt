@@ -101,7 +101,9 @@ fun TransferItem(
                     itemCount = files.count(),
                     maxLines = 1,
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
-                    overflow = ContextualFlowRowOverflow.expandIndicator { TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount) },
+                    overflow = ContextualFlowRowOverflow.expandIndicator {
+                        TransferFilePreview(remainingFilesCount = totalItemCount - shownItemCount)
+                    },
                 ) { index ->
                     TransferFilePreview(file = files[index])
                 }
