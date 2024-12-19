@@ -53,13 +53,17 @@ fun SwissTransferSuggestionChip(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, isSelected: () -> Boolean, onDismiss: () -> Unit) {
+fun SwissTransferInputChip(
+    modifier: Modifier = Modifier,
+    text: String,
+    isSelected: () -> Boolean,
+    onClick: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     InputChip(
         modifier = modifier.widthIn(min = Dimens.InputChipMinWidth),
         selected = isSelected(),
-        onClick = {
-            // isSelected = true //todo
-        },
+        onClick = onClick,
         label = { ChipLabel(text) },
         shape = CustomShapes.ROUNDED,
         colors = InputChipDefaults.inputChipColors(
@@ -98,6 +102,8 @@ private fun ChipLabel(text: String) {
 @Composable
 private fun EmailAddressChipPreview() {
 
+    fun getLoremText(words: Int) = LoremIpsum(words).values.joinToString(separator = " ")
+
     SwissTransferTheme {
         Surface {
             Column(Modifier.padding(Margin.Small)) {
@@ -107,10 +113,10 @@ private fun EmailAddressChipPreview() {
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                 ) {
-                    SwissTransferInputChip(text = LoremIpsum(2).values.joinToString(separator = " "), isSelected = { true }) { }
-                    SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " "), isSelected = { false }) { }
-                    SwissTransferInputChip(text = LoremIpsum(4).values.joinToString(separator = " "), isSelected = { false }) { }
-                    SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " "), isSelected = { false }) { }
+                    SwissTransferInputChip(text = getLoremText(2), isSelected = { true }, onClick = {}, onDismiss = { })
+                    SwissTransferInputChip(text = getLoremText(1), isSelected = { false }, onClick = {}, onDismiss = { })
+                    SwissTransferInputChip(text = getLoremText(4), isSelected = { false }, onClick = {}, onDismiss = { })
+                    SwissTransferInputChip(text = getLoremText(1), isSelected = { false }, onClick = {}, onDismiss = { })
                 }
             }
         }
