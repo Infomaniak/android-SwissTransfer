@@ -65,8 +65,7 @@ class ImportFilesViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val sendActionResult by transferSendManager::sendActionResult
-    val integrityCheckResult by transferSendManager::integrityCheckResult
+    val sendStatus by transferSendManager::sendStatus
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -136,11 +135,7 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     fun resetSendActionResult() {
-        transferSendManager.resetSendActionResult()
-    }
-
-    fun resetIntegrityCheckResult() {
-        transferSendManager.resetIntegrityCheckResult()
+        transferSendManager.resetSendStatus()
     }
 
     private suspend fun removeOldData() {
@@ -254,17 +249,6 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
     //endregion
-
-    sealed class SendActionResult {
-        data object NotStarted : SendActionResult()
-        data object Pending : SendActionResult()
-        data class Success(val totalSize: Long) : SendActionResult()
-        data object Failure : SendActionResult()
-    }
-
-    enum class AppIntegrityResult {
-        Idle, Ongoing, Success, Fail
-    }
 
     companion object {
         private val TAG = ImportFilesViewModel::class.java.simpleName

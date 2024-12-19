@@ -25,8 +25,6 @@ import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.AppIntegrityResult
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.coroutineScope
@@ -46,11 +44,8 @@ class TransferSendManager @Inject constructor(
 ) {
 
     // TODO: Merge these two UI states in a single one for the whole flow of logic
-    private val _sendActionResult = MutableStateFlow<SendActionResult?>(SendActionResult.NotStarted)
-    val sendActionResult = _sendActionResult.asStateFlow()
-
-    private val _integrityCheckResult = MutableStateFlow(AppIntegrityResult.Idle)
-    val integrityCheckResult = _integrityCheckResult.asStateFlow()
+    private val _sendStatus = MutableStateFlow<SendStatus>(SendStatus.Default)
+    val sendStatus = _sendStatus.asStateFlow()
 
     suspend fun sendNewTransfer(newUploadSession: NewUploadSession) {
         val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
@@ -66,29 +61,26 @@ class TransferSendManager @Inject constructor(
     }
 
     private suspend fun sendTransfer(uploadSessionUuid: String) {
-        _integrityCheckResult.value = AppIntegrityResult.Ongoing
+        _sendStatus.value = SendStatus.Pending
 
         withIntegrityToken(
             onSuccess = { attestationToken ->
                 runCatching {
-                    _integrityCheckResult.value = AppIntegrityResult.Success
-                    _sendActionResult.update { SendActionResult.Pending }
-
                     uploadManager.initUploadSession(
                         attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
                         attestationToken = attestationToken,
                     )!! // TODO: Handle ContainerErrorsException here
                     uploadWorkerScheduler.scheduleWork(uploadSessionUuid)
-                    _sendActionResult.update {
+                    _sendStatus.update {
                         val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
-                        SendActionResult.Success(totalSize)
+                        SendStatus.Success(totalSize)
                     }
                 }.onFailure { exception ->
                     SentryLog.e(TAG, "Failed to start the upload", exception)
-                    _sendActionResult.update { SendActionResult.Failure }
+                    _sendStatus.update { SendStatus.Failure }
                 }
             },
-            onRefused = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+            onRefused = { _sendStatus.update { SendStatus.Refused } },
         )
     }
 
@@ -139,14 +131,18 @@ class TransferSendManager @Inject constructor(
 
         return token
     }
-
-    fun resetIntegrityCheckResult() {
-        _integrityCheckResult.value = AppIntegrityResult.Idle
-    }
     //endregion
 
-    fun resetSendActionResult() {
-        _sendActionResult.value = SendActionResult.NotStarted
+    fun resetSendStatus() {
+        _sendStatus.value = SendStatus.Default
+    }
+
+    sealed class SendStatus {
+        data object Default : SendStatus()
+        data object Pending : SendStatus()
+        data class Success(val totalSize: Long) : SendStatus()
+        data object Refused : SendStatus()
+        data object Failure : SendStatus()
     }
 
     companion object {
