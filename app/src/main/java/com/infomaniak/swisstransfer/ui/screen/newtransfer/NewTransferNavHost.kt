@@ -65,7 +65,10 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             )
         }
         composable<UploadErrorDestination> {
-            UploadErrorScreen(navigateToImportFiles = { navController.navigate(ImportFilesDestination) })
+            UploadErrorScreen(
+                retryTransfer = { /* TODO */ },
+                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+            )
         }
     }
 }
