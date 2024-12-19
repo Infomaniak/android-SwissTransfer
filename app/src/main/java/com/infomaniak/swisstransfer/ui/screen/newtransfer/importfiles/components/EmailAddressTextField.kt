@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -28,6 +27,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.res.stringResource
@@ -109,7 +109,7 @@ fun EmailAddressTextField(
             }
         }
         event.isNavigatingRight() && currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
-            currentSelectedChip++
+            if (++currentSelectedChip > getLastEmailIndex()) currentSelectedChip = UNSELECTED_CHIP_INDEX
             true
         }
         else -> {
@@ -137,6 +137,7 @@ fun EmailAddressTextField(
     val emailAddressTextFieldModifier = modifier
         .fillMaxWidth()
         .onPreviewKeyEvent(::onKeyEvent)
+        .onFocusChanged { event -> if (!event.isFocused) currentSelectedChip = UNSELECTED_CHIP_INDEX }
 
     BasicTextField(
         modifier = emailAddressTextFieldModifier,
