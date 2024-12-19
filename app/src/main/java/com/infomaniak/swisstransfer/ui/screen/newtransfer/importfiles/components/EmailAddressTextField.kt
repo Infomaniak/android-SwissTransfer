@@ -29,12 +29,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.*
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -66,7 +62,6 @@ fun EmailAddressTextField(
     var text by rememberSaveable { mutableStateOf(initialValue) }
     var currentSelectedChip by remember { mutableIntStateOf(UNSELECTED_CHIP_INDEX) }
     val interactionSource = remember { MutableInteractionSource() }
-    val lastChipFocusRequester = remember { FocusRequester() }
 
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -90,7 +85,7 @@ fun EmailAddressTextField(
     }
 
     fun onKeyEvent(event: KeyEvent): Boolean = when {
-        event.type != KeyEventType.KeyUp -> false
+        event.type != KeyEventType.KeyDown -> false
         event.key == Key.Backspace && text.isEmpty() -> {
             validatedEmails.get().apply {
                 if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
@@ -137,7 +132,7 @@ fun EmailAddressTextField(
 
     val emailAddressTextFieldModifier = modifier
         .fillMaxWidth()
-        .onKeyEvent(::onKeyEvent)
+        .onPreviewKeyEvent(::onKeyEvent)
 
     BasicTextField(
         modifier = emailAddressTextFieldModifier,
@@ -153,8 +148,7 @@ fun EmailAddressTextField(
             EmailAddressDecorationBox(
                 text = text,
                 validatedEmails = validatedEmails,
-                currentSelectedChip = { currentSelectedChip },
-                lastChipFocusRequester = lastChipFocusRequester,
+                currentSelectedChip = GetSetCallbacks(get = { currentSelectedChip }, set = { currentSelectedChip = it }),
                 innerTextField = innerTextField,
                 isFocused = isFocused,
                 label = label,
@@ -172,8 +166,7 @@ fun EmailAddressTextField(
 private fun EmailAddressDecorationBox(
     text: String,
     validatedEmails: GetSetCallbacks<Set<String>>,
-    currentSelectedChip: () -> Int?,
-    lastChipFocusRequester: FocusRequester,
+    currentSelectedChip: GetSetCallbacks<Int>,
     innerTextField: @Composable () -> Unit,
     isFocused: Boolean,
     label: String,
@@ -188,7 +181,6 @@ private fun EmailAddressDecorationBox(
             EmailChipsAndInnerTextField(
                 validatedEmails = validatedEmails,
                 currentSelectedChip = currentSelectedChip,
-                lastChipFocusRequester = lastChipFocusRequester,
                 innerTextField = innerTextField,
             )
         },
@@ -220,31 +212,20 @@ private fun EmailAddressDecorationBox(
 @OptIn(ExperimentalLayoutApi::class)
 private fun EmailChipsAndInnerTextField(
     validatedEmails: GetSetCallbacks<Set<String>>,
-    currentSelectedChip: () -> Int?,
-    lastChipFocusRequester: FocusRequester,
+    currentSelectedChip: GetSetCallbacks<Int>,
     innerTextField: @Composable () -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
 
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
         itemVerticalAlignment = Alignment.CenterVertically,
     ) {
         validatedEmails.get().forEachIndexed { index, email ->
-            val chipModifier = if (email == validatedEmails.get().lastOrNull()) {
-                Modifier.focusRequester(lastChipFocusRequester)
-            } else {
-                Modifier
-            }
-
             SwissTransferInputChip(
-                modifier = chipModifier,
                 text = email,
-                isSelected = { currentSelectedChip() == index },
-                onDismiss = {
-                    validatedEmails.set(validatedEmails.get().minus(email))
-                    focusManager.moveFocus(FocusDirection.Exit)
-                },
+                isSelected = { currentSelectedChip.get() == index },
+                onClick = { currentSelectedChip.set(index) },
+                onDismiss = { validatedEmails.set(validatedEmails.get().minus(email)) },
             )
         }
 
