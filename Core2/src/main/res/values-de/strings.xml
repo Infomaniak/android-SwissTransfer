@@ -19,4 +19,7 @@
     <string name="buttonCancel">Abbrechen</string>
     <string name="buttonNext">Weiter</string>
     <string name="buttonRetry">Wiederholen</string>
+
+    <string name="errorDownload">Fehler beim Download</string>
+    <string name="errorDownloadInsufficientSpace">Download nicht möglich: Unzureichender Speicherplatz</string>
 </resources>
