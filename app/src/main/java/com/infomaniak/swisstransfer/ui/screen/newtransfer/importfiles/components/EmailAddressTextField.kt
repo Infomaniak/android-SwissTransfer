@@ -62,8 +62,6 @@ fun EmailAddressTextField(
     var currentSelectedChip by remember { mutableIntStateOf(UNSELECTED_CHIP_INDEX) }
     val interactionSource = remember { MutableInteractionSource() }
 
-    val isFocused by interactionSource.collectIsFocusedAsState()
-
     val cursorColor by animateColorAsState(
         targetValue = if (isError) SwissTransferTheme.materialColors.error else SwissTransferTheme.materialColors.primary,
         label = "CursorColor",
@@ -156,7 +154,6 @@ fun EmailAddressTextField(
                 validatedEmails = validatedEmails,
                 currentSelectedChip = GetSetCallbacks(get = { currentSelectedChip }, set = { currentSelectedChip = it }),
                 innerTextField = innerTextField,
-                isFocused = isFocused,
                 label = label,
                 interactionSource = interactionSource,
                 isError = isError,
@@ -174,7 +171,6 @@ private fun EmailAddressDecorationBox(
     validatedEmails: GetSetCallbacks<Set<String>>,
     currentSelectedChip: GetSetCallbacks<Int>,
     innerTextField: @Composable () -> Unit,
-    isFocused: Boolean,
     label: String,
     interactionSource: MutableInteractionSource,
     isError: Boolean,
@@ -192,7 +188,7 @@ private fun EmailAddressDecorationBox(
         },
         enabled = true,
         singleLine = true,
-        visualTransformation = if (validatedEmails.get().isNotEmpty() && !isFocused) {
+        visualTransformation = if (validatedEmails.get().isNotEmpty()) {
             // TODO: Remove this hack to make the label always in "above" position when the labelPosition will be
             //  available in the DecorationBox's API
             VisualTransformation { TransformedText(AnnotatedString(label), OffsetMapping.Identity) }
