@@ -56,24 +56,25 @@ class TransferSendManager @Inject constructor(
     suspend fun sendTransfer(newUploadSession: NewUploadSession) {
         _integrityCheckResult.value = AppIntegrityResult.Ongoing
 
-        withIntegrityToken { attestationToken ->
-            sendTransfer(newUploadSession, attestationToken)
-        }.onFailure { exception ->
-            if (exception !is CancellationException) {
-                SentryLog.e(TAG, "Integrity token received an exception", exception)
-            } else {
-                SentryLog.i(TAG, "Integrity token received an exception", exception)
+        withIntegrityToken(
+            onSuccess = { attestationToken ->
+                sendTransfer(newUploadSession, attestationToken)
+            },
+            onRefused = {
+                _integrityCheckResult.value = AppIntegrityResult.Fail
+            },
+            onFailure = { exception ->
+                if (exception !is CancellationException) {
+                    SentryLog.e(TAG, "Integrity token received an exception", exception)
+                } else {
+                    SentryLog.i(TAG, "Integrity token received an exception", exception)
+                }
+                _sendActionResult.update { SendActionResult.Failure }
             }
-            _sendActionResult.update { SendActionResult.Failure }
-        }.onRefused {
-            _integrityCheckResult.value = AppIntegrityResult.Fail
-        }
+        )
     }
 
-    private suspend fun sendTransfer(
-        newUploadSession: NewUploadSession,
-        attestationToken: String,
-    ) {
+    private suspend fun sendTransfer(newUploadSession: NewUploadSession, attestationToken: String) {
         _integrityCheckResult.value = AppIntegrityResult.Success
         _sendActionResult.update { SendActionResult.Pending }
 
@@ -95,8 +96,12 @@ class TransferSendManager @Inject constructor(
     }
 
     //region App Integrity
-    private suspend inline fun withIntegrityToken(block: ((attestationToken: String) -> Unit) = {}): IntegrityTokenResult {
-        return runCatching {
+    private suspend inline fun withIntegrityToken(
+        onSuccess: (attestationToken: String) -> Unit,
+        onRefused: () -> Unit = {},
+        onFailure: (exception: Throwable) -> Unit = {},
+    ) {
+        runCatching {
             var attestationToken: String? = null
 
             coroutineScope {
@@ -106,32 +111,27 @@ class TransferSendManager @Inject constructor(
                 )
             }
 
-            attestationToken?.let { IntegrityTokenResult.success(it) } ?: IntegrityTokenResult.refused()
-        }.getOrElse {
-            IntegrityTokenResult.failure(it)
-        }.onSuccess(block)
+            attestationToken?.let { onSuccess(it) } ?: onRefused.invoke()
+        }.onFailure {
+            onFailure.invoke(it)
+        }
     }
 
-    private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? {
+    private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? = coroutineScope {
         var attestationToken: String? = null
 
-        coroutineScope {
-            appIntegrityManager.requestClassicIntegrityVerdictToken(
-                onSuccess = { token ->
-                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
-                    launch { attestationToken = getApiIntegrityVerdict(appIntegrityManager, token) }
-                },
-                onFailure = {},
-            )
-        }
+        appIntegrityManager.requestClassicIntegrityVerdictToken(
+            onSuccess = { token ->
+                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
+                launch { attestationToken = getApiIntegrityVerdict(appIntegrityManager, token) }
+            },
+            onFailure = {},
+        )
 
-        return attestationToken
+        return@coroutineScope attestationToken
     }
 
-    private suspend fun getApiIntegrityVerdict(
-        appIntegrityManager: AppIntegrityManager,
-        appIntegrityToken: String,
-    ): String? {
+    private suspend fun getApiIntegrityVerdict(appIntegrityManager: AppIntegrityManager, appIntegrityToken: String): String? {
         var token: String? = null
 
         appIntegrityManager.getApiIntegrityVerdict(
@@ -156,45 +156,6 @@ class TransferSendManager @Inject constructor(
 
     fun resetSendActionResult() {
         _sendActionResult.value = SendActionResult.NotStarted
-    }
-
-    private class IntegrityTokenResult private constructor(private val value: State) {
-        inline fun onFailure(action: (exception: Throwable) -> Unit): IntegrityTokenResult {
-            if (value is State.Failure) {
-                action(value.exception)
-            }
-            return this
-        }
-
-        inline fun onRefused(action: () -> Unit): IntegrityTokenResult {
-            if (value is State.Refused) action()
-            return this
-        }
-
-        inline fun onSuccess(action: (attestationToken: String) -> Unit): IntegrityTokenResult {
-            if (value is State.Success) action(value.attestationToken)
-            return this
-        }
-
-        private sealed class State {
-            data class Success(val attestationToken: String) : State()
-            data object Refused : State()
-            data class Failure(val exception: Throwable) : State()
-        }
-
-        companion object {
-            fun success(attestationToken: String): IntegrityTokenResult {
-                return IntegrityTokenResult(State.Success(attestationToken))
-            }
-
-            fun refused(): IntegrityTokenResult {
-                return IntegrityTokenResult(State.Refused)
-            }
-
-            fun failure(exception: Throwable): IntegrityTokenResult {
-                return IntegrityTokenResult(State.Failure(exception))
-            }
-        }
     }
 
     companion object {
