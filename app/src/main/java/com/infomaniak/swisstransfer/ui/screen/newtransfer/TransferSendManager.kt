@@ -29,6 +29,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.A
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,51 +53,63 @@ class TransferSendManager @Inject constructor(
     private val _integrityCheckResult = MutableStateFlow(AppIntegrityResult.Idle)
     val integrityCheckResult = _integrityCheckResult.asStateFlow()
 
-    //region App Integrity
-    private suspend inline fun withIntegrityToken(block: (attestationToken: String?) -> Unit) {
-        var attestationToken: String? = null
-
-        coroutineScope {
-            appIntegrityManager.getChallenge(
-                onSuccess = { launch { attestationToken = requestAppIntegrityToken(appIntegrityManager) } },
-                onFailure = {},
-            )
-        }
-
-        block(attestationToken)
-    }
-
     suspend fun sendTransfer(newUploadSession: NewUploadSession) {
         _integrityCheckResult.value = AppIntegrityResult.Ongoing
 
+        withIntegrityToken { attestationToken ->
+            sendTransfer(newUploadSession, attestationToken)
+        }.onFailure { exception ->
+            if (exception !is CancellationException) {
+                SentryLog.e(TAG, "Integrity token received an exception", exception)
+            } else {
+                SentryLog.i(TAG, "Integrity token received an exception", exception)
+            }
+            _sendActionResult.update { SendActionResult.Failure }
+        }.onRefused {
+            _integrityCheckResult.value = AppIntegrityResult.Fail
+        }
+    }
+
+    private suspend fun sendTransfer(
+        newUploadSession: NewUploadSession,
+        attestationToken: String,
+    ) {
+        _integrityCheckResult.value = AppIntegrityResult.Success
+        _sendActionResult.update { SendActionResult.Pending }
+
         runCatching {
-            withIntegrityToken { attestationToken ->
-                if (attestationToken == null) {
-                    _integrityCheckResult.value = AppIntegrityResult.Fail
-                } else {
-                    _integrityCheckResult.value = AppIntegrityResult.Success
-                    _sendActionResult.update { SendActionResult.Pending }
-                    runCatching {
-                        val uuid = uploadManager.createAndGetUpload(newUploadSession).uuid
-                        uploadManager.initUploadSession(
-                            attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
-                            attestationToken = attestationToken,
-                        )!! // TODO: Handle ContainerErrorsException here
-                        uploadWorkerScheduler.scheduleWork(uuid)
-                        _sendActionResult.update {
-                            val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
-                            SendActionResult.Success(totalSize)
-                        }
-                    }.onFailure { exception ->
-                        SentryLog.e(TAG, "Failed to start the upload", exception)
-                        _sendActionResult.update { SendActionResult.Failure }
-                    }
-                }
+            val uuid = uploadManager.createAndGetUpload(newUploadSession).uuid
+            uploadManager.initUploadSession(
+                attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
+                attestationToken = attestationToken,
+            )!! // TODO: Handle ContainerErrorsException here
+            uploadWorkerScheduler.scheduleWork(uuid)
+            _sendActionResult.update {
+                val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
+                SendActionResult.Success(totalSize)
             }
         }.onFailure { exception ->
             SentryLog.e(TAG, "Failed to start the upload", exception)
             _sendActionResult.update { SendActionResult.Failure }
         }
+    }
+
+    //region App Integrity
+    private suspend inline fun withIntegrityToken(block: ((attestationToken: String) -> Unit) = {}): IntegrityTokenResult {
+        return runCatching {
+            var attestationToken: String? = null
+
+            coroutineScope {
+                appIntegrityManager.getChallenge(
+                    onSuccess = { launch { attestationToken = requestAppIntegrityToken(appIntegrityManager) } },
+                    onFailure = {},
+                )
+            }
+
+            attestationToken?.let { IntegrityTokenResult.success(it) } ?: IntegrityTokenResult.refused()
+        }.getOrElse {
+            IntegrityTokenResult.failure(it)
+        }.onSuccess(block)
     }
 
     private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? {
@@ -136,10 +149,6 @@ class TransferSendManager @Inject constructor(
         return token
     }
 
-    private fun setFailedIntegrityResult() {
-        _integrityCheckResult.value = AppIntegrityResult.Fail
-    }
-
     fun resetIntegrityCheckResult() {
         _integrityCheckResult.value = AppIntegrityResult.Idle
     }
@@ -147,6 +156,45 @@ class TransferSendManager @Inject constructor(
 
     fun resetSendActionResult() {
         _sendActionResult.value = SendActionResult.NotStarted
+    }
+
+    private class IntegrityTokenResult private constructor(private val value: State) {
+        inline fun onFailure(action: (exception: Throwable) -> Unit): IntegrityTokenResult {
+            if (value is State.Failure) {
+                action(value.exception)
+            }
+            return this
+        }
+
+        inline fun onRefused(action: () -> Unit): IntegrityTokenResult {
+            if (value is State.Refused) action()
+            return this
+        }
+
+        inline fun onSuccess(action: (attestationToken: String) -> Unit): IntegrityTokenResult {
+            if (value is State.Success) action(value.attestationToken)
+            return this
+        }
+
+        private sealed class State {
+            data class Success(val attestationToken: String) : State()
+            data object Refused : State()
+            data class Failure(val exception: Throwable) : State()
+        }
+
+        companion object {
+            fun success(attestationToken: String): IntegrityTokenResult {
+                return IntegrityTokenResult(State.Success(attestationToken))
+            }
+
+            fun refused(): IntegrityTokenResult {
+                return IntegrityTokenResult(State.Refused)
+            }
+
+            fun failure(exception: Throwable): IntegrityTokenResult {
+                return IntegrityTokenResult(State.Failure(exception))
+            }
+        }
     }
 
     companion object {
