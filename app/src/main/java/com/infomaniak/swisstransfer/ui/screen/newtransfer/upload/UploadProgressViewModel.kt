@@ -91,6 +91,10 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
+    fun removeAllUploadSession() {
+        viewModelScope.launch(ioDispatcher) { uploadManager.removeAllUploadSession() }
+    }
+
     companion object {
         private val TAG = UploadProgressViewModel::class.java.simpleName
     }
