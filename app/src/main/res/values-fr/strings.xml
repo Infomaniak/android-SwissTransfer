@@ -22,6 +22,7 @@
     <string name="buttonCopyLink">Copier le lien</string>
     <string name="buttonDownload">Télécharger</string>
     <string name="buttonDownloadSelected">Télécharger la sélection</string>
+    <string name="buttonEditTransfer">Modifier mon transfert</string>
     <string name="buttonFinished">Terminer</string>
     <string name="buttonShare">Partager</string>
     <string name="buttonStart">Démarrer</string>
