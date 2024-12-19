@@ -18,20 +18,12 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.input.key.*
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,49 +54,10 @@ fun SwissTransferSuggestionChip(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun SwissTransferInputChip(modifier: Modifier = Modifier, text: String, isSelected: () -> Boolean, onDismiss: () -> Unit) {
-    val focusRequester = remember { FocusRequester() }
-    var isFocused by rememberSaveable { mutableStateOf(false) }
-
-    val focusManager = LocalFocusManager.current
-
-    fun handleBackspaceKey() {
-        if (isSelected()) onDismiss()
-    }
-
-    fun onKeyEvent(event: KeyEvent): Boolean {
-        if (event.type != KeyEventType.KeyUp) return false
-
-        return when {
-            isDirectionalKey(event.key) && isFocused -> {
-                // isSelected = true
-                true
-            }
-            event.key == Key.Backspace || event.key == Key.Delete -> {
-                handleBackspaceKey()
-                true
-            }
-            event.key == Key.NavigateOut -> {
-                focusManager.moveFocus(FocusDirection.Exit)
-                true
-            }
-            else -> false
-        }
-    }
-
     InputChip(
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .widthIn(min = Dimens.InputChipMinWidth)
-            .onFocusChanged { focusState ->
-                isFocused = focusState.isFocused || focusState.hasFocus
-
-                // if (!isFocused) isSelected = false
-            }
-            .onKeyEvent { event -> onKeyEvent(event) }
-            .focusable(),
+        modifier = modifier.widthIn(min = Dimens.InputChipMinWidth),
         selected = isSelected(),
         onClick = {
-            focusRequester.requestFocus()
             // isSelected = true //todo
         },
         label = { ChipLabel(text) },
@@ -140,15 +93,6 @@ private fun ChipLabel(text: String) {
     )
 }
 
-private fun isDirectionalKey(key: Key): Boolean {
-    return key == Key.DirectionLeft || key == Key.DirectionCenter || key == Key.DirectionRight
-            || key == Key.DirectionUpLeft || key == Key.DirectionUp || key == Key.DirectionUpRight
-            || key == Key.DirectionDownLeft || key == Key.DirectionDown || key == Key.DirectionDownRight
-            || key == Key.SystemNavigationLeft || key == Key.SystemNavigationRight
-            || key == Key.SystemNavigationUp || key == Key.SystemNavigationDown
-            || key == Key.NavigatePrevious || key == Key.NavigateNext
-}
-
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
@@ -163,7 +107,7 @@ private fun EmailAddressChipPreview() {
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                 ) {
-                    SwissTransferInputChip(text = LoremIpsum(2).values.joinToString(separator = " "), isSelected = { false }) { }
+                    SwissTransferInputChip(text = LoremIpsum(2).values.joinToString(separator = " "), isSelected = { true }) { }
                     SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " "), isSelected = { false }) { }
                     SwissTransferInputChip(text = LoremIpsum(4).values.joinToString(separator = " "), isSelected = { false }) { }
                     SwissTransferInputChip(text = LoremIpsum(1).values.joinToString(separator = " "), isSelected = { false }) { }
