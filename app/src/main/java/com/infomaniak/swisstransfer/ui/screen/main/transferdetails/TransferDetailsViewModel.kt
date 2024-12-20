@@ -80,13 +80,14 @@ class TransferDetailsViewModel @Inject constructor(
                 appVersionCode = BuildConfig.VERSION_CODE,
                 appVersionName = BuildConfig.VERSION_NAME,
             )
+
             when (transfer.files.size) {
                 1 -> {
                     val singleFile = transfer.files.single()
                     DownloadManagerUtils.scheduleDownload(
                         url = sharedApiUrlCreator.downloadFileUrl(transfer.uuid, singleFile.uid) ?: return@launch,
                         name = "SwissTransfer/${singleFile.fileName}",
-                        userAgent = userAgent
+                        userAgent = userAgent,
                     )
                 }
                 else -> {
