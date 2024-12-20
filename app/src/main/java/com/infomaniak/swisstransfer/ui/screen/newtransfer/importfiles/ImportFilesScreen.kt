@@ -31,6 +31,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -46,8 +47,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.AppIntegrityResult
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager.SendStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -74,20 +74,13 @@ fun ImportFilesScreen(
     val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
-    val sendActionResult by importFilesViewModel.sendActionResult.collectAsStateWithLifecycle()
-    val integrityCheckResult by importFilesViewModel.integrityCheckResult.collectAsStateWithLifecycle()
+    val sendStatus by importFilesViewModel.sendStatus.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    HandleIntegrityCheckResult(
-        snackbarHostState = snackbarHostState,
-        integrityCheckResult = { integrityCheckResult },
-        resetResult = { importFilesViewModel.resetIntegrityCheckResult() },
-    )
-
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
-        getSendActionResult = { sendActionResult },
+        sendStatus = { sendStatus },
         transferType = { selectedTransferType },
         navigateToUploadProgress = navigateToUploadProgress,
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
@@ -142,10 +135,9 @@ fun ImportFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         addFiles = importFilesViewModel::importFiles,
         closeActivity = closeActivity,
-        integrityCheckResult = { integrityCheckResult },
+        sendStatus = { sendStatus },
         sendTransfer = importFilesViewModel::sendTransfer,
         shouldStartByPromptingUserForFiles = true,
-        isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
         snackbarHostState = snackbarHostState,
     )
 }
@@ -153,45 +145,32 @@ fun ImportFilesScreen(
 @Composable
 private fun HandleSendActionResult(
     snackbarHostState: SnackbarHostState,
-    getSendActionResult: () -> SendActionResult?,
+    sendStatus: () -> SendStatus,
     transferType: () -> TransferTypeUi,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
     resetSendActionResult: () -> Unit,
 ) {
-    val errorMessage = stringResource(R.string.errorUnknown)
-    LaunchedEffect(getSendActionResult()) {
-        when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> {
+    val context = LocalContext.current
+
+    LaunchedEffect(sendStatus()) {
+        when (val actionResult = sendStatus()) {
+            is SendStatus.Success -> {
                 // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
                 // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
                 // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
-                // TODO: Maybe merging the 2 screens state machines into 1 could help simplify this ?
                 resetSendActionResult()
                 navigateToUploadProgress(transferType(), actionResult.totalSize)
             }
-            is SendActionResult.Failure -> {
-                snackbarHostState.showSnackbar(errorMessage)
+            is SendStatus.Refused -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
+                resetSendActionResult()
+            }
+            is SendStatus.Failure -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
                 resetSendActionResult()
             }
             else -> Unit
         }
-    }
-}
-
-@Composable
-private fun HandleIntegrityCheckResult(
-    snackbarHostState: SnackbarHostState,
-    integrityCheckResult: () -> AppIntegrityResult,
-    resetResult: () -> Unit,
-) {
-    val result = integrityCheckResult()
-    val errorMessage = stringResource(R.string.errorAppIntegrity)
-
-    LaunchedEffect(result == AppIntegrityResult.Success || result == AppIntegrityResult.Fail) {
-        if (integrityCheckResult() == AppIntegrityResult.Fail) { // TODO: Better error management
-            snackbarHostState.showSnackbar(errorMessage)
-        }
-        resetResult()
     }
 }
 
@@ -207,9 +186,8 @@ private fun ImportFilesScreen(
     addFiles: (List<Uri>) -> Unit,
     closeActivity: () -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
-    integrityCheckResult: () -> AppIntegrityResult,
+    sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
-    isTransferStarted: () -> Boolean,
     snackbarHostState: SnackbarHostState? = null,
 ) {
 
@@ -231,9 +209,8 @@ private fun ImportFilesScreen(
                 importedFiles = files,
                 shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 transferAuthorEmail = transferAuthorEmail,
-                integrityCheckResult = integrityCheckResult,
+                sendStatus = sendStatus,
                 sendTransfer = sendTransfer,
-                isTransferStarted = isTransferStarted,
             )
         },
         content = {
@@ -411,9 +388,8 @@ private fun SendButton(
     importedFiles: () -> List<FileUi>,
     shouldShowEmailAddressesFields: () -> Boolean,
     transferAuthorEmail: GetSetCallbacks<String>,
-    integrityCheckResult: () -> AppIntegrityResult,
+    sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
-    isTransferStarted: () -> Boolean,
 ) {
     val remainingFilesCount = filesToImportCount()
     val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
@@ -434,11 +410,17 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
-        showIndeterminateProgress = { integrityCheckResult() == AppIntegrityResult.Ongoing || isTransferStarted() },
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferStarted() },
+        showIndeterminateProgress = { sendStatus() == SendStatus.Pending },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && sendStatus().canEnableButton() },
         progress = progress,
         onClick = { sendTransfer() },
     )
+}
+
+private fun SendStatus.canEnableButton(): Boolean = when (this) {
+    SendStatus.Initial,
+    SendStatus.Refused -> true
+    else -> false
 }
 
 data class TransferOptionsCallbacks(
@@ -503,9 +485,8 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
-            integrityCheckResult = { AppIntegrityResult.Idle },
+            sendStatus = { SendStatus.Initial },
             sendTransfer = {},
-            isTransferStarted = { false },
         )
     }
 }
