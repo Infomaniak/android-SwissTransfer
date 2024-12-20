@@ -130,7 +130,7 @@ class TransferSendManager @Inject constructor(
             packageName = BuildConfig.APPLICATION_ID,
             targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
             onSuccess = { attestationToken ->
-                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Api verdict check")
+                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "API verdict check")
                 Log.i(APP_INTEGRITY_MANAGER_TAG, "getApiIntegrityVerdict: $attestationToken")
                 token = attestationToken
             },
