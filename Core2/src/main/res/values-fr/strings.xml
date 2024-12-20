@@ -16,10 +16,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
+    <string name="anErrorHasOccurred">Une erreur est survenue</string>
     <string name="buttonCancel">Annuler</string>
     <string name="buttonNext">Suivant</string>
     <string name="buttonRetry">Réessayer</string>
-
     <string name="errorDownload">Erreur lors du téléchargement</string>
     <string name="errorDownloadInsufficientSpace">Téléchargement impossible : Espace insuffisant</string>
 </resources>
