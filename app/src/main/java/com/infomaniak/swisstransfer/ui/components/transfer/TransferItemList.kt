@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -38,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun TransferItemList(
-    modifier: Modifier = Modifier,
     direction: TransferDirection,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> List<TransferUi>,
@@ -55,7 +53,6 @@ fun TransferItemList(
     }
 
     LazyColumn(
-        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Medium),
         contentPadding = contentPadding,
     ) {
