@@ -57,12 +57,8 @@ class TransferSendManager @Inject constructor(
         _integrityCheckResult.value = AppIntegrityResult.Ongoing
 
         withIntegrityToken(
-            onSuccess = { attestationToken ->
-                sendTransfer(newUploadSession, attestationToken)
-            },
-            onRefused = {
-                _integrityCheckResult.value = AppIntegrityResult.Fail
-            },
+            onSuccess = { attestationToken -> sendTransfer(newUploadSession, attestationToken) },
+            onRefused = { _integrityCheckResult.value = AppIntegrityResult.Fail },
             onFailure = { exception ->
                 if (exception !is CancellationException) {
                     SentryLog.e(TAG, "Integrity token received an exception", exception)
