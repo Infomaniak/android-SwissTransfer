@@ -154,9 +154,13 @@ private fun HandleSendActionResult(
 
     LaunchedEffect(sendStatus()) {
         when (val actionResult = sendStatus()) {
-            is SendStatus.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
+            is SendStatus.Success -> {
+                navigateToUploadProgress(transferType(), actionResult.totalSize)
+                resetSendActionResult()
+            }
             is SendStatus.Refused -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
+                resetSendActionResult()
             }
             is SendStatus.Failure -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
