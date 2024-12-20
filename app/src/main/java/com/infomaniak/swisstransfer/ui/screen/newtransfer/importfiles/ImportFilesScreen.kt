@@ -155,8 +155,11 @@ private fun HandleSendActionResult(
     LaunchedEffect(sendStatus()) {
         when (val actionResult = sendStatus()) {
             is SendStatus.Success -> {
-                navigateToUploadProgress(transferType(), actionResult.totalSize)
+                // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
+                // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
+                // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
                 resetSendActionResult()
+                navigateToUploadProgress(transferType(), actionResult.totalSize)
             }
             is SendStatus.Refused -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
