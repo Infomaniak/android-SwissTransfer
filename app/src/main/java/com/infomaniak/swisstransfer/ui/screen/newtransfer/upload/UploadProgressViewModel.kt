@@ -24,6 +24,8 @@ import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.network.NetworkAvailability
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.di.MainDispatcher
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,6 +33,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +41,9 @@ class UploadProgressViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
     private val uploadManager: UploadManager,
+    private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     val isNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
@@ -91,8 +96,18 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
-    fun removeAllUploadSession() {
-        viewModelScope.launch(ioDispatcher) { uploadManager.removeAllUploadSession() }
+    fun removeAllUploadSession(onCompletion: () -> Unit) {
+        viewModelScope.launch(ioDispatcher) {
+            uploadManager.removeAllUploadSession()
+            withContext(mainDispatcher) { onCompletion() }
+        }
+    }
+
+    fun resendLastTransfer(onCompletion: () -> Unit) {
+        viewModelScope.launch(ioDispatcher) {
+            transferSendManager.resendLastTransfer()
+            withContext(mainDispatcher) { onCompletion() }
+        }
     }
 
     companion object {

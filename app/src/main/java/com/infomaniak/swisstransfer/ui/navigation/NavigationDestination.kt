@@ -111,7 +111,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
         val recipients: List<String>,
     ) : NewTransferNavigation()
     @Serializable
-    data object UploadErrorDestination : NewTransferNavigation()
+    data class UploadErrorDestination(val transferType: TransferTypeUi, val totalSize: Long) : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination
