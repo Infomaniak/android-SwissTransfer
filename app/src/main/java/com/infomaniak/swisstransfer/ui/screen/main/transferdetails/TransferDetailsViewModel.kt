@@ -22,11 +22,14 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core2.DownloadManagerUtils
+import com.infomaniak.core2.buildUserAgent
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.sentry.SentryLog
+import com.infomaniak.swisstransfer.BuildConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -68,6 +71,35 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
+
+    fun startDownloadingAllFiles(transfer: TransferUi) {
+        viewModelScope.launch {
+            val url = sharedApiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return@launch
+            val userAgent = buildUserAgent(
+                appId = BuildConfig.APPLICATION_ID,
+                appVersionCode = BuildConfig.VERSION_CODE,
+                appVersionName = BuildConfig.VERSION_NAME,
+            )
+
+            when (transfer.files.size) {
+                1 -> {
+                    val singleFile = transfer.files.single()
+                    DownloadManagerUtils.scheduleDownload(
+                        url = sharedApiUrlCreator.downloadFileUrl(transfer.uuid, singleFile.uid) ?: return@launch,
+                        name = "SwissTransfer/${singleFile.fileName}",
+                        userAgent = userAgent,
+                    )
+                }
+                else -> {
+                    DownloadManagerUtils.scheduleDownload(
+                        url = url,
+                        name = "SwissTransfer/${transfer.uuid}.zip", //TODO: Prepend date (and ensure the iOS app does it too)
+                        userAgent = userAgent,
+                    )
+                }
+            }
+        }
+    }
 
     private suspend fun handleTransferDeeplink(transferUuid: String) {
         runCatching {

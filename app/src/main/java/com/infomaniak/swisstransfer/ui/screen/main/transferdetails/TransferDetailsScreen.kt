@@ -71,20 +71,21 @@ fun TransferDetailsScreen(
         transferDetailsViewModel.loadTransfer(transferUuid)
     }
 
-    if (uiState is Delete) {
-        navigateBack?.invoke()
-    } else if (uiState is Success) {
-        TransferDetailsScreen(
+    when (val state = uiState) {
+        is Delete -> navigateBack?.invoke()
+        is Success -> TransferDetailsScreen(
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
             navigateBack = navigateBack,
-            getTransfer = { (uiState as Success).transfer },
+            getTransfer = { state.transfer },
+            downloadFiles = { transferDetailsViewModel.startDownloadingAllFiles(state.transfer) },
             getCheckedFiles = { transferDetailsViewModel.checkedFiles },
             clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
             setFileCheckStatus = { fileUid, isChecked ->
                 transferDetailsViewModel.checkedFiles[fileUid] = isChecked
             },
         )
+        TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
     }
 }
 
@@ -94,6 +95,7 @@ private fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
+    downloadFiles: () -> Unit,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit,
     setFileCheckStatus: (String, Boolean) -> Unit,
@@ -111,7 +113,7 @@ private fun TransferDetailsScreen(
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
-                TopAppBarButton.downloadButton { /* TODO */ },
+                TopAppBarButton.downloadButton { downloadFiles() },
             )
         },
         floatingActionButton = {},
@@ -303,6 +305,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 navigateBack = null,
                 getTransfer = { transfers.first() },
                 getCheckedFiles = { mutableStateMapOf() },
+                downloadFiles = {},
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },
             )
