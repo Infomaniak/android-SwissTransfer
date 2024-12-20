@@ -44,7 +44,7 @@ class TransferSendManager @Inject constructor(
 ) {
 
     // TODO: Merge these two UI states in a single one for the whole flow of logic
-    private val _sendStatus = MutableStateFlow<SendStatus>(SendStatus.Default)
+    private val _sendStatus = MutableStateFlow<SendStatus>(SendStatus.Initial)
     val sendStatus = _sendStatus.asStateFlow()
 
     suspend fun sendNewTransfer(newUploadSession: NewUploadSession) {
@@ -134,11 +134,11 @@ class TransferSendManager @Inject constructor(
     //endregion
 
     fun resetSendStatus() {
-        _sendStatus.value = SendStatus.Default
+        _sendStatus.value = SendStatus.Initial
     }
 
     sealed class SendStatus {
-        data object Default : SendStatus()
+        data object Initial : SendStatus()
         data object Pending : SendStatus()
         data class Success(val totalSize: Long) : SendStatus()
         data object Refused : SendStatus()

@@ -411,7 +411,7 @@ private fun SendButton(
 }
 
 private fun SendStatus.canEnableButton(): Boolean = when (this) {
-    SendStatus.Default,
+    SendStatus.Initial,
     SendStatus.Refused -> true
     else -> false
 }
@@ -478,7 +478,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             addFiles = {},
             closeActivity = {},
             shouldStartByPromptingUserForFiles = false,
-            sendStatus = { SendStatus.Default },
+            sendStatus = { SendStatus.Initial },
             sendTransfer = {},
         )
     }
