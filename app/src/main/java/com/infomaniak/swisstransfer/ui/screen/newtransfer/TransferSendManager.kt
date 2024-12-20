@@ -29,7 +29,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.A
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.SendActionResult
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,11 +66,11 @@ class TransferSendManager @Inject constructor(
     }
 
     private suspend fun sendTransfer(uploadSessionUuid: String) {
-        runCatching {
-            _integrityCheckResult.value = AppIntegrityResult.Ongoing
+        _integrityCheckResult.value = AppIntegrityResult.Ongoing
 
-            withIntegrityToken(
-                onSuccess = { attestationToken ->
+        withIntegrityToken(
+            onSuccess = { attestationToken ->
+                runCatching {
                     _integrityCheckResult.value = AppIntegrityResult.Success
                     _sendActionResult.update { SendActionResult.Pending }
 
@@ -84,43 +83,27 @@ class TransferSendManager @Inject constructor(
                         val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
                         SendActionResult.Success(totalSize)
                     }
-                },
-                onRefused = { _integrityCheckResult.value = AppIntegrityResult.Fail },
-                onFailure = { exception ->
-                    if (exception !is CancellationException) {
-                        SentryLog.e(TAG, "Integrity token received an exception", exception)
-                    } else {
-                        SentryLog.i(TAG, "Integrity token received an exception", exception)
-                    }
+                }.onFailure { exception ->
+                    SentryLog.e(TAG, "Failed to start the upload", exception)
                     _sendActionResult.update { SendActionResult.Failure }
-                },
-            )
-        }.onFailure { exception ->
-            SentryLog.e(TAG, "Failed to start the upload", exception)
-            _sendActionResult.update { SendActionResult.Failure }
-        }
+                }
+            },
+            onRefused = { _integrityCheckResult.value = AppIntegrityResult.Fail },
+        )
     }
 
     //region App Integrity
-    private suspend inline fun withIntegrityToken(
-        onSuccess: (attestationToken: String) -> Unit,
-        onRefused: () -> Unit = {},
-        onFailure: (exception: Throwable) -> Unit = {},
-    ) {
-        runCatching {
-            var attestationToken: String? = null
+    private suspend inline fun withIntegrityToken(onSuccess: (attestationToken: String) -> Unit, onRefused: () -> Unit = {}) {
+        var attestationToken: String? = null
 
-            coroutineScope {
-                appIntegrityManager.getChallenge(
-                    onSuccess = { launch { attestationToken = requestAppIntegrityToken(appIntegrityManager) } },
-                    onFailure = {},
-                )
-            }
-
-            attestationToken?.let(onSuccess) ?: onRefused()
-        }.onFailure {
-            onFailure.invoke(it)
+        coroutineScope {
+            appIntegrityManager.getChallenge(
+                onSuccess = { launch { attestationToken = requestAppIntegrityToken(appIntegrityManager) } },
+                onFailure = {},
+            )
         }
+
+        attestationToken?.let(onSuccess) ?: onRefused()
     }
 
     private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? {
