@@ -20,4 +20,6 @@
     <string name="buttonCancel">Annulla</string>
     <string name="buttonNext">Avanti</string>
     <string name="buttonRetry">Riprova</string>
+    <string name="errorDownload">Errore durante il download</string>
+    <string name="errorDownloadInsufficientSpace">Impossibile scaricare: spazio insufficiente</string>
 </resources>

@@ -19,17 +19,15 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
 import android.icu.text.NumberFormat
-import android.text.format.Formatter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
 import com.infomaniak.swisstransfer.R
 
 object HumanReadableSizeUtils {
 
-    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String {
-        return Formatter.formatShortFileSize(context, sizeInBytes)
-    }
+    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String = context.formatShortFileSize(sizeInBytes)
 
     @Composable
     fun formatSpaceLeft(humanReadableSize: () -> String): String {

@@ -24,6 +24,7 @@ import androidx.work.*
 import androidx.work.WorkInfo.State
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import dagger.assisted.Assisted
@@ -123,7 +124,8 @@ class UploadWorker @AssistedInject constructor(
                 return@mapLatest when (workInfo.state) {
                     State.RUNNING -> UploadProgressUiState.Progress(workInfo.progress).also { lastUploadedSize = it.uploadedSize }
                     State.SUCCEEDED -> UploadProgressUiState.Success.create(workInfo.outputData, sharedApiUrlCreator)
-                    State.FAILED, State.CANCELLED -> UploadProgressUiState.Error(lastUploadedSize)
+                    State.FAILED -> UploadProgressUiState.Error(lastUploadedSize)
+                    State.CANCELLED -> UploadProgressUiState.Cancel()
                     else -> UploadProgressUiState.Default(lastUploadedSize)
                 } ?: UploadProgressUiState.Error(lastUploadedSize)
             }.filterNotNull()
@@ -137,7 +139,7 @@ class UploadWorker @AssistedInject constructor(
 
     sealed class UploadProgressUiState(open val uploadedSize: Long) {
         @Immutable
-        data class Default(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+        data class Default(override val uploadedSize: Long = 0L) : UploadProgressUiState(uploadedSize)
 
         @Immutable
         data class Progress(override val uploadedSize: Long) : UploadProgressUiState(uploadedSize) {
@@ -158,14 +160,16 @@ class UploadWorker @AssistedInject constructor(
         }
 
         @Immutable
-        data class Error(override val uploadedSize: Long = 0) : UploadProgressUiState(uploadedSize)
+        data class Error(override val uploadedSize: Long = 0L) : UploadProgressUiState(uploadedSize)
+
+        @Immutable
+        data class Cancel(override val uploadedSize: Long = 0L) : UploadProgressUiState(uploadedSize)
     }
 
     companion object {
         private const val TAG = "UploadWorker"
-        private const val EXPECTED_CHUNK_SIZE = 50L * 1024 * 1024 // 50Mo
-        private const val TOTAL_FILE_SIZE = 50L * 1024 * 1024 * 1024  // 50Go
-        private const val MAX_CHUNK_COUNT = (TOTAL_FILE_SIZE / EXPECTED_CHUNK_SIZE).toInt()
+        private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
+        private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
         private const val TRANSFER_UUID_TAG = "transfer_uuid_tag"

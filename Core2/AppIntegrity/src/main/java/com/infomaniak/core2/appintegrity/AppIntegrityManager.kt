@@ -34,7 +34,7 @@ import java.util.UUID
  *
  * There is 2 types of Request:
  * - the standard request ([requestIntegrityVerdictToken]) that need a warm-up first ([warmUpTokenProvider])
- * - the classic request ([requestClassicIntegrityVerdictToken]) that need additional Api checks
+ * - the classic request ([requestClassicIntegrityVerdictToken]) that need additional API checks
  */
 class AppIntegrityManager(private val appContext: Context) {
 

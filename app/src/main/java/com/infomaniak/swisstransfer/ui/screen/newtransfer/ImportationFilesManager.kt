@@ -28,6 +28,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import io.sentry.Sentry
 import io.sentry.SentryLevel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,6 +38,7 @@ import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 
+@ViewModelScoped
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val importLocalStorage: ImportLocalStorage,

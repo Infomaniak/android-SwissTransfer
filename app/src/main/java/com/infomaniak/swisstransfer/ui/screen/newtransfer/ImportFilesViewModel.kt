@@ -65,8 +65,7 @@ class ImportFilesViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val sendActionResult by transferSendManager::sendActionResult
-    val integrityCheckResult by transferSendManager::integrityCheckResult
+    val sendStatus by transferSendManager::sendStatus
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -131,16 +130,12 @@ class ImportFilesViewModel @Inject constructor(
 
     fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
-            transferSendManager.sendTransfer(generateNewUploadSession())
+            transferSendManager.sendNewTransfer(generateNewUploadSession())
         }
     }
 
-    fun setDefaultSendActionResult() {
-        transferSendManager.setDefaultSendActionResult()
-    }
-
-    fun resetIntegrityCheckResult() {
-        transferSendManager.resetIntegrityCheckResult()
+    fun resetSendActionResult() {
+        transferSendManager.resetSendStatus()
     }
 
     private suspend fun removeOldData() {
@@ -157,7 +152,7 @@ class ImportFilesViewModel @Inject constructor(
             message = _transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
-            recipientsEmails = emptyList(),
+            recipientsEmails = emptySet(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
                     override val path: String? = null
@@ -254,18 +249,6 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
     //endregion
-
-    sealed class SendActionResult {
-        data object NotStarted : SendActionResult()
-        data object Pending : SendActionResult()
-        data class Success(val totalSize: Long) : SendActionResult()
-        data object Failure : SendActionResult()
-        data object RequireEmailValidation : SendActionResult()
-    }
-
-    enum class AppIntegrityResult {
-        Idle, Ongoing, Success, Fail
-    }
 
     companion object {
         private val TAG = ImportFilesViewModel::class.java.simpleName
