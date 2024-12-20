@@ -93,7 +93,7 @@ class TransferDetailsViewModel @Inject constructor(
                     DownloadManagerUtils.scheduleDownload(
                         url = url,
                         name = "SwissTransfer/${transfer.uuid}.zip", //TODO: Prepend date (and ensure the iOS app does it too)
-                        userAgent = userAgent
+                        userAgent = userAgent,
                     )
                 }
             }
