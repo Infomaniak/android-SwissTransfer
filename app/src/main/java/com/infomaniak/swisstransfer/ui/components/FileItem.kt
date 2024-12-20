@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -47,13 +48,14 @@ fun FileItem(
     onRemove: (() -> Unit)? = null,
 ) {
     FileItemContent(
+        isClickEnable = file.isFolder,
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
         title = file.fileName,
-        description = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, file.fileSize),
+        description = getDescription(file),
         content = {
             FilePreview(
                 file = file,
@@ -66,7 +68,20 @@ fun FileItem(
 }
 
 @Composable
+private fun getDescription(file: FileUi): String {
+    return if (file.isFolder) {
+        ""
+    } else {
+        HumanReadableSizeUtils.getHumanReadableSize(
+            LocalContext.current,
+            file.fileSize
+        )
+    }
+}
+
+@Composable
 private fun FileItemContent(
+    isClickEnable: Boolean,
     onClick: () -> Unit,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
@@ -77,8 +92,7 @@ private fun FileItemContent(
     content: @Composable () -> Unit,
 ) {
     Card(
-        onClick = onClick,
-        modifier = Modifier.aspectRatio(164.0f / 152.0f),
+        modifier = getCardModifier(isClickEnable, onClick),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -121,6 +135,12 @@ private fun FileItemContent(
             )
         }
     }
+}
+
+private fun getCardModifier(isClickEnable: Boolean, onClick: () -> Unit): Modifier {
+    return Modifier
+        .aspectRatio(164.0f / 152.0f)
+        .then(if (isClickEnable) Modifier.clickable(onClick = onClick) else Modifier)
 }
 
 @PreviewLightAndDark

@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core2.isEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -58,9 +57,10 @@ private val HORIZONTAL_PADDING = Margin.Medium
 
 @Composable
 fun ImportFilesScreen(
-    importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
+    importFilesViewModel: ImportFilesViewModel,
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -147,6 +147,7 @@ fun ImportFilesScreen(
         shouldStartByPromptingUserForFiles = true,
         isTransferStarted = { sendActionResult != SendActionResult.NotStarted },
         snackbarHostState = snackbarHostState,
+        navigateToFilesDetails = navigateToFilesDetails,
     )
 }
 
@@ -204,6 +205,7 @@ private fun ImportFilesScreen(
     sendTransfer: () -> Unit,
     isTransferStarted: () -> Boolean,
     snackbarHostState: SnackbarHostState? = null,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
@@ -233,7 +235,13 @@ private fun ImportFilesScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 SendByOptions(modifier, selectedTransferType)
-                FilesToImport(modifier, files, navigateToFileDetails = { /*TODO*/ }, addFiles, shouldStartByPromptingUserForFiles)
+                FilesToImport(
+                    modifier = modifier,
+                    files = files,
+                    navigateToFilesDetails = navigateToFilesDetails,
+                    addFiles = addFiles,
+                    shouldStartByPromptingUserForFiles = shouldStartByPromptingUserForFiles,
+                )
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
@@ -252,7 +260,7 @@ private fun ImportFilesScreen(
 private fun FilesToImport(
     modifier: Modifier,
     files: () -> List<FileUi>,
-    navigateToFileDetails: () -> Unit,
+    navigateToFilesDetails: () -> Unit,
     addFiles: (List<Uri>) -> Unit,
     shouldStartByPromptingUserForFiles: Boolean,
 ) {
@@ -271,7 +279,12 @@ private fun FilesToImport(
     LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
 
     ImportFilesTitle(modifier, R.string.myFilesTitle)
-    ImportedFilesCard(modifier, files, ::pickFiles, navigateToFileDetails)
+    ImportedFilesCard(
+        modifier,
+        files,
+        ::pickFiles,
+        navigateToFilesDetails = { navigateToFilesDetails() }
+    )
 }
 
 @Composable
@@ -499,6 +512,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             integrityCheckResult = { AppIntegrityResult.Idle },
             sendTransfer = {},
             isTransferStarted = { false },
+            navigateToFilesDetails = {},
         )
     }
 }
