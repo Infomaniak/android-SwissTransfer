@@ -198,12 +198,12 @@ private fun ImportFilesScreen(
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
-    val areEmailsCorrect by remember {
+    val areEmailsCorrects by remember {
         derivedStateOf {
             with(emailTextFieldCallbacks) {
-                val areAuthorAndRecipientCorrect = transferAuthorEmail.get().isNotEmpty() && !isAuthorEmailInvalid()
+                val areAuthorAndRecipientsCorrects = transferAuthorEmail.get().isNotEmpty() && !isAuthorEmailInvalid()
                         && validatedRecipientsEmails.get().isNotEmpty()
-                !shouldShowEmailAddressesFields || areAuthorAndRecipientCorrect
+                !shouldShowEmailAddressesFields || areAuthorAndRecipientsCorrects
             }
         }
     }
@@ -222,7 +222,7 @@ private fun ImportFilesScreen(
                 filesToImportCount = filesToImportCount,
                 currentSessionFilesCount = currentSessionFilesCount,
                 importedFiles = files,
-                areEmailsCorrect = { areEmailsCorrect },
+                areEmailsCorrects = { areEmailsCorrects },
                 sendStatus = sendStatus,
                 sendTransfer = sendTransfer,
             )
@@ -412,7 +412,7 @@ private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
-    areEmailsCorrect: () -> Boolean,
+    areEmailsCorrects: () -> Boolean,
     sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
 ) {
@@ -432,7 +432,7 @@ private fun SendButton(
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
         showIndeterminateProgress = { sendStatus() == SendStatus.Pending },
-        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrect() && sendStatus().canEnableButton() },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrects() && sendStatus().canEnableButton() },
         progress = progress,
         onClick = { sendTransfer() },
     )
