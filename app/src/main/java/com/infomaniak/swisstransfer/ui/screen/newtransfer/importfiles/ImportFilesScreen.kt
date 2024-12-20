@@ -60,7 +60,7 @@ private val HORIZONTAL_PADDING = Margin.Medium
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -79,6 +79,8 @@ fun ImportFilesScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
+
     HandleIntegrityCheckResult(
         snackbarHostState = snackbarHostState,
         integrityCheckResult = { integrityCheckResult },
@@ -88,8 +90,13 @@ fun ImportFilesScreen(
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
         getSendActionResult = { sendActionResult },
-        transferType = { selectedTransferType },
-        navigateToUploadProgress = navigateToUploadProgress,
+        navigateToUploadProgress = { totalSize ->
+            navigateToUploadProgress(
+                selectedTransferType,
+                totalSize,
+                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
+            )
+        },
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
 
@@ -133,7 +140,7 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
-        emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks(),
+        emailTextFieldCallbacks = emailTextFieldCallbacks,
         transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
@@ -154,14 +161,13 @@ fun ImportFilesScreen(
 private fun HandleSendActionResult(
     snackbarHostState: SnackbarHostState,
     getSendActionResult: () -> SendActionResult?,
-    transferType: () -> TransferTypeUi,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (totalSize: Long) -> Unit,
     resetSendActionResult: () -> Unit,
 ) {
     val errorMessage = stringResource(R.string.errorUnknown)
     LaunchedEffect(getSendActionResult()) {
         when (val actionResult = getSendActionResult()) {
-            is SendActionResult.Success -> navigateToUploadProgress(transferType(), actionResult.totalSize)
+            is SendActionResult.Success -> navigateToUploadProgress(actionResult.totalSize)
             is SendActionResult.Failure -> {
                 snackbarHostState.showSnackbar(errorMessage)
                 resetSendActionResult()

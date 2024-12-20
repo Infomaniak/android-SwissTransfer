@@ -29,11 +29,12 @@ fun UploadSuccessScreen(
     transferType: TransferTypeUi,
     transferUrl: String,
     closeActivity: () -> Unit,
+    recipients: List<String>,
 ) {
     BackHandler(onBack = closeActivity)
 
     if (transferType == TransferTypeUi.MAIL) {
-        UploadSuccessEmailScreen(closeActivity = closeActivity)
+        UploadSuccessEmailScreen(closeActivity = closeActivity, emails = recipients)
     } else {
         UploadSuccessQrScreen(transferType, transferUrl, closeActivity)
     }
@@ -47,7 +48,8 @@ private fun UploadSuccessScreenPreview() {
             UploadSuccessScreen(
                 transferType = TransferTypeUi.QR_CODE,
                 transferUrl = "https://chk.me/83azQOl",
-                closeActivity = {}
+                closeActivity = {},
+                recipients = emptyList(),
             )
         }
     }
