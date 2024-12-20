@@ -207,6 +207,15 @@ private fun ImportFilesScreen(
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
+    val areEmailsCorrect by remember {
+        derivedStateOf {
+            with(emailTextFieldCallbacks) {
+                val areAuthorAndRecipientCorrect = transferAuthorEmail.get().isNotEmpty() && !isAuthorEmailInvalid()
+                        && validatedRecipientsEmails.get().isNotEmpty()
+                !shouldShowEmailAddressesFields || areAuthorAndRecipientCorrect
+            }
+        }
+    }
 
     BottomStickyButtonScaffold(
         topBar = {
@@ -222,8 +231,7 @@ private fun ImportFilesScreen(
                 filesToImportCount = filesToImportCount,
                 currentSessionFilesCount = currentSessionFilesCount,
                 importedFiles = files,
-                shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
-                isAuthorEmailInvalid = emailTextFieldCallbacks.isAuthorEmailInvalid,
+                areEmailsCorrect = { areEmailsCorrect },
                 integrityCheckResult = integrityCheckResult,
                 sendTransfer = sendTransfer,
                 isTransferStarted = isTransferStarted,
@@ -414,8 +422,7 @@ private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
-    shouldShowEmailAddressesFields: () -> Boolean,
-    isAuthorEmailInvalid: () -> Boolean,
+    areEmailsCorrect: () -> Boolean,
     integrityCheckResult: () -> AppIntegrityResult,
     sendTransfer: () -> Unit,
     isTransferStarted: () -> Boolean,
@@ -431,16 +438,12 @@ private fun SendButton(
         null
     }
 
-    val isSenderEmailCorrect by remember {
-        derivedStateOf { !shouldShowEmailAddressesFields() || !isAuthorEmailInvalid() }
-    }
-
     LargeButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
         showIndeterminateProgress = { integrityCheckResult() == AppIntegrityResult.Ongoing || isTransferStarted() },
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && !isTransferStarted() },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrect() && !isTransferStarted() },
         progress = progress,
         onClick = { sendTransfer() },
     )
