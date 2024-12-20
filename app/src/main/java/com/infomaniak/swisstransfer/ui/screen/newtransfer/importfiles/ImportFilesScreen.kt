@@ -127,7 +127,7 @@ fun ImportFilesScreen(
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
         emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks(),
-        transferMessage = importFilesViewModel.transferMessage,
+        transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
             set = importFilesViewModel::selectTransferType,
@@ -180,7 +180,7 @@ private fun ImportFilesScreen(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
-    transferMessage: GetSetCallbacks<String>,
+    transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     addFiles: (List<Uri>) -> Unit,
@@ -222,7 +222,7 @@ private fun ImportFilesScreen(
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
                     emailTextFieldCallbacks = emailTextFieldCallbacks,
-                    transferMessage = transferMessage,
+                    transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
@@ -262,7 +262,7 @@ private fun FilesToImport(
 private fun ColumnScope.ImportTextFields(
     horizontalPaddingModifier: Modifier,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
-    transferMessage: GetSetCallbacks<String>,
+    transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
@@ -272,7 +272,7 @@ private fun ColumnScope.ImportTextFields(
         label = stringResource(R.string.transferMessagePlaceholder),
         isRequired = false,
         minLineNumber = 3,
-        onValueChange = transferMessage.set,
+        onValueChange = transferMessageCallbacks.set,
     )
 }
 
@@ -516,7 +516,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
-            transferMessage = GetSetCallbacks(get = { "" }, set = {}),
+            transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             addFiles = {},

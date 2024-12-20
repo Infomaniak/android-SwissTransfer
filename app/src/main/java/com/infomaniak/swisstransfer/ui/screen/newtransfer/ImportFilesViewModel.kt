@@ -83,28 +83,28 @@ class ImportFilesViewModel @Inject constructor(
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
     //region Transfer Author Email
-    private var _transferAuthorEmail by mutableStateOf("")
-    private val isAuthorEmailInvalid by derivedStateOf { !_transferAuthorEmail.trim().isEmail() }
+    private var transferAuthorEmail by mutableStateOf("")
+    private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.trim().isEmail() }
     //endregion
 
     //region Recipient Email
-    private var _recipientEmail by mutableStateOf("")
-    private val isRecipientEmailInvalid by derivedStateOf { !_recipientEmail.trim().isEmail() }
-    private var _validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
+    private var recipientEmail by mutableStateOf("")
+    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.trim().isEmail() }
+    private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
     //region Transfer Message
-    private var _transferMessage by mutableStateOf("")
-    val transferMessage = GetSetCallbacks(get = { _transferMessage }, set = { _transferMessage = it })
+    private var transferMessage by mutableStateOf("")
+    val transferMessageCallbacks = GetSetCallbacks(get = { transferMessage }, set = { transferMessage = it })
     //endregion
 
     //region Password
-    private var _transferPassword by mutableStateOf("")
-    private val isPasswordValid by derivedStateOf { _transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
+    private var transferPassword by mutableStateOf("")
+    private val isPasswordValid by derivedStateOf { transferPassword.length in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH }
     //endregion
 
     private var isFirstViewModelCreation: Boolean
-        get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
+        get() = savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] ?: true
         set(value) {
             savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] = value
         }
@@ -154,13 +154,13 @@ class ImportFilesViewModel @Inject constructor(
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
-            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail.trim() else "",
+            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) transferAuthorEmail.trim() else "",
             authorEmailToken = null,
-            password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) _transferPassword else NO_PASSWORD,
-            message = _transferMessage,
+            password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
+            message = transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
-            recipientsEmails = _validatedRecipientsEmails,
+            recipientsEmails = validatedRecipientsEmails,
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
                     override val path: String? = null
@@ -222,13 +222,13 @@ class ImportFilesViewModel @Inject constructor(
 
     fun getEmailTextFieldCallbacks(): EmailTextFieldCallbacks {
         return EmailTextFieldCallbacks(
-            transferAuthorEmail = GetSetCallbacks(get = { _transferAuthorEmail }, set = { _transferAuthorEmail = it }),
+            transferAuthorEmail = GetSetCallbacks(get = { transferAuthorEmail }, set = { transferAuthorEmail = it }),
             isAuthorEmailInvalid = { isAuthorEmailInvalid },
-            recipientEmail = GetSetCallbacks(get = { _recipientEmail }, set = { _recipientEmail = it }),
+            recipientEmail = GetSetCallbacks(get = { recipientEmail }, set = { recipientEmail = it }),
             isRecipientEmailInvalid = { isRecipientEmailInvalid },
             validatedRecipientsEmails = GetSetCallbacks(
-                get = { _validatedRecipientsEmails },
-                set = { _validatedRecipientsEmails = it }
+                get = { validatedRecipientsEmails },
+                set = { validatedRecipientsEmails = it }
             ),
         )
     }
@@ -254,8 +254,8 @@ class ImportFilesViewModel @Inject constructor(
             transferOptionsStates = transferOptionsStates,
             onTransferOptionValueSelected = ::onTransferOptionValueSelected,
             password = GetSetCallbacks(
-                get = { _transferPassword },
-                set = { _transferPassword = it },
+                get = { transferPassword },
+                set = { transferPassword = it },
             ),
             isPasswordValid = { isPasswordValid },
         )
