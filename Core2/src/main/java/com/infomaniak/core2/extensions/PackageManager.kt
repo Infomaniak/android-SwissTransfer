@@ -20,11 +20,11 @@ package com.infomaniak.core2.extensions
 import splitties.init.appCtx
 import kotlin.LazyThreadSafetyMode.NONE
 
-val appName: String by lazy(NONE) {
+internal val appName: String by lazy(NONE) {
     packageManager.getApplicationLabel(applicationInfo).toString()
 }
 
-val appVersionName: String by lazy(NONE) {
+internal val appVersionName: String by lazy(NONE) {
     packageManager.getPackageInfo(appCtx.packageName, 0).versionName.toString()
 }
 
