@@ -33,7 +33,6 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
-import com.infomaniak.swisstransfer.ui.previewparameter.emailsPreviewData
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -82,7 +81,7 @@ fun UploadSuccessEmailScreen(emails: List<String>, closeActivity: () -> Unit) {
 private fun UploadSuccessEmailScreenPreview(@PreviewParameter(EmailsPreviewParameter::class) emails: List<String>) {
     SwissTransferTheme {
         Surface {
-            UploadSuccessEmailScreen(closeActivity = {}, emails = emails)
+            UploadSuccessEmailScreen(emails) {}
         }
     }
 }
