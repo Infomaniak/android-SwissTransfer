@@ -192,6 +192,15 @@ private fun ImportFilesScreen(
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
+    val areEmailsCorrect by remember {
+        derivedStateOf {
+            with(emailTextFieldCallbacks) {
+                val areAuthorAndRecipientCorrect = transferAuthorEmail.get().isNotEmpty() && !isAuthorEmailInvalid()
+                        && validatedRecipientsEmails.get().isNotEmpty()
+                !shouldShowEmailAddressesFields || areAuthorAndRecipientCorrect
+            }
+        }
+    }
 
     BottomStickyButtonScaffold(
         topBar = {
@@ -207,8 +216,7 @@ private fun ImportFilesScreen(
                 filesToImportCount = filesToImportCount,
                 currentSessionFilesCount = currentSessionFilesCount,
                 importedFiles = files,
-                shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
-                isAuthorEmailInvalid = emailTextFieldCallbacks.isAuthorEmailInvalid,
+                areEmailsCorrect = { areEmailsCorrect },
                 sendStatus = sendStatus,
                 sendTransfer = sendTransfer,
             )
@@ -398,8 +406,7 @@ private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
-    shouldShowEmailAddressesFields: () -> Boolean,
-    isAuthorEmailInvalid: () -> Boolean,
+    areEmailsCorrect: () -> Boolean,
     sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
 ) {
@@ -414,16 +421,12 @@ private fun SendButton(
         null
     }
 
-    val isSenderEmailCorrect by remember {
-        derivedStateOf { !shouldShowEmailAddressesFields() || !isAuthorEmailInvalid() }
-    }
-
     LargeButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
         showIndeterminateProgress = { sendStatus() == SendStatus.Pending },
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && sendStatus().canEnableButton() },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrect() && sendStatus().canEnableButton() },
         progress = progress,
         onClick = { sendTransfer() },
     )
