@@ -111,7 +111,7 @@ class TransferSendManager @Inject constructor(
                 )
             }
 
-            attestationToken?.let { onSuccess(it) } ?: onRefused.invoke()
+            attestationToken?.let(onSuccess) ?: onRefused()
         }.onFailure {
             onFailure.invoke(it)
         }
