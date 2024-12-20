@@ -23,6 +23,7 @@ import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEG
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.workers.UploadWorker
@@ -77,7 +78,11 @@ class TransferSendManager @Inject constructor(
                     }
                 }.onFailure { exception ->
                     SentryLog.e(TAG, "Failed to start the upload", exception)
-                    _sendStatus.update { SendStatus.Failure }
+                    val result = when (exception) {
+                        is ContainerErrorsException.EmailValidationRequired -> SendStatus.RequireEmailValidation
+                        else -> SendStatus.Failure
+                    }
+                    _sendStatus.update { result }
                 }
             },
             onRefused = { _sendStatus.update { SendStatus.Refused } },
@@ -143,6 +148,7 @@ class TransferSendManager @Inject constructor(
         data class Success(val totalSize: Long) : SendStatus()
         data object Refused : SendStatus()
         data object Failure : SendStatus()
+        data object RequireEmailValidation : SendStatus()
     }
 
     companion object {

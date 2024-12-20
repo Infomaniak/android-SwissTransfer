@@ -25,10 +25,11 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 
 @Composable
 fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit) {
@@ -40,10 +41,19 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadProgress = { transferType, totalSize ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
+                navigateToEmailValidation = { email ->
+                    navController.navigate(ValidateUserEmailDestination(email, 1000L)) // TODO: Get actual size
+                }
             )
         }
         composable<ValidateUserEmailDestination> {
-            ValidateUserEmailScreen()
+            val args = it.toRoute<ValidateUserEmailDestination>()
+            ValidateUserEmailScreen(
+                closeActivity = closeActivity,
+                navigateBack = { navController.popBackStack() },
+                navigateToUploadInProgress = { navController.navigate(UploadProgressDestination(TransferTypeUi.MAIL, args.totalSize)) },
+                emailToValidate = args.userEmail,
+            )
         }
         composable<UploadProgressDestination> {
             val args = it.toRoute<UploadProgressDestination>()
