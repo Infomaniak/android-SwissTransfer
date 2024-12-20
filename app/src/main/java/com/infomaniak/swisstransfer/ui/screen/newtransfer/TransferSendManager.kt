@@ -117,18 +117,20 @@ class TransferSendManager @Inject constructor(
         }
     }
 
-    private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? = coroutineScope {
+    private suspend fun requestAppIntegrityToken(appIntegrityManager: AppIntegrityManager): String? {
         var attestationToken: String? = null
 
-        appIntegrityManager.requestClassicIntegrityVerdictToken(
-            onSuccess = { token ->
-                SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
-                launch { attestationToken = getApiIntegrityVerdict(appIntegrityManager, token) }
-            },
-            onFailure = {},
-        )
+        coroutineScope {
+            appIntegrityManager.requestClassicIntegrityVerdictToken(
+                onSuccess = { token ->
+                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
+                    launch { attestationToken = getApiIntegrityVerdict(appIntegrityManager, token) }
+                },
+                onFailure = {},
+            )
+        }
 
-        return@coroutineScope attestationToken
+        return attestationToken
     }
 
     private suspend fun getApiIntegrityVerdict(appIntegrityManager: AppIntegrityManager, appIntegrityToken: String): String? {
