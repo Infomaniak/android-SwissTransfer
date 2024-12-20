@@ -60,7 +60,7 @@ private val HORIZONTAL_PADDING = Margin.Medium
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -78,11 +78,18 @@ fun ImportFilesScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
+
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
         sendStatus = { sendStatus },
-        transferType = { selectedTransferType },
-        navigateToUploadProgress = navigateToUploadProgress,
+        navigateToUploadProgress = { totalSize ->
+            navigateToUploadProgress(
+                selectedTransferType,
+                totalSize,
+                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
+            )
+        },
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
 
@@ -126,7 +133,7 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
-        emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks(),
+        emailTextFieldCallbacks = emailTextFieldCallbacks,
         transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
@@ -146,8 +153,7 @@ fun ImportFilesScreen(
 private fun HandleSendActionResult(
     snackbarHostState: SnackbarHostState,
     sendStatus: () -> SendStatus,
-    transferType: () -> TransferTypeUi,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (totalSize: Long) -> Unit,
     resetSendActionResult: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -159,7 +165,7 @@ private fun HandleSendActionResult(
                 // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
                 // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
                 resetSendActionResult()
-                navigateToUploadProgress(transferType(), actionResult.totalSize)
+                navigateToUploadProgress(actionResult.totalSize)
             }
             is SendStatus.Refused -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
