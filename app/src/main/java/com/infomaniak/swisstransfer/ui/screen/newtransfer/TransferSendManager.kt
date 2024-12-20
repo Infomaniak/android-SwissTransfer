@@ -119,7 +119,7 @@ class TransferSendManager @Inject constructor(
         coroutineScope {
             appIntegrityManager.requestClassicIntegrityVerdictToken(
                 onSuccess = { token ->
-                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful $token")
+                    SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful")
                     launch { attestationToken = getApiIntegrityVerdict(appIntegrityManager, token) }
                 },
                 onFailure = {},
