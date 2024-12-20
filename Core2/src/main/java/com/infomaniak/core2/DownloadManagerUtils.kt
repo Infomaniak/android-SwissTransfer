@@ -18,6 +18,7 @@
 package com.infomaniak.core2
 
 import android.app.DownloadManager
+import android.app.DownloadManager.Request
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -40,21 +41,21 @@ object DownloadManagerUtils {
         url: String,
         name: String,
         userAgent: String,
-        extraHeaders: Iterable<Pair<String, String>> = emptySet()
+        extraHeaders: Iterable<Pair<String, String>> = emptySet(),
     ) {
         val formattedName = name.replace(regexInvalidSystemChar, "_").replace("%", "_").let {
             // fix IllegalArgumentException only on Android 10 if multi dot
             if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
         }
 
-        DownloadManager.Request(Uri.parse(url)).apply {
-            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+        Request(Uri.parse(url)).apply {
+            setAllowedNetworkTypes(Request.NETWORK_WIFI or Request.NETWORK_MOBILE)
             setTitle(formattedName)
             setDescription(appName)
             setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
             addHeaders(userAgent, extraHeaders)
 
-            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
             val downloadManager = appCtx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val downloadReference = downloadManager.enqueue(this)
@@ -62,18 +63,16 @@ object DownloadManagerUtils {
         }
     }
 
-    private fun DownloadManager.Request.addHeaders(userAgent: String, extraHeaders: Iterable<Pair<String, String>>) {
+    private fun Request.addHeaders(userAgent: String, extraHeaders: Iterable<Pair<String, String>>) {
         addRequestHeader("Accept-Encoding", "gzip")
         addRequestHeader("App-Version", "Android $appVersionName")
         addRequestHeader("User-Agent", userAgent)
-        extraHeaders.forEach { (key, value) ->
-            addRequestHeader(key, value)
-        }
+        extraHeaders.forEach { (key, value) -> addRequestHeader(key, value) }
     }
 
     private fun handleDownloadManagerErrors(downloadManager: DownloadManager, downloadReference: Long) {
         scope.launch {
-            delay(1_000L)
+            delay(1_000L) // We wait a little to make sure we have the errors from the query
             DownloadManager.Query().also { query ->
                 query.setFilterById(downloadReference)
                 Dispatchers.IO {
