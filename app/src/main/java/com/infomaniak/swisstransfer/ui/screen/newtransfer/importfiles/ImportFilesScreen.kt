@@ -284,8 +284,8 @@ private fun ColumnScope.EmailAddressesTextFields(
 ) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
-            val isAuthorError = emailTextFieldCallbacks.checkEmailError(isAuthor = true)
-            val isRecipientError = emailTextFieldCallbacks.checkEmailError(isAuthor = false)
+            val isAuthorError = checkEmailError(isAuthor = true)
+            val isRecipientError = checkEmailError(isAuthor = false)
 
             SwissTransferTextField(
                 modifier = modifier,
@@ -314,8 +314,8 @@ private fun ColumnScope.EmailAddressesTextFields(
 }
 
 @Composable
-private fun getEmailError(isAuthorError: Boolean): @Composable (() -> Unit)? {
-    val supportingText: @Composable (() -> Unit)? = if (isAuthorError) {
+private fun getEmailError(isError: Boolean): @Composable (() -> Unit)? {
+    val supportingText: @Composable (() -> Unit)? = if (isError) {
         { Text(stringResource(R.string.invalidAddress)) }
     } else {
         null
