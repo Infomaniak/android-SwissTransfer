@@ -46,8 +46,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
-private const val UNSELECTED_CHIP_INDEX = -1
-
 @Composable
 fun EmailAddressTextField(
     modifier: Modifier = Modifier,
@@ -59,8 +57,8 @@ fun EmailAddressTextField(
     supportingText: (@Composable () -> Unit)? = null,
 ) {
 
-    var textFieldValue by remember { mutableStateOf(TextFieldValue(initialValue)) }
-    var currentSelectedChip by remember { mutableIntStateOf(UNSELECTED_CHIP_INDEX) }
+    val state = remember(validatedEmails) { EmailAddressTextFieldState(validatedEmails, initialText = initialValue) }
+    var textFieldValue by state::textFieldValue
     val interactionSource = remember { MutableInteractionSource() }
 
     val cursorColor by animateColorAsState(
@@ -69,61 +67,9 @@ fun EmailAddressTextField(
     )
 
     fun updateUiTextValue(newValue: TextFieldValue) {
-        currentSelectedChip = UNSELECTED_CHIP_INDEX
+        state.unselectChip()
         textFieldValue = newValue
         onValueChange(newValue)
-    }
-
-    fun getLastEmailIndex() = validatedEmails.get().toList().lastIndex
-
-    fun handleBackspace() = if (currentSelectedChip == UNSELECTED_CHIP_INDEX) {
-        // If no chip is currently selected, we select the last one
-        currentSelectedChip = getLastEmailIndex()
-        false
-    } else {
-        // If any chip is already selected, pressing on backspace deletes it and reset the selection
-        validatedEmails.get().elementAtOrNull(currentSelectedChip)?.let { email ->
-            validatedEmails.set(validatedEmails.get().minusElement(email))
-        }
-        currentSelectedChip = UNSELECTED_CHIP_INDEX
-        true
-    }
-
-    fun handlePreviousNavigation(): Boolean = when {
-        currentSelectedChip == UNSELECTED_CHIP_INDEX && textFieldValue.selection.start == 0 -> {
-            // If we go left when the cursor is already at the start of the textField, we select the last chip
-            currentSelectedChip = getLastEmailIndex()
-            true
-        }
-        currentSelectedChip != UNSELECTED_CHIP_INDEX -> {
-            currentSelectedChip--
-            true
-        }
-        else -> false
-    }
-
-    fun handleForwardNavigation(): Boolean = when {
-        currentSelectedChip == UNSELECTED_CHIP_INDEX -> false
-        currentSelectedChip < getLastEmailIndex() -> {
-            currentSelectedChip++
-            true
-        }
-        else -> {
-            // The currently selected chip is the last one, so going right should deselect it and come back to the text
-            currentSelectedChip = UNSELECTED_CHIP_INDEX
-            true
-        }
-    }
-
-    fun onKeyEvent(event: KeyEvent): Boolean = when {
-        event.type != KeyEventType.KeyDown -> false
-        event.key == Key.Backspace -> handleBackspace()
-        event.isNavigatingLeft() -> handlePreviousNavigation()
-        event.isNavigatingRight() -> handleForwardNavigation()
-        else -> {
-            currentSelectedChip = UNSELECTED_CHIP_INDEX
-            false
-        }
     }
 
     val keyboardActions = KeyboardActions(
@@ -144,8 +90,8 @@ fun EmailAddressTextField(
 
     val emailAddressTextFieldModifier = modifier
         .fillMaxWidth()
-        .onPreviewKeyEvent(::onKeyEvent)
-        .onFocusChanged { event -> if (!event.isFocused) currentSelectedChip = UNSELECTED_CHIP_INDEX }
+        .onPreviewKeyEvent(state::onKeyEvent)
+        .onFocusChanged { event -> if (!event.isFocused) state.unselectChip() }
 
     BasicTextField(
         modifier = emailAddressTextFieldModifier,
@@ -161,7 +107,7 @@ fun EmailAddressTextField(
             EmailAddressDecorationBox(
                 text = textFieldValue.text,
                 validatedEmails = validatedEmails,
-                currentSelectedChip = GetSetCallbacks(get = { currentSelectedChip }, set = { currentSelectedChip = it }),
+                selectedChipIndexState = state.selectedChipIndexState,
                 innerTextField = innerTextField,
                 label = label,
                 interactionSource = interactionSource,
@@ -173,17 +119,87 @@ fun EmailAddressTextField(
     )
 }
 
+private class EmailAddressTextFieldState(
+    private val validatedEmails: GetSetCallbacks<Set<String>>,
+    initialText: String
+) {
+    var textFieldValue by mutableStateOf(TextFieldValue(initialText))
+
+    val selectedChipIndexState = mutableIntStateOf(UNSELECTED_CHIP_INDEX)
+    var selectedChipIndex by selectedChipIndexState
+
+    fun unselectChip() {
+        selectedChipIndex = UNSELECTED_CHIP_INDEX
+    }
+
+    fun onKeyEvent(event: KeyEvent): Boolean = when {
+        event.type != KeyEventType.KeyDown -> false
+        event.key == Key.Backspace -> handleBackspace()
+        event.isNavigatingLeft() -> handlePreviousNavigation()
+        event.isNavigatingRight() -> handleForwardNavigation()
+        else -> {
+            unselectChip()
+            false
+        }
+    }
+
+    private fun handleForwardNavigation(): Boolean = when {
+        selectedChipIndex == UNSELECTED_CHIP_INDEX -> false
+        selectedChipIndex < getLastEmailIndex() -> {
+            selectedChipIndex++
+            true
+        }
+        else -> {
+            // The currently selected chip is the last one, so going right should deselect it and come back to the text
+            unselectChip()
+            true
+        }
+    }
+
+    private fun handleBackspace() = if (selectedChipIndex == UNSELECTED_CHIP_INDEX) {
+        // If no chip is currently selected, we select the last one
+        selectedChipIndex = getLastEmailIndex()
+        false
+    } else {
+        // If any chip is already selected, pressing on backspace deletes it and reset the selection
+        validatedEmails.get().elementAtOrNull(selectedChipIndex)?.let { email ->
+            validatedEmails.set(validatedEmails.get().minusElement(email))
+        }
+        unselectChip()
+        true
+    }
+
+    private fun getLastEmailIndex() = validatedEmails.get().toList().lastIndex
+
+    private fun handlePreviousNavigation(): Boolean = when {
+        selectedChipIndex == UNSELECTED_CHIP_INDEX && textFieldValue.selection.start == 0 -> {
+            // If we go left when the cursor is already at the start of the textField, we select the last chip
+            selectedChipIndex = getLastEmailIndex()
+            true
+        }
+        selectedChipIndex != UNSELECTED_CHIP_INDEX -> {
+            selectedChipIndex--
+            true
+        }
+        else -> false
+    }
+
+    companion object {
+        private const val UNSELECTED_CHIP_INDEX = -1
+    }
+}
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun EmailAddressDecorationBox(
     text: String,
     validatedEmails: GetSetCallbacks<Set<String>>,
-    currentSelectedChip: GetSetCallbacks<Int>,
+    selectedChipIndexState: MutableIntState,
     innerTextField: @Composable () -> Unit,
     label: String,
     interactionSource: MutableInteractionSource,
     isError: Boolean,
-    supportingText: @Composable (() -> Unit)?,
+    supportingText: @Composable() (() -> Unit)?,
     textFieldColors: TextFieldColors,
 ) {
     OutlinedTextFieldDefaults.DecorationBox(
@@ -191,7 +207,7 @@ private fun EmailAddressDecorationBox(
         innerTextField = {
             EmailChipsAndInnerTextField(
                 validatedEmails = validatedEmails,
-                currentSelectedChip = currentSelectedChip,
+                selectedChipIndexState = selectedChipIndexState,
                 innerTextField = innerTextField,
             )
         },
@@ -223,10 +239,10 @@ private fun EmailAddressDecorationBox(
 @OptIn(ExperimentalLayoutApi::class)
 private fun EmailChipsAndInnerTextField(
     validatedEmails: GetSetCallbacks<Set<String>>,
-    currentSelectedChip: GetSetCallbacks<Int>,
+    selectedChipIndexState: MutableIntState,
     innerTextField: @Composable () -> Unit,
 ) {
-
+    var selectedChipIndex by selectedChipIndexState
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
         itemVerticalAlignment = Alignment.CenterVertically,
@@ -234,8 +250,8 @@ private fun EmailChipsAndInnerTextField(
         validatedEmails.get().forEachIndexed { index, email ->
             SwissTransferInputChip(
                 text = email,
-                isSelected = { currentSelectedChip.get() == index },
-                onClick = { currentSelectedChip.set(index) },
+                isSelected = { selectedChipIndex == index },
+                onClick = { selectedChipIndex = index },
                 onDismiss = { validatedEmails.set(validatedEmails.get().minus(email)) },
             )
         }
