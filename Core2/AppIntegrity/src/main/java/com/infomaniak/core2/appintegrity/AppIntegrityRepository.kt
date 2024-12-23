@@ -55,7 +55,7 @@ internal class AppIntegrityRepository {
             "challenge_id" to challengeId,
         )
 
-        // Add this line to test validation by api
+        // Add this line to test validation by API
         // body["force_integrity_test"] = "true"
 
         return post<ApiResponse<String>>(url = Url(AppIntegrityRoutes.requestApiIntegrityCheck), data = body)

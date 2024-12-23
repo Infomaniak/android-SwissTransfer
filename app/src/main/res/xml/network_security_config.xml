@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<!--
   ~ Infomaniak SwissTransfer - Android
   ~ Copyright (C) 2024 Infomaniak Network SA
   ~
@@ -15,11 +15,12 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
-    <string name="anErrorHasOccurred">An error has occurred</string>
-    <string name="buttonCancel">Cancel</string>
-    <string name="buttonNext">Next</string>
-    <string name="buttonRetry">Retry</string>
-    <string name="errorDownload">Download error</string>
-    <string name="errorDownloadInsufficientSpace">Cannot download : Insufficient space</string>
-</resources>
+<network-security-config>
+    <debug-overrides cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!-- Trust user added CAs while debuggable only -->
+            <certificates src="user" />
+            <certificates src="system" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

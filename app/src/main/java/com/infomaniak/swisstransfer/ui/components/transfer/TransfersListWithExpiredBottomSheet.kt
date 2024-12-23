@@ -17,14 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -46,7 +45,6 @@ fun TransfersListWithExpiredBottomSheet(
     var expiredTransfer: TransferUi? by rememberSaveable { mutableStateOf(null) }
 
     TransferItemList(
-        modifier = Modifier.padding(Margin.Medium),
         direction = direction,
         getSelectedTransferUuid = getSelectedTransferUuid,
         getTransfers = getTransfers,
@@ -57,7 +55,8 @@ fun TransfersListWithExpiredBottomSheet(
             } else {
                 navigateToDetails(transfer.uuid)
             }
-        }
+        },
+        contentPadding = PaddingValues(top = Margin.Large, bottom = Margin.Medium, start = Margin.Medium, end = Margin.Medium),
     )
 
     TransferExpiredBottomSheet(

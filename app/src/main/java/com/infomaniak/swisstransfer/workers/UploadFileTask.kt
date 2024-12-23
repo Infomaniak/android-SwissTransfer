@@ -52,7 +52,6 @@ class UploadFileTask(
         val totalChunks = fileChunkSizeManager.computeFileChunks(fileSize = uploadFileSession.size, fileChunkSize = chunkSize)
         val parallelChunks = fileChunkSizeManager.computeParallelChunks(fileChunkSize = chunkSize)
 
-
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 
         uploadFileSession.getLocalIoFile(uploadSession.uuid).inputStream().buffered().use { inputStream ->

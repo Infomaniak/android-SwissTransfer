@@ -60,7 +60,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     navController.navigate(UploadSuccessDestination(args.transferType, transferUrl))
                 },
                 navigateToUploadError = { navController.navigate(UploadErrorDestination) },
-                closeActivity = closeActivity,
+                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
             )
         }
         composable<UploadSuccessDestination> {
@@ -68,7 +68,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadSuccessScreen(
                 transferType = args.transferType,
                 transferUrl = args.transferUrl,
-                closeActivity = closeActivity
+                closeActivity = closeActivity,
             )
         }
         composable<UploadErrorDestination> {

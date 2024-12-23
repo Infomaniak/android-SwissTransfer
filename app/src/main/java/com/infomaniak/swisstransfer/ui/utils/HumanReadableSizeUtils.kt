@@ -19,23 +19,22 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
 import android.icu.text.NumberFormat
-import android.text.format.Formatter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.R
 
 object HumanReadableSizeUtils {
 
-    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String = Formatter.formatShortFileSize(context, sizeInBytes)
-
-    private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
+    fun getHumanReadableSize(context: Context, sizeInBytes: Long): String = context.formatShortFileSize(sizeInBytes)
 
     fun Context.getSpaceLeft(files: List<FileUi>): String {
-        val spaceLeft = (FileUtils.MAX_FILES_SIZE - getFilesSizeInBytes(files)).coerceAtLeast(0)
-        return getHumanReadableSize(this, spaceLeft)
+        val usedSpace = files.sumOf { it.fileSize }
+        val spaceLeft = (FileUtils.MAX_FILES_SIZE - usedSpace).coerceAtLeast(0)
+        return getHumanReadableSize(context = this, spaceLeft)
     }
 
     @Composable
