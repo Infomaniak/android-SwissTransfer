@@ -32,7 +32,6 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
-import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainScreen(isTransferDeeplink: Boolean = false) {
