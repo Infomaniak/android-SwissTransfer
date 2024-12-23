@@ -98,7 +98,7 @@ private fun ChipLabel(text: String) {
 
 @PreviewLightAndDark
 @Composable
-private fun EmailAddressChipPreview() {
+private fun Preview() {
 
     fun getLoremText(words: Int) = LoremIpsum(words).values.joinToString(separator = " ")
 
