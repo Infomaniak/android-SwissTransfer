@@ -29,6 +29,7 @@
     <string name="contentDescriptionButtonClose">Chiudi</string>
     <string name="contentDescriptionButtonHidePassword">Nascondere la password</string>
     <string name="contentDescriptionButtonRemove">Rimuovi il file</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Rimuove %s</string>
     <string name="contentDescriptionButtonShowPassword">Mostra password</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
     <string name="downloadedTransferLabel">Trasferimento scaricato: %d/%d</string>
