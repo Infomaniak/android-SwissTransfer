@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages
@@ -35,6 +33,7 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun SwissTransferSuggestionChip(text: String, modifier: Modifier = Modifier) {
@@ -97,8 +96,7 @@ private fun ChipLabel(text: String) {
     )
 }
 
-@Preview(name = "Light mode")
-@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@PreviewLightAndDark
 @Composable
 private fun EmailAddressChipPreview() {
 
