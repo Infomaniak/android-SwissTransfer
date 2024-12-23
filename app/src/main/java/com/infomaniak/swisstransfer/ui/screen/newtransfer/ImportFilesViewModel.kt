@@ -228,7 +228,7 @@ class ImportFilesViewModel @Inject constructor(
             isRecipientEmailInvalid = { isRecipientEmailInvalid },
             validatedRecipientsEmails = GetSetCallbacks(
                 get = { validatedRecipientsEmails },
-                set = { validatedRecipientsEmails = it }
+                set = { validatedRecipientsEmails = it },
             ),
         )
     }
