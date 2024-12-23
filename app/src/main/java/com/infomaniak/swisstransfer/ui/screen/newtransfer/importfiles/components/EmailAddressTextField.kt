@@ -36,7 +36,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.infomaniak.core2.isEmail
+import com.infomaniak.core2.isValidEmail
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextFieldDefaults
@@ -129,7 +129,7 @@ fun EmailAddressTextField(
     val keyboardActions = KeyboardActions(
         onDone = {
             val trimmedText = textFieldValue.text.trim()
-            if (trimmedText.isEmail()) {
+            if (trimmedText.isValidEmail()) {
                 validatedEmails.set(validatedEmails.get() + trimmedText)
                 updateUiTextValue(TextFieldValue())
             }

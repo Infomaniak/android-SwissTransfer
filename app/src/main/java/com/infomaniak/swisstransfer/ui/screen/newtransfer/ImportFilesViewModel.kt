@@ -25,7 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core2.isEmail
+import com.infomaniak.core2.isValidEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -84,12 +84,12 @@ class ImportFilesViewModel @Inject constructor(
 
     //region Transfer Author Email
     private var transferAuthorEmail by mutableStateOf("")
-    private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.trim().isEmail() }
+    private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isValidEmail() }
     //endregion
 
     //region Recipient Email
     private var recipientEmail by mutableStateOf("")
-    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.trim().isEmail() }
+    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.isValidEmail() }
     private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
