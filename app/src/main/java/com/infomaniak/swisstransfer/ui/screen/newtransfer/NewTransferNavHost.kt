@@ -29,6 +29,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUs
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
+import io.sentry.Sentry
+import io.sentry.SentryLevel
 
 @Composable
 fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit) {
@@ -73,11 +75,21 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             val args = it.toRoute<UploadErrorDestination>()
             UploadErrorScreen(
                 navigateBackToUploadProgress = {
-                    // TODO: Why doesn't this work ? It should, no ?? :(
-                    //  "NavController: Ignoring popBackStack to route UploadProgressDestination as it was not found on the current back stack"
-                    // navController.popBackStack(route = UploadProgressDestination(args.transferType, args.totalSize), inclusive = false)
-                    // TODO: Instead, I'm using this, which looks like it works fine. But this doesn't make sense to me.
-                    navController.navigate(UploadProgressDestination(args.transferType, args.totalSize, args.recipients))
+                    val hasPoppedBack = navController.popBackStack(
+                        route = UploadProgressDestination(args.transferType, args.totalSize, args.recipients),
+                        inclusive = false,
+                    )
+                    if (!hasPoppedBack) {
+                        navController.navigate(UploadProgressDestination(args.transferType, args.totalSize, args.recipients))
+                        Sentry.captureMessage(
+                            "PopBackStack to retry transfer after error has failed",
+                            SentryLevel.ERROR,
+                        ) { scope ->
+                            scope.setExtra("transferType", args.transferType.toString())
+                            scope.setExtra("totalSize", args.totalSize.toString())
+                            scope.setExtra("recipients.count", args.recipients.count().toString())
+                        }
+                    }
                 },
                 navigateBackToImportFiles = {
                     navController.popBackStack(route = ImportFilesDestination, inclusive = false)
