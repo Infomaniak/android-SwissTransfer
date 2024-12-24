@@ -48,6 +48,7 @@ class TransferSendManager @Inject constructor(
     val sendStatus = _sendStatus.asStateFlow()
 
     suspend fun sendNewTransfer(newUploadSession: NewUploadSession) {
+        uploadManager.removeAllUploadSession()
         val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
         sendTransfer(uploadSession.uuid)
     }
