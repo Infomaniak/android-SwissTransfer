@@ -59,6 +59,9 @@ sealed class MainNavigation : NavigationDestination() {
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
+    data class FilesDetailsDestination(val folderUuid: String? = null) : MainNavigation()
+
+    @Serializable
     data object SettingsDestination : MainNavigation()
 
     companion object {
@@ -69,7 +72,13 @@ sealed class MainNavigation : NavigationDestination() {
         val sentDestinationName = "SentDestination"
         val receivedDestinationName = "ReceivedDestination"
         val settingsDestinationName = "SettingsDestination"
-        val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
+        val filesDetailsDestinationName = "FilesDetailsDestination"
+        val destinationsNames = listOf(
+            sentDestinationName,
+            receivedDestinationName,
+            settingsDestinationName,
+            filesDetailsDestinationName
+        )
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
@@ -78,6 +87,7 @@ sealed class MainNavigation : NavigationDestination() {
                     sentDestinationName -> this.toRoute<SentDestination>()
                     receivedDestinationName -> this.toRoute<ReceivedDestination>()
                     settingsDestinationName -> this.toRoute<SettingsDestination>()
+                    filesDetailsDestinationName -> this.toRoute<FilesDetailsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
@@ -85,6 +95,8 @@ sealed class MainNavigation : NavigationDestination() {
                 null
             }
         }
+
+        fun MainNavigation.toRoute() = javaClass.canonicalName?.toString() ?: ""
     }
 }
 
@@ -120,6 +132,9 @@ sealed class NewTransferNavigation : NavigationDestination() {
         val totalSize: Long,
         val recipients: List<String>,
     ) : NewTransferNavigation()
+
+    @Serializable
+    data object NewTransferFilesDetailsDestination : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination

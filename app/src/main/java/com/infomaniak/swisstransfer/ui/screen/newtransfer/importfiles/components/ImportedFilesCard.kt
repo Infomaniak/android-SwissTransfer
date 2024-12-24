@@ -35,7 +35,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SmallFileItem
 import com.infomaniak.swisstransfer.ui.components.SmallFileTileSize
@@ -49,7 +48,7 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
 
@@ -58,20 +57,13 @@ fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
     pickFiles: () -> Unit,
-    navigateToFileDetails: () -> Unit,
+    navigateToFilesDetails: () -> Unit,
 ) {
 
     val context = LocalContext.current
+    val humanReadableSize by remember { derivedStateOf { context.getSpaceLeft(files()) } }
 
-    val humanReadableSize by remember {
-        derivedStateOf {
-            val usedSpace = files().sumOf { it.fileSize }
-            val spaceLeft = (FileUtils.MAX_FILES_SIZE - usedSpace).coerceAtLeast(0)
-            getHumanReadableSize(context, spaceLeft)
-        }
-    }
-
-    SwissTransferCard(modifier = modifier, onClick = navigateToFileDetails) {
+    SwissTransferCard(modifier = modifier, onClick = navigateToFilesDetails) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
                 firstText = {
@@ -150,7 +142,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
             pickFiles = {},
-            navigateToFileDetails = {},
+            navigateToFilesDetails = {},
         )
     }
 }

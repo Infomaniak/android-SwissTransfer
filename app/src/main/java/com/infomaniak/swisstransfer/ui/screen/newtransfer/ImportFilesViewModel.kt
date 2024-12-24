@@ -31,6 +31,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.Uploa
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -50,10 +51,9 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,6 +62,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
+    private val fileManager: FileManager,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -77,6 +78,16 @@ class ImportFilesViewModel @Inject constructor(
             started = SharingStarted.Lazily,
             initialValue = emptyList(),
         )
+
+    private val loadFilesFlow = MutableSharedFlow<String?>(1)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val files = loadFilesFlow.flatMapLatest { folderUuid ->
+        if (folderUuid == null) {
+            importationFilesManager.importedFiles
+        } else {
+            fileManager.getFilesFromTransfer(folderUuid)
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val failedFiles = importationFilesManager.failedFiles // TODO ? (unused)
     val filesToImportCount = importationFilesManager.filesToImportCount
@@ -129,6 +140,10 @@ class ImportFilesViewModel @Inject constructor(
 
             importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
         }
+    }
+
+    fun loadFiles(folderUuid: String?) {
+        viewModelScope.launch { loadFilesFlow.emit(folderUuid) }
     }
 
     fun importFiles(uris: List<Uri>) {
