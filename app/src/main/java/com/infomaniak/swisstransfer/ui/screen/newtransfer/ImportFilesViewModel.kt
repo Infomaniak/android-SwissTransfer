@@ -113,9 +113,16 @@ class ImportFilesViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
                 isFirstViewModelCreation = false
-                // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required
-                // for already imported files restoration to not pick up old files in some extreme cases.
+
+                // Remove old imported files in case it would've crashed (or similar) to start with a clean slate.
+                // This is required for already imported files restoration to not pick up old files in some extreme cases.
                 removeOldData()
+
+                // Set default values to advanced transfer options. This need to be done here in the `init`,
+                // because we only want to do it once. If we come back from a cancelled or edited transfer,
+                // we don't want to erase user's choices about advanced transfer options.
+                initTransferOptionsValues()
+
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
@@ -233,7 +240,7 @@ class ImportFilesViewModel @Inject constructor(
         )
     }
 
-    fun initTransferOptionsValues() {
+    private fun initTransferOptionsValues() {
         viewModelScope.launch(ioDispatcher) {
             appSettingsManager.getAppSettings()?.let {
                 selectTransferValidityPeriod(it.validityPeriod.toTransferOption())
