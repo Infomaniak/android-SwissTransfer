@@ -17,18 +17,17 @@
  */
 package com.infomaniak.swisstransfer.ui.images.illus.uploadError
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 val AppIllus.GhostMagnifyingGlassQuestionMark: ThemedImage
     get() = _ghostMagnifyingGlassQuestionMark ?: object : ThemedImage {
@@ -38,8 +37,7 @@ val AppIllus.GhostMagnifyingGlassQuestionMark: ThemedImage
 
 private var _ghostMagnifyingGlassQuestionMark: ThemedImage? = null
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@PreviewLightAndDark
 @Composable
 private fun Preview() {
     SwissTransferTheme {

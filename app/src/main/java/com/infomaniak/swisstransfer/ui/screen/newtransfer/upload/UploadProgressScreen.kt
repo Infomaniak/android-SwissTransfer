@@ -186,7 +186,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
 
 @PreviewAllWindows
 @Composable
-private fun UploadProgressScreenPreview() {
+private fun Preview() {
     SwissTransferTheme {
         UploadProgressScreen(
             progressState = { UploadProgressUiState.Progress(44_321_654L) },
