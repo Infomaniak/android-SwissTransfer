@@ -20,11 +20,9 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -32,14 +30,26 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.core2.R as RCore2
 
 @Composable
-fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
+fun UploadErrorScreen(
+    navigateBackToUploadProgress: () -> Unit,
+    navigateBackToImportFiles: () -> Unit,
+    uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
+) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
-        bottomButton = {
+        topButton = {
             LargeButton(
                 modifier = it,
                 title = stringResource(RCore2.string.buttonRetry),
-                onClick = navigateToImportFiles,
+                onClick = { uploadProgressViewModel.resendLastTransfer(onCompletion = navigateBackToUploadProgress) },
+            )
+        },
+        bottomButton = {
+            LargeButton(
+                modifier = it,
+                title = stringResource(R.string.buttonEditTransfer),
+                style = ButtonType.SECONDARY,
+                onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = navigateBackToImportFiles) },
             )
         }
     ) {
@@ -56,7 +66,7 @@ fun UploadErrorScreen(navigateToImportFiles: () -> Unit) {
 private fun UploadErrorScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadErrorScreen({})
+            UploadErrorScreen({}, {})
         }
     }
 }

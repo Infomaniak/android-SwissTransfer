@@ -93,8 +93,6 @@ fun ImportFilesScreen(
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
 
-    LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
-
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
             buildList {

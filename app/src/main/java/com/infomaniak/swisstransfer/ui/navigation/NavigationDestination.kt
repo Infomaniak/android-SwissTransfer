@@ -96,22 +96,30 @@ sealed class NewTransferNavigation : NavigationDestination() {
 
     @Serializable
     data object ImportFilesDestination : NewTransferNavigation()
+
     @Serializable
     data object ValidateUserEmailDestination : NewTransferNavigation()
+
     @Serializable
     data class UploadProgressDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
         val recipients: List<String>,
     ) : NewTransferNavigation()
+
     @Serializable
     data class UploadSuccessDestination(
         val transferType: TransferTypeUi,
         val transferUrl: String,
         val recipients: List<String>,
     ) : NewTransferNavigation()
+
     @Serializable
-    data object UploadErrorDestination : NewTransferNavigation()
+    data class UploadErrorDestination(
+        val transferType: TransferTypeUi,
+        val totalSize: Long,
+        val recipients: List<String>,
+    ) : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination
