@@ -19,4 +19,4 @@ package com.infomaniak.core2
 
 import android.util.Patterns
 
-fun String.isEmail(): Boolean = Patterns.EMAIL_ADDRESS.matcher(this).matches()
+fun String.isValidEmail(): Boolean = Patterns.EMAIL_ADDRESS.matcher(trim()).matches()

@@ -41,8 +41,8 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             ImportFilesScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
                 closeActivity = closeActivity,
-                navigateToUploadProgress = { transferType, totalSize ->
-                    navController.navigate(UploadProgressDestination(transferType, totalSize))
+                navigateToUploadProgress = { transferType, totalSize, recipients ->
+                    navController.navigate(UploadProgressDestination(transferType, totalSize, recipients))
                 },
                 navigateToFilesDetails = {
                     navController.navigate(NewTransferFilesDetailsDestination)
@@ -57,7 +57,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadProgressScreen(
                 totalSizeInBytes = args.totalSize,
                 navigateToUploadSuccess = { transferUrl ->
-                    navController.navigate(UploadSuccessDestination(args.transferType, transferUrl))
+                    navController.navigate(UploadSuccessDestination(args.transferType, transferUrl, args.recipients))
                 },
                 navigateToUploadError = { navController.navigate(UploadErrorDestination) },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
@@ -68,6 +68,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadSuccessScreen(
                 transferType = args.transferType,
                 transferUrl = args.transferUrl,
+                recipients = args.recipients,
                 closeActivity = closeActivity,
             )
         }

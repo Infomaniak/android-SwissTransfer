@@ -29,6 +29,7 @@
     <string name="contentDescriptionButtonClose">Fermer</string>
     <string name="contentDescriptionButtonHidePassword">Cacher le mot de passe</string>
     <string name="contentDescriptionButtonRemove">Supprimer le fichier</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Supprimer %s</string>
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
