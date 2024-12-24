@@ -52,7 +52,11 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadSuccess = { transferUrl ->
                     navController.navigate(UploadSuccessDestination(args.transferType, transferUrl, args.recipients))
                 },
-                navigateToUploadError = { navController.navigate(UploadErrorDestination(args.transferType, args.totalSize)) },
+                navigateToUploadError = {
+                    navController.navigate(
+                        UploadErrorDestination(args.transferType, args.totalSize, args.recipients),
+                    )
+                },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
             )
         }
@@ -73,7 +77,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     //  "NavController: Ignoring popBackStack to route UploadProgressDestination as it was not found on the current back stack"
                     // navController.popBackStack(route = UploadProgressDestination(args.transferType, args.totalSize), inclusive = false)
                     // TODO: Instead, I'm using this, which looks like it works fine. But this doesn't make sense to me.
-                    navController.navigate(UploadProgressDestination(args.transferType, args.totalSize))
+                    navController.navigate(UploadProgressDestination(args.transferType, args.totalSize, args.recipients))
                 },
                 navigateBackToImportFiles = {
                     navController.popBackStack(route = ImportFilesDestination, inclusive = false)
