@@ -23,7 +23,8 @@ class ApiClientProviderTest {
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
-            }
+            },
+            userAgent = "Ktor client test"
         )
     }
 
