@@ -23,13 +23,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.DownloadManagerUtils
-import com.infomaniak.core2.buildUserAgent
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.sentry.SentryLog
-import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.di.UserAgent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -40,6 +39,7 @@ import javax.inject.Inject
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
+    @UserAgent private val userAgent: String,
 ) : ViewModel() {
 
     private val _transferUuidFlow = MutableSharedFlow<String>(1)
@@ -75,11 +75,6 @@ class TransferDetailsViewModel @Inject constructor(
     fun startDownloadingAllFiles(transfer: TransferUi) {
         viewModelScope.launch {
             val url = sharedApiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return@launch
-            val userAgent = buildUserAgent(
-                appId = BuildConfig.APPLICATION_ID,
-                appVersionCode = BuildConfig.VERSION_CODE,
-                appVersionName = BuildConfig.VERSION_NAME,
-            )
 
             when (transfer.files.size) {
                 1 -> {

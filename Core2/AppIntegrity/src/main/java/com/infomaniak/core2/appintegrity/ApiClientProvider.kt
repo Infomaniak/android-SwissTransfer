@@ -29,6 +29,7 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.UserAgent
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.statement.HttpResponse
@@ -37,7 +38,10 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 
-internal class ApiClientProvider(engine: HttpClientEngine = OkHttp.create()) {
+internal class ApiClientProvider(
+    engine: HttpClientEngine = OkHttp.create(),
+    private val userAgent: String,
+) {
 
     val json = Json {
         ignoreUnknownKeys = true
@@ -50,7 +54,9 @@ internal class ApiClientProvider(engine: HttpClientEngine = OkHttp.create()) {
 
     private fun createHttpClient(engine: HttpClientEngine): HttpClient {
         val block: HttpClientConfig<*>.() -> Unit = {
-            expectSuccess = true
+            install(UserAgent) {
+                agent = userAgent
+            }
             install(ContentNegotiation) {
                 json(this@ApiClientProvider.json)
             }

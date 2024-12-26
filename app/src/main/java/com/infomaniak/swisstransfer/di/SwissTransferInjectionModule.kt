@@ -33,14 +33,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SwissTransferInjectionModule {
 
+    @UserAgent
     @Provides
     @Singleton
-    fun providesSwissTransferInjection(): SwissTransferInjection {
-        val userAgent = buildUserAgent(
+    fun providesUserAgent(): String {
+        return buildUserAgent(
             appId = BuildConfig.APPLICATION_ID,
             appVersionCode = BuildConfig.VERSION_CODE,
             appVersionName = BuildConfig.VERSION_NAME,
         )
+    }
+
+    @Provides
+    @Singleton
+    fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
         return SwissTransferInjection(environment = ApiEnvironment.Prod, userAgent = userAgent)
     }
 
@@ -66,5 +72,7 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesAppIntegrityManger(application: Application) = AppIntegrityManager(application)
+    fun providesAppIntegrityManger(application: Application, @UserAgent userAgent: String): AppIntegrityManager {
+        return AppIntegrityManager(application, userAgent)
+    }
 }
