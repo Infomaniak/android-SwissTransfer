@@ -146,7 +146,6 @@ private fun DetailPane(
         DATA_MANAGEMENT -> SettingsDataManagementScreen(
             navigateBack = navigateBack,
             onItemClick = { item ->
-                // Navigate to the detail pane with the passed item
                 navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
             },
         )
