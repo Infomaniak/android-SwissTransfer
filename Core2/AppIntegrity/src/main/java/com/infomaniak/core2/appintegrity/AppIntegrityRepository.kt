@@ -33,9 +33,9 @@ import io.ktor.http.HeadersBuilder
 import io.ktor.http.Url
 import io.ktor.http.contentType
 
-internal class AppIntegrityRepository {
+internal class AppIntegrityRepository(userAgent: String) {
 
-    private val apiClientProvider by lazy { ApiClientProvider() }
+    private val apiClientProvider by lazy { ApiClientProvider(userAgent = userAgent) }
 
     suspend fun getChallenge(challengeId: String): ApiResponse<String> {
         val body = mapOf("challenge_id" to challengeId)
