@@ -66,9 +66,9 @@ sealed class MainNavigation : NavigationDestination() {
         val startDestination = SentDestination
 
         // If these classes have to be renamed, they need to be renamed here too.
-        val sentDestinationName = "SentDestination"
-        val receivedDestinationName = "ReceivedDestination"
-        val settingsDestinationName = "SettingsDestination"
+        private const val sentDestinationName = "SentDestination"
+        private const val receivedDestinationName = "ReceivedDestination"
+        private const val settingsDestinationName = "SettingsDestination"
         val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
