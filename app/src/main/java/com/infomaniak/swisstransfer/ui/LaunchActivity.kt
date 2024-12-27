@@ -22,8 +22,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
+import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,16 +42,36 @@ class LaunchActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        startTargetActivity()
-        finish()
+        lifecycleScope.launch {
+            runCatching {
+                startTargetActivity()
+            }.onFailure { exception ->
+                SentryLog.e(TAG, "Failure for startTargetActivity", exception)
+            }
+            finish()
+        }
     }
 
-    private fun startTargetActivity() {
-        startActivity(Intent(this, chooseTargetActivity()))
+    private suspend fun startTargetActivity() {
+        if (hasValidTransferDeeplink()) {
+            if (!accountUtils.isUserConnected()) accountUtils.login()
+            createDeeplink()
+        } else {
+            startActivity(Intent(this@LaunchActivity, chooseTargetActivity()))
+        }
     }
 
     private fun chooseTargetActivity(): Class<out ComponentActivity> = when {
         accountUtils.isUserConnected() -> MainActivity::class
         else -> OnboardingActivity::class
     }.java
+
+    private fun createDeeplink() {
+        val deepLinkIntent = Intent(Intent.ACTION_VIEW, intent.data, /*context*/this, MainActivity::class.java)
+        startActivity(deepLinkIntent)
+    }
+
+    companion object {
+        private val TAG = LaunchActivity::class.java.simpleName
+    }
 }

@@ -62,20 +62,13 @@
         <activity
             android:name=".ui.LaunchActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.AppStarting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity android:name=".ui.OnboardingActivity" />
-
-        <activity
-            android:name=".ui.MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -88,6 +81,10 @@
                 <data android:pathPattern="/d/.*" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.OnboardingActivity" />
+
+        <activity android:name=".ui.MainActivity" />
 
         <activity android:name=".ui.NewTransferActivity" />
     </application>
