@@ -37,10 +37,11 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrap
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
+    isReceivedDeeplink: Boolean,
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainNavigation.startDestination,
+        startDestination = if (isReceivedDeeplink) ReceivedDestination() else MainNavigation.startDestination,
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {

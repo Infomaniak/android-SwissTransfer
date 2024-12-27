@@ -40,10 +40,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        val isReceivedDeeplink = intent.data != null
         setContent {
             val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
             SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                MainScreen()
+                MainScreen(isReceivedDeeplink)
             }
         }
     }
