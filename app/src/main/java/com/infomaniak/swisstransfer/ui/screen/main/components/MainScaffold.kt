@@ -114,14 +114,6 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
 
         // Restore state when re-selecting a previously selected item
         restoreState = true
-
-        // The commented code below was supposed to be an improvement on the line above,
-        // but it doesn't behave the way we'd like. TODO: Find a better solution that works
-
-        // val currentBackStackEntry = this@navigateToSelectedItem.currentBackStackEntry
-        // val hasDeepLink = currentBackStackEntry?.arguments?.parcelableExtra<Intent>(NavController.KEY_DEEP_LINK_INTENT) != null
-        // val isNavigatingToStartDestination = startDestination.route == destination::class.qualifiedName
-        // restoreState = !hasDeepLink || !isNavigatingToStartDestination
     }
 }
 
