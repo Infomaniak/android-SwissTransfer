@@ -25,6 +25,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class LaunchActivity : ComponentActivity() {
     }
 
     private suspend fun startTargetActivity() {
-        if (isValidTransferDeeplink()) {
+        if (hasValidTransferDeeplink()) {
             if (!accountUtils.isUserConnected()) accountUtils.login()
             createDeeplink()
         } else {
@@ -65,11 +66,6 @@ class LaunchActivity : ComponentActivity() {
         else -> OnboardingActivity::class
     }.java
 
-    private fun isValidTransferDeeplink(): Boolean {
-        val deeplink = intent?.data?.toString()
-        return deeplink?.matches(TRANSFER_DEEPLINK_REGEX) == true
-    }
-
     private fun createDeeplink() {
         val deepLinkIntent = Intent(Intent.ACTION_VIEW, intent.data, /*context*/this, MainActivity::class.java)
         startActivity(deepLinkIntent)
@@ -77,6 +73,5 @@ class LaunchActivity : ComponentActivity() {
 
     companion object {
         private val TAG = LaunchActivity::class.java.simpleName
-        private val TRANSFER_DEEPLINK_REGEX = "https://.+/d/.+".toRegex()
     }
 }

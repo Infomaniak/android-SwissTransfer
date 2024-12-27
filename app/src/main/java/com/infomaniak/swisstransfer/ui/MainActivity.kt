@@ -30,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,11 +41,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val isReceivedDeeplink = intent.data != null
+        val isTransferDeeplink = hasValidTransferDeeplink()
         setContent {
             val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
             SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                MainScreen(isReceivedDeeplink)
+                MainScreen(isTransferDeeplink)
             }
         }
     }
