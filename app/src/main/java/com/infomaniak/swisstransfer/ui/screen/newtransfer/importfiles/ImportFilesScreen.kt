@@ -437,9 +437,8 @@ private fun SendButton(
 }
 
 private fun SendStatus.canEnableButton(): Boolean = when (this) {
-    SendStatus.Initial,
-    SendStatus.Refused -> true
-    else -> false
+    SendStatus.Pending -> false
+    else -> true
 }
 
 data class EmailTextFieldCallbacks(
