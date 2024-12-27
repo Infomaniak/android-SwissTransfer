@@ -40,7 +40,6 @@ android {
             useSupportLibrary = true
         }
 
-        // TODO: Remove Preprod url when API is in Prod
         val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
         val prodHost = "www.swisstransfer.com"
         resValue("string", "preprod_host", preprodHost)
