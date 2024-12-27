@@ -53,6 +53,7 @@ class LaunchActivity : ComponentActivity() {
 
     private suspend fun startTargetActivity() {
         if (isValidTransferDeeplink()) {
+            if (!accountUtils.isUserConnected()) accountUtils.login()
             createDeeplink()
         } else {
             startActivity(Intent(this@LaunchActivity, chooseTargetActivity()))
