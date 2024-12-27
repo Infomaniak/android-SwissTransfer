@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.util.Log
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
+import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException as KmpNetworkException
 
 @ViewModelScoped
 class TransferSendManager @Inject constructor(
@@ -58,7 +60,9 @@ class TransferSendManager @Inject constructor(
             val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
             sendTransfer(uploadSession.uuid)
         }.onFailure { exception ->
-            SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
+            if (exception !is NetworkException && exception !is KmpNetworkException) {
+                SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
+            }
             _sendStatus.update { SendStatus.Failure }
         }
     }
