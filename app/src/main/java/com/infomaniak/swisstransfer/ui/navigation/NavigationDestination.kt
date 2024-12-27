@@ -47,7 +47,7 @@ sealed class MainNavigation : NavigationDestination() {
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
                 val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
-                val prodBasePath = "${BuildConfig.PROD_URL}/d/${ReceivedDestination::transferUuid.name}"
+                val prodBasePath = "${BuildConfig.PROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
                 val deepLinks = listOf(
                     navDeepLink<ReceivedDestination>(preprodBasePath),
                     navDeepLink<ReceivedDestination>(prodBasePath),
