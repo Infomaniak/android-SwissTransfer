@@ -37,6 +37,8 @@ play-review = { module = "com.google.android.play:review", version.ref = "playRe
 play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "playReview" }
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentryAndroid" }
 splitties-toast = { module = "com.louiscad.splitties:splitties-toast", version.ref = "splitties" }
+splitties-mainhandler = { module = "com.louiscad.splitties:splitties-mainhandler", version.ref = "splitties" }
+splitties-systemservices = { module = "com.louiscad.splitties:splitties-systemservices", version.ref = "splitties" }
 splitties-appctx = { module = "com.louiscad.splitties:splitties-appctx", version.ref = "splitties" }
 # Tests
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitAndroidx" }
