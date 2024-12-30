@@ -32,6 +32,8 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 matomo = { module = "com.github.matomo-org:matomo-sdk-android", version.ref = "matomo" }
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry-android" }
 splitties-toast = { module = "com.louiscad.splitties:splitties-toast", version.ref = "splitties" }
+splitties-mainhandler = { module = "com.louiscad.splitties:splitties-mainhandler", version.ref = "splitties" }
+splitties-systemservices = { module = "com.louiscad.splitties:splitties-systemservices", version.ref = "splitties" }
 splitties-appctx = { module = "com.louiscad.splitties:splitties-appctx", version.ref = "splitties" }
 # Tests
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitAndroidxVersion" }
