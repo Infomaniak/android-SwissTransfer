@@ -27,6 +27,7 @@ import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.sentry.SentryLog
 import io.sentry.Sentry
 import io.sentry.SentryLevel
+import kotlinx.coroutines.CompletableDeferred
 import java.util.UUID
 
 /**
@@ -83,20 +84,29 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
      *
      * This doesn't automatically protect from replay attack, thus the use of challenge/challengeId pair with our API to add this
      * layer of protection.
+     *
+     * ###### Can throw Integrity exceptions.
      */
-    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: () -> Unit) {
+    suspend fun requestClassicIntegrityVerdictToken(): String {
 
         // You can comment this if you want to test the App Integrity (also see getJwtToken in AppIntegrityRepository)
         if (BuildConfig.DEBUG) {
-            onSuccess("Basic app integrity token")
-            return
+            return "Basic app integrity token"
         }
 
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
+        val token: CompletableDeferred<String> = CompletableDeferred()
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
-            ?.addOnSuccessListener { response -> onSuccess(response.token()) }
-            ?.addOnFailureListener { manageException(it, "Error when requiring a classic integrity token", onFailure) }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    token.complete(task.result.token())
+                } else {
+                    token.completeExceptionally(task.exception ?: error("Failure when requestIntegrityToken"))
+                }
+            }
+
+        return token.await()
     }
 
     suspend fun getChallenge(onSuccess: () -> Unit, onFailure: () -> Unit) = runCatching {
