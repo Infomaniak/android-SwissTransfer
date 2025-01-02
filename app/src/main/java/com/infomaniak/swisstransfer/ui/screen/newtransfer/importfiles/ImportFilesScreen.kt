@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
 import android.net.Uri
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -100,8 +99,6 @@ fun ImportFilesScreen(
         },
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
-
-    BackHandler { closeActivity() } // Closing the activity like other screens will prompt the user to be sure he wants to leave
 
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
