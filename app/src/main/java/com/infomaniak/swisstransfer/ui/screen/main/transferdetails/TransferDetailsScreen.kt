@@ -71,14 +71,14 @@ fun TransferDetailsScreen(
         transferDetailsViewModel.loadTransfer(transferUuid)
     }
 
-    when (val state = uiState) {
+    when (uiState) {
         is Delete -> navigateBack?.invoke()
         is Success -> TransferDetailsScreen(
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
             navigateBack = navigateBack,
-            getTransfer = { state.transfer },
-            downloadFiles = { transferDetailsViewModel.startDownloadingAllFiles(state.transfer) },
+            getTransfer = { (uiState as Success).transfer },
+            downloadFiles = { transferDetailsViewModel.startDownloadingAllFiles((uiState as Success).transfer) },
             getCheckedFiles = { transferDetailsViewModel.checkedFiles },
             clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
             setFileCheckStatus = { fileUid, isChecked ->
