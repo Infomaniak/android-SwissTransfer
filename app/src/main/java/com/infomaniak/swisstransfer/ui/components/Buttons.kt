@@ -108,7 +108,7 @@ private fun CoreButton(
         showIndeterminateProgress,
         progress,
         onClick,
-        contentPadding = buttonSize.contentPadding
+        contentPadding = buttonSize.contentPadding,
     ) {
         ButtonTextContent(imageVector, title)
     }
