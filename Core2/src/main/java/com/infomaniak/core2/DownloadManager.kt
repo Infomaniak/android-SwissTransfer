@@ -93,6 +93,10 @@ fun DownloadManager.downloadStatusFlow(
     }
 }.flowOn(Dispatchers.Default).conflate()
 
+suspend fun DownloadManager.cancelAndRemove(id: UniqueDownloadId) {
+    Dispatchers.IO { remove(id.value) }
+}
+
 private fun Cursor.extractDownloadStatus(): DownloadStatus {
     moveToFirst()
     return buildStatus(
