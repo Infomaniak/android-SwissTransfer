@@ -50,9 +50,7 @@ fun ColumnScope.CodeVerification(
                 otpText = otpCode(),
                 otpLength = OPT_LENGTH,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                onOtpTextChange = { text, isFilled ->
-                    updateOtpCode(text, isFilled)
-                },
+                onOtpTextChange = updateOtpCode,
                 isCharacterValid = { it in VALID_CHARACTERS },
                 isError = isInvalidVerificationCode,
                 otpTextFieldStyle = OtpTextFieldStyle.default(textStyle = computeOtpTextStyle()),
