@@ -38,6 +38,8 @@
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
     <string name="errorUnknown">Ein Fehler ist aufgetreten</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
+    <string name="expiresToday">Läuft heute ab</string>
+    <string name="expiresTomorrow">Läuft morgen ab</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
         <item quantity="other">%d Dateien</item>

@@ -43,6 +43,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
 import com.infomaniak.swisstransfer.ui.utils.isExpired
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -60,7 +61,7 @@ fun TransferItem(
     val (expiryText, expiryColor) = if (transfer.isExpired) {
         stringResource(R.string.transferExpired) to SwissTransferTheme.materialColors.error
     } else {
-        stringResource(R.string.expiresIn, transfer.expiresInDays) to SwissTransferTheme.colors.secondaryTextColor
+        transfer.getFormattedExpiry() to SwissTransferTheme.colors.secondaryTextColor
     }
     val border = if (isSelected()) {
         BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.colors.transferListStroke)
