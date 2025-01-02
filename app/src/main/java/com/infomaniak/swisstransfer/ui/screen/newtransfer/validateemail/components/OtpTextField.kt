@@ -156,10 +156,11 @@ private fun CharView(
     }
 
     val isCharFocused = text.length == index || (text.length == otpCount && index == otpCount - 1)
-    val borderThickness = if (isTextFieldFocused() && isCharFocused) activeBorderThickness else inactiveBorderThickness
+    val isActive = isTextFieldFocused() && isCharFocused
+    val borderThickness = if (isActive) activeBorderThickness else inactiveBorderThickness
     val borderColor = when {
         isError() -> errorColor
-        isTextFieldFocused() && isCharFocused -> activeColor
+        isActive -> activeColor
         else -> inactiveColor
     }
 
