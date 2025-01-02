@@ -31,7 +31,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun MainScreen() {
+fun MainScreen(isTransferDeeplink: Boolean = false) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -44,7 +44,7 @@ fun MainScreen() {
         navController = navController,
         currentDestination = currentDestination,
         largeWindowTopAppBar = { BrandTopAppBar() },
-        content = { MainNavHost(navController, currentDestination) },
+        content = { MainNavHost(navController, currentDestination, isTransferDeeplink) },
     )
 }
 

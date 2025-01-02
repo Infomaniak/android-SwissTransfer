@@ -25,15 +25,12 @@ import javax.inject.Singleton
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     private val accountPreferences: AccountPreferences,
-    private val uploadRecaptcha: UploadRecaptcha,
 ) {
 
     suspend fun init() {
         accountPreferences.currentUserId?.let {
             accountManager.loadUser(it)
         }
-
-        uploadRecaptcha.initializeClient()
     }
 
     suspend fun login(userId: Int = DEFAULT_USER_ID) {

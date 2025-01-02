@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.images.illus.onboarding
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,11 +25,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 val AppIllus.TwoLocksIntertwinedStars: ThemedImage
     get() = _twoLocksIntertwinedStars ?: object : ThemedImage {
@@ -40,8 +39,7 @@ val AppIllus.TwoLocksIntertwinedStars: ThemedImage
 
 private var _twoLocksIntertwinedStars: ThemedImage? = null
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
+@PreviewLightAndDark
 @Composable
 private fun Preview() {
     SwissTransferTheme {

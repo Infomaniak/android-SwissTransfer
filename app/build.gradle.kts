@@ -30,15 +30,16 @@ android {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = sharedMinSdk
         targetSdk = sharedCompileSdk
-        versionCode = 1_00_000_00
-        versionName = "1.0.0-Alpha2"
+        versionCode = 1_00_000_03
+        versionName = "1.0.0-Alpha5"
+
+        setProperty("archivesBaseName", "swisstransfer-$versionName ($versionCode)")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
 
-        // TODO: Remove Preprod url when API is in Prod
         val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
         val prodHost = "www.swisstransfer.com"
         resValue("string", "preprod_host", preprodHost)
@@ -46,7 +47,6 @@ android {
         buildConfigField("String", "PREPROD_URL", "\"https://$preprodHost\"")
         buildConfigField("String", "PROD_URL", "\"https://$prodHost\"")
 
-        buildConfigField("String", "RECAPTCHA_API_SITE_KEY", "\"6LfaxOgpAAAAAI3Sj4rtB2oAFjkRJILiGEt-LUsc\"")
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
     }
 

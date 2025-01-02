@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core2.isValidEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -40,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.EmailTextFieldCallbacks
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsCallbacks
@@ -81,13 +83,19 @@ class ImportFilesViewModel @Inject constructor(
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
     //region Transfer Author Email
-    private var _transferAuthorEmail by mutableStateOf("")
-    val transferAuthorEmail = GetSetCallbacks(get = { _transferAuthorEmail }, set = { _transferAuthorEmail = it })
+    private var transferAuthorEmail by mutableStateOf("")
+    private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isValidEmail() }
+    //endregion
+
+    //region Recipient Email
+    private var recipientEmail by mutableStateOf("")
+    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.isValidEmail() }
+    private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
     //region Transfer Message
-    private var _transferMessage by mutableStateOf("")
-    val transferMessage = GetSetCallbacks(get = { _transferMessage }, set = { _transferMessage = it })
+    private var transferMessage by mutableStateOf("")
+    val transferMessageCallbacks = GetSetCallbacks(get = { transferMessage }, set = { transferMessage = it })
     //endregion
 
     //region Password
@@ -96,7 +104,7 @@ class ImportFilesViewModel @Inject constructor(
     //endregion
 
     private var isFirstViewModelCreation: Boolean
-        get() = savedStateHandle.get<Boolean>(IS_VIEW_MODEL_RESTORED_KEY) ?: true
+        get() = savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] ?: true
         set(value) {
             savedStateHandle[IS_VIEW_MODEL_RESTORED_KEY] = value
         }
@@ -105,9 +113,16 @@ class ImportFilesViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
                 isFirstViewModelCreation = false
-                // Remove old imported files in case it would've crashed or similar to start with a clean slate. This is required
-                // for already imported files restoration to not pick up old files in some extreme cases.
+
+                // Remove old imported files in case it would've crashed (or similar) to start with a clean slate.
+                // This is required for already imported files restoration to not pick up old files in some extreme cases.
                 removeOldData()
+
+                // Set default values to advanced transfer options. This need to be done here in the `init`,
+                // because we only want to do it once. If we come back from a cancelled or edited transfer,
+                // we don't want to erase user's choices about advanced transfer options.
+                initTransferOptionsValues()
+
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
@@ -146,13 +161,13 @@ class ImportFilesViewModel @Inject constructor(
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
-            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) _transferAuthorEmail else "",
+            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) transferAuthorEmail.trim() else "",
             authorEmailToken = null,
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
-            message = _transferMessage,
+            message = transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
-            recipientsEmails = emptySet(),
+            recipientsEmails = if (selectedTransferType.value == TransferTypeUi.MAIL) validatedRecipientsEmails else emptySet(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
                     override val path: String? = null
@@ -212,7 +227,20 @@ class ImportFilesViewModel @Inject constructor(
         savedStateHandle[SELECTED_LANGUAGE_KEY] = language
     }
 
-    fun initTransferOptionsValues() {
+    fun getEmailTextFieldCallbacks(): EmailTextFieldCallbacks {
+        return EmailTextFieldCallbacks(
+            transferAuthorEmail = GetSetCallbacks(get = { transferAuthorEmail }, set = { transferAuthorEmail = it }),
+            isAuthorEmailInvalid = { isAuthorEmailInvalid },
+            recipientEmail = GetSetCallbacks(get = { recipientEmail }, set = { recipientEmail = it }),
+            isRecipientEmailInvalid = { isRecipientEmailInvalid },
+            validatedRecipientsEmails = GetSetCallbacks(
+                get = { validatedRecipientsEmails },
+                set = { validatedRecipientsEmails = it },
+            ),
+        )
+    }
+
+    private fun initTransferOptionsValues() {
         viewModelScope.launch(ioDispatcher) {
             appSettingsManager.getAppSettings()?.let {
                 selectTransferValidityPeriod(it.validityPeriod.toTransferOption())

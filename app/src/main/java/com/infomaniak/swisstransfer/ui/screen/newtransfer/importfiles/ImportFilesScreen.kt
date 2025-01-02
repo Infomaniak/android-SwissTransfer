@@ -33,11 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.core2.isEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -60,7 +60,7 @@ private val HORIZONTAL_PADDING = Margin.Medium
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
     navigateToEmailValidation: (email: String) -> Unit,
 ) {
 
@@ -79,16 +79,21 @@ fun ImportFilesScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
+
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
         sendStatus = { sendStatus },
-        transferType = { selectedTransferType },
-        navigateToUploadProgress = navigateToUploadProgress,
-        navigateToEmailValidation = { navigateToEmailValidation(importFilesViewModel.transferAuthorEmail.get()) },
-        resetSendActionResult = { importFilesViewModel.resetSendActionResult() },
+        navigateToUploadProgress = { totalSize ->
+            navigateToUploadProgress(
+                selectedTransferType,
+                totalSize,
+                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
+            )
+        },
+        navigateToEmailValidation = { navigateToEmailValidation(emailTextFieldCallbacks.transferAuthorEmail.get()) },
+        resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
-
-    LaunchedEffect(Unit) { importFilesViewModel.initTransferOptionsValues() }
 
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
@@ -128,8 +133,8 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         currentSessionFilesCount = { currentSessionFilesCount },
-        transferAuthorEmail = importFilesViewModel.transferAuthorEmail,
-        transferMessage = importFilesViewModel.transferMessage,
+        emailTextFieldCallbacks = emailTextFieldCallbacks,
+        transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
             set = importFilesViewModel::selectTransferType,
@@ -148,8 +153,7 @@ fun ImportFilesScreen(
 private fun HandleSendActionResult(
     snackbarHostState: SnackbarHostState,
     sendStatus: () -> SendStatus,
-    transferType: () -> TransferTypeUi,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToUploadProgress: (totalSize: Long) -> Unit,
     navigateToEmailValidation: () -> Unit,
     resetSendActionResult: () -> Unit,
 ) {
@@ -162,7 +166,7 @@ private fun HandleSendActionResult(
                 // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
                 // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
                 resetSendActionResult()
-                navigateToUploadProgress(transferType(), actionResult.totalSize)
+                navigateToUploadProgress(actionResult.totalSize)
             }
             is SendStatus.Refused -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
@@ -186,8 +190,8 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
-    transferAuthorEmail: GetSetCallbacks<String>,
-    transferMessage: GetSetCallbacks<String>,
+    emailTextFieldCallbacks: EmailTextFieldCallbacks,
+    transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     addFiles: (List<Uri>) -> Unit,
@@ -199,6 +203,15 @@ private fun ImportFilesScreen(
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
+    val areEmailsCorrects by remember {
+        derivedStateOf {
+            with(emailTextFieldCallbacks) {
+                val areAuthorAndRecipientsCorrects = transferAuthorEmail.get().isNotEmpty() && !isAuthorEmailInvalid()
+                        && validatedRecipientsEmails.get().isNotEmpty()
+                !shouldShowEmailAddressesFields || areAuthorAndRecipientsCorrects
+            }
+        }
+    }
 
     BottomStickyButtonScaffold(
         topBar = {
@@ -214,8 +227,7 @@ private fun ImportFilesScreen(
                 filesToImportCount = filesToImportCount,
                 currentSessionFilesCount = currentSessionFilesCount,
                 importedFiles = files,
-                shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
-                transferAuthorEmail = transferAuthorEmail,
+                areEmailsCorrects = { areEmailsCorrects },
                 sendStatus = sendStatus,
                 sendTransfer = sendTransfer,
             )
@@ -228,8 +240,8 @@ private fun ImportFilesScreen(
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
-                    transferAuthorEmail = transferAuthorEmail,
-                    transferMessage = transferMessage,
+                    emailTextFieldCallbacks = emailTextFieldCallbacks,
+                    transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
@@ -268,55 +280,67 @@ private fun FilesToImport(
 @Composable
 private fun ColumnScope.ImportTextFields(
     horizontalPaddingModifier: Modifier,
-    transferAuthorEmail: GetSetCallbacks<String>,
-    transferMessage: GetSetCallbacks<String>,
+    emailTextFieldCallbacks: EmailTextFieldCallbacks,
+    transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
-    EmailAddressesTextFields(modifier, transferAuthorEmail, shouldShowEmailAddressesFields)
+    EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields)
     SwissTransferTextField(
         modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
         isRequired = false,
         minLineNumber = 3,
-        onValueChange = transferMessage.set,
+        onValueChange = transferMessageCallbacks.set,
     )
 }
 
 @Composable
 private fun ColumnScope.EmailAddressesTextFields(
     modifier: Modifier,
-    transferAuthorEmail: GetSetCallbacks<String>,
+    emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
-) {
+) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
-
-            val isError = transferAuthorEmail.get().isNotEmpty() && !transferAuthorEmail.get().isEmail()
-            val supportingText: @Composable (() -> Unit)? = if (isError) {
-                { Text(stringResource(R.string.invalidAddress)) }
-            } else {
-                null
-            }
+            val isAuthorError = checkEmailError(isAuthor = true)
+            val isRecipientError = checkEmailError(isAuthor = false)
 
             SwissTransferTextField(
                 modifier = modifier,
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
                 initialValue = transferAuthorEmail.get(),
                 keyboardType = KeyboardType.Email,
-                isError = isError,
-                supportingText = supportingText,
+                maxLineNumber = 1,
+                imeAction = ImeAction.Next,
+                isError = isAuthorError,
+                supportingText = getEmailError(isAuthorError),
                 onValueChange = transferAuthorEmail.set,
             )
             Spacer(Modifier.height(Margin.Medium))
-            SwissTransferTextField(
+            EmailAddressTextField(
                 modifier = modifier,
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
-                onValueChange = { /* TODO */ },
+                initialValue = recipientEmail.get(),
+                validatedEmails = validatedRecipientsEmails,
+                onValueChange = { recipientEmail.set(it.text) },
+                isError = isRecipientError,
+                supportingText = getEmailError(isRecipientError),
             )
             Spacer(Modifier.height(Margin.Medium))
         }
     }
+}
+
+@Composable
+private fun getEmailError(isError: Boolean): @Composable (() -> Unit)? {
+    val supportingText: @Composable (() -> Unit)? = if (isError) {
+        { Text(stringResource(R.string.invalidAddress)) }
+    } else {
+        null
+    }
+
+    return supportingText
 }
 
 @Composable
@@ -393,8 +417,7 @@ private fun SendButton(
     filesToImportCount: () -> Int,
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
-    shouldShowEmailAddressesFields: () -> Boolean,
-    transferAuthorEmail: GetSetCallbacks<String>,
+    areEmailsCorrects: () -> Boolean,
     sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
 ) {
@@ -409,25 +432,37 @@ private fun SendButton(
         null
     }
 
-    val isSenderEmailCorrect by remember {
-        derivedStateOf { if (shouldShowEmailAddressesFields()) transferAuthorEmail.get().isEmail() else true }
-    }
-
     LargeButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.PRIMARY,
         showIndeterminateProgress = { sendStatus() == SendStatus.Pending },
-        enabled = { importedFiles().isNotEmpty() && !isImporting && isSenderEmailCorrect && sendStatus().canEnableButton() },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrects() && sendStatus().canEnableButton() },
         progress = progress,
         onClick = { sendTransfer() },
     )
 }
 
 private fun SendStatus.canEnableButton(): Boolean = when (this) {
-    SendStatus.Initial,
-    SendStatus.Refused -> true
-    else -> false
+    SendStatus.Pending -> false
+    else -> true
+}
+
+data class EmailTextFieldCallbacks(
+    val transferAuthorEmail: GetSetCallbacks<String>,
+    val isAuthorEmailInvalid: () -> Boolean,
+    val recipientEmail: GetSetCallbacks<String>,
+    val isRecipientEmailInvalid: () -> Boolean,
+    val validatedRecipientsEmails: GetSetCallbacks<Set<String>>
+) {
+
+    fun checkEmailError(isAuthor: Boolean): Boolean {
+        return if (isAuthor) {
+            isAuthorEmailInvalid() && transferAuthorEmail.get().isNotEmpty()
+        } else {
+            isRecipientEmailInvalid() && recipientEmail.get().isNotEmpty()
+        }
+    }
 }
 
 data class TransferOptionsCallbacks(
@@ -480,13 +515,21 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
         isPasswordValid = { true },
     )
 
+    val emailTextFieldCallbacks = EmailTextFieldCallbacks(
+        transferAuthorEmail = GetSetCallbacks(get = { "" }, set = {}),
+        isAuthorEmailInvalid = { false },
+        recipientEmail = GetSetCallbacks(get = { "test.test@ik me" }, set = {}),
+        isRecipientEmailInvalid = { true },
+        validatedRecipientsEmails = GetSetCallbacks(get = { setOf("test.test@ik.me") }, set = {}),
+    )
+
     SwissTransferTheme {
         ImportFilesScreen(
             files = { files },
             filesToImportCount = { 0 },
             currentSessionFilesCount = { 0 },
-            transferAuthorEmail = GetSetCallbacks(get = { "" }, set = {}),
-            transferMessage = GetSetCallbacks(get = { "" }, set = {}),
+            emailTextFieldCallbacks = emailTextFieldCallbacks,
+            transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             addFiles = {},

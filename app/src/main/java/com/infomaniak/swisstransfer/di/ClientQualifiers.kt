@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.core2
+package com.infomaniak.swisstransfer.di
 
-import android.util.Patterns
+import javax.inject.Qualifier
 
-fun String.isValidEmail(): Boolean = Patterns.EMAIL_ADDRESS.matcher(trim()).matches()
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class UserAgent

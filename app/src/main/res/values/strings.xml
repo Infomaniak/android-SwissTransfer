@@ -26,6 +26,7 @@
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
+    <string name="buttonEditTransfer">Edit my transfer</string>
     <string name="buttonFinished">Finish</string>
     <string name="buttonOpenMailApp">Open the mail app</string>
     <string name="buttonShare">Share</string>
@@ -34,6 +35,7 @@
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>
     <string name="contentDescriptionButtonRemove">Remove file</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Remove %s</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>

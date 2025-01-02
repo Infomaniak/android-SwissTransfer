@@ -29,6 +29,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScre
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
+import io.sentry.Sentry
+import io.sentry.SentryLevel
 
 @Composable
 fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Unit) {
@@ -37,8 +39,8 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
         composable<ImportFilesDestination> {
             ImportFilesScreen(
                 closeActivity = closeActivity,
-                navigateToUploadProgress = { transferType, totalSize ->
-                    navController.navigate(UploadProgressDestination(transferType, totalSize))
+                navigateToUploadProgress = { transferType, totalSize, recipients ->
+                    navController.navigate(UploadProgressDestination(transferType, totalSize, recipients))
                 },
                 navigateToEmailValidation = { email ->
                     navController.navigate(ValidateUserEmailDestination(email))
@@ -58,9 +60,13 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadProgressScreen(
                 totalSizeInBytes = args.totalSize,
                 navigateToUploadSuccess = { transferUrl ->
-                    navController.navigate(UploadSuccessDestination(args.transferType, transferUrl))
+                    navController.navigate(UploadSuccessDestination(args.transferType, transferUrl, args.recipients))
                 },
-                navigateToUploadError = { navController.navigate(UploadErrorDestination) },
+                navigateToUploadError = {
+                    navController.navigate(
+                        UploadErrorDestination(args.transferType, args.totalSize, args.recipients),
+                    )
+                },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
             )
         }
@@ -69,11 +75,34 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             UploadSuccessScreen(
                 transferType = args.transferType,
                 transferUrl = args.transferUrl,
+                recipients = args.recipients,
                 closeActivity = closeActivity,
             )
         }
         composable<UploadErrorDestination> {
-            UploadErrorScreen(navigateToImportFiles = { navController.navigate(ImportFilesDestination) })
+            val args = it.toRoute<UploadErrorDestination>()
+            UploadErrorScreen(
+                navigateBackToUploadProgress = {
+                    val hasPoppedBack = navController.popBackStack(
+                        route = UploadProgressDestination(args.transferType, args.totalSize, args.recipients),
+                        inclusive = false,
+                    )
+                    if (!hasPoppedBack) {
+                        navController.navigate(UploadProgressDestination(args.transferType, args.totalSize, args.recipients))
+                        Sentry.captureMessage(
+                            "PopBackStack to retry transfer after error has failed",
+                            SentryLevel.ERROR,
+                        ) { scope ->
+                            scope.setExtra("transferType", args.transferType.toString())
+                            scope.setExtra("totalSize", args.totalSize.toString())
+                            scope.setExtra("recipients.count", args.recipients.count().toString())
+                        }
+                    }
+                },
+                navigateBackToImportFiles = {
+                    navController.popBackStack(route = ImportFilesDestination, inclusive = false)
+                },
+            )
         }
     }
 }

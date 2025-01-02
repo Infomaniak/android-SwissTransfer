@@ -36,11 +36,11 @@ import java.util.UUID
  * - the standard request ([requestIntegrityVerdictToken]) that need a warm-up first ([warmUpTokenProvider])
  * - the classic request ([requestClassicIntegrityVerdictToken]) that need additional API checks
  */
-class AppIntegrityManager(private val appContext: Context) {
+class AppIntegrityManager(private val appContext: Context, userAgent: String) {
 
     private var appIntegrityTokenProvider: StandardIntegrityTokenProvider? = null
     private val classicIntegrityTokenProvider by lazy { IntegrityManagerFactory.create(appContext) }
-    private val appIntegrityRepository by lazy { AppIntegrityRepository() }
+    private val appIntegrityRepository by lazy { AppIntegrityRepository(userAgent) }
 
     private var challenge = ""
     private var challengeId = ""

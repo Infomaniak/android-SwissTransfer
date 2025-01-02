@@ -131,10 +131,7 @@ private fun TransferDetailsScreen(
                         BottomBarItem.SHARE -> context.shareText(transferUrl)
                         BottomBarItem.QR_CODE -> showQrCodeBottomSheet = true
                         BottomBarItem.PASSWORD -> showPasswordBottomSheet = true
-                        BottomBarItem.DOWNLOAD -> {
-                            // TODO: Move the multiselect elsewhere, and implement this feature
-                            // isMultiselectOn = true // Disabled for now because it's not the correct spot to do this
-                        }
+                        BottomBarItem.DOWNLOAD -> downloadFiles()
                         BottomBarItem.MULTISELECT_DOWNLOAD -> {
                             // TODO: Move the multiselect elsewhere, and implement this feature
                             // clearCheckedFiles() // Disabled for now because it's not the correct spot to do this

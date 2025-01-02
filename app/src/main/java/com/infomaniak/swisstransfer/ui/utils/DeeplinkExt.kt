@@ -15,8 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.core2
+package com.infomaniak.swisstransfer.ui.utils
 
-import android.util.Patterns
+import androidx.activity.ComponentActivity
 
-fun String.isValidEmail(): Boolean = Patterns.EMAIL_ADDRESS.matcher(trim()).matches()
+
+private val TRANSFER_DEEPLINK_REGEX = "https://.+/d/.+".toRegex()
+
+fun ComponentActivity.hasValidTransferDeeplink(): Boolean {
+    val deeplink = intent?.data?.toString()
+    return deeplink?.matches(TRANSFER_DEEPLINK_REGEX) == true
+}

@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.util.Log
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
+import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException as KmpNetworkException
 
 @ViewModelScoped
 class TransferSendManager @Inject constructor(
@@ -44,13 +46,26 @@ class TransferSendManager @Inject constructor(
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
 ) {
 
-    // TODO: Merge these two UI states in a single one for the whole flow of logic
     private val _sendStatus = MutableStateFlow<SendStatus>(SendStatus.Initial)
     val sendStatus = _sendStatus.asStateFlow()
 
     suspend fun sendNewTransfer(newUploadSession: NewUploadSession) {
-        val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
-        sendTransfer(uploadSession.uuid)
+        runCatching {
+            // When clicking the "Send" button, a new session is created.
+            // If there is an error before reaching the UploadProgressScreen, we stay in ImportFilesScreen.
+            // Every time we'll click the "Send" button again, a new session will be created.
+            // So we'll have multiple UploadSession in Realm. We don't want that. We only want the last session.
+            // So before creating the new session, we need to remove the previous failed ones.
+            uploadManager.removeAllUploadSession()
+
+            val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
+            sendTransfer(uploadSession.uuid)
+        }.onFailure { exception ->
+            if (exception !is NetworkException && exception !is KmpNetworkException) {
+                SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
+            }
+            _sendStatus.update { SendStatus.Failure }
+        }
     }
 
     suspend fun resendLastTransfer() {

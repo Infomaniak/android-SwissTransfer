@@ -22,6 +22,7 @@
     <string name="buttonCopyLink">Copiar enlace</string>
     <string name="buttonDownload">Descargar</string>
     <string name="buttonDownloadSelected">Descargar la selección</string>
+    <string name="buttonEditTransfer">Editar mi transferencia</string>
     <string name="buttonFinished">Acabado</string>
     <string name="buttonOpenMailApp">Abrir la aplicación de correo</string>
     <string name="buttonShare">Compartir</string>
@@ -30,6 +31,7 @@
     <string name="contentDescriptionButtonClose">Cerrar</string>
     <string name="contentDescriptionButtonHidePassword">Ocultar contraseña</string>
     <string name="contentDescriptionButtonRemove">Eliminar archivo</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Suprimir %s</string>
     <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <string name="downloadedTransferLabel">Transferencia descargada: %d/%d</string>

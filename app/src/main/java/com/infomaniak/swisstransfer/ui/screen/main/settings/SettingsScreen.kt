@@ -122,6 +122,15 @@ fun SettingsScreen(
             )
             SettingDivider()
 
+            SettingTitle(R.string.settingsCategoryDataManagement)
+            SettingItem(
+                titleRes = R.string.settingsOptionDataManagement,
+                isSelected = { selectedSetting == DATA_MANAGEMENT },
+                endIcon = CHEVRON,
+                onClick = { onItemClick(DATA_MANAGEMENT) },
+            )
+            SettingDivider()
+
             SettingTitle(R.string.settingsCategoryAbout)
             SettingItem(
                 titleRes = R.string.settingsOptionDiscoverInfomaniak,
@@ -146,15 +155,6 @@ fun SettingsScreen(
                 isSelected = { false },
                 description = BuildConfig.VERSION_NAME,
                 onClick = null,
-            )
-            SettingDivider()
-
-            SettingTitle(R.string.settingsCategoryDataManagement)
-            SettingItem(
-                titleRes = R.string.settingsOptionDataManagement,
-                isSelected = { selectedSetting == DATA_MANAGEMENT },
-                endIcon = CHEVRON,
-                onClick = { onItemClick(DATA_MANAGEMENT) },
             )
         }
     }

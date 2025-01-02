@@ -47,7 +47,7 @@ sealed class MainNavigation : NavigationDestination() {
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
                 val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
-                val prodBasePath = "${BuildConfig.PROD_URL}/d/${ReceivedDestination::transferUuid.name}"
+                val prodBasePath = "${BuildConfig.PROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
                 val deepLinks = listOf(
                     navDeepLink<ReceivedDestination>(preprodBasePath),
                     navDeepLink<ReceivedDestination>(prodBasePath),
@@ -66,9 +66,9 @@ sealed class MainNavigation : NavigationDestination() {
         val startDestination = SentDestination
 
         // If these classes have to be renamed, they need to be renamed here too.
-        val sentDestinationName = "SentDestination"
-        val receivedDestinationName = "ReceivedDestination"
-        val settingsDestinationName = "SettingsDestination"
+        private const val sentDestinationName = "SentDestination"
+        private const val receivedDestinationName = "ReceivedDestination"
+        private const val settingsDestinationName = "SettingsDestination"
         val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
@@ -96,14 +96,29 @@ sealed class NewTransferNavigation : NavigationDestination() {
 
     @Serializable
     data object ImportFilesDestination : NewTransferNavigation()
+
     @Serializable
     data class ValidateUserEmailDestination(val userEmail: String) : NewTransferNavigation()
     @Serializable
-    data class UploadProgressDestination(val transferType: TransferTypeUi, val totalSize: Long) : NewTransferNavigation()
+    data class UploadProgressDestination(
+        val transferType: TransferTypeUi,
+        val totalSize: Long,
+        val recipients: List<String>,
+    ) : NewTransferNavigation()
+
     @Serializable
-    data class UploadSuccessDestination(val transferType: TransferTypeUi, val transferUrl: String) : NewTransferNavigation()
+    data class UploadSuccessDestination(
+        val transferType: TransferTypeUi,
+        val transferUrl: String,
+        val recipients: List<String>,
+    ) : NewTransferNavigation()
+
     @Serializable
-    data object UploadErrorDestination : NewTransferNavigation()
+    data class UploadErrorDestination(
+        val transferType: TransferTypeUi,
+        val totalSize: Long,
+        val recipients: List<String>,
+    ) : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination
