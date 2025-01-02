@@ -71,14 +71,7 @@ suspend fun DownloadManager.startDownloadingFile(request: DownloadManager.Reques
     return if (uniqueDownloadId == -1L) null else UniqueDownloadId(uniqueDownloadId)
 }
 
-fun DownloadManager.downloadFile(
-    request: DownloadManager.Request
-): Flow<DownloadStatus> = flow {
-    val uniqueDownloadId = startDownloadingFile(request) ?: return@flow emit(Failed(Failed.LocalIssue.CouldNotInitiateDownload))
-    emitAll(downloadStatus(uniqueDownloadId))
-}
-
-fun DownloadManager.downloadStatus(
+fun DownloadManager.downloadStatusFlow(
     id: UniqueDownloadId
 ): Flow<DownloadStatus?> = callbackFlow {
     val query = DownloadManager.Query().also { it.setFilterById(id.value) }

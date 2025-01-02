@@ -26,7 +26,6 @@ import android.os.Environment
 import com.infomaniak.core2.extensions.appName
 import com.infomaniak.core2.extensions.appVersionName
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 import splitties.systemservices.downloadManager
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
@@ -51,21 +50,6 @@ object DownloadManagerUtils {
         )
         val downloadReference = downloadManager.enqueue(request)
         handleDownloadManagerErrors(downloadManager, downloadReference)
-    }
-
-    fun downloadFile(
-        url: String,
-        name: String,
-        userAgent: String,
-        extraHeaders: Iterable<Pair<String, String>> = emptySet(),
-    ): Flow<DownloadStatus> {
-        val request = requestFor(
-            url = url,
-            name = name,
-            userAgent = userAgent,
-            extraHeaders = extraHeaders
-        )
-        return downloadManager.downloadFile(request)
     }
 
     fun requestFor(
