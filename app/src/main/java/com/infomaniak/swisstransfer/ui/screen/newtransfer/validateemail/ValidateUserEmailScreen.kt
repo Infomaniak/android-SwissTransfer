@@ -44,6 +44,7 @@ import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
@@ -63,7 +64,7 @@ private val MAX_LAYOUT_WIDTH = 400.dp
 fun ValidateUserEmailScreen(
     closeActivity: () -> Unit,
     navigateBack: () -> Unit,
-    navigateToUploadInProgress: () -> Unit,
+    navigateToUploadInProgress: (totalSize: Long) -> Unit,
     emailToValidate: String,
     validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel<ValidateUserEmailViewModel>(),
 ) {
@@ -71,13 +72,16 @@ fun ValidateUserEmailScreen(
     val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
     val isError by remember { derivedStateOf { uiState == ValidateEmailUiState.Error } }
 
+    val sendStatus by validateUserEmailViewModel.sendStatus.collectAsStateWithLifecycle()
+
+    HandleValidationSuccess(sendStatus, navigateToUploadInProgress)
+
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
-        validateEmailWithOtpCode = { (code, _, onUnknownError) ->
+        validateEmailWithOtpCode = { (code, onUnknownError) ->
             validateUserEmailViewModel.validateEmailWithOtpCode(
                 email = emailToValidate,
                 otpCode = code,
-                onSuccess = { navigateToUploadInProgress() },
                 onUnknownError = onUnknownError
             )
         },
@@ -88,6 +92,15 @@ fun ValidateUserEmailScreen(
         closeActivity = closeActivity,
         onResendEmailCode = { validateUserEmailViewModel.resendEmailCode(emailToValidate) }
     )
+}
+
+@Composable
+fun HandleValidationSuccess(sendStatus: TransferSendManager.SendStatus, navigateToUploadInProgress: (totalSize: Long) -> Unit) {
+    LaunchedEffect(sendStatus) {
+        if (sendStatus is TransferSendManager.SendStatus.Success) {
+            navigateToUploadInProgress(sendStatus.totalSize)
+        }
+    }
 }
 
 @Composable
@@ -160,7 +173,6 @@ private fun ValidateUserEmailScreen(
                         validateEmailWithOtpCode(
                             ValidateEmailPayload(
                                 otpCode = code,
-                                onSuccess = {}, // TODO: Navigate to the next step
                                 onUnknownError = {
                                     SentryLog.e(
                                         "Email validation",
@@ -225,7 +237,6 @@ private enum class LayoutStyle(
 
 private data class ValidateEmailPayload(
     val otpCode: String,
-    val onSuccess: () -> Unit,
     val onUnknownError: () -> Unit,
 )
 

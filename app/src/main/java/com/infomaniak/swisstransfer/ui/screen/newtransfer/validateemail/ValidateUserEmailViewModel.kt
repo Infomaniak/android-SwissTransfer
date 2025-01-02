@@ -22,20 +22,17 @@ import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
 import com.infomaniak.swisstransfer.di.IoDispatcher
-import com.infomaniak.swisstransfer.di.MainDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager
 ) : ViewModel() {
@@ -43,7 +40,9 @@ class ValidateUserEmailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
     val uiState = _uiState.asStateFlow()
 
-    fun validateEmailWithOtpCode(email: String, otpCode: String, onSuccess: () -> Unit, onUnknownError: () -> Unit) {
+    val sendStatus by transferSendManager::sendStatus
+
+    fun validateEmailWithOtpCode(email: String, otpCode: String, onUnknownError: () -> Unit) {
         viewModelScope.launch(ioDispatcher) {
             _uiState.value = ValidateEmailUiState.Loading
 
@@ -57,8 +56,6 @@ class ValidateUserEmailViewModel @Inject constructor(
             }.onSuccess { token ->
                 uploadManager.updateAuthorEmailToken(email, token.token)
                 transferSendManager.resendLastTransfer()
-                withContext(mainDispatcher) { onSuccess() }
-                _uiState.value = ValidateEmailUiState.Default
             }
         }
     }

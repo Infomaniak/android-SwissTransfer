@@ -44,7 +44,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                     navController.navigate(UploadProgressDestination(transferType, totalSize, recipients))
                 },
                 navigateToEmailValidation = { email, recipients ->
-                    navController.navigate(ValidateUserEmailDestination(email, 1000L, recipients)) // TODO: Get actual size
+                    navController.navigate(ValidateUserEmailDestination(email, recipients))
                 }
             )
         }
@@ -53,8 +53,8 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
             ValidateUserEmailScreen(
                 closeActivity = closeActivity,
                 navigateBack = { navController.popBackStack() },
-                navigateToUploadInProgress = {
-                    navController.navigate(UploadProgressDestination(TransferTypeUi.MAIL, args.totalSize, args.recipients))
+                navigateToUploadInProgress = { totalSize ->
+                    navController.navigate(UploadProgressDestination(TransferTypeUi.MAIL, totalSize, args.recipients))
                 },
                 emailToValidate = args.userEmail,
             )
