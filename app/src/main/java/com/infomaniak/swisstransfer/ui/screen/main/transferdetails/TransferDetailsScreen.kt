@@ -97,7 +97,7 @@ private fun TransferDetailsScreen(
     getTransfer: () -> TransferUi,
     downloadFiles: () -> Unit,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
-    clearCheckedFiles: () -> Unit,
+    clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
     setFileCheckStatus: (String, Boolean) -> Unit,
 ) {
 
