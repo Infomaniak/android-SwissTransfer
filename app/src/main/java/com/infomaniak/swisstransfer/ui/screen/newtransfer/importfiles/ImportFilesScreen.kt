@@ -61,7 +61,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
-    navigateToEmailValidation: (email: String) -> Unit,
+    navigateToEmailValidation: (email: String, recipients: List<String>) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -91,7 +91,12 @@ fun ImportFilesScreen(
                 emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
             )
         },
-        navigateToEmailValidation = { navigateToEmailValidation(emailTextFieldCallbacks.transferAuthorEmail.get()) },
+        navigateToEmailValidation = {
+            navigateToEmailValidation(
+                emailTextFieldCallbacks.transferAuthorEmail.get(),
+                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
+            )
+        },
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
 
