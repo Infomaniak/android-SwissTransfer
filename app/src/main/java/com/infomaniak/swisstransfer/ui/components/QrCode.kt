@@ -63,7 +63,7 @@ fun QrCode(transferUrl: String) {
 private fun QrCodePreview() {
     SwissTransferTheme {
         Surface {
-            QrCode(transferUrl = "https://chk.me/83azQOl")
+            QrCode(transferUrl = "https://www.swisstransfer.com/d/b311318d-0790-4618-83d5-3ae0e407727c")
         }
     }
 }
