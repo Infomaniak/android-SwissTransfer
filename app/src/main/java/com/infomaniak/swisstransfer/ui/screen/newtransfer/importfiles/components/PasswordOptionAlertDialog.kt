@@ -74,12 +74,12 @@ fun PasswordOptionAlertDialog(
         titleRes = R.string.settingsOptionPassword,
         descriptionRes = R.string.settingsPasswordDescription,
         positiveButton = {
-            SwissTransferAlertDialogDefaults.confirmButton(
+            SwissTransferAlertDialogDefaults.ConfirmButton(
                 isEnabled = { !isPasswordActivated || isPasswordValid() },
                 onClick = ::onConfirmButtonClicked,
             )
         },
-        negativeButton = { SwissTransferAlertDialogDefaults.cancelButton(onClick = ::onDismiss) },
+        negativeButton = { SwissTransferAlertDialogDefaults.CancelButton(onClick = ::onDismiss) },
         onDismiss = ::onDismiss,
     ) {
         ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
