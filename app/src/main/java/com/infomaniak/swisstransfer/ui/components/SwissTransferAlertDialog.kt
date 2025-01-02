@@ -33,7 +33,7 @@ import com.infomaniak.core2.R as RCore2
 
 object SwissTransferAlertDialogDefaults {
     @Composable
-    fun confirmButton(isEnabled: () -> Boolean = { true }, onClick: () -> Unit) {
+    fun ConfirmButton(isEnabled: () -> Boolean = { true }, onClick: () -> Unit) {
         SmallButton(
             style = ButtonType.TERTIARY,
             title = stringResource(R.string.buttonConfirm),
@@ -43,7 +43,7 @@ object SwissTransferAlertDialogDefaults {
     }
 
     @Composable
-    fun cancelButton(onClick: () -> Unit) {
+    fun CancelButton(onClick: () -> Unit) {
         SmallButton(
             style = ButtonType.TERTIARY,
             title = stringResource(RCore2.string.buttonCancel),
@@ -141,8 +141,8 @@ private fun PreviewAlertDialog() {
             SwissTransferAlertDialog(
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsPasswordDescription,
-                positiveButton = { SwissTransferAlertDialogDefaults.confirmButton { } },
-                negativeButton = { SwissTransferAlertDialogDefaults.cancelButton { } },
+                positiveButton = { SwissTransferAlertDialogDefaults.ConfirmButton { } },
+                negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
                 onDismiss = {},
             )
         }
@@ -158,7 +158,7 @@ private fun WideButtonsPreview() {
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsPasswordDescription,
                 positiveButton = { SmallButton("A very looong and wide button", onClick = {}, style = ButtonType.TERTIARY) },
-                negativeButton = { SwissTransferAlertDialogDefaults.cancelButton { } },
+                negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
                 onDismiss = {},
             )
         }
