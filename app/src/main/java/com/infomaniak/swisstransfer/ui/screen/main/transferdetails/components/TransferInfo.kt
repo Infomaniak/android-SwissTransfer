@@ -46,13 +46,13 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
 
 @Composable
 fun TransferInfo(getTransfer: () -> TransferUi) {
 
     val filesCount by remember { derivedStateOf { getTransfer().files.count() } }
     val downloadedCount by remember { derivedStateOf { getTransfer().downloadLimit - getTransfer().downloadLeft } }
-    val expiresInDays by remember { derivedStateOf { getTransfer().expiresInDays } }
     val downloadLimit by remember { derivedStateOf { getTransfer().downloadLimit } }
     val sizeUploaded by remember { derivedStateOf { getTransfer().sizeUploaded } }
 
@@ -74,7 +74,7 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
 
     IconText(
         icon = AppIcons.Clock,
-        text = stringResource(R.string.expiresIn, expiresInDays),
+        text = getTransfer().getFormattedExpiry(),
     )
 
     HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))

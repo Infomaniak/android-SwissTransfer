@@ -17,6 +17,16 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.swisstransfer.R
 
 val TransferUi.isExpired: Boolean get() = expiresInDays < 0 || downloadLeft <= 0
+
+@Composable
+fun TransferUi.getFormattedExpiry(): String = when (expiresInDays) {
+    0 -> stringResource(R.string.expiresToday)
+    1 -> stringResource(R.string.expiresTomorrow)
+    else -> stringResource(R.string.expiresIn, expiresInDays)
+}
