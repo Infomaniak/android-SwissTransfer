@@ -21,6 +21,7 @@ qrose = "1.0.1"
 recaptcha = "18.6.1"
 sentry = "4.12.0"
 serialization = "1.7.3"
+splitties = "3.0.0"
 swisstransfer = "0.10.1"
 workmanager = "2.10.0"
 
@@ -52,6 +53,7 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }
+splitties-toast = { module = "com.louiscad.splitties:splitties-toast", version.ref = "splitties" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
 workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }

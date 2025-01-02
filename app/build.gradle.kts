@@ -151,6 +151,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.recaptcha)
     implementation(libs.workmanager)
+    implementation(libs.splitties.toast)
 
     // Test
     testImplementation(libs.junit)
