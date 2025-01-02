@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -53,7 +54,7 @@ fun ColumnScope.CodeVerification(
                 onOtpTextChange = updateOtpCode,
                 isCharacterValid = { it in VALID_CHARACTERS },
                 isError = isInvalidVerificationCode,
-                otpTextFieldStyle = OtpTextFieldStyle.default(textStyle = computeOtpTextStyle()),
+                otpTextFieldStyle = OtpTextFieldStyle.default(textStyle = computeOtpTextStyle(), shape = CustomShapes.SMALL),
                 isEnabled = { !isLoading() }
             )
 
