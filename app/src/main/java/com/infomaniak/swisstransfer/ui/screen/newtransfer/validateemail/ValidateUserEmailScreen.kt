@@ -82,7 +82,7 @@ fun ValidateUserEmailScreen(
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
-        validateEmailWithOtpCode = { (code) ->
+        validateEmailWithOtpCode = { code ->
             validateUserEmailViewModel.validateEmailWithOtpCode(emailToValidate, code)
         },
         resetErrorState = validateUserEmailViewModel::resetErrorState,
@@ -126,7 +126,7 @@ fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHo
 @Composable
 private fun ValidateUserEmailScreen(
     emailToValidate: String,
-    validateEmailWithOtpCode: (ValidateEmailPayload) -> Unit,
+    validateEmailWithOtpCode: (String) -> Unit,
     resetErrorState: () -> Unit,
     isLoading: () -> Boolean,
     isInvalidVerificationCode: () -> Boolean,
@@ -189,7 +189,7 @@ private fun ValidateUserEmailScreen(
                     otpCode = code
 
                     if (isFilled) {
-                        validateEmailWithOtpCode(ValidateEmailPayload(otpCode = code))
+                        validateEmailWithOtpCode(code)
                     } else {
                         resetErrorState()
                     }
@@ -240,8 +240,6 @@ private enum class LayoutStyle(
         fun getCurrentLayoutStyle() = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) Centered else TopLeft
     }
 }
-
-private data class ValidateEmailPayload(val otpCode: String)
 
 @PreviewAllWindows
 @Composable
