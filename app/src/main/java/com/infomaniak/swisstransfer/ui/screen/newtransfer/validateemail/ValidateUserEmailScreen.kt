@@ -17,8 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -54,7 +52,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
-import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
+import com.infomaniak.swisstransfer.ui.utils.openMailApp
 import kotlinx.coroutines.launch
 import com.infomaniak.core2.R as RCore2
 
@@ -206,14 +204,6 @@ private fun ValidateUserEmailScreen(
             )
         }
     }
-}
-
-private fun Context.openMailApp() {
-    val intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL).apply {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
-
-    safeStartActivity(Intent.createChooser(intent, getString(R.string.buttonOpenMailApp)))
 }
 
 private enum class LayoutStyle(
