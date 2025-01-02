@@ -171,7 +171,7 @@ private fun ValidateUserEmailScreen(
             horizontalAlignment = layoutStyle.horizontalAlignment,
         ) {
             Text(
-                text = stringResource(id = R.string.validateMailTitle),
+                text = stringResource(R.string.validateMailTitle),
                 style = SwissTransferTheme.typography.h1,
                 textAlign = layoutStyle.textAlign,
             )
