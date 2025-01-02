@@ -158,11 +158,10 @@ class ImportFilesViewModel @Inject constructor(
         uploadManager.removeAllUploadSession()
     }
 
-    private fun generateNewUploadSession(): NewUploadSession {
-        return NewUploadSession(
+    private suspend fun generateNewUploadSession(): NewUploadSession {
+        return uploadManager.generateNewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
             authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) transferAuthorEmail.trim() else "",
-            authorEmailToken = null,
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,

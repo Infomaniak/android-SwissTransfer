@@ -59,6 +59,14 @@ fun Context.openAppNotificationSettings() {
     }.also(::startActivity)
 }
 
+fun Context.openMailApp() {
+    val intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+
+    safeStartActivity(Intent.createChooser(intent, getString(R.string.buttonOpenMailApp)))
+}
+
 fun Context.copyText(text: String, showSnackbar: (String) -> Unit) {
     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboardManager.setPrimaryClip(ClipData.newPlainText(text, text))

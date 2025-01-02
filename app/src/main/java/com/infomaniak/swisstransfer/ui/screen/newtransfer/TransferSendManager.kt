@@ -22,8 +22,10 @@ import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.workers.UploadWorker
@@ -39,7 +41,6 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkExce
 @ViewModelScoped
 class TransferSendManager @Inject constructor(
     private val appIntegrityManager: AppIntegrityManager,
-    private val importationFilesManager: ImportationFilesManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val uploadManager: UploadManager,
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
@@ -58,7 +59,7 @@ class TransferSendManager @Inject constructor(
             uploadManager.removeAllUploadSession()
 
             val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
-            sendTransfer(uploadSession.uuid)
+            sendTransfer(uploadSession)
         }.onFailure { exception ->
             if (exception !is NetworkException && exception !is KmpNetworkException) {
                 SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
@@ -68,14 +69,14 @@ class TransferSendManager @Inject constructor(
     }
 
     suspend fun resendLastTransfer() {
-        val uploadSessionUuid = uploadManager.getLastUpload()?.uuid ?: run {
+        val uploadSession = uploadManager.getLastUpload() ?: run {
             SentryLog.e(TAG, "No last upload found")
             return
         }
-        sendTransfer(uploadSessionUuid)
+        sendTransfer(uploadSession)
     }
 
-    private suspend fun sendTransfer(uploadSessionUuid: String) {
+    private suspend fun sendTransfer(uploadSession: UploadSession) {
         _sendStatus.value = SendStatus.Pending
 
         withIntegrityToken(
@@ -85,14 +86,18 @@ class TransferSendManager @Inject constructor(
                         attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
                         attestationToken = attestationToken,
                     )!! // TODO: Handle ContainerErrorsException here
-                    uploadWorkerScheduler.scheduleWork(uploadSessionUuid)
+                    uploadWorkerScheduler.scheduleWork(uploadSession.uuid)
                     _sendStatus.update {
-                        val totalSize = importationFilesManager.importedFiles.value.sumOf { it.fileSize }
+                        val totalSize = uploadSession.files.sumOf { it.size }
                         SendStatus.Success(totalSize)
                     }
                 }.onFailure { exception ->
                     SentryLog.e(TAG, "Failed to start the upload", exception)
-                    _sendStatus.update { SendStatus.Failure }
+                    val result = when (exception) {
+                        is ContainerErrorsException.EmailValidationRequired -> SendStatus.RequireEmailValidation
+                        else -> SendStatus.Failure
+                    }
+                    _sendStatus.update { result }
                 }
             },
             onRefused = { _sendStatus.update { SendStatus.Refused } },
@@ -158,6 +163,7 @@ class TransferSendManager @Inject constructor(
         data class Success(val totalSize: Long) : SendStatus()
         data object Refused : SendStatus()
         data object Failure : SendStatus()
+        data object RequireEmailValidation : SendStatus()
     }
 
     companion object {
