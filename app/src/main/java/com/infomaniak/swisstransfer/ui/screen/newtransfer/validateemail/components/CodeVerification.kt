@@ -41,7 +41,7 @@ fun ColumnScope.CodeVerification(
     otpCode: () -> String,
     updateOtpCode: (String, Boolean) -> Unit,
     isLoading: () -> Boolean,
-    isError: () -> Boolean,
+    isInvalidVerificationCode: () -> Boolean,
 ) {
     Column(Modifier.align(Alignment.CenterHorizontally)) {
         Box(contentAlignment = Alignment.Center) {
@@ -54,7 +54,7 @@ fun ColumnScope.CodeVerification(
                     updateOtpCode(text, isFilled)
                 },
                 isCharacterValid = { it in VALID_CHARACTERS },
-                isError = isError,
+                isError = isInvalidVerificationCode,
                 otpTextFieldStyle = OtpTextFieldStyle.default(textStyle = computeOtpTextStyle()),
                 isEnabled = { !isLoading() }
             )
@@ -67,7 +67,7 @@ fun ColumnScope.CodeVerification(
         Spacer(modifier = Modifier.height(Margin.Micro))
 
         Text(
-            modifier = Modifier.alpha(if (isError()) 1f else 0f),
+            modifier = Modifier.alpha(if (isInvalidVerificationCode()) 1f else 0f),
             text = stringResource(R.string.validateMailCodeIncorrectError),
             style = SwissTransferTheme.typography.labelRegular,
             color = SwissTransferTheme.materialColors.error,
@@ -90,19 +90,19 @@ private fun Preview() {
                     otpCode = { "123" },
                     updateOtpCode = { _, _ -> },
                     isLoading = { false },
-                    isError = { false },
+                    isInvalidVerificationCode = { false },
                 )
                 CodeVerification(
                     otpCode = { "123456" },
                     updateOtpCode = { _, _ -> },
                     isLoading = { true },
-                    isError = { false },
+                    isInvalidVerificationCode = { false },
                 )
                 CodeVerification(
                     otpCode = { "111111" },
                     updateOtpCode = { _, _ -> },
                     isLoading = { false },
-                    isError = { true },
+                    isInvalidVerificationCode = { true },
                 )
             }
         }

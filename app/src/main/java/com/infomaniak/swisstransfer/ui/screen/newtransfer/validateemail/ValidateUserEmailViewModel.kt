@@ -42,16 +42,16 @@ class ValidateUserEmailViewModel @Inject constructor(
 
     val sendStatus by transferSendManager::sendStatus
 
-    fun validateEmailWithOtpCode(email: String, otpCode: String, onUnknownError: () -> Unit) {
+    fun validateEmailWithOtpCode(email: String, otpCode: String) {
         viewModelScope.launch(ioDispatcher) {
             _uiState.value = ValidateEmailUiState.Loading
 
             runCatching {
                 uploadManager.verifyEmailCode(otpCode, email)
             }.onFailure {
-                when (it) {
-                    is EmailValidationException.InvalidPasswordException -> _uiState.value = ValidateEmailUiState.Error
-                    else -> onUnknownError()
+                _uiState.value = when (it) {
+                    is EmailValidationException.InvalidPasswordException -> ValidateEmailUiState.InvalidVerificationCode
+                    else -> ValidateEmailUiState.UnknownError
                 }
             }.onSuccess { token ->
                 uploadManager.updateAuthorEmailToken(email, token.token)
@@ -61,7 +61,7 @@ class ValidateUserEmailViewModel @Inject constructor(
     }
 
     fun resetErrorState() {
-        _uiState.compareAndSet(ValidateEmailUiState.Error, ValidateEmailUiState.Default)
+        _uiState.compareAndSet(ValidateEmailUiState.InvalidVerificationCode, ValidateEmailUiState.Default)
     }
 
     fun resendEmailCode(email: String) {
@@ -71,6 +71,6 @@ class ValidateUserEmailViewModel @Inject constructor(
     }
 
     enum class ValidateEmailUiState {
-        Default, Loading, Error,
+        Default, Loading, InvalidVerificationCode, UnknownError
     }
 }

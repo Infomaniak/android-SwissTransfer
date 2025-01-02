@@ -70,24 +70,25 @@ fun ValidateUserEmailScreen(
 ) {
     val uiState by validateUserEmailViewModel.uiState.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
-    val isError by remember { derivedStateOf { uiState == ValidateEmailUiState.Error } }
+    val isInvalidVerificationCode by remember { derivedStateOf { uiState == ValidateEmailUiState.InvalidVerificationCode } }
 
     val sendStatus by validateUserEmailViewModel.sendStatus.collectAsStateWithLifecycle()
 
-    HandleValidationSuccess(sendStatus, navigateToUploadInProgress)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    HandleValidationSuccess({ sendStatus }, navigateToUploadInProgress)
+
+    HandleUnknownValidationError({ uiState }, snackbarHostState)
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
-        validateEmailWithOtpCode = { (code, onUnknownError) ->
-            validateUserEmailViewModel.validateEmailWithOtpCode(
-                email = emailToValidate,
-                otpCode = code,
-                onUnknownError = onUnknownError
-            )
+        validateEmailWithOtpCode = { (code) ->
+            validateUserEmailViewModel.validateEmailWithOtpCode(emailToValidate, code)
         },
         resetErrorState = validateUserEmailViewModel::resetErrorState,
         isLoading = { isLoading },
-        isError = { isError },
+        isInvalidVerificationCode = { isInvalidVerificationCode },
+        snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         closeActivity = closeActivity,
         onResendEmailCode = { validateUserEmailViewModel.resendEmailCode(emailToValidate) }
@@ -95,10 +96,29 @@ fun ValidateUserEmailScreen(
 }
 
 @Composable
-fun HandleValidationSuccess(sendStatus: TransferSendManager.SendStatus, navigateToUploadInProgress: (totalSize: Long) -> Unit) {
-    LaunchedEffect(sendStatus) {
-        if (sendStatus is TransferSendManager.SendStatus.Success) {
-            navigateToUploadInProgress(sendStatus.totalSize)
+fun HandleValidationSuccess(
+    sendStatus: () -> TransferSendManager.SendStatus,
+    navigateToUploadInProgress: (totalSize: Long) -> Unit,
+) {
+    LaunchedEffect(sendStatus()) {
+        val status = sendStatus()
+        if (status is TransferSendManager.SendStatus.Success) {
+            navigateToUploadInProgress(status.totalSize)
+        }
+    }
+}
+
+@Composable
+fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHostState: SnackbarHostState) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(uiState()) {
+        if (uiState() == ValidateEmailUiState.UnknownError) {
+            SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
+            scope.launch {
+                snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred))
+            }
         }
     }
 }
@@ -109,16 +129,15 @@ private fun ValidateUserEmailScreen(
     validateEmailWithOtpCode: (ValidateEmailPayload) -> Unit,
     resetErrorState: () -> Unit,
     isLoading: () -> Boolean,
-    isError: () -> Boolean,
+    isInvalidVerificationCode: () -> Boolean,
+    snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
     closeActivity: () -> Unit,
     onResendEmailCode: () -> Unit,
 ) {
     var otpCode by rememberSaveable { mutableStateOf("") }
 
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
 
     BottomStickyButtonScaffold(
         snackbarHostState = snackbarHostState,
@@ -170,26 +189,13 @@ private fun ValidateUserEmailScreen(
                     otpCode = code
 
                     if (isFilled) {
-                        validateEmailWithOtpCode(
-                            ValidateEmailPayload(
-                                otpCode = code,
-                                onUnknownError = {
-                                    SentryLog.e(
-                                        "Email validation",
-                                        "An unknown API error has occurred when validating the OTP code"
-                                    )
-                                    scope.launch {
-                                        snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred))
-                                    }
-                                },
-                            )
-                        )
+                        validateEmailWithOtpCode(ValidateEmailPayload(otpCode = code))
                     } else {
                         resetErrorState()
                     }
                 },
                 isLoading = isLoading,
-                isError = isError,
+                isInvalidVerificationCode = isInvalidVerificationCode,
             )
 
             Text(
@@ -235,10 +241,7 @@ private enum class LayoutStyle(
     }
 }
 
-private data class ValidateEmailPayload(
-    val otpCode: String,
-    val onUnknownError: () -> Unit,
-)
+private data class ValidateEmailPayload(val otpCode: String)
 
 @PreviewAllWindows
 @Composable
@@ -250,7 +253,8 @@ private fun Preview() {
                 validateEmailWithOtpCode = {},
                 resetErrorState = {},
                 isLoading = { false },
-                isError = { false },
+                isInvalidVerificationCode = { false },
+                snackbarHostState = remember { SnackbarHostState() },
                 navigateBack = {},
                 closeActivity = {},
                 onResendEmailCode = {},
