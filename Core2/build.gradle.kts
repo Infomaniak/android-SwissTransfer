@@ -36,8 +36,9 @@ android {
 dependencies {
     api(core2.kotlinx.coroutines.core)
     api(core2.splitties.appctx)
+    api(core2.splitties.systemservices)
+    api(core2.splitties.coroutines)
     implementation(core2.splitties.toast)
-    implementation(core2.splitties.systemservices)
     implementation(core2.splitties.mainhandler)
     implementation(core2.androidx.core)
 }
