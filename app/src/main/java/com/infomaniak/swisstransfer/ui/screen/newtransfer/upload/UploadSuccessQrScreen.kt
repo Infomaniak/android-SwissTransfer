@@ -61,7 +61,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, clo
             SuccessMessage(transferType, transferUrl)
 
             ShareAndCopyButtons(
-                modifier = Modifier.padding(bottom = Margin.Medium, top = Margin.Mini),
+                modifier = Modifier.padding(bottom = Margin.Micro, top = Margin.Mini),
                 transferLink = transferUrl,
                 snackbarHostState = snackbarHostState,
             )
