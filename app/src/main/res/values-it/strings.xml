@@ -39,6 +39,8 @@
     <string name="errorTransferPasswordLength">La password deve essere compresa tra 6 e 24 caratteri</string>
     <string name="errorUnknown">Si è verificato un errore</string>
     <string name="expiresIn">Scade tra %d giorni</string>
+    <string name="expiresToday">Scade oggi</string>
+    <string name="expiresTomorrow">Scade domani</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
         <item quantity="other">%d file</item>

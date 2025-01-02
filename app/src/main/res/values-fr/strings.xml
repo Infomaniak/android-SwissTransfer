@@ -39,6 +39,8 @@
     <string name="errorTransferPasswordLength">Le mot de passe doit comporter entre 6 et 25 caractères</string>
     <string name="errorUnknown">Une erreur est survenue</string>
     <string name="expiresIn">Expire dans %d jours</string>
+    <string name="expiresToday">Expire aujourd’hui</string>
+    <string name="expiresTomorrow">Expire demain</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>
         <item quantity="other">%d fichiers</item>
