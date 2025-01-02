@@ -75,7 +75,7 @@ fun OtpTextField(
     var isTextFieldFocused by remember { mutableStateOf(false) }
 
     Box(contentAlignment = Alignment.Center) {
-        ProvideNoSelectAllTextToolbar {
+        ProvideTextToolbarWithoutSelectAll {
             BasicTextField(
                 modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
                 value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
@@ -132,7 +132,7 @@ fun OtpTextField(
 }
 
 @Composable
-fun ProvideNoSelectAllTextToolbar(content: @Composable () -> Unit) {
+fun ProvideTextToolbarWithoutSelectAll(content: @Composable () -> Unit) {
     val previousToolbar = LocalTextToolbar.current
     CompositionLocalProvider(LocalTextToolbar provides HideSelectAllTextToolbar(previousToolbar), content)
 }
