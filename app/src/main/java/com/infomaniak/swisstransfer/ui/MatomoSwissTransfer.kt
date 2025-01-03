@@ -19,10 +19,15 @@ package com.infomaniak.swisstransfer.ui
 
 import android.content.Context
 import com.infomaniak.core2.matomo.Matomo
+import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
+import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
+import com.infomaniak.swisstransfer.ui.utils.getValue
 import org.matomo.sdk.Tracker
 
 object MatomoSwissTransfer : Matomo {
 
-    override val Context.tracker: Tracker get() = buildTracker() // TODO: Fetch appSettings for opt-out
+    override val Context.tracker: Tracker
+        get() = buildTracker(shouldOptOut = !dataManagementDataStore.getValue(DataManagementPreferences.IsMatomoAuthorized))
+
     override val siteId: Int = 24
 }
