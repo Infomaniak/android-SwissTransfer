@@ -6,6 +6,7 @@ coilCompose = "3.0.2"
 composeAlpha = "1.8.0-alpha07"
 constraintlayoutCompose = "1.1.0"
 coreSplashscreen = "1.0.1"
+datastorePreferencesAndroid = "1.1.1"
 desugarJDK = "2.1.4"
 hiltAndroid = "2.53.1"
 hiltAndroidx = "1.2.0"
@@ -26,6 +27,7 @@ androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adapt
 androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptiveLayout" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferencesAndroid" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 
