@@ -25,7 +25,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 open class DataStoreValue<T>(val dataStoreKey: Preferences.Key<T>, val defaultValue: T)
 
@@ -40,4 +42,8 @@ private fun <T> DataStore<Preferences>.flowOf(preference: DataStoreValue<T>): Fl
 
 suspend fun <T : Any> DataStore<Preferences>.setValue(preference: DataStoreValue<T>, value: T) {
     edit { it[preference.dataStoreKey] = value }
+}
+
+fun <T : Any> DataStore<Preferences>.getValue(preference: DataStoreValue<T>): T {
+    return runBlocking { flowOf(preference).first() }
 }
