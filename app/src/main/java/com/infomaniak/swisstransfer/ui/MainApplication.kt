@@ -26,7 +26,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
-import com.infomaniak.swisstransfer.ui.utils.getValue
+import com.infomaniak.swisstransfer.ui.utils.getPreference
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
@@ -75,7 +75,7 @@ class MainApplication : Application(), Configuration.Provider {
                  * - User deactivated Sentry tracking in DataManagement settings
                  * - The exception was a NetworkException, and we don't want to send them to Sentry
                  */
-                val isSentryAuthorized = dataManagementDataStore.getValue(DataManagementPreferences.IsSentryAuthorized)
+                val isSentryAuthorized = dataManagementDataStore.getPreference(DataManagementPreferences.IsSentryAuthorized)
                 if (!BuildConfig.DEBUG && isSentryAuthorized && !isNetworkException) event else null
             }
         }
