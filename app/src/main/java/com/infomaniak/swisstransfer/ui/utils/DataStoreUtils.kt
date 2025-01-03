@@ -27,14 +27,18 @@ import kotlinx.coroutines.runBlocking
 
 open class DataStorePreference<T>(val dataStoreKey: Preferences.Key<T>, val defaultValue: T)
 
-private fun <T> DataStore<Preferences>.flowOf(preference: DataStorePreference<T>): Flow<T> {
-    return data.map { it[preference.dataStoreKey] ?: preference.defaultValue }
+fun <T : Any> DataStore<Preferences>.getPreference(preference: DataStorePreference<T>): T {
+    return runBlocking { flowOf(preference).first() }
 }
 
-fun <T : Any> DataStore<Preferences>.getPreference(preference: DataStorePreference<T>): T = runBlocking { flowOf(preference).first() }
-
-operator fun <T : Any> Preferences.get(preference: DataStorePreference<T>): T = get(preference.dataStoreKey) ?: preference.defaultValue
+operator fun <T : Any> Preferences.get(preference: DataStorePreference<T>): T {
+    return get(preference.dataStoreKey) ?: preference.defaultValue
+}
 
 operator fun <T : Any> MutablePreferences.set(preference: DataStorePreference<T>, value: T) {
     set(preference.dataStoreKey, value)
+}
+
+private fun <T : Any> DataStore<Preferences>.flowOf(preference: DataStorePreference<T>): Flow<T> {
+    return data.map { it[preference] }
 }
