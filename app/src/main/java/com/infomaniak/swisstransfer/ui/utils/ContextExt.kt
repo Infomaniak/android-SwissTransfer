@@ -72,11 +72,11 @@ fun Context.openAppNotificationSettings() {
  * email apps using [Intent.EXTRA_INITIAL_INTENTS].
  */
 fun Context.openMailApp() {
-    // Returns the list of package names from the list of ResolveInfo that support the input Intent
-    fun queryIntentSupportedPackageNames(intent: Intent): List<String> {
-        return packageManager
+    // Returns the list of unique package names from the list of ResolveInfo that support the input Intent
+    fun queryIntentSupportedPackageNames(intent: Intent): Set<String> = buildSet {
+        packageManager
             .queryIntentActivities(intent, 0)
-            .map { it.activityInfo.packageName }
+            .forEach { add(it.activityInfo.packageName) }
     }
 
     val mainActionIntent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL).apply {
