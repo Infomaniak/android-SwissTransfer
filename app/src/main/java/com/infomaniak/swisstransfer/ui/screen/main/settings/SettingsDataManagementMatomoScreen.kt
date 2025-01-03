@@ -26,11 +26,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -40,13 +39,15 @@ import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
+    val scope = rememberCoroutineScope()
+    val dataStore = LocalContext.current.dataManagementDataStore
 
-    // TODO: Use real value from Realm, and save it to Realm / anywhere else too.
-    var isMatomoAuthorized by rememberSaveable { mutableStateOf(true) }
+    val isMatomoAuthorized by dataStore.collectAsStateWithLifecycle(DataManagementPreferences.IsMatomoAuthorized, false)
 
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
@@ -85,7 +86,9 @@ fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
                 Spacer(Modifier.weight(1.0f))
                 Switch(
                     checked = isMatomoAuthorized,
-                    onCheckedChange = { isMatomoAuthorized = it },
+                    onCheckedChange = {
+                        scope.launch { dataStore.setValue(DataManagementPreferences.IsMatomoAuthorized, it) }
+                    },
                 )
             }
         }
