@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,19 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui
+package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
-import com.infomaniak.matomo.Matomo
-import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
-import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
-import com.infomaniak.swisstransfer.ui.utils.getPreference
-import org.matomo.sdk.Tracker
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 
-object MatomoSwissTransfer : Matomo {
+val Context.dataManagementDataStore: DataStore<Preferences> by preferencesDataStore(name = "DataManagementPreferences")
 
-    override val Context.tracker: Tracker
-        get() = buildTracker(shouldOptOut = !dataManagementDataStore.getPreference(DataManagementPreferences.IsMatomoAuthorized))
-
-    override val siteId: Int = 24
+object DataManagementPreferences {
+    data object IsSentryAuthorized : DataStorePreference<Boolean>(booleanPreferencesKey("IsSentryAuthorized"), true)
+    data object IsMatomoAuthorized : DataStorePreference<Boolean>(booleanPreferencesKey("IsMatomoAuthorized"), true)
 }
