@@ -24,13 +24,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -39,16 +38,28 @@ import com.infomaniak.swisstransfer.ui.images.illus.sentry.Sentry
 import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.*
-import kotlinx.coroutines.launch
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
-    val scope = rememberCoroutineScope()
-    val dataStore = LocalContext.current.dataManagementDataStore
+fun SettingsDataManagementSentryScreen(
+    navigateBack: (() -> Unit)?,
+    settingsSentryViewModel: SettingsSentryViewModel = hiltViewModel<SettingsSentryViewModel>()
+) {
+    val isSentryAuthorized by settingsSentryViewModel.isSentryAuthorized.collectAsStateWithLifecycle()
 
-    val isSentryAuthorized by dataStore.collectAsStateWithLifecycle(DataManagementPreferences.IsSentryAuthorized, false)
+    SettingsDataManagementSentryScreen(
+        navigateBack = navigateBack,
+        isSentryAuthorized = { isSentryAuthorized },
+        setSentryAuthorization = { settingsSentryViewModel.setSentryAuthorization(it) }
+    )
+}
 
+@Composable
+fun SettingsDataManagementSentryScreen(
+    navigateBack: (() -> Unit)?,
+    isSentryAuthorized: () -> Boolean,
+    setSentryAuthorization: (Boolean) -> Unit,
+) {
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
@@ -85,10 +96,8 @@ fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
                 )
                 Spacer(Modifier.weight(1.0f))
                 Switch(
-                    checked = isSentryAuthorized,
-                    onCheckedChange = {
-                        scope.launch { dataStore.setValue(DataManagementPreferences.IsSentryAuthorized, it) }
-                    },
+                    checked = isSentryAuthorized(),
+                    onCheckedChange = { setSentryAuthorization(it) },
                 )
             }
         }
@@ -100,7 +109,13 @@ fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            SettingsDataManagementSentryScreen {}
+            var isSentryAuthorized by remember { mutableStateOf(true) }
+
+            SettingsDataManagementSentryScreen(
+                navigateBack = {},
+                isSentryAuthorized = { isSentryAuthorized },
+                setSentryAuthorization = { isSentryAuthorized = it }
+            )
         }
     }
 }

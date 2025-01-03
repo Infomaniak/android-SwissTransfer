@@ -17,13 +17,9 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -31,19 +27,14 @@ import kotlinx.coroutines.runBlocking
 
 open class DataStoreValue<T>(val dataStoreKey: Preferences.Key<T>, val defaultValue: T)
 
-@Composable
-fun <T> DataStore<Preferences>.collectAsStateWithLifecycle(preference: DataStoreValue<T>, initialValue: T): State<T> {
-    return flowOf(preference).collectAsStateWithLifecycle(initialValue, LocalLifecycleOwner.current)
-}
-
 private fun <T> DataStore<Preferences>.flowOf(preference: DataStoreValue<T>): Flow<T> {
     return data.map { it[preference.dataStoreKey] ?: preference.defaultValue }
 }
 
-suspend fun <T : Any> DataStore<Preferences>.setValue(preference: DataStoreValue<T>, value: T) {
-    edit { it[preference.dataStoreKey] = value }
-}
+fun <T : Any> DataStore<Preferences>.getValue(preference: DataStoreValue<T>): T = runBlocking { flowOf(preference).first() }
 
-fun <T : Any> DataStore<Preferences>.getValue(preference: DataStoreValue<T>): T {
-    return runBlocking { flowOf(preference).first() }
+operator fun <T : Any> Preferences.get(preference: DataStoreValue<T>): T = get(preference.dataStoreKey) ?: preference.defaultValue
+
+operator fun <T : Any> MutablePreferences.set(preference: DataStoreValue<T>, value: T) {
+    set(preference.dataStoreKey, value)
 }
