@@ -33,7 +33,7 @@ fun UploadSuccessScreen(
 ) {
     BackHandler(onBack = closeActivity)
 
-    if (transferType == TransferTypeUi.MAIL) {
+    if (transferType == TransferTypeUi.Mail) {
         UploadSuccessEmailScreen(emails = recipients, closeActivity = closeActivity)
     } else {
         UploadSuccessQrScreen(transferType, transferUrl, closeActivity)
@@ -46,7 +46,7 @@ private fun UploadSuccessScreenPreview() {
     SwissTransferTheme {
         Surface {
             UploadSuccessScreen(
-                transferType = TransferTypeUi.QR_CODE,
+                transferType = TransferTypeUi.QrCode,
                 transferUrl = "https://chk.me/83azQOl",
                 recipients = emptyList(),
                 closeActivity = {},

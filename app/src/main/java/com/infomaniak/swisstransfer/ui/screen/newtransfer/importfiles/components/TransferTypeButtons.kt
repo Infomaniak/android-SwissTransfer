@@ -65,6 +65,7 @@ fun TransferTypeButtons(horizontalPadding: Dp, transferType: GetSetCallbacks<Tra
     }
 }
 
+// DO NOT RENAME THESE ENUMS. Their `.name` is used when sending Notifications.
 enum class TransferTypeUi(
     val buttonIcon: ImageVector,
     @StringRes val buttonTextRes: Int,
@@ -72,28 +73,28 @@ enum class TransferTypeUi(
     @StringRes @PluralsRes val descriptionRes: Int?,
     val dbValue: TransferType,
 ) {
-    QR_CODE(
+    QrCode(
         buttonIcon = AppIcons.QrCode,
         buttonTextRes = R.string.transferTypeQrCode,
         titleRes = R.string.uploadSuccessQrTitle,
         descriptionRes = null,
         dbValue = TransferType.QR_CODE,
     ),
-    MAIL(
+    Mail(
         buttonIcon = AppIcons.Envelope,
         buttonTextRes = R.string.transferTypeEmail,
         titleRes = R.string.uploadSuccessEmailTitle,
         descriptionRes = R.plurals.uploadSuccessEmailDescription,
         dbValue = TransferType.MAIL,
     ),
-    LINK(
+    Link(
         buttonIcon = AppIcons.Chain,
         buttonTextRes = R.string.transferTypeLink,
         titleRes = R.string.uploadSuccessLinkTitle,
         descriptionRes = R.string.uploadSuccessLinkDescription,
         dbValue = TransferType.LINK,
     ),
-    PROXIMITY(
+    Proximity(
         buttonIcon = AppIcons.WifiWave,
         buttonTextRes = R.string.transferTypeProximity,
         titleRes = R.string.uploadSuccessLinkTitle,
@@ -103,10 +104,10 @@ enum class TransferTypeUi(
 
     companion object {
         fun TransferType.toTransferTypeUi() = when (this) {
-            TransferType.LINK -> LINK
-            TransferType.QR_CODE -> QR_CODE
-            TransferType.PROXIMITY -> PROXIMITY
-            TransferType.MAIL -> MAIL
+            TransferType.LINK -> Link
+            TransferType.QR_CODE -> QrCode
+            TransferType.PROXIMITY -> Proximity
+            TransferType.MAIL -> Mail
         }
     }
 }
@@ -118,7 +119,7 @@ private fun TransferTypeButtonsPreview() {
         Surface {
             TransferTypeButtons(
                 horizontalPadding = Margin.Medium,
-                transferType = GetSetCallbacks(get = { TransferTypeUi.QR_CODE }, set = {}),
+                transferType = GetSetCallbacks(get = { TransferTypeUi.QrCode }, set = {}),
             )
         }
     }
