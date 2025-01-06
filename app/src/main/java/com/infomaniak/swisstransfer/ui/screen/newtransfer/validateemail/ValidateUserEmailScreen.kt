@@ -72,6 +72,8 @@ fun ValidateUserEmailScreen(
     val sendStatus by validateUserEmailViewModel.sendStatus.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     HandleValidationSuccess({ sendStatus }, navigateToUploadInProgress, snackbarHostState)
 
@@ -88,7 +90,14 @@ fun ValidateUserEmailScreen(
         snackbarHostState = snackbarHostState,
         navigateBack = navigateBack,
         closeActivity = closeActivity,
-        onResendEmailCode = { validateUserEmailViewModel.resendEmailCode(emailToValidate) }
+        onResendEmailCode = {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    context.getString(R.string.validateMailCodeResentFeedback, emailToValidate)
+                )
+            }
+            validateUserEmailViewModel.resendEmailCode(emailToValidate)
+        }
     )
 }
 

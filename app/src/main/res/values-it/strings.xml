@@ -172,6 +172,7 @@
     <string name="urlAbout">https://www.infomaniak.com/it/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/c85aa792-0f76-4923-8fe2-fae976cac9c2/#ideas/popular</string>
     <string name="validateMailCodeIncorrectError">Il codice inserito non è corretto</string>
+    <string name="validateMailCodeResentFeedback">Il codice è stato inviato all’indirizzo e-mail %s</string>
     <string name="validateMailDescription">Abbiamo inviato un codice a %s. Inseriscilo qui sotto per verificare il tuo indirizzo e-mail nell’app:</string>
     <string name="validateMailInfo">Ricordate di controllare la cartella spam del vostro indirizzo e-mail.</string>
     <string name="validateMailResendCode">Reinvia il codice</string>
