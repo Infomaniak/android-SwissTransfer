@@ -28,6 +28,7 @@ import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped
+import io.sentry.Sentry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -89,18 +90,21 @@ class TransferSendManager @Inject constructor(
             }
         }.onFailure { exception ->
             if (exception !is NetworkException && exception !is KmpNetworkException) {
-                SentryLog.e(TAG, "Failed to start the upload", exception)
+                Sentry.withScope { scope ->
+                    scope.setTag("exception", exception.message ?: "Unknown message")
+                    SentryLog.e(TAG, "Failed to start the upload", exception)
+                }
             }
-            if (exception is IntegrityException) {
-                _sendStatus.update { SendStatus.Refused }
-            } else {
-                _sendStatus.update { SendStatus.Failure }
+
+            when (exception) {
+                is IntegrityException -> _sendStatus.update { SendStatus.Refused }
+                else -> _sendStatus.update { SendStatus.Failure }
             }
         }
     }
 
     //region App Integrity
-    /** Handle [IntegrityException] and all the different exceptions that can be thrown */
+    /** Don't forget to handle [IntegrityException] and all the different exceptions that can be thrown at call site*/
     private suspend inline fun getAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
 
@@ -112,7 +116,7 @@ class TransferSendManager @Inject constructor(
             packageName = BuildConfig.APPLICATION_ID,
             targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
         )
-        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "API verdict check $appIntegrityToken")
+        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Successful API verdict")
 
         return attestationToken
     }
