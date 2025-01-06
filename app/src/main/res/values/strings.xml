@@ -21,6 +21,7 @@
     <string name="sentry" translatable="false">Sentry</string>
 
     <string name="advancedSettingsTitle">Advanced settings</string>
+    <string name="awaitingNetwork">Waiting for network</string>
     <string name="buttonAddFiles">Add files</string>
     <string name="buttonConfirm">Confirm</string>
     <string name="buttonCopyLink">Copy link</string>
@@ -54,7 +55,7 @@
     <string name="invalidAddress">Invalid address</string>
     <string name="messageHeader">Message:</string>
     <string name="myFilesTitle">My files</string>
-    <string name="networkUnavailable">Waiting for network</string>
+    <string name="networkUnavailable">Network unavailable</string>
     <string name="noFileDescription">Add up to 50 GB of files</string>
     <string name="noFileTitle">No file, no transfer!</string>
     <string name="noSettingsSelectedDescription">Select a parameter to display it</string>

@@ -17,6 +17,7 @@
   -->
 <resources>
     <string name="advancedSettingsTitle">Impostazioni avanzate</string>
+    <string name="awaitingNetwork">In attesa della rete</string>
     <string name="buttonAddFiles">Aggiunta di file</string>
     <string name="buttonConfirm">Conferma</string>
     <string name="buttonCopyLink">Copia link</string>
@@ -50,7 +51,7 @@
     <string name="invalidAddress">Indirizzo non valido</string>
     <string name="messageHeader">Messaggio:</string>
     <string name="myFilesTitle">I miei file</string>
-    <string name="networkUnavailable">In attesa della rete</string>
+    <string name="networkUnavailable">Rete non disponibile</string>
     <string name="noFileDescription">Aggiungere fino a 50 GB di file</string>
     <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noSettingsSelectedDescription">Seleziona un parametro da visualizzare</string>

@@ -49,7 +49,7 @@ fun NetworkUnavailable(modifier: Modifier = Modifier) {
             contentDescription = null,
         )
         Text(
-            text = stringResource(R.string.networkUnavailable),
+            text = stringResource(R.string.awaitingNetwork),
             style = SwissTransferTheme.typography.labelRegular,
             color = SwissTransferTheme.colors.warning,
         )
