@@ -173,6 +173,10 @@ private fun HandleSendActionResult(
                 resetSendActionResult()
                 navigateToUploadProgress(actionResult.totalSize)
             }
+            is SendStatus.NoNetwork -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
+                resetSendActionResult()
+            }
             is SendStatus.Refused -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
                 resetSendActionResult()
