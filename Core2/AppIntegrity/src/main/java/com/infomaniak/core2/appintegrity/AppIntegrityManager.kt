@@ -23,10 +23,13 @@ import android.util.Log
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.IntegrityTokenRequest
 import com.google.android.play.core.integrity.StandardIntegrityManager.*
+import com.infomaniak.core2.appintegrity.exceptions.IntegrityException
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
+import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
 import com.infomaniak.sentry.SentryLog
 import io.sentry.Sentry
 import io.sentry.SentryLevel
+import kotlinx.coroutines.CompletableDeferred
 import java.util.UUID
 
 /**
@@ -42,7 +45,6 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
     private val classicIntegrityTokenProvider by lazy { IntegrityManagerFactory.create(appContext) }
     private val appIntegrityRepository by lazy { AppIntegrityRepository(userAgent) }
 
-    private var challenge = ""
     private var challengeId = ""
 
     /**
@@ -83,42 +85,44 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
      *
      * This doesn't automatically protect from replay attack, thus the use of challenge/challengeId pair with our API to add this
      * layer of protection.
+     *
+     * ###### Can throw Integrity exceptions.
      */
-    fun requestClassicIntegrityVerdictToken(onSuccess: (String) -> Unit, onFailure: () -> Unit) {
-
-        // You can comment this if you want to test the App Integrity (also see getJwtToken in AppIntegrityRepository)
-        if (BuildConfig.DEBUG) {
-            onSuccess("Basic app integrity token")
-            return
-        }
-
+    suspend fun requestClassicIntegrityVerdictToken(challenge: String): String {
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
+        val token: CompletableDeferred<String> = CompletableDeferred()
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
-            ?.addOnSuccessListener { response -> onSuccess(response.token()) }
-            ?.addOnFailureListener { manageException(it, "Error when requiring a classic integrity token", onFailure) }
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    token.complete(task.result.token())
+                } else {
+                    token.completeExceptionally(task.exception ?: error("Failure when requestIntegrityToken"))
+                }
+            }
+
+        return runCatching {
+            token.await()
+        }.getOrElse { exception ->
+            throw IntegrityException(exception)
+        }
     }
 
-    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: () -> Unit) = runCatching {
+    suspend fun getChallenge(): String {
         generateChallengeId()
         val apiResponse = appIntegrityRepository.getChallenge(challengeId)
         SentryLog.d(
             tag = APP_INTEGRITY_MANAGER_TAG,
             msg = "challengeId hash : ${challengeId.hashCode()} / challenge hash: ${apiResponse.data.hashCode()}",
         )
-        apiResponse.data?.let { challenge = it }
-        onSuccess()
-    }.getOrElse {
-        manageException(it, "Error fetching challenge", onFailure)
+        return apiResponse.data ?: error("Get challenge cannot contain null data")
     }
 
     suspend fun getApiIntegrityVerdict(
         integrityToken: String,
         packageName: String,
         targetUrl: String,
-        onSuccess: (String) -> Unit,
-        onFailure: () -> Unit,
-    ) {
+    ): String {
         runCatching {
             val apiResponse = appIntegrityRepository.getJwtToken(
                 integrityToken = integrityToken,
@@ -126,9 +130,13 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
                 targetUrl = targetUrl,
                 challengeId = challengeId,
             )
-            apiResponse.data?.let(onSuccess)
-        }.getOrElse {
-            manageException(it, "Error during Integrity check by API", onFailure)
+            return apiResponse.data ?: error("Integrity ApiResponse cannot contain null data")
+        }.getOrElse { exception ->
+            if (exception is UnexpectedApiErrorFormatException && exception.bodyResponse.contains("invalid_attestation")) {
+                throw IntegrityException(exception)
+            } else {
+                throw exception
+            }
         }
     }
 
