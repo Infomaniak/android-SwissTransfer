@@ -54,7 +54,6 @@ import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.openMailApp
 import kotlinx.coroutines.launch
-import com.infomaniak.core2.R as RCore2
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 
@@ -74,7 +73,7 @@ fun ValidateUserEmailScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    HandleValidationSuccess({ sendStatus }, navigateToUploadInProgress)
+    HandleValidationSuccess({ sendStatus }, navigateToUploadInProgress, snackbarHostState)
 
     HandleUnknownValidationError({ uiState }, snackbarHostState)
 
@@ -97,11 +96,17 @@ fun ValidateUserEmailScreen(
 fun HandleValidationSuccess(
     sendStatus: () -> TransferSendManager.SendStatus,
     navigateToUploadInProgress: (totalSize: Long) -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
+    val context = LocalContext.current
     LaunchedEffect(sendStatus()) {
-        val status = sendStatus()
-        if (status is TransferSendManager.SendStatus.Success) {
-            navigateToUploadInProgress(status.totalSize)
+        when (val status = sendStatus()) {
+            is TransferSendManager.SendStatus.Success -> navigateToUploadInProgress(status.totalSize)
+            is TransferSendManager.SendStatus.Failure,
+            is TransferSendManager.SendStatus.NoNetwork -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
+            }
+            else -> Unit
         }
     }
 }
@@ -115,7 +120,7 @@ fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHo
         if (uiState() == ValidateEmailUiState.UnknownError) {
             SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
             scope.launch {
-                snackbarHostState.showSnackbar(context.getString(RCore2.string.anErrorHasOccurred))
+                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
             }
         }
     }

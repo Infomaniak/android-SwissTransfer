@@ -177,5 +177,6 @@
     <string name="validateMailResendCode">Reenviar un código</string>
     <string name="validateMailResendCodeTemplate">Reenviar un código (%ds)</string>
     <string name="validateMailTitle">Consulta tu correo electrónico</string>
+    <string name="validateMailUnknownError">Se ha producido un error. Por favor, inténtelo de nuevo en unos momentos.</string>
     <string name="version">Versión</string>
 </resources>

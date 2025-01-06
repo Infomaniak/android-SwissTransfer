@@ -179,5 +179,6 @@
     <string name="validateMailResendCode">Renvoyer un code</string>
     <string name="validateMailResendCodeTemplate">Renvoyer un code (%ds)</string>
     <string name="validateMailTitle">Vérifie ton e-mail</string>
+    <string name="validateMailUnknownError">Une erreur s’est produite. Retente ta chance dans quelques instants.</string>
     <string name="version">Version</string>
 </resources>

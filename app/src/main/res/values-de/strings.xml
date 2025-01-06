@@ -177,5 +177,6 @@
     <string name="validateMailResendCode">Code erneut senden</string>
     <string name="validateMailResendCodeTemplate">Code erneut senden (%ds)</string>
     <string name="validateMailTitle">Überprüfe deine E-Mail</string>
+    <string name="validateMailUnknownError">Es ist ein Fehler aufgetreten. Bitte versuche dein Glück in Kürze erneut.</string>
     <string name="version">Version</string>
 </resources>

@@ -181,5 +181,6 @@
     <string name="validateMailResendCode">Resend a code</string>
     <string name="validateMailResendCodeTemplate">Resend a code (%ds)</string>
     <string name="validateMailTitle">Check your email</string>
+    <string name="validateMailUnknownError">An error has occurred. Please try again in a few moments.</string>
     <string name="version">Version</string>
 </resources>
