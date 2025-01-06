@@ -88,12 +88,6 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
      * ###### Can throw Integrity exceptions.
      */
     suspend fun requestClassicIntegrityVerdictToken(): String {
-
-        // You can comment this if you want to test the App Integrity (also see getJwtToken in AppIntegrityRepository)
-        if (BuildConfig.DEBUG) {
-            return "Basic app integrity token"
-        }
-
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
         val token: CompletableDeferred<String> = CompletableDeferred()
 
