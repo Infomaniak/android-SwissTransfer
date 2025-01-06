@@ -23,7 +23,9 @@ import android.util.Log
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.IntegrityTokenRequest
 import com.google.android.play.core.integrity.StandardIntegrityManager.*
+import com.infomaniak.core2.appintegrity.exceptions.IntegrityException
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
+import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
 import com.infomaniak.sentry.SentryLog
 import io.sentry.Sentry
 import io.sentry.SentryLevel
@@ -99,29 +101,28 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
                 }
             }
 
-        return token.await()
+        return runCatching {
+            token.await()
+        }.getOrElse { exception ->
+            throw IntegrityException(exception)
+        }
     }
 
-    suspend fun getChallenge(onSuccess: () -> Unit, onFailure: () -> Unit) = runCatching {
+    suspend fun getChallenge(): String {
         generateChallengeId()
         val apiResponse = appIntegrityRepository.getChallenge(challengeId)
         SentryLog.d(
             tag = APP_INTEGRITY_MANAGER_TAG,
             msg = "challengeId hash : ${challengeId.hashCode()} / challenge hash: ${apiResponse.data.hashCode()}",
         )
-        apiResponse.data?.let { challenge = it }
-        onSuccess()
-    }.getOrElse {
-        manageException(it, "Error fetching challenge", onFailure)
+        return apiResponse.data ?: error("Get challenge cannot contain null data")
     }
 
     suspend fun getApiIntegrityVerdict(
         integrityToken: String,
         packageName: String,
         targetUrl: String,
-        onSuccess: (String) -> Unit,
-        onFailure: () -> Unit,
-    ) {
+    ): String {
         runCatching {
             val apiResponse = appIntegrityRepository.getJwtToken(
                 integrityToken = integrityToken,
@@ -129,9 +130,13 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
                 targetUrl = targetUrl,
                 challengeId = challengeId,
             )
-            apiResponse.data?.let(onSuccess)
-        }.getOrElse {
-            manageException(it, "Error during Integrity check by API", onFailure)
+            return apiResponse.data ?: error("Integrity ApiResponse cannot contain null data")
+        }.getOrElse { exception ->
+            if (exception is UnexpectedApiErrorFormatException && exception.bodyResponse.contains("invalid_attestation")) {
+                throw IntegrityException(exception)
+            } else {
+                throw exception
+            }
         }
     }
 
