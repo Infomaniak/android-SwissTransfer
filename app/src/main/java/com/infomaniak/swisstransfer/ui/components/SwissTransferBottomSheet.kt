@@ -161,7 +161,7 @@ private fun BottomSheetDefaultsPreview() {
                     LargeButton(
                         modifier = it,
                         title = "Top button",
-                        style = ButtonType.ERROR,
+                        style = ButtonType.DESTRUCTIVE,
                         onClick = {},
                     )
                 },

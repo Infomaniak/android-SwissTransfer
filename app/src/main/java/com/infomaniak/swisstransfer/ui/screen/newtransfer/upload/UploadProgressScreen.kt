@@ -168,7 +168,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
             LargeButton(
                 title = stringResource(R.string.uploadCancelConfirmBottomSheetCancel),
                 modifier = it,
-                style = ButtonType.ERROR,
+                style = ButtonType.DESTRUCTIVE,
                 onClick = onCancel,
             )
         },

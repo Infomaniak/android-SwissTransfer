@@ -118,13 +118,13 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
             contentColor = SwissTransferTheme.materialColors.primary,
         )
     }),
-    ERROR({
+    DESTRUCTIVE({
         ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.error,
             contentColor = SwissTransferTheme.materialColors.onError,
         )
     }),
-    ERROR_TEXT({
+    DESTRUCTIVE_TEXT({
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.error,
