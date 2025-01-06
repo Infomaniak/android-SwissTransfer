@@ -103,25 +103,18 @@ class TransferSendManager @Inject constructor(
     /** Handle [IntegrityException] and all the different exceptions that can be thrown */
     private suspend inline fun getAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
-        return requestAppIntegrityToken(challenge)
-    }
 
-    private suspend fun requestAppIntegrityToken(challenge: String): String {
-        val token = appIntegrityManager.requestClassicIntegrityVerdictToken(challenge)
+        val appIntegrityToken = appIntegrityManager.requestClassicIntegrityVerdictToken(challenge)
         SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful")
-        return getApiIntegrityVerdict(appIntegrityManager, token)
-    }
 
-    private suspend fun getApiIntegrityVerdict(appIntegrityManager: AppIntegrityManager, appIntegrityToken: String): String {
-        val token = appIntegrityManager.getApiIntegrityVerdict(
+        val attestationToken = appIntegrityManager.getApiIntegrityVerdict(
             integrityToken = appIntegrityToken,
             packageName = BuildConfig.APPLICATION_ID,
             targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
         )
+        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "API verdict check $appIntegrityToken")
 
-        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "API verdict check $token")
-
-        return token
+        return attestationToken
     }
     //endregion
 
