@@ -43,7 +43,6 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
     private val classicIntegrityTokenProvider by lazy { IntegrityManagerFactory.create(appContext) }
     private val appIntegrityRepository by lazy { AppIntegrityRepository(userAgent) }
 
-    private var challenge = ""
     private var challengeId = ""
 
     /**
@@ -87,7 +86,7 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
      *
      * ###### Can throw Integrity exceptions.
      */
-    suspend fun requestClassicIntegrityVerdictToken(): String {
+    suspend fun requestClassicIntegrityVerdictToken(challenge: String): String {
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
         val token: CompletableDeferred<String> = CompletableDeferred()
 
