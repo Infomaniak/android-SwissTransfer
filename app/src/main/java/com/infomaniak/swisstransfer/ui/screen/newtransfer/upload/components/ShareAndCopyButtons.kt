@@ -80,7 +80,7 @@ private fun RowScope.ShareCopyButton(icon: ImageVector, @StringRes textRes: Int,
     Button(
         modifier = Modifier.weight(1.0f),
         shape = CustomShapes.MEDIUM,
-        colors = ButtonType.SECONDARY.buttonColors(),
+        colors = ButtonType.Secondary.buttonColors(),
         contentPadding = PaddingValues(vertical = Margin.Medium),
         onClick = onClick,
     ) {

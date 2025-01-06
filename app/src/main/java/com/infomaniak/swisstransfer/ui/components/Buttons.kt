@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun LargeButton(
     title: String,
     modifier: Modifier = Modifier,
-    style: ButtonType = ButtonType.PRIMARY,
+    style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
@@ -69,7 +69,7 @@ fun LargeButton(
 fun SmallButton(
     title: String,
     modifier: Modifier = Modifier,
-    style: ButtonType = ButtonType.PRIMARY,
+    style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,

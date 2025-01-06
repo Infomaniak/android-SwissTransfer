@@ -75,7 +75,7 @@ fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: 
         LargeButton(
             modifier = modifier,
             title = stringResource(R.string.validateMailResendCode),
-            style = ButtonType.TERTIARY,
+            style = ButtonType.Tertiary,
             onClick = {
                 startTimer()
                 onResendEmailCode()
@@ -86,7 +86,7 @@ fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: 
         LargeButton(
             modifier = modifier,
             title = stringResource(R.string.validateMailResendCodeTemplate, timeLeft),
-            style = ButtonType.TERTIARY,
+            style = ButtonType.Tertiary,
             onClick = {},
             enabled = { false }
         )

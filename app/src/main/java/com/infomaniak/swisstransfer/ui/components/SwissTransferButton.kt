@@ -43,7 +43,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun SwissTransferButton(
     modifier: Modifier = Modifier,
-    style: ButtonType = ButtonType.PRIMARY,
+    style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
@@ -100,31 +100,31 @@ private fun getProgressSpecs(buttonColors: ButtonColors): Pair<Color, Modifier> 
 }
 
 enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
-    PRIMARY({
+    Primary({
         ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.primary,
             contentColor = SwissTransferTheme.materialColors.onPrimary,
         )
     }),
-    SECONDARY({
+    Secondary({
         ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
             contentColor = SwissTransferTheme.materialColors.primary,
         )
     }),
-    TERTIARY({
+    Tertiary({
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.primary,
         )
     }),
-    DESTRUCTIVE({
+    Destructive({
         ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.error,
             contentColor = SwissTransferTheme.materialColors.onError,
         )
     }),
-    DESTRUCTIVE_TEXT({
+    DestructiveText({
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.error,

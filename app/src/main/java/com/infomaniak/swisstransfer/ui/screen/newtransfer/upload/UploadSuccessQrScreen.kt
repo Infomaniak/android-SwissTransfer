@@ -51,7 +51,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, clo
         bottomButton = {
             LargeButton(
                 modifier = it,
-                style = ButtonType.PRIMARY,
+                style = ButtonType.Primary,
                 title = stringResource(R.string.buttonFinished),
                 onClick = closeActivity,
             )

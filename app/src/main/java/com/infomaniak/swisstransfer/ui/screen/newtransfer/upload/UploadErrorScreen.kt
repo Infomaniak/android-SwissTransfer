@@ -48,7 +48,7 @@ fun UploadErrorScreen(
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.buttonEditTransfer),
-                style = ButtonType.SECONDARY,
+                style = ButtonType.Secondary,
                 onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = navigateBackToImportFiles) },
             )
         }

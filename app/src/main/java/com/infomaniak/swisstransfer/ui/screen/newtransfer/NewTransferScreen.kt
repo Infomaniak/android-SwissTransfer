@@ -53,14 +53,14 @@ fun ConfirmLeavingDialog(onLeave: () -> Unit, onCancel: () -> Unit) {
         positiveButton = {
             SmallButton(
                 title = stringResource(R.string.newTransferLeavingDialogPositiveButton),
-                style = ButtonType.DESTRUCTIVE_TEXT,
+                style = ButtonType.DestructiveText,
                 onClick = onLeave,
             )
         },
         negativeButton = {
             SmallButton(
                 title = stringResource(R.string.newTransferLeavingDialogNegativeButton),
-                style = ButtonType.TERTIARY,
+                style = ButtonType.Tertiary,
                 onClick = onCancel,
             )
         },
