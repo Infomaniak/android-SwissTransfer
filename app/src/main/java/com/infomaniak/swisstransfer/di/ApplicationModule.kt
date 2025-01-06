@@ -20,14 +20,15 @@ package com.infomaniak.swisstransfer.di
 import android.app.Application
 import android.content.Context
 import androidx.work.WorkManager
+import com.infomaniak.core2.appintegrity.AppIntegrityManager
+import com.infomaniak.core2.buildUserAgent
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -39,11 +40,22 @@ object ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesGlobalCoroutineScope(@DefaultDispatcher defaultDispatcher: CoroutineDispatcher): CoroutineScope {
-        return CoroutineScope(defaultDispatcher)
+    fun providesWorkManager(@ApplicationContext appContext: Context) = WorkManager.getInstance(appContext)
+
+    @UserAgent
+    @Provides
+    @Singleton
+    fun providesUserAgent(): String {
+        return buildUserAgent(
+            appId = BuildConfig.APPLICATION_ID,
+            appVersionCode = BuildConfig.VERSION_CODE,
+            appVersionName = BuildConfig.VERSION_NAME,
+        )
     }
 
     @Provides
     @Singleton
-    fun providesWorkManager(@ApplicationContext context: Context) = WorkManager.getInstance(context)
+    fun providesAppIntegrityManager(application: Application, @UserAgent userAgent: String): AppIntegrityManager {
+        return AppIntegrityManager(application, userAgent)
+    }
 }
