@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    alias(core2.plugins.kotlin.android)
+    alias(core2.plugins.compose.compiler)
 }
 
 val sharedCompileSdk: Int by rootProject.extra
@@ -42,6 +42,6 @@ android {
 
 dependencies {
     implementation(platform(core2.compose.bom))
-    implementation(core2.compose.runtime)
+    implementation(core2.compose.runtime.android)
     implementation(core2.compose.ui.tooling)
 }

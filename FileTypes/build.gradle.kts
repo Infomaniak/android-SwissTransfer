@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    alias(core2.plugins.kotlin.android)
+    alias(core2.plugins.compose.compiler)
 }
 
 val sharedCompileSdk: Int by rootProject.extra
@@ -41,12 +41,13 @@ android {
 }
 
 dependencies {
+    implementation(core2.androidx.core.ktx)
+    implementation(platform(core2.compose.bom))
+    implementation(core2.compose.foundation.android)
+    implementation(core2.compose.ui.android)
+    implementation(core2.compose.ui.tooling.preview.android)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(filetypes.androidx.ui.android)
-    implementation(filetypes.androidx.foundation.android)
-    implementation(filetypes.androidx.ui.tooling.preview.android)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    debugImplementation(filetypes.androidx.ui.tooling)
+    testImplementation(core2.junit)
+    androidTestImplementation(core2.androidx.junit)
+    debugImplementation(core2.compose.ui.tooling)
 }
