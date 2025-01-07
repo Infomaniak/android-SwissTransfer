@@ -54,7 +54,7 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 closeActivity = closeActivity,
                 navigateBack = { navController.popBackStack() },
                 navigateToUploadInProgress = { totalSize ->
-                    navController.navigate(UploadProgressDestination(TransferTypeUi.MAIL, totalSize, args.recipients))
+                    navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize, args.recipients))
                 },
                 emailToValidate = args.userEmail,
             )

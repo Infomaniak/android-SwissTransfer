@@ -17,12 +17,8 @@
  */
 package com.infomaniak.swisstransfer.di
 
-import android.app.Application
-import com.infomaniak.core2.appintegrity.AppIntegrityManager
-import com.infomaniak.core2.buildUserAgent
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment
-import com.infomaniak.swisstransfer.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,17 +28,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SwissTransferInjectionModule {
-
-    @UserAgent
-    @Provides
-    @Singleton
-    fun providesUserAgent(): String {
-        return buildUserAgent(
-            appId = BuildConfig.APPLICATION_ID,
-            appVersionCode = BuildConfig.VERSION_CODE,
-            appVersionName = BuildConfig.VERSION_NAME,
-        )
-    }
 
     @Provides
     @Singleton
@@ -69,10 +54,4 @@ object SwissTransferInjectionModule {
     @Provides
     @Singleton
     fun providesSharedApiUrlCreator(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.sharedApiUrlCreator
-
-    @Provides
-    @Singleton
-    fun providesAppIntegrityManger(application: Application, @UserAgent userAgent: String): AppIntegrityManager {
-        return AppIntegrityManager(application, userAgent)
-    }
 }

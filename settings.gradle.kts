@@ -30,10 +30,10 @@ dependencyResolutionManagement {
 rootProject.name = "android-SwissTransfer"
 include(":app")
 include(":Core2")
-include(":Core2:Sentry")
+include(":Core2:AppIntegrity")
+include(":Core2:Compose:Core")
 include(":Core2:Matomo")
 include(":Core2:Network")
 include(":Core2:Onboarding")
-include(":Core2:Compose:Core")
-include(":Core2:AppIntegrity")
+include(":Core2:Sentry")
 include(":FileTypes")
