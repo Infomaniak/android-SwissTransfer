@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -48,8 +48,8 @@ fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
     // TODO: Use real value from Realm, and save it to Realm / anywhere else too.
     var isMatomoAuthorized by rememberSaveable { mutableStateOf(true) }
 
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = {
+    SwissTransferScaffold(
+        topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.matomo,
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),

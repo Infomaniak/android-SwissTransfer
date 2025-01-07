@@ -46,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Delete
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
@@ -107,8 +107,8 @@ private fun TransferDetailsScreen(
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = {
+    SwissTransferScaffold(
+        topBar = {
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),

@@ -22,21 +22,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
-import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
@@ -71,8 +75,13 @@ private fun ReceivedScreen(
 ) {
 
     val areTransfersEmpty by remember { derivedStateOf { getTransfers().isEmpty() } }
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-    BrandTopAppBarScaffold(
+    SwissTransferScaffold(
+        topBar = {
+            val title = stringResource(R.string.receivedFilesTitle)
+            if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
+        },
         floatingActionButton = { ReceivedEmptyFab { areTransfersEmpty } },
     ) {
         if (areTransfersEmpty) {

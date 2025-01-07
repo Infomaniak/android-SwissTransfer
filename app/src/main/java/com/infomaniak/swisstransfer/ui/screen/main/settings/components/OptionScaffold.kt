@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -44,8 +44,8 @@ fun OptionScaffold(
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)?,
 ) {
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = {
+    SwissTransferScaffold(
+        topBar = {
             SwissTransferTopAppBar(
                 titleRes = topAppBarTitleRes,
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
