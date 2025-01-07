@@ -21,13 +21,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
@@ -57,7 +57,7 @@ fun TransferItemList(
         contentPadding = contentPadding,
     ) {
 
-        item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
+        item { SmallWindowScreenTitle(title = stringResource(titleRes)) }
 
         items(
             count = getTransfers().count(),

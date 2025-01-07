@@ -25,7 +25,6 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -37,6 +36,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
@@ -77,10 +77,9 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .selectableGroup(),
         ) {
-            Text(
-                text = stringResource(R.string.settingsTitle),
-                style = SwissTransferTheme.typography.h1,
-                modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large),
+            SmallWindowScreenTitle(
+                title = stringResource(R.string.settingsTitle),
+                modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)
             )
 
             SettingTitle(R.string.settingsCategoryGeneral)
