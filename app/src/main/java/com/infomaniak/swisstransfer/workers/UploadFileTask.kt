@@ -19,10 +19,10 @@ package com.infomaniak.swisstransfer.workers
 
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
-import com.infomaniak.core2.sentry.SentryLog
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
