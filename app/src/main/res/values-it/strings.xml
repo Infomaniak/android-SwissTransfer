@@ -73,6 +73,8 @@
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
     <string name="noTransferSelectedDescription">Selezionare un trasferimento o crearne uno nuovo.</string>
     <string name="noTransferSelectedTitle">Nessun trasferimento da visualizzare</string>
+    <string name="notificationsGeneralChannelName">Notifiche generali</string>
+    <string name="notificationsUploadChannelName">Notifiche di caricamento</string>
     <string name="onboardingExpirationSubtitleArgument">30 giorni.</string>
     <string name="onboardingExpirationSubtitleTemplate">Condividi i tuoi file via email, link o QR code. I tuoi link rimangono attivi per %s</string>
     <string name="onboardingExpirationTitle">Gioca le tue carte migliori!</string>

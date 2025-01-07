@@ -39,11 +39,12 @@ import io.sentry.SentryLevel
 @Composable
 fun NewTransferNavHost(
     navController: NavHostController,
+    startDestination: NewTransferNavigation,
     closeActivity: () -> Unit,
     closeActivityAndPromptForValidation: () -> Unit,
 ) {
 
-    NavHost(navController, NewTransferNavigation.startDestination) {
+    NavHost(navController, startDestination) {
         composable<ImportFilesDestination> {
             ImportFilesScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),

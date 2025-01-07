@@ -19,6 +19,8 @@
     <string name="appName" translatable="false">SwissTransfer</string>
     <string name="matomo" translatable="false">Matomo</string>
     <string name="sentry" translatable="false">Sentry</string>
+    <string name="notifications_general_channel_id" translatable="false">general_channel_id</string>
+    <string name="notifications_upload_channel_id" translatable="false">upload_channel_id</string>
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
@@ -77,6 +79,8 @@
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
     <string name="noTransferSelectedTitle">No transfers to display</string>
+    <string name="notificationsGeneralChannelName">General notifications</string>
+    <string name="notificationsUploadChannelName">Upload notifications</string>
     <string name="onboardingExpirationSubtitleArgument">30 days.</string>
     <string name="onboardingExpirationSubtitleTemplate">Share your files via email, link, or QR code. Your links stay active for %s</string>
     <string name="onboardingExpirationTitle">Play Your Best Cards!</string>

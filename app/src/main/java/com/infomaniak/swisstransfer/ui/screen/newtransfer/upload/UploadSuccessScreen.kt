@@ -47,8 +47,8 @@ private fun UploadSuccessScreenPreview() {
         Surface {
             UploadSuccessScreen(
                 transferType = TransferTypeUi.QrCode,
-                transferUrl = "https://chk.me/83azQOl",
                 transferUuid = "",
+                transferUrl = "https://chk.me/83azQOl",
                 closeActivity = {},
             )
         }
