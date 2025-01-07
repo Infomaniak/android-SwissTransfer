@@ -31,7 +31,7 @@ fun SmallWindowScreenTitle(title: String, modifier: Modifier = Modifier) {
         Text(
             text = title,
             style = SwissTransferTheme.typography.h1,
-            modifier = Modifier,
+            modifier = modifier,
         )
     }
 }
