@@ -25,13 +25,19 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.swisstransfer.ui.components.NewTransferFab
-import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.NewTransferActivity
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.launchActivity
 
 /**
  * Layout for a [NavigationSuiteScaffold]'s content. This function wraps the [content] and places
@@ -81,6 +87,7 @@ fun AppNavigationSuiteScaffold(
                     when (layoutType) {
                         NavigationSuiteType.NavigationBar -> NavigationBarDefaults.windowInsets.only(WindowInsetsSides.Bottom)
                         NavigationSuiteType.NavigationRail -> NavigationRailDefaults.windowInsets.only(WindowInsetsSides.Start)
+                        NavigationSuiteType.NavigationDrawer -> DrawerDefaults.windowInsets.only(WindowInsetsSides.Start)
                         else -> WindowInsets(0, 0, 0, 0)
                     },
                 ),
@@ -115,26 +122,32 @@ private fun AppNavigationRail(
     currentDestination: MainNavigation,
     onClick: (MainNavigation) -> Unit,
 ) {
-    NavigationRail(
-        header = {
-            NewTransferFab(
-                modifier = Modifier.padding(vertical = Margin.Medium),
-                newTransferFabType = NewTransferFabType.NAVIGATION_RAIL,
-            )
-        },
-        containerColor = SwissTransferTheme.colors.navigationItemBackground,
-        windowInsets = WindowInsets(left = 0, top = 0, right = 0, bottom = 0),
+    val context = LocalContext.current
+    PermanentDrawerSheet(
+        drawerContainerColor = SwissTransferTheme.colors.navigationItemBackground,
+        windowInsets = DrawerDefaults.windowInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
     ) {
-        navigationItems.forEachIndexed { index, navigationItem ->
-            NavigationRailItem(
-                icon = { NavigationIcon(false, navigationItem) },
-                label = { NavigationLabel(navigationItem) },
-                selected = currentDestination::class == navigationItem.destination::class,
-                onClick = { onClick(navigationItem.destination) },
-            )
-            if (index != navigationItems.lastIndex) {
-                Spacer(modifier = Modifier.height(Margin.Micro))
+        BrandTopAppBar()
+        Column(modifier = Modifier.padding(horizontal = Margin.Mini, vertical = Margin.Medium)) {
+            navigationItems.forEachIndexed { index, navigationItem ->
+                NavigationDrawerItem(
+                    icon = { NavigationIcon(false, navigationItem) },
+                    label = { NavigationLabel(navigationItem) },
+                    selected = currentDestination::class == navigationItem.destination::class,
+                    onClick = { onClick(navigationItem.destination) },
+                )
+                if (index != navigationItems.lastIndex) {
+                    Spacer(modifier = Modifier.height(Margin.Micro))
+                }
             }
+
+            Spacer(modifier = Modifier.weight(1.0f))
+            LargeButton(
+                modifier = Modifier.fillMaxWidth(),
+                title = stringResource(R.string.contentDescriptionCreateNewTransferButton),
+                onClick = { context.launchActivity(NewTransferActivity::class) },
+                imageVector = AppIcons.Add
+            )
         }
     }
 }
