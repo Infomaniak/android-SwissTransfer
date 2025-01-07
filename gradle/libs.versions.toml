@@ -4,23 +4,18 @@ adaptiveLayout = "1.0.0"
 agp = "8.7.3"
 coilCompose = "3.0.2"
 composeAlpha = "1.8.0-alpha07"
-composeBom = "2024.12.01"
 constraintlayoutCompose = "1.1.0"
-coreKtx = "1.15.0"
 coreSplashscreen = "1.0.1"
-desugarJDK = "2.1.3"
-hiltAndroid = "2.52"
+desugarJDK = "2.1.4"
+hiltAndroid = "2.53.1"
 hiltAndroidx = "1.2.0"
 hiltNavigationCompose = "1.2.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
 kotlin = "2.0.21"
 lifecycleRuntimeKtx = "2.8.7"
 navigation = "2.8.5"
 qrose = "1.0.1"
 recaptcha = "18.6.1"
 sentry = "4.12.0"
-serialization = "1.7.3"
 swisstransfer = "0.10.2"
 workmanager = "2.10.0"
 
@@ -30,42 +25,31 @@ androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", v
 androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptiveLayout" }
 androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptiveLayout" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+# TODO: When Compose 1.8.0 is stable, we can remove this alpha dependency, and instead use the BOM one that is in Core2.
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" }
+
 compose-material3-adaptative-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJDK" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-androidx-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltAndroidx" }
 hilt-androidx-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltAndroidx" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
 workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
-# Tests
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 sentry = { id = "io.sentry.android.gradle", version.ref = "sentry" }
-
-# FileType module
-android-library = { id = "com.android.library", version.ref = "agp" }
