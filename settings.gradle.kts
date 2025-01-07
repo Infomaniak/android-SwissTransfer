@@ -30,7 +30,7 @@ rootProject.name = "android-SwissTransfer"
 include(":app")
 include(":Core2")
 include(":Core2:AppIntegrity")
-include(":Core2:Compose:Core")
+include(":Core2:Compose:Basics")
 include(":Core2:FileTypes")
 include(":Core2:Matomo")
 include(":Core2:Network")
