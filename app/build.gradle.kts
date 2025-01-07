@@ -118,9 +118,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(core2.compose.bom))
     implementation(libs.compose.foundation) // TODO: To be removed when compose 1.8.0 is stable
-    implementation(core2.compose.ui.android)
+    implementation(core2.compose.ui)
     implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.material3)
+    implementation(core2.compose.material3)
     implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
@@ -138,7 +138,7 @@ dependencies {
     implementation(libs.qrose)
 
     // Compose preview tools
-    implementation(libs.compose.ui.tooling.preview)
+    implementation(core2.compose.ui.tooling.preview)
     debugImplementation(core2.compose.ui.tooling)
 
     // Hilt

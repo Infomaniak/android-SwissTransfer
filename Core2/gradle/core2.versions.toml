@@ -17,11 +17,11 @@ androidx-core = { group = "androidx.core", name = "core", version.ref = "android
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 compose-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android" }
-compose-material3-android = { group = "androidx.compose.material3", name = "material3-android" }
-compose-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android" }
-compose-ui-android = { group = "androidx.compose.ui", name = "ui-android" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-compose-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }

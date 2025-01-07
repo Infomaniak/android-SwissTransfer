@@ -44,9 +44,9 @@ dependencies {
     implementation(platform(core2.compose.bom))
     implementation(core2.androidx.core.ktx)
     implementation(core2.compose.foundation.android)
-    implementation(core2.compose.material3.android)
-    implementation(core2.compose.runtime.android)
-    implementation(core2.compose.ui.tooling.preview.android)
+    implementation(core2.compose.material3)
+    implementation(core2.compose.runtime)
+    implementation(core2.compose.ui.tooling.preview)
 
     debugImplementation(core2.compose.ui.tooling)
 }

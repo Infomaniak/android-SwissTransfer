@@ -44,8 +44,8 @@ dependencies {
     implementation(core2.androidx.core.ktx)
     implementation(platform(core2.compose.bom))
     implementation(core2.compose.foundation.android)
-    implementation(core2.compose.ui.android)
-    implementation(core2.compose.ui.tooling.preview.android)
+    implementation(core2.compose.ui)
+    implementation(core2.compose.ui.tooling.preview)
 
     testImplementation(core2.junit)
     androidTestImplementation(core2.androidx.junit)
