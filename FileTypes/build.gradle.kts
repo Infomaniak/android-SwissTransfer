@@ -43,7 +43,7 @@ android {
 dependencies {
     implementation(core2.androidx.core.ktx)
     implementation(platform(core2.compose.bom))
-    implementation(core2.compose.foundation.android)
+    implementation(core2.compose.foundation)
     implementation(core2.compose.ui)
     implementation(core2.compose.ui.tooling.preview)
 

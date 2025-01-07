@@ -28,7 +28,10 @@ androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constr
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" } #TODO: To be removed when compose 1.8.0 is stable
+
+# TODO: When Compose 1.8.0 is stable, we can remove this alpha dependency, and instead use the BOM one that is in Core2.
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "composeAlpha" }
+
 compose-material3-adaptative-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 desugar-jdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJDK" }
