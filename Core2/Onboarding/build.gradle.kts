@@ -9,7 +9,7 @@ val sharedMinSdk: Int by rootProject.extra
 val sharedJavaVersion: JavaVersion by rootProject.extra
 
 android {
-    namespace = "com.infomaniak.library.onboarding"
+    namespace = "com.infomaniak.core2.onboarding"
     compileSdk = sharedCompileSdk
 
     defaultConfig {
