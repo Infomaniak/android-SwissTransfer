@@ -89,6 +89,24 @@ fun PasswordOptionAlertDialog(
 }
 
 @Composable
+fun DeeplinkPasswordAlertDialog(
+    password: GetSetCallbacks<String>,
+    closeAlertDialog: () -> Unit,
+    onConfirmation: () -> Unit,
+    isPasswordValid: () -> Boolean,
+) {
+
+    SwissTransferAlertDialog(
+        titleRes = R.string.sharePasswordTitle,
+        descriptionRes = R.string.deeplinkPasswordDescription,
+        onDismiss = closeAlertDialog,
+        onConfirmation = onConfirmation,
+    ) {
+        AnimatedPasswordInput(isChecked = true, password, isPasswordValid)
+    }
+}
+
+@Composable
 private fun ActivatePasswordSwitch(isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
