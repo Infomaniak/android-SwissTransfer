@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.content.Context
-import com.infomaniak.matomo.Matomo
+import com.infomaniak.core2.matomo.Matomo
 import org.matomo.sdk.Tracker
 
 object MatomoSwissTransfer : Matomo {

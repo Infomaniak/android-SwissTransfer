@@ -8,7 +8,7 @@ val sharedMinSdk: Int by rootProject.extra
 val sharedJavaVersion: JavaVersion by rootProject.extra
 
 android {
-    namespace = "com.infomaniak.matomo"
+    namespace = "com.infomaniak.core2.matomo"
     compileSdk = sharedCompileSdk
 
     defaultConfig {
