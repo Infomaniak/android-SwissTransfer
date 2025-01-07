@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -93,16 +94,52 @@ fun DeeplinkPasswordAlertDialog(
     password: GetSetCallbacks<String>,
     closeAlertDialog: () -> Unit,
     onConfirmation: () -> Unit,
-    isPasswordValid: () -> Boolean,
+    isError: () -> Boolean,
 ) {
+
+    var isLoading by remember { mutableStateOf(false) }
+    var hasPasswordChanged by remember { mutableStateOf(false) }
+
+    val shouldDisplayError = isError() && !hasPasswordChanged
+
+    fun onConfirm() {
+        hasPasswordChanged = false
+        isLoading = true
+        onConfirmation()
+    }
 
     SwissTransferAlertDialog(
         titleRes = R.string.sharePasswordTitle,
         descriptionRes = R.string.deeplinkPasswordDescription,
         onDismiss = closeAlertDialog,
-        onConfirmation = onConfirmation,
+        positiveButton = {
+            SwissTransferAlertDialogDefaults.ConfirmButton(
+                isEnabled = { !isLoading},
+                onClick = ::onConfirm,
+            )
+        },
+        negativeButton = { SwissTransferAlertDialogDefaults.CancelButton(onClick = closeAlertDialog) },
     ) {
-        AnimatedPasswordInput(isChecked = true, password, isPasswordValid)
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.settingsOptionPassword),
+            isPassword = true,
+            initialValue = password.get(),
+            imeAction = ImeAction.Done,
+            keyboardActions = KeyboardActions(onDone = { onConfirm() }),
+            isError = shouldDisplayError,
+            supportingText = {
+                Text(
+                    modifier = Modifier.alpha(shouldDisplayError.toFloat()),
+                    text = stringResource(R.string.errorIncorrectPassword),
+                )
+            },
+            onValueChange = {
+                isLoading = false
+                hasPasswordChanged = true
+                password.set(it)
+            },
+        )
     }
 }
 
