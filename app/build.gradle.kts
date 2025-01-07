@@ -99,14 +99,16 @@ sentry {
 }
 
 dependencies {
+
     implementation(project(":Core2"))
-    implementation(project(":Core2:Sentry"))
+    implementation(project(":Core2:AppIntegrity"))
+    implementation(project(":Core2:Compose:Core"))
     implementation(project(":Core2:Matomo"))
     implementation(project(":Core2:Network"))
-    implementation(project(":Core2:AppIntegrity"))
     implementation(project(":Core2:Onboarding"))
-    implementation(project(":Core2:Compose:Core"))
+    implementation(project(":Core2:Sentry"))
     implementation(project(":FileTypes"))
+
     implementation(kotlin("reflect"))
 
     implementation(libs.androidx.core.ktx)
