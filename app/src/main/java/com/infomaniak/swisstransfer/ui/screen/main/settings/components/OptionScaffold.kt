@@ -32,8 +32,10 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun OptionScaffold(
@@ -44,11 +46,13 @@ fun OptionScaffold(
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)?,
 ) {
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     SwissTransferScaffold(
         topBar = {
+            val navigationMenu = if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButton.backButton(navigateBack ?: {}) else null
             SwissTransferTopAppBar(
                 titleRes = topAppBarTitleRes,
-                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+                navigationMenu = navigationMenu,
             )
         },
     ) {
