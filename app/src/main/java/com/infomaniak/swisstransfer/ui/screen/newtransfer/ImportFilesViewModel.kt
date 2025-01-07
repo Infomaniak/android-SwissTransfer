@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.core2.isValidEmail
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile

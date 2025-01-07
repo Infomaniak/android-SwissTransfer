@@ -49,7 +49,7 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
 

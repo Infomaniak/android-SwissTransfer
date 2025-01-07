@@ -560,7 +560,6 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             shouldStartByPromptingUserForFiles = false,
             sendStatus = { SendStatus.Initial },
             sendTransfer = {},
-            isTransferStarted = { false },
             navigateToFilesDetails = {},
         )
     }

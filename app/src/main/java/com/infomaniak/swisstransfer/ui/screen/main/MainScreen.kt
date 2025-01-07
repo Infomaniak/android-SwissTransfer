@@ -69,7 +69,7 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
                 currentDestination = currentDestination,
                 onStartDestinationChanged = { lastStartDestination = it },
                 closeFilesDetails = { goBackToStartScreen(navController, lastStartDestination) },
-				isTransferDeepink = isTransferDeeplink,
+                isTransferDeeplink = isTransferDeeplink,
             )
         },
     )

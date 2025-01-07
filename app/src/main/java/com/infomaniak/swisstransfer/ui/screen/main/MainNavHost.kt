@@ -40,7 +40,6 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    isWindowSmall: Boolean,
     isTransferDeeplink: Boolean,
     onStartDestinationChanged: (MainNavigation) -> Unit,
     closeFilesDetails: () -> Unit,

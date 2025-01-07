@@ -22,14 +22,14 @@ import android.icu.text.NumberFormat
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
-import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
 import com.infomaniak.swisstransfer.R
 
 object HumanReadableSizeUtils {
 
-    private fun getHumanReadableSize(context: Context, sizeInBytes: Long) = context.formatShortFileSize(context, sizeInBytes)
+    fun getHumanReadableSize(context: Context, sizeInBytes: Long) = context.formatShortFileSize(sizeInBytes)
 
     private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
 

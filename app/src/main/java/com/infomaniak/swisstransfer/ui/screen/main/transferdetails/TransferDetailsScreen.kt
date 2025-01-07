@@ -65,7 +65,7 @@ fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
-    navigateToFilesDetails: (folderUuid: String) -> Unit,
+    navigateToFilesDetails: ((folderUuid: String) -> Unit)? = null,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -102,7 +102,6 @@ private fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
     downloadFiles: () -> Unit,
-    isFileChecked: (String) -> Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
     setFileCheckStatus: (String, Boolean) -> Unit,

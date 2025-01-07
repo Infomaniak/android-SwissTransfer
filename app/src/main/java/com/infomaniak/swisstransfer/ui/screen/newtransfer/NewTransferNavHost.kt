@@ -118,6 +118,8 @@ fun NewTransferNavHost(
                 navigateBackToImportFiles = {
                     navController.popBackStack(route = ImportFilesDestination, inclusive = false)
                 },
+            )
+        }
         composable<NewTransferFilesDetailsDestination> {
             val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
             NewTransferFilesDetailsScreen(
