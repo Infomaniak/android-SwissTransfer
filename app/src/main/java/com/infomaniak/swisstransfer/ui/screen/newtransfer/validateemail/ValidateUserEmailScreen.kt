@@ -111,9 +111,11 @@ fun HandleValidationSuccess(
     LaunchedEffect(sendStatus()) {
         when (val status = sendStatus()) {
             is TransferSendManager.SendStatus.Success -> navigateToUploadInProgress(status.totalSize)
-            is TransferSendManager.SendStatus.Failure,
-            is TransferSendManager.SendStatus.NoNetwork -> {
+            is TransferSendManager.SendStatus.Failure -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
+            }
+            is TransferSendManager.SendStatus.NoNetwork -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
             }
             else -> Unit
         }
