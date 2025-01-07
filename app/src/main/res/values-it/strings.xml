@@ -36,8 +36,10 @@
     <string name="contentDescriptionButtonRemoveRecipient">Rimuove %s</string>
     <string name="contentDescriptionButtonShowPassword">Mostra password</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
+    <string name="deeplinkPasswordDescription">Inserite la password che vi è stata fornita per scaricare questi file.</string>
     <string name="downloadedTransferLabel">Trasferimento scaricato: %d/%d</string>
     <string name="errorAppIntegrity">Il dispositivo non è riconosciuto come sicuro</string>
+    <string name="errorIncorrectPassword">Password errata</string>
     <string name="errorTransferPasswordLength">La password deve essere compresa tra 6 e 24 caratteri</string>
     <string name="errorUnknown">Si è verificato un errore</string>
     <string name="expiresIn">Scade tra %d giorni</string>
