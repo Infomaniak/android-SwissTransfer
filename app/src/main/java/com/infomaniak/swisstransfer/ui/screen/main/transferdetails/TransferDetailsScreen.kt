@@ -52,9 +52,11 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.shareText
 
 @Composable
@@ -72,6 +74,9 @@ fun TransferDetailsScreen(
 
     when (uiState) {
         is Delete -> navigateBack?.invoke()
+        is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
+            SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
+        }
         is Success -> TransferDetailsScreen(
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
@@ -101,6 +106,7 @@ private fun TransferDetailsScreen(
 ) {
 
     val context = LocalContext.current
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val transferRecipients: List<String> = emptyList() // TODO: Use real data
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -109,9 +115,10 @@ private fun TransferDetailsScreen(
 
     SwissTransferScaffold(
         topBar = {
+            val navigationMenu = if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButton.backButton(navigateBack ?: {}) else null
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
-                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+                navigationMenu = navigationMenu,
                 TopAppBarButton.downloadButton { downloadFiles() },
             )
         },
