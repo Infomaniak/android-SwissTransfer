@@ -41,7 +41,6 @@ fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
     isTransferDeeplink: Boolean,
-    onStartDestinationChanged: (MainNavigation) -> Unit,
     closeFilesDetails: () -> Unit,
 ) {
     NavHost(
@@ -51,7 +50,6 @@ fun MainNavHost(
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
         composable<SentDestination> {
-            onStartDestinationChanged(SentDestination)
             TransfersScreenWrapper(
                 direction = TransferDirection.SENT,
                 navigateToFilesDetails = { folderUuid ->
@@ -60,7 +58,6 @@ fun MainNavHost(
             )
         }
         receivedDestination {
-            onStartDestinationChanged(ReceivedDestination())
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(
                 direction = TransferDirection.RECEIVED,
