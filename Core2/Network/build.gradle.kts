@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(core2.plugins.kotlin.android)
 }
 
 val sharedCompileSdk: Int by rootProject.extra
@@ -36,5 +36,5 @@ android {
 dependencies {
     implementation(project(":Core2:Sentry"))
 
-    implementation(libs.androidx.core.ktx)
+    implementation(core2.androidx.core.ktx)
 }

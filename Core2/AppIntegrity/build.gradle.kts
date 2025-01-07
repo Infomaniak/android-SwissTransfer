@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(core2.plugins.kotlin.android)
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 

@@ -2,8 +2,8 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    alias(core2.plugins.kotlin.android)
+    alias(core2.plugins.compose.compiler)
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.sentry)
@@ -111,16 +111,16 @@ dependencies {
 
     implementation(kotlin("reflect"))
 
-    implementation(libs.androidx.core.ktx)
+    implementation(core2.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Compose
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.compose.bom))
+    implementation(platform(core2.compose.bom))
     implementation(libs.compose.foundation) // TODO: To be removed when compose 1.8.0 is stable
-    implementation(libs.compose.ui)
+    implementation(core2.compose.ui)
     implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.material3)
+    implementation(core2.compose.material3)
     implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
@@ -138,8 +138,8 @@ dependencies {
     implementation(libs.qrose)
 
     // Compose preview tools
-    implementation(libs.compose.ui.tooling.preview)
-    debugImplementation(libs.compose.ui.tooling)
+    implementation(core2.compose.ui.tooling.preview)
+    debugImplementation(core2.compose.ui.tooling)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -149,12 +149,12 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // Others
-    implementation(libs.kotlinx.serialization)
+    implementation(core2.kotlinx.serialization.json)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.recaptcha)
     implementation(libs.workmanager)
 
     // Test
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+    testImplementation(core2.junit)
+    androidTestImplementation(core2.androidx.junit)
 }

@@ -23,7 +23,6 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("core2") { from(files("Core2/gradle/core2.versions.toml")) }
-        create("filetypes") { from(files("FileTypes/gradle/filetypes.versions.toml")) }
     }
 }
 

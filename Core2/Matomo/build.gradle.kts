@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(core2.plugins.kotlin.android)
 }
 
 val sharedCompileSdk: Int by rootProject.extra
