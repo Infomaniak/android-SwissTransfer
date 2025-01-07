@@ -115,7 +115,7 @@ fun ImportFilesScreen(
                     )
                 )
 
-                if (selectedTransferType == TransferTypeUi.MAIL) {
+                if (selectedTransferType == TransferTypeUi.Mail) {
                     add(
                         TransferOptionState(
                             transferOptionType = TransferOptionType.LANGUAGE,
@@ -199,7 +199,7 @@ private fun ImportFilesScreen(
     snackbarHostState: SnackbarHostState? = null,
 ) {
 
-    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.MAIL } }
+    val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.Mail } }
     val areEmailsCorrects by remember {
         derivedStateOf {
             with(emailTextFieldCallbacks) {
@@ -527,7 +527,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             currentSessionFilesCount = { 0 },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
-            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.MAIL }, set = {}),
+            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             addFiles = {},
             closeActivity = {},

@@ -61,8 +61,8 @@ fun UploadSuccessEmailScreen(emails: List<String>, closeActivity: () -> Unit) {
 
             IllustratedMessageBlock(
                 icon = AppIllus.Beers.image(),
-                title = TransferTypeUi.MAIL.titleRes,
-                description = pluralStringResource(TransferTypeUi.MAIL.descriptionRes!!, emails.count()),
+                title = TransferTypeUi.Mail.titleRes,
+                description = pluralStringResource(TransferTypeUi.Mail.descriptionRes!!, emails.count()),
             )
 
             Spacer(Modifier.height(Margin.Medium))

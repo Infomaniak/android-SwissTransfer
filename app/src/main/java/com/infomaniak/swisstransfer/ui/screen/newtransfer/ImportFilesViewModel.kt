@@ -161,13 +161,13 @@ class ImportFilesViewModel @Inject constructor(
     private fun generateNewUploadSession(): NewUploadSession {
         return NewUploadSession(
             duration = selectedValidityPeriodOption.value.apiValue,
-            authorEmail = if (selectedTransferType.value == TransferTypeUi.MAIL) transferAuthorEmail.trim() else "",
+            authorEmail = if (selectedTransferType.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
             authorEmailToken = null,
             password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
             message = transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
-            recipientsEmails = if (selectedTransferType.value == TransferTypeUi.MAIL) validatedRecipientsEmails else emptySet(),
+            recipientsEmails = if (selectedTransferType.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
                     override val path: String? = null
@@ -182,7 +182,7 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     //region Transfer Type
-    val selectedTransferType = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.QR_CODE)
+    val selectedTransferType = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.QrCode)
 
     fun selectTransferType(type: TransferTypeUi) {
         savedStateHandle[SELECTED_TRANSFER_TYPE] = type
