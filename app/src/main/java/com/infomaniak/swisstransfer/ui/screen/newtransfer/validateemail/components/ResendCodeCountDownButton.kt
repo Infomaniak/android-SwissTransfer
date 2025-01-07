@@ -24,34 +24,51 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.seconds
 
-private const val RESEND_EMAIL_CODE_COOLDOWN = 30
+private val RESEND_EMAIL_CODE_COOLDOWN = 30.seconds
 
 @Composable
 fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: () -> Unit, enabled: () -> Boolean) {
     var timeLeft by rememberSaveable { mutableIntStateOf(0) }
+    var plannedEnd by rememberSaveable { mutableLongStateOf(0) }
     var isRunning by rememberSaveable { mutableStateOf(false) }
 
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
     fun startTimer() {
-        timeLeft = RESEND_EMAIL_CODE_COOLDOWN
+        plannedEnd = (Clock.System.now() + RESEND_EMAIL_CODE_COOLDOWN).epochSeconds
         isRunning = true
     }
 
     LaunchedEffect(isRunning) {
-        if (isRunning) {
-            while (timeLeft > 0) {
-                delay(1.seconds)
-                timeLeft--
+        if (isRunning.not()) return@LaunchedEffect
+
+        lifecycle.currentStateFlow
+            .map { it.isAtLeast(Lifecycle.State.STARTED) }
+            .distinctUntilChanged()
+            .collectLatest { isStarted ->
+                if (isStarted.not()) return@collectLatest
+
+                do {
+                    timeLeft = timeUntil(plannedEnd).coerceAtLeast(0).toInt()
+                    delay(1.seconds)
+                } while (plannedEnd.isInTheFuture())
+
+                isRunning = false
             }
-            isRunning = false
-        }
     }
 
     if (timeLeft == 0) {
@@ -76,6 +93,9 @@ fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: 
     }
 }
 
+private fun timeUntil(target: Long): Long = target - Clock.System.now().epochSeconds
+
+private fun Long.isInTheFuture(): Boolean = this >= Clock.System.now().epochSeconds
 
 @PreviewLightAndDark
 @Composable
