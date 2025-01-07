@@ -21,10 +21,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
-import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -32,7 +30,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager
 ) : ViewModel() {
@@ -43,7 +40,7 @@ class ValidateUserEmailViewModel @Inject constructor(
     val sendStatus by transferSendManager::sendStatus
 
     fun validateEmailWithOtpCode(email: String, otpCode: String) {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             _uiState.value = ValidateEmailUiState.Loading
 
             runCatching {
@@ -65,7 +62,7 @@ class ValidateUserEmailViewModel @Inject constructor(
     }
 
     fun resendEmailCode(email: String) {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             uploadManager.resendEmailCode(email)
         }
     }
