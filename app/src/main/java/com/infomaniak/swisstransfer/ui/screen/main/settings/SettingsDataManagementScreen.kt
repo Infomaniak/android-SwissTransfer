@@ -46,9 +46,11 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.theme.Dimens
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openUrl
 
 @Composable
@@ -58,12 +60,14 @@ fun SettingsDataManagementScreen(
 ) {
 
     val context = LocalContext.current
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     SwissTransferScaffold(
         topBar = {
+            val navigationMenu = if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButton.backButton(navigateBack ?: {}) else null
             SwissTransferTopAppBar(
                 titleRes = R.string.settingsOptionDataManagement,
-                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+                navigationMenu = navigationMenu,
             )
         },
     ) {
