@@ -41,11 +41,10 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    largeWindowTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
-    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, largeWindowTopAppBar, content)
+    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
 }
 
 @Composable
@@ -53,13 +52,11 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    largeWindowTopAppBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     Column {
-        if (windowAdaptiveInfo.isWindowLarge()) largeWindowTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
             if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
