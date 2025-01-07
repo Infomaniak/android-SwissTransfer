@@ -21,12 +21,12 @@ import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
 import com.infomaniak.core2.appintegrity.exceptions.IntegrityException
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
+import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
-import com.infomaniak.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped

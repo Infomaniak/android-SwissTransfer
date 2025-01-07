@@ -26,7 +26,7 @@ import com.google.android.play.core.integrity.StandardIntegrityManager.*
 import com.infomaniak.core2.appintegrity.exceptions.IntegrityException
 import com.infomaniak.core2.appintegrity.exceptions.NetworkException
 import com.infomaniak.core2.appintegrity.exceptions.UnexpectedApiErrorFormatException
-import com.infomaniak.sentry.SentryLog
+import com.infomaniak.core2.sentry.SentryLog
 import io.sentry.Sentry
 import io.sentry.SentryLevel
 import kotlinx.coroutines.CompletableDeferred

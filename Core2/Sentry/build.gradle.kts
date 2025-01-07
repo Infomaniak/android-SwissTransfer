@@ -8,7 +8,7 @@ val sharedMinSdk: Int by rootProject.extra
 val sharedJavaVersion: JavaVersion by rootProject.extra
 
 android {
-    namespace = "com.infomaniak.sentry"
+    namespace = "com.infomaniak.core2.sentry"
     compileSdk = sharedCompileSdk
 
     defaultConfig {
