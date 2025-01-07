@@ -27,11 +27,13 @@ import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import io.sentry.Sentry
 import io.sentry.SentryLevel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.invoke
@@ -45,6 +47,7 @@ import javax.inject.Inject
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val importLocalStorage: ImportLocalStorage,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
 
     private val filesToImportChannel: TransferCountChannel = TransferCountChannel()
@@ -92,7 +95,7 @@ class ImportationFilesManager @Inject constructor(
     suspend fun continuouslyCopyPickedFilesToLocalStorage() {
         filesToImportChannel.consume { fileToImport ->
             SentryLog.i(TAG, "Importing ${fileToImport.uri}")
-            val copiedFile = Dispatchers.IO {
+            val copiedFile = ioDispatcher {
                 copyUriDataLocally(fileToImport.uri, fileToImport.fileName).onFailure {
                     reportFailedImportation(fileToImport, it)
                 }.getOrNull()
