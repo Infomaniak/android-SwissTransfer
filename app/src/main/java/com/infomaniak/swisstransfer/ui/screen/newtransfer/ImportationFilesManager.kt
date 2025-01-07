@@ -189,13 +189,15 @@ class ImportationFilesManager @Inject constructor(
         return getColumnIndex(column).takeIf { it != -1 }
     }
 
-    private fun reportFailedImportation(file: PickedFile, throwable: Throwable) {
+    private suspend fun reportFailedImportation(file: PickedFile, throwable: Throwable) {
         SentryLog.e(TAG, "Failed importation of ${file.uri}", throwable)
 
         //TODO: Make more precise error messages (especially for the low storage issue).
         val errorMessage = appContext.getString(R.string.cantImportFileX, file.fileName)
-        @OptIn(UnreliableToastApi::class)
-        longToast(errorMessage) //TODO: Find a better way to show the error in an actionable way.
+        Dispatchers.Main {
+            @OptIn(UnreliableToastApi::class)
+            longToast(errorMessage) //TODO: Find a better way to show the error in an actionable way.
+        }
     }
 
     data class PickedFile(val fileName: String, val fileSizeInBytes: Long, val uri: Uri)
