@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -122,7 +121,6 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            largeWindowTopAppBar = { BrandTopAppBar() },
             content = {},
         )
     }
@@ -136,7 +134,6 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            largeWindowTopAppBar = { BrandTopAppBar() },
             content = {},
         )
     }
