@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -122,24 +121,45 @@ private fun TransferDetailsScreen(
 
             FilesList(getTransfer, transferRecipients, isMultiselectOn, getCheckedFiles, setFileCheckStatus)
 
-            BottomBar(
-                direction = direction,
-                isMultiselectOn = { isMultiselectOn },
-                shouldShowPassword = { getTransfer().password?.isNotEmpty() == true },
-                onClick = { item ->
-                    when (item) {
-                        BottomBarItem.SHARE -> context.shareText(transferUrl)
-                        BottomBarItem.QR_CODE -> showQrCodeBottomSheet = true
-                        BottomBarItem.PASSWORD -> showPasswordBottomSheet = true
-                        BottomBarItem.DOWNLOAD -> downloadFiles()
-                        BottomBarItem.MULTISELECT_DOWNLOAD -> {
-                            // TODO: Move the multiselect elsewhere, and implement this feature
-                            // clearCheckedFiles() // Disabled for now because it's not the correct spot to do this
-                            // isMultiselectOn = false // Disabled for now because it's not the correct spot to do this
-                        }
+            BottomBar {
+                if (isMultiselectOn) BottomBarButton(
+                    icon = AppIcons.ArrowDownBar,
+                    labelResId = R.string.buttonDownloadSelected,
+                    onClick = {
+                        // TODO: Move the multiselect elsewhere, and implement this feature
+                        // clearCheckedFiles() // Disabled for now because it's not the correct spot to do this
+                        // isMultiselectOn = false // Disabled for now because it's not the correct spot to do this
                     }
-                },
-            )
+                ) else {
+                    BottomBarButton(
+                        icon = AppIcons.Share,
+                        labelResId = R.string.buttonShare,
+                        onClick = { context.shareText(transferUrl) }
+                    )
+
+                    when (direction) {
+                        TransferDirection.SENT -> {
+                            BottomBarButton(
+                                icon = AppIcons.QrCode,
+                                labelResId = R.string.transferTypeQrCode,
+                                onClick = { showQrCodeBottomSheet = true }
+                            )
+
+                            val shouldShowPassword = getTransfer().password?.isNotEmpty() == true
+                            if (shouldShowPassword) BottomBarButton(
+                                icon = AppIcons.LockedTextField,
+                                labelResId = R.string.settingsOptionPassword,
+                                onClick = { showPasswordBottomSheet = true }
+                            )
+                        }
+                        TransferDirection.RECEIVED -> BottomBarButton(
+                            icon = AppIcons.ArrowDownBar,
+                            labelResId = R.string.buttonDownload,
+                            onClick = { downloadFiles() }
+                        )
+                    }
+                }
+            }
         }
 
         QrCodeBottomSheet(
@@ -230,65 +250,41 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-private fun BottomBar(
-    direction: TransferDirection,
-    isMultiselectOn: () -> Boolean,
-    shouldShowPassword: () -> Boolean,
-    onClick: (BottomBarItem) -> Unit,
+private fun BottomBar(content: @Composable() (RowScope.() -> Unit)) = Column(
+    modifier = Modifier
+        .height(80.dp)
+        .background(SwissTransferTheme.colors.navigationItemBackground),
 ) {
-    Column(
-        modifier = Modifier
-            .height(80.dp)
-            .background(SwissTransferTheme.colors.navigationItemBackground),
+    HorizontalDivider()
+    Row(
+        modifier = Modifier.padding(horizontal = Margin.Micro),
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        HorizontalDivider()
-        Row(
-            modifier = Modifier.padding(horizontal = Margin.Micro),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            if (isMultiselectOn()) {
-                BottomBarButton(BottomBarItem.MULTISELECT_DOWNLOAD, onClick)
-            } else {
-                BottomBarButton(BottomBarItem.SHARE, onClick)
-
-                when (direction) {
-                    TransferDirection.SENT -> {
-                        BottomBarButton(BottomBarItem.QR_CODE, onClick)
-
-                        if (shouldShowPassword()) BottomBarButton(BottomBarItem.PASSWORD, onClick)
-                    }
-                    TransferDirection.RECEIVED -> BottomBarButton(BottomBarItem.DOWNLOAD, onClick)
-                }
-            }
-        }
+        content()
     }
 }
 
 @Composable
-private fun RowScope.BottomBarButton(item: BottomBarItem, onClick: (BottomBarItem) -> Unit) {
-    Button(
-        modifier = Modifier.weight(1.0f),
-        colors = ButtonType.TERTIARY.buttonColors(),
-        onClick = { onClick(item) },
+private fun RowScope.BottomBarButton(
+    icon: ImageVector,
+    labelResId: Int,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) = Button(
+    modifier = Modifier.weight(1.0f),
+    colors = ButtonType.TERTIARY.buttonColors(),
+    enabled = enabled,
+    onClick = { onClick() },
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(item.icon, null)
-            Spacer(Modifier.height(Margin.Micro))
-            Text(text = stringResource(item.label))
-        }
+        Icon(icon, null)
+        Spacer(Modifier.height(Margin.Micro))
+        Text(text = stringResource(labelResId))
     }
-}
-
-private enum class BottomBarItem(@StringRes val label: Int, val icon: ImageVector) {
-    SHARE(R.string.buttonShare, AppIcons.Share),
-    QR_CODE(R.string.transferTypeQrCode, AppIcons.QrCode),
-    PASSWORD(R.string.settingsOptionPassword, AppIcons.LockedTextField),
-    DOWNLOAD(R.string.buttonDownload, AppIcons.ArrowDownBar),
-    MULTISELECT_DOWNLOAD(R.string.buttonDownloadSelected, AppIcons.ArrowDownBar),
 }
 
 @PreviewAllWindows
