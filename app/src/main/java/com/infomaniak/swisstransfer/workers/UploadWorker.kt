@@ -153,7 +153,7 @@ class UploadWorker @AssistedInject constructor(
                     return Success(
                         uploadedSize = outputData.getLong(UPLOADED_BYTES_TAG, 0L),
                         transferUrl = outputData.getString(TRANSFER_UUID_TAG)
-                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null
+                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null,
                     )
                 }
             }
