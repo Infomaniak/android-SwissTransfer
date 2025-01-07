@@ -122,15 +122,12 @@ fun HandleValidationSuccess(
 
 @Composable
 fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHostState: SnackbarHostState) {
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     LaunchedEffect(uiState()) {
         if (uiState() == ValidateEmailUiState.UnknownError) {
             SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
-            scope.launch {
-                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
-            }
+            snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
         }
     }
 }
