@@ -65,7 +65,9 @@ sealed class MainNavigation : NavigationDestination() {
         private val TAG = MainNavigation::class.java.simpleName
         val startDestination = SentDestination
 
-        // If these classes have to be renamed, they need to be renamed here too.
+        // Because of the minification, we can't directly use the classes names here. It won't work in production environment.
+        // So, if these classes have to be renamed, they need to be renamed here too.
+        // Don't worry if you forget, there's a unit test about that.
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
         private const val settingsDestinationName = "SettingsDestination"
