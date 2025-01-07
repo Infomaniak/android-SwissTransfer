@@ -82,7 +82,9 @@ private fun ReceivedScreen(
             val title = stringResource(R.string.receivedFilesTitle)
             if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
         },
-        floatingActionButton = { ReceivedEmptyFab { areTransfersEmpty } },
+        floatingActionButton = {
+            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab { areTransfersEmpty }
+        },
     ) {
         if (areTransfersEmpty) {
             val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
