@@ -36,19 +36,23 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.*
-import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 
 @Composable
 fun SettingsScreen(
@@ -60,8 +64,14 @@ fun SettingsScreen(
     getSelectedSetting: () -> SettingsOptionScreens?,
 ) {
     val selectedSetting = getSelectedSetting()
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-    BrandTopAppBarScaffold {
+    SwissTransferScaffold(
+        topBar = {
+            val title = stringResource(R.string.settingsTitle)
+            if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
+        }
+    ) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())

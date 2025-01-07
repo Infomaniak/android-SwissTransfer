@@ -40,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.images.icons.sentry.Sentry
 import com.infomaniak.swisstransfer.ui.images.illus.dataProtection.DataProtection
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
@@ -59,8 +59,8 @@ fun SettingsDataManagementScreen(
 
     val context = LocalContext.current
 
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = {
+    SwissTransferScaffold(
+        topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.settingsOptionDataManagement,
                 navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
