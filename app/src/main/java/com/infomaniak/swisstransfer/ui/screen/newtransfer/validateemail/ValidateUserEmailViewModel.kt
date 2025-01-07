@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +49,7 @@ class ValidateUserEmailViewModel @Inject constructor(
             }.onFailure {
                 _uiState.value = when (it) {
                     is EmailValidationException.InvalidPasswordException -> ValidateEmailUiState.InvalidVerificationCode
+                    is NetworkException -> ValidateEmailUiState.NoNetwork
                     else -> ValidateEmailUiState.UnknownError
                 }
             }.onSuccess { token ->
@@ -68,6 +70,6 @@ class ValidateUserEmailViewModel @Inject constructor(
     }
 
     enum class ValidateEmailUiState {
-        Default, Loading, InvalidVerificationCode, UnknownError
+        Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
     }
 }

@@ -75,7 +75,7 @@ fun ValidateUserEmailScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    HandleValidationSuccess({ sendStatus }, navigateToUploadInProgress, snackbarHostState)
+    HandleValidationStatus({ sendStatus }, navigateToUploadInProgress, snackbarHostState)
 
     HandleUnknownValidationError({ uiState }, snackbarHostState)
 
@@ -102,7 +102,7 @@ fun ValidateUserEmailScreen(
 }
 
 @Composable
-fun HandleValidationSuccess(
+fun HandleValidationStatus(
     sendStatus: () -> TransferSendManager.SendStatus,
     navigateToUploadInProgress: (totalSize: Long) -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -127,9 +127,17 @@ fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHo
     val context = LocalContext.current
 
     LaunchedEffect(uiState()) {
-        if (uiState() == ValidateEmailUiState.UnknownError) {
-            SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
-            snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
+        when (uiState()) {
+            ValidateEmailUiState.UnknownError -> {
+                SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
+                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
+            }
+            ValidateEmailUiState.NoNetwork -> {
+                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
+            }
+            ValidateEmailUiState.Default,
+            ValidateEmailUiState.Loading,
+            ValidateEmailUiState.InvalidVerificationCode -> Unit
         }
     }
 }
