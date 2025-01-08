@@ -59,12 +59,41 @@ fun Context.openAppNotificationSettings() {
     }.also(::startActivity)
 }
 
+
+/**
+ * This method opens a chooser to let the user open an email app as if he clicked on it on his home screen, with an ACTION_MAIN.
+ *
+ * Create a chooser with two parts:
+ * 1) The mainActionIntent which lists email apps with a single intent
+ * 2) A list of additional intents `extraEmailAppIntents` added using [Intent.EXTRA_INITIAL_INTENTS]
+ *
+ * When creating a chooser after Android 10 a maximum of 3 intents can be provided to the chooser. Relying on 1) lets us display
+ * more than 3 apps but not many email apps support it. To counter this, we add two more intents from the list of all available
+ * email apps using [Intent.EXTRA_INITIAL_INTENTS].
+ */
 fun Context.openMailApp() {
-    val intent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL).apply {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    // Returns the list of unique package names from the list of ResolveInfo that support the input Intent
+    fun queryIntentSupportedPackageNames(intent: Intent): Set<String> = buildSet {
+        packageManager
+            .queryIntentActivities(intent, 0)
+            .forEach { add(it.activityInfo.packageName) }
     }
 
-    safeStartActivity(Intent.createChooser(intent, getString(R.string.buttonOpenMailApp)))
+    val mainActionIntent = Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    val mainPackageNames = queryIntentSupportedPackageNames(mainActionIntent)
+
+    val extraEmailAppIntents = queryIntentSupportedPackageNames(Intent(Intent.ACTION_VIEW, Uri.parse("mailto:")))
+        .filter { it !in mainPackageNames }
+        .mapNotNull { packageName ->
+            packageManager.getLaunchIntentForPackage(packageName)
+        }
+
+    val chooserIntent = Intent.createChooser(mainActionIntent, getString(R.string.buttonOpenMailApp)).apply {
+        putExtra(Intent.EXTRA_INITIAL_INTENTS, extraEmailAppIntents.toTypedArray())
+    }
+    safeStartActivity(chooserIntent)
 }
 
 fun Context.copyText(text: String, showSnackbar: (String) -> Unit) {
