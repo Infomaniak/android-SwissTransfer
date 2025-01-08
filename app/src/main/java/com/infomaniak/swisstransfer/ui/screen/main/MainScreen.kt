@@ -22,8 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
@@ -41,16 +39,6 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
 
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf { navBackStackEntry?.toMainDestination() ?: MainNavigation.startDestination }
-    }
-
-    val navBackStackEntries: List<NavBackStackEntry> by navController.currentBackStack.collectAsStateWithLifecycle()
-
-    val previousDestination: MainNavigation by remember(navBackStackEntries) {
-        derivedStateOf {
-            navBackStackEntries
-                .lastOrNull { it.toMainDestination() !is MainNavigation.FilesDetailsDestination }
-                ?.toMainDestination() ?: MainNavigation.startDestination
-        }
     }
 
     MainScaffold(

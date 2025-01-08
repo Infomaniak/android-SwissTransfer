@@ -57,10 +57,6 @@ sealed class MainNavigation : NavigationDestination() {
         }
     }
 
-    // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
-    @Serializable
-    data class FilesDetailsDestination(val folderUuid: String? = null) : MainNavigation()
-
     @Serializable
     data object SettingsDestination : MainNavigation()
 
@@ -74,12 +70,10 @@ sealed class MainNavigation : NavigationDestination() {
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
         private const val settingsDestinationName = "SettingsDestination"
-        private const val filesDetailsDestinationName = "FilesDetailsDestination"
         val destinationsNames = listOf(
             sentDestinationName,
             receivedDestinationName,
             settingsDestinationName,
-            filesDetailsDestinationName,
         )
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
@@ -89,7 +83,6 @@ sealed class MainNavigation : NavigationDestination() {
                     sentDestinationName -> this.toRoute<SentDestination>()
                     receivedDestinationName -> this.toRoute<ReceivedDestination>()
                     settingsDestinationName -> this.toRoute<SettingsDestination>()
-                    filesDetailsDestinationName -> this.toRoute<FilesDetailsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
@@ -97,8 +90,6 @@ sealed class MainNavigation : NavigationDestination() {
                 null
             }
         }
-
-        fun MainNavigation.toRoute() = javaClass.canonicalName?.toString() ?: ""
     }
 }
 
