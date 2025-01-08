@@ -33,15 +33,12 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
-import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
     isTransferDeeplink: Boolean,
-    closeFilesDetails: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -77,7 +74,7 @@ fun MainNavHost(
                 folderUuid = filesDetailsDestination.folderUuid,
                 navigateBack = { navController.popBackStack() },
                 close = {
-                    closeFilesDetails()
+                    //closeFilesDetails()
                 },
                 withFilesSize = false,
                 withSpaceLeft = false,

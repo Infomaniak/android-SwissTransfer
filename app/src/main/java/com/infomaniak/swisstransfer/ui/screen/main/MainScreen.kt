@@ -24,12 +24,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toMainDestination
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toRoute
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -58,36 +56,7 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        /*windowTopAppBar = {
-            // This is temporary to fix an issue with the animation when displaying the FilesDetailsScreen
-            if (LocalWindowAdaptiveInfo.current.isWindowLarge()) {
-                if (currentDestination is MainNavigation.FilesDetailsDestination) {
-                    SwissTransferTopAppBar(
-                        navigationMenu = TopAppBarButton.backButton { navController.popBackStack() },
-                        actionMenus = arrayOf(TopAppBarButton.closeButton {
-                            goBackToStartScreen(navController, previousDestination)
-                        }),
-                    )
-                } else {
-                    BrandTopAppBar()
-                }
-            }
-        },*/
-        content = {
-            MainNavHost(
-                navController = navController,
-                currentDestination = currentDestination,
-                closeFilesDetails = { goBackToStartScreen(navController, previousDestination) },
-                isTransferDeeplink = isTransferDeeplink,
-            )
-        },
-    )
-}
-
-private fun goBackToStartScreen(navController: NavController, previousDestination: MainNavigation) {
-    navController.popBackStack(
-        route = previousDestination.toRoute(),
-        inclusive = false,
+        content = { MainNavHost(navController, currentDestination, isTransferDeeplink) },
     )
 }
 

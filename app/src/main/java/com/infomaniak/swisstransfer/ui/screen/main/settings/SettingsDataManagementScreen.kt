@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.icons.matomo.Matomo
@@ -64,10 +64,9 @@ fun SettingsDataManagementScreen(
 
     SwissTransferScaffold(
         topBar = {
-            val navigationMenu = if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButton.backButton(navigateBack ?: {}) else null
             SwissTransferTopAppBar(
                 titleRes = R.string.settingsOptionDataManagement,
-                navigationMenu = navigationMenu,
+                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
     ) {

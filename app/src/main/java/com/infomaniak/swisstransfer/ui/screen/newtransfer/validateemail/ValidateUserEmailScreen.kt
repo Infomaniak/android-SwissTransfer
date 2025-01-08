@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
@@ -163,8 +163,8 @@ private fun ValidateUserEmailScreen(
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.transferTypeScreenTitle,
-                navigationMenu = TopAppBarButton.backButton(navigateBack),
-                TopAppBarButton.closeButton(closeActivity)
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
+                actions = { TopAppBarButtons.Close(onClick = closeActivity) },
             )
         },
         topButton = {

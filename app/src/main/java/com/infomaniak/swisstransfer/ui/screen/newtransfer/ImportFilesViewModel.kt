@@ -80,6 +80,7 @@ class ImportFilesViewModel @Inject constructor(
         )
 
     private val loadFilesFlow = MutableSharedFlow<String?>(1)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val files = loadFilesFlow.flatMapLatest { folderUuid ->
         if (folderUuid == null) {
@@ -89,7 +90,6 @@ class ImportFilesViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    val failedFiles = importationFilesManager.failedFiles // TODO ? (unused)
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 

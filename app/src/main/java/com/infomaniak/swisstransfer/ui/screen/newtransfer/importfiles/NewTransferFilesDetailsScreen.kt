@@ -27,8 +27,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -77,7 +75,7 @@ private fun NewTransferFilesDetailsScreen(
 ) {
     Scaffold(
         topBar = {
-            SwissTransferTopAppBar(navigationMenu = TopAppBarButton.backButton { navigateBack() })
+            //SwissTransferTopAppBar(navigationMenu = TopAppBarButton.backButton { navigateBack() })
         }
     ) { paddingValues ->
         FilesDetailsScreen(

@@ -102,7 +102,7 @@ dependencies {
 
     implementation(project(":Core2"))
     implementation(project(":Core2:AppIntegrity"))
-    implementation(project(":Core2:Compose:Core"))
+    implementation(project(":Core2:Compose:Basics"))
     implementation(project(":Core2:FileTypes"))
     implementation(project(":Core2:Matomo"))
     implementation(project(":Core2:Network"))
@@ -153,6 +153,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.recaptcha)
     implementation(libs.workmanager)
+    implementation(core2.splitties.toast)
 
     // Test
     testImplementation(core2.junit)
