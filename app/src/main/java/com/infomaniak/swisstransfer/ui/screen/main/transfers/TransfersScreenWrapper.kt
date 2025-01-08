@@ -33,10 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
-import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
+import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -172,13 +169,11 @@ private fun FilesDetailsScreen(
     navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
     FilesDetailsScreen(
-        navigateToDetails = { folderUuid ->
-            navigateToFilesDetails(folderUuid)
+        navigateToDetails = { selectedFolderUuid ->
+            navigateToFilesDetails(selectedFolderUuid)
         },
         folderUuid = folderUuid,
-        navigateBack = {
-            navigator.navigateBack()
-        },
+        navigateBack = { navigator.popBackStack() },
         close = {
             //closeFilesDetails()
         },
