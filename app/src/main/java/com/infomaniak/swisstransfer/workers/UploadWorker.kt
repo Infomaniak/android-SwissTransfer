@@ -25,7 +25,7 @@ import androidx.work.WorkInfo.State
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
-import com.infomaniak.sentry.SentryLog
+import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
