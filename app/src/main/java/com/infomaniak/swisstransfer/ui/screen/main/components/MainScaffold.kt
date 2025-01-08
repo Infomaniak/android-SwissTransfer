@@ -48,7 +48,7 @@ fun MainScaffold(
         navType = navType,
         currentDestination = currentDestination,
         navigateToSelectedItem = navController::navigateToSelectedItem,
-        windowTopAppBar = windowTopAppBar,
+        //windowTopAppBar = windowTopAppBar,
         content = content
     )
 }

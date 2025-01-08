@@ -76,11 +76,11 @@ sealed class MainNavigation : NavigationDestination() {
         private const val settingsDestinationName = "SettingsDestination"
         private const val filesDetailsDestinationName = "FilesDetailsDestination"
         val destinationsNames = listOf(
-			sentDestinationName,
-			receivedDestinationName,
-			settingsDestinationName,
-			filesDetailsDestinationName,
-		)
+            sentDestinationName,
+            receivedDestinationName,
+            settingsDestinationName,
+            filesDetailsDestinationName,
+        )
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {

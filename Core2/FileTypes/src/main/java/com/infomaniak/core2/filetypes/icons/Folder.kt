@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.library.filetypes.FileTypeIcons
+import com.infomaniak.core2.filetypes.FileTypeIcons
 
 internal val FileTypeIcons.Folder: ImageVector
     get() {

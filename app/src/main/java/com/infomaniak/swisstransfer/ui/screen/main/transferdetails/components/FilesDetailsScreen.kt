@@ -15,6 +15,7 @@ import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.FilesSize
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -23,7 +24,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun FilesDetailsScreen(
-    shouldDisplayTopAppBar: Boolean,
     paddingValues: PaddingValues = PaddingValues(0.dp),
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     folderUuid: String? = null,
@@ -31,7 +31,7 @@ fun FilesDetailsScreen(
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
-    navigateBack: (() -> Unit),
+    navigateBack: () -> Unit,
     close: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
@@ -39,27 +39,29 @@ fun FilesDetailsScreen(
 
     if (files?.isEmpty() == true) navigateBack()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(folderUuid) {
         importFilesViewModel.loadFiles(folderUuid)
     }
 
     files?.let {
-        Column {
-            if (shouldDisplayTopAppBar) {
+        SwissTransferScaffold(
+            topBar = {
                 SwissTransferTopAppBar(
-                    navigationMenu = TopAppBarButton.backButton { navigateBack() },
+                    navigationMenu = TopAppBarButton.backButton(navigateBack),
                     actionMenus = arrayOf(TopAppBarButton.closeButton { close() }),
                 )
+            },
+        ) {
+            Column {
+                FilesDetailsScreen(
+                    paddingValues = paddingValues,
+                    files = it,
+                    navigateToDetails = navigateToDetails,
+                    withFileSize = withFilesSize,
+                    withSpaceLeft = withSpaceLeft,
+                    onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+                )
             }
-
-            FilesDetailsScreen(
-                paddingValues = paddingValues,
-                files = it,
-                navigateToDetails = navigateToDetails,
-                withFileSize = withFilesSize,
-                withSpaceLeft = withSpaceLeft,
-                onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
-            )
         }
     }
 }

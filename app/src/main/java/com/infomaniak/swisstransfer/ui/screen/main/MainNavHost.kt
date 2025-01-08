@@ -82,7 +82,6 @@ fun MainNavHost(
                 withFilesSize = false,
                 withSpaceLeft = false,
                 withFileDelete = false,
-                shouldDisplayTopAppBar = LocalWindowAdaptiveInfo.current.isWindowSmall(),
             )
         }
     }

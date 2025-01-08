@@ -17,17 +17,15 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
+import FilesDetailsScreen
 import android.os.Parcelable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -42,9 +40,11 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaff
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -74,7 +74,7 @@ fun TransfersScreenWrapper(
             )
         },
         detailPane = {
-            DetailPane(navigator = this, hasTransfer = { hasTransfer }, navigateToFilesDetails)
+            DetailPane(navigator = this, hasTransfer = { hasTransfer })
         },
     )
 }
@@ -125,6 +125,11 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFilesDetails(folderUuid: String) {
+    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(folderUuid = folderUuid))
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUuid(): String? {
     return currentDestination?.content?.transferUuid
 }
@@ -134,21 +139,52 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     hasTransfer: () -> Boolean,
-    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
-
     val destinationContent = navigator.safeCurrentContent()
 
     if (destinationContent == null) {
         NoSelectionEmptyState(hasTransfer())
     } else {
-        TransferDetailsScreen(
-            transferUuid = destinationContent.transferUuid,
-            direction = destinationContent.direction,
-            navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
-            navigateToFilesDetails = navigateToFilesDetails,
-        )
+
+        if (destinationContent.folderUuid != null) {
+            FilesDetailsScreen(navigator, destinationContent.folderUuid) {
+                navigator.navigateToFilesDetails(it)
+            }
+        } else {
+            TransferDetailsScreen(
+                transferUuid = destinationContent.transferUuid ?: "", //TODO to modified
+                direction = destinationContent.direction ?: TransferDirection.RECEIVED, //TODO to modified
+                navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+                navigateToFilesDetails = {
+                    navigator.navigateToFilesDetails(it)
+                },
+            )
+        }
     }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun FilesDetailsScreen(
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    folderUuid: String,
+    navigateToFilesDetails: (fileUuid: String) -> Unit,
+) {
+    FilesDetailsScreen(
+        navigateToDetails = { folderUuid ->
+            navigateToFilesDetails(folderUuid)
+        },
+        folderUuid = folderUuid,
+        navigateBack = {
+            navigator.navigateBack()
+        },
+        close = {
+            //closeFilesDetails()
+        },
+        withFilesSize = false,
+        withSpaceLeft = false,
+        withFileDelete = false,
+    )
 }
 
 @Composable
@@ -172,8 +208,9 @@ private fun NoSelectionEmptyState(hasTransfers: Boolean) {
 
 @Parcelize
 private data class DestinationContent(
-    val direction: TransferDirection,
-    val transferUuid: String,
+    val direction: TransferDirection? = null,
+    val transferUuid: String? = null,
+    val folderUuid: String? = null,
 ) : Parcelable
 
 @PreviewAllWindows
