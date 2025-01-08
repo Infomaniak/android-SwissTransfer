@@ -26,14 +26,19 @@ import androidx.core.net.toUri
 import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import io.sentry.Sentry
 import io.sentry.SentryLevel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.invoke
+import splitties.toast.UnreliableToastApi
+import splitties.toast.longToast
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
@@ -42,6 +47,7 @@ import javax.inject.Inject
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val importLocalStorage: ImportLocalStorage,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
 
     private val filesToImportChannel: TransferCountChannel = TransferCountChannel()
@@ -50,9 +56,6 @@ class ImportationFilesManager @Inject constructor(
 
     private val _importedFiles = FilesMutableStateFlow()
     val importedFiles = _importedFiles.flow
-
-    private val _failedFiles = MutableSharedFlow<PickedFile>()
-    val failedFiles = _failedFiles.asSharedFlow()
 
     // Importing a file locally can take up time. We can't base the list of already used names on _importedFiles's value because a
     // new import with the same name could occur while the file is still importing. This would lead to a name collision.
@@ -92,12 +95,11 @@ class ImportationFilesManager @Inject constructor(
     suspend fun continuouslyCopyPickedFilesToLocalStorage() {
         filesToImportChannel.consume { fileToImport ->
             SentryLog.i(TAG, "Importing ${fileToImport.uri}")
-            val copiedFile = copyUriDataLocally(fileToImport.uri, fileToImport.fileName)
-
-            if (copiedFile == null) {
-                reportFailedImportation(fileToImport)
-                return@consume
-            }
+            val copiedFile = ioDispatcher {
+                copyUriDataLocally(fileToImport.uri, fileToImport.fileName).onFailure {
+                    reportFailedImportation(fileToImport, it)
+                }.getOrNull()
+            } ?: return@consume
 
             SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
@@ -115,17 +117,17 @@ class ImportationFilesManager @Inject constructor(
         }
     }
 
-    private fun copyUriDataLocally(uri: Uri, fileName: String): File? {
-        val inputStream = openInputStream(uri) ?: return null
+    private fun copyUriDataLocally(
+        uri: Uri,
+        fileName: String
+    ): Result<File> = openInputStream(uri).mapCatching { inputStream ->
         return importLocalStorage.copyUriDataLocally(inputStream, fileName)
     }
 
-    private fun openInputStream(uri: Uri): InputStream? {
-        return runCatching { appContext.contentResolver.openInputStream(uri) }
-            .onSuccess {
-                if (it == null) SentryLog.w(ImportLocalStorage.TAG, "During local copy of the file openInputStream returned null")
-            }
-            .getOrNull()
+    private fun openInputStream(uri: Uri): Result<InputStream> = runCatching {
+        appContext.contentResolver.openInputStream(uri)
+    }.mapCatching {
+        it ?: throw NullPointerException("The provider recently crashed")
     }
 
     private fun getRestoredFileUi(localFiles: Array<File>): List<FileUi> {
@@ -190,9 +192,15 @@ class ImportationFilesManager @Inject constructor(
         return getColumnIndex(column).takeIf { it != -1 }
     }
 
-    private suspend fun reportFailedImportation(file: PickedFile) {
-        SentryLog.e(TAG, "Failed importation of ${file.uri}")
-        _failedFiles.emit(file)
+    private suspend fun reportFailedImportation(file: PickedFile, throwable: Throwable) {
+        SentryLog.e(TAG, "Failed importation of ${file.uri}", throwable)
+
+        //TODO: Make more precise error messages (especially for the low storage issue).
+        val errorMessage = appContext.getString(R.string.cantImportFileX, file.fileName)
+        Dispatchers.Main {
+            @OptIn(UnreliableToastApi::class)
+            longToast(errorMessage) //TODO: Find a better way to show the error in an actionable way.
+        }
     }
 
     data class PickedFile(val fileName: String, val fileSizeInBytes: Long, val uri: Uri)

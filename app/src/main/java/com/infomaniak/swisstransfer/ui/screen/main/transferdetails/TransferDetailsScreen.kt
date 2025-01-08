@@ -115,11 +115,10 @@ private fun TransferDetailsScreen(
 
     SwissTransferScaffold(
         topBar = {
-            val navigationMenu = if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButton.backButton(navigateBack ?: {}) else null
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
-                navigationMenu = navigationMenu,
-                TopAppBarButton.downloadButton { downloadFiles() },
+                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                actions = { TopAppBarButtons.Download { downloadFiles() } }
             )
         },
         floatingActionButton = {},

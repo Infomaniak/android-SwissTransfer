@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.sentry.Sentry
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -52,7 +52,7 @@ fun SettingsDataManagementSentryScreen(navigateBack: (() -> Unit)?) {
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.sentry,
-                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
     ) {
