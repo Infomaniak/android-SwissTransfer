@@ -21,14 +21,12 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
 import com.infomaniak.swisstransfer.ui.utils.get
 import com.infomaniak.swisstransfer.ui.utils.set
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -38,14 +36,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsSentryViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val isSentryAuthorized = appContext.dataManagementDataStore.data
         .map { it[DataManagementPreferences.IsSentryAuthorized] }
         .stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     fun setSentryAuthorization(isAuthorized: Boolean) {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             appContext.dataManagementDataStore.edit {
                 it[DataManagementPreferences.IsSentryAuthorized] = isAuthorized
             }
