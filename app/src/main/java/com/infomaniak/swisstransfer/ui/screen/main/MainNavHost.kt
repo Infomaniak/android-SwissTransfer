@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import FilesDetailsScreen
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -47,39 +46,15 @@ fun MainNavHost(
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
         composable<SentDestination> {
-            TransfersScreenWrapper(
-                direction = TransferDirection.SENT,
-                navigateToFilesDetails = { folderUuid ->
-                    navController.navigate(FilesDetailsDestination(folderUuid))
-                },
-            )
+            TransfersScreenWrapper(direction = TransferDirection.SENT)
         }
         receivedDestination {
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(
                 direction = TransferDirection.RECEIVED,
                 transferUuid = args.transferUuid,
-                navigateToFilesDetails = { folderUuid ->
-                    navController.navigate(FilesDetailsDestination(folderUuid))
-                },
             )
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
-        composable<FilesDetailsDestination> {
-            val filesDetailsDestination: FilesDetailsDestination = it.toRoute()
-            FilesDetailsScreen(
-                navigateToDetails = { folderUuid ->
-                    navController.navigate(FilesDetailsDestination(folderUuid))
-                },
-                folderUuid = filesDetailsDestination.folderUuid,
-                navigateBack = { navController.popBackStack() },
-                close = {
-                    //closeFilesDetails()
-                },
-                withFilesSize = false,
-                withSpaceLeft = false,
-                withFileDelete = false,
-            )
-        }
     }
 }

@@ -89,7 +89,9 @@ fun TransferDetailsScreen(
             setFileCheckStatus = { fileUid, isChecked ->
                 transferDetailsViewModel.checkedFiles[fileUid] = isChecked
             },
-            navigateToFilesDetails = navigateToFilesDetails,
+            navigateToFilesDetails = {
+                navigateToFilesDetails?.invoke(it)
+            },
         )
         TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
     }

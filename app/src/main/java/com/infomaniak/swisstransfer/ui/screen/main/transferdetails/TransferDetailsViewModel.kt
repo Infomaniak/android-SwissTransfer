@@ -27,6 +27,7 @@ import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
+    private val fileManager: FileManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
@@ -57,6 +59,13 @@ class TransferDetailsViewModel @Inject constructor(
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
+    private val loadFilesFlow = MutableSharedFlow<String>(1)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val filesInFolder = loadFilesFlow.flatMapLatest { folderUuid ->
+        fileManager.getFilesFromTransfer(folderUuid)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+
     fun loadTransfer(transferUuid: String) {
         viewModelScope.launch {
             runCatching {
@@ -68,6 +77,10 @@ class TransferDetailsViewModel @Inject constructor(
                 SentryLog.e(TAG, "Failure loading a transfer", exception)
             }
         }
+    }
+
+    fun loadFiles(folderUuid: String) {
+        viewModelScope.launch { loadFilesFlow.emit(folderUuid) }
     }
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)

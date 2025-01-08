@@ -21,12 +21,13 @@ import FilesDetailsScreen
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -36,38 +37,28 @@ import getOnFileRemoveCallback
 @Composable
 fun NewTransferFilesDetailsScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
-    folderUuid: String? = null,
-    navigateToDetails: (String) -> Unit,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     navigateBack: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
-    val files by importFilesViewModel.files.collectAsStateWithLifecycle()
+    val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
 
-    if (files?.isEmpty() == true) navigateBack()
+    if (files.isEmpty()) navigateBack()
 
-    LaunchedEffect(Unit) {
-        importFilesViewModel.loadFiles(folderUuid)
-    }
-
-    files?.let {
-        NewTransferFilesDetailsScreen(
-            files = it,
-            navigateToDetails = navigateToDetails,
-            withFilesSize = withFilesSize,
-            withSpaceLeft = withSpaceLeft,
-            onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
-            navigateBack = navigateBack,
-        )
-    }
+    NewTransferFilesDetailsScreen(
+        files = files,
+        withFilesSize = withFilesSize,
+        withSpaceLeft = withSpaceLeft,
+        onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+        navigateBack = navigateBack,
+    )
 }
 
 @Composable
 private fun NewTransferFilesDetailsScreen(
     files: List<FileUi>,
-    navigateToDetails: (String) -> Unit,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
@@ -75,13 +66,14 @@ private fun NewTransferFilesDetailsScreen(
 ) {
     Scaffold(
         topBar = {
-            //SwissTransferTopAppBar(navigationMenu = TopAppBarButton.backButton { navigateBack() })
+            SwissTransferTopAppBar(
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
+            )
         }
     ) { paddingValues ->
         FilesDetailsScreen(
             paddingValues = paddingValues,
             files = files,
-            navigateToDetails = navigateToDetails,
             withFileSize = withFilesSize,
             withSpaceLeft = withSpaceLeft,
             onFileRemoved = onFileRemoved
@@ -96,7 +88,6 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
         Surface {
             NewTransferFilesDetailsScreen(
                 files = files,
-                navigateToDetails = { _ -> },
                 withFilesSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},

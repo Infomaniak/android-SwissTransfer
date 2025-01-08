@@ -16,6 +16,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.FilesSize
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -25,22 +26,21 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun FilesDetailsScreen(
     paddingValues: PaddingValues = PaddingValues(0.dp),
-    importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
-    folderUuid: String? = null,
-    navigateToDetails: (String) -> Unit,
+    transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
+    folderUuid: String,
+    navigateToFolder: (String) -> Unit,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
-    withFileDelete: Boolean,
     navigateBack: () -> Unit,
     close: (() -> Unit),
 ) {
     // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
-    val files by importFilesViewModel.files.collectAsStateWithLifecycle()
+    val files by transferDetailsViewModel.filesInFolder.collectAsStateWithLifecycle()
 
     if (files?.isEmpty() == true) navigateBack()
 
     LaunchedEffect(folderUuid) {
-        importFilesViewModel.loadFiles(folderUuid)
+        transferDetailsViewModel.loadFiles(folderUuid)
     }
 
     files?.let {
@@ -56,10 +56,9 @@ fun FilesDetailsScreen(
                 FilesDetailsScreen(
                     paddingValues = paddingValues,
                     files = it,
-                    navigateToDetails = navigateToDetails,
+                    navigateToFolder = navigateToFolder,
                     withFileSize = withFilesSize,
                     withSpaceLeft = withSpaceLeft,
-                    onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
                 )
             }
         }
@@ -70,7 +69,7 @@ fun FilesDetailsScreen(
 fun FilesDetailsScreen(
     paddingValues: PaddingValues,
     files: List<FileUi>,
-    navigateToDetails: (String) -> Unit,
+    navigateToFolder: ((String) -> Unit)? = null,
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
@@ -85,9 +84,7 @@ fun FilesDetailsScreen(
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
-            onClick = {
-                navigateToDetails(it)
-            }
+            onClick = { navigateToFolder?.invoke(it) }
         )
     }
 }
@@ -109,7 +106,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             FilesDetailsScreen(
                 paddingValues = PaddingValues(0.dp),
                 files = files,
-                navigateToDetails = {},
+                navigateToFolder = {},
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},

@@ -50,7 +50,6 @@ import kotlinx.parcelize.Parcelize
 fun TransfersScreenWrapper(
     direction: TransferDirection,
     transferUuid: String? = null,
-    navigateToFilesDetails: (fileUuid: String) -> Unit,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -123,8 +122,14 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFilesDetails(folderUuid: String) {
-    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(folderUuid = folderUuid))
+private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFilesDetails(
+    direction: TransferDirection,
+    transferUuid: String,
+    folderUuid: String
+) {
+    navigateTo(
+        ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid, folderUuid)
+    )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -145,16 +150,30 @@ private fun DetailPane(
     } else {
 
         if (destinationContent.folderUuid != null) {
-            FilesDetailsScreen(navigator, destinationContent.folderUuid) {
-                navigator.navigateToFilesDetails(it)
-            }
+            FilesDetailsScreen(
+                navigator,
+                destinationContent.folderUuid,
+                destinationContent.direction,
+                destinationContent.transferUuid,
+                navigateToFilesDetails = { selectedFolderUuid ->
+                    navigator.navigateToFilesDetails(
+                        destinationContent.direction,
+                        destinationContent.transferUuid,
+                        selectedFolderUuid,
+                    )
+                }
+            )
         } else {
             TransferDetailsScreen(
-                transferUuid = destinationContent.transferUuid ?: "", //TODO to modified
-                direction = destinationContent.direction ?: TransferDirection.RECEIVED, //TODO to modified
+                transferUuid = destinationContent.transferUuid,
+                direction = destinationContent.direction,
                 navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
-                navigateToFilesDetails = {
-                    navigator.navigateToFilesDetails(it)
+                navigateToFilesDetails = { selectedFolderUuid ->
+                    navigator.navigateToFilesDetails(
+                        destinationContent.direction,
+                        destinationContent.transferUuid,
+                        selectedFolderUuid,
+                    )
                 },
             )
         }
@@ -166,20 +185,19 @@ private fun DetailPane(
 private fun FilesDetailsScreen(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     folderUuid: String,
-    navigateToFilesDetails: (fileUuid: String) -> Unit,
+    transferDirection: TransferDirection,
+    transferUuid: String,
+    navigateToFilesDetails: (folderUuid: String) -> Unit,
 ) {
     FilesDetailsScreen(
-        navigateToDetails = { selectedFolderUuid ->
+        navigateToFolder = { selectedFolderUuid ->
             navigateToFilesDetails(selectedFolderUuid)
         },
         folderUuid = folderUuid,
         navigateBack = { navigator.popBackStack() },
-        close = {
-            //closeFilesDetails()
-        },
+        close = { navigator.navigateToDetails(transferDirection, transferUuid) },
         withFilesSize = false,
         withSpaceLeft = false,
-        withFileDelete = false,
     )
 }
 
@@ -204,8 +222,8 @@ private fun NoSelectionEmptyState(hasTransfers: Boolean) {
 
 @Parcelize
 private data class DestinationContent(
-    val direction: TransferDirection? = null,
-    val transferUuid: String? = null,
+    val direction: TransferDirection,
+    val transferUuid: String,
     val folderUuid: String? = null,
 ) : Parcelable
 
@@ -214,7 +232,7 @@ private data class DestinationContent(
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null, navigateToFilesDetails = { _ -> })
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null)
         }
     }
 }
