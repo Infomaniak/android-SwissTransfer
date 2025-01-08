@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.library.filetypes
+package com.infomaniak.core2.filetypes
 
 import android.webkit.MimeTypeMap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.infomaniak.library.filetypes.icons.*
+import com.infomaniak.core2.filetypes.icons.*
 
 private val MEDIA_COLOR_LIGHT = Color(0xFF00BCD4)
 private val MEDIA_COLOR_DARK = Color(0xFF86DEEA)

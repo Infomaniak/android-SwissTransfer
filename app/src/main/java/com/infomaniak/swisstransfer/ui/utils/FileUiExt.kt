@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import com.infomaniak.library.filetypes.FileType
+import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 
 val FileUi.fileType: FileType get() = mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)

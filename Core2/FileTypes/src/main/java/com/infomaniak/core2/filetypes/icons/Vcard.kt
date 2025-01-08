@@ -1,4 +1,4 @@
-package com.infomaniak.library.filetypes.icons
+package com.infomaniak.core2.filetypes.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.library.filetypes.FileTypeIcons
-import com.infomaniak.library.filetypes.FileTypeIcons.previewSize
+import com.infomaniak.core2.filetypes.FileTypeIcons
+import com.infomaniak.core2.filetypes.FileTypeIcons.previewSize
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 

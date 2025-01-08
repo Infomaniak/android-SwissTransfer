@@ -1,4 +1,4 @@
-package com.infomaniak.library.filetypes.icons
+package com.infomaniak.core2.filetypes.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,18 +13,18 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.library.filetypes.FileTypeIcons
-import com.infomaniak.library.filetypes.FileTypeIcons.previewSize
+import com.infomaniak.core2.filetypes.FileTypeIcons
+import com.infomaniak.core2.filetypes.FileTypeIcons.previewSize
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-internal val FileTypeIcons.Image: ImageVector
+internal val FileTypeIcons.Points: ImageVector
     get() {
-        if (_image != null) {
-            return _image!!
+        if (_points != null) {
+            return _points!!
         }
-        _image = Builder(
-            name = "Image",
+        _points = Builder(
+            name = "Points",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -52,32 +52,33 @@ internal val FileTypeIcons.Image: ImageVector
                 close()
             }
             path(
-                fill = null,
-                stroke = SolidColor(Color(0xFF9F9F9F)),
-                strokeLineWidth = 1.5f,
-                strokeLineCap = strokeCapRound,
-                strokeLineJoin = strokeJoinRound,
-                strokeLineMiter = 4.0f,
-                pathFillType = NonZero
+                fill = SolidColor(Color(0xFF9F9F9F)),
+                pathFillType = NonZero,
             ) {
-                moveTo(18.77f, 18.482f)
-                lineToRelative(-3.925f, -5.888f)
-                arcToRelative(1.01f, 1.01f, 0.0f, false, false, -1.671f, -0.02f)
-                lineToRelative(-2.691f, 3.846f)
-                lineToRelative(-1.668f, -1.338f)
-                arcToRelative(1.01f, 1.01f, 0.0f, false, false, -1.474f, 0.229f)
-                lineTo(5.23f, 18.48f)
+                moveTo(13.0f, 5.007f)
+                verticalLineToRelative(6.0f)
+                horizontalLineToRelative(6.0f)
+                arcToRelative(6.0f, 6.0f, 0.0f, false, false, -6.0f, -6.0f)
+            }
+            path(
+                fill = SolidColor(Color(0xFF9F9F9F)),
+                pathFillType = NonZero,
+            ) {
+                moveTo(11.0f, 7.007f)
+                arcToRelative(6.0f, 6.0f, 0.0f, true, false, 6.0f, 6.0f)
+                horizontalLineToRelative(-6.0f)
+                close()
             }
         }.build()
-        return _image!!
+        return _points!!
     }
 
-private var _image: ImageVector? = null
+private var _points: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(previewSize)) {
-        Image(imageVector = FileTypeIcons.Image, contentDescription = null)
+        Image(imageVector = FileTypeIcons.Points, contentDescription = null)
     }
 }

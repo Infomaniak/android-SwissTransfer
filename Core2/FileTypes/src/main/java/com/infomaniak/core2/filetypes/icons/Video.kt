@@ -1,4 +1,4 @@
-package com.infomaniak.library.filetypes.icons
+package com.infomaniak.core2.filetypes.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,18 +13,18 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.infomaniak.library.filetypes.FileTypeIcons
-import com.infomaniak.library.filetypes.FileTypeIcons.previewSize
+import com.infomaniak.core2.filetypes.FileTypeIcons
+import com.infomaniak.core2.filetypes.FileTypeIcons.previewSize
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round as strokeCapRound
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Round as strokeJoinRound
 
-internal val FileTypeIcons.Points: ImageVector
+internal val FileTypeIcons.Video: ImageVector
     get() {
-        if (_points != null) {
-            return _points!!
+        if (_video != null) {
+            return _video!!
         }
-        _points = Builder(
-            name = "Points",
+        _video = Builder(
+            name = "Video",
             defaultWidth = 24.0.dp,
             defaultHeight = 24.0.dp,
             viewportWidth = 24.0f,
@@ -40,14 +40,14 @@ internal val FileTypeIcons.Points: ImageVector
                 pathFillType = NonZero
             ) {
                 moveTo(22.5f, 21.757f)
-                arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.503f, 1.5f)
-                horizontalLineTo(3.003f)
-                arcToRelative(1.505f, 1.505f, 0.0f, false, true, -1.503f, -1.5f)
+                arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, 1.5f)
+                horizontalLineTo(3.0f)
+                arcToRelative(1.5f, 1.5f, 0.0f, false, true, -1.5f, -1.5f)
                 verticalLineToRelative(-19.5f)
-                arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.503f, -1.5f)
-                horizontalLineToRelative(15.033f)
-                curveToRelative(0.392f, 0.0f, 0.769f, 0.152f, 1.05f, 0.426f)
-                lineToRelative(2.961f, 2.883f)
+                arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.5f, -1.5f)
+                horizontalLineToRelative(15.0f)
+                arcToRelative(1.5f, 1.5f, 0.0f, false, true, 1.047f, 0.426f)
+                lineToRelative(3.0f, 2.883f)
                 arcTo(1.5f, 1.5f, 0.0f, false, true, 22.5f, 5.14f)
                 close()
             }
@@ -55,30 +55,24 @@ internal val FileTypeIcons.Points: ImageVector
                 fill = SolidColor(Color(0xFF9F9F9F)),
                 pathFillType = NonZero,
             ) {
-                moveTo(13.0f, 5.007f)
-                verticalLineToRelative(6.0f)
-                horizontalLineToRelative(6.0f)
-                arcToRelative(6.0f, 6.0f, 0.0f, false, false, -6.0f, -6.0f)
-            }
-            path(
-                fill = SolidColor(Color(0xFF9F9F9F)),
-                pathFillType = NonZero,
-            ) {
-                moveTo(11.0f, 7.007f)
-                arcToRelative(6.0f, 6.0f, 0.0f, true, false, 6.0f, 6.0f)
-                horizontalLineToRelative(-6.0f)
+                moveTo(9.488f, 15.667f)
+                arcTo(0.856f, 0.856f, 0.0f, false, true, 8.25f, 14.9f)
+                verticalLineTo(9.113f)
+                arcToRelative(0.856f, 0.856f, 0.0f, false, true, 1.238f, -0.766f)
+                lineToRelative(5.789f, 2.895f)
+                arcToRelative(0.855f, 0.855f, 0.0f, false, true, 0.0f, 1.53f)
                 close()
             }
         }.build()
-        return _points!!
+        return _video!!
     }
 
-private var _points: ImageVector? = null
+private var _video: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(previewSize)) {
-        Image(imageVector = FileTypeIcons.Points, contentDescription = null)
+        Image(imageVector = FileTypeIcons.Video, contentDescription = null)
     }
 }
