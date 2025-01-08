@@ -83,9 +83,13 @@ class TransferDetailsViewModel @Inject constructor(
             runCatching {
                 _isWrongDeeplinkPassword.emit(false)
                 val transfer = transferManager.getTransferFlow(transferUuid).first()
-                if (transfer == null) handleTransferDeeplink(transferUuid, _deeplinkPassword)
-                _transferUuidFlow.emit(transferUuid)
-                if (transfer != null) transferManager.fetchTransfer(transferUuid)
+                if (transfer == null) {
+                    handleTransferDeeplink(transferUuid, _deeplinkPassword)
+                    _transferUuidFlow.emit(transferUuid)
+                } else {
+                    _transferUuidFlow.emit(transferUuid)
+                    transferManager.fetchTransfer(transferUuid)
+                }
             }.onFailure { exception ->
                 when (exception) {
                     is PasswordNeededDeeplinkException -> _isDeeplinkNeedingPassword.emit(true)
