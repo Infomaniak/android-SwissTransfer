@@ -17,8 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,7 +27,11 @@ import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.PasswordNeededDeeplinkException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.WrongPasswordDeeplinkException
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -57,15 +60,42 @@ class TransferDetailsViewModel @Inject constructor(
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
+    //region Deeplink Password
+    private val _isDeeplinkNeedingPassword = MutableStateFlow(false)
+    val isDeeplinkNeedingPassword = _isDeeplinkNeedingPassword as StateFlow<Boolean>
+
+    fun resetIsDeeplinkNeedingPassword() {
+        _isDeeplinkNeedingPassword.value = false
+    }
+
+    private val _isWrongDeeplinkPassword = MutableStateFlow(false)
+    val isWrongDeeplinkPassword = _isWrongDeeplinkPassword as StateFlow<Boolean>
+
+    private var _deeplinkPassword by mutableStateOf("")
+    var deeplinkPassword = GetSetCallbacks(
+        get = { _deeplinkPassword },
+        set = { _deeplinkPassword = it },
+    )
+    //endregion
+
     fun loadTransfer(transferUuid: String) {
         viewModelScope.launch {
             runCatching {
+                _isWrongDeeplinkPassword.emit(false)
                 val transfer = transferManager.getTransferFlow(transferUuid).first()
-                if (transfer == null) handleTransferDeeplink(transferUuid)
-                _transferUuidFlow.emit(transferUuid)
-                if (transfer != null) transferManager.fetchTransfer(transferUuid)
+                if (transfer == null) {
+                    handleTransferDeeplink(transferUuid, _deeplinkPassword)
+                    _transferUuidFlow.emit(transferUuid)
+                } else {
+                    _transferUuidFlow.emit(transferUuid)
+                    transferManager.fetchTransfer(transferUuid)
+                }
             }.onFailure { exception ->
-                SentryLog.e(TAG, "Failure loading a transfer", exception)
+                when (exception) {
+                    is PasswordNeededDeeplinkException -> _isDeeplinkNeedingPassword.emit(true)
+                    is WrongPasswordDeeplinkException -> _isWrongDeeplinkPassword.emit(true)
+                    else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
+                }
             }
         }
     }
@@ -96,16 +126,20 @@ class TransferDetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleTransferDeeplink(transferUuid: String) {
+    private suspend fun handleTransferDeeplink(transferUuid: String, password: String) {
         runCatching {
             transferManager.addTransferByLinkUUID(
                 linkUUID = transferUuid,
-                password = null, // TODO: Handle password for deeplinks
+                password = password,
                 transferDirection = TransferDirection.RECEIVED,
             )
+            _isWrongDeeplinkPassword.emit(false)
+            _isDeeplinkNeedingPassword.emit(false)
         }.onFailure { exception ->
-            SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
-            // TODO: Handle errors
+            when (exception) {
+                is DeeplinkException -> throw exception
+                else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
+            }
         }
     }
 
