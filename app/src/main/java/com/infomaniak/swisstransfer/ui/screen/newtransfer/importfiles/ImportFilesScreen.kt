@@ -61,6 +61,7 @@ fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
     closeActivity: () -> Unit,
     navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
+    navigateToEmailValidation: (email: String, recipients: List<String>) -> Unit,
 ) {
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -87,6 +88,12 @@ fun ImportFilesScreen(
             navigateToUploadProgress(
                 selectedTransferType,
                 totalSize,
+                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
+            )
+        },
+        navigateToEmailValidation = {
+            navigateToEmailValidation(
+                emailTextFieldCallbacks.transferAuthorEmail.get(),
                 emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
             )
         },
@@ -152,6 +159,7 @@ private fun HandleSendActionResult(
     snackbarHostState: SnackbarHostState,
     sendStatus: () -> SendStatus,
     navigateToUploadProgress: (totalSize: Long) -> Unit,
+    navigateToEmailValidation: () -> Unit,
     resetSendActionResult: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -175,6 +183,10 @@ private fun HandleSendActionResult(
             }
             is SendStatus.Failure -> {
                 snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
+                resetSendActionResult()
+            }
+            is SendStatus.RequireEmailValidation -> {
+                navigateToEmailValidation()
                 resetSendActionResult()
             }
             else -> Unit

@@ -25,6 +25,7 @@
     <string name="buttonDownloadSelected">Auswahl herunterladen</string>
     <string name="buttonEditTransfer">Meine Übertragung bearbeiten</string>
     <string name="buttonFinished">Beenden</string>
+    <string name="buttonOpenMailApp">Mail-App öffnen</string>
     <string name="buttonShare">Teilen</string>
     <string name="buttonStart">Starten</string>
     <string name="contentDescriptionButtonBack">Zurück</string>
@@ -170,5 +171,13 @@
     <string name="uploadSuccessQrTitle">Dein QR-Code ist fertig!</string>
     <string name="urlAbout">https://www.infomaniak.com/de/about</string>
     <string name="urlUserReportAndroid">https://feedback.userreport.com/9abc7665-a78e-4fd2-aa41-a47a8b867fcd/#ideas/popular</string>
+    <string name="validateMailCodeIncorrectError">Der eingegebene Code ist falsch</string>
+    <string name="validateMailCodeResentFeedback">Der Code wurde an die E-Mail-Adresse %s zurückgeschickt</string>
+    <string name="validateMailDescription">Wir haben einen Code an %s geschickt. Gib ihn unten ein, um deine E-Mail-Adresse in der App verifizieren zu lassen:</string>
+    <string name="validateMailInfo">Denke daran, den Spam-Ordner deiner E-Mail-Adresse zu überprüfen.</string>
+    <string name="validateMailResendCode">Code erneut senden</string>
+    <string name="validateMailResendCodeTemplate">Code erneut senden (%ds)</string>
+    <string name="validateMailTitle">Überprüfe deine E-Mail</string>
+    <string name="validateMailUnknownError">Es ist ein Fehler aufgetreten. Bitte versuche dein Glück in Kürze erneut.</string>
     <string name="version">Version</string>
 </resources>

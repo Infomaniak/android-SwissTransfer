@@ -21,15 +21,13 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MetallicSafe
 import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MountainGondola
 import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.SwissWithFlag
+import com.infomaniak.swisstransfer.ui.utils.TextUtils
 
 enum class UploadProgressAdType(
     @StringRes private val descriptionTemplate: Int,
@@ -54,17 +52,6 @@ enum class UploadProgressAdType(
 
     @Composable
     fun description(): AnnotatedString {
-        val template = stringResource(descriptionTemplate)
-        val templateArgument = stringResource(descriptionAccentuatedPart)
-
-        val description = String.format(template, templateArgument)
-
-        val startIndex = description.indexOf(templateArgument)
-        val endIndex = startIndex + templateArgument.length
-
-        return buildAnnotatedString {
-            append(description)
-            addStyle(style = SpanStyle(fontWeight = FontWeight.Bold), start = startIndex, end = endIndex)
-        }
+        return TextUtils.assembleWithBoldArgument(stringResource(descriptionTemplate), stringResource(descriptionAccentuatedPart))
     }
 }

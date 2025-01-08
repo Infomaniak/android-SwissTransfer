@@ -25,10 +25,11 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ValidateUserEmailScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 import io.sentry.Sentry
 import io.sentry.SentryLevel
 
@@ -42,10 +43,21 @@ fun NewTransferNavHost(navController: NavHostController, closeActivity: () -> Un
                 navigateToUploadProgress = { transferType, totalSize, recipients ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize, recipients))
                 },
+                navigateToEmailValidation = { email, recipients ->
+                    navController.navigate(ValidateUserEmailDestination(email, recipients))
+                }
             )
         }
         composable<ValidateUserEmailDestination> {
-            ValidateUserEmailScreen()
+            val args = it.toRoute<ValidateUserEmailDestination>()
+            ValidateUserEmailScreen(
+                closeActivity = closeActivity,
+                navigateBack = { navController.popBackStack() },
+                navigateToUploadInProgress = { totalSize ->
+                    navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize, args.recipients))
+                },
+                emailToValidate = args.userEmail,
+            )
         }
         composable<UploadProgressDestination> {
             val args = it.toRoute<UploadProgressDestination>()
