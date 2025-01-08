@@ -52,8 +52,11 @@ fun SwissTransferButton(
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable () -> Unit,
 ) {
-    val isEnabled by remember(progress) { derivedStateOf { enabled() && !showIndeterminateProgress() && progress == null } }
-    val buttonColors = style.buttonColors()
+    val isProgressing by remember(progress) { derivedStateOf { showIndeterminateProgress() || progress != null } }
+    val isEnabled = enabled() && isProgressing.not()
+
+    val buttonColors = style.buttonColors().let { colors -> if (isProgressing) colors.applyEnabledColorsToDisabled() else colors }
+    val progressColor = style.loaderColors()
 
     Button(
         modifier = modifier,
@@ -65,20 +68,31 @@ fun SwissTransferButton(
     ) {
         when {
             progress != null -> {
-                val (progressColor, progressModifier) = getProgressSpecs(buttonColors)
                 KeepButtonSize(content) {
-                    CircularProgressIndicator(modifier = progressModifier, color = progressColor, progress = progress)
+                    CircularProgressIndicator(
+                        modifier = getProgressModifier(),
+                        color = progressColor.progressColor,
+                        trackColor = progressColor.trackColor,
+                        progress = progress
+                    )
                 }
             }
             showIndeterminateProgress() -> {
-                val (progressColor, progressModifier) = getProgressSpecs(buttonColors)
                 KeepButtonSize(content) {
-                    CircularProgressIndicator(modifier = progressModifier, color = progressColor)
+                    CircularProgressIndicator(
+                        modifier = getProgressModifier(),
+                        color = progressColor.progressColor,
+                        trackColor = progressColor.trackColor,
+                    )
                 }
             }
             else -> content()
         }
     }
+}
+
+private fun ButtonColors.applyEnabledColorsToDisabled(): ButtonColors {
+    return copy(disabledContainerColor = containerColor, disabledContentColor = contentColor)
 }
 
 @Composable
@@ -92,50 +106,93 @@ private fun KeepButtonSize(targetSizeContent: @Composable () -> Unit, content: @
 }
 
 @Composable
-private fun getProgressSpecs(buttonColors: ButtonColors): Pair<Color, Modifier> {
-    val progressColor = buttonColors.disabledContentColor
+private fun getProgressModifier(): Modifier {
     val progressModifier = Modifier
         .fillMaxHeight(0.8f)
         .aspectRatio(1f)
-    return Pair(progressColor, progressModifier)
+    return progressModifier
 }
 
-enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
-    Primary({
-        ButtonDefaults.buttonColors(
-            containerColor = SwissTransferTheme.materialColors.primary,
-            contentColor = SwissTransferTheme.materialColors.onPrimary,
-        )
-    }),
-    Secondary({
-        ButtonDefaults.buttonColors(
-            containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
-            contentColor = SwissTransferTheme.materialColors.primary,
-        )
-    }),
-    Tertiary({
-        ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = SwissTransferTheme.materialColors.primary,
-            disabledContainerColor = Color.Transparent,
-        )
-    }),
-    Destructive({
-        ButtonDefaults.buttonColors(
-            containerColor = SwissTransferTheme.materialColors.error,
-            contentColor = SwissTransferTheme.materialColors.onError,
-        )
-    }),
-    DestructiveText({
-        ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = SwissTransferTheme.materialColors.error,
-            disabledContainerColor = Color.Transparent,
-            // Alpha based on Material's `FilledButtonTokens.DisabledLabelTextOpacity`
-            disabledContentColor = SwissTransferTheme.materialColors.error.copy(alpha = 0.38f),
-        )
-    }),
+private const val TRACK_COLOR_ALPHA = 0.3f
+
+enum class ButtonType(val buttonColors: @Composable () -> ButtonColors, val loaderColors: @Composable () -> LoaderColors) {
+    Primary(
+        {
+            ButtonDefaults.buttonColors(
+                containerColor = SwissTransferTheme.materialColors.primary,
+                contentColor = SwissTransferTheme.materialColors.onPrimary,
+            )
+        },
+        {
+            LoaderColors(
+                progressColor = SwissTransferTheme.materialColors.onPrimary,
+                trackColor = SwissTransferTheme.materialColors.onPrimary.copy(alpha = TRACK_COLOR_ALPHA),
+            )
+        }
+    ),
+    Secondary(
+        {
+            ButtonDefaults.buttonColors(
+                containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
+                contentColor = SwissTransferTheme.materialColors.primary,
+            )
+        },
+        {
+            LoaderColors(
+                progressColor = SwissTransferTheme.materialColors.primary,
+                trackColor = SwissTransferTheme.materialColors.primary.copy(alpha = TRACK_COLOR_ALPHA),
+            )
+        }
+    ),
+    Tertiary(
+        {
+            ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = SwissTransferTheme.materialColors.primary,
+                disabledContainerColor = Color.Transparent,
+            )
+        },
+        {
+            LoaderColors(
+                progressColor = SwissTransferTheme.materialColors.primary,
+                trackColor = SwissTransferTheme.materialColors.primary.copy(alpha = TRACK_COLOR_ALPHA),
+            )
+        }
+    ),
+    Destructive(
+        {
+            ButtonDefaults.buttonColors(
+                containerColor = SwissTransferTheme.materialColors.error,
+                contentColor = SwissTransferTheme.materialColors.onError,
+            )
+        },
+        {
+            LoaderColors(
+                progressColor = SwissTransferTheme.materialColors.onError,
+                trackColor = SwissTransferTheme.materialColors.onError.copy(alpha = TRACK_COLOR_ALPHA),
+            )
+        }
+    ),
+    DestructiveText(
+        {
+            ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = SwissTransferTheme.materialColors.error,
+                disabledContainerColor = Color.Transparent,
+                // Alpha based on Material's `FilledButtonTokens.DisabledLabelTextOpacity`
+                disabledContentColor = SwissTransferTheme.materialColors.error.copy(alpha = 0.38f),
+            )
+        },
+        {
+            LoaderColors(
+                progressColor = SwissTransferTheme.materialColors.error,
+                trackColor = SwissTransferTheme.materialColors.error.copy(alpha = TRACK_COLOR_ALPHA),
+            )
+        }
+    )
 }
+
+data class LoaderColors(val progressColor: Color, val trackColor: Color)
 
 @PreviewLightAndDark
 @Composable
