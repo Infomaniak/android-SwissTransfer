@@ -280,7 +280,7 @@ private fun RowScope.BottomBarButton(
     onClick: () -> Unit,
 ) = Button(
     modifier = Modifier.weight(1.0f),
-    colors = ButtonType.TERTIARY.buttonColors(),
+    colors = ButtonType.Tertiary.buttonColors(),
     enabled = enabled,
     onClick = { onClick() },
 ) {

@@ -57,6 +57,10 @@
     <string name="messageHeader">Message:</string>
     <string name="myFilesTitle">My files</string>
     <string name="networkUnavailable">Network unavailable</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Oops, do you really want to cancel?</string>
+    <string name="newTransferLeavingDialogDescription">Your transfer is almost ready. Are you sure you want to cancel it?</string>
+    <string name="newTransferLeavingDialogNegativeButton">No, continue</string>
+    <string name="newTransferLeavingDialogPositiveButton">Yes, cancel</string>
     <string name="noFileDescription">Add up to 50 GB of files</string>
     <string name="noFileTitle">No file, no transfer!</string>
     <string name="noSettingsSelectedDescription">Select a parameter to display it</string>

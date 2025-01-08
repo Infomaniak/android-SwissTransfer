@@ -444,7 +444,7 @@ private fun SendButton(
     LargeButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
-        style = ButtonType.PRIMARY,
+        style = ButtonType.Primary,
         showIndeterminateProgress = { sendStatus() == SendStatus.Pending },
         enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrects() && sendStatus().canEnableButton() },
         progress = progress,

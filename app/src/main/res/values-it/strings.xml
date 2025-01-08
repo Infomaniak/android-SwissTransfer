@@ -53,6 +53,10 @@
     <string name="messageHeader">Messaggio:</string>
     <string name="myFilesTitle">I miei file</string>
     <string name="networkUnavailable">Rete non disponibile</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Ops, vuoi davvero cancellarti?</string>
+    <string name="newTransferLeavingDialogDescription">Il trasferimento è quasi pronto. Sei sicuro di volerlo annullare?</string>
+    <string name="newTransferLeavingDialogNegativeButton">No, continua</string>
+    <string name="newTransferLeavingDialogPositiveButton">Sì, annulla</string>
     <string name="noFileDescription">Aggiungere fino a 50 GB di file</string>
     <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noSettingsSelectedDescription">Seleziona un parametro da visualizzare</string>

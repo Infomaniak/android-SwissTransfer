@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun LargeButton(
     title: String,
     modifier: Modifier = Modifier,
-    style: ButtonType = ButtonType.PRIMARY,
+    style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
@@ -68,7 +69,7 @@ fun LargeButton(
 fun SmallButton(
     title: String,
     modifier: Modifier = Modifier,
-    style: ButtonType = ButtonType.PRIMARY,
+    style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
@@ -107,6 +108,7 @@ private fun CoreButton(
         showIndeterminateProgress,
         progress,
         onClick,
+        contentPadding = buttonSize.contentPadding,
     ) {
         ButtonTextContent(imageVector, title)
     }
@@ -121,9 +123,9 @@ private fun ButtonTextContent(imageVector: ImageVector?, title: String) {
     Text(text = title, style = SwissTransferTheme.typography.bodyMedium)
 }
 
-private enum class ButtonSize(val height: Dp) {
-    LARGE(Dimens.LargeButtonHeight),
-    SMALL(40.dp),
+private enum class ButtonSize(val height: Dp, val contentPadding: PaddingValues) {
+    LARGE(Dimens.LargeButtonHeight, ButtonDefaults.ContentPadding),
+    SMALL(40.dp, PaddingValues(horizontal = Margin.Medium)),
 }
 
 @Preview(name = "Light", widthDp = 800)

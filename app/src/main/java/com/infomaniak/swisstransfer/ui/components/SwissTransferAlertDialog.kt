@@ -31,15 +31,36 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.core2.R as RCore2
 
+object SwissTransferAlertDialogDefaults {
+    @Composable
+    fun ConfirmButton(isEnabled: () -> Boolean = { true }, onClick: () -> Unit) {
+        SmallButton(
+            style = ButtonType.Tertiary,
+            title = stringResource(R.string.buttonConfirm),
+            enabled = isEnabled,
+            onClick = onClick,
+        )
+    }
+
+    @Composable
+    fun CancelButton(onClick: () -> Unit) {
+        SmallButton(
+            style = ButtonType.Tertiary,
+            title = stringResource(RCore2.string.buttonCancel),
+            onClick = onClick,
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferAlertDialog(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
+    positiveButton: @Composable () -> Unit,
+    negativeButton: @Composable () -> Unit,
     onDismiss: () -> Unit,
-    onConfirmation: () -> Unit,
-    isConfirmButtonEnabled: () -> Boolean = { true },
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     BasicAlertDialog(
@@ -52,11 +73,10 @@ fun SwissTransferAlertDialog(
             BasicAlertDialogContent(
                 modifier = modifier,
                 titleRes = titleRes,
+                positiveButton = positiveButton,
+                negativeButton = negativeButton,
                 descriptionRes = descriptionRes,
                 additionalContent = content,
-                onDismiss = onDismiss,
-                onConfirmation = onConfirmation,
-                isConfirmButtonEnabled = isConfirmButtonEnabled,
             )
         }
     }
@@ -67,10 +87,9 @@ private fun BasicAlertDialogContent(
     modifier: Modifier,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
+    positiveButton: @Composable () -> Unit,
+    negativeButton: @Composable () -> Unit,
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
-    onDismiss: () -> Unit,
-    onConfirmation: () -> Unit,
-    isConfirmButtonEnabled: () -> Boolean = { true },
 ) {
     Column(modifier.padding(Margin.Large)) {
         TitleAndDescription(titleRes, descriptionRes)
@@ -79,7 +98,7 @@ private fun BasicAlertDialogContent(
             it()
             Spacer(Modifier.height(Margin.Mini))
         }
-        ActionButtons(onDismiss, onConfirmation, isConfirmButtonEnabled)
+        ActionButtons(positiveButton, negativeButton)
     }
 }
 
@@ -98,24 +117,19 @@ private fun TitleAndDescription(titleRes: Int, descriptionRes: Int) {
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ActionButtons(onDismissRequest: () -> Unit, onConfirmation: () -> Unit, isEnabled: () -> Boolean) {
-    Row(
+private fun ActionButtons(
+    positiveButton: @Composable () -> Unit,
+    negativeButton: @Composable () -> Unit,
+) {
+    FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
+        itemVerticalAlignment = Alignment.CenterVertically,
     ) {
-        SmallButton(
-            style = ButtonType.TERTIARY,
-            title = stringResource(RCore2.string.buttonCancel),
-            onClick = onDismissRequest,
-        )
-        Spacer(Modifier.width(Margin.Micro))
-        SmallButton(
-            title = stringResource(R.string.buttonConfirm),
-            onClick = onConfirmation,
-            enabled = isEnabled
-        )
+        negativeButton()
+        positiveButton()
     }
 }
 
@@ -127,8 +141,25 @@ private fun PreviewAlertDialog() {
             SwissTransferAlertDialog(
                 titleRes = R.string.settingsOptionPassword,
                 descriptionRes = R.string.settingsPasswordDescription,
+                positiveButton = { SwissTransferAlertDialogDefaults.ConfirmButton { } },
+                negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
                 onDismiss = {},
-                onConfirmation = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun WideButtonsPreview() {
+    SwissTransferTheme {
+        Surface {
+            SwissTransferAlertDialog(
+                titleRes = R.string.settingsOptionPassword,
+                descriptionRes = R.string.settingsPasswordDescription,
+                positiveButton = { SmallButton("A very looong and wide button", onClick = {}, style = ButtonType.Tertiary) },
+                negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
+                onDismiss = {},
             )
         }
     }

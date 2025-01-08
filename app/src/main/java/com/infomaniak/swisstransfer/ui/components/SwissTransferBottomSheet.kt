@@ -161,7 +161,7 @@ private fun BottomSheetDefaultsPreview() {
                     LargeButton(
                         modifier = it,
                         title = "Top button",
-                        style = ButtonType.ERROR,
+                        style = ButtonType.Destructive,
                         onClick = {},
                     )
                 },
@@ -169,7 +169,7 @@ private fun BottomSheetDefaultsPreview() {
                     LargeButton(
                         modifier = it,
                         title = "Bottom button",
-                        style = ButtonType.TERTIARY,
+                        style = ButtonType.Tertiary,
                         onClick = {},
                     )
                 },
