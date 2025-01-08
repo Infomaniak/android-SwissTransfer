@@ -21,7 +21,7 @@ import android.os.Parcelable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,16 +32,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
-import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
+import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
@@ -56,7 +54,7 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val isDeepLinkConsumed by transfersViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
-            handleDeepLink(
+            HandleDeepLink(
                 transferUuid = transferUuid,
                 isDeepLinkConsumed = { isDeepLinkConsumed },
                 consumeDeepLink = transfersViewModel::consumeDeepLink,
@@ -76,7 +74,8 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.handleDeepLink(
+@Composable
+private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
     transferUuid: String?,
     isDeepLinkConsumed: () -> Boolean,
     consumeDeepLink: () -> Unit,
@@ -84,7 +83,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.handleDeepLink(
 ) {
     if (transferUuid != null && !isDeepLinkConsumed()) {
         consumeDeepLink()
-        navigateToDetails(direction, transferUuid)
+        navigateToDetails(LocalWindowAdaptiveInfo.current, direction, transferUuid)
     }
 }
 
@@ -96,15 +95,16 @@ private fun ListPane(
     transfersViewModel: TransfersViewModel,
     updateHasTransfer: (Boolean) -> Unit,
 ) {
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     when (direction) {
         TransferDirection.SENT -> SentScreen(
-            navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
+            navigateToDetails = { transferUuid -> navigator.navigateToDetails(windowAdaptiveInfo, direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
-            navigateToDetails = { transferUuid -> navigator.navigateToDetails(direction, transferUuid) },
+            navigateToDetails = { transferUuid -> navigator.navigateToDetails(windowAdaptiveInfo, direction, transferUuid) },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
@@ -114,10 +114,11 @@ private fun ListPane(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
+    windowAdaptiveInfo: WindowAdaptiveInfo,
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid))
+    selectItem(windowAdaptiveInfo, DestinationContent(direction, transferUuid))
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
