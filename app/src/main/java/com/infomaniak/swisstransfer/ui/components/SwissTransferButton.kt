@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
+import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
@@ -116,6 +117,7 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.primary,
+            disabledContainerColor = Color.Transparent,
         )
     }),
     Destructive({
@@ -128,6 +130,9 @@ enum class ButtonType(val buttonColors: @Composable () -> ButtonColors) {
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.error,
+            disabledContainerColor = Color.Transparent,
+            // Alpha based on Material's `FilledButtonTokens.DisabledLabelTextOpacity`
+            disabledContentColor = SwissTransferTheme.materialColors.error.copy(alpha = 0.38f),
         )
     }),
 }
@@ -139,16 +144,20 @@ private fun Preview() {
         Surface {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ButtonType.entries.forEach { buttonType ->
-                    Row {
+                    Row(horizontalArrangement = Arrangement.spacedBy(Margin.Small)) {
                         SwissTransferButton(
                             modifier = Modifier.height(40.dp),
                             style = buttonType,
                             onClick = {},
                             content = { Text("Click me!") },
                         )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
+                        SwissTransferButton(
+                            modifier = Modifier.height(40.dp),
+                            style = buttonType,
+                            onClick = {},
+                            content = { Text("Click me!") },
+                            enabled = { false },
+                        )
                         SwissTransferButton(
                             modifier = Modifier.height(40.dp),
                             style = buttonType,
