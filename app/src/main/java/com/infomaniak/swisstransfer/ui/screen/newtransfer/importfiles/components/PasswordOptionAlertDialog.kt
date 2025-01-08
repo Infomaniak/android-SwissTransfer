@@ -114,7 +114,7 @@ fun DeeplinkPasswordAlertDialog(
         onDismiss = closeAlertDialog,
         positiveButton = {
             SwissTransferAlertDialogDefaults.ConfirmButton(
-                isEnabled = { !isLoading},
+                isEnabled = { !isLoading && password.get().isNotEmpty() },
                 onClick = ::onConfirm,
             )
         },
