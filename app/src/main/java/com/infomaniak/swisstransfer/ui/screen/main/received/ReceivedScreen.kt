@@ -47,16 +47,18 @@ fun ReceivedScreen(
     hasTransfer: (Boolean) -> Unit,
 ) {
 
-    val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
-    val isLoading by remember { derivedStateOf { transfers == null } }
+    val receivedTransfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
+    val sentTransfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val isLoading by remember { derivedStateOf { receivedTransfers == null } }
 
-    hasTransfer(transfers?.isNotEmpty() == true)
+    hasTransfer(receivedTransfers?.isNotEmpty() == true)
 
     if (!isLoading) {
         ReceivedScreen(
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
-            getTransfers = { transfers!! },
+            receivedTransfers = { receivedTransfers ?: emptyList() },
+            sentTransfers = { sentTransfers ?: emptyList() },
             onDeleteTransfer = transfersViewModel::deleteTransfer,
         )
     }
@@ -66,14 +68,16 @@ fun ReceivedScreen(
 private fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    getTransfers: () -> List<TransferUi>,
+    receivedTransfers: () -> List<TransferUi>,
+    sentTransfers: () -> List<TransferUi>,
     onDeleteTransfer: (String) -> Unit,
 ) {
 
-    val areTransfersEmpty by remember { derivedStateOf { getTransfers().isEmpty() } }
+    val areTransfersEmpty by remember { derivedStateOf { receivedTransfers().isEmpty() } }
+    val isFirstTransfer by remember { derivedStateOf { sentTransfers().isEmpty() } }
 
     BrandTopAppBarScaffold(
-        floatingActionButton = { ReceivedEmptyFab { areTransfersEmpty } },
+        floatingActionButton = { ReceivedEmptyFab(isMessageVisible = { isFirstTransfer }) },
     ) {
         if (areTransfersEmpty) {
             val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
@@ -87,7 +91,7 @@ private fun ReceivedScreen(
                 direction = TransferDirection.RECEIVED,
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferUuid = getSelectedTransferUuid,
-                getTransfers = getTransfers,
+                getTransfers = receivedTransfers,
                 onDeleteTransfer = onDeleteTransfer,
             )
         }
@@ -102,7 +106,8 @@ private fun Preview() {
             ReceivedScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                getTransfers = { emptyList() },
+                receivedTransfers = { emptyList() },
+                sentTransfers = { emptyList() },
                 onDeleteTransfer = {},
             )
         }
