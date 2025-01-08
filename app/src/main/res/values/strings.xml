@@ -32,6 +32,7 @@
     <string name="buttonOpenMailApp">Open the mail app</string>
     <string name="buttonShare">Share</string>
     <string name="buttonStart">Start</string>
+    <string name="cantImportFileX">Can’t import the file %s</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>

@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
-import com.infomaniak.core2.sentry.SentryLog
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.InputStream
@@ -39,20 +38,12 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
 
     fun getLocalFiles(): Array<File>? = importFolder.listFiles()
 
-    fun copyUriDataLocally(inputStream: InputStream, fileName: String): File? {
-        val file = File(getImportFolderOrCreate(), fileName)
-
-        if (file.exists()) file.delete()
-        runCatching { file.createNewFile() }.onFailure { return null }
-
-        runCatching {
+    fun copyUriDataLocally(inputStream: InputStream, fileName: String): Result<File> = runCatching {
+        File(getImportFolderOrCreate(), fileName).also { file ->
+            if (file.exists()) file.delete()
+            file.createNewFile()
             copyStreams(inputStream, file.outputStream())
-        }.onFailure {
-            SentryLog.w(TAG, "Caught an exception while copying file to local storage: $it")
-            return null
         }
-
-        return file
     }
 
     private fun copyStreams(inputStream: InputStream, outputStream: OutputStream): Long {

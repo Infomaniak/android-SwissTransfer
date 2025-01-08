@@ -28,6 +28,7 @@
     <string name="buttonOpenMailApp">Abrir la aplicación de correo</string>
     <string name="buttonShare">Compartir</string>
     <string name="buttonStart">Inicio</string>
+    <string name="cantImportFileX">No se puede importar el archivo %s</string>
     <string name="contentDescriptionButtonBack">Volver</string>
     <string name="contentDescriptionButtonClose">Cerrar</string>
     <string name="contentDescriptionButtonHidePassword">Ocultar contraseña</string>

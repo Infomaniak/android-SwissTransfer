@@ -51,9 +51,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -78,7 +76,6 @@ class ImportFilesViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
-    val failedFiles = importationFilesManager.failedFiles // TODO ? (unused)
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
 
