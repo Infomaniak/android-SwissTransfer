@@ -46,8 +46,8 @@ fun QrCode(transferUrl: String) {
         }
         logo {
             painter = centralIcon
-            size = 0.25f // 25% : Icon size in fraction relative to the QR Code size.
-            padding = QrLogoPadding.Natural(size = 0.08f) // 8% : Padding size in fraction relative to the Icon size.
+            size = 0.25f // 25%: Icon size in fraction relative to the QR Code size.
+            padding = QrLogoPadding.Natural(size = 0.13f) // 13%: Padding size in fraction relative to the Icon size.
         }
     }
 
@@ -63,7 +63,7 @@ fun QrCode(transferUrl: String) {
 private fun QrCodePreview() {
     SwissTransferTheme {
         Surface {
-            QrCode(transferUrl = "https://chk.me/83azQOl")
+            QrCode(transferUrl = "https://www.swisstransfer.com/d/b311318d-0790-4618-83d5-3ae0e407727c")
         }
     }
 }
