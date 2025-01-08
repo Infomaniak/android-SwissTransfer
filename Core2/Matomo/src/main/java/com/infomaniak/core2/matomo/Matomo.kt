@@ -25,16 +25,17 @@ import org.matomo.sdk.Tracker
 import org.matomo.sdk.TrackerBuilder
 import org.matomo.sdk.extra.DownloadTracker
 import org.matomo.sdk.extra.TrackHelper
+import splitties.init.appCtx
 
 interface Matomo {
 
-    val Context.tracker: Tracker
+    val tracker: Tracker
     val siteId: Int
 
-    fun Context.buildTracker(shouldOptOut: Boolean = false): Tracker {
-        return TrackerBuilder(BuildConfig.MATOMO_URL, siteId, "AndroidTracker").build(Matomo.getInstance(this)).also {
+    fun buildTracker(shouldOptOut: Boolean = false): Tracker {
+        return TrackerBuilder(BuildConfig.MATOMO_URL, siteId, "AndroidTracker").build(Matomo.getInstance(appCtx)).also {
             // Put a tracker on app installs to have statistics on the number of times the app is installed or updated
-            TrackHelper.track().download().identifier(DownloadTracker.Extra.ApkChecksum(this)).with(it)
+            TrackHelper.track().download().identifier(DownloadTracker.Extra.ApkChecksum(appCtx)).with(it)
             it.isOptOut = shouldOptOut
         }
     }
@@ -88,7 +89,7 @@ interface Matomo {
     fun Boolean.toFloat() = if (this) 1.0f else 0.0f
 
     fun shouldOptOut(context: Context, shouldOptOut: Boolean) {
-        context.tracker.isOptOut = shouldOptOut
+        tracker.isOptOut = shouldOptOut
     }
 
     enum class TrackerAction {
