@@ -41,6 +41,7 @@ class TransfersViewModel @Inject constructor(
 
     val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
         .flowOn(ioDispatcher)
+        // .map { it.groupBySection() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
