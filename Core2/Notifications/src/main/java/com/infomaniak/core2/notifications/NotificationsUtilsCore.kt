@@ -76,6 +76,7 @@ fun Context.buildNotification(
         setSmallIcon(icon)
         setAutoCancel(true)
         setContentIntent(PendingIntent.getActivity(this@buildNotification, requestCode, intent, pendingIntentFlags))
+        setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 }
 

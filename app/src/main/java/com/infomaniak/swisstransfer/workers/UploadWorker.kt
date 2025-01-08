@@ -19,6 +19,8 @@ package com.infomaniak.swisstransfer.workers
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
@@ -145,14 +147,14 @@ class UploadWorker @AssistedInject constructor(
         }
     }
 
-    private fun displayProgressNotification(totalSize: Long) {
+    private suspend fun displayProgressNotification(totalSize: Long) {
 
         val percent = String.format(Locale.getDefault(), "%d", (uploadedBytes.toFloat() / totalSize * 100).toInt())
         val current = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, uploadedBytes)
         val total = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, totalSize)
 
-        notificationsUtils.sendUploadNotification(
-            notificationId = serviceNotificationId,
+        val builder = notificationsUtils.buildUploadNotification(
+            requestCode = serviceNotificationId,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 // .clearStack()
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
@@ -161,6 +163,12 @@ class UploadWorker @AssistedInject constructor(
             title = "Transfert en cours… (${percent}%)", // TODO
             description = "$current / $total", // TODO
         )
+        val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ForegroundInfo(serviceNotificationId, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            ForegroundInfo(serviceNotificationId, builder.build())
+        }
+        setForeground(foregroundInfo)
     }
 
     private fun displaySuccessNotification(transferUuid: String) {
@@ -169,7 +177,7 @@ class UploadWorker @AssistedInject constructor(
 
         Log.e("TOTO", "displaySuccessNotification - state.transferUrl: ${transferUrl}")
         notificationsUtils.sendUploadNotification(
-            notificationId = serviceNotificationId,
+            notificationId = serviceNotificationId + 1,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 // .clearStack()
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
@@ -194,7 +202,7 @@ class UploadWorker @AssistedInject constructor(
             val workRequest = OneTimeWorkRequestBuilder<UploadWorker>()
                 .addTag(uploadSessionUuid)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                // .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
         }

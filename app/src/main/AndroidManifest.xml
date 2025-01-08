@@ -27,6 +27,7 @@
     </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name=".ui.MainApplication"
@@ -55,6 +56,11 @@
         <meta-data
             android:name="io.sentry.dsn"
             android:value="https://8fa636a7655a9ab4949a2e7fc22bdee3@sentry-mobile.infomaniak.com/18" />
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:node="merge" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
