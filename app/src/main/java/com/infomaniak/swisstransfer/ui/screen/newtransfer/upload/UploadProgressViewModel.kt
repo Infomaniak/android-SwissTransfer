@@ -20,9 +20,9 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.core2.network.NetworkAvailability
 import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.MainDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
