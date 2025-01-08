@@ -154,6 +154,7 @@ dependencies {
     implementation(libs.recaptcha)
     implementation(libs.workmanager)
     implementation(core2.splitties.toast)
+    implementation(libs.androidx.datastore.preferences)
 
     // Test
     testImplementation(core2.junit)

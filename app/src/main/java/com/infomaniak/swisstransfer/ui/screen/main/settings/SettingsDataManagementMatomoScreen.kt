@@ -24,14 +24,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -43,11 +41,26 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
+fun SettingsDataManagementMatomoScreen(
+    navigateBack: (() -> Unit)?,
+    settingsMatomoViewModel: SettingsMatomoViewModel = hiltViewModel<SettingsMatomoViewModel>()
+) {
+    val isMatomoAuthorized by settingsMatomoViewModel.isMatomoAuthorized.collectAsStateWithLifecycle()
 
-    // TODO: Use real value from Realm, and save it to Realm / anywhere else too.
-    var isMatomoAuthorized by rememberSaveable { mutableStateOf(true) }
+    SettingsDataManagementMatomoScreen(
+        navigateBack = navigateBack,
+        isMatomoAuthorized = { isMatomoAuthorized },
+        setMatomoAuthorization = { settingsMatomoViewModel.setMatomoAuthorization(it) }
+    )
+}
 
+
+@Composable
+fun SettingsDataManagementMatomoScreen(
+    navigateBack: (() -> Unit)?,
+    isMatomoAuthorized: () -> Boolean,
+    setMatomoAuthorization: (Boolean) -> Unit,
+) {
     SmallWindowTopAppBarScaffold(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
@@ -84,8 +97,8 @@ fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
                 )
                 Spacer(Modifier.weight(1.0f))
                 Switch(
-                    checked = isMatomoAuthorized,
-                    onCheckedChange = { isMatomoAuthorized = it },
+                    checked = isMatomoAuthorized(),
+                    onCheckedChange = { setMatomoAuthorization(it) },
                 )
             }
         }
@@ -97,7 +110,13 @@ fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            SettingsDataManagementMatomoScreen {}
+            var isMatomoAuthorized by remember { mutableStateOf(true) }
+
+            SettingsDataManagementMatomoScreen(
+                navigateBack = {},
+                isMatomoAuthorized = { isMatomoAuthorized },
+                setMatomoAuthorization = { isMatomoAuthorized = it }
+            )
         }
     }
 }
