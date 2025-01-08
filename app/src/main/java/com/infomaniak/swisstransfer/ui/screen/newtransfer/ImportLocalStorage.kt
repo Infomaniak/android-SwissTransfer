@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
-import com.infomaniak.core2.sentry.SentryLog
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.InputStream
