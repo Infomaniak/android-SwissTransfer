@@ -111,8 +111,8 @@ private fun TransferDetailsScreen(
         smallWindowTopAppBar = {
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
-                navigationMenu = TopAppBarButton.backButton(navigateBack ?: {}),
-                TopAppBarButton.downloadButton { downloadFiles() },
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                actions = { TopAppBarButtons.Download { downloadFiles() } }
             )
         },
         floatingActionButton = {},

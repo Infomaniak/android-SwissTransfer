@@ -226,8 +226,7 @@ private fun ImportFilesScreen(
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.importFilesScreenTitle,
-                navigationMenu = null,
-                TopAppBarButton.closeButton { closeActivity() },
+                actions = { TopAppBarButtons.Close(onClick = { closeActivity() }) }
             )
         },
         topButton = { modifier ->

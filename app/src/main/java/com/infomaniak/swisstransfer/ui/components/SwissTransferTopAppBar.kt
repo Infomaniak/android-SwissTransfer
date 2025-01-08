@@ -18,9 +18,9 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
@@ -35,18 +35,18 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun SwissTransferTopAppBar(
     @StringRes titleRes: Int,
-    navigationMenu: TopAppBarButton? = null,
-    vararg actionMenus: TopAppBarButton,
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
-    SwissTransferTopAppBar(title = stringResource(titleRes), navigationMenu, *actionMenus)
+    SwissTransferTopAppBar(title = stringResource(titleRes), navigationIcon, actions)
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
     title: String,
-    navigationMenu: TopAppBarButton? = null,
-    vararg actionMenus: TopAppBarButton,
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -56,35 +56,44 @@ fun SwissTransferTopAppBar(
             navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
         ),
         title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
-        navigationIcon = { navigationMenu?.let { MenuButton(navigationMenu) } },
-        actions = { actionMenus.forEach { actionMenu -> MenuButton(actionMenu) } },
+        navigationIcon = navigationIcon,
+        actions = actions,
     )
 }
 
 @Composable
-private fun MenuButton(navigationMenu: TopAppBarButton) {
-    IconButton(onClick = navigationMenu.onClick) {
-        Icon(imageVector = navigationMenu.icon, contentDescription = stringResource(navigationMenu.contentDescription))
+private fun MenuButton(
+    icon: ImageVector,
+    @StringRes contentDescResId: Int,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+) {
+    IconButton(onClick = onClick, enabled = enabled) {
+        Icon(imageVector = icon, contentDescription = stringResource(contentDescResId))
     }
 }
 
-@Immutable
-data class TopAppBarButton(
-    val icon: ImageVector,
-    @StringRes val contentDescription: Int,
-    val onClick: () -> Unit,
-) {
-    companion object {
-        val backButton: (onClick: () -> Unit) -> TopAppBarButton = {
-            TopAppBarButton(AppIcons.ArrowLeft, R.string.contentDescriptionButtonBack, it)
-        }
-        val closeButton: (onClick: () -> Unit) -> TopAppBarButton = {
-            TopAppBarButton(AppIcons.Cross, R.string.contentDescriptionButtonClose, it)
-        }
-        val downloadButton: (onClick: () -> Unit) -> TopAppBarButton = {
-            TopAppBarButton(AppIcons.ArrowDownBar, R.string.buttonDownload, it)
-        }
-    }
+object TopAppBarButtons {
+    @Composable
+    fun Back(onClick: () -> Unit) = MenuButton(
+        icon = AppIcons.ArrowLeft,
+        contentDescResId = R.string.contentDescriptionButtonBack,
+        onClick = onClick
+    )
+
+    @Composable
+    fun Close(onClick: () -> Unit) = MenuButton(
+        icon = AppIcons.Cross,
+        contentDescResId = R.string.contentDescriptionButtonClose,
+        onClick = onClick
+    )
+
+    @Composable
+    fun Download(onClick: () -> Unit) = MenuButton(
+        icon = AppIcons.ArrowDownBar,
+        contentDescResId = R.string.buttonDownload,
+        onClick = onClick
+    )
 }
 
 @PreviewLightAndDark
@@ -92,11 +101,13 @@ data class TopAppBarButton(
 private fun SwissTransferTopAppBarPreview() {
     SwissTransferTheme {
         SwissTransferTopAppBar(
-            titleRes = R.string.appName,
-            navigationMenu = TopAppBarButton.backButton {},
-            TopAppBarButton(AppIcons.Add, R.string.appName) {},
-            TopAppBarButton.closeButton {},
-            TopAppBarButton.downloadButton {},
+            title = stringResource( R.string.appName),
+            navigationIcon = { TopAppBarButtons.Back {} },
+            actions = {
+                MenuButton(AppIcons.Add, R.string.appName, onClick = {})
+                TopAppBarButtons.Close {}
+                TopAppBarButtons.Download {}
+            }
         )
     }
 }
