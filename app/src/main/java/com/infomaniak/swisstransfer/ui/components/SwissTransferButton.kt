@@ -56,7 +56,7 @@ fun SwissTransferButton(
     val isEnabled = enabled() && isProgressing.not()
 
     val buttonColors = style.buttonColors().let { colors -> if (isProgressing) colors.applyEnabledColorsToDisabled() else colors }
-    val progressColor = style.loaderColors()
+    val progressColors = style.loaderColors()
 
     Button(
         modifier = modifier,
@@ -71,9 +71,9 @@ fun SwissTransferButton(
                 KeepButtonSize(content) {
                     CircularProgressIndicator(
                         modifier = getProgressModifier(),
-                        color = progressColor.progressColor,
-                        trackColor = progressColor.trackColor,
-                        progress = progress
+                        color = progressColors.progressColor,
+                        trackColor = progressColors.trackColor,
+                        progress = progress,
                     )
                 }
             }
@@ -81,8 +81,8 @@ fun SwissTransferButton(
                 KeepButtonSize(content) {
                     CircularProgressIndicator(
                         modifier = getProgressModifier(),
-                        color = progressColor.progressColor,
-                        trackColor = progressColor.trackColor,
+                        color = progressColors.progressColor,
+                        trackColor = progressColors.trackColor,
                     )
                 }
             }
