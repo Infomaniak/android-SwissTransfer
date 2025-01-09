@@ -31,14 +31,14 @@ import java.util.Locale
 
 object TransfersGroupingManager {
 
-    fun List<TransferUi>.groupBySection(): Map<TransferSection, List<TransferUi>> {
+    fun List<TransferUi>.groupBySection(today: LocalDate = LocalDate.now()): Map<TransferSection, List<TransferUi>> {
         return groupBy { transfer ->
-            when (transfer) {
-                in SpecificSection.Today -> SpecificSection.Today
-                in SpecificSection.Yesterday -> SpecificSection.Yesterday
-                in SpecificSection.ThisWeek -> SpecificSection.ThisWeek
-                in SpecificSection.LastWeek -> SpecificSection.LastWeek
-                in SpecificSection.ThisMonth -> SpecificSection.ThisMonth
+            when {
+                SpecificSection.Today.containsTransfer(transfer, today) -> SpecificSection.Today
+                SpecificSection.Yesterday.containsTransfer(transfer, today) -> SpecificSection.Yesterday
+                SpecificSection.ThisWeek.containsTransfer(transfer, today) -> SpecificSection.ThisWeek
+                SpecificSection.LastWeek.containsTransfer(transfer, today) -> SpecificSection.LastWeek
+                SpecificSection.ThisMonth.containsTransfer(transfer, today) -> SpecificSection.ThisMonth
                 else -> TransferSection.ByMonth(getMonthNameFromEpoch(transfer.createdDateTimestamp))
             }
         }
@@ -79,8 +79,8 @@ object TransfersGroupingManager {
         })
 
 
-        operator fun contains(transferUi: TransferUi): Boolean {
-            return contains(transferUi.createdDateTimestamp.toLocalDate(), LocalDate.now())
+        fun containsTransfer(transferUi: TransferUi, today: LocalDate): Boolean {
+            return contains(transferUi.createdDateTimestamp.toLocalDate(), today)
         }
     }
 

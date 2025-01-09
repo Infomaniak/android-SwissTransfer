@@ -22,6 +22,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingMa
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.getMonthNameFromEpoch
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
@@ -67,13 +68,6 @@ class TransferSectionGroupingTest {
     }
 
     private companion object {
-        const val SECONDS_IN_A_DAY = 24 * 60 * 60
-        const val TODAY = 1736411401L // 2025-01-08 WEDNESDAY
-
-        val groupedTransferUi = (-30..30).map { dayOffset ->
-            TODAY.plusDays(dayOffset).toTransferUi()
-        }.groupBySection()
-
         val december = listOf(
             1733819401L, // 2024-12-10 TUESDAY
             1733905801L, // 2024-12-11 WEDNESDAY
@@ -156,9 +150,10 @@ class TransferSectionGroupingTest {
             1739003401L, // 2025-02-08 SATURDAY
         )
 
-        fun Long.plusDays(dayQuantity: Int): Long {
-            return this + dayQuantity * SECONDS_IN_A_DAY
-        }
+        val groupedTransferUi = listOf(december, lastWeek, thisWeek, yesterday, today, thisMonth, february)
+            .flatten()
+            .map { day -> day.toTransferUi() }
+            .groupBySection(today = today.single().toLocalDate())
 
         fun Long.toTransferUi(): TransferUi {
             return TransferUi(
