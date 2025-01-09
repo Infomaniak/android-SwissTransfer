@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.ui.text.capitalize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import java.time.DayOfWeek
@@ -35,6 +34,7 @@ object TransfersGroupingManager {
     fun List<TransferUi>.groupBySection(today: LocalDate = LocalDate.now()): Map<TransferSection, List<TransferUi>> {
         return groupBy { transfer ->
             when {
+                SpecificSection.Future.containsTransfer(transfer, today) -> SpecificSection.Future
                 SpecificSection.Today.containsTransfer(transfer, today) -> SpecificSection.Today
                 SpecificSection.Yesterday.containsTransfer(transfer, today) -> SpecificSection.Yesterday
                 SpecificSection.ThisWeek.containsTransfer(transfer, today) -> SpecificSection.ThisWeek
@@ -53,6 +53,10 @@ object TransfersGroupingManager {
         @StringRes val titleRes: Int,
         private val contains: (LocalDate, LocalDate) -> Boolean,
     ) : TransferSection(title = { getString(titleRes) }) {
+
+        data object Future : SpecificSection(R.string.transferListSectionFuture, { date, today ->
+            date.isAfter(today)
+        })
 
         data object Today : SpecificSection(R.string.transferListSectionToday, { date, today ->
             date.isEqual(today)

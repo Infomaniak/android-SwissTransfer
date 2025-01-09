@@ -144,6 +144,7 @@
     <string name="transferExpiredDateReachedDescription">Sorry, this transfer expired on %s. You can no longer download or view the files.</string>
     <string name="transferExpiredLimitReachedDescription">Sorry, this transfer has reached the limit of %d possible downloads.</string>
     <string name="transferExpiredTitle">This transfer is no longer available</string>
+    <string name="transferListSectionFuture">Future</string>
     <string name="transferListSectionLastWeek">Last week</string>
     <string name="transferListSectionThisMonth">This month</string>
     <string name="transferListSectionThisWeek">This week</string>

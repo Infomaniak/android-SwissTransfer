@@ -23,6 +23,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingMa
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.getMonthNameFromEpoch
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
@@ -53,12 +54,31 @@ class TransferSectionGroupingTest {
     }
 
     @Test
-    fun otherDates_areGroupedCorrectly() {
+    fun months_areGroupedCorrectly() {
         val decemberSection = TransferSection.ByMonth(getMonthNameFromEpoch(december.first()))
         assertEpochsAreGroupedInSection(december, decemberSection)
+    }
 
-        val februarySection = TransferSection.ByMonth(getMonthNameFromEpoch(february.first()))
-        assertEpochsAreGroupedInSection(february, februarySection)
+    @Test
+    fun futureDates_areGroupedCorrectly() {
+        assertEpochsAreGroupedInSection(future, SpecificSection.Future)
+    }
+
+    @Test
+    fun allSections_areFound() {
+        assertEquals(groupedTransferUi.keys.count(), 7)
+    }
+
+    @Test
+    fun sections_areOrderCorrectly() {
+        val decemberSection = TransferSection.ByMonth(getMonthNameFromEpoch(december.first()))
+        assertEquals(groupedTransferUi.keys.elementAt(0), SpecificSection.Future)
+        assertEquals(groupedTransferUi.keys.elementAt(1), SpecificSection.Today)
+        assertEquals(groupedTransferUi.keys.elementAt(2), SpecificSection.Yesterday)
+        assertEquals(groupedTransferUi.keys.elementAt(3), SpecificSection.ThisWeek)
+        assertEquals(groupedTransferUi.keys.elementAt(4), SpecificSection.LastWeek)
+        assertEquals(groupedTransferUi.keys.elementAt(5), SpecificSection.ThisMonth)
+        assertEquals(groupedTransferUi.keys.elementAt(6), decemberSection)
     }
 
     private fun assertEpochsAreGroupedInSection(epochs: List<Long>, section: TransferSection) {
@@ -69,13 +89,6 @@ class TransferSectionGroupingTest {
 
     private companion object {
         val december = listOf(
-            1733819401L, // 2024-12-10 TUESDAY
-            1733905801L, // 2024-12-11 WEDNESDAY
-            1733992201L, // 2024-12-12 THURSDAY
-            1734078601L, // 2024-12-13 FRIDAY
-            1734165001L, // 2024-12-14 SATURDAY
-            1734251401L, // 2024-12-15 SUNDAY
-            1734337801L, // 2024-12-16 MONDAY
             1734424201L, // 2024-12-17 TUESDAY
             1734510601L, // 2024-12-18 WEDNESDAY
             1734597001L, // 2024-12-19 THURSDAY
@@ -89,11 +102,11 @@ class TransferSectionGroupingTest {
             1735288201L, // 2024-12-27 FRIDAY
             1735374601L, // 2024-12-28 SATURDAY
             1735461001L, // 2024-12-29 SUNDAY
-        )
-
-        val lastWeek = listOf(
             1735547401L, // 2024-12-30 MONDAY
             1735633801L, // 2024-12-31 TUESDAY
+        )
+
+        val thisMonth = listOf(
             1735720201L, // 2025-01-01 WEDNESDAY
             1735806601L, // 2025-01-02 THURSDAY
             1735893001L, // 2025-01-03 FRIDAY
@@ -101,27 +114,30 @@ class TransferSectionGroupingTest {
             1736065801L, // 2025-01-05 SUNDAY
         )
 
-        val thisWeek = listOf(
+        val lastWeek = listOf(
             1736152201L, // 2025-01-06 MONDAY
             1736238601L, // 2025-01-07 TUESDAY
+            1736325001L, // 2025-01-08 WEDNESDAY
+            1736411401L, // 2025-01-09 THURSDAY
             1736497801L, // 2025-01-10 FRIDAY
             1736584201L, // 2025-01-11 SATURDAY
             1736670601L, // 2025-01-12 SUNDAY
         )
 
+        val thisWeek = listOf(
+            1736757001L, // 2025-01-13 MONDAY
+            1736843401L, // 2025-01-14 TUESDAY
+        )
+
         val yesterday = listOf(
-            1736325001L, // 2025-01-08 WEDNESDAY
+            1736929801L, // 2025-01-15 WEDNESDAY
         )
 
         val today = listOf(
-            1736411401L, // 2025-01-09 THURSDAY
+            1737016201L, // 2025-01-16 THURSDAY
         )
 
-        val thisMonth = listOf(
-            1736757001L, // 2025-01-13 MONDAY
-            1736843401L, // 2025-01-14 TUESDAY
-            1736929801L, // 2025-01-15 WEDNESDAY
-            1737016201L, // 2025-01-16 THURSDAY
+        val future = listOf(
             1737102601L, // 2025-01-17 FRIDAY
             1737189001L, // 2025-01-18 SATURDAY
             1737275401L, // 2025-01-19 SUNDAY
@@ -137,9 +153,6 @@ class TransferSectionGroupingTest {
             1738139401L, // 2025-01-29 WEDNESDAY
             1738225801L, // 2025-01-30 THURSDAY
             1738312201L, // 2025-01-31 FRIDAY
-        )
-
-        val february = listOf(
             1738398601L, // 2025-02-01 SATURDAY
             1738485001L, // 2025-02-02 SUNDAY
             1738571401L, // 2025-02-03 MONDAY
@@ -148,10 +161,18 @@ class TransferSectionGroupingTest {
             1738830601L, // 2025-02-06 THURSDAY
             1738917001L, // 2025-02-07 FRIDAY
             1739003401L, // 2025-02-08 SATURDAY
+            1739089801L, // 2025-02-09 SUNDAY
+            1739176201L, // 2025-02-10 MONDAY
+            1739262601L, // 2025-02-11 TUESDAY
+            1739349001L, // 2025-02-12 WEDNESDAY
+            1739435401L, // 2025-02-13 THURSDAY
+            1739521801L, // 2025-02-14 FRIDAY
+            1739608201L, // 2025-02-15 SATURDAY
         )
 
-        val groupedTransferUi = listOf(december, lastWeek, thisWeek, yesterday, today, thisMonth, february)
+        val groupedTransferUi = listOf(december, lastWeek, thisMonth, thisWeek, yesterday, today, future)
             .flatten()
+            .sortedDescending()
             .map { day -> day.toTransferUi() }
             .groupBySection(today = today.single().toLocalDate())
 
