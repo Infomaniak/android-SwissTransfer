@@ -106,7 +106,8 @@ class NotificationsUtils @Inject constructor(
             icon = defaultSmallIcon,
             title = title,
             description = description,
-        ).setOnlyAlertOnce(true)
+            onlyAlertOnce = true,
+        )
     }
 
     companion object {
