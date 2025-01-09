@@ -83,7 +83,6 @@ object TransfersGroupingManager {
             date.year == today.year && date.month == today.month
         })
 
-
         fun containsTransfer(transferUi: TransferUi, today: LocalDate): Boolean {
             return contains(transferUi.createdDateTimestamp.toLocalDate(), today)
         }
