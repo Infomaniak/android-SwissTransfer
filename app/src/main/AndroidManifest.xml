@@ -104,9 +104,13 @@
 
         <activity android:name=".ui.OnboardingActivity" />
 
-        <activity android:name=".ui.MainActivity" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:launchMode="singleTask" />
 
-        <activity android:name=".ui.NewTransferActivity" />
+        <activity
+            android:name=".ui.NewTransferActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

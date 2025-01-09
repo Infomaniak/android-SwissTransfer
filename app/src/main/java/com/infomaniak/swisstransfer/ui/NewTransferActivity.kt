@@ -48,7 +48,13 @@ class NewTransferActivity : ComponentActivity() {
         handleSharedFiles()
         setContent {
             SwissTransferTheme {
-                NewTransferScreen(startDestination = getStartDestination(), closeActivity = { finish() })
+                NewTransferScreen(
+                    startDestination = getStartDestination(),
+                    closeActivity = {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    },
+                )
             }
         }
     }

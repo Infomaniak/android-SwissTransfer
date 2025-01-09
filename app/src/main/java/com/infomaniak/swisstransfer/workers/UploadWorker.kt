@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
@@ -175,7 +174,6 @@ class UploadWorker @AssistedInject constructor(
 
         val transferUrl = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 
-        Log.e("TOTO", "displaySuccessNotification - state.transferUrl: ${transferUrl}")
         notificationsUtils.sendUploadNotification(
             notificationId = serviceNotificationId + 1,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
@@ -216,7 +214,6 @@ class UploadWorker @AssistedInject constructor(
 
             return workManager.getWorkInfosFlow(workQuery).mapLatest { workInfoList ->
                 val workInfo = workInfoList.firstOrNull() ?: return@mapLatest UploadProgressUiState.Default()
-                Log.e("TOTO", "trackUploadProgressFlow - workInfo.state: ${workInfo.state}")
                 return@mapLatest when (workInfo.state) {
                     State.RUNNING -> UploadProgressUiState.Progress(workInfo.progress).also { lastUploadedSize = it.uploadedSize }
                     State.SUCCEEDED -> UploadProgressUiState.Success.create(workInfo.outputData, sharedApiUrlCreator)
@@ -236,7 +233,6 @@ class UploadWorker @AssistedInject constructor(
         }
 
         private fun displayFailureNotification() {
-            Log.e("TOTO", "displayFailureNotification")
             notificationsUtils.sendUploadNotification(
                 notificationId = UUID.randomUUID().hashCode(), // TODO: Use the same `transferUuid`
                 intent = Intent(appContext, NewTransferActivity::class.java),
