@@ -43,7 +43,7 @@ class TransfersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val sentTransfers: StateFlow<GroupedTransfers?> = transferManager.getTransfers(TransferDirection.SENT)
+    val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
         .flowOn(ioDispatcher)
         .map { it.groupBySection() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
