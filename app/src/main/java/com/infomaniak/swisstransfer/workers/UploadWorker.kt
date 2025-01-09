@@ -95,6 +95,8 @@ class UploadWorker @AssistedInject constructor(
 
         SentryLog.d(TAG, "Work started with ${uploadSession.files.count()} files of $totalSize bytes")
 
+        return runCatching {
+
         uploadSession.files.forEach { fileSession ->
             uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
                 uploadedBytes += bytesSent
@@ -107,13 +109,22 @@ class UploadWorker @AssistedInject constructor(
 
         displaySuccessNotification(transferUuid)
 
-        return Result.success(
+            Result.success(
             workDataOf(
                 UPLOADED_BYTES_TAG to totalSize,
                 TRANSFER_TYPE_TAG to transferType,
                 TRANSFER_UUID_TAG to transferUuid,
             )
         )
+        }.getOrElse { exception ->
+            when (exception) {
+                is NetworkException -> Result.retry()
+                is CancellationException -> Result.failure()
+                else -> {
+                    Result.failure()
+                }
+            }
+        }
     }
 
     override fun onFinish() {
