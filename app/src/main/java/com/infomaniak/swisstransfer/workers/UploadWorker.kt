@@ -80,23 +80,6 @@ class UploadWorker @AssistedInject constructor(
     private val transferType by lazy { appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi().name }
     private val uploadSessionJob: CompletableDeferred<UploadSession> = CompletableDeferred()
 
-    override suspend fun getForegroundInfo(): ForegroundInfo {
-
-        val uploadSession = uploadSessionJob.await()
-        val totalSize = uploadSession.files.sumOf { it.size }
-
-        val builder = notificationsUtils.buildUploadNotification(
-            requestCode = serviceNotificationId,
-            intent = Intent(applicationContext, NewTransferActivity::class.java)
-                // .clearStack()
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
-                .putExtra(TRANSFER_TYPE_KEY, transferType)
-                .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
-            title = "Transfert en cours…", // TODO
-        )
-        return ForegroundInfo(serviceNotificationId, builder.build())
-    }
-
     override suspend fun launchWork(): Result {
         SentryLog.i(TAG, "Work launched")
 
@@ -146,6 +129,19 @@ class UploadWorker @AssistedInject constructor(
         }
     }
 
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+
+        val uploadSession = uploadSessionJob.await()
+        val totalSize = uploadSession.files.sumOf { it.size }
+        val builder = notificationsUtils.buildUploadNotification(
+            requestCode = serviceNotificationId,
+            intent = createProgressNotificationIntent(totalSize),
+            title = "Transfert en cours…", // TODO
+        )
+
+        return ForegroundInfo(serviceNotificationId, builder.build())
+    }
+
     private suspend fun displayProgressNotification(totalSize: Long) {
 
         val percent = String.format(Locale.getDefault(), "%d", (uploadedBytes.toFloat() / totalSize * 100).toInt())
@@ -154,20 +150,25 @@ class UploadWorker @AssistedInject constructor(
 
         val builder = notificationsUtils.buildUploadNotification(
             requestCode = serviceNotificationId,
-            intent = Intent(applicationContext, NewTransferActivity::class.java)
-                // .clearStack()
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
-                .putExtra(TRANSFER_TYPE_KEY, transferType)
-                .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
+            intent = createProgressNotificationIntent(totalSize),
             title = "Transfert en cours… (${percent}%)", // TODO
             description = "$current / $total", // TODO
         )
+
         val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(serviceNotificationId, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
             ForegroundInfo(serviceNotificationId, builder.build())
         }
+
         setForeground(foregroundInfo)
+    }
+
+    private fun createProgressNotificationIntent(totalSize: Long): Intent {
+        return Intent(applicationContext, NewTransferActivity::class.java)
+            .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
+            .putExtra(TRANSFER_TYPE_KEY, transferType)
+            .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
     }
 
     private fun displaySuccessNotification(transferUuid: String) {
@@ -177,7 +178,6 @@ class UploadWorker @AssistedInject constructor(
         notificationsUtils.sendUploadNotification(
             notificationId = serviceNotificationId + 1,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
-                // .clearStack()
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType)
                 .putExtra(TRANSFER_UUID_KEY, transferUuid)
@@ -200,7 +200,6 @@ class UploadWorker @AssistedInject constructor(
             val workRequest = OneTimeWorkRequestBuilder<UploadWorker>()
                 .addTag(uploadSessionUuid)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                // .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .build()
             workManager.enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, workRequest)
         }
