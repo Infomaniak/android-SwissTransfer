@@ -36,8 +36,10 @@
     <string name="contentDescriptionButtonRemoveRecipient">Supprimer %s</string>
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
+    <string name="deeplinkPasswordDescription">Saisis le mot de passe qui t’a été fourni pour télécharger ces fichiers.</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
     <string name="errorAppIntegrity">Votre appareil n’est pas reconnu comme sûr</string>
+    <string name="errorIncorrectPassword">Mot de passe incorrect</string>
     <string name="errorTransferPasswordLength">Le mot de passe doit comporter entre 6 et 25 caractères</string>
     <string name="errorUnknown">Une erreur est survenue</string>
     <string name="expiresIn">Expire dans %d jours</string>

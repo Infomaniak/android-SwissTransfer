@@ -23,13 +23,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,13 +43,15 @@ class TransfersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
-        .flowOn(ioDispatcher)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
+        .mapLatest { TransferUiState.Success(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
-        .flowOn(ioDispatcher)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
+        .mapLatest { TransferUiState.Success(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
@@ -75,6 +79,11 @@ class TransfersViewModel @Inject constructor(
                 SentryLog.e(TAG, "Failure for deleteTransfer", it)
             }
         }
+    }
+
+    sealed interface TransferUiState {
+        data object Loading : TransferUiState
+        data class Success(val data: List<TransferUi>) : TransferUiState
     }
 
     companion object {

@@ -39,6 +39,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewPar
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel.TransferUiState
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -53,31 +54,30 @@ fun ReceivedScreen(
     hasTransfer: (Boolean) -> Unit,
 ) {
 
-    val transfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
-    val isLoading by remember { derivedStateOf { transfers == null } }
+    val uiState by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
+    val sentTransfersUiState by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
 
-    hasTransfer(transfers?.isNotEmpty() == true)
+    hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 
-    if (!isLoading) {
-        ReceivedScreen(
-            navigateToDetails = navigateToDetails,
-            getSelectedTransferUuid = getSelectedTransferUuid,
-            getTransfers = { transfers!! },
-            onDeleteTransfer = transfersViewModel::deleteTransfer,
-        )
-    }
+    ReceivedScreen(
+        uiState = { uiState },
+        sentTransfers = { (sentTransfersUiState as? TransferUiState.Success)?.data ?: emptyList() },
+        navigateToDetails = navigateToDetails,
+        getSelectedTransferUuid = getSelectedTransferUuid,
+        onDeleteTransfer = transfersViewModel::deleteTransfer,
+    )
 }
 
 @Composable
 private fun ReceivedScreen(
+    uiState: () -> TransferUiState,
+    sentTransfers: () -> List<TransferUi>,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    getTransfers: () -> List<TransferUi>,
     onDeleteTransfer: (String) -> Unit,
 ) {
-
-    val areTransfersEmpty by remember { derivedStateOf { getTransfers().isEmpty() } }
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    val isFirstTransfer by remember { derivedStateOf { sentTransfers().isEmpty() } }
 
     SwissTransferScaffold(
         topBar = {
@@ -85,25 +85,42 @@ private fun ReceivedScreen(
             if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
         },
         floatingActionButton = {
-            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab { areTransfersEmpty }
+            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer })
         },
     ) {
-        if (areTransfersEmpty) {
-            val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
-            EmptyState(
-                icon = if (shouldDisplayIcon) AppIllus.MascotWithMagnifyingGlass else null,
-                titleRes = R.string.noTransferReceivedTitle,
-                descriptionRes = R.string.noTransferReceivedDescription,
-            )
-        } else {
-            TransfersListWithExpiredBottomSheet(
-                direction = TransferDirection.RECEIVED,
+        if (uiState() is TransferUiState.Success) {
+            ReceivedContent(
+                transfers = (uiState() as TransferUiState.Success).data,
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferUuid = getSelectedTransferUuid,
-                getTransfers = getTransfers,
                 onDeleteTransfer = onDeleteTransfer,
             )
         }
+    }
+}
+
+@Composable
+private fun ReceivedContent(
+    transfers: List<TransferUi>,
+    navigateToDetails: (transferUuid: String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
+    onDeleteTransfer: (String) -> Unit,
+) {
+    if (transfers.isEmpty()) {
+        val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
+        EmptyState(
+            icon = if (shouldDisplayIcon) AppIllus.MascotWithMagnifyingGlass else null,
+            titleRes = R.string.noTransferReceivedTitle,
+            descriptionRes = R.string.noTransferReceivedDescription,
+        )
+    } else {
+        TransfersListWithExpiredBottomSheet(
+            direction = TransferDirection.RECEIVED,
+            navigateToDetails = navigateToDetails,
+            getSelectedTransferUuid = getSelectedTransferUuid,
+            getTransfers = { transfers },
+            onDeleteTransfer = onDeleteTransfer,
+        )
     }
 }
 
@@ -113,9 +130,10 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             ReceivedScreen(
+                uiState = { TransferUiState.Success(emptyList()) },
+                sentTransfers = { emptyList() },
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                getTransfers = { transfers },
                 onDeleteTransfer = {},
             )
         }

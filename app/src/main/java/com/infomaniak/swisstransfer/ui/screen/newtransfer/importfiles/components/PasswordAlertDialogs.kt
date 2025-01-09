@@ -17,8 +17,10 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -40,6 +42,52 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Weig
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+
+@Composable
+fun DeeplinkPasswordAlertDialog(
+    password: GetSetCallbacks<String>,
+    closeAlertDialog: () -> Unit,
+    onConfirmation: () -> Unit,
+    isError: () -> Boolean,
+) {
+
+    var isLoading by remember { mutableStateOf(false) }
+    var hasPasswordChanged by remember { mutableStateOf(false) }
+    val isConfirmButtonEnabled by remember { derivedStateOf { !isLoading && password.get().isNotEmpty() } }
+
+    val shouldDisplayError = isError() && !hasPasswordChanged
+
+    fun onConfirm() {
+        hasPasswordChanged = false
+        isLoading = true
+        onConfirmation()
+    }
+
+    SwissTransferAlertDialog(
+        titleRes = R.string.sharePasswordTitle,
+        descriptionRes = R.string.deeplinkPasswordDescription,
+        onDismiss = closeAlertDialog,
+        positiveButton = {
+            SwissTransferAlertDialogDefaults.ConfirmButton(
+                isEnabled = { isConfirmButtonEnabled },
+                onClick = ::onConfirm,
+            )
+        },
+        negativeButton = { SwissTransferAlertDialogDefaults.CancelButton(onClick = closeAlertDialog) },
+    ) {
+        PasswordTextField(
+            password = password,
+            isError = shouldDisplayError,
+            errorTextId = R.string.errorIncorrectPassword,
+            onDone = { if (isConfirmButtonEnabled) onConfirm() },
+            onValueChange = {
+                isLoading = false
+                hasPasswordChanged = true
+                password.set(it)
+            },
+        )
+    }
+}
 
 @Composable
 fun PasswordOptionAlertDialog(
@@ -84,7 +132,7 @@ fun PasswordOptionAlertDialog(
     ) {
         ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
         Spacer(Modifier.height(Margin.Medium))
-        AnimatedPasswordInput(isPasswordActivated, password, isPasswordValid)
+        AnimatedPasswordTextField(isPasswordActivated, password, isPasswordValid, ::onConfirmButtonClicked)
     }
 }
 
@@ -102,30 +150,49 @@ private fun ActivatePasswordSwitch(isChecked: Boolean, onCheckedChange: (Boolean
 }
 
 @Composable
-private fun ColumnScope.AnimatedPasswordInput(
+private fun ColumnScope.AnimatedPasswordTextField(
     isChecked: Boolean,
     password: GetSetCallbacks<String>,
-    isPasswordValid: () -> Boolean
+    isPasswordValid: () -> Boolean,
+    onDone: () -> Unit,
 ) {
 
     val isError = !isPasswordValid() && password.get().isNotEmpty()
     AnimatedVisibility(isChecked) {
-        SwissTransferTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(R.string.settingsOptionPassword),
-            isPassword = true,
-            initialValue = password.get(),
-            imeAction = ImeAction.Done,
+        PasswordTextField(
+            password = password,
             isError = isError,
-            supportingText = {
-                Text(
-                    modifier = Modifier.alpha(isError.toFloat()),
-                    text = stringResource(R.string.errorTransferPasswordLength),
-                )
-            },
+            errorTextId = R.string.errorTransferPasswordLength,
+            onDone = { if (isPasswordValid()) onDone() },
             onValueChange = { password.set(it) },
         )
     }
+}
+
+@Composable
+private fun PasswordTextField(
+    password: GetSetCallbacks<String>,
+    isError: Boolean,
+    @StringRes errorTextId: Int,
+    onDone: () -> Unit,
+    onValueChange: (String) -> Unit,
+) {
+    SwissTransferTextField(
+        modifier = Modifier.fillMaxWidth(),
+        label = stringResource(R.string.settingsOptionPassword),
+        isPassword = true,
+        initialValue = password.get(),
+        imeAction = ImeAction.Done,
+        keyboardActions = KeyboardActions(onDone = { onDone() }),
+        isError = isError,
+        supportingText = {
+            Text(
+                modifier = Modifier.alpha(isError.toFloat()),
+                text = stringResource(errorTextId),
+            )
+        },
+        onValueChange = onValueChange,
+    )
 }
 
 @Preview

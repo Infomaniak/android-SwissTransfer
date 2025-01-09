@@ -18,28 +18,28 @@
 package com.infomaniak.core2.matomo
 
 import android.app.Activity
-import android.content.Context
 import android.util.Log
 import org.matomo.sdk.Matomo
 import org.matomo.sdk.Tracker
 import org.matomo.sdk.TrackerBuilder
 import org.matomo.sdk.extra.DownloadTracker
 import org.matomo.sdk.extra.TrackHelper
+import splitties.init.appCtx
 
 interface Matomo {
 
-    val Context.tracker: Tracker
+    val tracker: Tracker
     val siteId: Int
 
-    fun Context.buildTracker(shouldOptOut: Boolean = false): Tracker {
-        return TrackerBuilder(BuildConfig.MATOMO_URL, siteId, "AndroidTracker").build(Matomo.getInstance(this)).also {
+    fun buildTracker(shouldOptOut: Boolean = false): Tracker {
+        return TrackerBuilder(BuildConfig.MATOMO_URL, siteId, "AndroidTracker").build(Matomo.getInstance(appCtx)).also {
             // Put a tracker on app installs to have statistics on the number of times the app is installed or updated
-            TrackHelper.track().download().identifier(DownloadTracker.Extra.ApkChecksum(this)).with(it)
+            TrackHelper.track().download().identifier(DownloadTracker.Extra.ApkChecksum(appCtx)).with(it)
             it.isOptOut = shouldOptOut
         }
     }
 
-    fun Context.addTrackingCallbackForDebugLog() {
+    fun addTrackingCallbackForDebugLog() {
         if (BuildConfig.DEBUG) {
             tracker.addTrackingCallback { trackMe ->
                 trackMe.also {
@@ -57,7 +57,7 @@ interface Matomo {
         }
     }
 
-    fun Context.trackUserId(userId: Int) {
+    fun trackUserId(userId: Int) {
         tracker.userId = userId.toString()
     }
 
@@ -66,13 +66,13 @@ interface Matomo {
         TrackHelper.track().screen(this).title(this::class.java.simpleName).with(tracker)
     }
 
-    fun Context.trackScreen(path: String, title: String) {
+    fun trackScreen(path: String, title: String) {
         TrackHelper.track().screen(path).title(title).with(tracker)
     }
     //endregion
 
     //region Track events
-    fun Context.trackEvent(category: String, name: String, action: TrackerAction = TrackerAction.CLICK, value: Float? = null) {
+    fun trackEvent(category: String, name: String, action: TrackerAction = TrackerAction.CLICK, value: Float? = null) {
         TrackHelper.track()
             .event(category, action.toString())
             .name(name)
@@ -80,16 +80,12 @@ interface Matomo {
             .with(tracker)
     }
 
-    fun Context.trackAccountEvent(name: String, action: TrackerAction = TrackerAction.CLICK, value: Float? = null) {
+    fun trackAccountEvent(name: String, action: TrackerAction = TrackerAction.CLICK, value: Float? = null) {
         trackEvent("account", name, action, value)
     }
     //endregion
 
     fun Boolean.toFloat() = if (this) 1.0f else 0.0f
-
-    fun shouldOptOut(context: Context, shouldOptOut: Boolean) {
-        context.tracker.isOptOut = shouldOptOut
-    }
 
     enum class TrackerAction {
         CLICK,

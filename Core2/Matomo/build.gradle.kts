@@ -43,4 +43,5 @@ android {
 
 dependencies {
     api(core2.matomo)
+    implementation(core2.splitties.appctx)
 }
