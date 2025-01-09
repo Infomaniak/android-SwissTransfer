@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="deeplinkPasswordDescription">Gib das Passwort ein, das du erhalten hast, um diese Dateien herunterzuladen.</string>
+    <string name="deeplinkTransferExpired">Diese Übertragung ist abgelaufen oder existiert nicht</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
     <string name="errorAppIntegrity">Ihr Gerät wird nicht als sicher erkannt</string>
     <string name="errorIncorrectPassword">Falsches Kennwort</string>
