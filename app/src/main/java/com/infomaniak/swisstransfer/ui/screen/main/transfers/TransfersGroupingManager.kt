@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.compose.ui.text.capitalize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import java.time.DayOfWeek
@@ -91,6 +92,6 @@ object TransfersGroupingManager {
 
     fun getMonthNameFromEpoch(epochSeconds: Long): String {
         val localDate = epochSeconds.toLocalDate()
-        return localDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+        return localDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault()).replaceFirstChar { it.uppercase() }
     }
 }
