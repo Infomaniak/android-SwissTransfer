@@ -17,12 +17,16 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -55,14 +59,27 @@ fun TransferItemList(
     }
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(Margin.Medium),
+        verticalArrangement = Arrangement.spacedBy(Margin.Mini),
         contentPadding = contentPadding,
     ) {
 
         item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
         getTransfers().forEach { (section, transfers) ->
-            item { Text(section.title(LocalContext.current)) }
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .background(SwissTransferTheme.materialColors.background)
+                ) {
+                    Text(
+                        section.title(LocalContext.current),
+                        style = SwissTransferTheme.typography.bodySmallRegular,
+                        color = SwissTransferTheme.colors.secondaryTextColor,
+                        modifier = Modifier.padding(vertical = Margin.Mini)
+                    )
+                }
+            }
 
             items(
                 count = transfers.count(),

@@ -44,6 +44,17 @@ val transfersPreviewData = listOf(
     ),
     TransferUi(
         uuid = UUID.randomUUID().toString(),
+        createdDateTimestamp = today - 0.6f.toLong() * 86_400L,
+        expirationDateTimestamp = today + 3 * 86_400L,
+        sizeUploaded = 237_866_728L,
+        downloadLimit = 250,
+        downloadLeft = 123,
+        message = null,
+        password = "my password",
+        files = filesPreviewData,
+    ),
+    TransferUi(
+        uuid = UUID.randomUUID().toString(),
         createdDateTimestamp = today - 5L * 86_400L,
         expirationDateTimestamp = today + 5 * 86_400L,
         sizeUploaded = 89_723_143L,
