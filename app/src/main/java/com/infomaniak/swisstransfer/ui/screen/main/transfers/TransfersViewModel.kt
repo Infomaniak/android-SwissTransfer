@@ -23,14 +23,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+typealias GroupedTransfers = Map<TransfersGroupingManager.TransferSection, List<TransferUi>>
 
 @HiltViewModel
 class TransfersViewModel @Inject constructor(
@@ -39,13 +43,14 @@ class TransfersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
+    val sentTransfers: StateFlow<GroupedTransfers?> = transferManager.getTransfers(TransferDirection.SENT)
         .flowOn(ioDispatcher)
-        // .map { it.groupBySection() }
+        .map { it.groupBySection() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
         .flowOn(ioDispatcher)
+        .map { it.groupBySection() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 
     val sentTransfersAreEmpty: StateFlow<Boolean?> = sentTransfers

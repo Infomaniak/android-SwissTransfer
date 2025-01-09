@@ -33,6 +33,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -57,7 +58,7 @@ fun ReceivedScreen(
         ReceivedScreen(
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
-            receivedTransfers = { receivedTransfers ?: emptyList() },
+            receivedTransfers = { receivedTransfers!! },
             isFirstTransfer = { sentTransfersAreEmpty!! },
             onDeleteTransfer = transfersViewModel::deleteTransfer,
         )
@@ -68,7 +69,7 @@ fun ReceivedScreen(
 private fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    receivedTransfers: () -> List<TransferUi>,
+    receivedTransfers: () -> GroupedTransfers,
     isFirstTransfer: () -> Boolean,
     onDeleteTransfer: (String) -> Unit,
 ) {
@@ -105,7 +106,7 @@ private fun Preview() {
             ReceivedScreen(
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
-                receivedTransfers = { emptyList() },
+                receivedTransfers = { emptyMap() },
                 isFirstTransfer = { true },
                 onDeleteTransfer = {},
             )

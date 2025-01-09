@@ -28,13 +28,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
-import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.BrandTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -71,7 +71,7 @@ fun SentScreen(
 private fun SentScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    getTransfers: () -> List<TransferUi>,
+    getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
 ) {
 
@@ -101,7 +101,7 @@ private fun SentScreen(
 
 @PreviewAllWindows
 @Composable
-private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
+private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::class) transfers: GroupedTransfers) {
     SwissTransferTheme {
         Surface {
             SentScreen(

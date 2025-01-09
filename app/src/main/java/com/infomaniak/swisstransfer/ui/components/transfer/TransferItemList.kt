@@ -23,13 +23,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
-import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -39,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 fun TransferItemList(
     direction: TransferDirection,
     getSelectedTransferUuid: () -> String?,
-    getTransfers: () -> List<TransferUi>,
+    getTransfers: () -> GroupedTransfers,
     onSwiped: (String) -> Unit,
     onClick: (TransferUi) -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
@@ -59,31 +61,35 @@ fun TransferItemList(
 
         item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
 
-        items(
-            count = getTransfers().count(),
-            key = { getTransfers()[it].uuid },
-            contentType = { getTransfers()[it] },
-            itemContent = {
-                val transfer = getTransfers()[it]
-                SwipeToDismissComponent(
-                    contentShape = itemShape,
-                    onSwiped = { onSwiped(transfer.uuid) },
-                ) {
-                    TransferItem(
-                        transfer = transfer,
-                        shape = itemShape,
-                        isSelected = { selectedTransferUuid == transfer.uuid },
-                        onClick = { onClick(transfer) },
-                    )
-                }
-            },
-        )
+        getTransfers().forEach { (section, transfers) ->
+            item { Text(section.title(LocalContext.current)) }
+
+            items(
+                count = transfers.count(),
+                key = { transfers[it].uuid },
+                contentType = { transfers[it] },
+                itemContent = {
+                    val transfer = transfers[it]
+                    SwipeToDismissComponent(
+                        contentShape = itemShape,
+                        onSwiped = { onSwiped(transfer.uuid) },
+                    ) {
+                        TransferItem(
+                            transfer = transfer,
+                            shape = itemShape,
+                            isSelected = { selectedTransferUuid == transfer.uuid },
+                            onClick = { onClick(transfer) },
+                        )
+                    }
+                },
+            )
+        }
     }
 }
 
 @PreviewLightAndDark
 @Composable
-private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
+private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::class) transfers: GroupedTransfers) {
     SwissTransferTheme {
         Surface {
             TransferItemList(
