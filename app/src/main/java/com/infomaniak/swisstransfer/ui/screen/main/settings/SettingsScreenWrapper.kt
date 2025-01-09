@@ -90,10 +90,10 @@ private fun ListPane(
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     SettingsScreen(
-        theme,
-        validityPeriod,
-        downloadLimit,
-        emailLanguage,
+        theme = theme,
+        validityPeriod = validityPeriod,
+        downloadLimit = downloadLimit,
+        emailLanguage = emailLanguage,
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
