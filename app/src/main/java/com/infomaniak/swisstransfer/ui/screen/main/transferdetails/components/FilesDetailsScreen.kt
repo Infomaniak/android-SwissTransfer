@@ -18,7 +18,6 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.FilesSize
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -34,7 +33,6 @@ fun FilesDetailsScreen(
     navigateBack: () -> Unit,
     close: (() -> Unit),
 ) {
-    // If we don't have a folderUuid, it means we have to load files from importedFiles in ImportFilesViewModel
     val files by transferDetailsViewModel.filesInFolder.collectAsStateWithLifecycle()
 
     if (files?.isEmpty() == true) navigateBack()
@@ -87,15 +85,6 @@ fun FilesDetailsScreen(
             onClick = { navigateToFolder?.invoke(it) }
         )
     }
-}
-
-fun getOnFileRemoveCallback(
-    importFilesViewModel: ImportFilesViewModel,
-    withFileDelete: Boolean,
-): ((String) -> Unit)? {
-    return if (withFileDelete) {
-        { importFilesViewModel.removeFileByUid(it) }
-    } else null
 }
 
 @PreviewAllWindows

@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -30,7 +29,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
-@SuppressLint("RestrictedApi")
 @Composable
 fun MainScreen(isTransferDeeplink: Boolean = false) {
     val navController = rememberNavController()

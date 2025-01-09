@@ -45,15 +45,10 @@ fun MainNavHost(
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> {
-            TransfersScreenWrapper(direction = TransferDirection.SENT)
-        }
+        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
         receivedDestination {
             val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(
-                direction = TransferDirection.RECEIVED,
-                transferUuid = args.transferUuid,
-            )
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
     }
