@@ -22,8 +22,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
-import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
 class GroupedTransfersPreviewParameterProvider : PreviewParameterProvider<GroupedTransfers> {
@@ -36,10 +34,7 @@ val transfersPreviewData = listOf(
     TransferUi(
         uuid = UUID.randomUUID().toString(),
         createdDateTimestamp = today - 0.5f.toLong() * 86_400L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) - 4)
-        }.time.time,
+        expirationDateTimestamp = today + 3 * 86_400L,
         sizeUploaded = 237_866_728L,
         downloadLimit = 250,
         downloadLeft = 123,
@@ -50,10 +45,7 @@ val transfersPreviewData = listOf(
     TransferUi(
         uuid = UUID.randomUUID().toString(),
         createdDateTimestamp = today - 5L * 86_400L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) + 5)
-        }.time.time,
+        expirationDateTimestamp = today + 5 * 86_400L,
         sizeUploaded = 89_723_143L,
         downloadLimit = 20,
         downloadLeft = 0,
@@ -64,10 +56,7 @@ val transfersPreviewData = listOf(
     TransferUi(
         uuid = UUID.randomUUID().toString(),
         createdDateTimestamp = today - 30L * 86_400L,
-        expirationDateTimestamp = Calendar.getInstance().apply {
-            time = Date()
-            set(Calendar.DATE, get(Calendar.DATE) + 3)
-        }.time.time,
+        expirationDateTimestamp = today - 4 * 86_400L,
         sizeUploaded = 57_689_032L,
         downloadLimit = 1,
         downloadLeft = 1,
