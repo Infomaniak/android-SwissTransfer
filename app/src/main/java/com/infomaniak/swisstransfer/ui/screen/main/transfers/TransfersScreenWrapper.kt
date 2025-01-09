@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,6 +45,7 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -126,14 +128,12 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFilesDetails(
+private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
     direction: TransferDirection,
     transferUuid: String,
-    folderUuid: String
+    folderUuid: String,
 ) {
-    navigateTo(
-        ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid, folderUuid)
-    )
+    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent(direction, transferUuid, folderUuid))
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -148,41 +148,38 @@ private fun DetailPane(
     hasTransfer: () -> Boolean,
 ) {
     val destinationContent = navigator.safeCurrentContent()
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     if (destinationContent == null) {
         NoSelectionEmptyState(hasTransfer())
+    } else if (destinationContent.folderUuid != null) {
+        val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+        FilesDetailsScreen(
+            windowAdaptiveInfo,
+            navigator,
+            destinationContent.folderUuid,
+            destinationContent.direction,
+            destinationContent.transferUuid,
+            navigateToFolder = { selectedFolderUuid ->
+                navigator.navigateToFolder(
+                    destinationContent.direction,
+                    destinationContent.transferUuid,
+                    selectedFolderUuid,
+                )
+            }
+        )
     } else {
-
-        if (destinationContent.folderUuid != null) {
-            FilesDetailsScreen(
-                windowAdaptiveInfo,
-                navigator,
-                destinationContent.folderUuid,
-                destinationContent.direction,
-                destinationContent.transferUuid,
-                navigateToFilesDetails = { selectedFolderUuid ->
-                    navigator.navigateToFilesDetails(
-                        destinationContent.direction,
-                        destinationContent.transferUuid,
-                        selectedFolderUuid,
-                    )
-                }
-            )
-        } else {
-            TransferDetailsScreen(
-                transferUuid = destinationContent.transferUuid,
-                direction = destinationContent.direction,
-                navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
-                navigateToFilesDetails = { selectedFolderUuid ->
-                    navigator.navigateToFilesDetails(
-                        destinationContent.direction,
-                        destinationContent.transferUuid,
-                        selectedFolderUuid,
-                    )
-                },
-            )
-        }
+        TransferDetailsScreen(
+            transferUuid = destinationContent.transferUuid,
+            direction = destinationContent.direction,
+            navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+            navigateToFolder = { selectedFolderUuid ->
+                navigator.navigateToFolder(
+                    destinationContent.direction,
+                    destinationContent.transferUuid,
+                    selectedFolderUuid,
+                )
+            },
+        )
     }
 }
 
@@ -194,20 +191,21 @@ private fun FilesDetailsScreen(
     folderUuid: String,
     transferDirection: TransferDirection,
     transferUuid: String,
-    navigateToFilesDetails: (folderUuid: String) -> Unit,
+    navigateToFolder: (folderUuid: String) -> Unit,
 ) {
     FilesDetailsScreen(
         navigateToFolder = { selectedFolderUuid ->
-            navigateToFilesDetails(selectedFolderUuid)
+            navigateToFolder(selectedFolderUuid)
         },
         folderUuid = folderUuid,
         navigateBack = { navigator.popBackStack() },
         close = {
+            if (windowAdaptiveInfo.isWindowSmall()) navigator.navigateBack()
             navigator.navigateToDetails(
                 windowAdaptiveInfo,
                 transferDirection,
                 transferUuid
-            ) //TODO a refaire car on peut back sur des dossier pré navigué
+            )
         },
         withFilesSize = false,
         withSpaceLeft = false,
