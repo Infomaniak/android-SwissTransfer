@@ -48,7 +48,7 @@ fun ReceivedScreen(
 ) {
 
     val receivedTransfers by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
-    val sentTransfers by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val sentTransfersAreEmpty by transfersViewModel.sentTransfersAreEmpty.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { receivedTransfers == null } }
 
     hasTransfer(receivedTransfers?.isNotEmpty() == true)
@@ -58,7 +58,7 @@ fun ReceivedScreen(
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
             receivedTransfers = { receivedTransfers ?: emptyList() },
-            sentTransfers = { sentTransfers ?: emptyList() },
+            isFirstTransfer = { sentTransfersAreEmpty!! },
             onDeleteTransfer = transfersViewModel::deleteTransfer,
         )
     }
@@ -69,15 +69,14 @@ private fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     receivedTransfers: () -> List<TransferUi>,
-    sentTransfers: () -> List<TransferUi>,
+    isFirstTransfer: () -> Boolean,
     onDeleteTransfer: (String) -> Unit,
 ) {
 
     val areTransfersEmpty by remember { derivedStateOf { receivedTransfers().isEmpty() } }
-    val isFirstTransfer by remember { derivedStateOf { sentTransfers().isEmpty() } }
 
     BrandTopAppBarScaffold(
-        floatingActionButton = { ReceivedEmptyFab(isMessageVisible = { isFirstTransfer }) },
+        floatingActionButton = { ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() }) },
     ) {
         if (areTransfersEmpty) {
             val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
@@ -107,7 +106,7 @@ private fun Preview() {
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 receivedTransfers = { emptyList() },
-                sentTransfers = { emptyList() },
+                isFirstTransfer = { true },
                 onDeleteTransfer = {},
             )
         }
