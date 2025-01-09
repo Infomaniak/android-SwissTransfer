@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.CrossThick
-import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -42,7 +41,6 @@ fun SwissTransferSuggestionChip(text: String, modifier: Modifier = Modifier) {
         onClick = {},
         label = { ChipLabel(text) },
         enabled = false,
-        shape = CustomShapes.ROUNDED,
         colors = SuggestionChipDefaults.suggestionChipColors(
             disabledContainerColor = SwissTransferTheme.colors.emailAddressChipColor,
             disabledLabelColor = SwissTransferTheme.colors.onEmailAddressChipColor,
@@ -64,7 +62,6 @@ fun SwissTransferInputChip(
         selected = isSelected(),
         onClick = onClick,
         label = { ChipLabel(text) },
-        shape = CustomShapes.ROUNDED,
         colors = InputChipDefaults.inputChipColors(
             containerColor = SwissTransferTheme.colors.emailAddressChipColor,
             labelColor = SwissTransferTheme.colors.onEmailAddressChipColor,

@@ -90,24 +90,23 @@ class TransferSendManager @Inject constructor(
                 SendStatus.Success(totalSize)
             }
         }.onFailure { exception ->
-            reportToSentry(exception)
-
             val status = when (exception) {
                 is NetworkException, is KmpNetworkException -> SendStatus.NoNetwork
                 is IntegrityException -> SendStatus.Refused
                 is ContainerErrorsException.EmailValidationRequired -> SendStatus.RequireEmailValidation
-                else -> SendStatus.Failure
+                else -> {
+                    reportToSentry(exception)
+                    SendStatus.Failure
+                }
             }
             _sendStatus.update { status }
         }
     }
 
     private fun reportToSentry(exception: Throwable) {
-        if (exception !is NetworkException && exception !is KmpNetworkException) {
-            Sentry.withScope { scope ->
-                scope.setTag("exception", exception.message ?: "Unknown message")
-                SentryLog.e(TAG, "Failed to start the upload", exception)
-            }
+        Sentry.withScope { scope ->
+            scope.setTag("exception", exception.message ?: "Unknown message")
+            SentryLog.e(TAG, "Failed to start the upload", exception)
         }
     }
 

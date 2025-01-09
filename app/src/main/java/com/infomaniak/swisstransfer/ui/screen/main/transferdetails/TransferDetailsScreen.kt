@@ -52,6 +52,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -67,6 +68,8 @@ fun TransferDetailsScreen(
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
+    val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
+    val isWrongDeeplinkPassword by transferDetailsViewModel.isWrongDeeplinkPassword.collectAsStateWithLifecycle()
 
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid)
@@ -90,6 +93,18 @@ fun TransferDetailsScreen(
             },
         )
         TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
+    }
+
+    if (isDeeplinkPasswordNeeded) {
+        DeeplinkPasswordAlertDialog(
+            password = transferDetailsViewModel.deeplinkPassword,
+            closeAlertDialog = {
+                transferDetailsViewModel.resetIsDeeplinkNeedingPassword()
+                navigateBack?.invoke()
+            },
+            onConfirmation = { transferDetailsViewModel.loadTransfer(transferUuid) },
+            isError = { isWrongDeeplinkPassword },
+        )
     }
 }
 
