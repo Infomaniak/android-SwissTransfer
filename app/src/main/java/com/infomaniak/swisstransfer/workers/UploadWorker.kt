@@ -187,7 +187,7 @@ class UploadWorker @AssistedInject constructor(
         val transferUrl = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 
         notificationsUtils.sendUploadNotification(
-            notificationId = serviceNotificationId + 1,
+            notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType)
@@ -306,5 +306,7 @@ class UploadWorker @AssistedInject constructor(
         private const val TRANSFER_UUID_TAG = "transfer_uuid_tag"
 
         private const val PROGRESS_ELAPSED_TIME = 50
+
+        private const val NOTIFICATION_ID = 42_1337_666 // ID used for the Success & Failure notifications
     }
 }
