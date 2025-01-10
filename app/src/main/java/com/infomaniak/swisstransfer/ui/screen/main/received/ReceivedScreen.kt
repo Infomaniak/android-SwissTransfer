@@ -76,8 +76,11 @@ private fun ReceivedScreen(
 
     SwissTransferScaffold(
         topBar = {
-            val title = stringResource(R.string.receivedFilesTitle)
-            if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
+            if (windowAdaptiveInfo.isWindowLarge()) {
+                SwissTransferTopAppBar(stringResource(R.string.receivedFilesTitle))
+            } else {
+                BrandTopAppBar()
+            }
         },
         floatingActionButton = {
             if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })

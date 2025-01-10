@@ -68,8 +68,11 @@ fun SettingsScreen(
 
     SwissTransferScaffold(
         topBar = {
-            val title = stringResource(R.string.settingsTitle)
-            if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
+            if (windowAdaptiveInfo.isWindowLarge()) {
+                SwissTransferTopAppBar(stringResource(R.string.settingsTitle))
+            } else {
+                BrandTopAppBar()
+            }
         }
     ) {
         Column(
