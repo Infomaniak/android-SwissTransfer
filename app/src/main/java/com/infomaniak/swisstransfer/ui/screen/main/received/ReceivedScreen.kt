@@ -19,9 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.received
 
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,14 +52,14 @@ fun ReceivedScreen(
     hasTransfer: (Boolean) -> Unit,
 ) {
 
-    val uiState by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
-    val sentTransfersUiState by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
+    val sentTransfersAreEmpty by transfersViewModel.sentTransfersAreEmpty.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 
     ReceivedScreen(
         uiState = { uiState },
-        sentTransfers = { (sentTransfersUiState as? TransferUiState.Success)?.data ?: emptyList() },
+        isFirstTransfer = { sentTransfersAreEmpty },
         navigateToDetails = navigateToDetails,
         getSelectedTransferUuid = getSelectedTransferUuid,
         onDeleteTransfer = transfersViewModel::deleteTransfer,
@@ -71,13 +69,12 @@ fun ReceivedScreen(
 @Composable
 private fun ReceivedScreen(
     uiState: () -> TransferUiState,
-    sentTransfers: () -> List<TransferUi>,
+    isFirstTransfer: () -> Boolean,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-    val isFirstTransfer by remember { derivedStateOf { sentTransfers().isEmpty() } }
 
     SwissTransferScaffold(
         topBar = {
@@ -85,7 +82,7 @@ private fun ReceivedScreen(
             if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
         },
         floatingActionButton = {
-            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer })
+            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })
         },
     ) {
         if (uiState() is TransferUiState.Success) {
@@ -131,7 +128,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
         Surface {
             ReceivedScreen(
                 uiState = { TransferUiState.Success(emptyList()) },
-                sentTransfers = { emptyList() },
+                isFirstTransfer = { true },
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 onDeleteTransfer = {},

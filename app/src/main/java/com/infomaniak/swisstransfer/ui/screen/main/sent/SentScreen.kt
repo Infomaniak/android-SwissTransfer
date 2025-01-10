@@ -52,7 +52,7 @@ fun SentScreen(
     hasTransfer: (Boolean) -> Unit,
 ) {
 
-    val uiState by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 
@@ -79,8 +79,11 @@ private fun SentScreen(
 
     SwissTransferScaffold(
         topBar = {
-            val title = stringResource(R.string.sentFilesTitle)
-            if (windowAdaptiveInfo.isWindowLarge()) SwissTransferTopAppBar(title) else BrandTopAppBar()
+            if (windowAdaptiveInfo.isWindowLarge()) {
+                SwissTransferTopAppBar(stringResource(R.string.sentFilesTitle))
+            } else {
+                BrandTopAppBar()
+            }
         },
         floatingActionButton = {
             val hasTransfers = (uiState() as? TransferUiState.Success)?.data?.isNotEmpty() == true
