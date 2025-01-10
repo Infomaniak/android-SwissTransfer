@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
@@ -63,7 +64,7 @@ fun TransferItemList(
         contentPadding = contentPadding,
     ) {
 
-        item { Text(text = stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
+        item { SmallWindowScreenTitle(title = stringResource(titleRes)) }
 
         getTransfers().forEach { (section, transfers) ->
             stickyHeader {

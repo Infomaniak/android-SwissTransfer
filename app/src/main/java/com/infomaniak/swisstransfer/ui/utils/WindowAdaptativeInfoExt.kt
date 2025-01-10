@@ -17,11 +17,17 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import android.content.res.Resources
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
+import androidx.window.core.layout.WindowWidthSizeClass.Companion.EXPANDED
+import androidx.window.core.layout.WindowWidthSizeClass.Companion.MEDIUM
+import androidx.window.layout.WindowMetricsCalculator
+import splitties.init.appCtx
 
 /**
  * Determines if the current window is classified as a large window suitable for tablet devices.
@@ -31,8 +37,8 @@ import androidx.window.core.layout.WindowWidthSizeClass
  *
  * @return `true` if the window is large (tablet), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowLarge(): Boolean = with(windowSizeClass) {
-    return windowWidthSizeClass == WindowWidthSizeClass.EXPANDED && windowHeightSizeClass != WindowHeightSizeClass.COMPACT
+fun WindowAdaptiveInfo.isWindowLarge(): Boolean {
+    return getCustomWindowClass() == EXPANDED && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
 }
 
 /**
@@ -44,3 +50,22 @@ fun WindowAdaptiveInfo.isWindowLarge(): Boolean = with(windowSizeClass) {
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
 fun WindowAdaptiveInfo.isWindowSmall(): Boolean = !isWindowLarge()
+
+private fun getCustomWindowClass(): WindowWidthSizeClass {
+    val windowBounds = WindowMetricsCalculator.getOrCreate()
+        .computeCurrentWindowMetrics(appCtx)
+        .bounds
+    val dpWidth = windowBounds.width().toDpInt()
+
+    require(dpWidth >= 0) { "Width must be positive, received $dpWidth" }
+
+    return when {
+        dpWidth < 600 -> COMPACT
+        dpWidth < 1080 -> MEDIUM
+        else -> EXPANDED
+    }
+}
+
+private fun Int.toDpInt(): Int {
+    return (this / Resources.getSystem().displayMetrics.density).toInt()
+}

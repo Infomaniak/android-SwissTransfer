@@ -17,17 +17,24 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import androidx.compose.ui.Modifier
 
 @Composable
-fun BrandTopAppBarScaffold(
+fun SwissTransferScaffold(
+    topBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = { BrandTopAppBar() },
+    Scaffold(
+        topBar = { topBar() },
         floatingActionButton = floatingActionButton,
-        content = content,
-    )
+    ) { contentPadding ->
+        Box(modifier = Modifier.padding(contentPadding)) {
+            content()
+        }
+    }
 }

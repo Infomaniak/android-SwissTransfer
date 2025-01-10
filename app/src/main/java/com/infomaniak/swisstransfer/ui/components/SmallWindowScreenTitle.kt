@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,33 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.components
+package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
-fun SmallWindowTopAppBarScaffold(
-    smallWindowTopAppBar: @Composable () -> Unit = {},
-    floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable () -> Unit,
-) {
+fun SmallWindowScreenTitle(title: String, modifier: Modifier = Modifier) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-
-    Scaffold(
-        topBar = { if (windowAdaptiveInfo.isWindowSmall()) smallWindowTopAppBar() },
-        floatingActionButton = floatingActionButton,
-    ) { contentPadding ->
-        val paddingValues = if (windowAdaptiveInfo.isWindowSmall()) contentPadding else PaddingValues(all = 0.dp)
-        Box(modifier = Modifier.padding(paddingValues)) {
-            content()
-        }
+    if (windowAdaptiveInfo.isWindowSmall()) {
+        Text(
+            text = title,
+            style = SwissTransferTheme.typography.h1,
+            modifier = modifier,
+        )
     }
 }

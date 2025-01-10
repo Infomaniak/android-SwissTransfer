@@ -20,9 +20,8 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
-import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.*
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
@@ -34,6 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private val backBehavior = BackNavigationBehavior.PopUntilContentChange
 
 /**
  * A composable function that sets up a List-Detail interface using a three-pane scaffold navigator.
@@ -64,9 +66,12 @@ fun <T> TwoPaneScaffold(
             maxHorizontalPartitions = maxHorizontalPartitions,
             horizontalPartitionSpacerSize = 0.dp,
         ),
+        initialDestinationHistory = listOf(
+            ThreePaneScaffoldDestinationItem(ListDetailPaneScaffoldRole.List),
+        )
     )
 
-    BackHandler(navigator.canNavigateBack()) { navigator.navigateBack() }
+    BackHandler(navigator.canPopBackStack()) { navigator.popBackStack() }
 
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
@@ -90,4 +95,20 @@ fun <T> ThreePaneScaffoldNavigator<T>.safeCurrentContent(): T? {
     currentDestination?.content?.let { oldContent = it }
 
     return newContent
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+fun <T> ThreePaneScaffoldNavigator<T>.canPopBackStack(): Boolean {
+    return canNavigateBack(backBehavior)
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
+    return navigateBack(backBehavior)
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+fun <T> ThreePaneScaffoldNavigator<T>.selectItem(windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
+    if (windowAdaptiveInfo.isWindowLarge()) navigateBack()
+    navigateTo(ListDetailPaneScaffoldRole.Detail, item)
 }

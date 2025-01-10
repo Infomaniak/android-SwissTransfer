@@ -33,12 +33,12 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
-import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
+import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.*
 
@@ -87,12 +87,13 @@ private fun ListPane(
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
     val userReportURL = stringResource(R.string.urlUserReportAndroid)
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     SettingsScreen(
-        theme,
-        validityPeriod,
-        downloadLimit,
-        emailLanguage,
+        theme = theme,
+        validityPeriod = validityPeriod,
+        downloadLimit = downloadLimit,
+        emailLanguage = emailLanguage,
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
@@ -101,7 +102,7 @@ private fun ListPane(
                 GIVE_FEEDBACK -> context.goToPlayStore()
                 else -> {
                     // Navigate to the detail pane with the passed item
-                    navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                    navigator.selectItem(windowAdaptiveInfo, item)
                 }
             }
         },
@@ -161,7 +162,9 @@ private fun DetailPane(
 
 @Composable
 private fun NoSelectionEmptyState() {
-    Surface {
+    SwissTransferScaffold(
+        topBar = { SwissTransferTopAppBar(title = "") }
+    ) {
         EmptyState(
             icon = AppIllus.MascotWithMagnifyingGlass,
             descriptionRes = R.string.noSettingsSelectedDescription
