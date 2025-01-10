@@ -19,13 +19,15 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
+import com.infomaniak.swisstransfer.ui.components.canPopBackStack
+import com.infomaniak.swisstransfer.ui.components.popBackStack
 
 object ScreenWrapperUtils {
 
     @OptIn(ExperimentalMaterial3AdaptiveApi::class)
     fun getBackNavigation(navigator: ThreePaneScaffoldNavigator<*>): (() -> Unit)? {
-        val navigateBackCallback: () -> Unit = { navigator.navigateBack() }
-        val navigateBack: (() -> Unit)? = if (navigator.canNavigateBack()) navigateBackCallback else null
+        val navigateBackCallback: () -> Unit = { navigator.popBackStack() }
+        val navigateBack: (() -> Unit)? = if (navigator.canPopBackStack()) navigateBackCallback else null
         return navigateBack
     }
 }

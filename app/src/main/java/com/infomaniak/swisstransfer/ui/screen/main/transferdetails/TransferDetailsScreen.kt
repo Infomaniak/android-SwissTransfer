@@ -46,16 +46,18 @@ import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Delete
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.DeeplinkPasswordAlertDialog
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.shareText
 
 @Composable
@@ -75,6 +77,9 @@ fun TransferDetailsScreen(
 
     when (uiState) {
         is Delete -> navigateBack?.invoke()
+        is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
+            SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
+        }
         is Success -> TransferDetailsScreen(
             transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
             direction = direction,
@@ -116,17 +121,18 @@ private fun TransferDetailsScreen(
 ) {
 
     val context = LocalContext.current
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val transferRecipients: List<String> = emptyList() // TODO: Use real data
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = {
+    SwissTransferScaffold(
+        topBar = {
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
-                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
                 actions = { TopAppBarButtons.Download { downloadFiles() } }
             )
         },

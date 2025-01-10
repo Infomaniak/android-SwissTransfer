@@ -35,7 +35,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
-import com.infomaniak.swisstransfer.ui.screen.main.components.SmallWindowTopAppBarScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -54,15 +54,14 @@ fun SettingsDataManagementMatomoScreen(
     )
 }
 
-
 @Composable
 fun SettingsDataManagementMatomoScreen(
     navigateBack: (() -> Unit)?,
     isMatomoAuthorized: () -> Boolean,
     setMatomoAuthorization: (Boolean) -> Unit,
 ) {
-    SmallWindowTopAppBarScaffold(
-        smallWindowTopAppBar = {
+    SwissTransferScaffold(
+        topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.matomo,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },

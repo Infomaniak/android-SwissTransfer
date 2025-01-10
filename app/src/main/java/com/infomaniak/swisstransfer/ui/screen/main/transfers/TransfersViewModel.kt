@@ -23,12 +23,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,17 +43,17 @@ class TransfersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
-        .flowOn(ioDispatcher)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
+    val sentTransfersUiState = transferManager.getTransfers(TransferDirection.SENT)
+        .map { TransferUiState.Success(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
 
-    val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
-        .flowOn(ioDispatcher)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
+    val receivedTransfersUiState = transferManager.getTransfers(TransferDirection.RECEIVED)
+        .map { TransferUiState.Success(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
 
-    val sentTransfersAreEmpty: StateFlow<Boolean?> = sentTransfers
-        .map { it?.isEmpty() }
-        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = null)
+    val sentTransfersAreEmpty: StateFlow<Boolean> = sentTransfersUiState
+        .map { it is TransferUiState.Success && it.data.isEmpty() }
+        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = false)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
@@ -77,6 +81,11 @@ class TransfersViewModel @Inject constructor(
                 SentryLog.e(TAG, "Failure for deleteTransfer", it)
             }
         }
+    }
+
+    sealed interface TransferUiState {
+        data object Loading : TransferUiState
+        data class Success(val data: List<TransferUi>) : TransferUiState
     }
 
     companion object {

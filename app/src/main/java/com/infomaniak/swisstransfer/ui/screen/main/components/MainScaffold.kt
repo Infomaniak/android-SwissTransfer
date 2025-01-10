@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -41,11 +40,10 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    largeWindowTopAppBar: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
-    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, largeWindowTopAppBar, content)
+    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
 }
 
 @Composable
@@ -53,13 +51,11 @@ private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    largeWindowTopAppBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     Column {
-        if (windowAdaptiveInfo.isWindowLarge()) largeWindowTopAppBar()
         AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
             if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
@@ -125,7 +121,6 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            largeWindowTopAppBar = { BrandTopAppBar() },
             content = {},
         )
     }
@@ -139,7 +134,6 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination,
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            largeWindowTopAppBar = { BrandTopAppBar() },
             content = {},
         )
     }
