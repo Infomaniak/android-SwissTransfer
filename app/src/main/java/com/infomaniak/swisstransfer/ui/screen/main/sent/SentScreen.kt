@@ -52,7 +52,7 @@ fun SentScreen(
     hasTransfer: (Boolean) -> Unit,
 ) {
 
-    val uiState by transfersViewModel.sentTransfers.collectAsStateWithLifecycle()
+    val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 

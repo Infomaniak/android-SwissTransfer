@@ -50,7 +50,7 @@ fun ReceivedScreen(
     hasTransfer: (Boolean) -> Unit,
 ) {
 
-    val uiState by transfersViewModel.receivedTransfers.collectAsStateWithLifecycle()
+    val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
     val sentTransfersAreEmpty by transfersViewModel.sentTransfersAreEmpty.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
