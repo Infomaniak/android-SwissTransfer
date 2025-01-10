@@ -29,9 +29,8 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,14 +42,12 @@ class TransfersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val sentTransfers = transferManager.getTransfers(TransferDirection.SENT)
-        .mapLatest { TransferUiState.Success(it) }
+        .map { TransferUiState.Success(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
-        .mapLatest { TransferUiState.Success(it) }
+        .map { TransferUiState.Success(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
