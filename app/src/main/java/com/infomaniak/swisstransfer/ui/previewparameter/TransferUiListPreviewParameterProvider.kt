@@ -19,9 +19,6 @@ package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
-import java.util.Calendar
-import java.util.Date
-import java.util.UUID
 
 class TransferUiListPreviewParameter : PreviewParameterProvider<List<TransferUi>> {
     override val values: Sequence<List<TransferUi>> = sequenceOf(transfersPreviewData)
