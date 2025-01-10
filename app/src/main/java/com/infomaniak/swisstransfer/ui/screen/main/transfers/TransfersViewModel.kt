@@ -30,6 +30,7 @@ import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -49,6 +50,10 @@ class TransfersViewModel @Inject constructor(
     val receivedTransfers = transferManager.getTransfers(TransferDirection.RECEIVED)
         .map { TransferUiState.Success(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
+
+    val sentTransfersAreEmpty: StateFlow<Boolean> = sentTransfers
+        .map { it is TransferUiState.Success && it.data.isEmpty() }
+        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = false)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
