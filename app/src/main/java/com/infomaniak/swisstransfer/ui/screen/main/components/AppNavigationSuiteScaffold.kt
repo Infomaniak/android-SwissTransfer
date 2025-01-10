@@ -76,7 +76,7 @@ fun AppNavigationSuiteScaffold(
                         AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
                     else -> {
-                        AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
+                        AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)
                     }
                 }
             },
@@ -117,7 +117,7 @@ private fun AppNavigationBar(
 }
 
 @Composable
-private fun AppNavigationRail(
+private fun AppNavigationDrawer(
     navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
     onClick: (MainNavigation) -> Unit,
