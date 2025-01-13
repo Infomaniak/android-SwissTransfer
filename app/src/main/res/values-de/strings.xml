@@ -19,6 +19,8 @@
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="awaitingNetwork">Auf Netzwerk warten</string>
     <string name="buttonAddFiles">Dateien hinzufügen</string>
+    <string name="buttonCancelTransfer">Übertragung abbrechen</string>
+    <string name="buttonCloseAndContinue">Schliessen und weiter</string>
     <string name="buttonConfirm">Bestätigen</string>
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonDownload">Download</string>
@@ -154,8 +156,6 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Übertragen</string>
     <string name="transferTypeTitle">Schicken per</string>
-    <string name="uploadCancelConfirmBottomSheetCancel">Übertragung abbrechen</string>
-    <string name="uploadCancelConfirmBottomSheetClose">Schliessen und weiter</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Überweisung rückgängig machen willst?</string>
     <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
     <string name="uploadErrorTitle">Was ist das denn?</string>

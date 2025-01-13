@@ -166,7 +166,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
         imageVector = AppIllus.RedCrossPaperPlanes.image(),
         topButton = {
             LargeButton(
-                title = stringResource(R.string.uploadCancelConfirmBottomSheetCancel),
+                title = stringResource(R.string.buttonCancelTransfer),
                 modifier = it,
                 style = ButtonType.Destructive,
                 onClick = onCancel,
@@ -174,7 +174,7 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
         },
         bottomButton = {
             LargeButton(
-                title = stringResource(R.string.uploadCancelConfirmBottomSheetClose),
+                title = stringResource(R.string.buttonCloseAndContinue),
                 modifier = it,
                 style = ButtonType.Tertiary,
                 onClick = closeButtonSheet,
