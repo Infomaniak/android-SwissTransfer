@@ -70,11 +70,7 @@ fun ImportedFilesCard(
         }
     }
 
-    SwissTransferCard(
-        modifier = modifier, onClick = if (files().isNotEmpty()) navigateToFilesDetails else {
-            null
-        }
-    ) {
+    SwissTransferCard(modifier = modifier, onClick = if (files().isNotEmpty()) navigateToFilesDetails else { null }) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
                 firstText = {
