@@ -30,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.*
@@ -39,16 +40,15 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
 import java.util.Locale
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltWorker
 class UploadWorker @AssistedInject constructor(
@@ -97,25 +97,25 @@ class UploadWorker @AssistedInject constructor(
 
         return runCatching {
 
-        uploadSession.files.forEach { fileSession ->
-            uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
-                uploadedBytes += bytesSent
-                emitProgress(totalSize)
+            uploadSession.files.forEach { fileSession ->
+                uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
+                    uploadedBytes += bytesSent
+                    emitProgress(totalSize)
+                }
             }
-        }
 
-        val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
-        importLocalStorage.removeImportFolder()
+            val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
+            importLocalStorage.removeImportFolder()
 
-        displaySuccessNotification(transferUuid)
+            displaySuccessNotification(transferUuid)
 
             Result.success(
-            workDataOf(
-                UPLOADED_BYTES_TAG to totalSize,
-                TRANSFER_TYPE_TAG to transferType,
-                TRANSFER_UUID_TAG to transferUuid,
+                workDataOf(
+                    UPLOADED_BYTES_TAG to totalSize,
+                    TRANSFER_TYPE_TAG to transferType,
+                    TRANSFER_UUID_TAG to transferUuid,
+                )
             )
-        )
         }.getOrElse { exception ->
             when (exception) {
                 is NetworkException -> Result.retry()
@@ -200,10 +200,8 @@ class UploadWorker @AssistedInject constructor(
 
     @Singleton
     class Scheduler @Inject constructor(
-        @ApplicationContext private val appContext: Context,
         private val workManager: WorkManager,
         private val sharedApiUrlCreator: SharedApiUrlCreator,
-        private val notificationsUtils: NotificationsUtils,
     ) {
 
         fun scheduleWork(uploadSessionUuid: String) {
@@ -227,10 +225,7 @@ class UploadWorker @AssistedInject constructor(
                 return@mapLatest when (workInfo.state) {
                     State.RUNNING -> UploadProgressUiState.Progress(workInfo.progress).also { lastUploadedSize = it.uploadedSize }
                     State.SUCCEEDED -> UploadProgressUiState.Success.create(workInfo.outputData, sharedApiUrlCreator)
-                    State.FAILED -> {
-                        displayFailureNotification()
-                        UploadProgressUiState.Error(lastUploadedSize)
-                    }
+                    State.FAILED -> UploadProgressUiState.Error(lastUploadedSize)
                     State.CANCELLED -> UploadProgressUiState.Cancel()
                     else -> UploadProgressUiState.Default(lastUploadedSize)
                 } ?: UploadProgressUiState.Error(lastUploadedSize)
@@ -240,23 +235,6 @@ class UploadWorker @AssistedInject constructor(
         fun cancelWork() {
             SentryLog.i(TAG, "Work cancelled")
             workManager.cancelUniqueWork(TAG)
-        }
-
-        private fun displayFailureNotification() {
-            notificationsUtils.sendUploadNotification(
-                notificationId = UUID.randomUUID().hashCode(), // TODO: Use the same `transferUuid`
-                intent = Intent(appContext, NewTransferActivity::class.java),
-                // .clearStack()
-                // .putExtras(
-                //     NewTransferActivityArgs(
-                //         userId = userId,
-                //         mailboxId = mailboxId,
-                //         openThreadUid = if (isSummary) null else threadUid,
-                //     ).toBundle(),
-                // )
-                title = "Le transfert a échoué", // TODO: Hardcoded
-                description = "Un problème est survenu, veuillez réessayer", // TODO: Hardcoded
-            )
         }
     }
 
