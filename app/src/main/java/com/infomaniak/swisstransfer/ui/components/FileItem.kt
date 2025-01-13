@@ -44,11 +44,10 @@ fun FileItem(
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean = { false },
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
 ) {
     FileItemContent(
-        isClickEnable = file.isFolder,
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
@@ -72,17 +71,13 @@ private fun getDescription(file: FileUi): String {
     return if (file.isFolder) {
         ""
     } else {
-        HumanReadableSizeUtils.getHumanReadableSize(
-            LocalContext.current,
-            file.fileSize
-        )
+        HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, file.fileSize)
     }
 }
 
 @Composable
 private fun FileItemContent(
-    isClickEnable: Boolean,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
     isRemoveButtonVisible: Boolean,
@@ -92,7 +87,7 @@ private fun FileItemContent(
     content: @Composable () -> Unit,
 ) {
     Card(
-        modifier = getCardModifier(isClickEnable, onClick),
+        modifier = getCardModifier(onClick),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -137,10 +132,10 @@ private fun FileItemContent(
     }
 }
 
-private fun getCardModifier(isClickEnable: Boolean, onClick: () -> Unit): Modifier {
+private fun getCardModifier(onClick: (() -> Unit)? = null): Modifier {
     return Modifier
         .aspectRatio(164.0f / 152.0f)
-        .then(if (isClickEnable) Modifier.clickable(onClick = onClick) else Modifier)
+        .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
 }
 
 @PreviewLightAndDark

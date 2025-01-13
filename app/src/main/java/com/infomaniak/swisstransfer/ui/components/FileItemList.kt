@@ -63,12 +63,14 @@ fun FileItemList(
                 isRemoveButtonVisible = isRemoveButtonVisible,
                 isCheckboxVisible = isCheckboxVisible(),
                 isChecked = { isUidChecked(file.uid) },
-                onClick = {
-                    if (isCheckboxVisible()) {
-                        setUidCheckStatus(file.uid, !isUidChecked(file.uid))
-                    } else if (file.isFolder) {
-                        onClick?.invoke(file.uid)
+                onClick = when {
+                    isCheckboxVisible() -> {
+                        { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     }
+                    file.isFolder -> {
+                        { onClick?.invoke(file.uid) }
+                    }
+                    else -> null
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
             )

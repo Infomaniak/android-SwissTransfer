@@ -62,7 +62,7 @@ fun ImportedFilesCard(
 ) {
 
     val context = LocalContext.current
-    val humanReadableSize by remember(files()) {
+    val humanReadableSize by remember {
         derivedStateOf {
             val usedSpace = files().sumOf { it.fileSize }
             val spaceLeft = (FileUtils.MAX_FILES_SIZE - usedSpace).coerceAtLeast(0)
@@ -70,7 +70,11 @@ fun ImportedFilesCard(
         }
     }
 
-    SwissTransferCard(modifier = modifier, onClick = if (files().isNotEmpty()) navigateToFilesDetails else { null }) {
+    SwissTransferCard(
+        modifier = modifier, onClick = if (files().isNotEmpty()) navigateToFilesDetails else {
+            null
+        }
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
                 firstText = {

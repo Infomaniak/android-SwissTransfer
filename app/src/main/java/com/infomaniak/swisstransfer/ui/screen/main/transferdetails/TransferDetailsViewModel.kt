@@ -80,13 +80,6 @@ class TransferDetailsViewModel @Inject constructor(
     )
     //endregion
 
-    private val loadFilesFlow = MutableSharedFlow<String>(1)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val filesInFolder = loadFilesFlow.flatMapLatest { folderUuid ->
-        fileManager.getFilesFromTransfer(folderUuid)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
-
     fun loadTransfer(transferUuid: String) {
         viewModelScope.launch {
             runCatching {
@@ -107,10 +100,6 @@ class TransferDetailsViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun loadFiles(folderUuid: String) {
-        viewModelScope.launch { loadFilesFlow.emit(folderUuid) }
     }
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)

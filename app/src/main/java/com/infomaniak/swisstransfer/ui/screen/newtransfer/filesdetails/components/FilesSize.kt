@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
@@ -40,8 +40,6 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 @Composable
 fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolean) {
     Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
-        Spacer(Modifier.size(Margin.Medium))
-
         val filesInfo = getFilesInfo(files, withFilesSize)
         TextDotText(
             firstText = { filesInfo.filesCountText },
@@ -49,8 +47,8 @@ fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolea
         )
         Spacer(modifier = Modifier.weight(1f))
         if (withSpaceLeft) {
+            Spacer(modifier = Modifier.width(Margin.Medium))
             Text(
-                modifier = Modifier.padding(horizontal = Margin.Medium),
                 text = filesInfo.spaceLeftText,
                 color = SwissTransferTheme.colors.secondaryTextColor,
                 style = SwissTransferTheme.typography.bodySmallRegular,

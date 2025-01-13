@@ -1,4 +1,4 @@
-package com.infomaniak.library.filetypes.icons
+package com.infomaniak.core2.filetypes.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -23,56 +23,53 @@ internal val FileTypeIcons.Folder: ImageVector
             return _folder!!
         }
         _folder = Builder(
-            name = "Icon",
-            defaultWidth = 16.0.dp,
-            defaultHeight = 15.0.dp,
-            viewportWidth = 16.0f,
-            viewportHeight = 15.0f
+            name = "Folder",
+            defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f,
+            viewportHeight = 24.0f
         ).apply {
             path(
-                fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
+                fill = SolidColor(Color(0xFF9F9F9F)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                 pathFillType = EvenOdd
             ) {
-                moveTo(0.515f, 0.979f)
-                curveTo(0.832f, 0.706f, 1.247f, 0.562f, 1.666f, 0.562f)
-                horizontalLineTo(5.135f)
-                curveTo(5.555f, 0.562f, 5.969f, 0.706f, 6.286f, 0.979f)
-                curveTo(6.605f, 1.255f, 6.802f, 1.647f, 6.802f, 2.074f)
-                verticalLineTo(2.562f)
-                horizontalLineTo(14.384f)
-                curveTo(14.804f, 2.562f, 15.219f, 2.706f, 15.535f, 2.979f)
-                curveTo(15.903f, 3.297f, 16.0f, 3.719f, 16.0f, 4.074f)
-                verticalLineTo(12.95f)
-                curveTo(15.993f, 13.369f, 15.812f, 13.757f, 15.513f, 14.047f)
-                curveTo(15.216f, 14.336f, 14.822f, 14.512f, 14.407f, 14.559f)
-                curveTo(14.388f, 14.561f, 14.368f, 14.562f, 14.349f, 14.562f)
-                lineTo(1.65f, 14.562f)
-                curveTo(1.631f, 14.562f, 1.611f, 14.561f, 1.592f, 14.559f)
-                curveTo(1.177f, 14.512f, 0.783f, 14.336f, 0.486f, 14.047f)
-                curveTo(0.187f, 13.757f, 0.006f, 13.369f, -0.0f, 12.95f)
-                lineTo(-0.0f, 12.942f)
-                lineTo(-0.0f, 2.074f)
-                curveTo(-0.0f, 1.647f, 0.197f, 1.255f, 0.515f, 0.979f)
+                moveTo(0.659f, 2.159f)
+                curveTo(1.081f, 1.737f, 1.653f, 1.5f, 2.25f, 1.5f)
+                horizontalLineTo(7.5f)
+                curveTo(7.849f, 1.5f, 8.194f, 1.581f, 8.506f, 1.738f)
+                curveTo(8.819f, 1.894f, 9.09f, 2.121f, 9.3f, 2.4f)
+                lineTo(10.875f, 4.5f)
+                horizontalLineTo(21.75f)
+                curveTo(22.347f, 4.5f, 22.919f, 4.737f, 23.341f, 5.159f)
+                curveTo(23.763f, 5.581f, 24.0f, 6.153f, 24.0f, 6.75f)
+                verticalLineTo(20.25f)
+                curveTo(24.0f, 20.847f, 23.763f, 21.419f, 23.341f, 21.841f)
+                curveTo(22.919f, 22.263f, 22.347f, 22.5f, 21.75f, 22.5f)
+                horizontalLineTo(2.25f)
+                curveTo(1.653f, 22.5f, 1.081f, 22.263f, 0.659f, 21.841f)
+                curveTo(0.237f, 21.419f, 0.0f, 20.847f, 0.0f, 20.25f)
+                verticalLineTo(3.75f)
+                curveTo(0.0f, 3.153f, 0.237f, 2.581f, 0.659f, 2.159f)
                 close()
-                moveTo(1.666f, 1.586f)
-                curveTo(1.473f, 1.586f, 1.3f, 1.654f, 1.182f, 1.755f)
-                curveTo(1.067f, 1.854f, 1.021f, 1.971f, 1.021f, 2.074f)
-                verticalLineTo(12.937f)
-                curveTo(1.024f, 13.062f, 1.078f, 13.196f, 1.197f, 13.312f)
-                curveTo(1.314f, 13.425f, 1.483f, 13.51f, 1.682f, 13.538f)
-                lineTo(14.318f, 13.538f)
-                curveTo(14.516f, 13.51f, 14.686f, 13.425f, 14.802f, 13.312f)
-                curveTo(14.921f, 13.196f, 14.975f, 13.062f, 14.978f, 12.937f)
-                verticalLineTo(4.074f)
-                curveTo(14.978f, 3.899f, 14.935f, 3.813f, 14.868f, 3.755f)
-                curveTo(14.751f, 3.654f, 14.578f, 3.587f, 14.384f, 3.587f)
-                horizontalLineTo(6.291f)
-                curveTo(6.009f, 3.587f, 5.78f, 3.357f, 5.78f, 3.074f)
-                verticalLineTo(2.074f)
-                curveTo(5.78f, 1.971f, 5.734f, 1.854f, 5.619f, 1.755f)
-                curveTo(5.502f, 1.654f, 5.329f, 1.586f, 5.135f, 1.586f)
-                horizontalLineTo(1.666f)
+                moveTo(2.25f, 3.0f)
+                curveTo(2.051f, 3.0f, 1.86f, 3.079f, 1.72f, 3.22f)
+                curveTo(1.579f, 3.36f, 1.5f, 3.551f, 1.5f, 3.75f)
+                verticalLineTo(20.25f)
+                curveTo(1.5f, 20.449f, 1.579f, 20.64f, 1.72f, 20.78f)
+                curveTo(1.86f, 20.921f, 2.051f, 21.0f, 2.25f, 21.0f)
+                horizontalLineTo(21.75f)
+                curveTo(21.949f, 21.0f, 22.14f, 20.921f, 22.28f, 20.78f)
+                curveTo(22.421f, 20.64f, 22.5f, 20.449f, 22.5f, 20.25f)
+                verticalLineTo(6.75f)
+                curveTo(22.5f, 6.551f, 22.421f, 6.36f, 22.28f, 6.22f)
+                curveTo(22.14f, 6.079f, 21.949f, 6.0f, 21.75f, 6.0f)
+                horizontalLineTo(10.5f)
+                curveTo(10.264f, 6.0f, 10.042f, 5.889f, 9.9f, 5.7f)
+                lineTo(8.1f, 3.3f)
+                curveTo(8.03f, 3.207f, 7.94f, 3.131f, 7.835f, 3.079f)
+                curveTo(7.731f, 3.027f, 7.616f, 3.0f, 7.5f, 3.0f)
+                horizontalLineTo(2.25f)
                 close()
             }
         }

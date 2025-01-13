@@ -66,7 +66,7 @@ fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
-    navigateToFolder: ((folderUuid: String) -> Unit)? = null,
+    navigateToFolder: (folderUuid: String) -> Unit,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
@@ -92,7 +92,7 @@ fun TransferDetailsScreen(
             setFileCheckStatus = { fileUid, isChecked ->
                 transferDetailsViewModel.checkedFiles[fileUid] = isChecked
             },
-            navigateToFolder = { navigateToFolder?.invoke(it) },
+            navigateToFolder = navigateToFolder,
         )
         TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
     }
@@ -120,7 +120,7 @@ private fun TransferDetailsScreen(
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
     setFileCheckStatus: (String, Boolean) -> Unit,
-    navigateToFolder: ((folderUuid: String) -> Unit)? = null,
+    navigateToFolder: (folderUuid: String) -> Unit,
 ) {
 
     val context = LocalContext.current

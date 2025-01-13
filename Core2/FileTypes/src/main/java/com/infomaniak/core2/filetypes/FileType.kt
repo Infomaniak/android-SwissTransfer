@@ -21,7 +21,6 @@ import android.webkit.MimeTypeMap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.core2.filetypes.icons.*
-import com.infomaniak.library.filetypes.icons.Folder
 
 private val MEDIA_COLOR_LIGHT = Color(0xFF00BCD4)
 private val MEDIA_COLOR_DARK = Color(0xFF86DEEA)

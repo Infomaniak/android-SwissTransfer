@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,43 +15,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
-import FilesDetailsScreen
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.FilesDetailsUiState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun NewTransferFilesDetailsScreen(
-    importFilesViewModel: ImportFilesViewModel = hiltViewModel<ImportFilesViewModel>(),
+    importFilesViewModel: ImportFilesViewModel,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     navigateBack: (() -> Unit),
 ) {
-    val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val uiState by importFilesViewModel.filesDetailsUiState.collectAsStateWithLifecycle()
 
-    if (files.isEmpty()) navigateBack()
-
-    NewTransferFilesDetailsScreen(
-        files = files,
-        withFilesSize = withFilesSize,
-        withSpaceLeft = withSpaceLeft,
-        onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
-        navigateBack = navigateBack,
-    )
+    when (uiState) {
+        is FilesDetailsUiState.EmptyFiles -> navigateBack()
+        is FilesDetailsUiState.Success -> {
+            NewTransferFilesDetailsScreen(
+                files = (uiState as FilesDetailsUiState.Success).files,
+                withFilesSize = withFilesSize,
+                withSpaceLeft = withSpaceLeft,
+                onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+                navigateBack = navigateBack,
+            )
+        }
+    }
 }
 
 private fun getOnFileRemoveCallback(
