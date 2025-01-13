@@ -61,7 +61,7 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) 
         }
     }
 
-    Text(text = "$percentageNoDecimals%")
+    Text(text = "${percentageNoDecimals}%")
 }
 
 /**

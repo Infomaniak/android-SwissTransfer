@@ -79,6 +79,10 @@
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
     <string name="noTransferSelectedTitle">No transfers to display</string>
+    <string name="notificationUploadProgressTitle">Transfer in progress… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">The download link has been sent to the recipients</string>
+    <string name="notificationUploadSuccessDescriptionOther">Click to get your download link</string>
+    <string name="notificationUploadSuccessTitle">Transfer completed</string>
     <string name="notificationsGeneralChannelName">General notifications</string>
     <string name="notificationsUploadChannelName">Upload notifications</string>
     <string name="onboardingExpirationSubtitleArgument">30 days.</string>

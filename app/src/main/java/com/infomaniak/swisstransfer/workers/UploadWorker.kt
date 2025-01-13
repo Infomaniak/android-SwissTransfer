@@ -32,9 +32,11 @@ import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
@@ -77,7 +79,7 @@ class UploadWorker @AssistedInject constructor(
     private var lastUpdateTime = 0L
 
     private val serviceNotificationId = id.hashCode()
-    private val transferType by lazy { appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi().name }
+    private val transferType by lazy { appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi() }
     private val uploadSessionJob: CompletableDeferred<UploadSession> = CompletableDeferred()
 
     override suspend fun launchWork(): Result {
@@ -112,7 +114,7 @@ class UploadWorker @AssistedInject constructor(
             Result.success(
                 workDataOf(
                     UPLOADED_BYTES_TAG to totalSize,
-                    TRANSFER_TYPE_TAG to transferType,
+                    TRANSFER_TYPE_TAG to transferType.name,
                     TRANSFER_UUID_TAG to transferUuid,
                 )
             )
@@ -147,7 +149,7 @@ class UploadWorker @AssistedInject constructor(
         val builder = notificationsUtils.buildUploadNotification(
             requestCode = serviceNotificationId,
             intent = createProgressNotificationIntent(totalSize),
-            title = "Transfert en cours…", // TODO
+            title = applicationContext.getString(R.string.uploadProgressIndication),
         )
 
         return ForegroundInfo(serviceNotificationId, builder.build())
@@ -162,8 +164,8 @@ class UploadWorker @AssistedInject constructor(
         val builder = notificationsUtils.buildUploadNotification(
             requestCode = serviceNotificationId,
             intent = createProgressNotificationIntent(totalSize),
-            title = "Transfert en cours… (${percent}%)", // TODO
-            description = "$current / $total", // TODO
+            title = applicationContext.getString(R.string.notificationUploadProgressTitle, percent),
+            description = "$current / $total",
         )
 
         val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -178,23 +180,28 @@ class UploadWorker @AssistedInject constructor(
     private fun createProgressNotificationIntent(totalSize: Long): Intent {
         return Intent(applicationContext, NewTransferActivity::class.java)
             .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
-            .putExtra(TRANSFER_TYPE_KEY, transferType)
+            .putExtra(TRANSFER_TYPE_KEY, transferType.name)
             .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
     }
 
     private fun displaySuccessNotification(transferUuid: String) {
 
         val transferUrl = sharedApiUrlCreator.shareTransferUrl(transferUuid)
+        val descriptionResId = if (transferType == TransferTypeUi.Mail) {
+            R.string.notificationUploadSuccessDescriptionMail
+        } else {
+            R.string.notificationUploadSuccessDescriptionOther
+        }
 
         notificationsUtils.sendUploadNotification(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
-                .putExtra(TRANSFER_TYPE_KEY, transferType)
+                .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_UUID_KEY, transferUuid)
                 .putExtra(TRANSFER_URL_KEY, transferUrl),
-            title = "Transfert terminé", // TODO: Hardcoded
-            description = "Clique pour obtenir ton lien de téléchargement", // TODO: Hardcoded
+            title = applicationContext.getString(R.string.notificationUploadSuccessTitle),
+            description = applicationContext.getString(descriptionResId),
         )
     }
 

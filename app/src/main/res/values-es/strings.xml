@@ -73,6 +73,10 @@
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="noTransferSelectedDescription">Selecciona una transferencia o crea una nueva.</string>
     <string name="noTransferSelectedTitle">No hay transferencias que mostrar</string>
+    <string name="notificationUploadProgressTitle">Transferencia en curso… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">El enlace de descarga se ha enviado a los destinatarios</string>
+    <string name="notificationUploadSuccessDescriptionOther">Haga clic para obtener su enlace de descarga</string>
+    <string name="notificationUploadSuccessTitle">Transferencia completada</string>
     <string name="notificationsGeneralChannelName">Notificaciones generales</string>
     <string name="notificationsUploadChannelName">Notificaciones de carga</string>
     <string name="onboardingExpirationSubtitleArgument">30 días.</string>
