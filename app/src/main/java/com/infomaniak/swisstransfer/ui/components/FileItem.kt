@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -39,21 +40,23 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun FileItem(
+    modifier: Modifier = Modifier,
     file: FileUi,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean = { false },
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
 ) {
     FileItemContent(
+        modifier = modifier,
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
         isRemoveButtonVisible = isRemoveButtonVisible,
         onRemove = onRemove,
         title = file.fileName,
-        description = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, file.fileSize),
+        description = getDescription(file),
         content = {
             FilePreview(
                 file = file,
@@ -66,8 +69,18 @@ fun FileItem(
 }
 
 @Composable
+private fun getDescription(file: FileUi): String {
+    return if (file.isFolder) {
+        ""
+    } else {
+        HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, file.fileSize)
+    }
+}
+
+@Composable
 private fun FileItemContent(
-    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
     isRemoveButtonVisible: Boolean,
@@ -77,8 +90,7 @@ private fun FileItemContent(
     content: @Composable () -> Unit,
 ) {
     Card(
-        onClick = onClick,
-        modifier = Modifier.aspectRatio(164.0f / 152.0f),
+        modifier = modifier.then(getCardModifier(onClick)),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -123,6 +135,12 @@ private fun FileItemContent(
     }
 }
 
+private fun getCardModifier(onClick: (() -> Unit)? = null): Modifier {
+    return Modifier
+        .aspectRatio(164.0f / 152.0f)
+        .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+}
+
 @PreviewLightAndDark
 @Composable
 private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
@@ -138,7 +156,7 @@ private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class)
 
                 val iconFile = files[0]
                 FileItem(
-                    iconFile,
+                    file = iconFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
                     isChecked = { isChecked },

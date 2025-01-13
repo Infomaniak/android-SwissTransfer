@@ -44,7 +44,7 @@ fun SwissTransferTopAppBar(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
-    title: String,
+    title: String = "",
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
@@ -101,7 +101,7 @@ object TopAppBarButtons {
 private fun SwissTransferTopAppBarPreview() {
     SwissTransferTheme {
         SwissTransferTopAppBar(
-            title = stringResource( R.string.appName),
+            title = stringResource(R.string.appName),
             navigationIcon = { TopAppBarButtons.Back {} },
             actions = {
                 MenuButton(AppIcons.Add, R.string.appName, onClick = {})

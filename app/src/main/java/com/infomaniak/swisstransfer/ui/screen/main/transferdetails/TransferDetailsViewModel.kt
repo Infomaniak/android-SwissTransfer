@@ -26,6 +26,7 @@ import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.PasswordNeededDeeplinkException
@@ -41,6 +42,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
+    private val fileManager: FileManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
