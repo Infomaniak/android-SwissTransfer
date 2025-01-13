@@ -23,7 +23,6 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -87,7 +86,7 @@ fun NotificationManagerCompat.notifyCompat(context: Context, notificationId: Int
         if (context.hasPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS))) {
             notify(notificationId, build)
         } else {
-            Log.e("TOTO", "permission de notifications manquante")
+            // TODO: Handle the case when permission isn't allowed
         }
     } else {
         notify(notificationId, build)
