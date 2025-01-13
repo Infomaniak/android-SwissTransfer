@@ -40,6 +40,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun FileItem(
+    modifier: Modifier = Modifier,
     file: FileUi,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
@@ -48,6 +49,7 @@ fun FileItem(
     onRemove: (() -> Unit)? = null,
 ) {
     FileItemContent(
+        modifier = modifier,
         onClick = onClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
@@ -77,6 +79,7 @@ private fun getDescription(file: FileUi): String {
 
 @Composable
 private fun FileItemContent(
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
@@ -87,7 +90,7 @@ private fun FileItemContent(
     content: @Composable () -> Unit,
 ) {
     Card(
-        modifier = getCardModifier(onClick),
+        modifier = modifier.then(getCardModifier(onClick)),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -153,7 +156,7 @@ private fun FileItemPreview(@PreviewParameter(FileUiListPreviewParameter::class)
 
                 val iconFile = files[0]
                 FileItem(
-                    iconFile,
+                    file = iconFile,
                     isRemoveButtonVisible = true,
                     isCheckboxVisible = true,
                     isChecked = { isChecked },

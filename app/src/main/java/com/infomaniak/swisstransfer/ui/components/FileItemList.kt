@@ -59,6 +59,7 @@ fun FileItemList(
 
         items(files, key = { it.uid }) { file ->
             FileItem(
+                modifier = Modifier.animateItem(),
                 file = file,
                 isRemoveButtonVisible = isRemoveButtonVisible,
                 isCheckboxVisible = isCheckboxVisible(),
