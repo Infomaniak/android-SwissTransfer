@@ -27,14 +27,14 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun UploadSuccessScreen(
     transferType: TransferTypeUi,
+    transferUuid: String,
     transferUrl: String,
-    recipients: List<String>,
     closeActivity: () -> Unit,
 ) {
     BackHandler(onBack = closeActivity)
 
     if (transferType == TransferTypeUi.Mail) {
-        UploadSuccessEmailScreen(emails = recipients, closeActivity = closeActivity)
+        UploadSuccessEmailScreen(transferUuid, closeActivity)
     } else {
         UploadSuccessQrScreen(transferType, transferUrl, closeActivity)
     }
@@ -48,7 +48,7 @@ private fun UploadSuccessScreenPreview() {
             UploadSuccessScreen(
                 transferType = TransferTypeUi.QrCode,
                 transferUrl = "https://chk.me/83azQOl",
-                recipients = emptyList(),
+                transferUuid = "",
                 closeActivity = {},
             )
         }

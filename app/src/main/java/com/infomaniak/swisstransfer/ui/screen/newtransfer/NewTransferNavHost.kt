@@ -48,15 +48,11 @@ fun NewTransferNavHost(
             ImportFilesScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
                 closeActivity = closeActivity,
-                navigateToUploadProgress = { transferType, totalSize, recipients ->
-                    navController.navigate(UploadProgressDestination(transferType, totalSize, recipients))
+                navigateToUploadProgress = { transferType, totalSize ->
+                    navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
-                navigateToEmailValidation = { email, recipients ->
-                    navController.navigate(ValidateUserEmailDestination(email, recipients))
-                },
-                navigateToFilesDetails = {
-                    navController.navigate(NewTransferFilesDetailsDestination)
-                }
+                navigateToEmailValidation = { email -> navController.navigate(ValidateUserEmailDestination(email)) },
+                navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
             )
         }
         composable<ValidateUserEmailDestination> {
@@ -65,7 +61,7 @@ fun NewTransferNavHost(
                 closeActivity = closeActivityAndPromptForValidation,
                 navigateBack = { navController.popBackStack() },
                 navigateToUploadInProgress = { totalSize ->
-                    navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize, args.recipients))
+                    navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize))
                 },
                 emailToValidate = args.userEmail,
             )
@@ -74,14 +70,10 @@ fun NewTransferNavHost(
             val args = it.toRoute<UploadProgressDestination>()
             UploadProgressScreen(
                 totalSizeInBytes = args.totalSize,
-                navigateToUploadSuccess = { transferUrl ->
-                    navController.navigate(UploadSuccessDestination(args.transferType, transferUrl, args.recipients))
+                navigateToUploadSuccess = { transferUuid, transferUrl ->
+                    navController.navigate(UploadSuccessDestination(args.transferType, transferUuid, transferUrl))
                 },
-                navigateToUploadError = {
-                    navController.navigate(
-                        UploadErrorDestination(args.transferType, args.totalSize, args.recipients),
-                    )
-                },
+                navigateToUploadError = { navController.navigate(UploadErrorDestination(args.transferType, args.totalSize)) },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
             )
         }
@@ -89,8 +81,8 @@ fun NewTransferNavHost(
             val args = it.toRoute<UploadSuccessDestination>()
             UploadSuccessScreen(
                 transferType = args.transferType,
+                transferUuid = args.transferUuid,
                 transferUrl = args.transferUrl,
-                recipients = args.recipients,
                 closeActivity = closeActivity,
             )
         }
@@ -99,18 +91,17 @@ fun NewTransferNavHost(
             UploadErrorScreen(
                 navigateBackToUploadProgress = {
                     val hasPoppedBack = navController.popBackStack(
-                        route = UploadProgressDestination(args.transferType, args.totalSize, args.recipients),
+                        route = UploadProgressDestination(args.transferType, args.totalSize),
                         inclusive = false,
                     )
                     if (!hasPoppedBack) {
-                        navController.navigate(UploadProgressDestination(args.transferType, args.totalSize, args.recipients))
+                        navController.navigate(UploadProgressDestination(args.transferType, args.totalSize))
                         Sentry.captureMessage(
                             "PopBackStack to retry transfer after error has failed",
                             SentryLevel.ERROR,
                         ) { scope ->
                             scope.setExtra("transferType", args.transferType.toString())
                             scope.setExtra("totalSize", args.totalSize.toString())
-                            scope.setExtra("recipients.count", args.recipients.count().toString())
                         }
                     }
                 },
