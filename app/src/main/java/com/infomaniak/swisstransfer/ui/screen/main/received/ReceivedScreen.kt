@@ -18,10 +18,13 @@
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -32,6 +35,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
@@ -116,6 +120,7 @@ private fun ReceivedContent(
         )
     } else {
         TransfersListWithExpiredBottomSheet(
+            modifier = Modifier.fillMaxHeight(),
             direction = TransferDirection.RECEIVED,
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
@@ -127,11 +132,11 @@ private fun ReceivedContent(
 
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::class) transfers: GroupedTransfers) {
     SwissTransferTheme {
         Surface {
             ReceivedScreen(
-                uiState = { TransferUiState.Success(emptyMap()) },
+                uiState = { TransferUiState.Success(transfers) },
                 isFirstTransfer = { true },
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },

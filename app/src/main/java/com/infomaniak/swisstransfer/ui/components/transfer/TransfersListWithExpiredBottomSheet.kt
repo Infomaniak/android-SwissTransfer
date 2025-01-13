@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -36,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.utils.isExpired
 
 @Composable
 fun TransfersListWithExpiredBottomSheet(
+    modifier: Modifier = Modifier,
     direction: TransferDirection,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
@@ -46,6 +48,7 @@ fun TransfersListWithExpiredBottomSheet(
     var expiredTransfer: TransferUi? by rememberSaveable { mutableStateOf(null) }
 
     TransferItemList(
+        modifier = modifier,
         direction = direction,
         getSelectedTransferUuid = getSelectedTransferUuid,
         getTransfers = getTransfers,
