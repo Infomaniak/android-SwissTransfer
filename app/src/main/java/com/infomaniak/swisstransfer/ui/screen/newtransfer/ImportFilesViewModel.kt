@@ -52,10 +52,8 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -64,6 +62,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
+    private val sharedFilesManager: SharedFilesManager,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -81,6 +80,9 @@ class ImportFilesViewModel @Inject constructor(
         started = SharingStarted.Lazily,
         initialValue = FilesDetailsUiState.Success(emptyList()),
     )
+
+    private val _shouldPickFilesOnStartup = MutableStateFlow(false)
+    val shouldPickFilesOnStartup: StateFlow<Boolean> = _shouldPickFilesOnStartup.asStateFlow()
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -144,7 +146,19 @@ class ImportFilesViewModel @Inject constructor(
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
 
-            importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+            launch {
+                sharedFilesManager.sharedUris.collect { uris ->
+                    if (uris == null) {
+                        _shouldPickFilesOnStartup.value = true
+                    } else {
+                        importationFilesManager.importFiles(uris)
+                    }
+                }
+            }
+
+            coroutineScope {
+                importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+            }
         }
     }
 

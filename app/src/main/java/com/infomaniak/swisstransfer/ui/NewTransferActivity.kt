@@ -17,24 +17,64 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.os.BundleCompat
+import androidx.lifecycle.lifecycleScope
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.SharedFilesManager
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var sharedFilesManager: SharedFilesManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        handleSharedFiles()
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(closeActivity = { finish() })
             }
         }
+    }
+
+    private fun handleSharedFiles() {
+        val uris: List<Uri>? = when (intent?.action) {
+            Intent.ACTION_SEND -> getSingleUri()
+            Intent.ACTION_SEND_MULTIPLE -> getMultipleUris()
+            else -> null
+        }
+
+        lifecycleScope.launch {
+            sharedFilesManager.initializeSharedFilesUris(uris)
+        }
+    }
+
+    private fun getSingleUri(): List<Uri> {
+        val extras = intent.extras ?: return emptyList()
+        val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Parcelable::class.java) as? Uri
+
+        return if (uri == null) emptyList() else listOf(uri)
+    }
+
+    private fun getMultipleUris(): List<Uri> {
+        val extras = intent.extras ?: return emptyList()
+        val uris = BundleCompat
+            .getParcelableArrayList(extras, Intent.EXTRA_STREAM, Parcelable::class.java)
+            ?.filterIsInstance<Uri>()
+
+        return uris ?: emptyList()
     }
 }
