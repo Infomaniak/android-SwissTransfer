@@ -7,13 +7,6 @@ import javax.inject.Singleton
 
 @Singleton
 class NewTransferOpenManager @Inject constructor() {
-    // private val _sharedUris = MutableSharedFlow<List<Uri>?>(replay = 1)
-    // val sharedUris: SharedFlow<List<Uri>?> = _sharedUris.asSharedFlow()
-    //
-    // suspend fun initializeSharedFilesUris(uris: List<Uri>?) {
-    //     _sharedUris.emit(uris)
-    // }
-
     sealed interface Reason {
         data class ExternalShareIncoming(val uris: List<Uri>) : Reason
         data object Other : Reason
