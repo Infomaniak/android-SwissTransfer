@@ -52,7 +52,13 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -80,8 +86,8 @@ class ImportFilesViewModel @Inject constructor(
         initialValue = FilesDetailsUiState.Success(emptyList()),
     )
 
-    private val _shouldPickFilesOnStartup = MutableStateFlow(false)
-    val shouldPickFilesOnStartup: StateFlow<Boolean> = _shouldPickFilesOnStartup.asStateFlow()
+    private val _openFilePickerEvent: Channel<Unit> = Channel(capacity = CONFLATED)
+    val openFilePickerEvent: ReceiveChannel<Unit> = _openFilePickerEvent
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -151,7 +157,7 @@ class ImportFilesViewModel @Inject constructor(
                         importationFilesManager.importFiles(reason.uris)
                     }
                     NewTransferOpenManager.Reason.Other -> {
-                        _shouldPickFilesOnStartup.value = true
+                        _openFilePickerEvent.send(Unit)
                     }
                 }
             }

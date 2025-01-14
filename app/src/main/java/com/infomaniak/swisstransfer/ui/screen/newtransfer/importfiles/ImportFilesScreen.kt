@@ -51,6 +51,8 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
@@ -76,11 +78,11 @@ fun ImportFilesScreen(
 
     val sendStatus by importFilesViewModel.sendStatus.collectAsStateWithLifecycle()
 
-    val shouldPickFilesOnStartup by importFilesViewModel.shouldPickFilesOnStartup.collectAsStateWithLifecycle()
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments(),
         onResult = importFilesViewModel::importFiles,
     )
+
     fun pickFiles() {
         filePickerLauncher.launch(arrayOf("*/*"))
     }
@@ -89,7 +91,7 @@ fun ImportFilesScreen(
 
     val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
 
-    HandleStartupFilePick(shouldPickFilesOnStartup, ::pickFiles)
+    HandleStartupFilePick(importFilesViewModel.openFilePickerEvent, ::pickFiles)
 
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
@@ -165,9 +167,9 @@ fun ImportFilesScreen(
 }
 
 @Composable
-private fun HandleStartupFilePick(shouldPickFilesOnStartup: Boolean, pickFiles: () -> Unit) {
-    LaunchedEffect(shouldPickFilesOnStartup) {
-        if (shouldPickFilesOnStartup) pickFiles()
+private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pickFiles: () -> Unit) {
+    LaunchedEffect(Unit) {
+        openFilePickerEvent.consumeEach { pickFiles() }
     }
 }
 
