@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.Companion.toMainDestination
 import com.infomaniak.swisstransfer.ui.screen.main.components.MainScaffold
@@ -30,7 +31,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun MainScreen(isTransferDeeplink: Boolean = false) {
+fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -42,7 +43,7 @@ fun MainScreen(isTransferDeeplink: Boolean = false) {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        content = { MainNavHost(navController, currentDestination, isTransferDeeplink) },
+        content = { MainNavHost(navController, currentDestination, deeplinkTransferDirection) },
     )
 }
 
