@@ -15,22 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.core2.extensions
+package com.infomaniak.core2
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
-
-tailrec fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}
-
-fun Context.hasPermissions(permissions: Array<String>): Boolean {
-    return permissions.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-    }
+inline fun <reified T : Enum<T>> enumValueOfOrNull(value: String?): T? {
+    return value?.let { runCatching { enumValueOf<T>(it) }.getOrNull() }
 }
