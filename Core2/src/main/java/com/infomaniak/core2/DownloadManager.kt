@@ -129,33 +129,30 @@ private fun buildStatus(
     downloadedBytes: Long,
     totalSizeInBytes: Long
 ): DownloadStatus = when (statusInt) {
-    DownloadManager.STATUS_RUNNING -> InProgress(
-        downloadedBytes = downloadedBytes,
-        totalSizeInBytes = totalSizeInBytes
-    )
+    DownloadManager.STATUS_RUNNING -> InProgress(downloadedBytes = downloadedBytes, totalSizeInBytes = totalSizeInBytes)
     DownloadManager.STATUS_PENDING -> Pending
-    DownloadManager.STATUS_PAUSED -> Paused(
-        reason = when (reason) {
-            DownloadManager.PAUSED_QUEUED_FOR_WIFI -> Paused.Reason.QueuedForWifi
-            DownloadManager.PAUSED_WAITING_TO_RETRY -> Paused.Reason.WaitingToRetry
-            DownloadManager.PAUSED_WAITING_FOR_NETWORK -> Paused.Reason.WaitingForNetwork
-            else -> null
-        }
-    )
-    DownloadManager.STATUS_FAILED -> Failed(
-        reason = when (reason) {
-            DownloadManager.ERROR_INSUFFICIENT_SPACE -> Failed.LocalIssue.InsufficientSpace
-            DownloadManager.ERROR_DEVICE_NOT_FOUND -> Failed.LocalIssue.StorageDeviceNotFound
-            DownloadManager.ERROR_FILE_ERROR -> Failed.LocalIssue.FileError
-            DownloadManager.ERROR_CANNOT_RESUME -> Failed.Reason.CannotResume
-            DownloadManager.ERROR_HTTP_DATA_ERROR -> Failed.RemoteIssue.HttpDataError
-            DownloadManager.ERROR_TOO_MANY_REDIRECTS -> Failed.RemoteIssue.TooManyRedirects
-            DownloadManager.ERROR_FILE_ALREADY_EXISTS -> Failed.LocalIssue.FileAlreadyExists
-            DownloadManager.ERROR_UNHANDLED_HTTP_CODE -> Failed.RemoteIssue.UnhandledHttpCode
-            DownloadManager.ERROR_UNKNOWN -> Failed.Reason.UnknownError
-            else -> Failed.RemoteIssue.HttpError(statusCode = statusInt)
-        }
-    )
+    DownloadManager.STATUS_PAUSED -> Paused(reason = buildPausedReason(reason))
+    DownloadManager.STATUS_FAILED -> Failed(reason = buildFailureReason(statusInt = statusInt, reason = reason))
     DownloadManager.STATUS_SUCCESSFUL -> Complete
     else -> error("Unexpected download status: $statusInt reason: $reason")
+}
+
+private fun buildFailureReason(statusInt: Int, reason: Int): Failed.Reason = when (reason) {
+    DownloadManager.ERROR_INSUFFICIENT_SPACE -> Failed.LocalIssue.InsufficientSpace
+    DownloadManager.ERROR_DEVICE_NOT_FOUND -> Failed.LocalIssue.StorageDeviceNotFound
+    DownloadManager.ERROR_FILE_ERROR -> Failed.LocalIssue.FileError
+    DownloadManager.ERROR_CANNOT_RESUME -> Failed.Reason.CannotResume
+    DownloadManager.ERROR_HTTP_DATA_ERROR -> Failed.RemoteIssue.HttpDataError
+    DownloadManager.ERROR_TOO_MANY_REDIRECTS -> Failed.RemoteIssue.TooManyRedirects
+    DownloadManager.ERROR_FILE_ALREADY_EXISTS -> Failed.LocalIssue.FileAlreadyExists
+    DownloadManager.ERROR_UNHANDLED_HTTP_CODE -> Failed.RemoteIssue.UnhandledHttpCode
+    DownloadManager.ERROR_UNKNOWN -> Failed.Reason.UnknownError
+    else -> Failed.RemoteIssue.HttpError(statusCode = statusInt)
+}
+
+private fun buildPausedReason(reason: Int): Paused.Reason? = when (reason) {
+    DownloadManager.PAUSED_QUEUED_FOR_WIFI -> Paused.Reason.QueuedForWifi
+    DownloadManager.PAUSED_WAITING_TO_RETRY -> Paused.Reason.WaitingToRetry
+    DownloadManager.PAUSED_WAITING_FOR_NETWORK -> Paused.Reason.WaitingForNetwork
+    else -> null
 }
