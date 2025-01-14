@@ -58,9 +58,7 @@ fun UploadProgressScreen(
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(!showBottomSheet) {
-        showBottomSheet = true
-    }
+    BackHandler(enabled = !showBottomSheet, onBack = { showBottomSheet = true })
 
     LaunchedEffect(Unit) {
         uploadProgressViewModel.trackUploadProgress()
