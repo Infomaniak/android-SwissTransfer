@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.play.review)
-    implementation(libs.play.review.ktx)
     implementation(project(":Core2"))
+    implementation(core2.play.review)
+    implementation(core2.play.review.ktx)
 }

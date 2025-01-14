@@ -41,8 +41,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":Core2"))
     implementation(platform(core2.compose.bom))
     implementation(core2.compose.runtime)
     implementation(core2.compose.ui.tooling)
-    implementation(project(":Core2"))
 }
