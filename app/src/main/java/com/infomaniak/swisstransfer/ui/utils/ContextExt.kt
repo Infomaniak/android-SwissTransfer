@@ -18,7 +18,10 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -33,14 +36,6 @@ fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = 
 
 fun Context.openUrl(url: String) {
     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-}
-
-fun Context.goToPlayStore() {
-    try {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${packageName}")))
-    } catch (_: ActivityNotFoundException) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${packageName}")))
-    }
 }
 
 fun Context.openAppNotificationSettings() {
@@ -58,7 +53,6 @@ fun Context.openAppNotificationSettings() {
         }
     }.also(::startActivity)
 }
-
 
 /**
  * This method opens a chooser to let the user open an email app as if he clicked on it on his home screen, with an ACTION_MAIN.
