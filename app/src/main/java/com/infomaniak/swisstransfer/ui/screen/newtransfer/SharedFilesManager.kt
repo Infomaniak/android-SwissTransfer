@@ -13,7 +13,7 @@ import javax.inject.Singleton
 class SharedFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
 ) {
-    private val _sharedUris = MutableSharedFlow<List<Uri>?>(1)
+    private val _sharedUris = MutableSharedFlow<List<Uri>?>(replay = 1)
     val sharedUris: SharedFlow<List<Uri>?> = _sharedUris.asSharedFlow()
 
     suspend fun initializeSharedFilesUris(uris: List<Uri>?) {
