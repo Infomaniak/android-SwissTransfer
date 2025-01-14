@@ -168,7 +168,7 @@ fun ImportFilesScreen(
 
 @Composable
 private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pickFiles: () -> Unit) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(pickFiles) {
         openFilePickerEvent.consumeEach { pickFiles() }
     }
 }
