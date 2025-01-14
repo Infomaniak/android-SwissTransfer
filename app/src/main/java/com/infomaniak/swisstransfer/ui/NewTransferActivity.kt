@@ -25,8 +25,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -45,9 +45,13 @@ class NewTransferActivity : ComponentActivity() {
         handleSharedFiles()
         setContent {
             SwissTransferTheme {
-                NewTransferScreen(closeActivity = { finish() })
+                NewTransferScreen(closeActivity = { finishAppAndRemoveTaskIfNeeded() })
             }
         }
+    }
+
+    private fun finishAppAndRemoveTaskIfNeeded() {
+        if (isTaskRoot) finishAndRemoveTask() else finish()
     }
 
     private fun handleSharedFiles() {

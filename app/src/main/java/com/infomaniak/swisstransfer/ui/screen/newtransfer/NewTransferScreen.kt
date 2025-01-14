@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,10 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 fun NewTransferScreen(closeActivity: () -> Unit) {
     val navController = rememberNavController()
     var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
+
+    BackHandler(!displayConfirmationDialog) {
+        closeActivity()
+    }
 
     NewTransferNavHost(
         navController,

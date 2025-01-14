@@ -80,7 +80,7 @@ class LaunchActivity : ComponentActivity() {
     private fun createNewTransferSharingFileIntent(): Intent {
         return Intent(intent).apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
-            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
 
