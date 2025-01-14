@@ -23,6 +23,8 @@
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
     <string name="buttonAddFiles">Add files</string>
+    <string name="buttonCancelTransfer">Cancel the transfer</string>
+    <string name="buttonCloseAndContinue">Close and continue</string>
     <string name="buttonConfirm">Confirm</string>
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
@@ -164,8 +166,6 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transfer</string>
     <string name="transferTypeTitle">Send by</string>
-    <string name="uploadCancelConfirmBottomSheetCancel">Cancel the transfer</string>
-    <string name="uploadCancelConfirmBottomSheetClose">Close and continue</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Are you sure you want to cancel the transfer?</string>
     <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
     <string name="uploadErrorTitle">Wait, what just happened?</string>

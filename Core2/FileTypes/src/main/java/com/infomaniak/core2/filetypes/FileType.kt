@@ -38,6 +38,7 @@ enum class FileType(val icon: ImageVector, private val colorLight: Color, privat
     TEXT(icon = FileTypeIcons.Text, colorLight = Color(0xFF2196F3), colorDark = Color(0xFF81C4F8)),
     VCARD(icon = FileTypeIcons.Vcard, colorLight = Color(0xFF9D66E1), colorDark = Color(0xFFC8AAEE)),
     VIDEO(icon = FileTypeIcons.Video, colorLight = MEDIA_COLOR_LIGHT, colorDark = MEDIA_COLOR_DARK),
+    FOLDER(icon = FileTypeIcons.Folder, colorLight = Color(0xFF9F9F9F), colorDark = Color(0xFFF1F1F1)),
 
     UNKNOWN(icon = FileTypeIcons.Unknown, colorLight = Color(0xFF85A2B6), colorDark = Color(0xFFAFC2CF));
 

@@ -57,7 +57,6 @@ sealed class MainNavigation : NavigationDestination() {
         }
     }
 
-    // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
     data object SettingsDestination : MainNavigation()
 
@@ -71,7 +70,11 @@ sealed class MainNavigation : NavigationDestination() {
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
         private const val settingsDestinationName = "SettingsDestination"
-        val destinationsNames = listOf(sentDestinationName, receivedDestinationName, settingsDestinationName)
+        val destinationsNames = listOf(
+            sentDestinationName,
+            receivedDestinationName,
+            settingsDestinationName,
+        )
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
@@ -122,6 +125,9 @@ sealed class NewTransferNavigation : NavigationDestination() {
         val totalSize: Long,
         val recipients: List<String>,
     ) : NewTransferNavigation()
+
+    @Serializable
+    data object NewTransferFilesDetailsDestination : NewTransferNavigation()
 
     companion object {
         val startDestination = ImportFilesDestination

@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.isValidEmail
 import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
@@ -53,6 +54,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,6 +71,17 @@ class ImportFilesViewModel @Inject constructor(
 
     val sendStatus by transferSendManager::sendStatus
 
+    val filesDetailsUiState = importationFilesManager.importedFiles.map {
+        when {
+            it.isEmpty() -> FilesDetailsUiState.EmptyFiles
+            else -> FilesDetailsUiState.Success(it)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = FilesDetailsUiState.Success(emptyList()),
+    )
+
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
         .debounce(50)
@@ -80,6 +93,11 @@ class ImportFilesViewModel @Inject constructor(
 
     val filesToImportCount = importationFilesManager.filesToImportCount
     val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
+
+    sealed interface FilesDetailsUiState {
+        data object EmptyFiles : FilesDetailsUiState
+        data class Success(val files: List<FileUi>) : FilesDetailsUiState
+    }
 
     //region Transfer Author Email
     private var transferAuthorEmail by mutableStateOf("")

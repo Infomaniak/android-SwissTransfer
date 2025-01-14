@@ -19,6 +19,8 @@
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="awaitingNetwork">Esperando la red</string>
     <string name="buttonAddFiles">Añadir archivos</string>
+    <string name="buttonCancelTransfer">Cancelar transferencia</string>
+    <string name="buttonCloseAndContinue">Cerrar y continuar</string>
     <string name="buttonConfirm">Confirme</string>
     <string name="buttonCopyLink">Copiar enlace</string>
     <string name="buttonDownload">Descargar</string>
@@ -160,8 +162,6 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transferencia</string>
     <string name="transferTypeTitle">Enviar por</string>
-    <string name="uploadCancelConfirmBottomSheetCancel">Cancelar transferencia</string>
-    <string name="uploadCancelConfirmBottomSheetClose">Cerrar y continuar</string>
     <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
     <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
     <string name="uploadErrorTitle">¿Pero qué, qué?</string>

@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,10 +40,12 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaff
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -118,7 +121,16 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    selectItem(windowAdaptiveInfo, DestinationContent(direction, transferUuid))
+    selectItem(windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
+    direction: TransferDirection,
+    transferUuid: String,
+    folderUuid: String,
+) {
+    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent.FolderLevel(direction, transferUuid, folderUuid))
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -132,18 +144,71 @@ private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     hasTransfer: () -> Boolean,
 ) {
+    when (val destinationContent = navigator.safeCurrentContent()) {
+        null -> {
+            NoSelectionEmptyState(hasTransfer())
+        }
+        is DestinationContent.RootLevel -> {
+            TransferDetailsScreen(
+                transferUuid = destinationContent.transferUuid,
+                direction = destinationContent.direction,
+                navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+                navigateToFolder = { selectedFolderUuid ->
+                    navigator.navigateToFolder(
+                        destinationContent.direction,
+                        destinationContent.transferUuid,
+                        selectedFolderUuid,
+                    )
+                },
+            )
+        }
+        is DestinationContent.FolderLevel -> {
+            val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-    val destinationContent = navigator.safeCurrentContent()
-
-    if (destinationContent == null) {
-        NoSelectionEmptyState(hasTransfer())
-    } else {
-        TransferDetailsScreen(
-            transferUuid = destinationContent.transferUuid,
-            direction = destinationContent.direction,
-            navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
-        )
+            FilesDetailsScreen(
+                navigator,
+                destinationContent.folderUuid,
+                destinationContent.direction,
+                destinationContent.transferUuid,
+                windowAdaptiveInfo
+            )
+        }
     }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun FilesDetailsScreen(
+    navigator: ThreePaneScaffoldNavigator<DestinationContent>,
+    folderUuid: String,
+    transferDirection: TransferDirection,
+    transferUuid: String,
+    windowAdaptiveInfo: WindowAdaptiveInfo
+) {
+    FilesDetailsScreen(
+        navigateToFolder = { selectedFolderUuid ->
+            navigator.navigateToFolder(
+                transferDirection,
+                transferUuid,
+                selectedFolderUuid,
+            )
+        },
+        folderUuid = folderUuid,
+        navigateBack = { navigator.popBackStack() },
+        close = {
+            // Because on phones, if we navigateToDetails, we arrive on the TransferDetailsScreen but
+            // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all
+            // the FilesDetailsScreen's
+            if (windowAdaptiveInfo.isWindowSmall()) navigator.navigateBack()
+            navigator.navigateToDetails(
+                windowAdaptiveInfo,
+                transferDirection,
+                transferUuid
+            )
+        },
+        withFilesSize = false,
+        withSpaceLeft = false,
+    )
 }
 
 @Composable
@@ -166,10 +231,23 @@ private fun NoSelectionEmptyState(hasTransfers: Boolean) {
 }
 
 @Parcelize
-private data class DestinationContent(
-    val direction: TransferDirection,
-    val transferUuid: String,
-) : Parcelable
+private sealed class DestinationContent : Parcelable {
+    abstract val direction: TransferDirection
+    abstract val transferUuid: String
+
+    @Parcelize
+    data class RootLevel(
+        override val direction: TransferDirection,
+        override val transferUuid: String,
+    ) : DestinationContent(), Parcelable
+
+    @Parcelize
+    data class FolderLevel(
+        override val direction: TransferDirection,
+        override val transferUuid: String,
+        val folderUuid: String,
+    ) : DestinationContent(), Parcelable
+}
 
 @PreviewAllWindows
 @Composable
