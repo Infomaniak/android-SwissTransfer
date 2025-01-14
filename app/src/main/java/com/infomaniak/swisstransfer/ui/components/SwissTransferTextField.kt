@@ -30,7 +30,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -86,7 +85,7 @@ fun SwissTransferTextField(
         minLines = minLineNumber,
         maxLines = maxLineNumber,
         colors = SwissTransferTextFieldDefaults.colors(),
-        textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
+        textStyle = LocalTextStyle.current.copy(color = SwissTransferTheme.colors.primaryTextColor),
         onValueChange = {
             text = it
             onValueChange?.invoke(it)

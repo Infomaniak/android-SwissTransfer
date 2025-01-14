@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,27 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.core2.compose.basics
+package com.infomaniak.core2.extensions
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.ActivityInfo
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
-import com.infomaniak.core2.extensions.findActivity
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 
-@Composable
-fun LockScreenOrientation(isLocked: Boolean) {
-    if (!isLocked) return
+tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
 
-    val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        val activity = context.findActivity() ?: return@LaunchedEffect
-
-        @SuppressLint("SourceLockedOrientationActivity")
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+fun Context.hasPermissions(permissions: Array<String>): Boolean {
+    return permissions.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 }

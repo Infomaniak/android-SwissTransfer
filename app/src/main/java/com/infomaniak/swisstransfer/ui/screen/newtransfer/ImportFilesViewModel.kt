@@ -52,10 +52,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -64,6 +61,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
+    private val newTransferOpenManager: NewTransferOpenManager,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -81,6 +79,9 @@ class ImportFilesViewModel @Inject constructor(
         started = SharingStarted.Lazily,
         initialValue = FilesDetailsUiState.Success(emptyList()),
     )
+
+    private val _shouldPickFilesOnStartup = MutableStateFlow(false)
+    val shouldPickFilesOnStartup: StateFlow<Boolean> = _shouldPickFilesOnStartup.asStateFlow()
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -142,6 +143,17 @@ class ImportFilesViewModel @Inject constructor(
 
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
+            }
+
+            launch {
+                when (val reason = newTransferOpenManager.readOpenReason()) {
+                    is NewTransferOpenManager.Reason.ExternalShareIncoming -> {
+                        importationFilesManager.importFiles(reason.uris)
+                    }
+                    NewTransferOpenManager.Reason.Other -> {
+                        _shouldPickFilesOnStartup.value = true
+                    }
+                }
             }
 
             importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()

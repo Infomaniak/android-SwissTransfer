@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -44,7 +43,6 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 fun SwissTransferFab(
     modifier: Modifier = Modifier,
     fabType: FabType = FabType.NORMAL,
-    elevation: FloatingActionButtonElevation = FloatingActionButtonDefaults.elevation(),
     icon: ImageVector = AppIcons.Add,
     onClick: () -> Unit,
 ) {
@@ -53,7 +51,7 @@ fun SwissTransferFab(
         onClick = onClick,
         containerColor = SwissTransferTheme.materialColors.primary,
         shape = fabType.shape,
-        elevation = elevation,
+        elevation = FloatingActionButtonDefaults.elevation(0.dp),
     ) {
         Icon(
             imageVector = icon,

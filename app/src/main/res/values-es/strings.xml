@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonShowPassword">Mostrar contraseña</string>
     <string name="contentDescriptionCreateNewTransferButton">Nueva transferencia</string>
     <string name="deeplinkPasswordDescription">Introduzca la contraseña que se le ha dado para descargar estos archivos.</string>
+    <string name="deeplinkTransferNotFound">Esta transferencia ha caducado o no existe</string>
     <string name="downloadedTransferLabel">Transferencia descargada: %d/%d</string>
     <string name="errorAppIntegrity">Su dispositivo no es reconocido como seguro</string>
     <string name="errorIncorrectPassword">Contraseña incorrecta</string>

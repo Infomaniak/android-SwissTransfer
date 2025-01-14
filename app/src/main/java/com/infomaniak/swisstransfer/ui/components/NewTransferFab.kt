@@ -20,14 +20,10 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -44,25 +40,13 @@ fun NewTransferFab(
     SwissTransferFab(
         modifier = modifier,
         fabType = newTransferFabType.fabType,
-        elevation = newTransferFabType.elevation(),
         onClick = { context.launchActivity(NewTransferActivity::class) },
     )
 }
 
-enum class NewTransferFabType(val fabType: FabType, private val defaultElevation: Dp?) {
-
-    BOTTOM_BAR(FabType.NORMAL, null),
-    EMPTY_STATE(FabType.BIG, null),
-    NAVIGATION_RAIL(FabType.NORMAL, 0.dp);
-
-    @Composable
-    fun elevation(): FloatingActionButtonElevation {
-        return if (defaultElevation != null) {
-            FloatingActionButtonDefaults.elevation(defaultElevation)
-        } else {
-            FloatingActionButtonDefaults.elevation()
-        }
-    }
+enum class NewTransferFabType(val fabType: FabType) {
+    BOTTOM_BAR(FabType.NORMAL),
+    EMPTY_STATE(FabType.BIG);
 }
 
 @PreviewLightAndDark
@@ -74,8 +58,6 @@ private fun NewTransferFabPreview() {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
                 Spacer(Modifier.width(Margin.Large))
                 NewTransferFab(newTransferFabType = NewTransferFabType.EMPTY_STATE)
-                Spacer(Modifier.width(Margin.Large))
-                NewTransferFab(newTransferFabType = NewTransferFabType.NAVIGATION_RAIL)
             }
         }
     }

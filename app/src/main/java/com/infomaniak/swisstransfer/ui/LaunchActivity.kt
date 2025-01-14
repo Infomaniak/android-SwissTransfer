@@ -53,28 +53,39 @@ class LaunchActivity : ComponentActivity() {
     }
 
     private suspend fun startTargetActivity() {
-        if (hasValidTransferDeeplink()) {
-            if (!accountUtils.isUserConnected()) accountUtils.login()
-            createDeeplink()
-        } else {
-            startActivity(Intent(this@LaunchActivity, chooseTargetActivity()))
+        val intent = when {
+            hasValidTransferDeeplink() -> {
+                if (!accountUtils.isUserConnected()) accountUtils.login()
+                createDeeplinkIntent()
+            }
+            isSharingFilesToTheApp() -> createNewTransferSharingFileIntent()
+            accountUtils.isUserConnected() -> Intent(this, MainActivity::class.java)
+            else -> Intent(this, OnboardingActivity::class.java)
         }
+
+        startActivity(intent)
     }
 
-    private fun chooseTargetActivity(): Class<out ComponentActivity> = when {
-        accountUtils.isUserConnected() -> MainActivity::class
-        else -> OnboardingActivity::class
-    }.java
-
-    private fun createDeeplink() {
-        Intent(
+    private fun createDeeplinkIntent(): Intent {
+        return Intent(
             Intent.ACTION_VIEW,
             intent.data,
             /*context*/this,
             MainActivity::class.java,
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }.also(::startActivity)
+        }
+    }
+
+    private fun createNewTransferSharingFileIntent(): Intent {
+        return Intent(intent).apply {
+            setClass(this@LaunchActivity, NewTransferActivity::class.java)
+            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+    }
+
+    private fun ComponentActivity.isSharingFilesToTheApp(): Boolean {
+        return intent?.action == Intent.ACTION_SEND || intent?.action == Intent.ACTION_SEND_MULTIPLE
     }
 
     companion object {
