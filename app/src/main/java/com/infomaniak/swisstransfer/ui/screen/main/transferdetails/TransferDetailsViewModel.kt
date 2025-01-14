@@ -17,13 +17,14 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
+import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core2.DownloadManagerUtils
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
@@ -105,29 +106,20 @@ class TransferDetailsViewModel @Inject constructor(
 
     fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
 
-    fun startDownloadingAllFiles(transfer: TransferUi) {
-        viewModelScope.launch {
-            val url = sharedApiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return@launch
-
-            when (transfer.files.size) {
-                1 -> {
-                    val singleFile = transfer.files.single()
-                    DownloadManagerUtils.scheduleDownload(
-                        url = sharedApiUrlCreator.downloadFileUrl(transfer.uuid, singleFile.uid) ?: return@launch,
-                        name = "SwissTransfer/${singleFile.fileName}",
-                        userAgent = userAgent,
-                    )
-                }
-                else -> {
-                    DownloadManagerUtils.scheduleDownload(
-                        url = url,
-                        name = "SwissTransfer/${transfer.uuid}.zip", //TODO: Prepend date (and ensure the iOS app does it too)
-                        userAgent = userAgent,
-                    )
-                }
-            }
-        }
-    }
+    suspend fun handleTransferDownload(
+        ui: TransferDownloadUi,
+        transfer: TransferUi,
+        targetFile: FileUi?,
+        openFile: (Uri) -> Unit,
+    ): Nothing = handleTransferDownload(
+        ui = ui,
+        transferManager = transferManager,
+        apiUrlCreator = sharedApiUrlCreator,
+        userAgent = userAgent,
+        transfer = transfer,
+        targetFile = targetFile,
+        openFile = openFile,
+    )
 
     @OptIn(UnreliableToastApi::class)
     private suspend fun handleTransferDeeplink(transferUuid: String, password: String) {

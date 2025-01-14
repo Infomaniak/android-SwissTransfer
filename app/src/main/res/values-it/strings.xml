@@ -25,6 +25,8 @@
     <string name="buttonCopyLink">Copia link</string>
     <string name="buttonDownload">Scaricare</string>
     <string name="buttonDownloadSelected">Scarica la selezione</string>
+    <string name="buttonDownloaded">Scaricato</string>
+    <string name="buttonDownloading">Scaricare</string>
     <string name="buttonEditTransfer">Modifica mio trasferimento</string>
     <string name="buttonFinished">Finisci</string>
     <string name="buttonOpenMailApp">Apri l’app di posta elettronica</string>

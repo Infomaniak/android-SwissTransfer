@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -28,6 +29,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import com.infomaniak.swisstransfer.R
+import splitties.toast.UnreliableToastApi
+import splitties.toast.toast
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -103,6 +106,20 @@ fun Context.shareText(text: String) {
         type = "text/plain"
     }
     safeStartActivity(Intent.createChooser(intent, null))
+}
+
+fun Context.openFile(uri: Uri) {
+    val intent = Intent(Intent.ACTION_VIEW).also {
+        it.data = uri
+        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    try {
+        startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        @OptIn(UnreliableToastApi::class)
+        toast(msgResId = R.string.startActivityCantHandleAction)
+    }
 }
 
 fun Context.safeStartActivity(intent: Intent) {

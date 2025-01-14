@@ -29,6 +29,8 @@
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
+    <string name="buttonDownloaded">Downloaded</string>
+    <string name="buttonDownloading">Downloading</string>
     <string name="buttonEditTransfer">Edit my transfer</string>
     <string name="buttonFinished">Finish</string>
     <string name="buttonOpenMailApp">Open the mail app</string>

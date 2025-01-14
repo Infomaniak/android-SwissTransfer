@@ -18,19 +18,25 @@
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun SwissTransferScaffold(
     topBar: @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = { topBar() },
+        snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
