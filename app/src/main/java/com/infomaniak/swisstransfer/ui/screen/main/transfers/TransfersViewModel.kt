@@ -45,14 +45,14 @@ class TransfersViewModel @Inject constructor(
 
     val sentTransfersUiState = transferManager.getTransfers(TransferDirection.SENT)
         .map { TransferUiState.Success(it) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
+        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
     val receivedTransfersUiState = transferManager.getTransfers(TransferDirection.RECEIVED)
         .map { TransferUiState.Success(it) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = TransferUiState.Loading)
+        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
-    val sentTransfersAreEmpty: StateFlow<Boolean> = sentTransfersUiState
-        .map { it is TransferUiState.Success && it.data.isEmpty() }
+    val sentTransfersAreEmpty: StateFlow<Boolean> = transferManager.getTransfersCount(TransferDirection.SENT)
+        .map { it == 0L }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = false)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
