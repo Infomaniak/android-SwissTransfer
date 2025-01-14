@@ -143,7 +143,7 @@ class TransferDetailsViewModel @Inject constructor(
             _isDeeplinkNeedingPassword.emit(false)
         }.onFailure { exception ->
             when (exception) {
-                is ExpiredDeeplinkException -> longToast(R.string.deeplinkTransferExpired)
+                is NotFoundDeeplinkException -> longToast(R.string.deeplinkTransferNotFound)
                 is DeeplinkException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             }
