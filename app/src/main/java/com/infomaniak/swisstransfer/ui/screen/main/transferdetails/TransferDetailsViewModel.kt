@@ -29,14 +29,17 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirectio
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.PasswordNeededDeeplinkException
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.WrongPasswordDeeplinkException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.*
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.UnexpectedApiErrorFormatException
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import splitties.toast.UnreliableToastApi
+import splitties.toast.longToast
 import javax.inject.Inject
 
 @HiltViewModel
@@ -128,6 +131,7 @@ class TransferDetailsViewModel @Inject constructor(
         }
     }
 
+    @OptIn(UnreliableToastApi::class)
     private suspend fun handleTransferDeeplink(transferUuid: String, password: String) {
         runCatching {
             transferManager.addTransferByLinkUUID(
@@ -139,6 +143,7 @@ class TransferDetailsViewModel @Inject constructor(
             _isDeeplinkNeedingPassword.emit(false)
         }.onFailure { exception ->
             when (exception) {
+                is NotFoundDeeplinkException -> longToast(R.string.deeplinkTransferNotFound)
                 is DeeplinkException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             }
