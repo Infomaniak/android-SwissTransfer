@@ -231,22 +231,22 @@ private fun NoSelectionEmptyState(hasTransfers: Boolean) {
 }
 
 @Parcelize
-private sealed class DestinationContent : Parcelable {
-    abstract val direction: TransferDirection
-    abstract val transferUuid: String
+private sealed interface DestinationContent : Parcelable {
+    val direction: TransferDirection
+    val transferUuid: String
 
     @Parcelize
     data class RootLevel(
         override val direction: TransferDirection,
         override val transferUuid: String,
-    ) : DestinationContent(), Parcelable
+    ) : DestinationContent
 
     @Parcelize
     data class FolderLevel(
         override val direction: TransferDirection,
         override val transferUuid: String,
         val folderUuid: String,
-    ) : DestinationContent(), Parcelable
+    ) : DestinationContent
 }
 
 @PreviewAllWindows
