@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -64,16 +63,14 @@ class NewTransferActivity : ComponentActivity() {
 
     private fun getSingleUri(): List<Uri> {
         val extras = intent.extras ?: return emptyList()
-        val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Parcelable::class.java) as? Uri
+        val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
         return if (uri == null) emptyList() else listOf(uri)
     }
 
     private fun getMultipleUris(): List<Uri> {
         val extras = intent.extras ?: return emptyList()
-        val uris = BundleCompat
-            .getParcelableArrayList(extras, Intent.EXTRA_STREAM, Parcelable::class.java)
-            ?.filterIsInstance<Uri>()
+        val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
         return uris ?: emptyList()
     }
