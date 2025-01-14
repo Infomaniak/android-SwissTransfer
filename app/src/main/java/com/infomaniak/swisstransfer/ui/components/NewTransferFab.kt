@@ -51,8 +51,8 @@ fun NewTransferFab(
 
 enum class NewTransferFabType(val fabType: FabType, private val defaultElevation: Dp?) {
 
-    BOTTOM_BAR(FabType.NORMAL, null),
-    EMPTY_STATE(FabType.BIG, null),
+    BOTTOM_BAR(FabType.NORMAL, 0.dp),
+    EMPTY_STATE(FabType.BIG, 0.dp),
     NAVIGATION_RAIL(FabType.NORMAL, 0.dp);
 
     @Composable
