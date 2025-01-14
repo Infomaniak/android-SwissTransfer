@@ -62,7 +62,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
-    private val sharedFilesManager: SharedFilesManager,
+    private val newTransferOpenManager: NewTransferOpenManager,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -147,11 +147,12 @@ class ImportFilesViewModel @Inject constructor(
             }
 
             launch {
-                sharedFilesManager.sharedUris.collect { uris ->
-                    if (uris == null) {
+                when (val reason = newTransferOpenManager.readOpenReason()) {
+                    is NewTransferOpenManager.Reason.ExternalShareIncoming -> {
+                        importationFilesManager.importFiles(reason.uris)
+                    }
+                    NewTransferOpenManager.Reason.Other -> {
                         _shouldPickFilesOnStartup.value = true
-                    } else {
-                        importationFilesManager.importFiles(uris)
                     }
                 }
             }

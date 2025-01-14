@@ -26,17 +26,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.SharedFilesManager
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager.Reason as OpenReason
 
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
 
     @Inject
-    lateinit var sharedFilesManager: SharedFilesManager
+    lateinit var newTransferOpenManager: NewTransferOpenManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,15 +51,12 @@ class NewTransferActivity : ComponentActivity() {
     }
 
     private fun handleSharedFiles() {
-        val uris: List<Uri>? = when (intent?.action) {
-            Intent.ACTION_SEND -> getSingleUri()
-            Intent.ACTION_SEND_MULTIPLE -> getMultipleUris()
-            else -> null
+        val openReason: OpenReason = when (intent?.action) {
+            Intent.ACTION_SEND -> OpenReason.ExternalShareIncoming(getSingleUri())
+            Intent.ACTION_SEND_MULTIPLE -> OpenReason.ExternalShareIncoming(getMultipleUris())
+            else -> OpenReason.Other
         }
-
-        lifecycleScope.launch {
-            sharedFilesManager.initializeSharedFilesUris(uris)
-        }
+        lifecycleScope.launch { newTransferOpenManager.setOpenReason(openReason) }
     }
 
     private fun getSingleUri(): List<Uri> {
