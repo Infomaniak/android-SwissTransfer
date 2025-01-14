@@ -58,9 +58,9 @@ class UploadWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val appSettingsManager: AppSettingsManager,
     private val importLocalStorage: ImportLocalStorage,
-    private val uploadManager: UploadManager,
-    private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val notificationsUtils: NotificationsUtils,
+    private val sharedApiUrlCreator: SharedApiUrlCreator,
+    private val uploadManager: UploadManager,
 ) : BaseCoroutineWorker(appContext, params) {
 
     private val fileChunkSizeManager by lazy {
@@ -122,9 +122,7 @@ class UploadWorker @AssistedInject constructor(
             when (exception) {
                 is NetworkException -> Result.retry()
                 is CancellationException -> Result.failure()
-                else -> {
-                    Result.failure()
-                }
+                else -> Result.failure()
             }
         }
     }
