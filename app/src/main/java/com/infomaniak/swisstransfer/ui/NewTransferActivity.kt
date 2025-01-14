@@ -17,24 +17,59 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.os.BundleCompat
+import androidx.lifecycle.lifecycleScope
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager.Reason as OpenReason
 
 @AndroidEntryPoint
 class NewTransferActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var newTransferOpenManager: NewTransferOpenManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        handleSharedFiles()
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(closeActivity = { finish() })
             }
         }
+    }
+
+    private fun handleSharedFiles() {
+        val openReason: OpenReason = when (intent?.action) {
+            Intent.ACTION_SEND -> OpenReason.ExternalShareIncoming(getSingleUri())
+            Intent.ACTION_SEND_MULTIPLE -> OpenReason.ExternalShareIncoming(getMultipleUris())
+            else -> OpenReason.Other
+        }
+        lifecycleScope.launch { newTransferOpenManager.setOpenReason(openReason) }
+    }
+
+    private fun getSingleUri(): List<Uri> {
+        val extras = intent.extras ?: return emptyList()
+        val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Uri::class.java)
+
+        return if (uri == null) emptyList() else listOf(uri)
+    }
+
+    private fun getMultipleUris(): List<Uri> {
+        val extras = intent.extras ?: return emptyList()
+        val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
+
+        return uris ?: emptyList()
     }
 }

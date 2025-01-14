@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -77,9 +76,20 @@ fun ImportFilesScreen(
 
     val sendStatus by importFilesViewModel.sendStatus.collectAsStateWithLifecycle()
 
+    val shouldPickFilesOnStartup by importFilesViewModel.shouldPickFilesOnStartup.collectAsStateWithLifecycle()
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenMultipleDocuments(),
+        onResult = importFilesViewModel::importFiles,
+    )
+    fun pickFiles() {
+        filePickerLauncher.launch(arrayOf("*/*"))
+    }
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
+
+    HandleStartupFilePick(shouldPickFilesOnStartup, ::pickFiles)
 
     HandleSendActionResult(
         snackbarHostState = snackbarHostState,
@@ -145,14 +155,20 @@ fun ImportFilesScreen(
             set = importFilesViewModel::selectTransferType,
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
-        addFiles = importFilesViewModel::importFiles,
+        pickFiles = ::pickFiles,
         closeActivity = closeActivity,
         sendStatus = { sendStatus },
         sendTransfer = importFilesViewModel::sendTransfer,
-        shouldStartByPromptingUserForFiles = true,
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
     )
+}
+
+@Composable
+private fun HandleStartupFilePick(shouldPickFilesOnStartup: Boolean, pickFiles: () -> Unit) {
+    LaunchedEffect(shouldPickFilesOnStartup) {
+        if (shouldPickFilesOnStartup) pickFiles()
+    }
 }
 
 @Composable
@@ -204,9 +220,8 @@ private fun ImportFilesScreen(
     transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
-    addFiles: (List<Uri>) -> Unit,
+    pickFiles: () -> Unit,
     closeActivity: () -> Unit,
-    shouldStartByPromptingUserForFiles: Boolean,
     sendStatus: () -> SendStatus,
     sendTransfer: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
@@ -246,7 +261,7 @@ private fun ImportFilesScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 SendByOptions(modifier, selectedTransferType)
-                FilesToImport(modifier, files, navigateToFilesDetails, addFiles, shouldStartByPromptingUserForFiles)
+                FilesToImport(modifier, files, navigateToFilesDetails, pickFiles)
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
@@ -266,28 +281,13 @@ private fun FilesToImport(
     modifier: Modifier,
     files: () -> List<FileUi>,
     navigateToFilesDetails: () -> Unit,
-    addFiles: (List<Uri>) -> Unit,
-    shouldStartByPromptingUserForFiles: Boolean,
+    pickFiles: () -> Unit,
 ) {
-    var shouldShowInitialFilePick by rememberSaveable { mutableStateOf(shouldStartByPromptingUserForFiles) }
-
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenMultipleDocuments(),
-        onResult = addFiles,
-    )
-
-    fun pickFiles() {
-        shouldShowInitialFilePick = false
-        filePickerLauncher.launch(arrayOf("*/*"))
-    }
-
-    LaunchedEffect(Unit) { if (shouldShowInitialFilePick) pickFiles() }
-
     ImportFilesTitle(modifier, R.string.myFilesTitle)
     ImportedFilesCard(
         modifier,
         files,
-        ::pickFiles,
+        pickFiles,
         navigateToFilesDetails,
     )
 }
@@ -547,9 +547,8 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
-            addFiles = {},
+            pickFiles = {},
             closeActivity = {},
-            shouldStartByPromptingUserForFiles = false,
             sendStatus = { SendStatus.Initial },
             sendTransfer = {},
             navigateToFilesDetails = {},
