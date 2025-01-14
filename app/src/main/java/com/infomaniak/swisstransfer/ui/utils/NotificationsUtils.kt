@@ -62,11 +62,11 @@ class NotificationsUtils @Inject constructor(
     }
 
     fun sendGeneralNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
-        notificationManagerCompat.notifyCompat(
-            context = appContext,
-            notificationId = notificationId,
-            build = buildGeneralNotification(notificationId, intent, title, description).build()
-        )
+        sendNotification(notificationId, buildGeneralNotification(notificationId, intent, title, description))
+    }
+
+    fun sendUploadNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
+        sendNotification(notificationId, buildUploadNotification(notificationId, intent, title, description))
     }
 
     private fun buildGeneralNotification(
@@ -85,14 +85,6 @@ class NotificationsUtils @Inject constructor(
         )
     }
 
-    fun sendUploadNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
-        notificationManagerCompat.notifyCompat(
-            context = appContext,
-            notificationId = notificationId,
-            build = buildUploadNotification(notificationId, intent, title, description).build()
-        )
-    }
-
     fun buildUploadNotification(
         requestCode: Int,
         intent: Intent,
@@ -108,6 +100,10 @@ class NotificationsUtils @Inject constructor(
             description = description,
             onlyAlertOnce = true,
         )
+    }
+
+    private fun sendNotification(notificationId: Int, builder: NotificationCompat.Builder) {
+        notificationManagerCompat.notifyCompat(appContext, notificationId, builder.build())
     }
 
     companion object {
