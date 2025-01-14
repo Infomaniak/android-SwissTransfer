@@ -105,6 +105,12 @@ class NewTransferActivity : ComponentActivity() {
                     transferUrl = intent?.extras?.getString(TRANSFER_URL_KEY)!!,
                 )
             }
+            NotificationNavigation.UploadFailure -> {
+                NewTransferNavigation.UploadErrorDestination(
+                    transferType = transferType!!,
+                    totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
+                )
+            }
             null -> NewTransferNavigation.startDestination
         }
     }

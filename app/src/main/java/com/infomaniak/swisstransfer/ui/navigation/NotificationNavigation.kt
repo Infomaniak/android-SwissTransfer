@@ -23,4 +23,4 @@ const val TRANSFER_TYPE_KEY = "transferTypeKey"
 const val TRANSFER_TOTAL_SIZE_KEY = "transferTotalSizeKey"
 const val TRANSFER_URL_KEY = "transferUrlKey"
 
-enum class NotificationNavigation { UploadProgress, UploadSuccess }
+enum class NotificationNavigation { UploadProgress, UploadSuccess, UploadFailure }

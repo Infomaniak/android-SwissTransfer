@@ -51,10 +51,29 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 
 private val HORIZONTAL_PADDING = Margin.Medium
+
+/**
+ * If the user kills the task while the upload is in progress, we lose the ImportFilesScreen and its information.
+ * So, in every places we want to go back to ImportFilesScreen, instead we need to go back to the MainActivity.
+ */
+var areTransferDataStillAvailable = false
+    private set
+
+@Composable
+fun AutoResetTransferDataAvailabilityStatus() {
+    LaunchedEffect(Unit) {
+        try {
+            awaitCancellation()
+        } finally {
+            areTransferDataStillAvailable = false
+        }
+    }
+}
 
 @Composable
 fun ImportFilesScreen(
@@ -64,6 +83,8 @@ fun ImportFilesScreen(
     navigateToEmailValidation: (email: String) -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
+
+    areTransferDataStillAvailable = true
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()

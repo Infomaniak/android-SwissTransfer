@@ -26,6 +26,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.areTransferDataStillAvailable
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.core2.R as RCore2
@@ -34,6 +35,7 @@ import com.infomaniak.core2.R as RCore2
 fun UploadErrorScreen(
     navigateBackToUploadProgress: () -> Unit,
     navigateBackToImportFiles: () -> Unit,
+    closeActivity: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
 
@@ -49,12 +51,21 @@ fun UploadErrorScreen(
             )
         },
         bottomButton = {
-            LargeButton(
-                modifier = it,
-                title = stringResource(R.string.buttonEditTransfer),
-                style = ButtonType.Secondary,
-                onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = navigateBackToImportFiles) },
-            )
+            if (areTransferDataStillAvailable) {
+                LargeButton(
+                    modifier = it,
+                    title = stringResource(R.string.buttonEditTransfer),
+                    style = ButtonType.Secondary,
+                    onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = navigateBackToImportFiles) },
+                )
+            } else {
+                LargeButton(
+                    modifier = it,
+                    title = stringResource(R.string.buttonCancelTransfer),
+                    style = ButtonType.Destructive,
+                    onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = closeActivity) },
+                )
+            }
         }
     ) {
         EmptyState(
@@ -70,7 +81,7 @@ fun UploadErrorScreen(
 private fun UploadErrorScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadErrorScreen({}, {})
+            UploadErrorScreen({}, {}, {})
         }
     }
 }
