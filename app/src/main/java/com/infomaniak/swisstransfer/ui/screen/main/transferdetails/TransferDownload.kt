@@ -110,7 +110,8 @@ private suspend fun getDownloadIdFromStorage(
     transferUuid: String,
     fileUid: String?,
 ): UniqueDownloadId? = transferManager.readDownloadManagerId(transferUuid, fileUid)?.let { id ->
-    val uri = Dispatchers.IO { downloadManager.getUriForDownloadedFile(id) } ?: return null
+    val uri: Uri? = Dispatchers.IO { downloadManager.getUriForDownloadedFile(id) }
+    uri ?: return null
     UniqueDownloadId(id)
 }
 
