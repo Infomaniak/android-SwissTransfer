@@ -37,7 +37,7 @@ class ImportFilesViewModelStartup @Inject constructor(
         importationFilesManager.restoreAlreadyImportedFiles()
     }
 
-    suspend fun handleOpenReasonAsync() {
+    suspend fun handleOpenReasonAsync(isFirstViewModelCreation: Boolean) {
         coroutineScope {
             launch {
                 when (val reason = newTransferOpenManager.readOpenReason()) {
@@ -45,7 +45,7 @@ class ImportFilesViewModelStartup @Inject constructor(
                         importationFilesManager.importFiles(reason.uris)
                     }
                     NewTransferOpenManager.Reason.Other -> {
-                        _openFilePickerEvent.send(Unit)
+                        if (isFirstViewModelCreation) _openFilePickerEvent.send(Unit)
                     }
                 }
             }

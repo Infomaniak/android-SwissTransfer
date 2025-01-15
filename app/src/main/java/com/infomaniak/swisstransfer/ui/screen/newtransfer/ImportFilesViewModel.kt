@@ -144,7 +144,7 @@ class ImportFilesViewModel @Inject constructor(
                 importFilesViewModelStartup.restoreAlreadyImportedFiles()
             }
 
-            importFilesViewModelStartup.handleOpenReasonAsync()
+            importFilesViewModelStartup.handleOpenReasonAsync(isFirstViewModelCreation)
 
             launch { importFilesViewModelStartup.continuouslyCopyPickedFilesToLocalStorage() }
 
