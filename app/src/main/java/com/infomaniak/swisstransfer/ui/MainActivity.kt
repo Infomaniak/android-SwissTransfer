@@ -57,7 +57,9 @@ class MainActivity : ComponentActivity() {
         
         lifecycleScope.launch {
             val deeplinkUuid = getDeeplinkTransferUuid()
-            val transferDirection = deeplinkUuid?.let { deeplinkViewModel.getDeeplinkTransferDirection(it) }
+            val transferDirection = deeplinkUuid?.let {
+                deeplinkViewModel.getDeeplinkTransferDirection(it) ?: TransferDirection.RECEIVED
+            }
 
             if (transferDirection == TransferDirection.SENT) {
                 // Modify the intent to avoid conflict between the `Sent` and `received` deeplinks
