@@ -178,7 +178,7 @@
     <string name="uploadSuccessLinkTitle">Su transferencia está lista</string>
     <string name="uploadSuccessQrTitle">Su código QR está listo</string>
     <string name="urlAbout">https://www.infomaniak.com/es/about</string>
-    <string name="urlUserReport">https://feedback.userreport.com/1c462a20-7559-415e-a6e0-4b624dc38877/#ideas/popular</string>
+    <string name="urlUserReport">https://feedback.userreport.com/60e9cc6b-8352-451c-ae3d-8fe4722f85d6/#ideas/popular</string>
     <string name="validateMailCodeIncorrectError">El código introducido es incorrecto</string>
     <string name="validateMailCodeResentFeedback">El código se ha enviado a la dirección de correo electrónico %s</string>
     <string name="validateMailDescription">Hemos enviado un código a %s. Introdúcelo a continuación para verificar tu dirección de correo electrónico en la aplicación:</string>
