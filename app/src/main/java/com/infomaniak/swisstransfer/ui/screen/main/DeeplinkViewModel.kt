@@ -29,9 +29,7 @@ class DeeplinkViewModel @Inject constructor(
 ) : ViewModel() {
 
     suspend fun getDeeplinkTransferDirection(transferUuid: String): TransferDirection? {
-        return transferManager.getTransferByUUID(transferUuid)?.let {
-            it.direction
-        }
+        return transferManager.getTransferByUUID(transferUuid)?.direction
     }
 }
 

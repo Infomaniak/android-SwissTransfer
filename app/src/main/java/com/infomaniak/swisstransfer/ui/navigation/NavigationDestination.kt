@@ -26,6 +26,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import kotlinx.serialization.Serializable
 
@@ -36,19 +37,28 @@ import kotlinx.serialization.Serializable
 sealed class MainNavigation : NavigationDestination() {
     var enableTransition = true
 
+    protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
+        noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
+        transferUuidName: String,
+        suffix: String = "",
+    ) {
+
+        val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{$transferUuidName}$suffix"
+        val prodBasePath = "${BuildConfig.PROD_URL}/d/{$transferUuidName}$suffix"
+        val deepLinks = listOf(
+            navDeepLink<T>(preprodBasePath),
+            navDeepLink<T>(prodBasePath),
+        )
+        composable<T>(deepLinks = deepLinks, content = content)
+    }
+
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
     data class SentDestination(val transferUuid: String? = null) : MainNavigation() {
 
         companion object {
             fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
-                val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${SentDestination::transferUuid.name}}/sent"
-                val prodBasePath = "${BuildConfig.PROD_URL}/d/{${SentDestination::transferUuid.name}}/sent"
-                val deepLinks = listOf(
-                    navDeepLink<SentDestination>(preprodBasePath),
-                    navDeepLink<SentDestination>(prodBasePath),
-                )
-                composable<SentDestination>(deepLinks = deepLinks, content = content)
+                getDeeplinkDirection<SentDestination>(content, SentDestination::transferUuid.name, "/sent")
             }
         }
     }
@@ -59,13 +69,7 @@ sealed class MainNavigation : NavigationDestination() {
 
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
-                val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
-                val prodBasePath = "${BuildConfig.PROD_URL}/d/{${ReceivedDestination::transferUuid.name}}"
-                val deepLinks = listOf(
-                    navDeepLink<ReceivedDestination>(preprodBasePath),
-                    navDeepLink<ReceivedDestination>(prodBasePath),
-                )
-                composable<ReceivedDestination>(deepLinks = deepLinks, content = content)
+                getDeeplinkDirection<ReceivedDestination>(content, ReceivedDestination::transferUuid.name)
             }
         }
     }
