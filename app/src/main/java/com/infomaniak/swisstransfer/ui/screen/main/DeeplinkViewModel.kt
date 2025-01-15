@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager

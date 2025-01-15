@@ -59,7 +59,10 @@ class MainActivity : ComponentActivity() {
             val deeplinkUuid = getDeeplinkTransferUuid()
             val transferDirection = deeplinkUuid?.let { deeplinkViewModel.getDeeplinkTransferDirection(it) }
 
-            if (transferDirection == TransferDirection.SENT) intent.setData((intent.data?.path + "/sent").toUri())
+            if (transferDirection == TransferDirection.SENT) {
+                // Modify the intent to avoid conflict between the `Sent` and `received` deeplinks
+                intent.setData((intent.data.toString() + "/sent").toUri())
+            }
 
             setContent {
                 val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
