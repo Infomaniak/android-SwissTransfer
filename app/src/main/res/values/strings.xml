@@ -43,7 +43,8 @@
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
-    <string name="deeplinkTransferNotFound">This transfer has expired or does not exist</string>
+    <string name="deeplinkTransferExpired">This transfer has expired</string>
+    <string name="deeplinkTransferNotFound">This transfer does not exist</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
     <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorIncorrectPassword">Incorrect password</string>
