@@ -21,6 +21,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.SpecificSection.Companion.isIn
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -34,12 +35,12 @@ object TransfersGroupingManager {
     fun List<TransferUi>.groupBySection(today: LocalDate = LocalDate.now()): Map<TransferSection, List<TransferUi>> {
         return groupBy { transfer ->
             when {
-                SpecificSection.Future.containsTransfer(transfer, today) -> SpecificSection.Future
-                SpecificSection.Today.containsTransfer(transfer, today) -> SpecificSection.Today
-                SpecificSection.Yesterday.containsTransfer(transfer, today) -> SpecificSection.Yesterday
-                SpecificSection.ThisWeek.containsTransfer(transfer, today) -> SpecificSection.ThisWeek
-                SpecificSection.LastWeek.containsTransfer(transfer, today) -> SpecificSection.LastWeek
-                SpecificSection.ThisMonth.containsTransfer(transfer, today) -> SpecificSection.ThisMonth
+                transfer.isIn(SpecificSection.Future, relativeTo = today) -> SpecificSection.Future
+                transfer.isIn(SpecificSection.Today, relativeTo = today) -> SpecificSection.Today
+                transfer.isIn(SpecificSection.Yesterday, relativeTo = today) -> SpecificSection.Yesterday
+                transfer.isIn(SpecificSection.ThisWeek, relativeTo = today) -> SpecificSection.ThisWeek
+                transfer.isIn(SpecificSection.LastWeek, relativeTo = today) -> SpecificSection.LastWeek
+                transfer.isIn(SpecificSection.ThisMonth, relativeTo = today) -> SpecificSection.ThisMonth
                 else -> TransferSection.ByMonth(getMonthNameFromEpoch(transfer.createdDateTimestamp))
             }
         }
@@ -83,8 +84,10 @@ object TransfersGroupingManager {
             date.year == today.year && date.month == today.month
         })
 
-        fun containsTransfer(transferUi: TransferUi, today: LocalDate): Boolean {
-            return contains(transferUi.createdDateTimestamp.toLocalDate(), today)
+        companion object {
+            fun TransferUi.isIn(section: TransfersGroupingManager.SpecificSection, relativeTo: LocalDate): Boolean {
+                return section.contains(createdDateTimestamp.toLocalDate(), relativeTo)
+            }
         }
     }
 
