@@ -201,7 +201,7 @@ class ImportFilesViewModel @Inject constructor(
             message = transferMessage,
             numberOfDownload = selectedDownloadLimitOption.value.apiValue,
             language = selectedLanguageOption.value.apiValue,
-            recipients = if (selectedTransferType.value == TransferTypeUi.Mail) validatedRecipientsEmails.toList() else emptyList(),
+            recipientsEmails = if (selectedTransferType.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
             files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
                 object : UploadFileSession {
                     override val path: String? = null

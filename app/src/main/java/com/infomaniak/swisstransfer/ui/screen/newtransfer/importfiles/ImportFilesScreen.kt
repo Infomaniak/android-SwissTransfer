@@ -330,7 +330,7 @@ private fun ColumnScope.EmailAddressesTextFields(
                 modifier = modifier,
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 initialValue = recipientEmail.get(),
-                validatedEmails = validatedRecipientsEmails,
+                validatedRecipientsEmails = validatedRecipientsEmails,
                 onValueChange = { recipientEmail.set(it.text) },
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),

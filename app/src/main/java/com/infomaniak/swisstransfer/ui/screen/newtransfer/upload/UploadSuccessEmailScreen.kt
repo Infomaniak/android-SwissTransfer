@@ -47,13 +47,13 @@ fun UploadSuccessEmailScreen(
     closeActivity: () -> Unit,
     uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
 ) {
-    val emails by uploadSuccessViewModel.recipients.collectAsStateWithLifecycle()
+    val recipientsEmails by uploadSuccessViewModel.recipientsEmails.collectAsStateWithLifecycle()
     uploadSuccessViewModel.fetchTransfer(transferUuid)
-    UploadSuccessEmailScreen({ emails }, closeActivity)
+    UploadSuccessEmailScreen({ recipientsEmails }, closeActivity)
 }
 
 @Composable
-fun UploadSuccessEmailScreen(emails: () -> List<String>, closeActivity: () -> Unit) {
+fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, closeActivity: () -> Unit) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -76,13 +76,13 @@ fun UploadSuccessEmailScreen(emails: () -> List<String>, closeActivity: () -> Un
             IllustratedMessageBlock(
                 icon = AppIllus.Beers.image(),
                 title = TransferTypeUi.Mail.titleRes,
-                description = pluralStringResource(TransferTypeUi.Mail.descriptionRes!!, emails().count()),
+                description = pluralStringResource(TransferTypeUi.Mail.descriptionRes!!, recipientsEmails().count()),
             )
 
             Spacer(Modifier.height(Margin.Medium))
 
             EmailsFlowRow(
-                emails = emails(),
+                emails = recipientsEmails().toList(),
                 modifier = Modifier.widthIn(max = 800.dp),
                 horizontalArrangement = Arrangement.Center,
             )

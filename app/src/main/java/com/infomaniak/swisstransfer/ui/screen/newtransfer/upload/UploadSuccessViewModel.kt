@@ -37,12 +37,12 @@ class UploadSuccessViewModel @Inject constructor(
     private val _transferUuidFlow = MutableSharedFlow<String>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val recipients = _transferUuidFlow.flatMapLatest { transferUuid ->
-        transferManager.getTransferFlow(transferUuid).map { it?.recipients?.toList() ?: emptyList() }.flowOn(ioDispatcher)
+    val recipientsEmails = _transferUuidFlow.flatMapLatest { transferUuid ->
+        transferManager.getTransferFlow(transferUuid).map { it?.recipientsEmails ?: emptySet() }.flowOn(ioDispatcher)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = emptyList(),
+        initialValue = emptySet(),
     )
 
     fun fetchTransfer(transferUuid: String) {
