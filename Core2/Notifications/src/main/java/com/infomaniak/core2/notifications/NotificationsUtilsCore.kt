@@ -81,9 +81,10 @@ fun Context.buildNotification(
 
 @SuppressLint("MissingPermission")
 fun NotificationManagerCompat.notifyCompat(context: Context, notificationId: Int, build: Notification) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        if (context.hasPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS))) notify(notificationId, build)
-    } else {
+    if (
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+        context.hasPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
+    ) {
         notify(notificationId, build)
     }
 }
