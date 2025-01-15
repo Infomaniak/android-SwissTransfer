@@ -28,8 +28,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.infomaniak.core2.extensions.hasPermissions
 
-const val PENDING_INTENT_FLAGS = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-
 @RequiresApi(Build.VERSION_CODES.O)
 fun buildNotificationChannel(
     channelId: String,
@@ -70,13 +68,14 @@ fun Context.buildNotification(
     title: String,
     description: String? = null,
 ): NotificationCompat.Builder {
+    val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     return NotificationCompat.Builder(this, channelId).apply {
         setTicker(title)
         setContentTitle(title)
         description?.let { setStyle(NotificationCompat.BigTextStyle().bigText(it)) }
         setSmallIcon(icon)
         setAutoCancel(true)
-        setContentIntent(PendingIntent.getActivity(this@buildNotification, requestCode, intent, PENDING_INTENT_FLAGS))
+        setContentIntent(PendingIntent.getActivity(this@buildNotification, requestCode, intent, pendingIntentFlags))
     }
 }
 
