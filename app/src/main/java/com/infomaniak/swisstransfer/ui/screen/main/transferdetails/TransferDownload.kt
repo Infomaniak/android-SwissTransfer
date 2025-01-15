@@ -172,11 +172,7 @@ private suspend fun buildDownloadRequest(
     when {
         targetFile != null -> {
             url = apiUrlCreator.downloadFileUrl(transfer.uuid, targetFile.uid) ?: return null
-            val isTheOnlyFile = transfer.files.size == 1
-            name = when {
-                isTheOnlyFile -> "SwissTransfer/${targetFile.fileName}"
-                else -> "SwissTransfer/${currentDateTimeWithSecondsString()}/${targetFile.fileName}"
-            }
+            name = "SwissTransfer/${targetFile.fileName}"
         }
         else -> {
             url = apiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return null
