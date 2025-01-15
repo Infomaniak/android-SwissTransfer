@@ -18,10 +18,13 @@
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,6 +50,7 @@ fun FilesDetailsScreen(
     close: (() -> Unit),
 ) {
     val files by filesDetailsViewModel.filesInFolder.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(folderUuid) {
         filesDetailsViewModel.loadFiles(folderUuid)
@@ -60,8 +64,10 @@ fun FilesDetailsScreen(
                     actions = { TopAppBarButtons.Close(close) },
                 )
             },
+            snackbarHost = { SnackbarHost(snackbarHostState) }
         ) {
             FilesDetailsScreen(
+                snackbarHostState = snackbarHostState,
                 files = it,
                 navigateToFolder = navigateToFolder,
                 withFileSize = withFilesSize,
@@ -78,6 +84,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
         Surface {
             FilesDetailsScreen(
                 paddingValues = PaddingValues(0.dp),
+                snackbarHostState = remember { SnackbarHostState() },
                 files = files,
                 navigateToFolder = {},
                 withFileSize = true,

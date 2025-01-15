@@ -19,29 +19,49 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun FileItemList(
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: () -> Boolean,
     isUidChecked: (String) -> Boolean,
     setUidCheckStatus: (String, Boolean) -> Unit,
     onRemoveUid: ((String) -> Unit)? = null,
-    onClick: ((String) -> Unit)? = null,
+    navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
+    transferFlow: Flow<TransferUi> = emptyFlow(),
+    runDownloadUi: suspend (
+        ui: TransferDownloadUi,
+        transfer: TransferUi,
+        file: FileUi
+    ) -> Nothing = { _, _, _ -> awaitCancellation() }
 ) {
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Adaptive(150.dp),
@@ -58,6 +78,8 @@ fun FileItemList(
         }
 
         items(files, key = { it.uid }) { file ->
+            val downloadUi: TransferDownloadComposeUi = remember(lifecycle) { TransferDownloadComposeUi(lifecycle, snackbarHostState) }
+            LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -65,15 +87,15 @@ fun FileItemList(
                 isCheckboxVisible = isCheckboxVisible(),
                 isChecked = { isUidChecked(file.uid) },
                 onClick = when {
-                    isCheckboxVisible() -> {
-                        { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
-                    }
-                    file.isFolder -> {
-                        { onClick?.invoke(file.uid) }
-                    }
-                    else -> null
+                    isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
+                    file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
+                    else -> downloadUi.onFileClick
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
+                previewOverlay = {
+                    downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
+                    downloadUi.CardProgressBar(Modifier.align(Alignment.BottomStart).fillMaxWidth())
+                }
             )
         }
     }
@@ -85,6 +107,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
     SwissTransferTheme {
         FileItemList(
             files = files,
+            snackbarHostState = remember { SnackbarHostState() },
             isRemoveButtonVisible = false,
             isCheckboxVisible = { true },
             isUidChecked = { false },

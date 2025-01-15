@@ -118,7 +118,14 @@ private suspend fun getDownloadIdFromStorage(
     fileUid: String?,
 ): UniqueDownloadId? = transferManager.readDownloadManagerId(transferUuid, fileUid)?.let { id ->
     val uri: Uri? = Dispatchers.IO { downloadManager.getUriForDownloadedFile(id) }
-    uri ?: return null
+    if (uri == null) {
+        transferManager.writeDownloadManagerId(
+            transferUUID = transferUuid,
+            fileUid = fileUid,
+            uniqueDownloadManagerId = null
+        )
+        return null
+    }
     UniqueDownloadId(id)
 }
 
@@ -141,11 +148,17 @@ private suspend fun getNewDownloadId(
     return newId
 }
 
+/**
+ * Seconds are important to avoid overwrites if the user downloads from multiple
+ * transfers within the same minute.
+ * We don't expect the user to trigger download from multiple different
+ * transfers within a second because of the time it takes to navigate back and forth.
+*/
 @SuppressLint("SimpleDateFormat")
-private val dateFormat = SimpleDateFormat("yyyy-mm-dd_hh:mm:ss")
+private val dateFormatWithSeconds = SimpleDateFormat("yyyy-mm-dd_hhmmss")
 
-private fun currentDateString(): String {
-    return dateFormat.format(Date())
+private fun currentDateTimeWithSecondsString(): String {
+    return dateFormatWithSeconds.format(Date())
 }
 
 private suspend fun buildDownloadRequest(
@@ -159,17 +172,15 @@ private suspend fun buildDownloadRequest(
     when {
         targetFile != null -> {
             url = apiUrlCreator.downloadFileUrl(transfer.uuid, targetFile.uid) ?: return null
-            val dirName = "${currentDateString()}${transfer.uuid}"
-            name = "SwissTransfer/$dirName/${targetFile.fileName}"
-        }
-        transfer.files.size == 1 -> {
-            val singleFile = transfer.files.single()
-            url = apiUrlCreator.downloadFileUrl(transfer.uuid, singleFile.uid) ?: return null
-            name = "SwissTransfer/${singleFile.fileName}"
+            val isTheOnlyFile = transfer.files.size == 1
+            name = when {
+                isTheOnlyFile -> "SwissTransfer/${targetFile.fileName}"
+                else -> "SwissTransfer/${currentDateTimeWithSecondsString()}/${targetFile.fileName}"
+            }
         }
         else -> {
             url = apiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return null
-            val fileName = "${currentDateString()}${transfer.uuid}"
+            val fileName = currentDateTimeWithSecondsString()
             name = "SwissTransfer/$fileName.zip"
         }
     }

@@ -38,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core2.FORMAT_DATE_FULL
 import com.infomaniak.core2.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
@@ -63,6 +64,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openFile
 import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun TransferDetailsScreen(
@@ -91,11 +93,11 @@ fun TransferDetailsScreen(
             direction = direction,
             navigateBack = navigateBack,
             getTransfer = { (uiState as Success).transfer },
-            runDownloadUi = { ui, transfer ->
+            runDownloadUi = { ui, transfer, file ->
                 transferDetailsViewModel.handleTransferDownload(
                     ui = ui,
                     transfer = transfer,
-                    targetFile = null,
+                    targetFile = file,
                     openFile = { uri -> context.openFile(uri) }
                 )
             },
@@ -128,7 +130,7 @@ private fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
-    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi) -> Nothing,
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi?) -> Nothing,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
     setFileCheckStatus: (String, Boolean) -> Unit,
@@ -147,7 +149,12 @@ private fun TransferDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val downloadUi = remember(lifecycle) { TransferDownloadComposeUi(lifecycle, snackbarHostState) }
     val transferFlow = remember { snapshotFlow { getTransfer() } }
-    LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer) } }
+    LaunchedEffect(Unit) {
+        transferFlow.collect { transfer ->
+            val singleFileOrNull = transfer.files.singleOrNull()
+            runDownloadUi(downloadUi, transfer, singleFileOrNull)
+        }
+    }
 
     SwissTransferScaffold(
         topBar = {
@@ -162,12 +169,15 @@ private fun TransferDetailsScreen(
         Column {
 
             FilesList(
-                getTransfer,
-                transferRecipients,
-                isMultiselectOn,
-                getCheckedFiles,
-                setFileCheckStatus,
-                navigateToFolder,
+                snackbarHostState = snackbarHostState,
+                getTransfer = getTransfer,
+                transferRecipients = transferRecipients,
+                isMultiselectOn = isMultiselectOn,
+                getCheckedFiles = getCheckedFiles,
+                setFileCheckStatus = setFileCheckStatus,
+                navigateToFolder = navigateToFolder,
+                transferFlow = transferFlow,
+                runDownloadUi = runDownloadUi
             )
 
             BottomBar {
@@ -230,12 +240,15 @@ private fun TransferDetailsScreen(
 
 @Composable
 private fun ColumnScope.FilesList(
+    snackbarHostState: SnackbarHostState,
     getTransfer: () -> TransferUi,
     transferRecipients: List<String>,
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
     navigateToFolder: ((folderUuid: String) -> Unit)? = null,
+    transferFlow: Flow<TransferUi>,
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -245,12 +258,13 @@ private fun ColumnScope.FilesList(
         modifier = Modifier
             .weight(1.0f)
             .padding(horizontal = Margin.Medium),
+        snackbarHostState = snackbarHostState,
         files = getTransfer().files,
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
         isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
         setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
-        onClick = { fileUuid ->
+        navigateToFolder = { fileUuid ->
             navigateToFolder?.invoke(fileUuid)
         },
         header = {
@@ -265,6 +279,8 @@ private fun ColumnScope.FilesList(
                 TransferContentHeader()
             }
         },
+        transferFlow = transferFlow,
+        runDownloadUi = runDownloadUi
     )
 }
 
@@ -362,7 +378,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 direction = TransferDirection.SENT,
                 navigateBack = null,
                 getTransfer = { transfers.first() },
-                runDownloadUi = { _, _ -> awaitCancellation() },
+                runDownloadUi = { _, _, _ -> awaitCancellation() },
                 getCheckedFiles = { mutableStateMapOf() },
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },

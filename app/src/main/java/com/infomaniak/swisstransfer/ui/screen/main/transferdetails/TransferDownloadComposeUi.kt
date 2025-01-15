@@ -23,12 +23,18 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -95,6 +101,15 @@ class TransferDownloadComposeUi(
         openRequest.awaitOneCall()
     }
 
+    val onFileClick: () -> Unit
+        get() = when {
+            downloadRequest.isAwaitingCall -> downloadRequest
+            openRequest.isAwaitingCall -> openRequest
+            removalRequest.isAwaitingCall && downloadStatus is DownloadStatus.Failed -> removalRequest
+            else -> fun () {}
+            //TODO: If download is in progress, maybe request confirmation and remove?
+        }
+
     @Composable
     fun TopAppBarButton() {
         if (removalRequest.isAwaitingCall) DownloadStatus { btnData, action, progressIndicator ->
@@ -131,6 +146,66 @@ class TransferDownloadComposeUi(
             onClick = downloadRequest,
             modifier = modifier,
         )
+    }
+
+    @Composable
+    fun CardCornerButton(modifier: Modifier = Modifier) {
+        if (removalRequest.isAwaitingCall) DownloadStatus { btnData, action, _ ->
+            CardCornerButton(
+                icon = btnData.icon,
+                labelResId = btnData.labelResId,
+                onClick = action,
+                enabled = action.isAwaitingCall,
+                modifier = modifier,
+            )
+        } else CardCornerButton(
+            icon = BtnData.download.icon,
+            labelResId = BtnData.download.labelResId,
+            enabled = downloadRequest.isAwaitingCall,
+            onClick = downloadRequest,
+            modifier = modifier,
+        )
+    }
+
+    @Composable
+    private fun CardCornerButton(
+        icon: ImageVector,
+        labelResId: Int,
+        onClick: () -> Unit,
+        modifier: Modifier = Modifier,
+        enabled: Boolean = true,
+    ) = IconButton(
+        onClick = onClick,
+        modifier = modifier,
+        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+        enabled = enabled
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(labelResId),
+            modifier = Modifier.size(18.dp)
+        )
+    }
+
+    @Composable
+    fun CardProgressBar(modifier: Modifier) {
+        when (val status = downloadStatus) {
+            DownloadStatus.Complete -> {}
+            is DownloadStatus.Failed -> {
+                LinearProgressIndicator(
+                    progress = { 1f },
+                    modifier = modifier,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            is DownloadStatus.InProgress -> {
+                DownloadProgressBar(rememberUpdatedState(status), modifier = modifier)
+            }
+            is DownloadStatus.Paused, DownloadStatus.Pending -> {
+                LinearProgressIndicator(modifier = modifier)
+            }
+            else -> {}
+        }
     }
 
     @Composable
@@ -183,6 +258,18 @@ class TransferDownloadComposeUi(
                 labelResId = com.infomaniak.core2.R.string.errorDownload
             )
         }
+    }
+
+    @Composable
+    private fun DownloadProgressBar(
+        progressStatus: State<DownloadStatus.InProgress>,
+        modifier: Modifier = Modifier,
+    ) {
+        val status by progressStatus
+        LinearProgressIndicator(
+            progress = { status.let { it.downloadedBytes.toFloat() / it.totalSizeInBytes } },
+            modifier = modifier
+        )
     }
 
     @Composable
