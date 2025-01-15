@@ -52,9 +52,6 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
@@ -67,7 +64,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
-    private val newTransferOpenManager: NewTransferOpenManager,
+    private val importFilesViewModelStartup: ImportFilesViewModelStartup,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -86,8 +83,7 @@ class ImportFilesViewModel @Inject constructor(
         initialValue = FilesDetailsUiState.Success(emptyList()),
     )
 
-    private val _openFilePickerEvent: Channel<Unit> = Channel(capacity = CONFLATED)
-    val openFilePickerEvent: ReceiveChannel<Unit> = _openFilePickerEvent
+    val openFilePickerEvent by importFilesViewModelStartup::openFilePickerEvent
 
     @OptIn(FlowPreview::class)
     val importedFilesDebounced = importationFilesManager.importedFiles
@@ -134,35 +130,25 @@ class ImportFilesViewModel @Inject constructor(
         }
 
     init {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             if (isFirstViewModelCreation) {
-                isFirstViewModelCreation = false
-
                 // Remove old imported files in case it would've crashed (or similar) to start with a clean slate.
                 // This is required for already imported files restoration to not pick up old files in some extreme cases.
-                removeOldData()
+                importFilesViewModelStartup.removeOldData()
 
                 // Set default values to advanced transfer options. This need to be done here in the `init`,
                 // because we only want to do it once. If we come back from a cancelled or edited transfer,
                 // we don't want to erase user's choices about advanced transfer options.
                 initTransferOptionsValues()
-
             } else {
-                importationFilesManager.restoreAlreadyImportedFiles()
+                importFilesViewModelStartup.restoreAlreadyImportedFiles()
             }
 
-            launch {
-                when (val reason = newTransferOpenManager.readOpenReason()) {
-                    is NewTransferOpenManager.Reason.ExternalShareIncoming -> {
-                        importationFilesManager.importFiles(reason.uris)
-                    }
-                    NewTransferOpenManager.Reason.Other -> {
-                        _openFilePickerEvent.send(Unit)
-                    }
-                }
-            }
+            importFilesViewModelStartup.handleOpenReasonAsync()
 
-            importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+            launch { importFilesViewModelStartup.continuouslyCopyPickedFilesToLocalStorage() }
+
+            isFirstViewModelCreation = false
         }
     }
 
@@ -186,11 +172,6 @@ class ImportFilesViewModel @Inject constructor(
 
     fun resetSendActionResult() {
         transferSendManager.resetSendStatus()
-    }
-
-    private suspend fun removeOldData() {
-        importationFilesManager.removeLocalCopyFolder()
-        uploadManager.removeAllUploadSession()
     }
 
     private suspend fun generateNewUploadSession(): NewUploadSession {
