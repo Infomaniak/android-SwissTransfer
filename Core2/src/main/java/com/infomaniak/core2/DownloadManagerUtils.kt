@@ -26,6 +26,10 @@ import com.infomaniak.core2.extensions.appVersionName
 
 object DownloadManagerUtils {
 
+    fun withoutProblematicCharacters(originalName: String): String {
+        return originalName.replace(regexInvalidSystemChar, "_").replace('%','_')
+    }
+
     private val regexInvalidSystemChar = Regex("[\\\\/:*?\"<>|\\x7F]|[\\x00-\\x1f]")
 
     fun requestFor(
