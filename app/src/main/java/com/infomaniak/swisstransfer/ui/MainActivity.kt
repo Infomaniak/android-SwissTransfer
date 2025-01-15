@@ -30,10 +30,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
@@ -58,9 +59,11 @@ class MainActivity : ComponentActivity() {
             val deeplinkUuid = getDeeplinkTransferUuid()
             val transferDirection = deeplinkUuid?.let { deeplinkViewModel.getDeeplinkTransferDirection(it) }
 
-        setContent {
-            val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-            SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
+            if (transferDirection == TransferDirection.SENT) intent.setData((intent.data?.path + "/sent").toUri())
+
+            setContent {
+                val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+                SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                     MainScreen(deeplinkTransferDirection = transferDirection)
                 }
             }

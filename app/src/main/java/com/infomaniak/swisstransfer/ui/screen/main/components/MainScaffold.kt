@@ -118,7 +118,7 @@ private fun NavHostController.navigateToSelectedItem(destination: MainNavigation
 private fun NavigationSmallWindowPreview() {
     SwissTransferTheme {
         MainScaffold(
-            currentDestination = MainNavigation.SentDestination,
+            currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
             content = {},
@@ -131,7 +131,7 @@ private fun NavigationSmallWindowPreview() {
 private fun NavigationLargeWindowPreview() {
     SwissTransferTheme {
         MainScaffold(
-            currentDestination = MainNavigation.SentDestination,
+            currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
             content = {},

@@ -21,15 +21,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 @HiltViewModel
 class DeeplinkViewModel @Inject constructor(
     private val transferManager: TransferManager,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     suspend fun getDeeplinkTransferDirection(transferUuid: String): TransferDirection? {

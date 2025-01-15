@@ -38,7 +38,20 @@ sealed class MainNavigation : NavigationDestination() {
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data object SentDestination : MainNavigation()
+    data class SentDestination(val transferUuid: String? = null) : MainNavigation() {
+
+        companion object {
+            fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
+                val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{${SentDestination::transferUuid.name}}/sent"
+                val prodBasePath = "${BuildConfig.PROD_URL}/d/{${SentDestination::transferUuid.name}}/sent"
+                val deepLinks = listOf(
+                    navDeepLink<SentDestination>(preprodBasePath),
+                    navDeepLink<SentDestination>(prodBasePath),
+                )
+                composable<SentDestination>(deepLinks = deepLinks, content = content)
+            }
+        }
+    }
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
@@ -62,7 +75,7 @@ sealed class MainNavigation : NavigationDestination() {
 
     companion object {
         private val TAG = MainNavigation::class.java.simpleName
-        val startDestination = SentDestination
+        val startDestination = SentDestination()
 
         // Because of the minification, we can't directly use the classes names here. It won't work in production environment.
         // So, if these classes have to be renamed, they need to be renamed here too.
