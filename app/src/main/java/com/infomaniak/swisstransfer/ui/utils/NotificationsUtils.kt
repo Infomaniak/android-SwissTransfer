@@ -29,6 +29,7 @@ import com.infomaniak.core2.notifications.buildNotificationChannel
 import com.infomaniak.core2.notifications.createNotificationChannels
 import com.infomaniak.core2.notifications.notifyCompat
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,7 +48,7 @@ class NotificationsUtils @Inject constructor(
         val uploadChannel = buildNotificationChannel(
             channelId = getString(R.string.notifications_upload_channel_id),
             name = getString(R.string.notificationsUploadChannelName),
-            importance = NotificationManager.IMPORTANCE_HIGH,
+            importance = NotificationManager.IMPORTANCE_LOW,
         )
         channelList.add(uploadChannel)
 
@@ -69,6 +70,7 @@ class NotificationsUtils @Inject constructor(
             requestCode = requestCode,
             intent = intent,
             icon = defaultSmallIcon,
+            iconColor = notificationIconColor,
             title = title,
             description = description,
             onlyAlertOnce = true,

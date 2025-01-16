@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.theme
 
+import androidx.annotation.ColorInt
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
@@ -45,6 +46,14 @@ private const val black_translucent = 0x80000000
 
 private const val warning = 0xFFFF8500
 private const val error = 0xFFF44336
+
+/**
+ * Try to not do that.
+ * This is an exceptional use case because this color is used outside of Compose
+ * (hence we can't access the Compose color schemes).
+ */
+@ColorInt
+const val notificationIconColor: Int = green_main.toInt()
 
 val LightColorScheme = lightColorScheme(
     primary = Color(green_main),
