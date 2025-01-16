@@ -26,23 +26,26 @@ import com.infomaniak.core2.extensions.appVersionName
 
 object DownloadManagerUtils {
 
+    fun withoutProblematicCharacters(originalName: String): String {
+        return originalName.replace(regexInvalidSystemChar, "_").replace('%','_').let {
+            // fix IllegalArgumentException only on Android 10 if multi dot
+            if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
+        }
+    }
+
     private val regexInvalidSystemChar = Regex("[\\\\/:*?\"<>|\\x7F]|[\\x00-\\x1f]")
 
     fun requestFor(
         url: String,
-        name: String,
+        nameWithoutProblematicChars: String,
         mimeType: String?,
         userAgent: String,
         extraHeaders: Iterable<Pair<String, String>> = emptySet(),
     ): Request = Request(Uri.parse(url)).also { req ->
         req.setAllowedNetworkTypes(Request.NETWORK_WIFI or Request.NETWORK_MOBILE)
-        val formattedName = name.replace(regexInvalidSystemChar, "_").replace("%", "_").let {
-            // fix IllegalArgumentException only on Android 10 if multi dot
-            if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
-        }
-        req.setTitle(formattedName)
+        req.setTitle(nameWithoutProblematicChars)
         req.setDescription(appName)
-        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameWithoutProblematicChars)
         req.setMimeType(mimeType)
         req.addHeaders(userAgent, extraHeaders)
 

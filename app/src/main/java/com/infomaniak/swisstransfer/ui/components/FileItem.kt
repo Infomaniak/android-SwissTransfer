@@ -47,6 +47,7 @@ fun FileItem(
     isChecked: () -> Boolean = { false },
     onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
+    previewOverlay: @Composable BoxScope.() -> Unit = {}
 ) {
     FileItemContent(
         modifier = modifier,
@@ -64,6 +65,7 @@ fun FileItem(
                 circleSize = 64.dp,
                 showFileName = false,
             )
+            previewOverlay()
         },
     )
 }
@@ -87,7 +89,7 @@ private fun FileItemContent(
     onRemove: (() -> Unit)?,
     title: String,
     description: String,
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Card(
         modifier = modifier.then(getCardModifier(onClick)),
