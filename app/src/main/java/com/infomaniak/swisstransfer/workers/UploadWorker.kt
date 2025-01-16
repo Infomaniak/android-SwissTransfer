@@ -25,6 +25,7 @@ import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import androidx.work.WorkInfo.State
+import com.infomaniak.core2.percent
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
@@ -47,7 +48,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.cancellation.CancellationException
@@ -155,7 +155,7 @@ class UploadWorker @AssistedInject constructor(
 
     private suspend fun displayProgressNotification(totalSize: Long) {
 
-        val percent = String.format(Locale.getDefault(), "%d", (uploadedBytes.toFloat() / totalSize * 100).toInt())
+        val percent = percent(uploadedBytes, totalSize)
         val current = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, uploadedBytes)
         val total = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, totalSize)
 
