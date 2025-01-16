@@ -28,9 +28,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.*
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.UnexpectedApiErrorFormatException
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -145,7 +143,7 @@ class TransferDetailsViewModel @Inject constructor(
             when (exception) {
                 is ExpiredDeeplinkException -> longToast(R.string.deeplinkTransferExpired)
                 is NotFoundDeeplinkException -> longToast(R.string.deeplinkTransferNotFound)
-                is DeeplinkException -> throw exception
+                is PasswordNeededDeeplinkException, is WrongPasswordDeeplinkException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             }
         }
