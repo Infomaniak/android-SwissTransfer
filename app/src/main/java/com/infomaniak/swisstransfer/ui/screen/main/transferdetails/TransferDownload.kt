@@ -183,7 +183,7 @@ private suspend fun buildDownloadRequest(
     }
     return DownloadManagerUtils.requestFor(
         url = url,
-        name = name,
+        nameWithoutProblematicChars = name,
         mimeType = FileType.guessMimeTypeFromFileName(name),
         userAgent = userAgent,
     )
