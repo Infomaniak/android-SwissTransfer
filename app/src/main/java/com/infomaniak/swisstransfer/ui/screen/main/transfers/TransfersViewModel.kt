@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.sentry.SentryLog
@@ -43,7 +42,6 @@ typealias GroupedTransfers = Map<TransfersGroupingManager.TransferSection, List<
 class TransfersViewModel @Inject constructor(
     private val transferManager: TransferManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     val sentTransfersUiState = transferManager.getTransfers(TransferDirection.SENT)
@@ -59,12 +57,6 @@ class TransfersViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = false)
 
     val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
-
-    val isDeepLinkConsumed = savedStateHandle.getStateFlow(IS_DEEP_LINK_CONSUMED_KEY, false)
-
-    fun consumeDeepLink() {
-        if (!isDeepLinkConsumed.value) savedStateHandle[IS_DEEP_LINK_CONSUMED_KEY] = true
-    }
 
     fun fetchPendingTransfers() {
         viewModelScope.launch(ioDispatcher) {
@@ -93,7 +85,5 @@ class TransfersViewModel @Inject constructor(
 
     companion object {
         private val TAG = TransfersViewModel::class.java.simpleName
-
-        private const val IS_DEEP_LINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }
 }

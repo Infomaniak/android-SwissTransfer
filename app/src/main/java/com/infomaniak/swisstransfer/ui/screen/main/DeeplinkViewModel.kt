@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -25,11 +26,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DeeplinkViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val transferManager: TransferManager,
 ) : ViewModel() {
 
+    val isDeepLinkConsumed = savedStateHandle.getStateFlow(IS_DEEP_LINK_CONSUMED_KEY, false)
+
+    fun consumeDeepLink() {
+        if (!isDeepLinkConsumed.value) savedStateHandle[IS_DEEP_LINK_CONSUMED_KEY] = true
+    }
+
     suspend fun getDeeplinkTransferDirection(transferUuid: String): TransferDirection? {
         return transferManager.getTransferByUUID(transferUuid)?.direction
+    }
+
+    private companion object {
+
+        private const val IS_DEEP_LINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }
 }
 
