@@ -77,7 +77,6 @@
     <string name="notificationUploadSuccessDescriptionMail">Der Download-Link wurde an die Empfänger gesendet</string>
     <string name="notificationUploadSuccessDescriptionOther">Klicke, um deinen Download-Link zu erhalten</string>
     <string name="notificationUploadSuccessTitle">Transfer abgeschlossen</string>
-    <string name="notificationsGeneralChannelName">Allgemeine Benachrichtigungen</string>
     <string name="notificationsUploadChannelName">Upload-Benachrichtigungen</string>
     <string name="onboardingExpirationSubtitleArgument">30 Tage</string>
     <string name="onboardingExpirationSubtitleTemplate">Teile deine Dateien per E-Mail, Link oder QR-Code. Deine Links bleiben %s aktiv.</string>

@@ -44,13 +44,6 @@ class NotificationsUtils @Inject constructor(
 
         val channelList = mutableListOf<NotificationChannel>()
 
-        val generalChannel = buildNotificationChannel(
-            channelId = getString(R.string.notifications_general_channel_id),
-            name = getString(R.string.notificationsGeneralChannelName),
-            importance = NotificationManager.IMPORTANCE_DEFAULT,
-        )
-        channelList.add(generalChannel)
-
         val uploadChannel = buildNotificationChannel(
             channelId = getString(R.string.notifications_upload_channel_id),
             name = getString(R.string.notificationsUploadChannelName),
@@ -61,28 +54,8 @@ class NotificationsUtils @Inject constructor(
         createNotificationChannels(channelList)
     }
 
-    fun sendGeneralNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
-        sendNotification(notificationId, buildGeneralNotification(notificationId, intent, title, description))
-    }
-
     fun sendUploadNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
         sendNotification(notificationId, buildUploadNotification(notificationId, intent, title, description))
-    }
-
-    private fun buildGeneralNotification(
-        requestCode: Int,
-        intent: Intent,
-        title: String,
-        description: String? = null,
-    ): NotificationCompat.Builder = with(appContext) {
-        return@with buildNotification(
-            channelId = getString(R.string.notifications_general_channel_id),
-            requestCode = requestCode,
-            intent = intent,
-            icon = defaultSmallIcon,
-            title = title,
-            description = description,
-        )
     }
 
     fun buildUploadNotification(
