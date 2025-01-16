@@ -159,8 +159,8 @@ class TransferDownloadComposeUi(
                 modifier = modifier,
             )
         } else CardCornerButton(
-            icon = BtnData.download.icon,
-            labelResId = BtnData.download.labelResId,
+            icon = ButtonData.download.icon,
+            labelResId = ButtonData.download.labelResId,
             enabled = downloadRequest.isAwaitingCall,
             onClick = downloadRequest,
             modifier = modifier,
