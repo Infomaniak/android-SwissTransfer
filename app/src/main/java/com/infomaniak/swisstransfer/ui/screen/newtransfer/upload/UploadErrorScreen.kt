@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,9 @@ fun UploadErrorScreen(
     navigateBackToImportFiles: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
+
+    BackHandler(onBack = {})
+
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         topButton = {

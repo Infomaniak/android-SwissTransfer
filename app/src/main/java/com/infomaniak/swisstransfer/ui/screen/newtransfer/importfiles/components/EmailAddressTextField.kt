@@ -51,13 +51,15 @@ fun EmailAddressTextField(
     modifier: Modifier = Modifier,
     label: String,
     initialValue: String,
-    validatedEmails: GetSetCallbacks<Set<String>>,
+    validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
     onValueChange: (TextFieldValue) -> Unit,
     isError: Boolean = false,
     supportingText: (@Composable () -> Unit)? = null,
 ) {
 
-    val state = remember(validatedEmails) { EmailAddressTextFieldState(validatedEmails, initialText = initialValue) }
+    val state = remember(validatedRecipientsEmails) {
+        EmailAddressTextFieldState(validatedRecipientsEmails, initialText = initialValue)
+    }
     var textFieldValue by state::textFieldValue
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -76,7 +78,7 @@ fun EmailAddressTextField(
         onDone = {
             val trimmedText = textFieldValue.text.trim()
             if (trimmedText.isValidEmail()) {
-                validatedEmails.set(validatedEmails.get() + trimmedText)
+                validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
                 updateUiTextValue(TextFieldValue())
             }
         },
@@ -106,7 +108,7 @@ fun EmailAddressTextField(
         decorationBox = { innerTextField ->
             EmailAddressDecorationBox(
                 text = textFieldValue.text,
-                validatedEmails = validatedEmails,
+                validatedRecipientsEmails = validatedRecipientsEmails,
                 selectedChipIndexState = state.selectedChipIndexState,
                 innerTextField = innerTextField,
                 label = label,
@@ -193,7 +195,7 @@ private class EmailAddressTextFieldState(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun EmailAddressDecorationBox(
     text: String,
-    validatedEmails: GetSetCallbacks<Set<String>>,
+    validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
     selectedChipIndexState: MutableIntState,
     innerTextField: @Composable () -> Unit,
     label: String,
@@ -206,14 +208,14 @@ private fun EmailAddressDecorationBox(
         value = text,
         innerTextField = {
             EmailChipsAndInnerTextField(
-                validatedEmails = validatedEmails,
+                validatedRecipientsEmails = validatedRecipientsEmails,
                 selectedChipIndexState = selectedChipIndexState,
                 innerTextField = innerTextField,
             )
         },
         enabled = true,
         singleLine = true,
-        visualTransformation = if (validatedEmails.get().isNotEmpty()) {
+        visualTransformation = if (validatedRecipientsEmails.get().isNotEmpty()) {
             // TODO: Remove this hack to make the label always in "above" position when the labelPosition will be
             //  available in the DecorationBox's API
             VisualTransformation { TransformedText(AnnotatedString(label), OffsetMapping.Identity) }
@@ -238,7 +240,7 @@ private fun EmailAddressDecorationBox(
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
 private fun EmailChipsAndInnerTextField(
-    validatedEmails: GetSetCallbacks<Set<String>>,
+    validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
     selectedChipIndexState: MutableIntState,
     innerTextField: @Composable () -> Unit,
 ) {
@@ -247,12 +249,12 @@ private fun EmailChipsAndInnerTextField(
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
         itemVerticalAlignment = Alignment.CenterVertically,
     ) {
-        validatedEmails.get().forEachIndexed { index, email ->
+        validatedRecipientsEmails.get().forEachIndexed { index, email ->
             SwissTransferInputChip(
                 text = email,
                 isSelected = { selectedChipIndex == index },
                 onClick = { selectedChipIndex = index },
-                onDismiss = { validatedEmails.set(validatedEmails.get().minus(email)) },
+                onDismiss = { validatedRecipientsEmails.set(validatedRecipientsEmails.get().minus(email)) },
             )
         }
 
@@ -278,28 +280,28 @@ private fun Preview(@PreviewParameter(EmailsPreviewParameter::class) emails: Lis
         Surface {
             Column(Modifier.padding(Margin.Medium)) {
                 EmailAddressTextField(
-                    validatedEmails = GetSetCallbacks(get = { emails.take(5).toSet() }, set = {}),
+                    validatedRecipientsEmails = GetSetCallbacks(get = { emails.take(5).toSet() }, set = {}),
                     label = label,
                     initialValue = "test.test@ik.me",
                     onValueChange = {},
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
-                    validatedEmails = GetSetCallbacks(get = { emptySet() }, set = {}),
+                    validatedRecipientsEmails = GetSetCallbacks(get = { emptySet() }, set = {}),
                     label = label,
                     initialValue = "",
                     onValueChange = {},
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
-                    validatedEmails = GetSetCallbacks(get = { emails.take(1).toSet() }, set = {}),
+                    validatedRecipientsEmails = GetSetCallbacks(get = { emails.take(1).toSet() }, set = {}),
                     label = label,
                     initialValue = "test",
                     onValueChange = {},
                 )
                 Spacer(Modifier.height(Margin.Large))
                 EmailAddressTextField(
-                    validatedEmails = GetSetCallbacks(get = { emails.take(1).toSet() }, set = {}),
+                    validatedRecipientsEmails = GetSetCallbacks(get = { emails.take(1).toSet() }, set = {}),
                     label = label,
                     initialValue = "test",
                     onValueChange = {},

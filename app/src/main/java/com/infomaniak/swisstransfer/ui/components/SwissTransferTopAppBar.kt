@@ -62,7 +62,7 @@ fun SwissTransferTopAppBar(
 }
 
 @Composable
-private fun MenuButton(
+fun TopAppBarButton(
     icon: ImageVector,
     @StringRes contentDescResId: Int,
     onClick: () -> Unit,
@@ -75,22 +75,26 @@ private fun MenuButton(
 
 object TopAppBarButtons {
     @Composable
-    fun Back(onClick: () -> Unit) = MenuButton(
+    fun Back(onClick: () -> Unit) = TopAppBarButton(
         icon = AppIcons.ArrowLeft,
         contentDescResId = R.string.contentDescriptionButtonBack,
         onClick = onClick
     )
 
     @Composable
-    fun Close(onClick: () -> Unit) = MenuButton(
+    fun Close(onClick: () -> Unit) = TopAppBarButton(
         icon = AppIcons.Cross,
         contentDescResId = R.string.contentDescriptionButtonClose,
         onClick = onClick
     )
 
     @Composable
-    fun Download(onClick: () -> Unit) = MenuButton(
+    fun Download(
+        onClick: () -> Unit,
+        enabled: Boolean = true,
+    ) = TopAppBarButton(
         icon = AppIcons.ArrowDownBar,
+        enabled = enabled,
         contentDescResId = R.string.buttonDownload,
         onClick = onClick
     )
@@ -104,9 +108,9 @@ private fun SwissTransferTopAppBarPreview() {
             title = stringResource(R.string.appName),
             navigationIcon = { TopAppBarButtons.Back {} },
             actions = {
-                MenuButton(AppIcons.Add, R.string.appName, onClick = {})
+                TopAppBarButton(AppIcons.Add, R.string.appName, onClick = {})
                 TopAppBarButtons.Close {}
-                TopAppBarButtons.Download {}
+                TopAppBarButtons.Download(onClick = {})
             }
         )
     }

@@ -17,10 +17,15 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.Manifest
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -39,14 +44,26 @@ class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
+
+        askUserForNotificationsPermission()
+
         val isTransferDeeplink = hasValidTransferDeeplink()
         setContent {
             val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
             SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                 MainScreen(isTransferDeeplink)
             }
+        }
+    }
+
+    private fun askUserForNotificationsPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                callback = {},
+            ).launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 }

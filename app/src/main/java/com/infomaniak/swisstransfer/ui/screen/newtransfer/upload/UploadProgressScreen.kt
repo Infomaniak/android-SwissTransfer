@@ -47,7 +47,7 @@ import com.infomaniak.core2.R as RCore2
 @Composable
 fun UploadProgressScreen(
     totalSizeInBytes: Long,
-    navigateToUploadSuccess: (String) -> Unit,
+    navigateToUploadSuccess: (String, String) -> Unit,
     navigateToUploadError: () -> Unit,
     navigateBackToImportFiles: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
@@ -58,9 +58,7 @@ fun UploadProgressScreen(
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(!showBottomSheet) {
-        showBottomSheet = true
-    }
+    BackHandler(enabled = !showBottomSheet, onBack = { showBottomSheet = true })
 
     LaunchedEffect(Unit) {
         uploadProgressViewModel.trackUploadProgress()
@@ -81,14 +79,14 @@ fun UploadProgressScreen(
 @Composable
 private fun HandleProgressState(
     uiState: () -> UploadProgressUiState,
-    navigateToUploadSuccess: (String) -> Unit,
+    navigateToUploadSuccess: (String, String) -> Unit,
     navigateToUploadError: () -> Unit,
     navigateBackToImportFiles: () -> Unit,
 ) {
     val currentUiState = uiState()
     LaunchedEffect(uiState()) {
         when (currentUiState) {
-            is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferUrl)
+            is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferUuid, currentUiState.transferUrl)
             is UploadProgressUiState.Error -> navigateToUploadError()
             is UploadProgressUiState.Cancel -> navigateBackToImportFiles()
             else -> Unit
@@ -131,8 +129,8 @@ private fun UploadProgressScreen(
         if (showBottomSheet.get()) {
             CancelUploadBottomSheet(
                 onCancel = {
-                    onCancel()
                     showBottomSheet.set(false)
+                    onCancel()
                 },
                 closeButtonSheet = { showBottomSheet.set(false) },
             )

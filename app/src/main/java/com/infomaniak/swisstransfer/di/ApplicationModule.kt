@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.di
 
 import android.app.Application
 import android.content.Context
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.infomaniak.core2.appintegrity.AppIntegrityManager
 import com.infomaniak.core2.buildUserAgent
@@ -57,5 +58,11 @@ object ApplicationModule {
     @Singleton
     fun providesAppIntegrityManager(application: Application, @UserAgent userAgent: String): AppIntegrityManager {
         return AppIntegrityManager(application, userAgent)
+    }
+
+    @Provides
+    @Singleton
+    fun providesNotificationManagerCompat(@ApplicationContext appContext: Context): NotificationManagerCompat {
+        return NotificationManagerCompat.from(appContext)
     }
 }

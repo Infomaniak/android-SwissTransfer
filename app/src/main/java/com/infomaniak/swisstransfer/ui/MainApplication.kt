@@ -25,6 +25,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
+import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
 import com.infomaniak.swisstransfer.ui.utils.getPreference
 import dagger.hilt.android.HiltAndroidApp
@@ -46,6 +47,9 @@ class MainApplication : Application(), Configuration.Provider {
     lateinit var accountUtils: AccountUtils
 
     @Inject
+    lateinit var notificationUtils: NotificationsUtils
+
+    @Inject
     lateinit var transferManager: TransferManager
 
     @Inject
@@ -59,6 +63,8 @@ class MainApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+
+        notificationUtils.initNotificationsChannel()
 
         globalCoroutineScope.launch {
             accountUtils.init()

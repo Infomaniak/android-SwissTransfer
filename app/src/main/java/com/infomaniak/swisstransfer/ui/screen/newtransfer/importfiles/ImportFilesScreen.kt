@@ -60,8 +60,8 @@ private val HORIZONTAL_PADDING = Margin.Medium
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel,
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, recipients: List<String>) -> Unit,
-    navigateToEmailValidation: (email: String, recipients: List<String>) -> Unit,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
+    navigateToEmailValidation: (email: String) -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
 
@@ -97,18 +97,9 @@ fun ImportFilesScreen(
         snackbarHostState = snackbarHostState,
         sendStatus = { sendStatus },
         navigateToUploadProgress = { totalSize ->
-            navigateToUploadProgress(
-                selectedTransferType,
-                totalSize,
-                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
-            )
+            navigateToUploadProgress(selectedTransferType, totalSize)
         },
-        navigateToEmailValidation = {
-            navigateToEmailValidation(
-                emailTextFieldCallbacks.transferAuthorEmail.get(),
-                emailTextFieldCallbacks.validatedRecipientsEmails.get().toList(),
-            )
-        },
+        navigateToEmailValidation = { navigateToEmailValidation(emailTextFieldCallbacks.transferAuthorEmail.get()) },
         resetSendActionResult = importFilesViewModel::resetSendActionResult,
     )
 
@@ -339,7 +330,7 @@ private fun ColumnScope.EmailAddressesTextFields(
                 modifier = modifier,
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 initialValue = recipientEmail.get(),
-                validatedEmails = validatedRecipientsEmails,
+                validatedRecipientsEmails = validatedRecipientsEmails,
                 onValueChange = { recipientEmail.set(it.text) },
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),

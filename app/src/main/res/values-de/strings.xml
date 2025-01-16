@@ -25,6 +25,8 @@
     <string name="buttonCopyLink">Link kopieren</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Auswahl herunterladen</string>
+    <string name="buttonDownloaded">Heruntergeladen</string>
+    <string name="buttonDownloading">Herunterladen</string>
     <string name="buttonEditTransfer">Meine Übertragung bearbeiten</string>
     <string name="buttonFinished">Beenden</string>
     <string name="buttonOpenMailApp">Mail-App öffnen</string>
@@ -39,7 +41,8 @@
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="deeplinkPasswordDescription">Gib das Passwort ein, das du erhalten hast, um diese Dateien herunterzuladen.</string>
-    <string name="deeplinkTransferNotFound">Diese Übertragung ist abgelaufen oder existiert nicht</string>
+    <string name="deeplinkTransferExpired">Diese Überweisung ist abgelaufen</string>
+    <string name="deeplinkTransferNotFound">Diese Übertragung gibt es nicht</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
     <string name="errorAppIntegrity">Ihr Gerät wird nicht als sicher erkannt</string>
     <string name="errorIncorrectPassword">Falsches Kennwort</string>
@@ -70,6 +73,11 @@
     <string name="noTransferReceivedTitle">Keine Überweisungen erhalten</string>
     <string name="noTransferSelectedDescription">Wähle eine Übertragung aus oder erstelle eine neue.</string>
     <string name="noTransferSelectedTitle">Keine Transfers zum Anzeigen</string>
+    <string name="notificationUploadProgressTitle">Transfer wird durchgeführt… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Der Download-Link wurde an die Empfänger gesendet</string>
+    <string name="notificationUploadSuccessDescriptionOther">Klicke, um deinen Download-Link zu erhalten</string>
+    <string name="notificationUploadSuccessTitle">Transfer abgeschlossen</string>
+    <string name="notificationsUploadChannelName">Upload-Benachrichtigungen</string>
     <string name="onboardingExpirationSubtitleArgument">30 Tage</string>
     <string name="onboardingExpirationSubtitleTemplate">Teile deine Dateien per E-Mail, Link oder QR-Code. Deine Links bleiben %s aktiv.</string>
     <string name="onboardingExpirationTitle">Spiel deine besten Karten aus!</string>

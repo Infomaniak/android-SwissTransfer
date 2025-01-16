@@ -22,12 +22,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -39,7 +43,20 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessEmailScreen(emails: List<String>, closeActivity: () -> Unit) {
+fun UploadSuccessEmailScreen(
+    transferUuid: String,
+    closeActivity: () -> Unit,
+    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
+) {
+    val recipientsEmails by uploadSuccessViewModel.recipientsEmails.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) { uploadSuccessViewModel.fetchTransfer(transferUuid) }
+
+    UploadSuccessEmailScreen({ recipientsEmails }, closeActivity)
+}
+
+@Composable
+fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, closeActivity: () -> Unit) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -62,13 +79,13 @@ fun UploadSuccessEmailScreen(emails: List<String>, closeActivity: () -> Unit) {
             IllustratedMessageBlock(
                 icon = AppIllus.Beers.image(),
                 title = TransferTypeUi.Mail.titleRes,
-                description = pluralStringResource(TransferTypeUi.Mail.descriptionRes!!, emails.count()),
+                description = pluralStringResource(TransferTypeUi.Mail.descriptionRes!!, recipientsEmails().count()),
             )
 
             Spacer(Modifier.height(Margin.Medium))
 
             EmailsFlowRow(
-                emails = emails,
+                emails = recipientsEmails().toList(),
                 modifier = Modifier.widthIn(max = 800.dp),
                 horizontalArrangement = Arrangement.Center,
             )
@@ -81,7 +98,7 @@ fun UploadSuccessEmailScreen(emails: List<String>, closeActivity: () -> Unit) {
 private fun UploadSuccessEmailScreenPreview(@PreviewParameter(EmailsPreviewParameter::class) emails: List<String>) {
     SwissTransferTheme {
         Surface {
-            UploadSuccessEmailScreen(emails) {}
+            UploadSuccessEmailScreen({ emails.toSet() }, {})
         }
     }
 }

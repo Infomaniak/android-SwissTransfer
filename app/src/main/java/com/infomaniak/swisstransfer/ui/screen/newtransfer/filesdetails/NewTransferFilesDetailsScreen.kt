@@ -18,10 +18,13 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -29,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.FilesDetailsUiState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -49,7 +53,7 @@ fun NewTransferFilesDetailsScreen(
     }
 
     NewTransferFilesDetailsScreen(
-        files = (uiState as? FilesDetailsUiState.Success)?.files ?: emptyList(),
+        files = (uiState as? FilesDetailsUiState.Success)?.files?.asReversed() ?: emptyList(),
         withFilesSize = withFilesSize,
         withSpaceLeft = withSpaceLeft,
         onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
@@ -74,15 +78,18 @@ private fun NewTransferFilesDetailsScreen(
     onFileRemoved: ((uuid: String) -> Unit)? = null,
     navigateBack: (() -> Unit),
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
             SwissTransferTopAppBar(
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         FilesDetailsScreen(
             paddingValues = paddingValues,
+            snackbarHostState = snackbarHostState,
             files = files,
             withFileSize = withFilesSize,
             withSpaceLeft = withSpaceLeft,
@@ -95,14 +102,16 @@ private fun NewTransferFilesDetailsScreen(
 @Composable
 private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
-        Surface {
-            NewTransferFilesDetailsScreen(
-                files = files,
-                withFilesSize = true,
-                withSpaceLeft = true,
-                onFileRemoved = {},
-                navigateBack = {},
-            )
+        SwissTransferScaffold {
+            Surface {
+                NewTransferFilesDetailsScreen(
+                    files = files,
+                    withFilesSize = true,
+                    withSpaceLeft = true,
+                    onFileRemoved = {},
+                    navigateBack = {},
+                )
+            }
         }
     }
 }

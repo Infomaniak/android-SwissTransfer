@@ -19,6 +19,7 @@
     <string name="appName" translatable="false">SwissTransfer</string>
     <string name="matomo" translatable="false">Matomo</string>
     <string name="sentry" translatable="false">Sentry</string>
+    <string name="notifications_upload_channel_id" translatable="false">upload_channel_id</string>
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
@@ -29,6 +30,8 @@
     <string name="buttonCopyLink">Copy link</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
+    <string name="buttonDownloaded">Downloaded</string>
+    <string name="buttonDownloading">Downloading</string>
     <string name="buttonEditTransfer">Edit my transfer</string>
     <string name="buttonFinished">Finish</string>
     <string name="buttonOpenMailApp">Open the mail app</string>
@@ -43,7 +46,8 @@
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
-    <string name="deeplinkTransferNotFound">This transfer has expired or does not exist</string>
+    <string name="deeplinkTransferExpired">This transfer has expired</string>
+    <string name="deeplinkTransferNotFound">This transfer does not exist</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
     <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorIncorrectPassword">Incorrect password</string>
@@ -74,6 +78,11 @@
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
     <string name="noTransferSelectedTitle">No transfers to display</string>
+    <string name="notificationUploadProgressTitle">Transfer in progress… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">The download link has been sent to the recipients</string>
+    <string name="notificationUploadSuccessDescriptionOther">Click to get your download link</string>
+    <string name="notificationUploadSuccessTitle">Transfer completed</string>
+    <string name="notificationsUploadChannelName">Upload notifications</string>
     <string name="onboardingExpirationSubtitleArgument">30 days.</string>
     <string name="onboardingExpirationSubtitleTemplate">Share your files via email, link, or QR code. Your links stay active for %s</string>
     <string name="onboardingExpirationTitle">Play Your Best Cards!</string>

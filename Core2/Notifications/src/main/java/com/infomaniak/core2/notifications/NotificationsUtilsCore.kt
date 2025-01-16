@@ -23,6 +23,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -65,8 +66,10 @@ fun Context.buildNotification(
     requestCode: Int,
     intent: Intent,
     icon: Int,
+    @ColorInt iconColor: Int,
     title: String,
     description: String? = null,
+    onlyAlertOnce: Boolean = false,
 ): NotificationCompat.Builder {
     val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     return NotificationCompat.Builder(this, channelId).apply {
@@ -74,8 +77,11 @@ fun Context.buildNotification(
         setContentTitle(title)
         description?.let { setStyle(NotificationCompat.BigTextStyle().bigText(it)) }
         setSmallIcon(icon)
+        setColor(iconColor)
         setAutoCancel(true)
+        setOnlyAlertOnce(onlyAlertOnce)
         setContentIntent(PendingIntent.getActivity(this@buildNotification, requestCode, intent, pendingIntentFlags))
+        setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 }
 

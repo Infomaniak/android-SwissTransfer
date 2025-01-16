@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 @Composable
 fun FilesDetailsScreen(
     paddingValues: PaddingValues = PaddingValues(0.dp),
+    snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
     navigateToFolder: ((String) -> Unit)? = null,
     withFileSize: Boolean,
@@ -44,13 +46,14 @@ fun FilesDetailsScreen(
     ) {
         FilesSize(files, withFilesSize = withFileSize, withSpaceLeft)
         FileItemList(
+            snackbarHostState = snackbarHostState,
             files = files,
             isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = { false },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
-            onClick = { navigateToFolder?.invoke(it) }
+            navigateToFolder = { navigateToFolder?.invoke(it) }
         )
     }
 }
