@@ -26,11 +26,13 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SwissTransferScaffold(
     topBar: @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = { topBar() },
+        snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {

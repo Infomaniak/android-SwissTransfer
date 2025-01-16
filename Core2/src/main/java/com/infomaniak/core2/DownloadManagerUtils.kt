@@ -17,50 +17,36 @@
  */
 package com.infomaniak.core2
 
-import android.app.DownloadManager
 import android.app.DownloadManager.Request
-import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import com.infomaniak.core2.extensions.appName
 import com.infomaniak.core2.extensions.appVersionName
-import kotlinx.coroutines.*
-import splitties.init.appCtx
-import splitties.toast.UnreliableToastApi
-import splitties.toast.toast
 
 object DownloadManagerUtils {
 
     private val regexInvalidSystemChar = Regex("[\\\\/:*?\"<>|\\x7F]|[\\x00-\\x1f]")
 
-    private val scope = CoroutineScope(Dispatchers.Default)
-
-    fun scheduleDownload(
+    fun requestFor(
         url: String,
         name: String,
+        mimeType: String?,
         userAgent: String,
         extraHeaders: Iterable<Pair<String, String>> = emptySet(),
-    ) {
+    ): Request = Request(Uri.parse(url)).also { req ->
+        req.setAllowedNetworkTypes(Request.NETWORK_WIFI or Request.NETWORK_MOBILE)
         val formattedName = name.replace(regexInvalidSystemChar, "_").replace("%", "_").let {
             // fix IllegalArgumentException only on Android 10 if multi dot
             if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
         }
+        req.setTitle(formattedName)
+        req.setDescription(appName)
+        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+        req.setMimeType(mimeType)
+        req.addHeaders(userAgent, extraHeaders)
 
-        Request(Uri.parse(url)).apply {
-            setAllowedNetworkTypes(Request.NETWORK_WIFI or Request.NETWORK_MOBILE)
-            setTitle(formattedName)
-            setDescription(appName)
-            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
-            addHeaders(userAgent, extraHeaders)
-
-            setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-
-            val downloadManager = appCtx.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            val downloadReference = downloadManager.enqueue(this)
-            handleDownloadManagerErrors(downloadManager, downloadReference)
-        }
+        req.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     }
 
     private fun Request.addHeaders(userAgent: String, extraHeaders: Iterable<Pair<String, String>>) {
@@ -68,35 +54,5 @@ object DownloadManagerUtils {
         addRequestHeader("App-Version", "Android $appVersionName")
         addRequestHeader("User-Agent", userAgent)
         extraHeaders.forEach { (key, value) -> addRequestHeader(key, value) }
-    }
-
-    private fun handleDownloadManagerErrors(downloadManager: DownloadManager, downloadReference: Long) {
-        scope.launch {
-            delay(1_000L) // We wait a little to make sure we have the errors from the query
-            DownloadManager.Query().also { query ->
-                query.setFilterById(downloadReference)
-                Dispatchers.IO {
-                    downloadManager.query(query).use {
-                        if (it.moveToFirst()) showErrorIfAny(it)
-                    }
-                }
-            }
-        }
-    }
-
-    @OptIn(UnreliableToastApi::class)
-    private suspend fun showErrorIfAny(cursor: Cursor) {
-        val status: Int
-        val reason: Int
-        withContext(Dispatchers.IO) {
-            status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
-            reason = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON))
-        }
-        if (status == DownloadManager.STATUS_FAILED) Dispatchers.Main {
-            when (reason) {
-                DownloadManager.ERROR_INSUFFICIENT_SPACE -> toast(R.string.errorDownloadInsufficientSpace)
-                else -> toast(R.string.errorDownload)
-            }
-        }
     }
 }
