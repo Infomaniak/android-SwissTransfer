@@ -30,7 +30,9 @@ import splitties.mainhandler.mainHandler
 value class UniqueDownloadId(val value: Long)
 
 sealed interface DownloadStatus {
+
     data class Failed(val reason: Reason) : DownloadStatus {
+
         sealed interface Reason {
             data object CannotResume : Reason
             data object UnknownError : Reason
@@ -51,6 +53,7 @@ sealed interface DownloadStatus {
 
         }
     }
+
     data class Paused(val reason: Reason?) : DownloadStatus {
         enum class Reason {
             WaitingToRetry,
@@ -58,11 +61,14 @@ sealed interface DownloadStatus {
             QueuedForWifi;
         }
     }
+
     data object Pending : DownloadStatus
+
     data class InProgress(
         val downloadedBytes: Long,
         val totalSizeInBytes: Long,
     ) : DownloadStatus
+
     data object Complete : DownloadStatus
 }
 
