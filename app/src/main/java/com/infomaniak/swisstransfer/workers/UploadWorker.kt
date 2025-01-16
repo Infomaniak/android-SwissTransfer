@@ -167,12 +167,12 @@ class UploadWorker @AssistedInject constructor(
         ) : UploadProgressUiState(uploadedSize) {
             companion object {
                 fun create(outputData: Data, sharedApiUrlCreator: SharedApiUrlCreator): Success? {
+                    val uuid = outputData.getString(TRANSFER_UUID_TAG) ?: return null
                     return Success(
                         uploadedSize = outputData.getLong(UPLOADED_BYTES_TAG, 0L),
                         transferType = outputData.getString(TRANSFER_TYPE_TAG) ?: return null,
-                        transferUuid = outputData.getString(TRANSFER_UUID_TAG) ?: return null,
-                        transferUrl = outputData.getString(TRANSFER_UUID_TAG)
-                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null,
+                        transferUuid = uuid,
+                        transferUrl = sharedApiUrlCreator.shareTransferUrl(uuid),
                     )
                 }
             }

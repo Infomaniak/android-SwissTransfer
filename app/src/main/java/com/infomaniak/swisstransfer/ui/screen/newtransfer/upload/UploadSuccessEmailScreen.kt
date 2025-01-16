@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,9 @@ fun UploadSuccessEmailScreen(
     uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
 ) {
     val recipientsEmails by uploadSuccessViewModel.recipientsEmails.collectAsStateWithLifecycle()
-    uploadSuccessViewModel.fetchTransfer(transferUuid)
+
+    LaunchedEffect(Unit) { uploadSuccessViewModel.fetchTransfer(transferUuid) }
+
     UploadSuccessEmailScreen({ recipientsEmails }, closeActivity)
 }
 
