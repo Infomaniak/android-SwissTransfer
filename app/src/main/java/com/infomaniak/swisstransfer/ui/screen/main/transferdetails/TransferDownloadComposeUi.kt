@@ -190,7 +190,7 @@ class TransferDownloadComposeUi(
     @Composable
     fun CardProgressBar(modifier: Modifier) {
         when (val status = downloadStatus) {
-            DownloadStatus.Complete -> {}
+            DownloadStatus.Complete -> Unit
             is DownloadStatus.Failed -> {
                 LinearProgressIndicator(
                     progress = { 1f },
@@ -204,7 +204,7 @@ class TransferDownloadComposeUi(
             is DownloadStatus.Paused, DownloadStatus.Pending -> {
                 LinearProgressIndicator(modifier = modifier)
             }
-            else -> {}
+            else -> Unit
         }
     }
 
