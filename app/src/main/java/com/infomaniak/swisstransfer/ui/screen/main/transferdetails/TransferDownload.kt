@@ -76,7 +76,13 @@ suspend fun handleTransferDownload(
                 repeatWhileActive {
                     ui.awaitOpenRequest()
                     openFile(uri)
-                    delay(.7.seconds) // Prevent unintended doubled actions.
+                    // We can't know for sure how long the target app
+                    // will take to react, if any, so we keep
+                    // the action disabled for a short time to
+                    // show the user their action has
+                    // been taken into account, and also to
+                    // prevent unintended doubled actions.
+                    delay(.7.seconds)
                 }
             }
         })
