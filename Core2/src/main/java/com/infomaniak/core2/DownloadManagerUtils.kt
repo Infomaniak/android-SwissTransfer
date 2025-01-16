@@ -23,7 +23,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import com.infomaniak.core2.extensions.appName
 import com.infomaniak.core2.extensions.appVersionName
-import java.nio.file.spi.FileTypeDetector
 
 object DownloadManagerUtils {
 
