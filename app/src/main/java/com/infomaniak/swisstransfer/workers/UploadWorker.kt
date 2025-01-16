@@ -24,9 +24,11 @@ import androidx.work.*
 import androidx.work.WorkInfo.State
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,6 +42,7 @@ import javax.inject.Singleton
 class UploadWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted params: WorkerParameters,
+    private val appSettingsManager: AppSettingsManager,
     private val importLocalStorage: ImportLocalStorage,
     private val uploadManager: UploadManager,
 ) : BaseCoroutineWorker(appContext, params) {
@@ -51,12 +54,15 @@ class UploadWorker @AssistedInject constructor(
             maxChunkCount = MAX_CHUNK_COUNT,
         )
     }
+
     private val uploadFileTask by lazy {
         UploadFileTask(uploadManager, fileChunkSizeManager)
     }
 
     private var uploadedBytes = 0L
     private var lastUpdateTime = 0L
+
+    private val transferType by lazy { appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi().name }
 
     override suspend fun launchWork(): Result {
         SentryLog.i(TAG, "Work launched")
@@ -82,7 +88,13 @@ class UploadWorker @AssistedInject constructor(
         val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
         importLocalStorage.removeImportFolder()
 
-        return Result.success(workDataOf(TRANSFER_UUID_TAG to transferUuid, UPLOADED_BYTES_TAG to totalSize))
+        return Result.success(
+            workDataOf(
+                UPLOADED_BYTES_TAG to totalSize,
+                TRANSFER_TYPE_TAG to transferType,
+                TRANSFER_UUID_TAG to transferUuid,
+            )
+        )
     }
 
     override fun onFinish() {
@@ -147,13 +159,20 @@ class UploadWorker @AssistedInject constructor(
         }
 
         @Immutable
-        data class Success(override val uploadedSize: Long, val transferUrl: String) : UploadProgressUiState(uploadedSize) {
+        data class Success(
+            override val uploadedSize: Long,
+            val transferType: String,
+            val transferUuid: String,
+            val transferUrl: String,
+        ) : UploadProgressUiState(uploadedSize) {
             companion object {
                 fun create(outputData: Data, sharedApiUrlCreator: SharedApiUrlCreator): Success? {
+                    val uuid = outputData.getString(TRANSFER_UUID_TAG) ?: return null
                     return Success(
                         uploadedSize = outputData.getLong(UPLOADED_BYTES_TAG, 0L),
-                        transferUrl = outputData.getString(TRANSFER_UUID_TAG)
-                            ?.let { transferUuid -> sharedApiUrlCreator.shareTransferUrl(transferUuid) } ?: return null,
+                        transferType = outputData.getString(TRANSFER_TYPE_TAG) ?: return null,
+                        transferUuid = uuid,
+                        transferUrl = sharedApiUrlCreator.shareTransferUrl(uuid),
                     )
                 }
             }
@@ -172,6 +191,7 @@ class UploadWorker @AssistedInject constructor(
         private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
         private const val UPLOADED_BYTES_TAG = "uploaded_bytes_tag"
+        private const val TRANSFER_TYPE_TAG = "transfer_type_tag"
         private const val TRANSFER_UUID_TAG = "transfer_uuid_tag"
 
         private const val PROGRESS_ELAPSED_TIME = 50
