@@ -39,7 +39,8 @@
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="deeplinkPasswordDescription">Saisis le mot de passe qui t’a été fourni pour télécharger ces fichiers.</string>
-    <string name="deeplinkTransferNotFound">Ce transfert est expiré ou n’existe pas</string>
+    <string name="deeplinkTransferExpired">Ce transfert a expiré</string>
+    <string name="deeplinkTransferNotFound">Ce transfert n’existe pas</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
     <string name="errorAppIntegrity">Votre appareil n’est pas reconnu comme sûr</string>
     <string name="errorIncorrectPassword">Mot de passe incorrect</string>
