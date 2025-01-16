@@ -33,6 +33,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingMa
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import kotlin.reflect.full.primaryConstructor
 
 class TransferSectionGroupingTest {
     @Test
@@ -103,17 +104,15 @@ class TransferSectionGroupingTest {
                 previousUids.add(uid)
             } ?: run {
                 // Case: data class with one parameter
-                val oneParameterConstructor = subClass
-                    .constructors
-                    .firstOrNull { it.parameters.count() == 1 }
+                val constructor = subClass.primaryConstructor
+                assertNotNull("This test needs to create instances of this class ${subClass.simpleName}", constructor)
+                assertEquals(1, constructor?.parameters?.count())
 
-                assertNotNull("This test need to create instances of this class ${subClass.simpleName}", oneParameterConstructor)
-
-                val firstInstanceUid = oneParameterConstructor!!.call("aaa").uid
+                val firstInstanceUid = constructor!!.call("aaa").uid
                 assert(firstInstanceUid !in previousUids)
                 previousUids.add(firstInstanceUid)
 
-                val secondInstanceUid = oneParameterConstructor.call("bbb").uid
+                val secondInstanceUid = constructor.call("bbb").uid
                 assert(secondInstanceUid !in previousUids)
                 previousUids.add(secondInstanceUid)
             }
@@ -122,7 +121,7 @@ class TransferSectionGroupingTest {
         TransferSectionWithContains::class.sealedSubclasses.forEach { subClass ->
             // Case: data object
             val instance = subClass.objectInstance
-            assertNotNull("This test need to create instances of this class ${subClass.simpleName}", subClass.objectInstance)
+            assertNotNull("This test needs to create instances of this class ${subClass.simpleName}", subClass.objectInstance)
 
             val uid = instance!!.uid
             assert(uid !in previousUids)
