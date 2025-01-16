@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.SpecificSection.Companion.isIn
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.UniqueSection.Companion.isIn
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -35,57 +35,59 @@ object TransfersGroupingManager {
     fun List<TransferUi>.groupBySection(today: LocalDate = LocalDate.now()): Map<TransferSection, List<TransferUi>> {
         return groupBy { transfer ->
             when {
-                transfer.isIn(SpecificSection.Future, relativeTo = today) -> SpecificSection.Future
-                transfer.isIn(SpecificSection.Today, relativeTo = today) -> SpecificSection.Today
-                transfer.isIn(SpecificSection.Yesterday, relativeTo = today) -> SpecificSection.Yesterday
-                transfer.isIn(SpecificSection.ThisWeek, relativeTo = today) -> SpecificSection.ThisWeek
-                transfer.isIn(SpecificSection.LastWeek, relativeTo = today) -> SpecificSection.LastWeek
-                transfer.isIn(SpecificSection.ThisMonth, relativeTo = today) -> SpecificSection.ThisMonth
+                transfer.isIn(UniqueSection.Future, relativeTo = today) -> UniqueSection.Future
+                transfer.isIn(UniqueSection.Today, relativeTo = today) -> UniqueSection.Today
+                transfer.isIn(UniqueSection.Yesterday, relativeTo = today) -> UniqueSection.Yesterday
+                transfer.isIn(UniqueSection.ThisWeek, relativeTo = today) -> UniqueSection.ThisWeek
+                transfer.isIn(UniqueSection.LastWeek, relativeTo = today) -> UniqueSection.LastWeek
+                transfer.isIn(UniqueSection.ThisMonth, relativeTo = today) -> UniqueSection.ThisMonth
                 else -> TransferSection.ByMonth(getMonthNameFromEpoch(transfer.createdDateTimestamp))
             }
         }
     }
 
     sealed class TransferSection(val title: Context.() -> String) {
+        val uid get() = toString()
+
         data class ByMonth(val monthName: String) : TransferSection({ monthName })
     }
 
-    sealed class SpecificSection(
+    sealed class UniqueSection(
         @StringRes val titleRes: Int,
         private val contains: (LocalDate, LocalDate) -> Boolean,
     ) : TransferSection(title = { getString(titleRes) }) {
 
-        data object Future : SpecificSection(R.string.transferListSectionFuture, { date, today ->
+        data object Future : UniqueSection(R.string.transferListSectionFuture, { date, today ->
             date.isAfter(today)
         })
 
-        data object Today : SpecificSection(R.string.transferListSectionToday, { date, today ->
+        data object Today : UniqueSection(R.string.transferListSectionToday, { date, today ->
             date.isEqual(today)
         })
 
-        data object Yesterday : SpecificSection(R.string.transferListSectionYesterday, { date, today ->
+        data object Yesterday : UniqueSection(R.string.transferListSectionYesterday, { date, today ->
             val yesterday = today.minusDays(1)
             date.isEqual(yesterday)
         })
 
-        data object ThisWeek : SpecificSection(R.string.transferListSectionThisWeek, { date, today ->
+        data object ThisWeek : UniqueSection(R.string.transferListSectionThisWeek, { date, today ->
             val startOfWeek = today.firstDayOfWeek()
             val endOfWeek = startOfWeek.plusDays(6)
             date.isAfter(startOfWeek.minusDays(1)) && date.isBefore(endOfWeek.plusDays(1))
         })
 
-        data object LastWeek : SpecificSection(R.string.transferListSectionLastWeek, { date, today ->
+        data object LastWeek : UniqueSection(R.string.transferListSectionLastWeek, { date, today ->
             val startOfLastWeek = today.minusWeeks(1).firstDayOfWeek()
             val endOfLastWeek = startOfLastWeek.plusDays(6)
             date.isAfter(startOfLastWeek.minusDays(1)) && date.isBefore(endOfLastWeek.plusDays(1))
         })
 
-        data object ThisMonth : SpecificSection(R.string.transferListSectionThisMonth, { date, today ->
+        data object ThisMonth : UniqueSection(R.string.transferListSectionThisMonth, { date, today ->
             date.year == today.year && date.month == today.month
         })
 
         companion object {
-            fun TransferUi.isIn(section: TransfersGroupingManager.SpecificSection, relativeTo: LocalDate): Boolean {
+            fun TransferUi.isIn(section: UniqueSection, relativeTo: LocalDate): Boolean {
                 return section.contains(createdDateTimestamp.toLocalDate(), relativeTo)
             }
         }
