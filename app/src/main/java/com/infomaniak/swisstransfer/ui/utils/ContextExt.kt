@@ -119,6 +119,7 @@ fun Context.openFile(uri: Uri) {
     } catch (e: ActivityNotFoundException) {
         @OptIn(UnreliableToastApi::class)
         toast(msgResId = R.string.startActivityCantHandleAction)
+        //TODO: Offer the share action as a fallback.
     }
 }
 
