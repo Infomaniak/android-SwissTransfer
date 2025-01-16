@@ -196,7 +196,7 @@ class TransferDownloadComposeUi(
 
 @Preview
 @Composable
-private fun DownloadingButtonPreview() = SwissTransferTheme {
+private fun Preview() = SwissTransferTheme {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val ui = remember { TransferDownloadComposeUi(lifecycle, SnackbarHostState()) }
     LaunchedEffect(Unit) {
