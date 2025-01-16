@@ -23,6 +23,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import com.infomaniak.core2.extensions.appName
 import com.infomaniak.core2.extensions.appVersionName
+import java.nio.file.spi.FileTypeDetector
 
 object DownloadManagerUtils {
 
@@ -31,6 +32,7 @@ object DownloadManagerUtils {
     fun requestFor(
         url: String,
         name: String,
+        mimeType: String?,
         userAgent: String,
         extraHeaders: Iterable<Pair<String, String>> = emptySet(),
     ): Request = Request(Uri.parse(url)).also { r ->
@@ -42,6 +44,7 @@ object DownloadManagerUtils {
         r.setTitle(formattedName)
         r.setDescription(appName)
         r.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+        r.setMimeType(mimeType)
         r.addHeaders(userAgent, extraHeaders)
 
         r.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

@@ -23,6 +23,7 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.net.Uri
 import com.infomaniak.core2.*
+import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -169,6 +170,7 @@ private suspend fun buildDownloadRequest(
     return DownloadManagerUtils.requestFor(
         url = url,
         name = name,
+        mimeType = FileType.guessMimeTypeFromFileName(name),
         userAgent = userAgent,
     )
 }
