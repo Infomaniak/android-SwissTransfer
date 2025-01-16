@@ -34,19 +34,19 @@ object DownloadManagerUtils {
         mimeType: String?,
         userAgent: String,
         extraHeaders: Iterable<Pair<String, String>> = emptySet(),
-    ): Request = Request(Uri.parse(url)).also { r ->
-        r.setAllowedNetworkTypes(Request.NETWORK_WIFI or Request.NETWORK_MOBILE)
+    ): Request = Request(Uri.parse(url)).also { req ->
+        req.setAllowedNetworkTypes(Request.NETWORK_WIFI or Request.NETWORK_MOBILE)
         val formattedName = name.replace(regexInvalidSystemChar, "_").replace("%", "_").let {
             // fix IllegalArgumentException only on Android 10 if multi dot
             if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
         }
-        r.setTitle(formattedName)
-        r.setDescription(appName)
-        r.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
-        r.setMimeType(mimeType)
-        r.addHeaders(userAgent, extraHeaders)
+        req.setTitle(formattedName)
+        req.setDescription(appName)
+        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+        req.setMimeType(mimeType)
+        req.addHeaders(userAgent, extraHeaders)
 
-        r.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        req.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
     }
 
     private fun Request.addHeaders(userAgent: String, extraHeaders: Iterable<Pair<String, String>>) {
