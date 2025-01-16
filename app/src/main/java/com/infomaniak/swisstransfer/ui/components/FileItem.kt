@@ -47,6 +47,7 @@ fun FileItem(
     isChecked: () -> Boolean = { false },
     onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
+    uriForFile: State<String?> = rememberUpdatedState(file.localPath),
     previewOverlay: @Composable BoxScope.() -> Unit = {}
 ) {
     FileItemContent(
@@ -61,6 +62,7 @@ fun FileItem(
         content = {
             FilePreview(
                 file = file,
+                previewUri = uriForFile.value,
                 circleColor = SwissTransferTheme.materialColors.surface,
                 circleSize = 64.dp,
                 showFileName = false,

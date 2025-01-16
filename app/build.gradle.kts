@@ -137,6 +137,7 @@ dependencies {
     implementation(libs.swisstransfer.network)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.video)
     implementation(libs.qrose)
 
     // Compose preview tools
