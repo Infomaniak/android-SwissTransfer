@@ -107,6 +107,7 @@ dependencies {
     implementation(project(":Core2:InAppStore"))
     implementation(project(":Core2:Matomo"))
     implementation(project(":Core2:Network"))
+    implementation(project(":Core2:Notifications"))
     implementation(project(":Core2:Onboarding"))
     implementation(project(":Core2:Sentry"))
 
