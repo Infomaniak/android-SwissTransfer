@@ -67,6 +67,7 @@ fun Context.buildNotification(
     icon: Int,
     title: String,
     description: String? = null,
+    onlyAlertOnce: Boolean = false
 ): NotificationCompat.Builder {
     val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     return NotificationCompat.Builder(this, channelId).apply {
@@ -75,7 +76,9 @@ fun Context.buildNotification(
         description?.let { setStyle(NotificationCompat.BigTextStyle().bigText(it)) }
         setSmallIcon(icon)
         setAutoCancel(true)
+        setOnlyAlertOnce(onlyAlertOnce)
         setContentIntent(PendingIntent.getActivity(this@buildNotification, requestCode, intent, pendingIntentFlags))
+        setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 }
 

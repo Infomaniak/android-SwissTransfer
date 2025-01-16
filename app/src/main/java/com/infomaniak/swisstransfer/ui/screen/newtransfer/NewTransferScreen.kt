@@ -28,16 +28,18 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun NewTransferScreen(closeActivity: () -> Unit) {
+fun NewTransferScreen(startDestination: NewTransferNavigation, closeActivity: () -> Unit) {
     val navController = rememberNavController()
     var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
 
     NewTransferNavHost(
-        navController,
+        navController = navController,
+        startDestination = startDestination,
         closeActivity = closeActivity,
         closeActivityAndPromptForValidation = { displayConfirmationDialog = true },
     )

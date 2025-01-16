@@ -131,8 +131,8 @@ private fun UploadProgressScreen(
         if (showBottomSheet.get()) {
             CancelUploadBottomSheet(
                 onCancel = {
-                    onCancel()
                     showBottomSheet.set(false)
+                    onCancel()
                 },
                 closeButtonSheet = { showBottomSheet.set(false) },
             )
