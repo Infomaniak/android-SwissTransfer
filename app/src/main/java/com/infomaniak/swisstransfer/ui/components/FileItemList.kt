@@ -78,7 +78,9 @@ fun FileItemList(
         }
 
         items(files, key = { it.uid }) { file ->
-            val downloadUi: TransferDownloadComposeUi = remember(lifecycle) { TransferDownloadComposeUi(lifecycle, snackbarHostState) }
+            val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
+                TransferDownloadComposeUi(lifecycle, snackbarHostState)
+            }
             LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
             FileItem(
                 modifier = Modifier.animateItem(),
