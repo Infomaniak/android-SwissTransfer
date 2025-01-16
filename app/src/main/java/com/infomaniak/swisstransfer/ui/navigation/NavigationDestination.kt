@@ -46,11 +46,11 @@ sealed class MainNavigation : NavigationDestination() {
 
         val preprodBasePath = "${BuildConfig.PREPROD_URL}/d/{$transferUuidName}$suffix"
         val prodBasePath = "${BuildConfig.PROD_URL}/d/{$transferUuidName}$suffix"
-        val deepLinks = listOf(
+        val deeplinks = listOf(
             navDeepLink<T>(preprodBasePath),
             navDeepLink<T>(prodBasePath),
         )
-        composable<T>(deepLinks = deepLinks, content = content)
+        composable<T>(deepLinks = deeplinks, content = content)
     }
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.

@@ -30,10 +30,10 @@ class DeeplinkViewModel @Inject constructor(
     private val transferManager: TransferManager,
 ) : ViewModel() {
 
-    val isDeepLinkConsumed = savedStateHandle.getStateFlow(IS_DEEP_LINK_CONSUMED_KEY, false)
+    val isDeeplinkConsumed = savedStateHandle.getStateFlow(IS_DEEPLINK_CONSUMED_KEY, false)
 
     fun consumeDeepLink() {
-        if (!isDeepLinkConsumed.value) savedStateHandle[IS_DEEP_LINK_CONSUMED_KEY] = true
+        if (!isDeeplinkConsumed.value) savedStateHandle[IS_DEEPLINK_CONSUMED_KEY] = true
     }
 
     suspend fun getDeeplinkTransferDirection(transferUuid: String): TransferDirection? {
@@ -44,7 +44,7 @@ class DeeplinkViewModel @Inject constructor(
 
         const val SENT_DEEPLINK_SUFFIX = "/sent"
 
-        private const val IS_DEEP_LINK_CONSUMED_KEY = "isDeepLinkConsumed"
+        private const val IS_DEEPLINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }
 }
 

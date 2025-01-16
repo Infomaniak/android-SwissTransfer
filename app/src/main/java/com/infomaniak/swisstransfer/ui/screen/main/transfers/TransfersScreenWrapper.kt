@@ -59,7 +59,7 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
 
-            val isDeepLinkConsumed by deeplinkViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
+            val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
 
             HandleDeepLink(
                 transferUuid = transferUuid,
