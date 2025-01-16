@@ -40,7 +40,9 @@ class DeeplinkViewModel @Inject constructor(
         return transferManager.getTransferByUUID(transferUuid)?.direction
     }
 
-    private companion object {
+    companion object {
+
+        const val SENT_DEEPLINK_SUFFIX = "/sent"
 
         private const val IS_DEEP_LINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }

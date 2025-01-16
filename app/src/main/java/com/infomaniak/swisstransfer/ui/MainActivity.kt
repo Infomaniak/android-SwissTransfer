@@ -36,6 +36,7 @@ import androidx.lifecycle.lifecycleScope
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -58,12 +59,13 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val deeplinkUuid = getDeeplinkTransferUuid()
             val transferDirection = deeplinkUuid?.let {
+                // If we don't find the transfer in Realm, it means it's a new received one
                 deeplinkViewModel.getDeeplinkTransferDirection(it) ?: TransferDirection.RECEIVED
             }
 
             if (transferDirection == TransferDirection.SENT) {
-                // Modify the intent to avoid conflict between the `Sent` and `received` deeplinks
-                intent.setData((intent.data.toString() + "/sent").toUri())
+                // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
+                intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
             }
 
             setContent {

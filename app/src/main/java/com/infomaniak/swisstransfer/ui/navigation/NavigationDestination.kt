@@ -27,6 +27,7 @@ import androidx.navigation.toRoute
 import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination.getDeeplinkDirection
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import kotlinx.serialization.Serializable
 
@@ -58,7 +59,7 @@ sealed class MainNavigation : NavigationDestination() {
 
         companion object {
             fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
-                getDeeplinkDirection<SentDestination>(content, SentDestination::transferUuid.name, "/sent")
+                getDeeplinkDirection<SentDestination>(content, SentDestination::transferUuid.name, SENT_DEEPLINK_SUFFIX)
             }
         }
     }
