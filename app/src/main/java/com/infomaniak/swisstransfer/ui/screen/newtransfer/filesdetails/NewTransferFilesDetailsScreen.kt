@@ -49,7 +49,7 @@ fun NewTransferFilesDetailsScreen(
     }
 
     NewTransferFilesDetailsScreen(
-        files = (uiState as? FilesDetailsUiState.Success)?.files ?: emptyList(),
+        files = (uiState as? FilesDetailsUiState.Success)?.files?.asReversed() ?: emptyList(),
         withFilesSize = withFilesSize,
         withSpaceLeft = withSpaceLeft,
         onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
