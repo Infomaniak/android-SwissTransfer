@@ -136,8 +136,6 @@ class ImportFilesViewModel @Inject constructor(
     init {
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
-                isFirstViewModelCreation = false
-
                 // Remove old imported files in case it would've crashed (or similar) to start with a clean slate.
                 // This is required for already imported files restoration to not pick up old files in some extreme cases.
                 removeOldData()
@@ -151,18 +149,12 @@ class ImportFilesViewModel @Inject constructor(
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
 
-            launch {
-                when (val reason = newTransferOpenManager.readOpenReason()) {
-                    is NewTransferOpenManager.Reason.ExternalShareIncoming -> {
-                        importationFilesManager.importFiles(reason.uris)
-                    }
-                    NewTransferOpenManager.Reason.Other -> {
-                        _openFilePickerEvent.send(Unit)
-                    }
-                }
-            }
+            val wasFirstViewModelCreation = isFirstViewModelCreation
+            launch { handleOpenReason(wasFirstViewModelCreation) }
 
             importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+
+            isFirstViewModelCreation = false
         }
     }
 
@@ -191,6 +183,17 @@ class ImportFilesViewModel @Inject constructor(
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
         uploadManager.removeAllUploadSession()
+    }
+
+    private suspend fun handleOpenReason(isFirstViewModelCreation: Boolean) {
+        when (val reason = newTransferOpenManager.readOpenReason()) {
+            is NewTransferOpenManager.Reason.ExternalShareIncoming -> {
+                importationFilesManager.importFiles(reason.uris)
+            }
+            NewTransferOpenManager.Reason.Other -> {
+                if (isFirstViewModelCreation) _openFilePickerEvent.send(Unit)
+            }
+        }
     }
 
     private suspend fun generateNewUploadSession(): NewUploadSession {
