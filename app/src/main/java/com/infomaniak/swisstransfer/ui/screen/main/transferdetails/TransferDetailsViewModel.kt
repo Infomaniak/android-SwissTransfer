@@ -110,7 +110,7 @@ class TransferDetailsViewModel @Inject constructor(
         ui: TransferDownloadUi,
         transfer: TransferUi,
         targetFile: FileUi?,
-        openFile: (Uri) -> Unit,
+        openFile: suspend (Uri) -> Unit,
     ): Nothing = handleTransferDownload(
         ui = ui,
         transferManager = transferManager,

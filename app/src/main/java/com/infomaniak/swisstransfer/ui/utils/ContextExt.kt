@@ -28,7 +28,10 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.swisstransfer.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.invoke
 import splitties.toast.UnreliableToastApi
 import splitties.toast.toast
 import kotlin.reflect.KClass
@@ -108,9 +111,12 @@ fun Context.shareText(text: String) {
     safeStartActivity(Intent.createChooser(intent, null))
 }
 
-fun Context.openFile(uri: Uri) {
+suspend fun Context.openFile(uri: Uri) {
     val intent = Intent(Intent.ACTION_VIEW).also {
-        it.data = uri
+        val type = Dispatchers.IO { contentResolver.getType(uri) } ?: uri.lastPathSegment?.let { name ->
+            FileType.guessMimeTypeFromFileName(name)
+        }
+        it.setDataAndType(uri, type)
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }

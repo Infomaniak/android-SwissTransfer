@@ -48,7 +48,7 @@ suspend fun handleTransferDownload(
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
-    openFile: (Uri) -> Unit,
+    openFile: suspend (Uri) -> Unit,
 ): Nothing = repeatWhileActive {
     val id: UniqueDownloadId = getDownloadIdFromStorage(
         transferManager = transferManager,
