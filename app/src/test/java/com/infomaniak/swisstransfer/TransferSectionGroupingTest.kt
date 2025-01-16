@@ -26,7 +26,7 @@ import com.infomaniak.swisstransfer.dataset.TransferSectionGroupingData.thisWeek
 import com.infomaniak.swisstransfer.dataset.TransferSectionGroupingData.today
 import com.infomaniak.swisstransfer.dataset.TransferSectionGroupingData.yesterday
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSection
-import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.UniqueSection
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSectionWithContains
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.getMonthNameFromEpoch
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
@@ -37,27 +37,27 @@ import org.junit.Test
 class TransferSectionGroupingTest {
     @Test
     fun today_isGroupedCorrectly() {
-        assertEpochsAreGroupedInSection(today, UniqueSection.Today)
+        assertEpochsAreGroupedInSection(today, TransferSectionWithContains.Today)
     }
 
     @Test
     fun yesterday_isGroupedCorrectly() {
-        assertEpochsAreGroupedInSection(yesterday, UniqueSection.Yesterday)
+        assertEpochsAreGroupedInSection(yesterday, TransferSectionWithContains.Yesterday)
     }
 
     @Test
     fun thisWeek_areGroupedCorrectly() {
-        assertEpochsAreGroupedInSection(thisWeek, UniqueSection.ThisWeek)
+        assertEpochsAreGroupedInSection(thisWeek, TransferSectionWithContains.ThisWeek)
     }
 
     @Test
     fun lastWeek_areGroupedCorrectly() {
-        assertEpochsAreGroupedInSection(lastWeek, UniqueSection.LastWeek)
+        assertEpochsAreGroupedInSection(lastWeek, TransferSectionWithContains.LastWeek)
     }
 
     @Test
     fun thisMonth_areGroupedCorrectly() {
-        assertEpochsAreGroupedInSection(thisMonth, UniqueSection.ThisMonth)
+        assertEpochsAreGroupedInSection(thisMonth, TransferSectionWithContains.ThisMonth)
     }
 
     @Test
@@ -68,7 +68,7 @@ class TransferSectionGroupingTest {
 
     @Test
     fun futureDates_areGroupedCorrectly() {
-        assertEpochsAreGroupedInSection(future, UniqueSection.Future)
+        assertEpochsAreGroupedInSection(future, TransferSectionWithContains.Future)
     }
 
     @Test
@@ -79,12 +79,12 @@ class TransferSectionGroupingTest {
     @Test
     fun sections_areOrderCorrectly() {
         val decemberSection = TransferSection.ByMonth(getMonthNameFromEpoch(december.first()))
-        assertEquals(groupedTransferUi.keys.elementAt(0), UniqueSection.Future)
-        assertEquals(groupedTransferUi.keys.elementAt(1), UniqueSection.Today)
-        assertEquals(groupedTransferUi.keys.elementAt(2), UniqueSection.Yesterday)
-        assertEquals(groupedTransferUi.keys.elementAt(3), UniqueSection.ThisWeek)
-        assertEquals(groupedTransferUi.keys.elementAt(4), UniqueSection.LastWeek)
-        assertEquals(groupedTransferUi.keys.elementAt(5), UniqueSection.ThisMonth)
+        assertEquals(groupedTransferUi.keys.elementAt(0), TransferSectionWithContains.Future)
+        assertEquals(groupedTransferUi.keys.elementAt(1), TransferSectionWithContains.Today)
+        assertEquals(groupedTransferUi.keys.elementAt(2), TransferSectionWithContains.Yesterday)
+        assertEquals(groupedTransferUi.keys.elementAt(3), TransferSectionWithContains.ThisWeek)
+        assertEquals(groupedTransferUi.keys.elementAt(4), TransferSectionWithContains.LastWeek)
+        assertEquals(groupedTransferUi.keys.elementAt(5), TransferSectionWithContains.ThisMonth)
         assertEquals(groupedTransferUi.keys.elementAt(6), decemberSection)
     }
 
@@ -93,7 +93,7 @@ class TransferSectionGroupingTest {
         val previousUids = mutableListOf<String>()
 
         TransferSection::class.sealedSubclasses.forEach { subClass ->
-            if (subClass == UniqueSection::class) return@forEach
+            if (subClass == TransferSectionWithContains::class) return@forEach
 
             subClass.objectInstance?.let { instance ->
                 // Case: data object
@@ -119,7 +119,7 @@ class TransferSectionGroupingTest {
             }
         }
 
-        UniqueSection::class.sealedSubclasses.forEach { subClass ->
+        TransferSectionWithContains::class.sealedSubclasses.forEach { subClass ->
             // Case: data object
             val instance = subClass.objectInstance
             assertNotNull("This test need to create instances of this class ${subClass.simpleName}", subClass.objectInstance)
