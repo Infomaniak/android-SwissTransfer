@@ -27,6 +27,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,6 +37,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+typealias GroupedTransfers = Map<TransfersGroupingManager.TransferSection, List<TransferUi>>
+
 @HiltViewModel
 class TransfersViewModel @Inject constructor(
     private val transferManager: TransferManager,
@@ -44,11 +47,11 @@ class TransfersViewModel @Inject constructor(
 ) : ViewModel() {
 
     val sentTransfersUiState = transferManager.getTransfers(TransferDirection.SENT)
-        .map { TransferUiState.Success(it) }
+        .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
     val receivedTransfersUiState = transferManager.getTransfers(TransferDirection.RECEIVED)
-        .map { TransferUiState.Success(it) }
+        .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
     val sentTransfersAreEmpty: StateFlow<Boolean> = transferManager.getTransfersCount(TransferDirection.SENT)
@@ -85,7 +88,7 @@ class TransfersViewModel @Inject constructor(
 
     sealed interface TransferUiState {
         data object Loading : TransferUiState
-        data class Success(val data: List<TransferUi>) : TransferUiState
+        data class Success(val data: GroupedTransfers) : TransferUiState
     }
 
     companion object {

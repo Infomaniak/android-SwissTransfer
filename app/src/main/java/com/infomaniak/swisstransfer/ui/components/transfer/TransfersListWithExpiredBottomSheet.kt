@@ -27,7 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
-import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -38,7 +39,7 @@ fun TransfersListWithExpiredBottomSheet(
     direction: TransferDirection,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    getTransfers: () -> List<TransferUi>,
+    getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
 ) {
 
@@ -68,7 +69,7 @@ fun TransfersListWithExpiredBottomSheet(
 
 @PreviewLightAndDark
 @Composable
-private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) transfers: List<TransferUi>) {
+private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::class) transfers: GroupedTransfers) {
     SwissTransferTheme {
         Surface {
             TransfersListWithExpiredBottomSheet(

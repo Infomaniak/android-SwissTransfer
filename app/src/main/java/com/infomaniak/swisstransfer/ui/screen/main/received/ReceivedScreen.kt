@@ -34,6 +34,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel.TransferUiState
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -99,7 +100,7 @@ private fun ReceivedScreen(
 
 @Composable
 private fun ReceivedContent(
-    transfers: List<TransferUi>,
+    transfers: GroupedTransfers,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit,
@@ -128,7 +129,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             ReceivedScreen(
-                uiState = { TransferUiState.Success(emptyList()) },
+                uiState = { TransferUiState.Success(emptyMap()) },
                 isFirstTransfer = { true },
                 navigateToDetails = {},
                 getSelectedTransferUuid = { null },
