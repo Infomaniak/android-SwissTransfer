@@ -27,7 +27,10 @@ import com.infomaniak.core2.extensions.appVersionName
 object DownloadManagerUtils {
 
     fun withoutProblematicCharacters(originalName: String): String {
-        return originalName.replace(regexInvalidSystemChar, "_").replace('%','_')
+        return originalName.replace(regexInvalidSystemChar, "_").replace('%','_').let {
+            // fix IllegalArgumentException only on Android 10 if multi dot
+            if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
+        }
     }
 
     private val regexInvalidSystemChar = Regex("[\\\\/:*?\"<>|\\x7F]|[\\x00-\\x1f]")
@@ -44,7 +47,7 @@ object DownloadManagerUtils {
             // fix IllegalArgumentException only on Android 10 if multi dot
             if (SDK_INT == 29) it.replace(Regex("\\.{2,}"), ".") else it
         }
-        req.setTitle(formattedName)
+        req.setTitle(name)
         req.setDescription(appName)
         req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
         req.setMimeType(mimeType)
