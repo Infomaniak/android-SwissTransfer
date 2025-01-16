@@ -55,7 +55,7 @@ import splitties.coroutines.raceOf
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import kotlin.time.Duration.Companion.seconds
-import com.infomaniak.core2.R as Core2R
+import com.infomaniak.core2.R as RCore2
 
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
@@ -176,7 +176,7 @@ class TransferDownloadComposeUi(
             val downloading = BtnData(
                 icon = AppImages.AppIcons.Stop,
                 labelResId = R.string.buttonDownloading,
-                contentDescResId = Core2R.string.buttonCancel
+                contentDescResId = RCore2.string.buttonCancel
             )
             val failed = BtnData(
                 icon = AppImages.AppIcons.ArrowDownBar,
