@@ -152,7 +152,7 @@ class ImportFilesViewModel @Inject constructor(
             val wasFirstViewModelCreation = isFirstViewModelCreation
             launch { handleOpenReason(wasFirstViewModelCreation) }
 
-            importationFilesManager.continuouslyCopyPickedFilesToLocalStorage()
+            launch { importationFilesManager.continuouslyCopyPickedFilesToLocalStorage() }
 
             isFirstViewModelCreation = false
         }
