@@ -125,8 +125,8 @@ class TransferDownloadComposeUi(
                 extraBackgroundContent = progressIndicator
             )
         } else BottomBarButton(
-            icon = BtnData.download.icon,
-            labelResId = BtnData.download.labelResId,
+            icon = ButtonData.download.icon,
+            labelResId = ButtonData.download.labelResId,
             enabled = downloadRequest.isAwaitingCall,
             onClick = downloadRequest,
             modifier = modifier,
@@ -136,49 +136,49 @@ class TransferDownloadComposeUi(
     @Composable
     private fun DownloadStatus(
         button: @Composable (
-            data: BtnData,
+            data: ButtonData,
             action: CallableState<Unit>,
             progressIndicator: @Composable BoxScope.() -> Unit
         ) -> Unit,
     ) {
         when (val status = downloadStatus) {
             DownloadStatus.Complete -> {
-                button(BtnData.downloaded, openRequest) {}
+                button(ButtonData.downloaded, openRequest) {}
             }
             is DownloadStatus.Failed -> {
-                button(BtnData.failed, removalRequest) {}
+                button(ButtonData.failed, removalRequest) {}
             }
             is DownloadStatus.InProgress -> {
-                button(BtnData.downloading, removalRequest) {
+                button(ButtonData.downloading, removalRequest) {
                     DownloadProgress(rememberUpdatedState(status))
                 }
             }
             is DownloadStatus.Paused, DownloadStatus.Pending, null -> {
-                button(BtnData.downloading, removalRequest) { CircularProgressIndicator() }
+                button(ButtonData.downloading, removalRequest) { CircularProgressIndicator() }
             }
         }
     }
 
-    private class BtnData(
+    private class ButtonData(
         val icon: ImageVector,
         @StringRes val labelResId: Int,
         @StringRes val contentDescResId: Int = labelResId,
     ) {
         companion object {
-            val download = BtnData(
+            val download = ButtonData(
                 icon = AppImages.AppIcons.ArrowDownBar,
                 labelResId = R.string.buttonDownload
             )
-            val downloaded = BtnData(
+            val downloaded = ButtonData(
                 icon = AppImages.AppIcons.Checkmark,
                 labelResId = R.string.buttonDownloaded
             )
-            val downloading = BtnData(
+            val downloading = ButtonData(
                 icon = AppImages.AppIcons.Stop,
                 labelResId = R.string.buttonDownloading,
                 contentDescResId = RCore2.string.buttonCancel
             )
-            val failed = BtnData(
+            val failed = ButtonData(
                 icon = AppImages.AppIcons.ArrowDownBar,
                 labelResId = com.infomaniak.core2.R.string.errorDownload
             )
