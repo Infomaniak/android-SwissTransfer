@@ -51,7 +51,6 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 
@@ -66,13 +65,7 @@ var areTransferDataStillAvailable = false
 
 @Composable
 fun AutoResetTransferDataAvailabilityStatus() {
-    LaunchedEffect(Unit) {
-        try {
-            awaitCancellation()
-        } finally {
-            areTransferDataStillAvailable = false
-        }
-    }
+    DisposableEffect(Unit) { onDispose { areTransferDataStillAvailable = false } }
 }
 
 @Composable
