@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
@@ -56,18 +57,21 @@ fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? =
     TwoPaneScaffold<DestinationContent>(
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
-            val isDeepLinkConsumed by transfersViewModel.isDeepLinkConsumed.collectAsStateWithLifecycle()
+            val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
+
+            val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
+
             HandleDeepLink(
                 transferUuid = transferUuid,
                 isDeepLinkConsumed = { isDeepLinkConsumed },
-                consumeDeepLink = transfersViewModel::consumeDeepLink,
+                consumeDeepLink = deeplinkViewModel::consumeDeepLink,
                 direction = direction,
             )
             ListPane(
                 direction = direction,
                 navigator = this,
                 updateHasTransfer = { hasTransfer = it },
-                transfersViewModel = transfersViewModel
+                transfersViewModel = transfersViewModel,
             )
         },
         detailPane = {

@@ -30,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirectio
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination.Companion.sentDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
@@ -37,15 +38,25 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrap
 fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    isTransferDeeplink: Boolean,
+    deeplinkTransferDirection: TransferDirection?,
 ) {
+
+    val startDestination = when (deeplinkTransferDirection) {
+        TransferDirection.SENT -> SentDestination()
+        TransferDirection.RECEIVED -> ReceivedDestination()
+        else -> MainNavigation.startDestination
+    }
+
     NavHost(
         navController = navController,
-        startDestination = if (isTransferDeeplink) ReceivedDestination() else MainNavigation.startDestination,
+        startDestination = startDestination,
         enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
         exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
     ) {
-        composable<SentDestination> { TransfersScreenWrapper(TransferDirection.SENT) }
+        sentDestination {
+            val args = it.toRoute<SentDestination>()
+            TransfersScreenWrapper(TransferDirection.SENT, transferUuid = args.transferUuid)
+        }
         receivedDestination {
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
