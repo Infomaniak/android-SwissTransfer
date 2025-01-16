@@ -17,9 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import android.os.Bundle
-import android.os.Parcelable
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
-import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
