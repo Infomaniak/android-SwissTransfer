@@ -19,6 +19,10 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.Context
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.*
@@ -31,12 +35,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.layout.LookaheadScope
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private val backBehavior = BackNavigationBehavior.PopUntilContentChange
+
+fun Modifier.animateBounds(
+    animateFraction: () -> Float,
+    sizeAnimationSpec: FiniteAnimationSpec<IntSize>,
+    positionAnimationSpec: FiniteAnimationSpec<IntOffset>,
+    lookaheadScope: LookaheadScope,
+    enabled: Boolean
+) =
+    if (enabled) {
+        this.then(
+            AnimateBoundsElement(
+                animateFraction,
+                sizeAnimationSpec,
+                positionAnimationSpec,
+                lookaheadScope
+            )
+        )
+    } else {
+        this
+    }
 
 /**
  * A composable function that sets up a List-Detail interface using a three-pane scaffold navigator.
@@ -77,8 +105,49 @@ fun <T> TwoPaneScaffold(
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
-        listPane = { AnimatedPane { navigator.listPane() } },
-        detailPane = { AnimatedPane { navigator.detailPane() } },
+        listPane = {
+            AnimatedPane {
+
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////
+            scaffoldStateTransition.AnimatedVisibility(
+                visible = { value: ThreePaneScaffoldValue -> value[role] != PaneAdaptedValue.Hidden },
+                modifier =
+                modifier
+                    // .animatedPane()
+                    .animateBounds(
+                        animateFraction = animateFraction,
+                        positionAnimationSpec = positionAnimationSpec,
+                        sizeAnimationSpec = sizeAnimationSpec,
+                        lookaheadScope = this,
+                        enabled = keepShowing
+                    )
+                    .then(if (keepShowing) Modifier else Modifier.clipToBounds()),
+                enter = enterTransition,
+                exit = exitTransition
+            ) {
+                navigator.listPane()
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////
+            scaffoldStateTransition.AnimatedVisibility(
+                visible = { value: ThreePaneScaffoldValue -> value[role] != PaneAdaptedValue.Hidden },
+                enter = slideInHorizontally(),
+                exit = slideOutHorizontally(),
+            ) {
+                navigator.listPane()
+            }
+        },
+        detailPane = {
+            scaffoldStateTransition.AnimatedVisibility(
+                visible = { value: ThreePaneScaffoldValue -> value[role] != PaneAdaptedValue.Hidden },
+                enter = slideInHorizontally(initialOffsetX = { it / 2 }),
+                exit = slideOutHorizontally(targetOffsetX = { it / 2 }),
+            ) {
+                navigator.detailPane()
+            }
+        },
         modifier = modifier,
     )
 }
