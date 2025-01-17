@@ -52,9 +52,8 @@ class NewTransferActivity : ComponentActivity() {
             SwissTransferTheme {
                 NewTransferScreen(
                     startDestination = getStartDestination(),
-                    closeActivity = {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+                    closeActivity = { startMainActivityIfTaskIsEmpty ->
+                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
                     },
                 )
             }
@@ -82,6 +81,17 @@ class NewTransferActivity : ComponentActivity() {
         val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
         return uris ?: emptyList()
+    }
+
+    private fun finishNewTransferActivity(startMainActivityIfTaskIsEmpty: Boolean) {
+        when {
+            isTaskRoot && startMainActivityIfTaskIsEmpty -> {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+            isTaskRoot -> finishAndRemoveTask()
+            else -> finish()
+        }
     }
 
     private fun getStartDestination(): NewTransferNavigation {

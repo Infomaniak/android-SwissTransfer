@@ -80,7 +80,9 @@ class LaunchActivity : ComponentActivity() {
     private fun createNewTransferSharingFileIntent(): Intent {
         return Intent(intent).apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
-            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            // We need NewMessageActivity to have its standard launchMode in the Manifest
+            // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
+            setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
     }
 

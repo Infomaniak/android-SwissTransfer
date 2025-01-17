@@ -62,7 +62,7 @@ fun UploadErrorScreen(
                 LargeButton(
                     modifier = it,
                     title = stringResource(R.string.buttonCancelTransfer),
-                    style = ButtonType.Destructive,
+                    style = ButtonType.DestructiveText,
                     onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = closeActivity) },
                 )
             }

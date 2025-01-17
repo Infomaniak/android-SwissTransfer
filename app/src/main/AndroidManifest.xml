@@ -108,9 +108,9 @@
             android:name=".ui.MainActivity"
             android:launchMode="singleTask" />
 
-        <activity
-            android:name=".ui.NewTransferActivity"
-            android:launchMode="singleTask" />
+        <!-- We need NewMessageActivity to have its standard launchMode in the Manifest
+            in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity -->
+        <activity android:name=".ui.NewTransferActivity" />
     </application>
 
 </manifest>

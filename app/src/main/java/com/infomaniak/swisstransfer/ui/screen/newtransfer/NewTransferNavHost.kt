@@ -41,7 +41,7 @@ import io.sentry.SentryLevel
 fun NewTransferNavHost(
     navController: NavHostController,
     startDestination: NewTransferNavigation,
-    closeActivity: () -> Unit,
+    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     closeActivityAndPromptForValidation: () -> Unit,
     cancelFailureNotification: () -> Unit,
 ) {
@@ -53,7 +53,7 @@ fun NewTransferNavHost(
             cancelFailureNotification()
             ImportFilesScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
-                closeActivity = closeActivity,
+                closeActivity = { closeActivity(false) },
                 navigateToUploadProgress = { transferType, totalSize ->
                     navController.navigate(UploadProgressDestination(transferType, totalSize))
                 },
@@ -81,7 +81,8 @@ fun NewTransferNavHost(
                 },
                 navigateToUploadError = { navController.navigate(UploadErrorDestination(args.transferType, args.totalSize)) },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
-                closeActivity = closeActivity,
+                // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
+                closeActivity = { closeActivity(false) },
             )
         }
         composable<UploadSuccessDestination> {
@@ -90,7 +91,7 @@ fun NewTransferNavHost(
                 transferType = args.transferType,
                 transferUuid = args.transferUuid,
                 transferUrl = args.transferUrl,
-                closeActivity = closeActivity,
+                closeActivity = { closeActivity(true) },
             )
         }
         composable<UploadErrorDestination> {
@@ -114,7 +115,8 @@ fun NewTransferNavHost(
                     }
                 },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
-                closeActivity = closeActivity,
+                // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
+                closeActivity = { closeActivity(true) },
             )
         }
         composable<NewTransferFilesDetailsDestination> {
