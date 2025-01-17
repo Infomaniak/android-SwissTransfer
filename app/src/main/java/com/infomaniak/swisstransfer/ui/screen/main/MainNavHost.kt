@@ -22,6 +22,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,6 +40,7 @@ fun MainNavHost(
     navController: NavHostController,
     currentDestination: MainNavigation,
     deeplinkTransferDirection: TransferDirection?,
+    hideBottomBar: MutableState<Boolean>,
 ) {
 
     val startDestination = when (deeplinkTransferDirection) {
@@ -55,11 +57,11 @@ fun MainNavHost(
     ) {
         sentDestination {
             val args = it.toRoute<SentDestination>()
-            TransfersScreenWrapper(TransferDirection.SENT, transferUuid = args.transferUuid)
+            TransfersScreenWrapper(TransferDirection.SENT, transferUuid = args.transferUuid, hideBottomBar = hideBottomBar)
         }
         receivedDestination {
             val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid)
+            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid, hideBottomBar = hideBottomBar)
         }
         composable<SettingsDestination> { SettingsScreenWrapper() }
     }

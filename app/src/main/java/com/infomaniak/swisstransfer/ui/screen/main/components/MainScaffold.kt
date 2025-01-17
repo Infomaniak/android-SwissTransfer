@@ -23,6 +23,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -40,23 +42,37 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
+    hideBottomBar: MutableState<Boolean>,
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
-    MainScaffold(navType, currentDestination, navController::navigateToSelectedItem, content)
+    MainScaffold(
+        navType = navType,
+        currentDestination = currentDestination,
+        hideBottomBar = hideBottomBar,
+        navigateToSelectedItem = navController::navigateToSelectedItem,
+        content = content,
+    )
 }
 
 @Composable
 private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
+    hideBottomBar: MutableState<Boolean>,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     Column {
-        AppNavigationSuiteScaffold(navType, NavigationItem.entries, currentDestination, navigateToSelectedItem) {
+        AppNavigationSuiteScaffold(
+            layoutType = navType,
+            navigationItems = NavigationItem.entries,
+            currentDestination = currentDestination,
+            hideBottomBar = hideBottomBar,
+            navigateToSelectedItem = navigateToSelectedItem,
+        ) {
             if (windowAdaptiveInfo.isWindowSmall()) {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
@@ -121,6 +137,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
+            hideBottomBar = remember { mutableStateOf(false) },
             content = {},
         )
     }
@@ -134,6 +151,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
+            hideBottomBar = remember { mutableStateOf(false) },
             content = {},
         )
     }

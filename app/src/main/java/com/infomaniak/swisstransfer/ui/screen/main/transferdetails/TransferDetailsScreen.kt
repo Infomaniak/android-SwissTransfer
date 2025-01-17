@@ -180,7 +180,7 @@ private fun TransferDetailsScreen(
                 runDownloadUi = runDownloadUi
             )
 
-            BottomBar {
+            BottomBar(getBottomBarPadding()) {
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
                     BottomBarButton(
@@ -239,6 +239,15 @@ private fun TransferDetailsScreen(
 }
 
 @Composable
+private fun getBottomBarPadding(): PaddingValues {
+    return if (LocalWindowAdaptiveInfo.current.isWindowSmall()) {
+        WindowInsets.navigationBars.asPaddingValues()
+    } else {
+        PaddingValues()
+    }
+}
+
+@Composable
 private fun ColumnScope.FilesList(
     snackbarHostState: SnackbarHostState,
     getTransfer: () -> TransferUi,
@@ -252,7 +261,7 @@ private fun ColumnScope.FilesList(
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
-    val shouldDisplayMessage = getTransfer().message.isNullOrEmpty().not()
+    val shouldDisplayMessage = getTransfer().message.isNullOrBlank().not()
 
     FileItemList(
         modifier = Modifier
@@ -324,21 +333,25 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-private fun BottomBar(content: @Composable (RowScope.() -> Unit)) {
+private fun BottomBar(paddingValues: PaddingValues, content: @Composable (RowScope.() -> Unit)) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
-            .background(SwissTransferTheme.colors.navigationItemBackground),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(SwissTransferTheme.colors.navigationItemBackground)
+            .wrapContentHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalDivider()
         Row(
-            modifier = Modifier.padding(horizontal = Margin.Micro),
+            modifier = Modifier
+                .padding(horizontal = Margin.Micro)
+                .heightIn(min = 80.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             content()
         }
+        Spacer(Modifier.height(paddingValues.calculateBottomPadding()))
     }
 }
 

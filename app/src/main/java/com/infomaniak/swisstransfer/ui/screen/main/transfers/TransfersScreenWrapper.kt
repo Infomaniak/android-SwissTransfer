@@ -24,11 +24,8 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -51,13 +48,18 @@ import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun TransfersScreenWrapper(direction: TransferDirection, transferUuid: String? = null) {
+fun TransfersScreenWrapper(
+    direction: TransferDirection,
+    transferUuid: String? = null,
+    hideBottomBar: MutableState<Boolean>,
+) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold<DestinationContent>(
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
+            hideBottomBar.value = currentDestination?.content != null
 
             val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
 
@@ -258,7 +260,11 @@ private sealed interface DestinationContent : Parcelable {
 private fun Preview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = null)
+            TransfersScreenWrapper(
+                TransferDirection.RECEIVED,
+                transferUuid = null,
+                hideBottomBar = remember { mutableStateOf(false) },
+            )
         }
     }
 }
