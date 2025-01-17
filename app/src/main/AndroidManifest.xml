@@ -110,7 +110,7 @@
 
         <activity
             android:name=".ui.NewTransferActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="standard" />
     </application>
 
 </manifest>

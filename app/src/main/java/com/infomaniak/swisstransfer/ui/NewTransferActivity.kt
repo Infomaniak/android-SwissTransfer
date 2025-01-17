@@ -54,7 +54,7 @@ class NewTransferActivity : ComponentActivity() {
                     startDestination = getStartDestination(),
                     closeActivity = {
                         startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+                        finishAppAndRemoveTaskIfNeeded()
                     },
                 )
             }
@@ -82,6 +82,10 @@ class NewTransferActivity : ComponentActivity() {
         val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
         return uris ?: emptyList()
+    }
+
+    private fun finishAppAndRemoveTaskIfNeeded() {
+        if (isTaskRoot) finishAndRemoveTask() else finish()
     }
 
     private fun getStartDestination(): NewTransferNavigation {

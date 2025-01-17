@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -104,6 +105,8 @@ fun ImportFilesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
+
+    BackHandler { closeActivity() }
 
     HandleStartupFilePick(importFilesViewModel.openFilePickerEvent, ::pickFiles)
 
