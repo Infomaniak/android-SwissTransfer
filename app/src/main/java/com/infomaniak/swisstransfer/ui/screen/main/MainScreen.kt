@@ -17,10 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -35,6 +33,7 @@ fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val hideBottomBar = rememberSaveable { mutableStateOf(false) }
 
     val currentDestination by remember(navBackStackEntry) {
         derivedStateOf { navBackStackEntry?.toMainDestination() ?: MainNavigation.startDestination }
@@ -43,7 +42,8 @@ fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        content = { MainNavHost(navController, currentDestination, deeplinkTransferDirection) },
+        hideBottomBar = hideBottomBar,
+        content = { MainNavHost(navController, currentDestination, deeplinkTransferDirection, hideBottomBar) },
     )
 }
 
