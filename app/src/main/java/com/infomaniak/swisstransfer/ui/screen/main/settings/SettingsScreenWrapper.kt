@@ -168,6 +168,7 @@ private fun NoSelectionEmptyState() {
     ) {
         EmptyState(
             icon = AppIllus.MascotWithMagnifyingGlass,
+            iconContent = null,
             descriptionRes = R.string.noSettingsSelectedDescription
         )
     }

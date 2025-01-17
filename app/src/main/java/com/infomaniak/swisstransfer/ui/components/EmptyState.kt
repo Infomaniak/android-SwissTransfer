@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -39,14 +40,16 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun EmptyState(
     icon: ImageVector? = null,
+    iconContent: (@Composable () -> Unit)? = null,
     @StringRes titleRes: Int? = null,
     @StringRes descriptionRes: Int? = null,
     modifier: Modifier = Modifier,
-) = EmptyState(icon, titleRes, descriptionRes?.let { stringResource(it) }, modifier)
+) = EmptyState(icon, iconContent, titleRes, descriptionRes?.let { stringResource(it) }, modifier)
 
 @Composable
 fun EmptyState(
-    icon: ImageVector?,
+    icon: ImageVector? = null,
+    iconContent: (@Composable () -> Unit)? = null,
     @StringRes titleRes: Int?,
     description: String?,
     modifier: Modifier = Modifier,
@@ -59,6 +62,7 @@ fun EmptyState(
     ) {
         IllustratedMessageBlock(
             icon = icon,
+            iconContent = iconContent,
             title = titleRes,
             description = description,
             modifier = modifier.padding(horizontal = Margin.Medium),
@@ -72,7 +76,7 @@ private fun EmptyStatePreview() {
     SwissTransferTheme {
         Surface {
             EmptyState(
-                icon = AppIllus.MascotSearching,
+                icon = AppIllus.MascotWithMagnifyingGlass,
                 titleRes = R.string.noTransferReceivedTitle,
                 descriptionRes = R.string.noTransferReceivedDescription,
             )

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -42,6 +43,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun IllustratedMessageBlock(
     icon: ImageVector?,
+    iconContent: (@Composable () -> Unit)?,
     @StringRes title: Int?,
     description: String?,
     modifier: Modifier = Modifier,
@@ -50,10 +52,15 @@ fun IllustratedMessageBlock(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        icon?.let {
-            Image(imageVector = it, contentDescription = null)
 
-            Spacer(Modifier.height(Margin.Huge))
+        if (iconContent == null) {
+            icon?.let {
+                Image(imageVector = it, contentDescription = null)
+
+                Spacer(Modifier.height(Margin.Huge))
+            }
+        } else {
+            iconContent()
         }
 
         title?.let {
@@ -84,7 +91,8 @@ private fun IllustratedMessageBlockPreview() {
     SwissTransferTheme {
         Surface {
             IllustratedMessageBlock(
-                icon = AppIllus.MascotSearching,
+                icon = AppIllus.MascotWithMagnifyingGlass,
+                iconContent = null,
                 title = R.string.noTransferReceivedTitle,
                 description = stringResource(R.string.noTransferReceivedDescription),
             )

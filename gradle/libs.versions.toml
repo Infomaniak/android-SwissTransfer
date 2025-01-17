@@ -19,6 +19,7 @@ recaptcha = "18.6.1"
 sentry = "4.12.0"
 swisstransfer = "0.11.1"
 workmanager = "2.10.0"
+lottie = "6.6.2"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -48,6 +49,7 @@ recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
 workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
+lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -31,6 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core2.onboarding.IndicatorStyle
 import com.infomaniak.core2.onboarding.OnboardingPage
 import com.infomaniak.core2.onboarding.OnboardingScaffold
@@ -97,7 +100,10 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
 @Composable
 private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>) = OnboardingPage(
     background = background.image(),
-    illustration = { Image(illustration.image(), contentDescription = null) },
+    illustration = {
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(illustration))
+        LottieAnimation(composition)
+    },
     text = {
         TitleAndDescription(
             page = this,
@@ -152,7 +158,7 @@ private const val HIGHLIGHT_ANGLE = 3.0
 
 private enum class Page(
     val background: ThemedImage,
-    val illustration: ThemedImage,
+    val illustration: Int,
     @StringRes val titleRes: Int,
     @StringRes val subtitleTemplateRes: Int,
     @StringRes val subtitleArgumentRes: Int,
@@ -160,7 +166,7 @@ private enum class Page(
 ) {
     STORAGE(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustration = AppIllus.StorageCardboardBoxPile,
+        illustration = R.raw.storage_cardboard_box_pile,
         titleRes = R.string.onboardingStorageTitle,
         subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
@@ -168,7 +174,7 @@ private enum class Page(
     ),
     EXPIRATION(
         background = AppIllus.RadialGradientCornerTopLeft,
-        illustration = AppIllus.ThreeCardsTransferType,
+        illustration =  R.raw.three_cards_transfer_type,
         titleRes = R.string.onboardingExpirationTitle,
         subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
@@ -176,7 +182,7 @@ private enum class Page(
     ),
     PASSWORD(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustration = AppIllus.TwoLocksIntertwinedStars,
+        illustration = R.raw.two_locks_intertwined_stars,
         titleRes = R.string.onboardingPasswordTitle,
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,

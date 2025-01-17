@@ -70,6 +70,7 @@ fun UploadErrorScreen(
     ) {
         EmptyState(
             icon = AppIllus.GhostMagnifyingGlassQuestionMark.image(),
+            iconContent = null,
             titleRes = R.string.uploadErrorTitle,
             descriptionRes = R.string.uploadErrorDescription,
         )

@@ -151,12 +151,13 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // Others
-    implementation(core2.kotlinx.serialization.json)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.lottie)
     implementation(libs.recaptcha)
     implementation(libs.workmanager)
+    implementation(core2.kotlinx.serialization.json)
     implementation(core2.splitties.toast)
-    implementation(libs.androidx.datastore.preferences)
 
     // Test
     testImplementation(core2.junit)
