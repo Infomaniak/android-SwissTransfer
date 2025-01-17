@@ -132,17 +132,29 @@ private class EmailAddressTextFieldState(
 
 
     fun updateUiTextValue(newValue: TextFieldValue) {
-        unselectChip()
-        textFieldValue = newValue
-        onValueChange(newValue)
+        var hasNewValidRecipientEmail = false
+        val lastAddedChar = newValue.text.lastOrNull()
+
+        if (lastAddedChar == ' ' || lastAddedChar == ',') {
+            hasNewValidRecipientEmail = addRecipientAddress()
+        }
+
+        if (!hasNewValidRecipientEmail) {
+            unselectChip()
+            textFieldValue = newValue
+            onValueChange(newValue)
+        }
     }
 
-    fun addRecipientAddress() {
+    fun addRecipientAddress(): Boolean {
         val trimmedText = textFieldValue.text.trim()
         if (trimmedText.isValidEmail()) {
             validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
             updateUiTextValue(TextFieldValue())
+            return true
         }
+
+        return false
     }
 
     fun onKeyEvent(event: KeyEvent) = when {
