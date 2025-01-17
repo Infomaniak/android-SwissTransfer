@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EmailAddressTextField(
     modifier: Modifier = Modifier,
@@ -58,9 +59,9 @@ fun EmailAddressTextField(
 ) {
 
     val state = remember(validatedRecipientsEmails) {
-        EmailAddressTextFieldState(validatedRecipientsEmails, initialText = initialValue)
+        EmailAddressTextFieldState(initialValue, validatedRecipientsEmails, onValueChange)
     }
-    var textFieldValue by state::textFieldValue
+    val textFieldValue by state::textFieldValue
     val interactionSource = remember { MutableInteractionSource() }
 
     val cursorColor by animateColorAsState(
@@ -68,21 +69,10 @@ fun EmailAddressTextField(
         label = "CursorColor",
     )
 
-    fun updateUiTextValue(newValue: TextFieldValue) {
-        state.unselectChip()
-        textFieldValue = newValue
-        onValueChange(newValue)
-    }
+    val isImeVisible = WindowInsets.isImeVisible
+    LaunchedEffect(isImeVisible) { if (!isImeVisible) state.addRecipientAddress() }
 
-    val keyboardActions = KeyboardActions(
-        onDone = {
-            val trimmedText = textFieldValue.text.trim()
-            if (trimmedText.isValidEmail()) {
-                validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
-                updateUiTextValue(TextFieldValue())
-            }
-        },
-    )
+    val keyboardActions = KeyboardActions(onDone = { state.addRecipientAddress() })
 
     val keyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Email,
@@ -93,12 +83,17 @@ fun EmailAddressTextField(
     val emailAddressTextFieldModifier = modifier
         .fillMaxWidth()
         .onPreviewKeyEvent(state::onKeyEvent)
-        .onFocusChanged { event -> if (!event.isFocused) state.unselectChip() }
+        .onFocusChanged { event ->
+            if (!event.isFocused) {
+                state.unselectChip()
+                state.addRecipientAddress()
+            }
+        }
 
     BasicTextField(
         modifier = emailAddressTextFieldModifier,
         value = textFieldValue,
-        onValueChange = ::updateUiTextValue,
+        onValueChange = state::updateUiTextValue,
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
@@ -122,8 +117,9 @@ fun EmailAddressTextField(
 }
 
 private class EmailAddressTextFieldState(
-    private val validatedEmails: GetSetCallbacks<Set<String>>,
-    initialText: String
+    initialText: String,
+    private val validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
+    private val onValueChange: (TextFieldValue) -> Unit
 ) {
     var textFieldValue by mutableStateOf(TextFieldValue(initialText))
 
@@ -134,7 +130,22 @@ private class EmailAddressTextFieldState(
         selectedChipIndex = UNSELECTED_CHIP_INDEX
     }
 
-    fun onKeyEvent(event: KeyEvent): Boolean = when {
+
+    fun updateUiTextValue(newValue: TextFieldValue) {
+        unselectChip()
+        textFieldValue = newValue
+        onValueChange(newValue)
+    }
+
+    fun addRecipientAddress() {
+        val trimmedText = textFieldValue.text.trim()
+        if (trimmedText.isValidEmail()) {
+            validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
+            updateUiTextValue(TextFieldValue())
+        }
+    }
+
+    fun onKeyEvent(event: KeyEvent) = when {
         event.type != KeyEventType.KeyDown -> false
         event.key == Key.Backspace -> handleBackspace()
         event.isNavigatingLeft() -> handlePreviousNavigation()
@@ -164,14 +175,14 @@ private class EmailAddressTextFieldState(
         false
     } else {
         // If any chip is already selected, pressing on backspace deletes it and reset the selection
-        validatedEmails.get().elementAtOrNull(selectedChipIndex)?.let { email ->
-            validatedEmails.set(validatedEmails.get().minusElement(email))
+        validatedRecipientsEmails.get().elementAtOrNull(selectedChipIndex)?.let { email ->
+            validatedRecipientsEmails.set(validatedRecipientsEmails.get().minusElement(email))
         }
         unselectChip()
         true
     }
 
-    private fun getLastEmailIndex() = validatedEmails.get().toList().lastIndex
+    private fun getLastEmailIndex() = validatedRecipientsEmails.get().toList().lastIndex
 
     private fun handlePreviousNavigation(): Boolean = when {
         selectedChipIndex == UNSELECTED_CHIP_INDEX && textFieldValue.selection.start == 0 -> {
@@ -201,7 +212,7 @@ private fun EmailAddressDecorationBox(
     label: String,
     interactionSource: MutableInteractionSource,
     isError: Boolean,
-    supportingText: @Composable() (() -> Unit)?,
+    supportingText: @Composable (() -> Unit)?,
     textFieldColors: TextFieldColors,
 ) {
     OutlinedTextFieldDefaults.DecorationBox(
