@@ -180,6 +180,7 @@ class UploadWorker @AssistedInject constructor(
 
     private fun createProgressNotificationIntent(totalSize: Long): Intent {
         return Intent(applicationContext, NewTransferActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
             .putExtra(TRANSFER_TYPE_KEY, transferType.name)
             .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
@@ -197,6 +198,7 @@ class UploadWorker @AssistedInject constructor(
         notificationsUtils.sendUploadNotification(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_UUID_KEY, transferUuid)
@@ -210,6 +212,7 @@ class UploadWorker @AssistedInject constructor(
         notificationsUtils.sendUploadNotification(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
+                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadFailure.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
