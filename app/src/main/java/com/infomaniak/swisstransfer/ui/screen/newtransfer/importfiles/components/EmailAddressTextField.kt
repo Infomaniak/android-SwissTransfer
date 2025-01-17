@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EmailAddressTextField(
     modifier: Modifier = Modifier,
@@ -67,6 +68,9 @@ fun EmailAddressTextField(
         targetValue = if (isError) SwissTransferTheme.materialColors.error else SwissTransferTheme.materialColors.primary,
         label = "CursorColor",
     )
+
+    val isImeVisible = WindowInsets.isImeVisible
+    LaunchedEffect(isImeVisible) { if (!isImeVisible) state.addRecipientAddress() }
 
     val keyboardActions = KeyboardActions(onDone = { state.addRecipientAddress() })
 
