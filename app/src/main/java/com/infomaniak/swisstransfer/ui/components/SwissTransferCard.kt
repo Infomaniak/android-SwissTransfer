@@ -18,10 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
@@ -39,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 fun SwissTransferCard(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = modifier
+            .fillMaxWidth()
             .clip(shape = CustomShapes.MEDIUM)
             .then(
                 other = if (onClick == null) {
