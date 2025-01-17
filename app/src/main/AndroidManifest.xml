@@ -108,9 +108,9 @@
             android:name=".ui.MainActivity"
             android:launchMode="singleTask" />
 
-        <activity
-            android:name=".ui.NewTransferActivity"
-            android:launchMode="standard" />
+        <!-- NewMessageActivity needs its standard launch mode in order for Intent.FLAG_ACTIVITY_CLEAR_TOP to clear and recreate
+        the NewTransferActivity -->
+        <activity android:name=".ui.NewTransferActivity" />
     </application>
 
 </manifest>
