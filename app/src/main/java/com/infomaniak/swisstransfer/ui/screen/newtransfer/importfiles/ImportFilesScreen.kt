@@ -56,6 +56,18 @@ import kotlinx.coroutines.channels.consumeEach
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
+/**
+ * If the user kills the task while the upload is in progress, we lose the ImportFilesScreen and its information.
+ * So, in every places we want to go back to ImportFilesScreen, instead we need to go back to the MainActivity.
+ */
+var areTransferDataStillAvailable = false
+    private set
+
+@Composable
+fun AutoResetTransferDataAvailabilityStatus() {
+    DisposableEffect(Unit) { onDispose { areTransferDataStillAvailable = false } }
+}
+
 @Composable
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel,
@@ -64,6 +76,8 @@ fun ImportFilesScreen(
     navigateToEmailValidation: (email: String) -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
+
+    areTransferDataStillAvailable = true
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()

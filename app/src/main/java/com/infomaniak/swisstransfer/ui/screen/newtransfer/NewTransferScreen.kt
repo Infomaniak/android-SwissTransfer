@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
@@ -33,7 +34,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun NewTransferScreen(startDestination: NewTransferNavigation, closeActivity: () -> Unit) {
+fun NewTransferScreen(
+    startDestination: NewTransferNavigation,
+    closeActivity: () -> Unit,
+    newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
+) {
+
     val navController = rememberNavController()
     var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -42,6 +48,7 @@ fun NewTransferScreen(startDestination: NewTransferNavigation, closeActivity: ()
         startDestination = startDestination,
         closeActivity = closeActivity,
         closeActivityAndPromptForValidation = { displayConfirmationDialog = true },
+        cancelFailureNotification = { newTransferViewModel.cancelFailureNotification() }
     )
 
     if (displayConfirmationDialog) ConfirmLeavingDialog(onLeave = closeActivity, onCancel = { displayConfirmationDialog = false })

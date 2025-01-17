@@ -15,12 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.navigation
+package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-const val NOTIFICATION_NAVIGATION_KEY = "notificationNavigationKey"
-const val TRANSFER_UUID_KEY = "transferUuidKey"
-const val TRANSFER_TYPE_KEY = "transferTypeKey"
-const val TRANSFER_TOTAL_SIZE_KEY = "transferTotalSizeKey"
-const val TRANSFER_URL_KEY = "transferUrlKey"
+import androidx.lifecycle.ViewModel
+import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
+import com.infomaniak.swisstransfer.workers.UploadWorker
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-enum class NotificationNavigation { UploadProgress, UploadSuccess, UploadFailure }
+@HiltViewModel
+class NewTransferViewModel @Inject constructor(
+    private val notificationsUtils: NotificationsUtils,
+) : ViewModel() {
+
+    fun cancelFailureNotification() {
+        notificationsUtils.cancelNotification(UploadWorker.NOTIFICATION_ID)
+    }
+}

@@ -27,6 +27,7 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.NewTransferFilesDetailsScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AutoResetTransferDataAvailabilityStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
@@ -42,10 +43,14 @@ fun NewTransferNavHost(
     startDestination: NewTransferNavigation,
     closeActivity: () -> Unit,
     closeActivityAndPromptForValidation: () -> Unit,
+    cancelFailureNotification: () -> Unit,
 ) {
+
+    AutoResetTransferDataAvailabilityStatus()
 
     NavHost(navController, startDestination) {
         composable<ImportFilesDestination> {
+            cancelFailureNotification()
             ImportFilesScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
                 closeActivity = closeActivity,
@@ -75,12 +80,8 @@ fun NewTransferNavHost(
                     navController.navigate(UploadSuccessDestination(args.transferType, transferUuid, transferUrl))
                 },
                 navigateToUploadError = { navController.navigate(UploadErrorDestination(args.transferType, args.totalSize)) },
-                navigateBackToImportFiles = {
-                    val hasPoppedBack = navController.popBackStack(route = ImportFilesDestination, inclusive = false)
-                    // If the popBack failed, it means the user killed the task while the upload was in progress.
-                    // So, since we lost the ImportFilesScreen, instead we go back to the MainActivity.
-                    if (!hasPoppedBack) closeActivity()
-                },
+                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+                closeActivity = closeActivity,
             )
         }
         composable<UploadSuccessDestination> {
@@ -93,6 +94,7 @@ fun NewTransferNavHost(
             )
         }
         composable<UploadErrorDestination> {
+            cancelFailureNotification()
             val args = it.toRoute<UploadErrorDestination>()
             UploadErrorScreen(
                 navigateBackToUploadProgress = {
@@ -111,9 +113,8 @@ fun NewTransferNavHost(
                         }
                     }
                 },
-                navigateBackToImportFiles = {
-                    navController.popBackStack(route = ImportFilesDestination, inclusive = false)
-                },
+                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+                closeActivity = closeActivity,
             )
         }
         composable<NewTransferFilesDetailsDestination> {

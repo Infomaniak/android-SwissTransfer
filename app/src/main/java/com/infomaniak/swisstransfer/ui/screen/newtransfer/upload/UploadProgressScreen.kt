@@ -34,6 +34,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.areTransferDataStillAvailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.NetworkUnavailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
@@ -50,6 +51,7 @@ fun UploadProgressScreen(
     navigateToUploadSuccess: (String, String) -> Unit,
     navigateToUploadError: () -> Unit,
     navigateBackToImportFiles: () -> Unit,
+    closeActivity: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
@@ -64,7 +66,7 @@ fun UploadProgressScreen(
         uploadProgressViewModel.trackUploadProgress()
     }
 
-    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles)
+    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles, closeActivity)
 
     UploadProgressScreen(
         progressState = { uiState },
@@ -82,13 +84,14 @@ private fun HandleProgressState(
     navigateToUploadSuccess: (String, String) -> Unit,
     navigateToUploadError: () -> Unit,
     navigateBackToImportFiles: () -> Unit,
+    closeActivity: () -> Unit,
 ) {
     val currentUiState = uiState()
     LaunchedEffect(uiState()) {
         when (currentUiState) {
             is UploadProgressUiState.Success -> navigateToUploadSuccess(currentUiState.transferUuid, currentUiState.transferUrl)
             is UploadProgressUiState.Error -> navigateToUploadError()
-            is UploadProgressUiState.Cancel -> navigateBackToImportFiles()
+            is UploadProgressUiState.Cancel -> if (areTransferDataStillAvailable) navigateBackToImportFiles() else closeActivity()
             else -> Unit
         }
     }

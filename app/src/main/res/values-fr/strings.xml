@@ -74,6 +74,8 @@
     <string name="noTransferReceivedTitle">Aucun transfert reçu</string>
     <string name="noTransferSelectedDescription">Sélectionne un transfert ou créé-en un nouveau.</string>
     <string name="noTransferSelectedTitle">Aucun transfert à afficher</string>
+    <string name="notificationUploadFailureDescription">Un problème est survenu, veuillez réessayer</string>
+    <string name="notificationUploadFailureTitle">Le transfert a échoué</string>
     <string name="notificationUploadProgressTitle">Transfert en cours… (%s%%)</string>
     <string name="notificationUploadSuccessDescriptionMail">Le lien de téléchargement a été envoyé aux destinataires</string>
     <string name="notificationUploadSuccessDescriptionOther">Clique pour obtenir ton lien de téléchargement</string>

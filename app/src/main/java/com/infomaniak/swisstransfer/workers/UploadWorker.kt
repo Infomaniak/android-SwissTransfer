@@ -122,7 +122,10 @@ class UploadWorker @AssistedInject constructor(
             when (exception) {
                 is NetworkException -> Result.retry()
                 is CancellationException -> Result.failure()
-                else -> Result.failure()
+                else -> {
+                    displayFailureNotification(totalSize)
+                    Result.failure()
+                }
             }
         }
     }
@@ -200,6 +203,18 @@ class UploadWorker @AssistedInject constructor(
                 .putExtra(TRANSFER_URL_KEY, transferUrl),
             title = applicationContext.getString(R.string.notificationUploadSuccessTitle),
             description = applicationContext.getString(descriptionResId),
+        )
+    }
+
+    private fun displayFailureNotification(totalSize: Long) {
+        notificationsUtils.sendUploadNotification(
+            notificationId = NOTIFICATION_ID,
+            intent = Intent(applicationContext, NewTransferActivity::class.java)
+                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadFailure.name)
+                .putExtra(TRANSFER_TYPE_KEY, transferType.name)
+                .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
+            title = applicationContext.getString(R.string.notificationUploadFailureTitle),
+            description = applicationContext.getString(R.string.notificationUploadFailureDescription),
         )
     }
 
@@ -290,6 +305,6 @@ class UploadWorker @AssistedInject constructor(
 
         private const val PROGRESS_ELAPSED_TIME = 50
 
-        private const val NOTIFICATION_ID = 42_1337_666 // ID used for the Success & Failure notifications
+        const val NOTIFICATION_ID = 42_1337_666 // ID used for the Success & Failure notifications
     }
 }
