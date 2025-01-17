@@ -24,10 +24,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.infomaniak.core2.notifications.buildNotification
-import com.infomaniak.core2.notifications.buildNotificationChannel
-import com.infomaniak.core2.notifications.createNotificationChannels
-import com.infomaniak.core2.notifications.notifyCompat
+import com.infomaniak.core2.notifications.*
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -79,6 +76,10 @@ class NotificationsUtils @Inject constructor(
 
     private fun sendNotification(notificationId: Int, builder: NotificationCompat.Builder) {
         notificationManagerCompat.notifyCompat(appContext, notificationId, builder.build())
+    }
+
+    fun cancelNotification(notificationId: Int) {
+        appContext.cancelNotification(notificationId)
     }
 
     companion object {

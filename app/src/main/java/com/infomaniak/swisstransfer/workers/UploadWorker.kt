@@ -305,6 +305,6 @@ class UploadWorker @AssistedInject constructor(
 
         private const val PROGRESS_ELAPSED_TIME = 50
 
-        private const val NOTIFICATION_ID = 42_1337_666 // ID used for the Success & Failure notifications
+        const val NOTIFICATION_ID = 42_1337_666 // ID used for the Success & Failure notifications
     }
 }
