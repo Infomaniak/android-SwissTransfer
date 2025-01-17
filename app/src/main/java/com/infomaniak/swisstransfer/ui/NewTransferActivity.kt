@@ -52,7 +52,9 @@ class NewTransferActivity : ComponentActivity() {
             SwissTransferTheme {
                 NewTransferScreen(
                     startDestination = getStartDestination(),
-                    closeActivity = { startMainActivityIfTaskIsEmpty -> finishNewTransferActivity(startMainActivityIfTaskIsEmpty) },
+                    closeActivity = { startMainActivityIfTaskIsEmpty ->
+                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
+                    },
                 )
             }
         }
