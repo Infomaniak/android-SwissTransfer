@@ -81,6 +81,7 @@ fun NewTransferNavHost(
                 },
                 navigateToUploadError = { navController.navigate(UploadErrorDestination(args.transferType, args.totalSize)) },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+                // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
                 closeActivity = { closeActivity(false) },
             )
         }
@@ -114,6 +115,7 @@ fun NewTransferNavHost(
                     }
                 },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+                // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
                 closeActivity = { closeActivity(true) },
             )
         }
