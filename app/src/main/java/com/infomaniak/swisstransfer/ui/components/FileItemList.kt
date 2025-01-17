@@ -47,6 +47,7 @@ fun FileItemList(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
+    isDownloadButtonVisible: Boolean,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: () -> Boolean,
     isUidChecked: (String) -> Boolean,
@@ -95,8 +96,10 @@ fun FileItemList(
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
-                    downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
-                    downloadUi.CardProgressBar(Modifier.align(Alignment.BottomStart).fillMaxWidth())
+                    if (isDownloadButtonVisible) {
+                        downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
+                        downloadUi.CardProgressBar(Modifier.align(Alignment.BottomStart).fillMaxWidth())
+                    }
                 }
             )
         }
@@ -111,6 +114,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
             files = files,
             snackbarHostState = remember { SnackbarHostState() },
             isRemoveButtonVisible = false,
+            isDownloadButtonVisible = false,
             isCheckboxVisible = { true },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },

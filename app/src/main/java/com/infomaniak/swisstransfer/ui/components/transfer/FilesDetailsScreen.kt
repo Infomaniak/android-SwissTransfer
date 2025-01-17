@@ -48,6 +48,7 @@ fun FilesDetailsScreen(
         FileItemList(
             snackbarHostState = snackbarHostState,
             files = files,
+            isDownloadButtonVisible = false,
             isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = { false },
             isUidChecked = { false },
