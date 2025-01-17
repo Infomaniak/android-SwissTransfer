@@ -26,6 +26,10 @@ android {
     namespace = "com.infomaniak.swisstransfer"
     compileSdk = appCompileSdk
 
+
+    val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
+    val prodHost = "www.swisstransfer.com"
+
     defaultConfig {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = appMinSdk
@@ -40,12 +44,8 @@ android {
             useSupportLibrary = true
         }
 
-        val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
-        val prodHost = "www.swisstransfer.com"
         resValue("string", "preprod_host", preprodHost)
         resValue("string", "prod_host", prodHost)
-        buildConfigField("String", "PREPROD_URL", "\"https://$preprodHost\"")
-        buildConfigField("String", "PROD_URL", "\"https://$prodHost\"")
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
     }
@@ -54,11 +54,32 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+        }
+    }
+
+    productFlavors {
+        create("preprod") {
+            dimension = "env"
+
+            applicationIdSuffix = ".preprod"
+
+            buildConfigField("String", "BASE_URL", "\"https://$preprodHost\"")
+        }
+        create("prod") {
+            dimension = "env"
+
+            buildConfigField("String", "BASE_URL", "\"https://$prodHost\"")
         }
     }
 
     buildFeatures {
+        flavorDimensions += "env"
+
         buildConfig = true
     }
 
