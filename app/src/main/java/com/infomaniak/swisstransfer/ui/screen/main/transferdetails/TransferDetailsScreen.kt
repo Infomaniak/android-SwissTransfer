@@ -180,13 +180,7 @@ private fun TransferDetailsScreen(
                 runDownloadUi = runDownloadUi
             )
 
-            val bottomBarPadding = if (windowAdaptiveInfo.isWindowSmall()) {
-                WindowInsets.navigationBars.asPaddingValues()
-            } else {
-                PaddingValues()
-            }
-
-            BottomBar(bottomBarPadding) {
+            BottomBar(getBottomBarPadding()) {
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
                     BottomBarButton(
@@ -241,6 +235,15 @@ private fun TransferDetailsScreen(
             transferPassword = { getTransfer().password },
             closeBottomSheet = { showPasswordBottomSheet = false },
         )
+    }
+}
+
+@Composable
+private fun getBottomBarPadding(): PaddingValues {
+    return if (LocalWindowAdaptiveInfo.current.isWindowSmall()) {
+        WindowInsets.navigationBars.asPaddingValues()
+    } else {
+        PaddingValues()
     }
 }
 

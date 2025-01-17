@@ -75,13 +75,9 @@ fun AppNavigationSuiteScaffold(
                 when (layoutType) {
                     NavigationSuiteType.None -> Unit
                     NavigationSuiteType.NavigationBar -> {
-                        if (!hideBottomBar.value) {
-                            AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
-                        }
+                        if (!hideBottomBar.value) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
-                    else -> {
-                        AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)
-                    }
+                    else -> AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)
                 }
             },
             layoutType = layoutType,
