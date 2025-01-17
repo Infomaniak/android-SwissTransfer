@@ -223,6 +223,9 @@ private fun TransferDetailsScreen(
                     }
                 }
             }
+            if (windowAdaptiveInfo.isWindowSmall()) {
+                Spacer(Modifier.height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()))
+            }
         }
 
         QrCodeBottomSheet(
