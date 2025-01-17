@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun NewTransferScreen(
     startDestination: NewTransferNavigation,
-    closeActivity: () -> Unit,
+    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
 ) {
 
@@ -51,7 +51,12 @@ fun NewTransferScreen(
         cancelFailureNotification = { newTransferViewModel.cancelFailureNotification() }
     )
 
-    if (displayConfirmationDialog) ConfirmLeavingDialog(onLeave = closeActivity, onCancel = { displayConfirmationDialog = false })
+    if (displayConfirmationDialog) {
+        ConfirmLeavingDialog(
+            onLeave = { closeActivity(false) },
+            onCancel = { displayConfirmationDialog = false },
+        )
+    }
 }
 
 @Composable
