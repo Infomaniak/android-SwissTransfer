@@ -114,7 +114,7 @@ fun NewTransferNavHost(
                     }
                 },
                 navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
-                closeActivity = { closeActivity(false) },
+                closeActivity = { closeActivity(true) },
             )
         }
         composable<NewTransferFilesDetailsDestination> {
