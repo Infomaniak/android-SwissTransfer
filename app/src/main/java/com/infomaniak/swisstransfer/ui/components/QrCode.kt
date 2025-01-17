@@ -52,7 +52,7 @@ fun QrCode(transferUrl: String) {
     }
 
     Image(
-        modifier = Modifier.size(160.dp),
+        modifier = Modifier.size(140.dp),
         painter = painter,
         contentDescription = null,
     )
