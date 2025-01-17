@@ -86,8 +86,8 @@ class NewTransferActivity : ComponentActivity() {
     private fun finishNewTransferActivity(startMainActivityIfTaskIsEmpty: Boolean) {
         when {
             isTaskRoot && startMainActivityIfTaskIsEmpty -> {
-                finish()
                 startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
             isTaskRoot -> finishAndRemoveTask()
             else -> finish()
