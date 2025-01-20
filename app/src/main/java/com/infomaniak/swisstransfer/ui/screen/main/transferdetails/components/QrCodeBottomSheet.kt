@@ -52,9 +52,9 @@ fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottom
         description = stringResource(R.string.shareQrCodeDescription),
     ) {
         Column {
-            Spacer(Modifier.height(Margin.Small))
+            Spacer(Modifier.height(Margin.Large))
             QrCode(transferUrl)
-            Spacer(Modifier.height(Margin.Small))
+            Spacer(Modifier.height(Margin.Large))
         }
     }
 }
