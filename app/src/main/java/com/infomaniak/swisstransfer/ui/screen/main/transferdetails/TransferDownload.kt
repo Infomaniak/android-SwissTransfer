@@ -48,19 +48,14 @@ suspend fun handleTransferDownload(
     transfer: TransferUi,
     targetFile: FileUi?,
     openFile: suspend (Uri) -> Unit,
-): Nothing = repeatWhileActive {
-    val id: UniqueDownloadId = getDownloadIdFromStorage(
-        transferManager = transferManager,
-        transferUuid = transfer.uuid,
-        fileUid = targetFile?.uid,
-    ) ?: getNewDownloadId(
-        ui = ui,
-        apiUrlCreator = apiUrlCreator,
-        transferManager = transferManager,
-        userAgent = userAgent,
-        transfer = transfer,
-        targetFile = targetFile,
-    ) ?: return@repeatWhileActive
+): Nothing = currentOrNewDownloadManagerId(
+    transferManager = transferManager,
+    ui = ui,
+    apiUrlCreator = apiUrlCreator,
+    userAgent = userAgent,
+    transfer = transfer,
+    targetFile = targetFile
+).collectLatest { id ->
     autoCancelScope {
         val downloadStatusFlow = downloadManager.downloadStatusFlow(id).stateIn(scope = this)
         raceOf({
@@ -68,10 +63,10 @@ suspend fun handleTransferDownload(
         }, {
             awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow)
         }, {
-            downloadStatusFlow.collectLatest { status ->
-                if (status !is DownloadStatus.Complete) return@collectLatest
+            downloadStatusFlow.collectLatest newStatus@{ status ->
+                if (status !is DownloadStatus.Complete) return@newStatus
                 val uri = downloadManager.uriFor(id)
-                    ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
+                    ?: return@newStatus // Shouldn't happen since DownloadStatus is Complete.
                 repeatWhileActive {
                     ui.awaitOpenRequest()
                     openFile(uri)
@@ -92,7 +87,7 @@ suspend fun handleTransferDownload(
         fileUid = targetFile?.uid,
         uniqueDownloadManagerId = null
     )
-}
+}.let { awaitCancellation() /* Should never reach this line. */ }
 
 fun downloadManagerId(
     transferManager: TransferManager,
@@ -102,6 +97,31 @@ fun downloadManagerId(
     transferUUID = transferUuid,
     fileUid = fileUid,
 ).map { UniqueDownloadId(it ?: return@map null) }
+
+@OptIn(ExperimentalCoroutinesApi::class)
+private fun currentOrNewDownloadManagerId(
+    transferManager: TransferManager,
+    ui: TransferDownloadUi,
+    apiUrlCreator: SharedApiUrlCreator,
+    userAgent: String,
+    transfer: TransferUi,
+    targetFile: FileUi?,
+): Flow<UniqueDownloadId> = downloadManagerId(
+    transferManager = transferManager,
+    transferUuid = transfer.uuid,
+    fileUid = targetFile?.uid
+).mapLatest { id ->
+    id ?: repeatWhileActive {
+        return@mapLatest getNewDownloadId(
+            ui = ui,
+            apiUrlCreator = apiUrlCreator,
+            transferManager = transferManager,
+            userAgent = userAgent,
+            transfer = transfer,
+            targetFile = targetFile,
+        ) ?: return@repeatWhileActive
+    }
+}.distinctUntilChanged()
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun awaitFileDeletion(
@@ -120,23 +140,6 @@ private suspend fun awaitFileDeletion(
         else -> awaitCancellation()
     }
 }.first()
-
-private suspend fun getDownloadIdFromStorage(
-    transferManager: TransferManager,
-    transferUuid: String,
-    fileUid: String?,
-): UniqueDownloadId? = transferManager.readDownloadManagerId(transferUuid, fileUid)?.let { id ->
-    val uri: Uri? = Dispatchers.IO { downloadManager.getUriForDownloadedFile(id) }
-    if (uri == null) {
-        transferManager.writeDownloadManagerId(
-            transferUUID = transferUuid,
-            fileUid = fileUid,
-            uniqueDownloadManagerId = null
-        )
-        return null
-    }
-    UniqueDownloadId(id)
-}
 
 private suspend fun getNewDownloadId(
     ui: TransferDownloadUi,
