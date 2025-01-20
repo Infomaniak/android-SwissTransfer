@@ -230,7 +230,6 @@ private fun NoSelectionEmptyState(hasTransfers: Boolean) {
     ) {
         EmptyState(
             icon = AppIllus.MascotWithMagnifyingGlass,
-            iconContent = null,
             titleRes = titleRes,
             descriptionRes = descriptionRes
         )

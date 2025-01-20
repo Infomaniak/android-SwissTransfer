@@ -76,7 +76,7 @@ private fun EmptyStatePreview() {
     SwissTransferTheme {
         Surface {
             EmptyState(
-                icon = AppIllus.MascotWithMagnifyingGlass,
+                icon = AppIllus.MascotSearching,
                 titleRes = R.string.noTransferReceivedTitle,
                 descriptionRes = R.string.noTransferReceivedDescription,
             )

@@ -18,8 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.onboarding
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RawRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
@@ -41,7 +41,8 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
-import com.infomaniak.swisstransfer.ui.images.illus.onboarding.*
+import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopLeft
+import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopRight
 import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -101,7 +102,7 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
 private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>) = OnboardingPage(
     background = background.image(),
     illustration = {
-        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(illustration))
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(illustrationRes))
         LottieAnimation(composition)
     },
     text = {
@@ -158,7 +159,7 @@ private const val HIGHLIGHT_ANGLE = 3.0
 
 private enum class Page(
     val background: ThemedImage,
-    val illustration: Int,
+    @RawRes val illustrationRes: Int,
     @StringRes val titleRes: Int,
     @StringRes val subtitleTemplateRes: Int,
     @StringRes val subtitleArgumentRes: Int,
@@ -166,7 +167,7 @@ private enum class Page(
 ) {
     STORAGE(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustration = R.raw.storage_cardboard_box_pile,
+        illustrationRes = R.raw.storage_cardboard_box_pile,
         titleRes = R.string.onboardingStorageTitle,
         subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
@@ -174,7 +175,7 @@ private enum class Page(
     ),
     EXPIRATION(
         background = AppIllus.RadialGradientCornerTopLeft,
-        illustration =  R.raw.three_cards_transfer_type,
+        illustrationRes = R.raw.three_cards_transfer_type,
         titleRes = R.string.onboardingExpirationTitle,
         subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
@@ -182,7 +183,7 @@ private enum class Page(
     ),
     PASSWORD(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustration = R.raw.two_locks_intertwined_stars,
+        illustrationRes = R.raw.two_locks_intertwined_stars,
         titleRes = R.string.onboardingPasswordTitle,
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
