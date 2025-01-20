@@ -21,6 +21,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -160,10 +161,11 @@ private fun UploadStatus(isNetworkAvailable: () -> Boolean, progressState: () ->
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -> Unit) {
     SwissTransferBottomSheet(
-        titleRes = R.string.uploadCancelConfirmBottomSheetTitle,
+        title = stringResource(R.string.uploadCancelConfirmBottomSheetTitle),
         imageVector = AppIllus.RedCrossPaperPlanes.image(),
         topButton = {
             LargeButton(

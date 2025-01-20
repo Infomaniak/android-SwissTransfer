@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.copyText
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String?, closeBottomSheet: () -> Unit) {
 
@@ -75,8 +77,8 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String
                 onClick = closeBottomSheet,
             )
         },
-        titleRes = R.string.sharePasswordTitle,
-        descriptionRes = R.string.sharePasswordDescription,
+        title = stringResource(R.string.sharePasswordTitle),
+        description = stringResource(R.string.sharePasswordDescription),
     ) {
         SwissTransferTextField(
             modifier = Modifier

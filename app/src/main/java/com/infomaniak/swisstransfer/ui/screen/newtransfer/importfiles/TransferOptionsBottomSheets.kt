@@ -17,13 +17,14 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.annotation.StringRes
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
@@ -34,13 +35,14 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TransferOptionBottomSheetScaffold(
     onOptionClicked: (SettingOption) -> Unit,
     closeBottomSheet: () -> Unit,
     initialValue: SettingOption?,
     optionEntries: List<SettingOption>,
-    @StringRes titleRes: Int,
+    title: String,
 ) {
     var selectedItem by rememberSaveable { mutableStateOf(initialValue) }
 
@@ -54,7 +56,7 @@ private fun TransferOptionBottomSheetScaffold(
 
     SwissTransferBottomSheet(
         onDismissRequest = closeBottomSheet,
-        titleRes = titleRes,
+        title = title,
         content = {
             SingleSelectOptions(
                 items = optionEntries,
@@ -79,7 +81,7 @@ fun ValidityPeriodBottomSheet(
     TransferOptionBottomSheetScaffold(
         closeBottomSheet = closeBottomSheet,
         initialValue = initialValue,
-        titleRes = R.string.settingsOptionValidityPeriod,
+        title = stringResource(R.string.settingsOptionValidityPeriod),
         optionEntries = ValidityPeriodOption.entries,
         onOptionClicked = { onOptionClicked(it as ValidityPeriodOption) },
     )
@@ -94,7 +96,7 @@ fun DownloadLimitBottomSheet(
     TransferOptionBottomSheetScaffold(
         closeBottomSheet = closeBottomSheet,
         initialValue = initialValue,
-        titleRes = R.string.settingsOptionDownloadLimit,
+        title = stringResource(R.string.settingsOptionDownloadLimit),
         optionEntries = DownloadLimitOption.entries,
         onOptionClicked = { onOptionClicked(it as DownloadLimitOption) },
     )
@@ -109,7 +111,7 @@ fun EmailLanguageBottomSheet(
     TransferOptionBottomSheetScaffold(
         closeBottomSheet = closeBottomSheet,
         initialValue = initialValue,
-        titleRes = R.string.settingsOptionEmailLanguage,
+        title = stringResource(R.string.settingsOptionEmailLanguage),
         optionEntries = EmailLanguageOption.entries,
         onOptionClicked = { onOptionClicked(it as EmailLanguageOption) },
     )

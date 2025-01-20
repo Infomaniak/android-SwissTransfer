@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottomSheet: () -> Unit) {
 
@@ -46,8 +48,8 @@ fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottom
                 onClick = closeBottomSheet,
             )
         },
-        titleRes = R.string.shareQrCodeTitle,
-        descriptionRes = R.string.shareQrCodeDescription,
+        title = stringResource(R.string.shareQrCodeTitle),
+        description = stringResource(R.string.shareQrCodeDescription),
     ) {
         Column {
             Spacer(Modifier.height(Margin.Small))

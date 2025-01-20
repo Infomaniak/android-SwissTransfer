@@ -17,16 +17,12 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,33 +39,11 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
-@Composable
-fun SwissTransferBottomSheet(
-    modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit,
-    imageVector: ImageVector? = null,
-    @StringRes titleRes: Int? = null,
-    @StringRes descriptionRes: Int? = null,
-    topButton: @Composable ((Modifier) -> Unit)? = null,
-    bottomButton: @Composable ((Modifier) -> Unit)? = null,
-    content: @Composable (() -> Unit)? = null,
-) {
-    SwissTransferBottomSheet(
-        modifier = modifier,
-        onDismissRequest = onDismissRequest,
-        imageVector = imageVector,
-        title = titleRes?.let { stringResource(titleRes) },
-        description = descriptionRes?.let { stringResource(descriptionRes) },
-        topButton = topButton,
-        bottomButton = bottomButton,
-        content = content,
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferBottomSheet(
     modifier: Modifier = Modifier,
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     onDismissRequest: () -> Unit,
     imageVector: ImageVector? = null,
     title: String? = null,
@@ -78,7 +52,7 @@ fun SwissTransferBottomSheet(
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
-    ModalBottomSheet(onDismissRequest, modifier) {
+    ModalBottomSheet(onDismissRequest, modifier, sheetState) {
         BottomSheetContent(imageVector, title, description, content, topButton, bottomButton)
     }
 }
