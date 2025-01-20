@@ -31,8 +31,10 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -44,7 +46,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferUuid
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,13 +57,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var transferManager: TransferManager
 
-    private var lastTransfersUpdateTime = 0L
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
 
         askUserForNotificationsPermission()
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(State.STARTED) { transferManager.tryUpdatingAllTransfers() }
+        }
 
         lifecycleScope.launch {
             val deeplinkUuid = getDeeplinkTransferUuid()
@@ -85,24 +88,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        updateTransfersWithDebounce()
-    }
-
     private fun askUserForNotificationsPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerForActivityResult(
                 contract = ActivityResultContracts.RequestPermission(),
                 callback = {},
             ).launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
-    }
-
-    private fun updateTransfersWithDebounce() {
-        lifecycleScope.launch {
-            transferManager.updateAllTransfers(lastTransfersUpdateTime)
-            lastTransfersUpdateTime = Date().time
         }
     }
 }
