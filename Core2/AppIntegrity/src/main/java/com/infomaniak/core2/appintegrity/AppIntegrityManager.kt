@@ -92,6 +92,8 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
         val token: CompletableDeferred<String> = CompletableDeferred()
 
+        if (BuildConfig.DEBUG) return "fake integrity token"
+
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -168,7 +170,7 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
                 scope.setExtra("stacktrace", exception.printStackTrace().toString())
             }
         }
-        exception.printStackTrace()
+        SentryLog.w(APP_INTEGRITY_MANAGER_TAG, errorMessage, throwable = exception)
         onFailure()
     }
 

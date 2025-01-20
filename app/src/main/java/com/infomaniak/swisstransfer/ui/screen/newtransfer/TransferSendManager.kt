@@ -90,6 +90,7 @@ class TransferSendManager @Inject constructor(
                 SendStatus.Success(totalSize)
             }
         }.onFailure { exception ->
+            SentryLog.w(TAG, "Exception during sendTransfer", exception)
             val status = when (exception) {
                 is NetworkException, is KmpNetworkException -> SendStatus.NoNetwork
                 is IntegrityException -> SendStatus.Refused
