@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -36,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewPar
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransferExpiredBottomSheet(
     expiredTransfer: () -> TransferUi?,
