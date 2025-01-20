@@ -25,8 +25,8 @@ import androidx.compose.runtime.Immutable
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import androidx.work.WorkInfo.State
-import com.infomaniak.core2.percent
-import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.core.percent
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager

@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.core2.R as RCore2
+import com.infomaniak.core.R as RCore
 
 object SwissTransferAlertDialogDefaults {
     @Composable
@@ -46,7 +46,7 @@ object SwissTransferAlertDialogDefaults {
     fun CancelButton(onClick: () -> Unit) {
         SmallButton(
             style = ButtonType.Tertiary,
-            title = stringResource(RCore2.string.buttonCancel),
+            title = stringResource(RCore.string.buttonCancel),
             onClick = onClick,
         )
     }

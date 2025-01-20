@@ -23,8 +23,8 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.net.Uri
 import androidx.lifecycle.Lifecycle
-import com.infomaniak.core2.*
-import com.infomaniak.core2.filetypes.FileType
+import com.infomaniak.core.*
+import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi

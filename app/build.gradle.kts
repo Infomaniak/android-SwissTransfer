@@ -2,8 +2,8 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(core2.plugins.kotlin.android)
-    alias(core2.plugins.compose.compiler)
+    alias(core.plugins.kotlin.android)
+    alias(core.plugins.compose.compiler)
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.sentry)
@@ -100,29 +100,29 @@ sentry {
 
 dependencies {
 
-    implementation(project(":Core2"))
-    implementation(project(":Core2:AppIntegrity"))
-    implementation(project(":Core2:Compose:Basics"))
-    implementation(project(":Core2:FileTypes"))
-    implementation(project(":Core2:InAppStore"))
-    implementation(project(":Core2:Matomo"))
-    implementation(project(":Core2:Network"))
-    implementation(project(":Core2:Notifications"))
-    implementation(project(":Core2:Onboarding"))
-    implementation(project(":Core2:Sentry"))
+    implementation(project(":Core"))
+    implementation(project(":Core:AppIntegrity"))
+    implementation(project(":Core:Compose:Basics"))
+    implementation(project(":Core:FileTypes"))
+    implementation(project(":Core:InAppStore"))
+    implementation(project(":Core:Matomo"))
+    implementation(project(":Core:Network"))
+    implementation(project(":Core:Notifications"))
+    implementation(project(":Core:Onboarding"))
+    implementation(project(":Core:Sentry"))
 
     implementation(kotlin("reflect"))
 
-    implementation(core2.androidx.core.ktx)
+    implementation(core.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Compose
     implementation(libs.androidx.activity.compose)
-    implementation(platform(core2.compose.bom))
+    implementation(platform(core.compose.bom))
     implementation(libs.compose.foundation) // TODO: To be removed when compose 1.8.0 is stable
-    implementation(core2.compose.ui)
+    implementation(core.compose.ui)
     implementation(libs.compose.ui.graphics)
-    implementation(core2.compose.material3)
+    implementation(core.compose.material3)
     implementation(libs.compose.material3.adaptative.navigation)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
@@ -141,8 +141,8 @@ dependencies {
     implementation(libs.qrose)
 
     // Compose preview tools
-    implementation(core2.compose.ui.tooling.preview)
-    debugImplementation(core2.compose.ui.tooling)
+    implementation(core.compose.ui.tooling.preview)
+    debugImplementation(core.compose.ui.tooling)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -157,10 +157,10 @@ dependencies {
     implementation(libs.lottie)
     implementation(libs.recaptcha)
     implementation(libs.workmanager)
-    implementation(core2.kotlinx.serialization.json)
-    implementation(core2.splitties.toast)
+    implementation(core.kotlinx.serialization.json)
+    implementation(core.splitties.toast)
 
     // Test
-    testImplementation(core2.junit)
-    androidTestImplementation(core2.androidx.junit)
+    testImplementation(core.junit)
+    androidTestImplementation(core.androidx.junit)
 }

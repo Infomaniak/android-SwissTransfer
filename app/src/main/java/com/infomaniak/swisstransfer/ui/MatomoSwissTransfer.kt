@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui
 
-import com.infomaniak.core2.matomo.Matomo
+import com.infomaniak.core.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
 import com.infomaniak.swisstransfer.ui.utils.get

@@ -21,8 +21,8 @@ import android.app.Application
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
-import com.infomaniak.core2.appintegrity.AppIntegrityManager
-import com.infomaniak.core2.buildUserAgent
+import com.infomaniak.core.appintegrity.AppIntegrityManager
+import com.infomaniak.core.buildUserAgent
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.Module

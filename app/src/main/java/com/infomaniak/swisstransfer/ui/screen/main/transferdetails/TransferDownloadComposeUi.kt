@@ -39,11 +39,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.infomaniak.core2.DownloadStatus
-import com.infomaniak.core2.autoCancelScope
-import com.infomaniak.core2.compose.basics.CallableState
-import com.infomaniak.core2.compose.basics.withForwardTo
-import com.infomaniak.core2.snackbarMsgResId
+import com.infomaniak.core.DownloadStatus
+import com.infomaniak.core.autoCancelScope
+import com.infomaniak.core.compose.basics.CallableState
+import com.infomaniak.core.compose.basics.withForwardTo
+import com.infomaniak.core.snackbarMsgResId
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -61,7 +61,7 @@ import splitties.coroutines.raceOf
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import kotlin.time.Duration.Companion.seconds
-import com.infomaniak.core2.R as RCore2
+import com.infomaniak.core.R as RCore
 
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
@@ -112,7 +112,7 @@ class TransferDownloadComposeUi(
             openRequest.isAwaitingCall -> openRequest
             removalRequest.isAwaitingCall && downloadStatus is DownloadStatus.Failed -> removalRequest
             else -> fun () {}
-            //TODO: If download is in progress, maybe request confirmation and remove?
+            // TODO: If download is in progress, maybe request confirmation and remove?
         }
 
     @Composable
@@ -260,11 +260,11 @@ class TransferDownloadComposeUi(
             val downloading = ButtonData(
                 icon = AppImages.AppIcons.Stop,
                 labelResId = R.string.buttonDownloading,
-                contentDescResId = RCore2.string.buttonCancel
+                contentDescResId = RCore.string.buttonCancel
             )
             val failed = ButtonData(
                 icon = AppImages.AppIcons.ArrowDownBar,
-                labelResId = com.infomaniak.core2.R.string.errorDownload
+                labelResId = com.infomaniak.core.R.string.errorDownload
             )
         }
     }

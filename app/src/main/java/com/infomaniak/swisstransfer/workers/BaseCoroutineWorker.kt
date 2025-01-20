@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.workers
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import io.sentry.Sentry
 import kotlin.coroutines.cancellation.CancellationException

@@ -28,7 +28,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
-import com.infomaniak.core2.filetypes.FileType
+import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.swisstransfer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
@@ -125,7 +125,7 @@ suspend fun Context.openFile(uri: Uri) {
     } catch (e: ActivityNotFoundException) {
         @OptIn(UnreliableToastApi::class)
         toast(msgResId = R.string.startActivityCantHandleAction)
-        //TODO: Offer the share action as a fallback.
+        // TODO: Offer the share action as a fallback.
     }
 }
 
