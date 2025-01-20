@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.isValidEmail
 import com.infomaniak.core2.sentry.SentryLog
@@ -55,10 +56,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -172,7 +170,11 @@ class ImportFilesViewModel @Inject constructor(
 
     fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
-            transferSendManager.sendNewTransfer(generateNewUploadSession())
+            val newUploadSession = generateNewUploadSession()
+
+            appSettingsManager.setLastAuthorEmail(newUploadSession.authorEmail)
+
+            transferSendManager.sendNewTransfer(newUploadSession)
         }
     }
 
