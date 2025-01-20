@@ -13,6 +13,7 @@ hiltAndroidx = "1.2.0"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.21"
 lifecycleRuntimeKtx = "2.8.7"
+lottie = "6.6.2"
 navigation = "2.8.5"
 qrose = "1.0.1"
 recaptcha = "18.6.1"
@@ -42,6 +43,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-androidx-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltAndroidx" }
 hilt-androidx-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltAndroidx" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }

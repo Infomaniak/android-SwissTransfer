@@ -17,13 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
+import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -108,7 +108,9 @@ private fun ReceivedContent(
     if (transfers.isEmpty()) {
         val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
         EmptyState(
-            icon = if (shouldDisplayIcon) AppIllus.MascotWithMagnifyingGlass else null,
+            content = if (shouldDisplayIcon) {
+                { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) }
+            } else null,
             titleRes = R.string.noTransferReceivedTitle,
             descriptionRes = R.string.noTransferReceivedDescription,
         )

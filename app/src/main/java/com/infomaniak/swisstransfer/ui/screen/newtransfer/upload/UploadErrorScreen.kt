@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -69,7 +70,7 @@ fun UploadErrorScreen(
         }
     ) {
         EmptyState(
-            icon = AppIllus.GhostMagnifyingGlassQuestionMark.image(),
+            content = { Image(imageVector = AppIllus.GhostMagnifyingGlassQuestionMark.image(), contentDescription = null) },
             titleRes = R.string.uploadErrorTitle,
             descriptionRes = R.string.uploadErrorDescription,
         )

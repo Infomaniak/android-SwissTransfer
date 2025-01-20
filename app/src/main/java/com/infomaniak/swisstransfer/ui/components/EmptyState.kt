@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,26 +28,26 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
+import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun EmptyState(
-    icon: ImageVector? = null,
+    content: (@Composable () -> Unit)? = null,
     @StringRes titleRes: Int? = null,
     @StringRes descriptionRes: Int? = null,
     modifier: Modifier = Modifier,
-) = EmptyState(icon, titleRes, descriptionRes?.let { stringResource(it) }, modifier)
+) = EmptyState(content, titleRes, descriptionRes?.let { stringResource(it) }, modifier)
 
 @Composable
 fun EmptyState(
-    icon: ImageVector?,
+    content: (@Composable () -> Unit)? = null,
     @StringRes titleRes: Int?,
     description: String?,
     modifier: Modifier = Modifier,
@@ -58,7 +59,7 @@ fun EmptyState(
         contentAlignment = Alignment.Center,
     ) {
         IllustratedMessageBlock(
-            icon = icon,
+            content = content,
             title = titleRes,
             description = description,
             modifier = modifier.padding(horizontal = Margin.Medium),
@@ -72,7 +73,7 @@ private fun EmptyStatePreview() {
     SwissTransferTheme {
         Surface {
             EmptyState(
-                icon = AppIllus.MascotSearching,
+                content = { Image(imageVector = AppIllus.MascotSearching, contentDescription = null) },
                 titleRes = R.string.noTransferReceivedTitle,
                 descriptionRes = R.string.noTransferReceivedDescription,
             )
