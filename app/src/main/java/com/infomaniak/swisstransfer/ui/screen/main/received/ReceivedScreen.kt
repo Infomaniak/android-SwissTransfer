@@ -31,7 +31,6 @@ import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab

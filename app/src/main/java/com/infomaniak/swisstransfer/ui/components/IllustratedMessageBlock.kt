@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -50,7 +50,7 @@ fun IllustratedMessageBlock(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         content?.let {
-            content()
+            it()
             Spacer(Modifier.height(Margin.Huge))
         }
 
@@ -82,7 +82,7 @@ private fun IllustratedMessageBlockPreview() {
     SwissTransferTheme {
         Surface {
             IllustratedMessageBlock(
-                content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) },
+                content = { Image(imageVector = AppIllus.MascotSearching, contentDescription = null) },
                 title = R.string.noTransferReceivedTitle,
                 description = stringResource(R.string.noTransferReceivedDescription),
             )

@@ -21,6 +21,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -72,7 +73,9 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
     }
 
     val onboardingPages = buildList {
-        Page.entries.forEach { page -> add(page.toOnboardingPage(isHighlighted)) }
+        Page.entries.forEachIndexed { index, page ->
+            add(page.toOnboardingPage(isHighlighted, pagerState, index))
+        }
     }
 
     OnboardingScaffold(
@@ -99,19 +102,24 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
 }
 
 @Composable
-private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>) = OnboardingPage(
-    background = background.image(),
-    illustration = {
-        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(illustrationRes))
-        LottieAnimation(composition)
-    },
-    text = {
-        TitleAndDescription(
-            page = this,
-            isHighlighted = { isHighlighted[this]?.value ?: false }
-        )
-    }
-)
+private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>, pagerState: PagerState, index: Int) =
+    OnboardingPage(
+        background = background.image(),
+        illustration = {
+            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(illustrationRes))
+            val isPlayingLottie by remember { derivedStateOf { pagerState.currentPage == index } }
+
+            // We have to specify the isPlaying parameter in order to play the animation only when the page is selected.
+            // Otherwise, the ViewPager can load the page and start the animation before it's visible.
+            LottieAnimation(composition, restartOnPlay = true, isPlaying = isPlayingLottie)
+        },
+        text = {
+            TitleAndDescription(
+                page = this,
+                isHighlighted = { isHighlighted[this]?.value ?: false }
+            )
+        }
+    )
 
 @Composable
 private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
