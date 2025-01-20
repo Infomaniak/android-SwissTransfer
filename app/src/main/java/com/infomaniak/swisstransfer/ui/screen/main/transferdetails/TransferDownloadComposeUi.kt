@@ -72,10 +72,15 @@ class TransferDownloadComposeUi(
     private val removalRequest = CallableState<Unit>()
     private val openRequest = CallableState<Unit>()
     private var downloadStatus by mutableStateOf<DownloadStatus?>(null)
+    private var supportsPreview by mutableStateOf(false)
 
     override suspend fun awaitDownloadRequest() = downloadRequest.awaitOneCall()
 
-    override suspend fun showStatusAndAwaitRemovalRequest(statusFlow: StateFlow<DownloadStatus?>) {
+    override suspend fun showStatusAndAwaitRemovalRequest(
+        statusFlow: StateFlow<DownloadStatus?>,
+        supportsPreview: Boolean
+    ) {
+        this.supportsPreview = supportsPreview
         raceOf({
             removalRequest.awaitOneCall()
         }, {
@@ -151,6 +156,10 @@ class TransferDownloadComposeUi(
     @Composable
     fun CardCornerButton(modifier: Modifier = Modifier) {
         if (removalRequest.isAwaitingCall) DownloadStatus { btnData, action, _ ->
+            if (action == openRequest && supportsPreview) {
+                // Don't overlay the checkmark once the file is openable and has a preview.
+                return@DownloadStatus
+            }
             CardCornerButton(
                 icon = btnData.icon,
                 labelResId = btnData.labelResId,
@@ -292,7 +301,7 @@ private fun Preview() = SwissTransferTheme {
                 emit(DownloadStatus.InProgress(downloadedBytes = 9_345_064L, totalSizeInBytes = 84_234_122L))
                 awaitCancellation()
             }.stateIn(scope = this)
-            ui.showStatusAndAwaitRemovalRequest(statusFlow)
+            ui.showStatusAndAwaitRemovalRequest(statusFlow, supportsPreview = false)
             delay(.7.seconds)
         }
     }

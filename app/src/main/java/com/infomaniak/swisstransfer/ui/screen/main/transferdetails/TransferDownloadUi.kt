@@ -22,8 +22,15 @@ import com.infomaniak.core2.DownloadStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface TransferDownloadUi {
+
     val lifecycle: Lifecycle
+
     suspend fun awaitDownloadRequest()
-    suspend fun showStatusAndAwaitRemovalRequest(statusFlow: StateFlow<DownloadStatus?>)
+
+    suspend fun showStatusAndAwaitRemovalRequest(
+        statusFlow: StateFlow<DownloadStatus?>,
+        supportsPreview: Boolean
+    )
+
     suspend fun awaitOpenRequest()
 }

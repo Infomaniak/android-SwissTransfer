@@ -29,6 +29,7 @@ import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.ui.utils.hasPreview
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import splitties.coroutines.raceOf
@@ -63,7 +64,7 @@ suspend fun handleTransferDownload(
     autoCancelScope {
         val downloadStatusFlow = downloadManager.downloadStatusFlow(id).stateIn(scope = this)
         raceOf({
-            ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow)
+            ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow, supportsPreview = targetFile?.hasPreview == true)
         }, {
             awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow)
         }, {
