@@ -24,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core2.isValidEmail
 import com.infomaniak.core2.sentry.SentryLog
@@ -143,6 +142,8 @@ class ImportFilesViewModel @Inject constructor(
                 // we don't want to erase user's choices about advanced transfer options.
                 initTransferOptionsValues()
 
+                launch { retrieveLastAuthorEmail() }
+
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
@@ -185,6 +186,12 @@ class ImportFilesViewModel @Inject constructor(
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
         uploadManager.removeAllUploadSession()
+    }
+
+    private suspend fun retrieveLastAuthorEmail() {
+        appSettingsManager.appSettings.first()?.let { appSettings ->
+            appSettings.lastAuthorEmail?.let { lastAuthorEmail -> transferAuthorEmail = lastAuthorEmail }
+        }
     }
 
     private suspend fun handleOpenReason(isFirstViewModelCreation: Boolean) {
