@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -167,7 +168,7 @@ private fun NoSelectionEmptyState() {
         topBar = { SwissTransferTopAppBar(title = "") }
     ) {
         EmptyState(
-            icon = AppIllus.MascotWithMagnifyingGlass,
+            content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) },
             descriptionRes = R.string.noSettingsSelectedDescription
         )
     }

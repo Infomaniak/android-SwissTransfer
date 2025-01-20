@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.swisstransfer.R
@@ -41,8 +40,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun IllustratedMessageBlock(
-    icon: ImageVector?,
-    iconContent: (@Composable () -> Unit)?,
+    content: (@Composable () -> Unit)?,
     @StringRes title: Int?,
     description: String?,
     modifier: Modifier = Modifier,
@@ -51,16 +49,8 @@ fun IllustratedMessageBlock(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
-        if (iconContent == null) {
-            icon?.let {
-                Image(imageVector = it, contentDescription = null)
-
-                Spacer(Modifier.height(Margin.Huge))
-            }
-        } else {
-            iconContent()
-
+        content?.let {
+            content()
             Spacer(Modifier.height(Margin.Huge))
         }
 
@@ -92,8 +82,7 @@ private fun IllustratedMessageBlockPreview() {
     SwissTransferTheme {
         Surface {
             IllustratedMessageBlock(
-                icon = AppIllus.MascotWithMagnifyingGlass,
-                iconContent = null,
+                content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) },
                 title = R.string.noTransferReceivedTitle,
                 description = stringResource(R.string.noTransferReceivedDescription),
             )

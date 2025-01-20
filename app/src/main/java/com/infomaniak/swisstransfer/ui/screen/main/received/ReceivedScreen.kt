@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
+import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +31,7 @@ import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.MascotSearching
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
@@ -107,7 +109,9 @@ private fun ReceivedContent(
     if (transfers.isEmpty()) {
         val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
         EmptyState(
-            icon = if (shouldDisplayIcon) AppIllus.MascotWithMagnifyingGlass else null,
+            content = if (shouldDisplayIcon) {
+                { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) }
+            } else null,
             titleRes = R.string.noTransferReceivedTitle,
             descriptionRes = R.string.noTransferReceivedDescription,
         )

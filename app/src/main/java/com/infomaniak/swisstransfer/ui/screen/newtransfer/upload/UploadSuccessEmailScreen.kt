@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -77,8 +78,7 @@ fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, closeActivity:
         ) {
 
             IllustratedMessageBlock(
-                icon = AppIllus.Beers.image(),
-                iconContent = null,
+                content = { Image(imageVector = AppIllus.Beers.image(), contentDescription = null) },
                 title = TransferTypeUi.Mail.titleRes,
                 description = pluralStringResource(TransferTypeUi.Mail.descriptionRes!!, recipientsEmails().count()),
             )
