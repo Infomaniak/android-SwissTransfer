@@ -44,6 +44,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferUuid
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,6 +55,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var transferManager: TransferManager
+
+    private var lastTransfersUpdateTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
@@ -84,7 +87,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        lifecycleScope.launch { transferManager.updateAllTransfers() }
+        updateTransfersWithDebounce()
     }
 
     private fun askUserForNotificationsPermission() {
@@ -93,6 +96,13 @@ class MainActivity : ComponentActivity() {
                 contract = ActivityResultContracts.RequestPermission(),
                 callback = {},
             ).launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun updateTransfersWithDebounce() {
+        lifecycleScope.launch {
+            transferManager.updateAllTransfers(lastTransfersUpdateTime)
+            lastTransfersUpdateTime = Date().time
         }
     }
 }
