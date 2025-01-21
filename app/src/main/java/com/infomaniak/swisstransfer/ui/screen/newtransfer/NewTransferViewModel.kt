@@ -28,7 +28,7 @@ class NewTransferViewModel @Inject constructor(
     private val notificationsUtils: NotificationsUtils,
 ) : ViewModel() {
 
-    fun cancelFailureNotification() {
+    fun cancelUploadNotification() {
         notificationsUtils.cancelNotification(UploadWorker.NOTIFICATION_ID)
     }
 }

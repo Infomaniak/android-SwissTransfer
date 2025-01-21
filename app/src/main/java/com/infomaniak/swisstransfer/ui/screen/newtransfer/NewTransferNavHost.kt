@@ -43,14 +43,14 @@ fun NewTransferNavHost(
     startDestination: NewTransferNavigation,
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     closeActivityAndPromptForValidation: () -> Unit,
-    cancelFailureNotification: () -> Unit,
+    cancelUploadNotification: () -> Unit,
 ) {
 
     AutoResetTransferDataAvailabilityStatus()
 
     NavHost(navController, startDestination) {
         composable<ImportFilesDestination> {
-            cancelFailureNotification()
+            cancelUploadNotification()
             ImportFilesScreen(
                 importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
                 closeActivity = { closeActivity(false) },
@@ -86,6 +86,7 @@ fun NewTransferNavHost(
             )
         }
         composable<UploadSuccessDestination> {
+            cancelUploadNotification()
             val args = it.toRoute<UploadSuccessDestination>()
             UploadSuccessScreen(
                 transferType = args.transferType,
@@ -95,7 +96,7 @@ fun NewTransferNavHost(
             )
         }
         composable<UploadErrorDestination> {
-            cancelFailureNotification()
+            cancelUploadNotification()
             val args = it.toRoute<UploadErrorDestination>()
             UploadErrorScreen(
                 navigateBackToUploadProgress = {
