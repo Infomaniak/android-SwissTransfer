@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.workers
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.infomaniak.core2.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import io.sentry.Sentry
 import kotlin.coroutines.cancellation.CancellationException
@@ -35,9 +36,9 @@ abstract class BaseCoroutineWorker(appContext: Context, params: WorkerParameters
         return runCatching {
             launchWork()
         }.getOrElse { exception ->
-            exception.printStackTrace()
+            SentryLog.w(TAG, "Exception during work", exception)
             when (exception) {
-                is CancellationException -> Result.failure()
+                is CancellationException -> throw exception
                 is NetworkException -> Result.retry()
                 else -> {
                     Sentry.captureException(exception)
@@ -51,5 +52,6 @@ abstract class BaseCoroutineWorker(appContext: Context, params: WorkerParameters
 
     companion object {
         private const val MAX_RETRIES = 3
+        private val TAG = BaseCoroutineWorker::class.java.simpleName
     }
 }
