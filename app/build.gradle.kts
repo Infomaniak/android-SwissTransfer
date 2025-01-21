@@ -89,15 +89,25 @@ android {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
+
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("./debug.keystore")
+        }
+    }
+
     kotlinOptions {
         jvmTarget = javaVersion.toString()
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
