@@ -67,12 +67,7 @@ class LaunchActivity : ComponentActivity() {
     }
 
     private fun createDeeplinkIntent(): Intent {
-        return Intent(
-            Intent.ACTION_VIEW,
-            intent.data,
-            /*context*/this,
-            MainActivity::class.java,
-        ).apply {
+        return Intent(Intent.ACTION_VIEW, intent.data, this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
     }
