@@ -24,10 +24,10 @@ import com.infomaniak.core.appintegrity.exceptions.NetworkException
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
-import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.utils.totalFileSize
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.scopes.ViewModelScoped
 import io.sentry.Sentry
@@ -48,25 +48,26 @@ class TransferSendManager @Inject constructor(
     private val _sendStatus = MutableStateFlow<SendStatus>(SendStatus.Initial)
     val sendStatus = _sendStatus.asStateFlow()
 
-    suspend fun sendNewTransfer(newUploadSession: NewUploadSession) {
-        runCatching {
-            // When clicking the "Send" button, a new session is created.
-            // If there is an error before reaching the UploadProgressScreen, we stay in ImportFilesScreen.
-            // Every time we'll click the "Send" button again, a new session will be created.
-            // So we'll have multiple UploadSession in Realm. We don't want that. We only want the last session.
-            // So before creating the new session, we need to remove the previous failed ones.
-            uploadManager.removeAllUploadSession()
+    // suspend fun sendNewTransfer(newUploadSession: UploadSession) {
+    //     runCatching {
+    //         // When clicking the "Send" button, a new session is created.
+    //         // If there is an error before reaching the UploadProgressScreen, we stay in ImportFilesScreen.
+    //         // Every time we'll click the "Send" button again, a new session will be created.
+    //         // So we'll have multiple UploadSession in Realm. We don't want that. We only want the last session.
+    //         // So before creating the new session, we need to remove the previous failed ones.
+    //         uploadManager.removeAllUploadSession()
+    //
+    //         val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
+    //         sendTransfer(uploadSession)
+    //     }.onFailure { exception ->
+    //         if (exception !is NetworkException && exception !is KmpNetworkException) {
+    //             SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
+    //         }
+    //         _sendStatus.update { SendStatus.Failure }
+    //     }
+    // }
 
-            val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
-            sendTransfer(uploadSession)
-        }.onFailure { exception ->
-            if (exception !is NetworkException && exception !is KmpNetworkException) {
-                SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
-            }
-            _sendStatus.update { SendStatus.Failure }
-        }
-    }
-
+    // TODO: Rename
     suspend fun resendLastTransfer() {
         val uploadSession = uploadManager.getLastUpload() ?: run {
             SentryLog.e(TAG, "No last upload found")
@@ -86,8 +87,7 @@ class TransferSendManager @Inject constructor(
             )!! // TODO: Handle ContainerErrorsException here
             uploadWorkerScheduler.scheduleWork(uploadSession.uuid)
             _sendStatus.update {
-                val totalSize = uploadSession.files.sumOf { it.size }
-                SendStatus.Success(totalSize)
+                SendStatus.Success(uploadSession.totalFileSize())
             }
         }.onFailure { exception ->
             SentryLog.w(TAG, "Exception during sendTransfer", exception)

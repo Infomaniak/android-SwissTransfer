@@ -72,6 +72,14 @@ class ImportFilesViewModel @Inject constructor(
 
     val sendStatus by transferSendManager::sendStatus
 
+    // val hasOngoingUploadSession = uploadManager
+    //     .lastUploadFlow
+    //     .map { it != null }
+    //     .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val lastUpload = uploadManager.lastUploadFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val filesDetailsUiState = importationFilesManager.importedFiles.map {
         when {
             it.isEmpty() -> FilesDetailsUiState.EmptyFiles
@@ -169,13 +177,13 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun sendTransfer() {
-        viewModelScope.launch(ioDispatcher) {
+    // Creating the new upload session will trigger the navigation from the ImportFilesScreen to the UploadProgressScreen which
+    // will start the transfer and the worker.
+    fun createNewUploadSession() {
+        viewModelScope.launch {
             val newUploadSession = generateNewUploadSession()
-
             appSettingsManager.setLastAuthorEmail(newUploadSession.authorEmail)
-
-            transferSendManager.sendNewTransfer(newUploadSession)
+            uploadManager.createAndGetUpload(newUploadSession)
         }
     }
 

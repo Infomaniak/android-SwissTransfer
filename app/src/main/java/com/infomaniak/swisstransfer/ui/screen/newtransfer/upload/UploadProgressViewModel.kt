@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.network.NetworkAvailability
@@ -42,6 +43,8 @@ class UploadProgressViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
+
+    val sendStatus by transferSendManager::sendStatus
 
     val isNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
         .onEach { SentryLog.d("Internet availability", if (it) "Available" else "Unavailable") }
@@ -103,11 +106,15 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
-    fun resendLastTransfer(onCompletion: () -> Unit) {
-        viewModelScope.launch(ioDispatcher) {
+    fun sendNewTransfer() {
+        Log.e("gibran", "sendNewTransfer: SENDING A NEW TRANSFER FROM THE UPLOAD PROGRESS VIEW MODEL", );
+        viewModelScope.launch {
             transferSendManager.resendLastTransfer()
-            withContext(mainDispatcher) { onCompletion() }
         }
+    }
+
+    fun resetSendStatus() {
+        transferSendManager.resetSendStatus()
     }
 
     companion object {

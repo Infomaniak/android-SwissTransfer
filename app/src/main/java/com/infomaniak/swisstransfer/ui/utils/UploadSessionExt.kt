@@ -15,13 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.navigation
+package com.infomaniak.swisstransfer.ui.utils
 
-const val NOTIFICATION_NAVIGATION_KEY = "notificationNavigationKey"
-const val TRANSFER_UUID_KEY = "transferUuidKey"
-const val TRANSFER_TYPE_KEY = "transferTypeKey"
-const val TRANSFER_TOTAL_SIZE_KEY = "transferTotalSizeKey"
-const val TRANSFER_URL_KEY = "transferUrlKey"
-const val TRANSFER_AUTHOR_EMAIL_KEY = "transferAuthorEmailKey"
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 
-enum class NotificationNavigation { UploadProgress, UploadSuccess, UploadFailure }
+fun UploadSession.totalFileSize(): Long = files.sumOf { it.size }

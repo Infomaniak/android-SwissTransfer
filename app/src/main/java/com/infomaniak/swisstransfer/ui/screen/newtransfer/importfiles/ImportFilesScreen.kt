@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
@@ -53,6 +54,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.NotificationPermissionUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.totalFileSize
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 
@@ -74,8 +76,7 @@ fun AutoResetTransferDataAvailabilityStatus() {
 fun ImportFilesScreen(
     importFilesViewModel: ImportFilesViewModel,
     closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long) -> Unit,
-    navigateToEmailValidation: (email: String) -> Unit,
+    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, authorEmail: String?) -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
 
@@ -92,7 +93,7 @@ fun ImportFilesScreen(
     val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
-    val sendStatus by importFilesViewModel.sendStatus.collectAsStateWithLifecycle()
+    val lastUpload by importFilesViewModel.lastUpload.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -102,7 +103,7 @@ fun ImportFilesScreen(
     )
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        importFilesViewModel.sendTransfer()
+        importFilesViewModel.createNewUploadSession()
     }
 
     fun pickFiles() {
@@ -117,15 +118,22 @@ fun ImportFilesScreen(
 
     HandleStartupFilePick(importFilesViewModel.openFilePickerEvent, ::pickFiles)
 
-    HandleSendActionResult(
-        snackbarHostState = snackbarHostState,
-        sendStatus = { sendStatus },
+    HandleNavigationToUploadInProgress(
+        lastUpload = { lastUpload },
         navigateToUploadProgress = { totalSize ->
-            navigateToUploadProgress(selectedTransferType, totalSize)
-        },
-        navigateToEmailValidation = { navigateToEmailValidation(emailTextFieldCallbacks.transferAuthorEmail.get()) },
-        resetSendActionResult = importFilesViewModel::resetSendActionResult,
+            navigateToUploadProgress(selectedTransferType, totalSize, lastUpload?.authorEmail)
+        }
     )
+
+    // HandleSendActionResult(
+    //     snackbarHostState = snackbarHostState,
+    //     sendStatus = { sendStatus },
+    //     navigateToUploadProgress = { totalSize ->
+    //         navigateToUploadProgress(selectedTransferType, totalSize)
+    //     },
+    //     navigateToEmailValidation = { navigateToEmailValidation(emailTextFieldCallbacks.transferAuthorEmail.get()) },
+    //     resetSendActionResult = importFilesViewModel::resetSendActionResult,
+    // )
 
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
@@ -174,10 +182,10 @@ fun ImportFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
         closeActivity = closeActivity,
-        sendStatus = { sendStatus },
+        sendStatus = { SendStatus.Initial }, // TODO: Only used for button
         sendTransfer = {
             if (NotificationPermissionUtils.hasNotificationPermission(context)) {
-                importFilesViewModel.sendTransfer()
+				importFilesViewModel.createNewUploadSession()
             } else {
                 NotificationPermissionUtils.askNotificationPermission(launcher)
             }
@@ -195,44 +203,53 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 }
 
 @Composable
-private fun HandleSendActionResult(
-    snackbarHostState: SnackbarHostState,
-    sendStatus: () -> SendStatus,
-    navigateToUploadProgress: (totalSize: Long) -> Unit,
-    navigateToEmailValidation: () -> Unit,
-    resetSendActionResult: () -> Unit,
-) {
-    val context = LocalContext.current
+fun HandleNavigationToUploadInProgress(lastUpload: () -> UploadSession?, navigateToUploadProgress: (Long) -> Unit) {
+    LaunchedEffect(lastUpload()) {
+        val uploadSession = lastUpload() ?: return@LaunchedEffect
 
-    LaunchedEffect(sendStatus()) {
-        when (val actionResult = sendStatus()) {
-            is SendStatus.Success -> {
-                // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
-                // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
-                // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
-                resetSendActionResult()
-                navigateToUploadProgress(actionResult.totalSize)
-            }
-            is SendStatus.NoNetwork -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
-                resetSendActionResult()
-            }
-            is SendStatus.Refused -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
-                resetSendActionResult()
-            }
-            is SendStatus.Failure -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
-                resetSendActionResult()
-            }
-            is SendStatus.RequireEmailValidation -> {
-                navigateToEmailValidation()
-                resetSendActionResult()
-            }
-            else -> Unit
-        }
+        navigateToUploadProgress(uploadSession.totalFileSize())
     }
 }
+
+// @Composable
+// private fun HandleSendActionResult(
+//     snackbarHostState: SnackbarHostState,
+//     sendStatus: () -> SendStatus,
+//     navigateToUploadProgress: (totalSize: Long) -> Unit,
+//     navigateToEmailValidation: () -> Unit,
+//     resetSendActionResult: () -> Unit,
+// ) {
+//     val context = LocalContext.current
+//
+//     LaunchedEffect(sendStatus()) {
+//         when (val actionResult = sendStatus()) {
+//             is SendStatus.Success -> {
+//                 // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
+//                 // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
+//                 // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
+//                 resetSendActionResult()
+//                 navigateToUploadProgress(actionResult.totalSize)
+//             }
+//             is SendStatus.NoNetwork -> {
+//                 snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
+//                 resetSendActionResult()
+//             }
+//             is SendStatus.Refused -> {
+//                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
+//                 resetSendActionResult()
+//             }
+//             is SendStatus.Failure -> {
+//                 snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
+//                 resetSendActionResult()
+//             }
+//             is SendStatus.RequireEmailValidation -> {
+//                 navigateToEmailValidation()
+//                 resetSendActionResult()
+//             }
+//             else -> Unit
+//         }
+//     }
+// }
 
 @Composable
 private fun ImportFilesScreen(

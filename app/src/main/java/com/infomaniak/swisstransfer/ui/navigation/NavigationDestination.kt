@@ -116,12 +116,13 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object ImportFilesDestination : NewTransferNavigation()
 
     @Serializable
-    data class ValidateUserEmailDestination(val userEmail: String) : NewTransferNavigation()
+    data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation()
 
     @Serializable
     data class UploadProgressDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
+        val authorEmail: String?,
     ) : NewTransferNavigation()
 
     @Serializable
@@ -135,7 +136,11 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data class UploadErrorDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
+        val authorEmail: String?,
     ) : NewTransferNavigation()
+
+    @Serializable
+    data object UploadIntegrityErrorDestination : NewTransferNavigation()
 
     @Serializable
     data object NewTransferFilesDetailsDestination : NewTransferNavigation()

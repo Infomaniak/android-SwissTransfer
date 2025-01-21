@@ -22,12 +22,14 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,6 +37,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager.SendStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.areTransferDataStillAvailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.NetworkUnavailable
@@ -49,22 +52,36 @@ import com.infomaniak.core.R as RCore
 @Composable
 fun UploadProgressScreen(
     totalSizeInBytes: Long,
-    navigateToUploadSuccess: (String, String) -> Unit,
+    navigateToUploadSuccess: (transferUid: String, transferUrl: String) -> Unit,
     navigateToUploadError: () -> Unit,
+    navigateToEmailValidation: () -> Unit,
+    navigateToAppIntegrityError: () -> Unit,
     navigateBackToImportFiles: () -> Unit,
     closeActivity: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
     val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
     val isNetworkAvailable by uploadProgressViewModel.isNetworkAvailable.collectAsStateWithLifecycle()
+    val sendStatus by uploadProgressViewModel.sendStatus.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     BackHandler(enabled = !showBottomSheet, onBack = { showBottomSheet = true })
 
+    HandleSendStatus(
+        snackbarHostState = snackbarHostState,
+        sendStatus = { sendStatus },
+        navigateToUploadError = { navigateToUploadError() },
+        navigateToEmailValidation = { navigateToEmailValidation() },
+        navigateToAppIntegrityError = { navigateToAppIntegrityError() },
+        resetSendStatus = { uploadProgressViewModel.resetSendStatus() }
+    )
+
     LaunchedEffect(Unit) {
         uploadProgressViewModel.trackUploadProgress()
+        uploadProgressViewModel.sendNewTransfer()
     }
 
     HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles, closeActivity)
@@ -77,6 +94,51 @@ fun UploadProgressScreen(
         adScreenType = adScreenType,
         onCancel = { uploadProgressViewModel.cancelUpload(onFailedCancellation = closeActivity) }
     )
+}
+
+@Composable
+fun HandleSendStatus(
+    snackbarHostState: SnackbarHostState,
+    sendStatus: () -> SendStatus,
+    navigateToUploadError: () -> Unit,
+    navigateToEmailValidation: () -> Unit,
+    navigateToAppIntegrityError: () -> Unit,
+    resetSendStatus: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    LaunchedEffect(sendStatus()) {
+        when (val actionResult = sendStatus()) {
+            is SendStatus.Success -> {
+                // TODO: Did we still need to reset?
+                // // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
+                // // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
+                // // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
+                // resetSendActionResult()
+
+                // TODO: Do we need to check for this?
+                // navigateToUploadProgress(actionResult.totalSize)
+            }
+            is SendStatus.NoNetwork -> {
+                // TODO: Handle this case. Check if snackbar code doesn't straight block the code execution
+                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
+                resetSendStatus()
+            }
+            is SendStatus.Refused -> {
+                navigateToAppIntegrityError()
+                resetSendStatus()
+            }
+            is SendStatus.Failure -> {
+                navigateToUploadError()
+                resetSendStatus() // Needed apparently
+            }
+            is SendStatus.RequireEmailValidation -> {
+                navigateToEmailValidation()
+                // resetSendActionResult() // Not needed apparently
+            }
+            else -> Unit
+        }
+    }
 }
 
 @Composable
