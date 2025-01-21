@@ -146,7 +146,7 @@ private fun TransferDetailsScreen(
 
     val context = LocalContext.current
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-    val transferRecipients: List<String> = emptyList() // TODO: Use real data
+    val transferRecipients: Set<String> = getTransfer().recipientsEmails
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -259,7 +259,7 @@ private fun getBottomBarPadding(): PaddingValues {
 private fun ColumnScope.FilesList(
     snackbarHostState: SnackbarHostState,
     getTransfer: () -> TransferUi,
-    transferRecipients: List<String>,
+    transferRecipients: Set<String>,
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
@@ -305,14 +305,14 @@ private fun ColumnScope.FilesList(
 }
 
 @Composable
-private fun TransferRecipients(recipients: List<String>) {
+private fun TransferRecipients(recipients: Set<String>) {
     Text(
         text = pluralStringResource(R.plurals.recipientHeader, recipients.count()),
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
     )
     Spacer(Modifier.height(Margin.Mini))
-    EmailsFlowRow(recipients)
+    EmailsFlowRow(recipients.toList())
 }
 
 @Composable
