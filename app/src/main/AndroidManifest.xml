@@ -76,7 +76,6 @@
         <activity
             android:name=".ui.LaunchActivity"
             android:exported="true"
-            android:launchMode="singleTask"
             android:theme="@style/Theme.AppStarting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
