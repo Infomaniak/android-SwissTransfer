@@ -55,10 +55,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -145,6 +142,8 @@ class ImportFilesViewModel @Inject constructor(
                 // we don't want to erase user's choices about advanced transfer options.
                 initTransferOptionsValues()
 
+                launch { retrieveLastAuthorEmail() }
+
             } else {
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
@@ -172,7 +171,11 @@ class ImportFilesViewModel @Inject constructor(
 
     fun sendTransfer() {
         viewModelScope.launch(ioDispatcher) {
-            transferSendManager.sendNewTransfer(generateNewUploadSession())
+            val newUploadSession = generateNewUploadSession()
+
+            appSettingsManager.setLastAuthorEmail(newUploadSession.authorEmail)
+
+            transferSendManager.sendNewTransfer(newUploadSession)
         }
     }
 
@@ -183,6 +186,12 @@ class ImportFilesViewModel @Inject constructor(
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
         uploadManager.removeAllUploadSession()
+    }
+
+    private suspend fun retrieveLastAuthorEmail() {
+        appSettingsManager.appSettings.first()?.lastAuthorEmail?.let {
+            transferAuthorEmail = it
+        }
     }
 
     private suspend fun handleOpenReason(isFirstViewModelCreation: Boolean) {
@@ -225,7 +234,7 @@ class ImportFilesViewModel @Inject constructor(
         savedStateHandle[SELECTED_TRANSFER_TYPE] = type
         viewModelScope.launch(ioDispatcher) { appSettingsManager.setLastTransferType(type.dbValue) }
     }
-    //endregion
+//endregion
 
     //region Transfer Options
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
@@ -313,7 +322,7 @@ class ImportFilesViewModel @Inject constructor(
             is EmailLanguageOption -> selectTransferLanguage(option)
         }
     }
-    //endregion
+//endregion
 
     companion object {
         private val TAG = ImportFilesViewModel::class.java.simpleName
