@@ -31,7 +31,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DeeplinkException.*
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.*
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -99,8 +99,8 @@ class TransferDetailsViewModel @Inject constructor(
                 }
             }.onFailure { exception ->
                 when (exception) {
-                    is PasswordNeededDeeplinkException -> _isDeeplinkNeedingPassword.emit(true)
-                    is WrongPasswordDeeplinkException -> _isWrongDeeplinkPassword.emit(true)
+                    is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
+                    is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
                     else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
                 }
             }
@@ -157,9 +157,9 @@ class TransferDetailsViewModel @Inject constructor(
             _isDeeplinkNeedingPassword.emit(false)
         }.onFailure { exception ->
             when (exception) {
-                is ExpiredDeeplinkException -> longToast(R.string.deeplinkTransferExpired)
-                is NotFoundDeeplinkException -> longToast(R.string.deeplinkTransferNotFound)
-                is PasswordNeededDeeplinkException, is WrongPasswordDeeplinkException -> throw exception
+                is ExpiredFetchTransferException -> longToast(R.string.deeplinkTransferExpired)
+                is NotFoundFetchTransferException -> longToast(R.string.deeplinkTransferNotFound)
+                is PasswordNeededFetchTransferException, is WrongPasswordFetchTransferException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             }
         }
