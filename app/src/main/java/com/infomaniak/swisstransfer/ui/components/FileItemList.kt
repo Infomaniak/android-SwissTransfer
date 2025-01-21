@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
@@ -60,7 +63,8 @@ fun FileItemList(
         ui: TransferDownloadUi,
         transfer: TransferUi,
         file: FileUi
-    ) -> Nothing = { _, _, _ -> awaitCancellation() }
+    ) -> Nothing = { _, _, _ -> awaitCancellation() },
+    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     LazyVerticalGrid(
@@ -93,6 +97,13 @@ fun FileItemList(
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
                     else -> downloadUi.onFileClick
+                },
+                uriForFile = produceState(file.localPath) {
+                    transferFlow.collectLatest { transfer ->
+                        uriForFile(transfer, file).collect { uri: Uri? ->
+                            value = uri.toString()
+                        }
+                    }
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {

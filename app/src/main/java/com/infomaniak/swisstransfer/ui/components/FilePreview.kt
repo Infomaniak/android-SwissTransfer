@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.video.VideoFrameDecoder
 import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
@@ -51,28 +53,35 @@ import com.infomaniak.swisstransfer.ui.utils.hasPreview
 @Composable
 fun FilePreview(
     file: FileUi,
+    previewUri: String? = file.localPath,
     circleColor: Color,
     circleSize: Dp,
     showFileName: Boolean,
     fileIconContentPadding: PaddingValues = PaddingValues(),
 ) {
-    var displayPreview by rememberSaveable { mutableStateOf(file.hasPreview) }
-    val previewUri = file.localPath
+    var shouldDisplayPreview by rememberSaveable(previewUri) { mutableStateOf(file.hasPreview) }
 
-    if (displayPreview && previewUri != null) {
-        FileThumbnail(previewUri, onError = { displayPreview = false })
+    if (shouldDisplayPreview && previewUri != null) {
+        FileThumbnail(previewUri, onError = { shouldDisplayPreview = false })
     } else {
         FileIcon(file.fileType, circleColor, circleSize, file.fileName, showFileName, fileIconContentPadding)
     }
 }
 
+private val videoFrameDecoderFactory = VideoFrameDecoder.Factory()
+
 @Composable
 private fun FileThumbnail(uri: String, onError: () -> Unit) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
+    val context = LocalContext.current
+    val imageRequest = remember(uri) {
+        ImageRequest.Builder(context)
             .data(uri)
+            .decoderFactory(videoFrameDecoderFactory)
             .crossfade(true)
-            .build(),
+            .build()
+    }
+    AsyncImage(
+        model = imageRequest,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         onError = { onError() },

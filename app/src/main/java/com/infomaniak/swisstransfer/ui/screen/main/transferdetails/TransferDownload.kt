@@ -22,17 +22,15 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.net.Uri
+import androidx.lifecycle.Lifecycle
 import com.infomaniak.core2.*
 import com.infomaniak.core2.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.invoke
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
@@ -67,7 +65,7 @@ suspend fun handleTransferDownload(
         raceOf({
             ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow)
         }, {
-            awaitFileDeletion(ui, id, downloadStatusFlow)
+            awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow)
         }, {
             downloadStatusFlow.collectLatest { status ->
                 if (status !is DownloadStatus.Complete) return@collectLatest
@@ -95,20 +93,30 @@ suspend fun handleTransferDownload(
     )
 }
 
+fun downloadManagerId(
+    transferManager: TransferManager,
+    transferUuid: String,
+    fileUid: String?,
+): Flow<UniqueDownloadId?> = transferManager.downloadManagerIdFor(
+    transferUUID = transferUuid,
+    fileUid = fileUid,
+).map { UniqueDownloadId(it ?: return@map null) }
+
 @OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun awaitFileDeletion(
-    ui: TransferDownloadUi,
+    lifecycle: Lifecycle,
     id: UniqueDownloadId,
     downloadStatusFlow: SharedFlow<DownloadStatus?>
-) = downloadStatusFlow.transformLatest { status ->
-    if (status == DownloadStatus.Complete) {
-        ui.lifecycle.isResumedFlow().transformLatest { isResumed ->
+) = downloadStatusFlow.mapLatest { status ->
+    when (status) {
+        null -> return@mapLatest
+        DownloadStatus.Complete -> lifecycle.isResumedFlow().transformLatest { isResumed ->
             if (isResumed) {
                 val isFileDeleted = downloadManager.doesFileExist(id).not()
                 emit(isFileDeleted)
             }
         }.first { deleted -> deleted }
-        emit(Unit)
+        else -> awaitCancellation()
     }
 }.first()
 

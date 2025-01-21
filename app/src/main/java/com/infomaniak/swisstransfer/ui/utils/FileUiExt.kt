@@ -29,4 +29,7 @@ val FileUi.fileType: FileType
         }
     }
 
-val FileUi.hasPreview: Boolean get() = fileType == FileType.IMAGE
+val FileUi.hasPreview: Boolean get() = when (fileType) {
+    FileType.IMAGE, FileType.VIDEO -> true
+    else -> false
+}
