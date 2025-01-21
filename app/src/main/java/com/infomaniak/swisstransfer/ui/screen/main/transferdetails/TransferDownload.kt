@@ -63,22 +63,7 @@ suspend fun handleTransferDownload(
         }, {
             awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow)
         }, {
-            downloadStatusFlow.collectLatest newStatus@{ status ->
-                if (status !is DownloadStatus.Complete) return@newStatus
-                val uri = downloadManager.uriFor(id)
-                    ?: return@newStatus // Shouldn't happen since DownloadStatus is Complete.
-                repeatWhileActive {
-                    ui.awaitOpenRequest()
-                    openFile(uri)
-                    // We can't know for sure how long the target app
-                    // will take to react, if any, so we keep
-                    // the action disabled for a short time to
-                    // show the user their action has
-                    // been taken into account, and also to
-                    // prevent unintended doubled actions.
-                    delay(.7.seconds)
-                }
-            }
+            handleOpenRequests(downloadStatusFlow, id, ui, openFile)
         })
     }
     downloadManager.cancelAndRemove(id)
@@ -97,6 +82,28 @@ fun downloadManagerId(
     transferUUID = transferUuid,
     fileUid = fileUid,
 ).map { UniqueDownloadId(it ?: return@map null) }
+
+private suspend fun handleOpenRequests(
+    downloadStatusFlow: StateFlow<DownloadStatus?>,
+    id: UniqueDownloadId,
+    ui: TransferDownloadUi,
+    openFile: suspend (Uri) -> Unit,
+) = downloadStatusFlow.collectLatest { status ->
+    if (status !is DownloadStatus.Complete) return@collectLatest
+    val uri = downloadManager.uriFor(id)
+        ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
+    repeatWhileActive {
+        ui.awaitOpenRequest()
+        openFile(uri)
+        // We can't know for sure how long the target app
+        // will take to react, if any, so we keep
+        // the action disabled for a short time to
+        // show the user their action has
+        // been taken into account, and also to
+        // prevent unintended doubled actions.
+        delay(.7.seconds)
+    }
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private fun currentOrNewDownloadManagerId(
