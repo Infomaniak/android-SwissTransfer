@@ -40,6 +40,7 @@ object NotificationPermissionUtils {
 
     fun askNotificationPermission(launcher: ManagedActivityResultLauncher<String, Boolean>) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            //TODO: Manage with a custom dialog if not handled by the system
             launcher.launch(permission)
         }
     }
