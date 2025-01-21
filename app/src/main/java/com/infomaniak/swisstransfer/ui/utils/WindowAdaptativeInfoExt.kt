@@ -17,17 +17,19 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import android.content.Context
 import android.content.res.Resources
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.EXPANDED
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.MEDIUM
 import androidx.window.layout.WindowMetricsCalculator
-import splitties.init.appCtx
 
 /**
  * Determines if the current window is classified as a large window suitable for tablet devices.
@@ -37,9 +39,12 @@ import splitties.init.appCtx
  *
  * @return `true` if the window is large (tablet), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowLarge(): Boolean {
-    return getCustomWindowClass() == EXPANDED && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
+fun WindowAdaptiveInfo.isWindowLarge(context: Context): Boolean {
+    return getCustomWindowClass(context) == EXPANDED && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
 }
+
+@Composable
+fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.current)
 
 /**
  * Determines if the current window is classified as a small window suitable for mobile devices.
@@ -49,11 +54,14 @@ fun WindowAdaptiveInfo.isWindowLarge(): Boolean {
  *
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
+fun WindowAdaptiveInfo.isWindowSmall(context:Context): Boolean = !isWindowLarge(context)
+
+@Composable
 fun WindowAdaptiveInfo.isWindowSmall(): Boolean = !isWindowLarge()
 
-private fun getCustomWindowClass(): WindowWidthSizeClass {
+private fun getCustomWindowClass(context: Context): WindowWidthSizeClass {
     val windowBounds = WindowMetricsCalculator.getOrCreate()
-        .computeCurrentWindowMetrics(appCtx)
+        .computeCurrentWindowMetrics(context)
         .bounds
     val dpWidth = windowBounds.width().toDpInt()
 

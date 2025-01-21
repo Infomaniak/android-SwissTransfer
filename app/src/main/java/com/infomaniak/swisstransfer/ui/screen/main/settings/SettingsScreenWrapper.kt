@@ -104,7 +104,7 @@ private fun ListPane(
                 GIVE_FEEDBACK -> context.openReviewBottomSheet()
                 else -> {
                     // Navigate to the detail pane with the passed item
-                    navigator.selectItem(windowAdaptiveInfo, item)
+                    navigator.selectItem(context, windowAdaptiveInfo, item)
                 }
             }
         },

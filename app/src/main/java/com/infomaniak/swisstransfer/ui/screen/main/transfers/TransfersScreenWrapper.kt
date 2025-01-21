@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
+import android.content.Context
 import android.os.Parcelable
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +28,7 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -93,7 +95,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
 ) {
     if (transferUuid != null && !isDeepLinkConsumed()) {
         consumeDeepLink()
-        navigateToDetails(LocalWindowAdaptiveInfo.current, direction, transferUuid)
+        navigateToDetails(LocalContext.current, LocalWindowAdaptiveInfo.current, direction, transferUuid)
     }
 }
 
@@ -105,16 +107,21 @@ private fun ListPane(
     transfersViewModel: TransfersViewModel,
     updateHasTransfer: (Boolean) -> Unit,
 ) {
+    val context = LocalContext.current
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     when (direction) {
         TransferDirection.SENT -> SentScreen(
-            navigateToDetails = { transferUuid -> navigator.navigateToDetails(windowAdaptiveInfo, direction, transferUuid) },
+            navigateToDetails = { transferUuid ->
+                navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid)
+            },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
-            navigateToDetails = { transferUuid -> navigator.navigateToDetails(windowAdaptiveInfo, direction, transferUuid) },
+            navigateToDetails = { transferUuid ->
+                navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid)
+            },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
@@ -124,11 +131,12 @@ private fun ListPane(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
+    context: Context,
     windowAdaptiveInfo: WindowAdaptiveInfo,
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    selectItem(windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
+    selectItem(context, windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -192,6 +200,7 @@ private fun FilesDetailsScreen(
     transferUuid: String,
     windowAdaptiveInfo: WindowAdaptiveInfo
 ) {
+    val context = LocalContext.current
     FilesDetailsScreen(
         navigateToFolder = { selectedFolderUuid ->
             navigator.navigateToFolder(
@@ -206,8 +215,9 @@ private fun FilesDetailsScreen(
             // Because on phones, if we navigateToDetails, we arrive on the TransferDetailsScreen but
             // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all
             // the FilesDetailsScreen's
-            if (windowAdaptiveInfo.isWindowSmall()) navigator.navigateBack()
+            if (windowAdaptiveInfo.isWindowSmall(context)) navigator.navigateBack()
             navigator.navigateToDetails(
+                context,
                 windowAdaptiveInfo,
                 transferDirection,
                 transferUuid
