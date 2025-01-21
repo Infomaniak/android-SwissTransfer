@@ -92,6 +92,8 @@ class AppIntegrityManager(private val appContext: Context, userAgent: String) {
         val nonce = Base64.encodeToString(challenge.toByteArray(), Base64.DEFAULT)
         val token: CompletableDeferred<String> = CompletableDeferred()
 
+        // The backend token check is disabled by default in preprod.
+        // See [AppIntegrityRepository.getJwtToken]'s `force_integrity_test` if you want to enable it.
         if (BuildConfig.DEBUG) return "fake integrity token"
 
         classicIntegrityTokenProvider.requestIntegrityToken(IntegrityTokenRequest.builder().setNonce(nonce).build())
