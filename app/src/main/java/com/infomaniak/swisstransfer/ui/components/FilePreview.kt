@@ -59,10 +59,10 @@ fun FilePreview(
     showFileName: Boolean,
     fileIconContentPadding: PaddingValues = PaddingValues(),
 ) {
-    var displayPreview by rememberSaveable(previewUri) { mutableStateOf(file.hasPreview) }
+    var shouldDisplayPreview by rememberSaveable(previewUri) { mutableStateOf(file.hasPreview) }
 
-    if (displayPreview && previewUri != null) {
-        FileThumbnail(previewUri, onError = { displayPreview = false })
+    if (shouldDisplayPreview && previewUri != null) {
+        FileThumbnail(previewUri, onError = { shouldDisplayPreview = false })
     } else {
         FileIcon(file.fileType, circleColor, circleSize, file.fileName, showFileName, fileIconContentPadding)
     }
