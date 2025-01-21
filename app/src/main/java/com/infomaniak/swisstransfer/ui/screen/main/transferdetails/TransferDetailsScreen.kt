@@ -85,32 +85,35 @@ fun TransferDetailsScreen(
     }
 
     val context = LocalContext.current
-    when (uiState) {
+    when (val state = uiState) {
         is Delete -> navigateBack?.invoke()
         is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
-        is Success -> TransferDetailsScreen(
-            transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
-            direction = direction,
-            navigateBack = navigateBack,
-            getTransfer = { (uiState as Success).transfer },
-            runDownloadUi = { ui, transfer, file ->
-                transferDetailsViewModel.handleTransferDownload(
-                    ui = ui,
-                    transfer = transfer,
-                    targetFile = file,
-                    openFile = { uri -> context.openFile(uri) }
-                )
-            },
-            uriForFile = { transfer, file -> transferDetailsViewModel.uriForFile(transfer, file) },
-            getCheckedFiles = { transferDetailsViewModel.checkedFiles },
-            clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
-            setFileCheckStatus = { fileUid, isChecked ->
-                transferDetailsViewModel.checkedFiles[fileUid] = isChecked
-            },
-            navigateToFolder = navigateToFolder,
-        )
+        is Success -> {
+            val success by rememberUpdatedState(state)
+            TransferDetailsScreen(
+                transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
+                direction = direction,
+                navigateBack = navigateBack,
+                getTransfer = { success.transfer },
+                runDownloadUi = { ui, transfer, file ->
+                    transferDetailsViewModel.handleTransferDownload(
+                        ui = ui,
+                        transfer = transfer,
+                        targetFile = file,
+                        openFile = { uri -> context.openFile(uri) }
+                    )
+                },
+                uriForFile = { transfer, file -> transferDetailsViewModel.uriForFile(transfer, file) },
+                getCheckedFiles = { transferDetailsViewModel.checkedFiles },
+                clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
+                setFileCheckStatus = { fileUid, isChecked ->
+                    transferDetailsViewModel.checkedFiles[fileUid] = isChecked
+                },
+                navigateToFolder = navigateToFolder,
+            )
+        }
         TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
     }
 
