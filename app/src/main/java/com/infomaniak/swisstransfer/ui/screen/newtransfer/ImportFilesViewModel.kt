@@ -189,8 +189,8 @@ class ImportFilesViewModel @Inject constructor(
     }
 
     private suspend fun retrieveLastAuthorEmail() {
-        appSettingsManager.appSettings.first()?.let { appSettings ->
-            appSettings.lastAuthorEmail?.let { lastAuthorEmail -> transferAuthorEmail = lastAuthorEmail }
+        appSettingsManager.appSettings.first()?.lastAuthorEmail?.let {
+            transferAuthorEmail = it
         }
     }
 
@@ -234,7 +234,7 @@ class ImportFilesViewModel @Inject constructor(
         savedStateHandle[SELECTED_TRANSFER_TYPE] = type
         viewModelScope.launch(ioDispatcher) { appSettingsManager.setLastTransferType(type.dbValue) }
     }
-    //endregion
+//endregion
 
     //region Transfer Options
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
@@ -322,7 +322,7 @@ class ImportFilesViewModel @Inject constructor(
             is EmailLanguageOption -> selectTransferLanguage(option)
         }
     }
-    //endregion
+//endregion
 
     companion object {
         private val TAG = ImportFilesViewModel::class.java.simpleName
