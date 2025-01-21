@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
@@ -108,7 +109,7 @@ fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-fun <T> ThreePaneScaffoldNavigator<T>.selectItem(windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
-    if (windowAdaptiveInfo.isWindowLarge()) navigateBack()
+fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
+    if (windowAdaptiveInfo.isWindowLarge(context)) navigateBack()
     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
 }

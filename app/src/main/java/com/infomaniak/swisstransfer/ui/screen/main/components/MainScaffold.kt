@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
@@ -27,6 +28,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
@@ -95,9 +97,11 @@ private fun rememberNavType(
         isDestinationInTopLevelNav(currentDestination)
     }
 
+    val context = LocalContext.current
+
     return remember(showNavigation, windowAdaptiveInfo) {
         if (showNavigation) {
-            calculateFromAdaptiveInfo(windowAdaptiveInfo)
+            calculateFromAdaptiveInfo(context, windowAdaptiveInfo)
         } else {
             NavigationSuiteType.None
         }
@@ -108,8 +112,12 @@ private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
     return NavigationItem.entries.any { it.destination::class == destination::class }
 }
 
-private fun calculateFromAdaptiveInfo(windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
-    return if (windowAdaptiveInfo.isWindowLarge()) NavigationSuiteType.NavigationRail else NavigationSuiteType.NavigationBar
+private fun calculateFromAdaptiveInfo(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
+    return if (windowAdaptiveInfo.isWindowLarge(context)) {
+        NavigationSuiteType.NavigationRail
+    } else {
+        NavigationSuiteType.NavigationBar
+    }
 }
 
 private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
