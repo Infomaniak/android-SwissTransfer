@@ -75,7 +75,7 @@ fun UploadProgressScreen(
         totalSizeInBytes = totalSizeInBytes,
         showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
         adScreenType = adScreenType,
-        onCancel = { uploadProgressViewModel.cancelUpload() }
+        onCancel = { uploadProgressViewModel.cancelUpload(onFailedCancellation = closeActivity) }
     )
 }
 
