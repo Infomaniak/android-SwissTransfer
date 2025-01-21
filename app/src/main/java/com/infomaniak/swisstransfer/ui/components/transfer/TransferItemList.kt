@@ -17,6 +17,9 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun TransferItemList(
+    modifier: Modifier = Modifier,
     direction: TransferDirection,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> GroupedTransfers,
@@ -60,6 +64,7 @@ fun TransferItemList(
     }
 
     LazyColumn(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Mini),
         contentPadding = contentPadding,
     ) {
@@ -72,6 +77,7 @@ fun TransferItemList(
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .background(SwissTransferTheme.materialColors.background)
+                        .animateItem()
                 ) {
                     Text(
                         section.title(LocalContext.current),
@@ -89,6 +95,7 @@ fun TransferItemList(
                 itemContent = {
                     val transfer = transfers[it]
                     SwipeToDismissComponent(
+                        modifier = Modifier.animateItem(),
                         contentShape = itemShape,
                         onSwiped = { onSwiped(transfer.uuid) },
                     ) {

@@ -17,9 +17,11 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -114,6 +116,7 @@ private fun SentContent(
         SentEmptyScreen()
     } else {
         TransfersListWithExpiredBottomSheet(
+            modifier = Modifier.fillMaxHeight(),
             direction = TransferDirection.SENT,
             navigateToDetails = navigateToDetails,
             getSelectedTransferUuid = getSelectedTransferUuid,
