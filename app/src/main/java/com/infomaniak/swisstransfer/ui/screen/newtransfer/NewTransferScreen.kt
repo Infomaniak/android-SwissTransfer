@@ -48,7 +48,7 @@ fun NewTransferScreen(
         startDestination = startDestination,
         closeActivity = closeActivity,
         closeActivityAndPromptForValidation = { displayConfirmationDialog = true },
-        cancelFailureNotification = { newTransferViewModel.cancelFailureNotification() }
+        cancelUploadNotification = { newTransferViewModel.cancelUploadNotification() }
     )
 
     if (displayConfirmationDialog) {
