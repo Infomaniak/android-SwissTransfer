@@ -49,6 +49,10 @@ android {
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
     }
 
+    val debugSigningConfig = signingConfigs.getByName("debug") {
+        storeFile = rootProject.file("debug.keystore")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -58,6 +62,8 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+
+            signingConfig = debugSigningConfig
         }
     }
 
@@ -93,12 +99,6 @@ android {
 
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
-    }
-
-    signingConfigs {
-        getByName("debug") {
-            storeFile = rootProject.file("debug.keystore")
-        }
     }
 
     kotlinOptions {
