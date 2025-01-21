@@ -51,6 +51,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.NotificationPermissionUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -93,10 +94,16 @@ fun ImportFilesScreen(
 
     val sendStatus by importFilesViewModel.sendStatus.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments(),
         onResult = importFilesViewModel::importFiles,
     )
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        importFilesViewModel.sendTransfer()
+    }
 
     fun pickFiles() {
         filePickerLauncher.launch(arrayOf("*/*"))
@@ -168,7 +175,13 @@ fun ImportFilesScreen(
         pickFiles = ::pickFiles,
         closeActivity = closeActivity,
         sendStatus = { sendStatus },
-        sendTransfer = importFilesViewModel::sendTransfer,
+        sendTransfer = {
+            if (NotificationPermissionUtils.hasNotificationPermission(context)) {
+                importFilesViewModel.sendTransfer()
+            } else {
+                NotificationPermissionUtils.askNotificationPermission(launcher)
+            }
+        },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
     )
