@@ -27,14 +27,16 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "android-SwissTransfer"
-include(":app")
-include(":Core")
-include(":Core:AppIntegrity")
-include(":Core:Compose:Basics")
-include(":Core:FileTypes")
-include(":Core:InAppStore")
-include(":Core:Matomo")
-include(":Core:Network")
-include(":Core:Notifications")
-include(":Core:Onboarding")
-include(":Core:Sentry")
+include(
+    ":app",
+    ":Core",
+    ":Core:AppIntegrity",
+    ":Core:Compose:Basics",
+    ":Core:FileTypes",
+    ":Core:InAppStore",
+    ":Core:Matomo",
+    ":Core:Network",
+    ":Core:Notifications",
+    ":Core:Onboarding",
+    ":Core:Sentry",
+)
