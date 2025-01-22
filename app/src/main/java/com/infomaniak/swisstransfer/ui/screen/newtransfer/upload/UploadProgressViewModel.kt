@@ -79,7 +79,7 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
-    fun cancelUpload() {
+    fun cancelUpload(onFailedCancellation: () -> Unit) {
         uploadWorkerScheduler.cancelWork()
 
         viewModelScope.launch(ioDispatcher) {
@@ -92,6 +92,7 @@ class UploadProgressViewModel @Inject constructor(
                 }
             }.onFailure { exception ->
                 SentryLog.e(TAG, "Failure on cancel upload", exception)
+                onFailedCancellation()
             }
         }
     }
