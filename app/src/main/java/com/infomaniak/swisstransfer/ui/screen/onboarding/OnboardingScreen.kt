@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.infomaniak.core2.onboarding.IndicatorStyle
-import com.infomaniak.core2.onboarding.OnboardingPage
-import com.infomaniak.core2.onboarding.OnboardingScaffold
+import com.infomaniak.core.onboarding.IndicatorStyle
+import com.infomaniak.core.onboarding.OnboardingPage
+import com.infomaniak.core.onboarding.OnboardingScaffold
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus

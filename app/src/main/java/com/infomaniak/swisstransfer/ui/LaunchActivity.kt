@@ -23,7 +23,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
 import dagger.hilt.android.AndroidEntryPoint

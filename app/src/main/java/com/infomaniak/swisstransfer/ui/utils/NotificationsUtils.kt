@@ -24,7 +24,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.infomaniak.core2.notifications.*
+import com.infomaniak.core.notifications.*
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext

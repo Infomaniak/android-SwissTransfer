@@ -22,19 +22,19 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
     }
     versionCatalogs {
-        create("core2") { from(files("Core2/gradle/core2.versions.toml")) }
+        create("core") { from(files("Core/gradle/core.versions.toml")) }
     }
 }
 
 rootProject.name = "android-SwissTransfer"
 include(":app")
-include(":Core2")
-include(":Core2:AppIntegrity")
-include(":Core2:Compose:Basics")
-include(":Core2:FileTypes")
-include(":Core2:InAppStore")
-include(":Core2:Matomo")
-include(":Core2:Network")
-include(":Core2:Notifications")
-include(":Core2:Onboarding")
-include(":Core2:Sentry")
+include(":Core")
+include(":Core:AppIntegrity")
+include(":Core:Compose:Basics")
+include(":Core:FileTypes")
+include(":Core:InAppStore")
+include(":Core:Matomo")
+include(":Core:Network")
+include(":Core:Notifications")
+include(":Core:Onboarding")
+include(":Core:Sentry")

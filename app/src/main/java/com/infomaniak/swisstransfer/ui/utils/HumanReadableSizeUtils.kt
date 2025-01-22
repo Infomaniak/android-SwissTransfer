@@ -22,7 +22,7 @@ import android.icu.text.NumberFormat
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
-import com.infomaniak.core2.FormatterFileSize.formatShortFileSize
+import com.infomaniak.core.FormatterFileSize.formatShortFileSize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.R

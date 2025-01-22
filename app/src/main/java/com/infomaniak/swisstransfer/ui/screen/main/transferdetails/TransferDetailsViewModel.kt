@@ -22,10 +22,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core2.DownloadStatus
-import com.infomaniak.core2.downloadStatusFlow
-import com.infomaniak.core2.sentry.SentryLog
-import com.infomaniak.core2.uriFor
+import com.infomaniak.core.DownloadStatus
+import com.infomaniak.core.downloadStatusFlow
+import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.core.uriFor
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi

@@ -30,7 +30,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingG
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.areTransferDataStillAvailable
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.core2.R as RCore2
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun UploadErrorScreen(
@@ -47,7 +47,7 @@ fun UploadErrorScreen(
         topButton = {
             LargeButton(
                 modifier = it,
-                title = stringResource(RCore2.string.buttonRetry),
+                title = stringResource(RCore.string.buttonRetry),
                 onClick = { uploadProgressViewModel.resendLastTransfer(onCompletion = navigateBackToUploadProgress) },
             )
         },

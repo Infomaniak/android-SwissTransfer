@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import androidx.lifecycle.Lifecycle
-import com.infomaniak.core2.DownloadStatus
+import com.infomaniak.core.DownloadStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface TransferDownloadUi {

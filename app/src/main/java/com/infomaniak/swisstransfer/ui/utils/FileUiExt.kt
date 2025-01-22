@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import com.infomaniak.core2.filetypes.FileType
+import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 
 val FileUi.fileType: FileType

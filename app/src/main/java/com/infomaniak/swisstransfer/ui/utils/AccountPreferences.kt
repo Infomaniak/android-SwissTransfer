@@ -38,7 +38,7 @@ class AccountPreferences @Inject constructor(@ApplicationContext private val app
         }
 
     //region SharedValues methods to remove
-    // TODO: Extend SharedValues when the util class is migrated to Core2 instead of using these two methods
+    // TODO: Extend SharedValues when the util class is migrated to Core instead of using these two methods
     private fun sharedValue(key: String, defaultValue: Int): ReadWriteProperty<Any, Int> = with(sharedPreferences) {
         return object : ReadWriteProperty<Any, Int> {
             override fun getValue(thisRef: Any, property: KProperty<*>): Int = getInt(key, defaultValue)

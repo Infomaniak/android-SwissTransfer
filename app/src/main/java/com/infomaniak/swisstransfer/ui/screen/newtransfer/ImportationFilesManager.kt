@@ -23,8 +23,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.core.net.toUri
-import com.infomaniak.core2.filetypes.FileType
-import com.infomaniak.core2.sentry.SentryLog
+import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -195,11 +195,11 @@ class ImportationFilesManager @Inject constructor(
     private suspend fun reportFailedImportation(file: PickedFile, throwable: Throwable) {
         SentryLog.e(TAG, "Failed importation of ${file.uri}", throwable)
 
-        //TODO: Make more precise error messages (especially for the low storage issue).
+        // TODO: Make more precise error messages (especially for the low storage issue).
         val errorMessage = appContext.getString(R.string.cantImportFileX, file.fileName)
         Dispatchers.Main {
             @OptIn(UnreliableToastApi::class)
-            longToast(errorMessage) //TODO: Find a better way to show the error in an actionable way.
+            longToast(errorMessage) // TODO: Find a better way to show the error in an actionable way.
         }
     }
 
