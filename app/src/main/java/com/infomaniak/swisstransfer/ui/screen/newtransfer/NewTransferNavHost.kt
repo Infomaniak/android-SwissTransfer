@@ -65,7 +65,7 @@ fun NewTransferNavHost(
             val args = it.toRoute<ValidateUserEmailDestination>()
             ValidateUserEmailScreen(
                 closeActivity = closeActivityAndPromptForValidation,
-                navigateBack = { navController.popBackStack() },
+                navigateBack = { navController.navigateUp() },
                 navigateToUploadInProgress = { totalSize ->
                     navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize))
                 },
@@ -127,7 +127,7 @@ fun NewTransferNavHost(
                 withFilesSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,
-                navigateBack = { navController.popBackStack() },
+                navigateBack = { navController.navigateUp() },
             )
         }
     }
