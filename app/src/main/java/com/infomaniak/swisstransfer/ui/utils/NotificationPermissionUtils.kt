@@ -1,6 +1,6 @@
 /*
- * Infomaniak kDrive - Android
- * Copyright (C) 2022-2024 Infomaniak Network SA
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,9 +40,8 @@ object NotificationPermissionUtils {
 
     fun askNotificationPermission(launcher: ManagedActivityResultLauncher<String, Boolean>) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            //TODO: Manage with a custom dialog if not handled by the system
+            // TODO: Manage with a custom dialog if not handled by the system
             launcher.launch(permission)
         }
     }
-
 }
