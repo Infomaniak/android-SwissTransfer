@@ -26,6 +26,7 @@ android {
     namespace = "com.infomaniak.swisstransfer"
     compileSdk = appCompileSdk
 
+    // Those urls are duplicated with the ones we have in KMP so don't forget to change them also in KMP
     val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
     val prodHost = "www.swisstransfer.com"
 
