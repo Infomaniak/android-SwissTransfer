@@ -64,6 +64,8 @@ android {
         debug {
             applicationIdSuffix = ".debug"
 
+            defaultConfig.versionCode = 1
+
             signingConfig = debugSigningConfig
         }
     }
@@ -86,6 +88,8 @@ android {
 
             manifestPlaceholders["icon"] = "@mipmap/ic_launcher"
             manifestPlaceholders["roundIcon"] = "@mipmap/ic_launcher_round"
+
+            isDefault = true
         }
     }
 
