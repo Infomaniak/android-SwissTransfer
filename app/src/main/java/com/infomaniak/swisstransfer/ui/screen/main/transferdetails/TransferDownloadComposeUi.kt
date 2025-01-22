@@ -21,15 +21,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -111,7 +103,7 @@ class TransferDownloadComposeUi(
             downloadRequest.isAwaitingCall -> downloadRequest
             openRequest.isAwaitingCall -> openRequest
             removalRequest.isAwaitingCall && downloadStatus is DownloadStatus.Failed -> removalRequest
-            else -> fun () {}
+            else -> fun() {}
             // TODO: If download is in progress, maybe request confirmation and remove?
         }
 
@@ -251,20 +243,20 @@ class TransferDownloadComposeUi(
         companion object {
             val download = ButtonData(
                 icon = AppImages.AppIcons.ArrowDownBar,
-                labelResId = R.string.buttonDownload
+                labelResId = R.string.buttonDownload,
             )
             val downloaded = ButtonData(
                 icon = AppImages.AppIcons.Checkmark,
-                labelResId = R.string.buttonDownloaded
+                labelResId = R.string.buttonDownloaded,
             )
             val downloading = ButtonData(
                 icon = AppImages.AppIcons.Stop,
                 labelResId = R.string.buttonDownloading,
-                contentDescResId = RCore.string.buttonCancel
+                contentDescResId = RCore.string.buttonCancel,
             )
             val failed = ButtonData(
                 icon = AppImages.AppIcons.ArrowDownBar,
-                labelResId = com.infomaniak.core.R.string.errorDownload
+                labelResId = RCore.string.errorDownload,
             )
         }
     }
