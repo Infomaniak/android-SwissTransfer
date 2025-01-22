@@ -11,9 +11,9 @@ plugins {
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
-val sharedCompileSdk: Int by rootProject.extra
-val sharedMinSdk: Int by rootProject.extra
-val sharedJavaVersion: JavaVersion by rootProject.extra
+val appCompileSdk: Int by rootProject.extra
+val appMinSdk: Int by rootProject.extra
+val javaVersion: JavaVersion by rootProject.extra
 
 val envProperties = rootProject.file("env.properties").takeIf { it.exists() }?.let { file ->
     Properties().also { it.load(file.reader()) }
@@ -24,12 +24,12 @@ val sentryAuthToken = envProperties?.getProperty("sentryAuthToken").takeUnless {
 
 android {
     namespace = "com.infomaniak.swisstransfer"
-    compileSdk = sharedCompileSdk
+    compileSdk = appCompileSdk
 
     defaultConfig {
         applicationId = "com.infomaniak.swisstransfer"
-        minSdk = sharedMinSdk
-        targetSdk = sharedCompileSdk
+        minSdk = appMinSdk
+        targetSdk = appCompileSdk
         versionCode = 1_00_000_07
         versionName = "1.0.0-Beta1"
 
@@ -65,11 +65,11 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
 
-        sourceCompatibility = sharedJavaVersion
-        targetCompatibility = sharedJavaVersion
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
     kotlinOptions {
-        jvmTarget = sharedJavaVersion.toString()
+        jvmTarget = javaVersion.toString()
     }
     buildFeatures {
         compose = true
