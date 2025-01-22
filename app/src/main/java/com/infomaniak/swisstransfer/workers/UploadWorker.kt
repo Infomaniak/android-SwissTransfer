@@ -123,6 +123,7 @@ class UploadWorker @AssistedInject constructor(
                 is NetworkException -> Result.retry()
                 is CancellationException -> Result.failure()
                 else -> {
+                    SentryLog.e(TAG, "UploadWorker result FAILURE", exception)
                     displayFailureNotification(totalSize)
                     Result.failure()
                 }
