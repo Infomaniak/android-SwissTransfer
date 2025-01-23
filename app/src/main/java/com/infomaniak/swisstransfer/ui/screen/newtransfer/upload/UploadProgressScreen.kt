@@ -22,7 +22,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -66,12 +65,10 @@ fun UploadProgressScreen(
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
 
     BackHandler(enabled = !showBottomSheet, onBack = { showBottomSheet = true })
 
     HandleSendStatus(
-        snackbarHostState = snackbarHostState,
         sendStatus = { sendStatus },
         navigateToUploadError = { navigateToUploadError() },
         navigateToEmailValidation = { navigateToEmailValidation() },
@@ -99,7 +96,6 @@ fun UploadProgressScreen(
 
 @Composable
 fun HandleSendStatus(
-    snackbarHostState: SnackbarHostState,
     sendStatus: () -> SendStatus,
     navigateToUploadError: () -> Unit,
     navigateToEmailValidation: () -> Unit,
