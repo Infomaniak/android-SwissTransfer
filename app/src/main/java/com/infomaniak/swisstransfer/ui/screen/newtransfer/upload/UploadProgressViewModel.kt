@@ -29,11 +29,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -91,6 +88,8 @@ class UploadProgressViewModel @Inject constructor(
                     uploadManager.cancelUploadSession(uploadSession.uuid)
                 }
             }.onFailure { exception ->
+                if (exception is CancellationException) throw exception
+
                 SentryLog.e(TAG, "Failure on cancel upload", exception)
                 onFailedCancellation()
             }
