@@ -81,7 +81,7 @@ fun UploadProgressScreen(
 
     LaunchedEffect(Unit) {
         uploadProgressViewModel.trackUploadProgress()
-        uploadProgressViewModel.sendNewTransfer()
+        uploadProgressViewModel.initNewTransfer()
     }
 
     HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles, closeActivity)
@@ -120,15 +120,13 @@ fun HandleSendStatus(
                 // TODO: Do we need to check for this?
                 // navigateToUploadProgress(actionResult.totalSize)
             }
-            is SendStatus.NoNetwork -> {
-                // TODO: Handle this case. Check if snackbar code doesn't straight block the code execution
-                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
-                resetSendStatus()
-            }
             is SendStatus.Refused -> {
                 navigateToAppIntegrityError()
                 resetSendStatus()
             }
+            // We are waiting to have access to the network before starting the app integrity and container step, so if we still
+            // get a NoNetwork during that step then it's fine to navigate to the error screen and let the user retry manually
+            is SendStatus.NoNetwork,
             is SendStatus.Failure -> {
                 navigateToUploadError()
                 resetSendStatus() // Needed apparently
