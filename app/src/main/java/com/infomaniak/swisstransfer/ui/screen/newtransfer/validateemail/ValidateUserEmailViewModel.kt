@@ -54,7 +54,7 @@ class ValidateUserEmailViewModel @Inject constructor(
                 }
             }.onSuccess { token ->
                 uploadManager.updateAuthorEmailToken(email, token.token)
-                transferSendManager.resendLastTransfer()
+                transferSendManager.sendLastTransfer()
             }
         }
     }

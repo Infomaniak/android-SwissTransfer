@@ -131,7 +131,7 @@ class UploadProgressViewModel @Inject constructor(
                 if (isNetworkAvailable) {
                     SentryLog.i(TAG, "Initializing the upload")
                     hasAlreadyInitialized = true
-                    transferSendManager.resendLastTransfer()
+                    transferSendManager.sendLastTransfer()
                 }
             }
         }

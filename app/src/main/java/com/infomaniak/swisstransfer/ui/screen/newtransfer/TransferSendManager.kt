@@ -48,27 +48,7 @@ class TransferSendManager @Inject constructor(
     private val _sendStatus = MutableStateFlow<SendStatus>(SendStatus.Initial)
     val sendStatus = _sendStatus.asStateFlow()
 
-    // suspend fun sendNewTransfer(newUploadSession: UploadSession) {
-    //     runCatching {
-    //         // When clicking the "Send" button, a new session is created.
-    //         // If there is an error before reaching the UploadProgressScreen, we stay in ImportFilesScreen.
-    //         // Every time we'll click the "Send" button again, a new session will be created.
-    //         // So we'll have multiple UploadSession in Realm. We don't want that. We only want the last session.
-    //         // So before creating the new session, we need to remove the previous failed ones.
-    //         uploadManager.removeAllUploadSession()
-    //
-    //         val uploadSession = uploadManager.createAndGetUpload(newUploadSession)
-    //         sendTransfer(uploadSession)
-    //     }.onFailure { exception ->
-    //         if (exception !is NetworkException && exception !is KmpNetworkException) {
-    //             SentryLog.e(TAG, "Failure on sendNewTransfer", exception)
-    //         }
-    //         _sendStatus.update { SendStatus.Failure }
-    //     }
-    // }
-
-    // TODO: Rename
-    suspend fun resendLastTransfer() {
+    suspend fun sendLastTransfer() {
         val uploadSession = uploadManager.getLastUpload() ?: run {
             SentryLog.e(TAG, "No last upload found")
             return
