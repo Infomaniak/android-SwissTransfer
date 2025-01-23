@@ -18,10 +18,10 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -88,6 +88,7 @@ fun UploadProgressScreen(
 
     UploadProgressScreen(
         progressState = { uiState },
+        sendStatus = { sendStatus },
         isNetworkAvailable = { isNetworkAvailable },
         totalSizeInBytes = totalSizeInBytes,
         showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
@@ -163,6 +164,7 @@ private fun HandleProgressState(
 @Composable
 private fun UploadProgressScreen(
     progressState: () -> UploadProgressUiState,
+    sendStatus: () -> SendStatus,
     isNetworkAvailable: () -> Boolean,
     totalSizeInBytes: Long,
     adScreenType: UploadProgressAdType,
@@ -187,7 +189,7 @@ private fun UploadProgressScreen(
 
             Spacer(Modifier.height(Margin.Mini))
 
-            UploadStatus(isNetworkAvailable, progressState, totalSizeInBytes)
+            UploadStatus(isNetworkAvailable, progressState, sendStatus, totalSizeInBytes)
 
             Spacer(Modifier.height(Margin.Huge))
         }
@@ -205,22 +207,51 @@ private fun UploadProgressScreen(
 }
 
 @Composable
-private fun UploadStatus(isNetworkAvailable: () -> Boolean, progressState: () -> UploadProgressUiState, totalSizeInBytes: Long) {
-    Box(
-        contentAlignment = Alignment.Center,
-    ) {
-        val alpha by animateFloatAsState(
-            targetValue = if (isNetworkAvailable()) 0.0f else 1.0f,
-            animationSpec = tween(),
-            label = "NetworkUnavailable visibility",
-        )
-        Progress(
-            modifier = Modifier.alpha(1 - alpha),
-            progressState = progressState,
-            totalSizeInBytes = totalSizeInBytes,
-        )
-        NetworkUnavailable(modifier = Modifier.alpha(alpha))
+private fun UploadStatus(
+    isNetworkAvailable: () -> Boolean,
+    progressState: () -> UploadProgressUiState,
+    sendStatus: () -> SendStatus,
+    totalSizeInBytes: Long
+) {
+    fun getProgressUiState() = when {
+        !isNetworkAvailable() -> ProgressUiState.NoNetwork
+        sendStatus() is SendStatus.Pending -> ProgressUiState.Initializing
+        else -> ProgressUiState.Progress
     }
+
+    var progressUiState by remember { mutableStateOf(getProgressUiState()) }
+
+    LaunchedEffect(isNetworkAvailable(), sendStatus()) {
+        progressUiState = getProgressUiState()
+    }
+
+    Crossfade(
+        modifier = Modifier.fillMaxWidth(),
+        targetState = progressUiState,
+        label = "upload progress status",
+    ) { progressUiState ->
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            val style = SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor)
+            CompositionLocalProvider(value = LocalTextStyle provides style) {
+                // NetworkUnavailable is always the biggest item of the three. It's composed here in order for the Box to be
+                // constrained to its height. Having a constant height in all ProgressUiState makes the crossfade smoother looking
+                NetworkUnavailable(modifier = Modifier.alpha(0f))
+
+                when (progressUiState) {
+                    ProgressUiState.Initializing -> Text(stringResource(R.string.transferInitializing))
+                    ProgressUiState.Progress -> Progress(progressState, totalSizeInBytes)
+                    ProgressUiState.NoNetwork -> NetworkUnavailable()
+                }
+            }
+        }
+    }
+}
+
+private enum class ProgressUiState {
+    Initializing, Progress, NoNetwork
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -255,6 +286,7 @@ private fun Preview() {
     SwissTransferTheme {
         UploadProgressScreen(
             progressState = { UploadProgressUiState.Progress(44_321_654L) },
+            sendStatus = { SendStatus.Pending },
             isNetworkAvailable = { true },
             totalSizeInBytes = 76_321_894L,
             adScreenType = UploadProgressAdType.INDEPENDENCE,
