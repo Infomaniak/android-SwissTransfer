@@ -28,7 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -102,20 +101,8 @@ fun HandleSendStatus(
     navigateToAppIntegrityError: () -> Unit,
     resetSendStatus: () -> Unit,
 ) {
-    val context = LocalContext.current
-
     LaunchedEffect(sendStatus()) {
-        when (val actionResult = sendStatus()) {
-            is SendStatus.Success -> {
-                // TODO: Did we still need to reset?
-                // // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
-                // // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
-                // // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
-                // resetSendActionResult()
-
-                // TODO: Do we need to check for this?
-                // navigateToUploadProgress(actionResult.totalSize)
-            }
+        when (sendStatus()) {
             is SendStatus.Refused -> {
                 navigateToAppIntegrityError()
                 resetSendStatus()
@@ -131,7 +118,9 @@ fun HandleSendStatus(
                 navigateToEmailValidation()
                 // resetSendActionResult() // Not needed apparently
             }
-            else -> Unit
+            SendStatus.Initial,
+            SendStatus.Pending,
+            is SendStatus.Success -> Unit
         }
     }
 }
