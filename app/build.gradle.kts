@@ -77,17 +77,11 @@ android {
             applicationIdSuffix = ".preprod"
 
             buildConfigField("String", "BASE_URL", "\"https://$preprodHost\"")
-
-            manifestPlaceholders["icon"] = "@mipmap/ic_launcher_preprod"
-            manifestPlaceholders["roundIcon"] = "@mipmap/ic_launcher_round_preprod"
         }
         create("prod") {
             dimension = "env"
 
             buildConfigField("String", "BASE_URL", "\"https://$prodHost\"")
-
-            manifestPlaceholders["icon"] = "@mipmap/ic_launcher"
-            manifestPlaceholders["roundIcon"] = "@mipmap/ic_launcher_round"
 
             isDefault = true
         }
