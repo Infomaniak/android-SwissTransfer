@@ -70,13 +70,6 @@ class ImportFilesViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val sendStatus by transferSendManager::sendStatus
-
-    // val hasOngoingUploadSession = uploadManager
-    //     .lastUploadFlow
-    //     .map { it != null }
-    //     .stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
     val lastUpload = uploadManager.lastUploadFlow
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

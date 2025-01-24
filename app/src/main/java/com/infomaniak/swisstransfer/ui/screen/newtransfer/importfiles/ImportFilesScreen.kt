@@ -125,16 +125,6 @@ fun ImportFilesScreen(
         }
     )
 
-    // HandleSendActionResult(
-    //     snackbarHostState = snackbarHostState,
-    //     sendStatus = { sendStatus },
-    //     navigateToUploadProgress = { totalSize ->
-    //         navigateToUploadProgress(selectedTransferType, totalSize)
-    //     },
-    //     navigateToEmailValidation = { navigateToEmailValidation(emailTextFieldCallbacks.transferAuthorEmail.get()) },
-    //     resetSendActionResult = importFilesViewModel::resetSendActionResult,
-    // )
-
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
             buildList {
@@ -185,7 +175,7 @@ fun ImportFilesScreen(
         sendStatus = { SendStatus.Initial }, // TODO: Only used for button
         sendTransfer = {
             if (NotificationPermissionUtils.hasNotificationPermission(context)) {
-				importFilesViewModel.createNewUploadSession()
+                importFilesViewModel.createNewUploadSession()
             } else {
                 NotificationPermissionUtils.askNotificationPermission(launcher)
             }
@@ -210,46 +200,6 @@ fun HandleNavigationToUploadInProgress(lastUpload: () -> UploadSession?, navigat
         navigateToUploadProgress(uploadSession.totalFileSize())
     }
 }
-
-// @Composable
-// private fun HandleSendActionResult(
-//     snackbarHostState: SnackbarHostState,
-//     sendStatus: () -> SendStatus,
-//     navigateToUploadProgress: (totalSize: Long) -> Unit,
-//     navigateToEmailValidation: () -> Unit,
-//     resetSendActionResult: () -> Unit,
-// ) {
-//     val context = LocalContext.current
-//
-//     LaunchedEffect(sendStatus()) {
-//         when (val actionResult = sendStatus()) {
-//             is SendStatus.Success -> {
-//                 // If the user cancels the transfer while in UploadProgress, we're gonna popBackStack to ImportFiles.
-//                 // If we don't reset the ImportFiles state machine, we'll automatically navigate-back to UploadProgress again.
-//                 // So, before leaving ImportFiles to go to UploadProgress, we need to reset the ImportFiles state machine.
-//                 resetSendActionResult()
-//                 navigateToUploadProgress(actionResult.totalSize)
-//             }
-//             is SendStatus.NoNetwork -> {
-//                 snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
-//                 resetSendActionResult()
-//             }
-//             is SendStatus.Refused -> {
-//                 snackbarHostState.showSnackbar(context.getString(R.string.errorAppIntegrity))
-//                 resetSendActionResult()
-//             }
-//             is SendStatus.Failure -> {
-//                 snackbarHostState.showSnackbar(context.getString(R.string.errorUnknown))
-//                 resetSendActionResult()
-//             }
-//             is SendStatus.RequireEmailValidation -> {
-//                 navigateToEmailValidation()
-//                 resetSendActionResult()
-//             }
-//             else -> Unit
-//         }
-//     }
-// }
 
 @Composable
 private fun ImportFilesScreen(
