@@ -48,6 +48,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -256,6 +257,15 @@ class UploadWorker @AssistedInject constructor(
                     else -> UploadProgressUiState.Default(lastUploadedSize)
                 } ?: UploadProgressUiState.Error(lastUploadedSize)
             }.filterNotNull()
+        }
+
+        suspend fun hasAlreadyBeenScheduled(): Boolean {
+            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
+                .addStates(listOf(State.BLOCKED, State.ENQUEUED, State.RUNNING))
+                .build()
+
+            val workInfo = workManager.getWorkInfosFlow(workQuery).first().firstOrNull()
+            return workInfo != null
         }
 
         fun cancelWork() {

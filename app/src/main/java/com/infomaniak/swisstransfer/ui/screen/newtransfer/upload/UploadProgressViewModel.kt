@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.network.NetworkAvailability
@@ -40,7 +39,6 @@ class UploadProgressViewModel @Inject constructor(
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
     private val uploadManager: UploadManager,
     private val transferSendManager: TransferSendManager,
-    private val savedStateHandle: SavedStateHandle,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
@@ -64,12 +62,6 @@ class UploadProgressViewModel @Inject constructor(
             started = SharingStarted.Eagerly,
             initialValue = false,
         )
-
-    private var hasAlreadyInitialized
-        get() = savedStateHandle[HAS_STARTED_TRANSFER_INIT_KEY] ?: false
-        set(value) {
-            savedStateHandle[HAS_STARTED_TRANSFER_INIT_KEY] = value
-        }
 
     private val _transferUuidFlow = MutableSharedFlow<String?>()
 
@@ -124,13 +116,12 @@ class UploadProgressViewModel @Inject constructor(
     }
 
     fun initNewTransfer() {
-        if (hasAlreadyInitialized) return
-
         viewModelScope.launch {
+            if (uploadWorkerScheduler.hasAlreadyBeenScheduled()) return@launch
+
             uploadInitializationIsNetworkAvailable.collect { isNetworkAvailable ->
                 if (isNetworkAvailable) {
                     SentryLog.i(TAG, "Initializing the upload")
-                    hasAlreadyInitialized = true
                     transferSendManager.sendLastTransfer()
                 }
             }
@@ -143,6 +134,5 @@ class UploadProgressViewModel @Inject constructor(
 
     companion object {
         private val TAG = UploadProgressViewModel::class.java.simpleName
-        private const val HAS_STARTED_TRANSFER_INIT_KEY = "hasStartedTransferInitKey"
     }
 }
