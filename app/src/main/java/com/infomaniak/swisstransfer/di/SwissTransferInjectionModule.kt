@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.di
 
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment
+import com.infomaniak.swisstransfer.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,7 +33,7 @@ object SwissTransferInjectionModule {
     @Provides
     @Singleton
     fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
-        return SwissTransferInjection(environment = ApiEnvironment.Prod, userAgent = userAgent)
+        return SwissTransferInjection(environment = ApiEnvironment.Custom(BuildConfig.BASE_URL), userAgent = userAgent)
     }
 
     @Provides

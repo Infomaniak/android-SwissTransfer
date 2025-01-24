@@ -26,6 +26,10 @@ android {
     namespace = "com.infomaniak.swisstransfer"
     compileSdk = appCompileSdk
 
+    // Those urls are duplicated with the ones we have in KMP so don't forget to change them also in KMP
+    val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
+    val prodHost = "www.swisstransfer.com"
+
     defaultConfig {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = appMinSdk
@@ -40,25 +44,52 @@ android {
             useSupportLibrary = true
         }
 
-        val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
-        val prodHost = "www.swisstransfer.com"
         resValue("string", "preprod_host", preprodHost)
         resValue("string", "prod_host", prodHost)
-        buildConfigField("String", "PREPROD_URL", "\"https://$preprodHost\"")
-        buildConfigField("String", "PROD_URL", "\"https://$prodHost\"")
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
+    }
+
+    val debugSigningConfig = signingConfigs.getByName("debug") {
+        storeFile = rootProject.file("debug.keystore")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+
+            defaultConfig.versionCode = 1
+
+            signingConfig = debugSigningConfig
+        }
+    }
+
+    productFlavors {
+        create("preprod") {
+            dimension = "env"
+
+            applicationIdSuffix = ".preprod"
+
+            buildConfigField("String", "BASE_URL", "\"https://$preprodHost\"")
+        }
+        create("prod") {
+            dimension = "env"
+
+            buildConfigField("String", "BASE_URL", "\"https://$prodHost\"")
+
+            isDefault = true
         }
     }
 
     buildFeatures {
+        flavorDimensions += "env"
+
         buildConfig = true
     }
 
@@ -68,15 +99,19 @@ android {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
+
     kotlinOptions {
         jvmTarget = javaVersion.toString()
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
