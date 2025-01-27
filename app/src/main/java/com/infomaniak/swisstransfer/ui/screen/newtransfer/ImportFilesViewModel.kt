@@ -66,11 +66,10 @@ class ImportFilesViewModel @Inject constructor(
     private val importationFilesManager: ImportationFilesManager,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val uploadManager: UploadManager,
-    private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val lastUpload = uploadManager.lastUploadFlow
+    val lastUploadSession = uploadManager.lastUploadFlow
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val filesDetailsUiState = importationFilesManager.importedFiles.map {
@@ -178,10 +177,6 @@ class ImportFilesViewModel @Inject constructor(
             appSettingsManager.setLastAuthorEmail(newUploadSession.authorEmail)
             uploadManager.createAndGetUpload(newUploadSession)
         }
-    }
-
-    fun resetSendActionResult() {
-        transferSendManager.resetSendStatus()
     }
 
     private suspend fun removeOldData() {

@@ -93,7 +93,7 @@ fun ImportFilesScreen(
     val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
-    val lastUpload by importFilesViewModel.lastUpload.collectAsStateWithLifecycle()
+    val lastUploadSession by importFilesViewModel.lastUploadSession.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -119,9 +119,9 @@ fun ImportFilesScreen(
     HandleStartupFilePick(importFilesViewModel.openFilePickerEvent, ::pickFiles)
 
     HandleNavigationToUploadInProgress(
-        lastUpload = { lastUpload },
+        lastUploadSession = { lastUploadSession },
         navigateToUploadProgress = { totalSize ->
-            navigateToUploadProgress(selectedTransferType, totalSize, lastUpload?.authorEmail)
+            navigateToUploadProgress(selectedTransferType, totalSize, lastUploadSession?.authorEmail)
         }
     )
 
@@ -193,9 +193,9 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 }
 
 @Composable
-fun HandleNavigationToUploadInProgress(lastUpload: () -> UploadSession?, navigateToUploadProgress: (Long) -> Unit) {
-    LaunchedEffect(lastUpload()) {
-        val uploadSession = lastUpload() ?: return@LaunchedEffect
+fun HandleNavigationToUploadInProgress(lastUploadSession: () -> UploadSession?, navigateToUploadProgress: (Long) -> Unit) {
+    LaunchedEffect(lastUploadSession()) {
+        val uploadSession = lastUploadSession() ?: return@LaunchedEffect
 
         navigateToUploadProgress(uploadSession.totalFileSize())
     }
