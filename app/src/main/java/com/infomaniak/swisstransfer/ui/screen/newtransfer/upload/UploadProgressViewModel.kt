@@ -115,7 +115,7 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
-    fun initNewTransfer() {
+    fun initializeLastTransfer() {
         viewModelScope.launch {
             if (uploadWorkerScheduler.hasAlreadyBeenScheduled()) return@launch
 

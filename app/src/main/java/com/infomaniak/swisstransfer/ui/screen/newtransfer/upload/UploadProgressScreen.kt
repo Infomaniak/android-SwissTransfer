@@ -77,7 +77,7 @@ fun UploadProgressScreen(
 
     LaunchedEffect(Unit) {
         uploadProgressViewModel.trackUploadProgress()
-        uploadProgressViewModel.initNewTransfer()
+        uploadProgressViewModel.initializeLastTransfer()
     }
 
     HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles, closeActivity)
