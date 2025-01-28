@@ -55,15 +55,27 @@ class LaunchActivity : ComponentActivity() {
     private suspend fun startTargetActivity() {
         val intent = when {
             hasValidTransferDeeplink() -> {
-                if (!accountUtils.isUserConnected()) accountUtils.login()
+                connectLoggedOutUser()
                 createDeeplinkIntent()
             }
-            isSharingFilesToTheApp() -> createNewTransferSharingFileIntent()
+            isSharingFilesToTheApp() -> {
+                connectLoggedOutUser()
+                createNewTransferSharingFileIntent()
+            }
             accountUtils.isUserConnected() -> Intent(this, MainActivity::class.java)
             else -> Intent(this, OnboardingActivity::class.java)
         }
 
         startActivity(intent)
+    }
+
+
+    /**
+     * A user will be logged out if the app received an intent before the user ever finished the onboarding. In case of such an
+     * intent, we want to handle it correctly but we first need to connect the user seamlessly.
+     */
+    private suspend fun connectLoggedOutUser() {
+        if (!accountUtils.isUserConnected()) accountUtils.login()
     }
 
     private fun createDeeplinkIntent(): Intent {
