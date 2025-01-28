@@ -30,7 +30,9 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
@@ -172,7 +174,7 @@ private suspend fun getNewDownloadId(
  * transfers within the same minute.
  * We don't expect the user to trigger download from multiple different
  * transfers within a second because of the time it takes to navigate back and forth.
-*/
+ */
 @SuppressLint("SimpleDateFormat")
 private val dateFormatWithSeconds = SimpleDateFormat("yyyy-mm-dd_hhmmss")
 
@@ -192,7 +194,7 @@ private suspend fun buildDownloadRequest(
         targetFile != null -> {
             url = apiUrlCreator.downloadFileUrl(transfer.uuid, targetFile.uid) ?: return null
             val fileName = DownloadManagerUtils.withoutProblematicCharacters(targetFile.fileName)
-            name = "SwissTransfer/$fileName"
+            name = "SwissTransfer/$fileName${if (targetFile.isFolder) ".zip" else ""}"
         }
         else -> {
             url = apiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return null
