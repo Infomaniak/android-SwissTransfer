@@ -103,12 +103,16 @@ class ImportationFilesManager @Inject constructor(
 
             SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
+            // Make sure the file size has to be correct by reading it from local io File
+            val fileSizeInBytes = copiedFile.length()
+            SentryLog.v(TAG, "File size in bytes: $fileSizeInBytes")
+
             _importedFiles.add(
                 FileUi(
                     uid = fileToImport.fileName,
                     fileName = fileToImport.fileName,
                     isFolder = false,
-                    fileSize = copiedFile.length(), // Make sure the file size has to be correct by reading it from local io File
+                    fileSize = fileSizeInBytes,
                     mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                     path = null,
@@ -135,6 +139,8 @@ class ImportationFilesManager @Inject constructor(
             val fileSizeInBytes = runCatching { localFile.length() }
                 .onFailure { Sentry.addBreadcrumb("Caught an exception while restoring imported files: $it") }
                 .getOrNull() ?: return@mapNotNull null
+
+            SentryLog.v(TAG, "Restoring files after activity recreation with file size in bytes: $fileSizeInBytes")
 
             FileUi(
                 uid = localFile.name,
