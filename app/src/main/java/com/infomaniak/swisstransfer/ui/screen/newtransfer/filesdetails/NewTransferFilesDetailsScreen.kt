@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -28,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.swisstransfer.ui.components.SinglePaneScaffold
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
@@ -79,7 +79,7 @@ private fun NewTransferFilesDetailsScreen(
     navigateBack: (() -> Unit),
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    Scaffold(
+    SinglePaneScaffold(
         topBar = {
             SwissTransferTopAppBar(
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
