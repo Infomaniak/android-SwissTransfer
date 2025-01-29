@@ -102,7 +102,7 @@ fun TransferDetailsScreen(
                         ui = ui,
                         transfer = transfer,
                         targetFile = file,
-                        openFile = { uri -> context.openFile(uri) }
+                        openFile = { uri -> context.openFile(uri) },
                     )
                 },
                 uriForFile = { transfer, file -> transferDetailsViewModel.uriForFile(transfer, file) },

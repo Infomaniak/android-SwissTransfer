@@ -59,14 +59,14 @@ fun FileItemList(
     navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
-    runDownloadUi: suspend (
-        ui: TransferDownloadUi,
-        transfer: TransferUi,
-        file: FileUi
-    ) -> Nothing = { _, _, _ -> awaitCancellation() },
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
+        awaitCancellation()
+    },
     uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
+
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Adaptive(150.dp),
@@ -83,10 +83,13 @@ fun FileItemList(
         }
 
         items(files, key = { it.uid }) { file ->
+
             val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
                 TransferDownloadComposeUi(lifecycle, snackbarHostState)
             }
+
             LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
+
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -109,7 +112,11 @@ fun FileItemList(
                 previewOverlay = {
                     if (isDownloadButtonVisible) {
                         downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
-                        downloadUi.CardProgressBar(Modifier.align(Alignment.BottomStart).fillMaxWidth())
+                        downloadUi.CardProgressBar(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .fillMaxWidth(),
+                        )
                     }
                 }
             )
@@ -122,8 +129,8 @@ fun FileItemList(
 private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
     SwissTransferTheme {
         FileItemList(
-            files = files,
             snackbarHostState = remember { SnackbarHostState() },
+            files = files,
             isRemoveButtonVisible = false,
             isDownloadButtonVisible = false,
             isCheckboxVisible = { true },

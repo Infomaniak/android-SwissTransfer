@@ -58,14 +58,11 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
             applicationIdSuffix = ".debug"
-
             defaultConfig.versionCode = 1
-
             signingConfig = debugSigningConfig
         }
     }
@@ -73,29 +70,23 @@ android {
     productFlavors {
         create("preprod") {
             dimension = "env"
-
             applicationIdSuffix = ".preprod"
-
             buildConfigField("String", "BASE_URL", "\"https://$preprodHost\"")
         }
         create("prod") {
             dimension = "env"
-
             buildConfigField("String", "BASE_URL", "\"https://$prodHost\"")
-
             isDefault = true
         }
     }
 
     buildFeatures {
         flavorDimensions += "env"
-
         buildConfig = true
     }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }

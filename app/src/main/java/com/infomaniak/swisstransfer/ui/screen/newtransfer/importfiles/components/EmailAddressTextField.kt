@@ -130,7 +130,6 @@ private class EmailAddressTextFieldState(
         selectedChipIndex = UNSELECTED_CHIP_INDEX
     }
 
-
     fun updateUiTextValue(newValue: TextFieldValue) {
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()

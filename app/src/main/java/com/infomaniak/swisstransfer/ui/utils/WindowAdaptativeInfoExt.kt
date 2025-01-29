@@ -54,7 +54,7 @@ fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.cur
  *
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowSmall(context:Context): Boolean = !isWindowLarge(context)
+fun WindowAdaptiveInfo.isWindowSmall(context: Context): Boolean = !isWindowLarge(context)
 
 @Composable
 fun WindowAdaptiveInfo.isWindowSmall(): Boolean = !isWindowLarge()

@@ -69,7 +69,6 @@ class LaunchActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-
     /**
      * A user will be logged out if the app received an intent before the user ever finished the onboarding. In case of such an
      * intent, we want to handle it correctly but we first need to connect the user seamlessly.

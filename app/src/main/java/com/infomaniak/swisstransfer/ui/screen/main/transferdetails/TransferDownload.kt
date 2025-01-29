@@ -56,23 +56,21 @@ suspend fun handleTransferDownload(
     apiUrlCreator = apiUrlCreator,
     userAgent = userAgent,
     transfer = transfer,
-    targetFile = targetFile
+    targetFile = targetFile,
 ).collectLatest { id ->
     autoCancelScope {
         val downloadStatusFlow = downloadManager.downloadStatusFlow(id).stateIn(scope = this)
-        raceOf({
-            ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow, supportsPreview = targetFile?.hasPreview == true)
-        }, {
-            awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow)
-        }, {
-            handleOpenRequests(downloadStatusFlow, id, ui, openFile)
-        })
+        raceOf(
+            { ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow, supportsPreview = targetFile?.hasPreview == true) },
+            { awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow) },
+            { handleOpenRequests(downloadStatusFlow, id, ui, openFile) },
+        )
     }
     downloadManager.cancelAndRemove(id)
     transferManager.writeDownloadManagerId(
         transferUUID = transfer.uuid,
         fileUid = targetFile?.uid,
-        uniqueDownloadManagerId = null
+        uniqueDownloadManagerId = null,
     )
 }.let { awaitCancellation() /* Should never reach this line. */ }
 
@@ -92,18 +90,13 @@ private suspend fun handleOpenRequests(
     openFile: suspend (Uri) -> Unit,
 ) = downloadStatusFlow.collectLatest { status ->
     if (status !is DownloadStatus.Complete) return@collectLatest
-    val uri = downloadManager.uriFor(id)
-        ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
+    val uri = downloadManager.uriFor(id) ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
     repeatWhileActive {
         ui.awaitOpenRequest()
         openFile(uri)
-        // We can't know for sure how long the target app
-        // will take to react, if any, so we keep
-        // the action disabled for a short time to
-        // show the user their action has
-        // been taken into account, and also to
-        // prevent unintended doubled actions.
-        delay(.7.seconds)
+        // We can't know for sure how long the target app will take to react, if any, so we keep the action disabled for a short
+        // time to show the user their action has been taken into account, and also to prevent unintended doubled actions.
+        delay(0.7.seconds)
     }
 }
 
@@ -118,7 +111,7 @@ private fun currentOrNewDownloadManagerId(
 ): Flow<UniqueDownloadId> = downloadManagerId(
     transferManager = transferManager,
     transferUuid = transfer.uuid,
-    fileUid = targetFile?.uid
+    fileUid = targetFile?.uid,
 ).mapLatest { id ->
     id ?: repeatWhileActive {
         return@mapLatest getNewDownloadId(
@@ -136,7 +129,7 @@ private fun currentOrNewDownloadManagerId(
 private suspend fun awaitFileDeletion(
     lifecycle: Lifecycle,
     id: UniqueDownloadId,
-    downloadStatusFlow: SharedFlow<DownloadStatus?>
+    downloadStatusFlow: SharedFlow<DownloadStatus?>,
 ) = downloadStatusFlow.mapLatest { status ->
     when (status) {
         null -> return@mapLatest
@@ -164,7 +157,7 @@ private suspend fun getNewDownloadId(
     transferManager.writeDownloadManagerId(
         transferUUID = transfer.uuid,
         fileUid = targetFile?.uid,
-        uniqueDownloadManagerId = newId?.value
+        uniqueDownloadManagerId = newId?.value,
     )
     return newId
 }
@@ -186,7 +179,7 @@ private suspend fun buildDownloadRequest(
     transfer: TransferUi,
     targetFile: FileUi?,
     apiUrlCreator: SharedApiUrlCreator,
-    userAgent: String
+    userAgent: String,
 ): DownloadManager.Request? {
     val url: String
     val name: String
