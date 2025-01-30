@@ -19,8 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
@@ -38,7 +36,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrap
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    currentDestination: MainNavigation,
     deeplinkTransferDirection: TransferDirection?,
     hideBottomBar: MutableState<Boolean>,
 ) {
@@ -52,8 +49,8 @@ fun MainNavHost(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        enterTransition = { if (currentDestination.enableTransition) fadeIn() else EnterTransition.None },
-        exitTransition = { if (currentDestination.enableTransition) fadeOut() else ExitTransition.None },
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         sentDestination {
             val args = it.toRoute<SentDestination>()
