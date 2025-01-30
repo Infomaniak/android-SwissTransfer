@@ -1,4 +1,5 @@
 [versions]
+accompanistPermissions = "0.37.0"
 activityCompose = "1.10.0"
 adaptiveLayout = "1.0.0"
 agp = "8.7.3"
@@ -22,6 +23,7 @@ swisstransfer = "1.0.3"
 workmanager = "2.10.0"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "adaptiveLayout" }
 androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptiveLayout" }

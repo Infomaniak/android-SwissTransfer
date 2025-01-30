@@ -24,11 +24,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components.FilesSize
 import com.infomaniak.swisstransfer.ui.theme.Margin
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FilesDetailsScreen(
     paddingValues: PaddingValues = PaddingValues(0.dp),

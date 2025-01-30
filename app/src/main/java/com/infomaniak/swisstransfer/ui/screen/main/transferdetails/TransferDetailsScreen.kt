@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
+import android.Manifest
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -36,6 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
 import com.infomaniak.core.FORMAT_DATE_FULL
 import com.infomaniak.core.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
@@ -130,6 +134,7 @@ fun TransferDetailsScreen(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun TransferDetailsScreen(
     transferUrl: String,
@@ -154,7 +159,10 @@ private fun TransferDetailsScreen(
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val snackbarHostState = remember { SnackbarHostState() }
-    val downloadUi = remember(lifecycle) { TransferDownloadComposeUi(lifecycle, snackbarHostState) }
+    val writeExternalStoragePermissionState = rememberPermissionState(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val downloadUi = remember(lifecycle) {
+        TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState)
+    }
     val transferFlow = remember { snapshotFlow { getTransfer() } }
     LaunchedEffect(Unit) {
         transferFlow.collect { transfer ->
@@ -177,6 +185,7 @@ private fun TransferDetailsScreen(
 
             FilesList(
                 snackbarHostState = snackbarHostState,
+                writeExternalStoragePermissionState = writeExternalStoragePermissionState,
                 getTransfer = getTransfer,
                 transferRecipients = transferRecipients,
                 isMultiselectOn = isMultiselectOn,
@@ -255,9 +264,11 @@ private fun getBottomBarPadding(): PaddingValues {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun ColumnScope.FilesList(
     snackbarHostState: SnackbarHostState,
+    writeExternalStoragePermissionState: PermissionState,
     getTransfer: () -> TransferUi,
     transferRecipients: Set<String>,
     isMultiselectOn: Boolean,
@@ -277,6 +288,7 @@ private fun ColumnScope.FilesList(
             .weight(1.0f)
             .padding(horizontal = Margin.Medium),
         snackbarHostState = snackbarHostState,
+        writeExternalStoragePermissionState = writeExternalStoragePermissionState,
         files = getTransfer().files,
         isDownloadButtonVisible = true,
         isRemoveButtonVisible = false,
