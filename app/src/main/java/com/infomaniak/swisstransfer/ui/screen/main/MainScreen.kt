@@ -43,7 +43,7 @@ fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
         navController = navController,
         currentDestination = currentDestination,
         hideBottomBar = hideBottomBar,
-        content = { MainNavHost(navController, currentDestination, deeplinkTransferDirection, hideBottomBar) },
+        content = { MainNavHost(navController, deeplinkTransferDirection, hideBottomBar) },
     )
 }
 

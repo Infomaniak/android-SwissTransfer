@@ -36,7 +36,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class MainNavigation : NavigationDestination() {
-    var enableTransition = true
 
     protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
         noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
