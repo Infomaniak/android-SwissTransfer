@@ -62,8 +62,17 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
-            defaultConfig.versionCode = 1
             signingConfig = debugSigningConfig
+        }
+    }
+    androidComponents.onVariants { variant ->
+        if (variant.buildType == "release") return@onVariants
+        variant.outputs.forEach { output ->
+            // Pin the versionCode to 1 for all non-release variants,
+            // to avoid the issue where we have to reinstall the app
+            // after checking out an older branch because
+            // the versionCode is lower than the one installed.
+            output.versionCode = 1
         }
     }
 
