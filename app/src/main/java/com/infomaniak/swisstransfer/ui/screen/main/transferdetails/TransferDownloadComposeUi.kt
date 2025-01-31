@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.core.DownloadStatus
 import com.infomaniak.core.autoCancelScope
 import com.infomaniak.core.compose.basics.CallableState
@@ -44,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
 import com.infomaniak.swisstransfer.ui.images.icons.Stop
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.checkPermission
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
@@ -55,9 +58,11 @@ import splitties.init.appCtx
 import kotlin.time.Duration.Companion.seconds
 import com.infomaniak.core.R as RCore
 
+@OptIn(ExperimentalPermissionsApi::class)
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
     private val snackbarHostState: SnackbarHostState,
+    private val writeExternalStoragePermissionState: PermissionState? = null,
 ) : TransferDownloadUi {
 
     private val downloadRequest = CallableState<Unit>()
@@ -125,7 +130,7 @@ class TransferDownloadComposeUi(
         } else {
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = downloadRequest,
+                onClick = { writeExternalStoragePermissionState.checkPermission { downloadRequest() } },
             )
         }
     }
@@ -295,6 +300,7 @@ class TransferDownloadComposeUi(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @PreviewLightDark
 @Composable
 private fun Preview() = SwissTransferTheme {

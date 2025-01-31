@@ -32,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
@@ -40,15 +42,18 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownl
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import com.infomaniak.swisstransfer.ui.utils.checkPermission
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FileItemList(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
+    writeExternalStoragePermissionState: PermissionState? = null,
     files: List<FileUi>,
     isDownloadButtonVisible: Boolean,
     isRemoveButtonVisible: Boolean,
@@ -99,7 +104,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> downloadUi.onFileClick
+                    else -> fun() = writeExternalStoragePermissionState.checkPermission { downloadUi.onFileClick() }
                 },
                 uriForFile = produceState(file.localPath) {
                     transferFlow.collectLatest { transfer ->
@@ -124,6 +129,7 @@ fun FileItemList(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @PreviewLightAndDark
 @Composable
 private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
