@@ -41,7 +41,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaff
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.FilesDetailsScreen
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.ExistingTransferFilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -180,12 +180,12 @@ private fun DetailPane(
         is DestinationContent.FolderLevel -> {
             val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-            FilesDetailsScreen(
+            ExistingTransferFilesDetails(
                 navigator,
                 destinationContent.folderUuid,
                 destinationContent.direction,
                 destinationContent.transferUuid,
-                windowAdaptiveInfo
+                windowAdaptiveInfo,
             )
         }
     }
@@ -193,15 +193,15 @@ private fun DetailPane(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun FilesDetailsScreen(
+private fun ExistingTransferFilesDetails(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     folderUuid: String,
     transferDirection: TransferDirection,
     transferUuid: String,
-    windowAdaptiveInfo: WindowAdaptiveInfo
+    windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     val context = LocalContext.current
-    FilesDetailsScreen(
+    ExistingTransferFilesDetailsScreen(
         navigateToFolder = { selectedFolderUuid ->
             navigator.navigateToFolder(
                 transferDirection,

@@ -21,14 +21,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
+import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components.FilesSize
 import com.infomaniak.swisstransfer.ui.theme.Margin
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -58,5 +64,23 @@ fun FilesDetailsScreen(
             onRemoveUid = { onFileRemoved?.invoke(it) },
             navigateToFolder = { navigateToFolder?.invoke(it) }
         )
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
+    SwissTransferTheme {
+        Surface {
+            FilesDetailsScreen(
+                paddingValues = PaddingValues(0.dp),
+                snackbarHostState = remember { SnackbarHostState() },
+                files = files,
+                navigateToFolder = {},
+                withFileSize = true,
+                withSpaceLeft = true,
+                onFileRemoved = {},
+            )
+        }
     }
 }
