@@ -47,7 +47,6 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
-
 /**
  * @throws IllegalStateException if the first otpText is bigger than the maximum specified number of characters specified by
  * [otpLength] or if it has invalid characters according to [isCharacterValid].

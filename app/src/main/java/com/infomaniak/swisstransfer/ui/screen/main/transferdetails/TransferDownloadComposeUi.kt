@@ -27,7 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -70,28 +70,29 @@ class TransferDownloadComposeUi(
 
     override suspend fun showStatusAndAwaitRemovalRequest(
         statusFlow: StateFlow<DownloadStatus?>,
-        supportsPreview: Boolean
+        supportsPreview: Boolean,
     ) {
         this.supportsPreview = supportsPreview
-        raceOf({
-            removalRequest.awaitOneCall()
-        }, {
-            @OptIn(ExperimentalCoroutinesApi::class)
-            statusFlow.withForwardTo(
-                onNewValue = { downloadStatus = it },
-                defaultValue = null
-            ).transformLatest { status ->
-                if (status is DownloadStatus.Failed) {
-                    snackbarHostState.showSnackbar(
-                        message = appCtx.getString(status.reason.snackbarMsgResId()),
-                        actionLabel = appCtx.getString(android.R.string.ok),
-                        withDismissAction = true,
-                        duration = SnackbarDuration.Indefinite
-                    )
-                    emit(Unit)
-                }
-            }.first()
-        })
+        raceOf(
+            { removalRequest.awaitOneCall() },
+            {
+                @OptIn(ExperimentalCoroutinesApi::class)
+                statusFlow.withForwardTo(
+                    onNewValue = { downloadStatus = it },
+                    defaultValue = null,
+                ).transformLatest { status ->
+                    if (status is DownloadStatus.Failed) {
+                        snackbarHostState.showSnackbar(
+                            message = appCtx.getString(status.reason.snackbarMsgResId()),
+                            actionLabel = appCtx.getString(android.R.string.ok),
+                            withDismissAction = true,
+                            duration = SnackbarDuration.Indefinite,
+                        )
+                        emit(Unit)
+                    }
+                }.first()
+            },
+        )
     }
 
     override suspend fun awaitOpenRequest() {
@@ -109,63 +110,75 @@ class TransferDownloadComposeUi(
 
     @Composable
     fun TopAppBarButton() {
-        if (removalRequest.isAwaitingCall) DownloadStatus { btnData, action, progressIndicator ->
-            Box(contentAlignment = Alignment.Center) {
-                progressIndicator()
-                TopAppBarButton(
-                    icon = btnData.icon,
-                    contentDescResId = btnData.contentDescResId,
-                    enabled = action.isAwaitingCall,
-                    onClick = action,
-                )
+        if (removalRequest.isAwaitingCall) {
+            DownloadStatus { btnData, action, progressIndicator ->
+                Box(contentAlignment = Alignment.Center) {
+                    progressIndicator()
+                    TopAppBarButton(
+                        icon = btnData.icon,
+                        contentDescResId = btnData.contentDescResId,
+                        enabled = action.isAwaitingCall,
+                        onClick = action,
+                    )
+                }
             }
-        } else TopAppBarButtons.Download(
-            onClick = downloadRequest,
-            enabled = downloadRequest.isAwaitingCall
-        )
+        } else {
+            TopAppBarButtons.Download(
+                enabled = downloadRequest.isAwaitingCall,
+                onClick = downloadRequest,
+            )
+        }
     }
 
     @Composable
     fun BottomBarItem(modifier: Modifier = Modifier) {
-        if (removalRequest.isAwaitingCall) DownloadStatus { btnData, action, progressIndicator ->
+        if (removalRequest.isAwaitingCall) {
+            DownloadStatus { btnData, action, progressIndicator ->
+                BottomBarButton(
+                    icon = btnData.icon,
+                    labelResId = btnData.labelResId,
+                    onClick = action,
+                    enabled = action.isAwaitingCall,
+                    modifier = modifier,
+                    extraBackgroundContent = progressIndicator,
+                )
+            }
+        } else {
             BottomBarButton(
-                icon = btnData.icon,
-                labelResId = btnData.labelResId,
-                onClick = action,
-                enabled = action.isAwaitingCall,
+                icon = ButtonData.download.icon,
+                labelResId = ButtonData.download.labelResId,
+                enabled = downloadRequest.isAwaitingCall,
+                onClick = downloadRequest,
                 modifier = modifier,
-                extraBackgroundContent = progressIndicator
             )
-        } else BottomBarButton(
-            icon = ButtonData.download.icon,
-            labelResId = ButtonData.download.labelResId,
-            enabled = downloadRequest.isAwaitingCall,
-            onClick = downloadRequest,
-            modifier = modifier,
-        )
+        }
     }
 
     @Composable
     fun CardCornerButton(modifier: Modifier = Modifier) {
-        if (removalRequest.isAwaitingCall) DownloadStatus { btnData, action, _ ->
-            if (action == openRequest && supportsPreview) {
-                // Don't overlay the checkmark once the file is openable and has a preview.
-                return@DownloadStatus
+        if (removalRequest.isAwaitingCall) {
+            DownloadStatus { btnData, action, _ ->
+                if (action == openRequest && supportsPreview) {
+                    // Don't overlay the checkmark once the file is openable and has a preview.
+                    return@DownloadStatus
+                }
+                CardCornerButton(
+                    icon = btnData.icon,
+                    labelResId = btnData.labelResId,
+                    onClick = action,
+                    enabled = action.isAwaitingCall,
+                    modifier = modifier,
+                )
             }
+        } else {
             CardCornerButton(
-                icon = btnData.icon,
-                labelResId = btnData.labelResId,
-                onClick = action,
-                enabled = action.isAwaitingCall,
+                icon = ButtonData.download.icon,
+                labelResId = ButtonData.download.labelResId,
+                enabled = downloadRequest.isAwaitingCall,
+                onClick = downloadRequest,
                 modifier = modifier,
             )
-        } else CardCornerButton(
-            icon = ButtonData.download.icon,
-            labelResId = ButtonData.download.labelResId,
-            enabled = downloadRequest.isAwaitingCall,
-            onClick = downloadRequest,
-            modifier = modifier,
-        )
+        }
     }
 
     @Composable
@@ -179,12 +192,12 @@ class TransferDownloadComposeUi(
         onClick = onClick,
         modifier = modifier,
         colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.primary),
-        enabled = enabled
+        enabled = enabled,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = stringResource(labelResId),
-            modifier = Modifier.size(18.dp)
+            modifier = Modifier.size(18.dp),
         )
     }
 
@@ -196,7 +209,7 @@ class TransferDownloadComposeUi(
                 LinearProgressIndicator(
                     progress = { 1f },
                     modifier = modifier,
-                    color = MaterialTheme.colorScheme.error
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
             is DownloadStatus.InProgress -> {
@@ -214,7 +227,7 @@ class TransferDownloadComposeUi(
         button: @Composable (
             data: ButtonData,
             action: CallableState<Unit>,
-            progressIndicator: @Composable BoxScope.() -> Unit
+            progressIndicator: @Composable BoxScope.() -> Unit,
         ) -> Unit,
     ) {
         when (val status = downloadStatus) {
@@ -269,7 +282,7 @@ class TransferDownloadComposeUi(
         val status by progressStatus
         LinearProgressIndicator(
             progress = { status.let { it.downloadedBytes.toFloat() / it.totalSizeInBytes } },
-            modifier = modifier
+            modifier = modifier,
         )
     }
 
@@ -277,12 +290,12 @@ class TransferDownloadComposeUi(
     private fun DownloadProgress(progressStatus: State<DownloadStatus.InProgress>) {
         val status by progressStatus
         CircularProgressIndicator(
-            progress = { status.let { it.downloadedBytes.toFloat() / it.totalSizeInBytes } }
+            progress = { status.let { it.downloadedBytes.toFloat() / it.totalSizeInBytes } },
         )
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun Preview() = SwissTransferTheme {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -294,7 +307,7 @@ private fun Preview() = SwissTransferTheme {
                 awaitCancellation()
             }.stateIn(scope = this)
             ui.showStatusAndAwaitRemovalRequest(statusFlow, supportsPreview = false)
-            delay(.7.seconds)
+            delay(0.7.seconds)
         }
     }
     Column {

@@ -21,15 +21,14 @@ import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 
 val FileUi.fileType: FileType
-    get() {
-        return if (isFolder) {
-            FileType.FOLDER
-        } else {
-            mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
-        }
+    get() = if (isFolder) {
+        FileType.FOLDER
+    } else {
+        mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
     }
 
-val FileUi.hasPreview: Boolean get() = when (fileType) {
-    FileType.IMAGE, FileType.VIDEO -> true
-    else -> false
-}
+val FileUi.hasPreview: Boolean
+    get() = when (fileType) {
+        FileType.IMAGE, FileType.VIDEO -> true
+        else -> false
+    }

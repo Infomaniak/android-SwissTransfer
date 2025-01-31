@@ -47,7 +47,6 @@ class FilesDetailsViewModel @Inject constructor(
         fileManager.getFilesFromTransfer(folderUuid)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-
     fun loadFiles(folderUuid: String) {
         viewModelScope.launch { loadFilesFlow.emit(folderUuid) }
     }

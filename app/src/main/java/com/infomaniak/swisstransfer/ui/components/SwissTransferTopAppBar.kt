@@ -78,14 +78,14 @@ object TopAppBarButtons {
     fun Back(onClick: () -> Unit) = TopAppBarButton(
         icon = AppIcons.ArrowLeft,
         contentDescResId = R.string.contentDescriptionButtonBack,
-        onClick = onClick
+        onClick = onClick,
     )
 
     @Composable
     fun Close(onClick: () -> Unit) = TopAppBarButton(
         icon = AppIcons.Cross,
         contentDescResId = R.string.contentDescriptionButtonClose,
-        onClick = onClick
+        onClick = onClick,
     )
 
     @Composable
@@ -96,7 +96,7 @@ object TopAppBarButtons {
         icon = AppIcons.ArrowDownBar,
         enabled = enabled,
         contentDescResId = R.string.buttonDownload,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
