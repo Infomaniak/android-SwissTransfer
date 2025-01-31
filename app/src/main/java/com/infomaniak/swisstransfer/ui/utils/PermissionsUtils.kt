@@ -23,7 +23,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 
 @OptIn(ExperimentalPermissionsApi::class)
-fun PermissionState?.checkWritePermission(action: () -> Unit) {
+fun PermissionState?.checkPermission(action: () -> Unit) {
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && this?.status?.isGranted != true) {
         this?.launchPermissionRequest()
     } else {

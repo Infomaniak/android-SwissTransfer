@@ -46,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
 import com.infomaniak.swisstransfer.ui.images.icons.Stop
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.checkWritePermission
+import com.infomaniak.swisstransfer.ui.utils.checkPermission
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
@@ -130,7 +130,7 @@ class TransferDownloadComposeUi(
         } else {
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = { writeExternalStoragePermissionState.checkWritePermission { downloadRequest() } },
+                onClick = { writeExternalStoragePermissionState.checkPermission { downloadRequest() } },
             )
         }
     }
