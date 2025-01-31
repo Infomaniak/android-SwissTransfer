@@ -96,7 +96,8 @@ class ImportFilesViewModel @Inject constructor(
         )
 
     val filesToImportCount = importationFilesManager.filesToImportCount
-    val currentSessionFilesCount = importationFilesManager.currentSessionFilesCount
+    val importedByteCount = importationFilesManager.importedByteCount
+    val currentSessionByteCount = importationFilesManager.currentSessionByteCount
 
     sealed interface FilesDetailsUiState {
         data object EmptyFiles : FilesDetailsUiState

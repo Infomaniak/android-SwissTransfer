@@ -50,9 +50,12 @@ class ImportationFilesManager @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
 
-    private val filesToImportChannel: TransferCountChannel = TransferCountChannel()
+    private val filesToImportChannel: TransferCountChannel = TransferCountChannel(
+        resetCopiedBytes = { importLocalStorage.resetCopiedBytes() }
+    )
     val filesToImportCount: StateFlow<Int> = filesToImportChannel.count
-    val currentSessionFilesCount: StateFlow<Int> = filesToImportChannel.currentSessionFilesCount
+    val currentSessionByteCount: StateFlow<Long> = filesToImportChannel.currentSessionByteCount
+    val importedByteCount by importLocalStorage::copiedBytes
 
     private val _importedFiles = FilesMutableStateFlow()
     val importedFiles = _importedFiles.flow
@@ -64,7 +67,7 @@ class ImportationFilesManager @Inject constructor(
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
     suspend fun importFiles(uris: List<Uri>) {
-        uris.extractPickedFiles().forEach { filesToImportChannel.send(it) }
+        uris.extractPickedFiles().forEach { filesToImportChannel.send(it, appContext) }
     }
 
     suspend fun removeFileByUid(uid: String) {

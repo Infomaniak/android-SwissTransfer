@@ -19,6 +19,10 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -29,6 +33,16 @@ import javax.inject.Singleton
 class ImportLocalStorage @Inject constructor(@ApplicationContext private val appContext: Context) {
 
     private val importFolder by lazy { File(appContext.filesDir, IMPORTED_FILES) }
+
+    private val _copiedBytes = MutableStateFlow<Long>(0)
+    val copiedBytes: StateFlow<Long> = _copiedBytes.asStateFlow()
+
+    /**
+     * This method is used to reset the copied bytes the transfer count session is reset
+     */
+    fun resetCopiedBytes() {
+        _copiedBytes.update { 0 }
+    }
 
     fun removeImportFolder() {
         if (importFolder.exists()) runCatching { importFolder.deleteRecursively() }
@@ -46,10 +60,16 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
         }
     }
 
-    private fun copyStreams(inputStream: InputStream, outputStream: OutputStream): Long {
+    private fun copyStreams(inputStream: InputStream, outputStream: OutputStream) {
         return inputStream.use { input ->
             outputStream.use { output ->
-                input.copyTo(output)
+                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                var bytes = input.read(buffer)
+                while (bytes >= 0) {
+                    output.write(buffer, 0, bytes)
+                    _copiedBytes.update { it + bytes }
+                    bytes = input.read(buffer)
+                }
             }
         }
     }
