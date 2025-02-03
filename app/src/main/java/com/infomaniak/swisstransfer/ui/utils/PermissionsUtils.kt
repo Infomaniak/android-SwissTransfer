@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.first
 fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
     if (this == null) return action
     val isGrantedFlow = remember(this.permission) { snapshotFlow { this.status.isGranted } }
-    val actionFired: CompletableJob = remember { Job() }
+    val actionFired: CompletableJob = remember(this.permission) { Job() }
     LaunchedEffect(this.permission) {
         actionFired.join()
         isGrantedFlow.first { it }
