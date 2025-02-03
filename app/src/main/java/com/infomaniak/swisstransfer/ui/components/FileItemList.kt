@@ -21,7 +21,11 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownl
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
-import com.infomaniak.swisstransfer.ui.utils.checkPermission
+import com.infomaniak.swisstransfer.ui.utils.guardedCallback
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -104,7 +108,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> fun() = writeExternalStoragePermissionState.checkPermission { downloadUi.onFileClick() }
+                    else -> writeExternalStoragePermissionState.guardedCallback { downloadUi.onFileClick() }
                 },
                 uriForFile = produceState(file.localPath) {
                     transferFlow.collectLatest { transfer ->
