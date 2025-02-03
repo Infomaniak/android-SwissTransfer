@@ -17,16 +17,33 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import android.os.Build
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalPermissionsApi::class)
-fun PermissionState?.checkPermission(action: () -> Unit) {
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && this?.status?.isGranted != true) {
-        this?.launchPermissionRequest()
-    } else {
+@Composable
+fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
+    if (this == null) return action
+    val isGrantedFlow = remember(this.permission) { snapshotFlow { this.status.isGranted } }
+    val actionFired: CompletableJob = remember { Job() }
+    LaunchedEffect(this.permission) {
+        actionFired.join()
+        isGrantedFlow.first { it }
         action()
+    }
+    return {
+        if (status.isGranted) action()
+        else {
+            launchPermissionRequest()
+            actionFired.complete()
+        }
     }
 }

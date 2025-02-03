@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import android.Manifest
 import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -159,7 +160,10 @@ private fun TransferDetailsScreen(
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val snackbarHostState = remember { SnackbarHostState() }
-    val writeExternalStoragePermissionState = rememberPermissionState(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val writeExternalStoragePermissionState: PermissionState? = when {
+        SDK_INT > 28 -> null
+        else -> rememberPermissionState(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
     val downloadUi = remember(lifecycle) {
         TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState)
     }
@@ -268,7 +272,7 @@ private fun getBottomBarPadding(): PaddingValues {
 @Composable
 private fun ColumnScope.FilesList(
     snackbarHostState: SnackbarHostState,
-    writeExternalStoragePermissionState: PermissionState,
+    writeExternalStoragePermissionState: PermissionState?,
     getTransfer: () -> TransferUi,
     transferRecipients: Set<String>,
     isMultiselectOn: Boolean,
