@@ -32,9 +32,9 @@ import kotlinx.coroutines.flow.first
 @Composable
 fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
     if (this == null) return action
-    val isGrantedFlow = remember(this.permission) { snapshotFlow { this.status.isGranted } }
-    val actionFired: CompletableJob = remember(this.permission) { Job() }
-    LaunchedEffect(this.permission) {
+    val isGrantedFlow = remember(permission) { snapshotFlow { status.isGranted } }
+    val actionFired: CompletableJob = remember(permission) { Job() }
+    LaunchedEffect(permission) {
         actionFired.join()
         isGrantedFlow.first { it }
         action()
