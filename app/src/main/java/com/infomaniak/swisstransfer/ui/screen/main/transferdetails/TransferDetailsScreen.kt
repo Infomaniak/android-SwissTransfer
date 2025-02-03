@@ -71,6 +71,7 @@ import com.infomaniak.swisstransfer.ui.utils.openFile
 import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
@@ -169,7 +170,7 @@ private fun TransferDetailsScreen(
     }
     val transferFlow = remember { snapshotFlow { getTransfer() } }
     LaunchedEffect(Unit) {
-        transferFlow.collect { transfer ->
+        transferFlow.collectLatest { transfer ->
             val singleFileOrNull = transfer.files.singleOrNull()
             runDownloadUi(downloadUi, transfer, singleFileOrNull)
         }
