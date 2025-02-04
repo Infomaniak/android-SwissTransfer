@@ -41,12 +41,10 @@ fun ExistingTransferFilesDetailsScreen(
     navigateBack: () -> Unit,
     close: (() -> Unit),
 ) {
-    val files by filesDetailsViewModel.filesInFolder.collectAsStateWithLifecycle()
+    val files by remember(folderUuid) {
+        filesDetailsViewModel.filesFlow(folderUuid)
+    }.collectAsStateWithLifecycle(initialValue = null)
     val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(folderUuid) {
-        filesDetailsViewModel.loadFiles(folderUuid)
-    }
 
     files?.let {
         SwissTransferScaffold(
