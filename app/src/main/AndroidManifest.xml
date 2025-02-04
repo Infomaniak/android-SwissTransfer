@@ -78,6 +78,7 @@
 
         <activity
             android:name=".ui.LaunchActivity"
+            android:configChanges="colorMode|density|fontScale|fontWeightAdjustment|grammaticalGender|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
             android:exported="true"
             android:theme="@style/Theme.AppStarting">
             <intent-filter>
@@ -105,10 +106,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.OnboardingActivity" />
+        <activity
+            android:name=".ui.OnboardingActivity"
+            android:configChanges="colorMode|density|fontScale|fontWeightAdjustment|grammaticalGender|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode" />
 
         <activity
             android:name=".ui.MainActivity"
+            android:configChanges="colorMode|density|fontScale|fontWeightAdjustment|grammaticalGender|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
             android:launchMode="singleTask" />
 
         <!-- We need NewMessageActivity to have its standard launchMode in the Manifest
