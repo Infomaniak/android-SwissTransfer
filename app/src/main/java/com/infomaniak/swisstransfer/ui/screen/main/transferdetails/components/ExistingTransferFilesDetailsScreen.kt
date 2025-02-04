@@ -41,7 +41,7 @@ fun ExistingTransferFilesDetailsScreen(
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     navigateBack: () -> Unit,
-    close: (() -> Unit),
+    close: () -> Unit,
 ) {
     val files by remember(folderUuid) {
         filesDetailsViewModel.filesFlow(folderUuid)
