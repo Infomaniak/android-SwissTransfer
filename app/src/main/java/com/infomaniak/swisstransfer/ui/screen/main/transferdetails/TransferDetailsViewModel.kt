@@ -59,7 +59,7 @@ class TransferDetailsViewModel @Inject constructor(
         .flatMapLatest { transferManager.getTransferFlow(it) }
         .map { transfer ->
             when (transfer) {
-                null -> TransferDetailsUiState.Delete
+                null -> TransferDetailsUiState.Deleted
                 else -> TransferDetailsUiState.Success(transfer)
             }
         }
@@ -174,7 +174,7 @@ class TransferDetailsViewModel @Inject constructor(
         data object Loading : TransferDetailsUiState()
 
         @Immutable
-        data object Delete : TransferDetailsUiState()
+        data object Deleted : TransferDetailsUiState()
     }
 
     companion object {

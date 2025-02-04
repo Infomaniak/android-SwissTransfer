@@ -56,7 +56,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Delete
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Deleted
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
@@ -92,7 +92,7 @@ fun TransferDetailsScreen(
 
     val context = LocalContext.current
     when (val state = uiState) {
-        is Delete -> navigateBack?.invoke()
+        is Deleted -> navigateBack?.invoke()
         is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
