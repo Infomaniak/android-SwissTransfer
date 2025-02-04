@@ -17,19 +17,52 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.uriForFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 
 @HiltViewModel
 class FilesDetailsViewModel @Inject constructor(
     private val fileManager: FileManager,
+    private val transferManager: TransferManager,
+    private val sharedApiUrlCreator: SharedApiUrlCreator,
+    @UserAgent private val userAgent: String,
 ) : ViewModel() {
 
     fun filesFlow(folderUuid: String): Flow<List<FileUi>> {
         return fileManager.getFilesFromTransfer(folderUuid)
     }
+
+    fun transfer(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
+
+    fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
+        return transferManager.uriForFile(transfer = transfer, file = file)
+    }
+
+    suspend fun handleTransferDownload(
+        ui: TransferDownloadUi,
+        transfer: TransferUi,
+        targetFile: FileUi?,
+        openFile: suspend (Uri) -> Unit,
+    ): Nothing = handleTransferDownload(
+        ui = ui,
+        transferManager = transferManager,
+        apiUrlCreator = sharedApiUrlCreator,
+        userAgent = userAgent,
+        transfer = transfer,
+        targetFile = targetFile,
+        openFile = openFile,
+    )
 }

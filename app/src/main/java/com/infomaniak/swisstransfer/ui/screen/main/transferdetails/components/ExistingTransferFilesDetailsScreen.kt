@@ -20,9 +20,9 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -30,11 +30,13 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.FilesDetailsViewModel
+import com.infomaniak.swisstransfer.ui.utils.openFile
 
 @Composable
 fun ExistingTransferFilesDetailsScreen(
     filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
     folderUuid: String,
+    transferUuid: String,
     navigateToFolder: (String) -> Unit,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
@@ -56,12 +58,24 @@ fun ExistingTransferFilesDetailsScreen(
             },
             snackbarHost = { SnackbarHost(snackbarHostState) }
         ) {
+            val context = LocalContext.current
             FilesDetailsScreen(
                 snackbarHostState = snackbarHostState,
                 files = it,
                 navigateToFolder = navigateToFolder,
+                transferFlow = filesDetailsViewModel.transfer(transferUuid),
+                runDownloadUi = { ui, transfer, file ->
+                    filesDetailsViewModel.handleTransferDownload(
+                        ui = ui,
+                        transfer = transfer,
+                        targetFile = file,
+                        openFile = { uri -> context.openFile(uri) },
+                    )
+                },
+                uriForFile = { transfer, file -> filesDetailsViewModel.uriForFile(transfer, file) },
                 withFileSize = withFilesSize,
                 withSpaceLeft = withSpaceLeft,
+                isDownloadButtonVisible = true,
             )
         }
     }

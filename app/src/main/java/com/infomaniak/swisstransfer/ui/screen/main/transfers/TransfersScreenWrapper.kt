@@ -209,6 +209,7 @@ private fun ExistingTransferFilesDetails(
                 selectedFolderUuid,
             )
         },
+        transferUuid = transferUuid,
         folderUuid = folderUuid,
         navigateBack = { navigator.popBackStack() },
         close = {

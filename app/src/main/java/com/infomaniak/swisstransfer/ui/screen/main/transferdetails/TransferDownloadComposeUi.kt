@@ -87,7 +87,7 @@ import com.infomaniak.core.R as RCore
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
     private val snackbarHostState: SnackbarHostState,
-    private val writeExternalStoragePermissionState: PermissionState? = null,
+    private val writeExternalStoragePermissionState: PermissionState?,
 ) : TransferDownloadUi {
 
     private val downloadRequest = CallableState<Unit>()
@@ -330,7 +330,13 @@ class TransferDownloadComposeUi(
 @Composable
 private fun Preview() = SwissTransferTheme {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val ui = remember { TransferDownloadComposeUi(lifecycle, SnackbarHostState()) }
+    val ui = remember {
+        TransferDownloadComposeUi(
+            lifecycle = lifecycle,
+            snackbarHostState = SnackbarHostState(),
+            writeExternalStoragePermissionState = null
+        )
+    }
     LaunchedEffect(Unit) {
         while (coroutineContext.isActive) autoCancelScope {
             val statusFlow = flow {
