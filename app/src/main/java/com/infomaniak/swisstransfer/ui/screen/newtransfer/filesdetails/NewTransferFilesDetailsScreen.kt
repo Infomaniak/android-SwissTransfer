@@ -93,6 +93,7 @@ private fun NewTransferFilesDetailsScreen(
             files = files,
             withFileSize = withFilesSize,
             withSpaceLeft = withSpaceLeft,
+            isDownloadButtonVisible = false,
             onFileRemoved = onFileRemoved
         )
     }

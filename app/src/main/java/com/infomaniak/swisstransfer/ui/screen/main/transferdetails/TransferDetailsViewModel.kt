@@ -22,10 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.DownloadStatus
-import com.infomaniak.core.downloadStatusFlow
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.core.uriFor
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -37,10 +34,8 @@ import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import splitties.systemservices.downloadManager
 import splitties.toast.UnreliableToastApi
 import splitties.toast.longToast
 import javax.inject.Inject
@@ -59,7 +54,7 @@ class TransferDetailsViewModel @Inject constructor(
         .flatMapLatest { transferManager.getTransferFlow(it) }
         .map { transfer ->
             when (transfer) {
-                null -> TransferDetailsUiState.Delete
+                null -> TransferDetailsUiState.Deleted
                 else -> TransferDetailsUiState.Success(transfer)
             }
         }
@@ -124,26 +119,9 @@ class TransferDetailsViewModel @Inject constructor(
         openFile = openFile,
     )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> = downloadManagerId(
-        transferManager = transferManager,
-        transferUuid = transfer.uuid,
-        fileUid = file.uid,
-    ).transformLatest { uniqueDownloadId ->
-        if (uniqueDownloadId == null) {
-            emit(null)
-            return@transformLatest
-        }
-        val uriFlow = downloadManager.downloadStatusFlow(uniqueDownloadId).transformLatest { status ->
-            if (status !is DownloadStatus.Complete) {
-                emit(null)
-                awaitCancellation()
-            }
-            val uri = downloadManager.uriFor(uniqueDownloadId)
-            emit(uri)
-        }
-        emitAll(uriFlow)
-    }.distinctUntilChanged()
+    fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
+        return transferManager.uriForFile(transfer = transfer, file = file)
+    }
 
     @OptIn(UnreliableToastApi::class)
     private suspend fun handleTransferDeeplink(transferUuid: String, password: String) {
@@ -174,7 +152,7 @@ class TransferDetailsViewModel @Inject constructor(
         data object Loading : TransferDetailsUiState()
 
         @Immutable
-        data object Delete : TransferDetailsUiState()
+        data object Deleted : TransferDetailsUiState()
     }
 
     companion object {

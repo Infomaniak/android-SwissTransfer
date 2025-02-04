@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -29,12 +30,17 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components.FilesSize
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -43,8 +49,16 @@ fun FilesDetailsScreen(
     snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
     navigateToFolder: ((String) -> Unit)? = null,
+    transferFlow: Flow<TransferUi> = emptyFlow(),
+    runDownloadUi: suspend (
+        ui: TransferDownloadUi,
+        transfer: TransferUi,
+        file: FileUi
+    ) -> Nothing = { _, _, _ -> awaitCancellation() },
+    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
+    isDownloadButtonVisible: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
 ) {
     Column(
@@ -56,13 +70,16 @@ fun FilesDetailsScreen(
         FileItemList(
             snackbarHostState = snackbarHostState,
             files = files,
-            isDownloadButtonVisible = false,
+            isDownloadButtonVisible = isDownloadButtonVisible,
             isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = { false },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = { onFileRemoved?.invoke(it) },
-            navigateToFolder = { navigateToFolder?.invoke(it) }
+            navigateToFolder = { navigateToFolder?.invoke(it) },
+            transferFlow = transferFlow,
+            runDownloadUi = runDownloadUi,
+            uriForFile = uriForFile,
         )
     }
 }
@@ -75,8 +92,12 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             FilesDetailsScreen(
                 paddingValues = PaddingValues(0.dp),
                 snackbarHostState = remember { SnackbarHostState() },
+                isDownloadButtonVisible = false,
                 files = files,
                 navigateToFolder = {},
+                transferFlow = emptyFlow(),
+                runDownloadUi = { _, _, _ -> awaitCancellation() },
+                uriForFile = { _, _ -> emptyFlow() },
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},

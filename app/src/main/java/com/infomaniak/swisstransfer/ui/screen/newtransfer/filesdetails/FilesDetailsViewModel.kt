@@ -17,37 +17,52 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
-import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
-import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.uriForFile
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 
 @HiltViewModel
 class FilesDetailsViewModel @Inject constructor(
-    @ApplicationContext private val appContext: Context,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val fileManager: FileManager,
+    private val transferManager: TransferManager,
+    private val sharedApiUrlCreator: SharedApiUrlCreator,
+    @UserAgent private val userAgent: String,
 ) : ViewModel() {
 
-    private val loadFilesFlow = MutableSharedFlow<String>(1)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val filesInFolder = loadFilesFlow.flatMapLatest { folderUuid ->
-        fileManager.getFilesFromTransfer(folderUuid)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    fun loadFiles(folderUuid: String) {
-        viewModelScope.launch { loadFilesFlow.emit(folderUuid) }
+    fun filesFlow(folderUuid: String): Flow<List<FileUi>> {
+        return fileManager.getFilesFromTransfer(folderUuid)
     }
+
+    fun transferFlow(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
+
+    fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
+        return transferManager.uriForFile(transfer = transfer, file = file)
+    }
+
+    suspend fun handleTransferDownload(
+        ui: TransferDownloadUi,
+        transfer: TransferUi,
+        targetFile: FileUi?,
+        openFile: suspend (Uri) -> Unit,
+    ): Nothing = handleTransferDownload(
+        ui = ui,
+        transferManager = transferManager,
+        apiUrlCreator = sharedApiUrlCreator,
+        userAgent = userAgent,
+        transfer = transfer,
+        targetFile = targetFile,
+        openFile = openFile,
+    )
 }

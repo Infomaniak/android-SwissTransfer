@@ -94,7 +94,7 @@ fun FileItemList(
         items(files, key = { it.uid }) { file ->
 
             val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
-                TransferDownloadComposeUi(lifecycle, snackbarHostState)
+                TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState)
             }
 
             LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
