@@ -45,7 +45,7 @@ class FilesDetailsViewModel @Inject constructor(
         return fileManager.getFilesFromTransfer(folderUuid)
     }
 
-    fun transfer(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
+    fun transferFlow(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
 
     fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
         return transferManager.uriForFile(transfer = transfer, file = file)

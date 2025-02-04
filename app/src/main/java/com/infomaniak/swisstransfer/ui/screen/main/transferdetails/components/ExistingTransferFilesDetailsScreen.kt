@@ -63,7 +63,7 @@ fun ExistingTransferFilesDetailsScreen(
                 snackbarHostState = snackbarHostState,
                 files = it,
                 navigateToFolder = navigateToFolder,
-                transferFlow = filesDetailsViewModel.transfer(transferUuid),
+                transferFlow = filesDetailsViewModel.transferFlow(transferUuid),
                 runDownloadUi = { ui, transfer, file ->
                     filesDetailsViewModel.handleTransferDownload(
                         ui = ui,
