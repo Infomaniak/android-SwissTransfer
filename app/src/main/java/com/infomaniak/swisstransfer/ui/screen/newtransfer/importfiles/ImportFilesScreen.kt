@@ -47,7 +47,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager.SendStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -94,6 +93,8 @@ fun ImportFilesScreen(
     val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val lastUploadSession by importFilesViewModel.lastUploadSession.collectAsStateWithLifecycle()
+
+    var sendButtonStatus by remember { mutableStateOf(SendButtonStatus.Available) }
 
     val context = LocalContext.current
 
@@ -172,8 +173,9 @@ fun ImportFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
         closeActivity = closeActivity,
-        sendStatus = { SendStatus.Initial }, // TODO: Only used for button
-        sendTransfer = {
+        sendButtonStatus = { sendButtonStatus },
+        onSendButtonClick = {
+            sendButtonStatus = SendButtonStatus.Loading
             if (NotificationPermissionUtils.hasNotificationPermission(context)) {
                 importFilesViewModel.createNewUploadSession()
             } else {
@@ -212,8 +214,8 @@ private fun ImportFilesScreen(
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
     closeActivity: () -> Unit,
-    sendStatus: () -> SendStatus,
-    sendTransfer: () -> Unit,
+    sendButtonStatus: () -> SendButtonStatus,
+    onSendButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
     navigateToFilesDetails: () -> Unit,
 ) {
@@ -243,8 +245,8 @@ private fun ImportFilesScreen(
                 currentSessionFilesCount = currentSessionFilesCount,
                 importedFiles = files,
                 areEmailsCorrects = { areEmailsCorrects },
-                sendStatus = sendStatus,
-                sendTransfer = sendTransfer,
+                sendButtonStatus = sendButtonStatus,
+                onClick = onSendButtonClick,
             )
         },
         content = {
@@ -423,8 +425,8 @@ private fun SendButton(
     currentSessionFilesCount: () -> Int,
     importedFiles: () -> List<FileUi>,
     areEmailsCorrects: () -> Boolean,
-    sendStatus: () -> SendStatus,
-    sendTransfer: () -> Unit,
+    sendButtonStatus: () -> SendButtonStatus,
+    onClick: () -> Unit,
 ) {
     val remainingFilesCount = filesToImportCount()
     val isImporting by remember(remainingFilesCount) { derivedStateOf { remainingFilesCount > 0 } }
@@ -441,16 +443,17 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.Primary,
-        showIndeterminateProgress = { sendStatus() == SendStatus.Pending },
-        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrects() && sendStatus().canEnableButton() },
+        showIndeterminateProgress = { sendButtonStatus() == SendButtonStatus.Loading },
+        enabled = { importedFiles().isNotEmpty() && !isImporting && areEmailsCorrects() && sendButtonStatus().canEnableButton() },
         progress = progress,
-        onClick = { sendTransfer() },
+        onClick = onClick,
     )
 }
 
-private fun SendStatus.canEnableButton(): Boolean = when (this) {
-    SendStatus.Pending -> false
-    else -> true
+private fun SendButtonStatus.canEnableButton(): Boolean = this == SendButtonStatus.Available
+
+enum class SendButtonStatus {
+    Available, Loading
 }
 
 data class EmailTextFieldCallbacks(
@@ -539,8 +542,8 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             transferOptionsCallbacks = transferOptionsCallbacks,
             pickFiles = {},
             closeActivity = {},
-            sendStatus = { SendStatus.Initial },
-            sendTransfer = {},
+            sendButtonStatus = { SendButtonStatus.Available },
+            onSendButtonClick = {},
             navigateToFilesDetails = {},
         )
     }
