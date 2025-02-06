@@ -55,7 +55,7 @@ class UploadProgressViewModel @Inject constructor(
 
     // This stateflow is required in order to start with `initialValue = false`. We need it to block the initialization of the
     // upload while we wait for a network connection. If we start with `initialValue = true`, the initialization will go through
-    // because of to the initial value.
+    // because of the initial value.
     private val uploadInitializationIsNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
         .stateIn(
             scope = viewModelScope,
