@@ -45,9 +45,11 @@ class TransferCountChannel(private val context: Context, private val resetCopied
     private val countMutex = Mutex()
 
     suspend fun send(element: ImportationFilesManager.PickedFile) {
+        val fileSize = element.uri.getFileSize(context)
+
         countMutex.withLock {
             _count.value += 1
-            _currentSessionByteCount.update { it + element.uri.getFileSize(context) }
+            _currentSessionByteCount.update { it + fileSize }
         }
         channel.send(element)
     }
