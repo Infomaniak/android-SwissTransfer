@@ -25,7 +25,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -49,7 +48,7 @@ class TransferCountChannel(private val context: Context, private val resetCopied
 
         countMutex.withLock {
             _count.value += 1
-            _currentSessionByteCount.update { it + fileSize }
+            _currentSessionByteCount.value += fileSize
         }
         channel.send(element)
     }
@@ -60,7 +59,7 @@ class TransferCountChannel(private val context: Context, private val resetCopied
             countMutex.withLock {
                 _count.value -= 1
                 if (_count.value == 0) {
-                    _currentSessionByteCount.update { 0 }
+                    _currentSessionByteCount.value = 0
                     resetCopiedBytes()
                 }
             }
