@@ -54,8 +54,8 @@ class ImportationFilesManager @Inject constructor(
         resetCopiedBytes = { importLocalStorage.resetCopiedBytes() }
     )
     val filesToImportCount: StateFlow<Int> = filesToImportChannel.count
-    val currentSessionByteCount: StateFlow<Long> = filesToImportChannel.currentSessionByteCount
-    val importedByteCount by importLocalStorage::copiedBytes
+    val currentSessionTotalByteCount: StateFlow<Long> = filesToImportChannel.currentSessionTotalByteCount
+    val currentSessionImportedByteCount by importLocalStorage::copiedBytes
 
     private val _importedFiles = FilesMutableStateFlow()
     val importedFiles = _importedFiles.flow

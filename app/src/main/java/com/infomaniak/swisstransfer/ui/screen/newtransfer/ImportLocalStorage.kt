@@ -38,7 +38,7 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
     val copiedBytes: StateFlow<Long> = _copiedBytes.asStateFlow()
 
     /**
-     * This method is used to reset the copied bytes the transfer count session is reset
+     * This method is used to reset the copied bytes when the session is reset
      */
     fun resetCopiedBytes() {
         _copiedBytes.update { 0 }

@@ -83,8 +83,8 @@ fun ImportFilesScreen(
 
     val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val filesToImportCount by importFilesViewModel.filesToImportCount.collectAsStateWithLifecycle()
-    val importedByteCount by importFilesViewModel.importedByteCount.collectAsStateWithLifecycle()
-    val currentSessionByteCount by importFilesViewModel.currentSessionByteCount.collectAsStateWithLifecycle()
+    val importedByteCount by importFilesViewModel.currentSessionImportedByteCount.collectAsStateWithLifecycle()
+    val totalByteCount by importFilesViewModel.currentSessionTotalByteCount.collectAsStateWithLifecycle()
 
     val selectedTransferType by importFilesViewModel.selectedTransferType.collectAsStateWithLifecycle()
 
@@ -166,7 +166,7 @@ fun ImportFilesScreen(
         files = { files },
         filesToImportCount = { filesToImportCount },
         importedByteCount = { importedByteCount },
-        currentSessionByteCount = { currentSessionByteCount },
+        totalByteCount = { totalByteCount },
         emailTextFieldCallbacks = emailTextFieldCallbacks,
         transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
@@ -241,7 +241,7 @@ private fun ImportFilesScreen(
     files: () -> List<FileUi>,
     filesToImportCount: () -> Int,
     importedByteCount: () -> Long,
-    currentSessionByteCount: () -> Long,
+    totalByteCount: () -> Long,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
@@ -277,7 +277,7 @@ private fun ImportFilesScreen(
                 modifier = modifier,
                 filesToImportCount = filesToImportCount,
                 importedByteCount = importedByteCount,
-                currentSessionByteCount = currentSessionByteCount,
+                totalByteCount = totalByteCount,
                 importedFiles = files,
                 areEmailsCorrects = { areEmailsCorrects },
                 sendStatus = sendStatus,
@@ -458,7 +458,7 @@ private fun SendButton(
     modifier: Modifier,
     filesToImportCount: () -> Int,
     importedByteCount: () -> Long,
-    currentSessionByteCount: () -> Long,
+    totalByteCount: () -> Long,
     importedFiles: () -> List<FileUi>,
     areEmailsCorrects: () -> Boolean,
     sendStatus: () -> SendStatus,
@@ -466,7 +466,7 @@ private fun SendButton(
 ) {
     val isImporting by remember { derivedStateOf { filesToImportCount() > 0 } }
 
-    val importProgress = importedByteCount() / currentSessionByteCount().toFloat()
+    val importProgress = importedByteCount() / totalByteCount().toFloat()
     val progress: (() -> Float)? = if (isImporting) fun() = importProgress else null
 
     LargeButton(
@@ -565,7 +565,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             files = { files },
             filesToImportCount = { 0 },
             importedByteCount = { 0 },
-            currentSessionByteCount = { 0 },
+            totalByteCount = { 0 },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),

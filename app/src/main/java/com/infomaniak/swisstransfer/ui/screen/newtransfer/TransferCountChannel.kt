@@ -40,7 +40,7 @@ class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
      * This count is used to track and compute the progress of files being imported during the current session.
      */
     private val _currentSessionByteCount: MutableStateFlow<Long> = MutableStateFlow(0)
-    val currentSessionByteCount: StateFlow<Long> = _currentSessionByteCount.asStateFlow()
+    val currentSessionTotalByteCount: StateFlow<Long> = _currentSessionByteCount.asStateFlow()
 
     private val countMutex = Mutex()
 
