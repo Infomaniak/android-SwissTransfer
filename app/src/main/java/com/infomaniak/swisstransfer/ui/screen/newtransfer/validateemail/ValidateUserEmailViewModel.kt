@@ -69,7 +69,7 @@ class ValidateUserEmailViewModel @Inject constructor(
         }
     }
 
-    suspend fun removeUploadSession() {
+    suspend fun removeAllUploadSession() {
         uploadManager.removeAllUploadSession()
     }
 

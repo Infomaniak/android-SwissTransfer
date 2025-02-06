@@ -78,7 +78,7 @@ fun ValidateUserEmailScreen(
 
     fun removeUploadSessionAndBack() {
         scope.launch {
-            validateUserEmailViewModel.removeUploadSession()
+            validateUserEmailViewModel.removeAllUploadSession()
             navigateBackToFileImportation()
         }
     }
