@@ -112,12 +112,9 @@ fun HandleSendStatus(
             is SendStatus.NoNetwork,
             is SendStatus.Failure -> {
                 navigateToUploadError()
-                resetSendStatus() // Needed apparently
+                resetSendStatus()
             }
-            is SendStatus.RequireEmailValidation -> {
-                navigateToEmailValidation()
-                // resetSendActionResult() // Not needed apparently
-            }
+            is SendStatus.RequireEmailValidation -> navigateToEmailValidation()
             SendStatus.Initial,
             SendStatus.Pending,
             is SendStatus.Success -> Unit
