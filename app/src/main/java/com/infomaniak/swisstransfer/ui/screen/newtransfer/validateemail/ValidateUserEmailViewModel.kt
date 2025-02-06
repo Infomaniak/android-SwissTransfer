@@ -69,6 +69,10 @@ class ValidateUserEmailViewModel @Inject constructor(
         }
     }
 
+    suspend fun removeUploadSession() {
+        uploadManager.removeAllUploadSession()
+    }
+
     enum class ValidateEmailUiState {
         Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
     }
