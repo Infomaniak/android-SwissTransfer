@@ -121,12 +121,10 @@ class UploadProgressViewModel @Inject constructor(
         viewModelScope.launch {
             if (uploadWorkerScheduler.hasAlreadyBeenScheduled()) return@launch
 
-            uploadInitializationIsNetworkAvailable.collect { isNetworkAvailable ->
-                if (isNetworkAvailable) {
-                    SentryLog.i(TAG, "Initializing the upload")
-                    transferSendManager.sendLastTransfer()
-                }
-            }
+            uploadInitializationIsNetworkAvailable.first { isNetworkAvailable -> isNetworkAvailable }
+
+            SentryLog.i(TAG, "Initializing the upload")
+            transferSendManager.sendLastTransfer()
         }
     }
 
