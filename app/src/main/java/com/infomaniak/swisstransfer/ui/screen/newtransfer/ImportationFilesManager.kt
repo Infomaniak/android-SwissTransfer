@@ -51,6 +51,7 @@ class ImportationFilesManager @Inject constructor(
 ) {
 
     private val filesToImportChannel: TransferCountChannel = TransferCountChannel(
+        context = appContext,
         resetCopiedBytes = { importLocalStorage.resetCopiedBytes() }
     )
     val filesToImportCount: StateFlow<Int> = filesToImportChannel.count
@@ -67,7 +68,7 @@ class ImportationFilesManager @Inject constructor(
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
     suspend fun importFiles(uris: List<Uri>) {
-        uris.extractPickedFiles().forEach { filesToImportChannel.send(it, appContext) }
+        uris.extractPickedFiles().forEach { filesToImportChannel.send(it) }
     }
 
     suspend fun removeFileByUid(uid: String) {
