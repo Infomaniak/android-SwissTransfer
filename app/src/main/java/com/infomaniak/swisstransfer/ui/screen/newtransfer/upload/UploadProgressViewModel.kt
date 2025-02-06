@@ -97,7 +97,9 @@ class UploadProgressViewModel @Inject constructor(
                 if (uploadSession == null) {
                     uploadManager.removeAllUploadSession()
                 } else {
-                    uploadManager.cancelUploadSession(uploadSession.uuid)
+                    // We can cancel during the app integrity check, before any remote container creation. In this case, no need
+                    // to cancel any remote upload session.
+                    if (uploadSession.remoteContainer != null) uploadManager.cancelUploadSession(uploadSession.uuid)
                 }
             }.onFailure { exception ->
                 if (exception is CancellationException) throw exception
