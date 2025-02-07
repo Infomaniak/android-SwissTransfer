@@ -138,6 +138,7 @@ fun SettingsScreen(
             SettingItem(
                 titleRes = R.string.settingsOptionDataManagement,
                 isSelected = { selectedSetting == DATA_MANAGEMENT },
+                icon = AppIcons.Shield,
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DATA_MANAGEMENT) },
             )
