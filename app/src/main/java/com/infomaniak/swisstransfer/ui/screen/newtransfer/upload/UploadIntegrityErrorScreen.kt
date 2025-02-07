@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -33,6 +34,8 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadIntegrityErrorScreen(closeActivity: () -> Unit) {
+    BackHandler { closeActivity() }
+
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
