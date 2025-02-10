@@ -34,8 +34,8 @@ class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
      * A "session" lasts from when the queue count is greater than 0 until it resets to 0 again.
      * This count is used to track and compute the progress of files being imported during the current session.
      */
-    private val _currentSessionByteCount: MutableStateFlow<Long> = MutableStateFlow(0)
-    val currentSessionTotalByteCount: StateFlow<Long> = _currentSessionByteCount.asStateFlow()
+    private val _currentSessionTotalByteCount: MutableStateFlow<Long> = MutableStateFlow(0)
+    val currentSessionTotalByteCount: StateFlow<Long> = _currentSessionTotalByteCount.asStateFlow()
 
     private val countMutex = Mutex()
 
@@ -50,7 +50,7 @@ class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
             countMutex.withLock {
                 _count.value -= 1
                 if (_count.value == 0) {
-                    _currentSessionByteCount.value = 0
+                    _currentSessionTotalByteCount.value = 0
                     resetCopiedBytes()
                 }
             }
@@ -59,7 +59,7 @@ class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
 
     suspend fun setTotalFileSize(totalFileSize: Long) {
         countMutex.withLock {
-            _currentSessionByteCount.value += totalFileSize
+            _currentSessionTotalByteCount.value += totalFileSize
         }
     }
 }
