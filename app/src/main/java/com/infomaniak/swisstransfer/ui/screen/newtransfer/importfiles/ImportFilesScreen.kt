@@ -447,10 +447,6 @@ private fun SendButtonStatus.canEnableButton(): Boolean = when (this) {
     SendButtonStatus.Loading -> false
 }
 
-enum class SendButtonStatus {
-    Available, Loading
-}
-
 data class EmailTextFieldCallbacks(
     val transferAuthorEmail: GetSetCallbacks<String>,
     val isAuthorEmailInvalid: () -> Boolean,
