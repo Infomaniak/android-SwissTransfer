@@ -91,7 +91,7 @@ class ImportFilesViewModel @Inject constructor(
     val openFilePickerEvent: ReceiveChannel<Unit> = _openFilePickerEvent
 
     @OptIn(FlowPreview::class)
-    val importedFilesDebounced = importationFilesManager.importedFiles
+    val importedFilesDebounced: StateFlow<List<FileUi>> = importationFilesManager.importedFiles
         .debounce(50)
         .stateIn(
             scope = viewModelScope,

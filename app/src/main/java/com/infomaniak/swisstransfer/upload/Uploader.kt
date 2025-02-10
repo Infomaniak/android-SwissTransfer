@@ -19,6 +19,9 @@ package com.infomaniak.swisstransfer.upload
 
 class Uploader {
 
+    //TODO:
+    // - Edit UploadFileSession to accommodate
+
     //TODO: We want take some data:
     // - pending transfer metadata, if needed
     // - list of either:

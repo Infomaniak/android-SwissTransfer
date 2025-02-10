@@ -45,8 +45,10 @@ class UploadFileTask(
         onUploadBytes: suspend (Long) -> Unit,
     ) {
         SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}, with size ${uploadFileSession.size}")
-        val fileUUID: String = uploadFileSession.remoteUploadFile?.uuid
-            ?: throwAndDestroyUpload(uploadSession.uuid, "Remote upload file not found")
+        val fileUUID: String = checkNotNull(uploadFileSession.remoteUploadFile?.uuid) {
+            uploadManager.removeUploadSession(uploadSession.uuid)
+            "Remote upload file not found"
+        }
 
         val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
         val chunkSize = chunkConfig.fileChunkSize
@@ -122,8 +124,9 @@ class UploadFileTask(
 
     private suspend inline fun UploadFileSession.getLocalIoFile(uploadUuid: String): File {
         return localPath.toUri().toFile().also {
-            if (!it.exists()) {
-                throwAndDestroyUpload(uploadUuid, "The file ${it.path} doesn't exists")
+            check(it.exists()) {
+                uploadManager.removeUploadSession(uploadUuid)
+                "The file ${it.path} doesn't exists"
             }
         }
     }
@@ -163,11 +166,6 @@ class UploadFileTask(
                 }
             }
         )
-    }
-
-    private suspend inline fun throwAndDestroyUpload(uploadUuid: String, throwMessage: String): Nothing {
-        uploadManager.removeUploadSession(uploadUuid)
-        error(throwMessage)
     }
 
     companion object {
