@@ -17,10 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import android.content.Context
-import android.net.Uri
-import android.provider.OpenableColumns
-import com.infomaniak.core.sentry.SentryLog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class TransferCountChannel(private val context: Context, private val resetCopiedBytes: () -> Unit) {
+class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
     private val channel = Channel<ImportationFilesManager.PickedFile>(capacity = Channel.UNLIMITED)
 
     private val _count = MutableStateFlow(0)
@@ -44,12 +40,7 @@ class TransferCountChannel(private val context: Context, private val resetCopied
     private val countMutex = Mutex()
 
     suspend fun send(element: ImportationFilesManager.PickedFile) {
-        val fileSize = element.uri.getFileSize(context)
-
-        countMutex.withLock {
-            _count.value += 1
-            _currentSessionByteCount.value += fileSize
-        }
+        countMutex.withLock { _count.value += 1 }
         channel.send(element)
     }
 
@@ -66,21 +57,9 @@ class TransferCountChannel(private val context: Context, private val resetCopied
         }
     }
 
-    companion object {
-        private val TAG = TransferCountChannel::class.java.simpleName
-
-        private fun Uri.getFileSize(context: Context): Long {
-            return context.contentResolver.query(this, null, null, null, null)?.use { cursor ->
-                val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-                if (sizeIndex != -1 && cursor.moveToFirst()) {
-                    cursor.getLong(sizeIndex)
-                } else {
-                    null
-                }
-            } ?: run {
-                SentryLog.e(TAG, "Could not read file size when importing a new file")
-                0
-            }
+    suspend fun setTotalFileSize(totalFileSize: Long) {
+        countMutex.withLock {
+            _currentSessionByteCount.value = totalFileSize
         }
     }
 }
