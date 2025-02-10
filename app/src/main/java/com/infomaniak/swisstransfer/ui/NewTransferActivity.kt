@@ -31,7 +31,7 @@ import com.infomaniak.core.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -103,25 +103,15 @@ class NewTransferActivity : ComponentActivity() {
         val authorEmail = intent?.extras?.getString(TRANSFER_AUTHOR_EMAIL_KEY)
 
         return when (externalNavigation) {
-            ExternalNavigation.UploadProgress -> {
-                NewTransferNavigation.UploadProgressDestination(
-                    transferType = transferType!!,
-                    totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
-                    authorEmail = authorEmail,
-                )
+            ExternalNavigation.UploadOngoing -> {
+                NewTransferNavigation.UploadDestination
             }
             ExternalNavigation.UploadSuccess -> {
+                val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
                 NewTransferNavigation.UploadSuccessDestination(
                     transferType = transferType!!,
                     transferUuid = intent?.extras?.getString(TRANSFER_UUID_KEY)!!,
                     transferUrl = intent?.extras?.getString(TRANSFER_URL_KEY)!!,
-                )
-            }
-            ExternalNavigation.UploadFailure -> {
-                NewTransferNavigation.UploadErrorDestination(
-                    transferType = transferType!!,
-                    totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
-                    authorEmail = authorEmail,
                 )
             }
             null -> NewTransferNavigation.startDestination

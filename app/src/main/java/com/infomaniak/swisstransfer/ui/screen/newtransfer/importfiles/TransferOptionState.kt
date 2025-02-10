@@ -15,19 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferOptionType
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
-
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
-    }
-}
+data class TransferOptionState(
+    val transferOptionType: TransferOptionType,
+    val settingState: () -> SettingOption?,
+)

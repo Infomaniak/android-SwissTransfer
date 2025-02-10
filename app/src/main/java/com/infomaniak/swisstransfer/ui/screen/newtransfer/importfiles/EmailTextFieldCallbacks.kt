@@ -15,19 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
+data class EmailTextFieldCallbacks(
+    val transferAuthorEmail: GetSetCallbacks<String>,
+    val isAuthorEmailInvalid: () -> Boolean,
+    val recipientEmail: GetSetCallbacks<String>,
+    val isRecipientEmailInvalid: () -> Boolean,
+    val validatedRecipientsEmails: GetSetCallbacks<Set<String>>
+) {
 
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
+    fun checkEmailError(isAuthor: Boolean): Boolean {
+        return if (isAuthor) {
+            isAuthorEmailInvalid() && transferAuthorEmail.get().isNotEmpty()
+        } else {
+            isRecipientEmailInvalid() && recipientEmail.get().isNotEmpty()
+        }
     }
 }

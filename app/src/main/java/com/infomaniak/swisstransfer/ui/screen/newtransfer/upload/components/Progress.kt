@@ -32,18 +32,17 @@ import com.infomaniak.core.utils.percent
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
-import com.infomaniak.swisstransfer.workers.UploadWorker
 
 @Composable
 fun Progress(
-    progressState: () -> UploadWorker.UploadProgressUiState,
+    uploadedSize: () -> Long,
     totalSizeInBytes: Long,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier) {
-        Percentage({ progressState().uploadedSize }, totalSizeInBytes)
+        Percentage({ uploadedSize() }, totalSizeInBytes)
         Text(text = " - ")
-        UploadedSize { progressState().uploadedSize }
+        UploadedSize { uploadedSize() }
         Text(text = " / ")
         TotalSize(totalSizeInBytes)
     }
@@ -90,7 +89,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             Progress(
-                progressState = { UploadWorker.UploadProgressUiState.Progress(73_614L) },
+                uploadedSize = { 73_614L },
                 totalSizeInBytes = 3_279_218L,
             )
         }
