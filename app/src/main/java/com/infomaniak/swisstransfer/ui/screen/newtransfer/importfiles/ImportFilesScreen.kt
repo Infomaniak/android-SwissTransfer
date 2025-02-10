@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
 
+import android.content.ContentUris
+import android.provider.MediaStore
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -106,6 +108,9 @@ fun ImportFilesScreen(
     }
 
     fun pickFiles() {
+        // MediaStore.getDocumentUri()
+        // MediaStore.getMediaUri()
+        // ContentUris.withAppendedId()
         filePickerLauncher.launch(arrayOf("*/*"))
     }
 
