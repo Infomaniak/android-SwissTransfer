@@ -108,7 +108,7 @@ fun HandleValidationStatus(
     snackbarHostState: SnackbarHostState,
 ) {
     val context = LocalContext.current
-    LaunchedEffect(sendStatus()) {
+    LaunchedEffect(sendStatus(), context) {
         when (val status = sendStatus()) {
             is TransferSendManager.SendStatus.Success -> navigateToUploadInProgress(status.totalSize)
             is TransferSendManager.SendStatus.Failure -> {
@@ -126,7 +126,7 @@ fun HandleValidationStatus(
 fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHostState: SnackbarHostState) {
     val context = LocalContext.current
 
-    LaunchedEffect(uiState()) {
+    LaunchedEffect(uiState(), context) {
         when (uiState()) {
             ValidateEmailUiState.UnknownError -> {
                 SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")

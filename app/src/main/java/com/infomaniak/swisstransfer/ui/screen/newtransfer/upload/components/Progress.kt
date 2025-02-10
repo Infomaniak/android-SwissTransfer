@@ -64,7 +64,7 @@ private fun Percentage(uploadedSizeInBytes: () -> Long, totalSizeInBytes: Long) 
 @Composable
 private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
     val context = LocalContext.current
-    val humanReadableSize by remember {
+    val humanReadableSize by remember(context) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, uploadedSizeInBytes()) }
     }
 
@@ -77,7 +77,7 @@ private fun UploadedSize(uploadedSizeInBytes: () -> Long) {
 @Composable
 private fun TotalSize(totalSizeInBytes: Long) {
     val context = LocalContext.current
-    val humanReadableTotalSize by remember {
+    val humanReadableTotalSize by remember(context) {
         derivedStateOf { HumanReadableSizeUtils.getHumanReadableSize(context, totalSizeInBytes) }
     }
 
