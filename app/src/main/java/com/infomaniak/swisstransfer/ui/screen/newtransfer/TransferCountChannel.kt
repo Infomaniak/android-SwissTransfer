@@ -59,7 +59,7 @@ class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
 
     suspend fun setTotalFileSize(totalFileSize: Long) {
         countMutex.withLock {
-            _currentSessionByteCount.value = totalFileSize
+            _currentSessionByteCount.value += totalFileSize
         }
     }
 }
