@@ -50,9 +50,12 @@ class ImportationFilesManager @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
 
-    private val filesToImportChannel: TransferCountChannel = TransferCountChannel()
+    private val filesToImportChannel: TransferCountChannel = TransferCountChannel(
+        resetCopiedBytes = importLocalStorage::resetCopiedBytes,
+    )
     val filesToImportCount: StateFlow<Int> = filesToImportChannel.count
-    val currentSessionFilesCount: StateFlow<Int> = filesToImportChannel.currentSessionFilesCount
+    val currentSessionTotalByteCount: StateFlow<Long> = filesToImportChannel.currentSessionTotalByteCount
+    val currentSessionImportedByteCount: StateFlow<Long> by importLocalStorage::copiedBytes
 
     private val _importedFiles = FilesMutableStateFlow()
     val importedFiles = _importedFiles.flow
@@ -64,7 +67,9 @@ class ImportationFilesManager @Inject constructor(
     private val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
 
     suspend fun importFiles(uris: List<Uri>) {
-        uris.extractPickedFiles().forEach { filesToImportChannel.send(it) }
+        val pickedFiles = uris.extractPickedFiles()
+        filesToImportChannel.setTotalFileSize(pickedFiles.sumOf { it.fileSize })
+        pickedFiles.forEach { filesToImportChannel.send(it) }
     }
 
     suspend fun removeFileByUid(uid: String) {
@@ -168,7 +173,7 @@ class ImportationFilesManager @Inject constructor(
         val contentResolver: ContentResolver = appContext.contentResolver
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
-        return cursor?.getFileName()?.let { name ->
+        return cursor?.getFileNameAndSize()?.let { (name, size) ->
             val uniqueName = alreadyUsedFileNames.addUniqueFileName(computeUniqueFileName = { alreadyUsedStrategy ->
                 FileNameUtils.postfixExistingFileNames(
                     fileName = name,
@@ -176,14 +181,19 @@ class ImportationFilesManager @Inject constructor(
                 )
             })
 
-            PickedFile(uniqueName, uri)
+            PickedFile(uniqueName, uri, size)
         }
     }
 
-    private fun Cursor.getFileName(): String? = use {
+    private fun Cursor.getFileNameAndSize(): Pair<String, Long>? = use {
         if (it.moveToFirst()) {
             val displayNameColumnIndex = it.getColumnIndexOrNull(OpenableColumns.DISPLAY_NAME) ?: return null
-            it.getString(displayNameColumnIndex)
+            val fileName = it.getString(displayNameColumnIndex)
+
+            val fileSizeColumnIndex = it.getColumnIndexOrNull(OpenableColumns.SIZE) ?: return null
+            val fileSize = it.getLong(fileSizeColumnIndex)
+
+            fileName to fileSize
         } else {
             null
         }
@@ -204,7 +214,7 @@ class ImportationFilesManager @Inject constructor(
         }
     }
 
-    data class PickedFile(val fileName: String, val uri: Uri)
+    data class PickedFile(val fileName: String, val uri: Uri, val fileSize: Long)
 
     companion object {
         private const val TAG = "File importation"
