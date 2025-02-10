@@ -175,6 +175,14 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
+    fun startLoadingSendButton() {
+        _sendButtonStatus.value = SendButtonStatus.Loading
+    }
+
+    fun resetSendButtonStatus() {
+        _sendButtonStatus.value = SendButtonStatus.Clickable
+    }
+
     fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(ioDispatcher) {
             importUris(uris)

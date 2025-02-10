@@ -48,7 +48,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.SendButtonStatus
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager.SendStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -95,8 +94,6 @@ fun ImportFilesScreen(
 
     val lastUploadSession by importFilesViewModel.lastUploadSession.collectAsStateWithLifecycle()
 
-    var sendButtonStatus by remember { mutableStateOf(SendButtonStatus.Available) }
-
     val context = LocalContext.current
 
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -124,7 +121,8 @@ fun ImportFilesScreen(
         lastUploadSession = { lastUploadSession },
         navigateToUploadProgress = { totalSize ->
             navigateToUploadProgress(selectedTransferType, totalSize, lastUploadSession?.authorEmail)
-        }
+        },
+        resetSendButtonStatus = importFilesViewModel::resetSendButtonStatus
     )
 
     val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
@@ -173,9 +171,8 @@ fun ImportFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
         closeActivity = closeActivity,
-        sendButtonStatus = { sendButtonStatus },
         onSendButtonClick = {
-            sendButtonStatus = SendButtonStatus.Loading
+            importFilesViewModel.startLoadingSendButton()
             if (NotificationPermissionUtils.hasNotificationPermission(context)) {
                 importFilesViewModel.createNewUploadSession()
             } else {
@@ -195,10 +192,15 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 }
 
 @Composable
-fun HandleNavigationToUploadInProgress(lastUploadSession: () -> UploadSession?, navigateToUploadProgress: (Long) -> Unit) {
+fun HandleNavigationToUploadInProgress(
+    lastUploadSession: () -> UploadSession?,
+    navigateToUploadProgress: (Long) -> Unit,
+    resetSendButtonStatus: () -> Unit,
+) {
     LaunchedEffect(lastUploadSession()) {
         val uploadSession = lastUploadSession() ?: return@LaunchedEffect
 
+        resetSendButtonStatus()
         navigateToUploadProgress(uploadSession.totalFileSize())
     }
 }
@@ -213,7 +215,6 @@ private fun ImportFilesScreen(
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
     closeActivity: () -> Unit,
-    sendButtonStatus: () -> SendButtonStatus,
     onSendButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
     navigateToFilesDetails: () -> Unit,
@@ -243,7 +244,6 @@ private fun ImportFilesScreen(
                 sendButtonStatus = sendButtonStatus,
                 importedFiles = files,
                 areEmailsCorrects = { areEmailsCorrects },
-                sendButtonStatus = sendButtonStatus,
                 onClick = onSendButtonClick,
             )
         },
@@ -422,7 +422,6 @@ private fun SendButton(
     sendButtonStatus: () -> SendButtonStatus,
     importedFiles: () -> List<FileUi>,
     areEmailsCorrects: () -> Boolean,
-    sendButtonStatus: () -> SendButtonStatus,
     onClick: () -> Unit,
 ) {
     fun isImporting() = sendButtonStatus() is SendButtonStatus.Progress
@@ -437,11 +436,16 @@ private fun SendButton(
         showIndeterminateProgress = { sendButtonStatus() == SendButtonStatus.Loading },
         enabled = { importedFiles().isNotEmpty() && !isImporting() && areEmailsCorrects() && sendButtonStatus().canEnableButton() },
         progress = progress,
-        onClick = { if (sendButtonStatus() !is SendButtonStatus.Unclickable) sendTransfer() },
+        onClick = { if (sendButtonStatus() !is SendButtonStatus.Unclickable) onClick() },
     )
 }
 
-private fun SendButtonStatus.canEnableButton(): Boolean = this == SendButtonStatus.Available
+private fun SendButtonStatus.canEnableButton(): Boolean = when (this) {
+    is SendButtonStatus.Unclickable,
+    is SendButtonStatus.Clickable,
+    is SendButtonStatus.Progress -> true
+    SendButtonStatus.Loading -> false
+}
 
 enum class SendButtonStatus {
     Available, Loading
@@ -532,7 +536,6 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             transferOptionsCallbacks = transferOptionsCallbacks,
             pickFiles = {},
             closeActivity = {},
-            sendButtonStatus = { SendButtonStatus.Available },
             onSendButtonClick = {},
             navigateToFilesDetails = {},
         )
