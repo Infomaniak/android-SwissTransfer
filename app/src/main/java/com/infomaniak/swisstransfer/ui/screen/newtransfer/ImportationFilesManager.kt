@@ -52,7 +52,7 @@ class ImportationFilesManager @Inject constructor(
 
     private val filesToImportChannel: TransferCountChannel = TransferCountChannel(
         context = appContext,
-        resetCopiedBytes = { importLocalStorage.resetCopiedBytes() }
+        resetCopiedBytes = importLocalStorage::resetCopiedBytes,
     )
     val filesToImportCount: StateFlow<Int> = filesToImportChannel.count
     val currentSessionTotalByteCount: StateFlow<Long> = filesToImportChannel.currentSessionTotalByteCount
