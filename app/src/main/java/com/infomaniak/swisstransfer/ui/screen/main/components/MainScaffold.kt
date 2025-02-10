@@ -99,7 +99,7 @@ private fun rememberNavType(
 
     val context = LocalContext.current
 
-    return remember(showNavigation, windowAdaptiveInfo) {
+    return remember(context, showNavigation, windowAdaptiveInfo) {
         if (showNavigation) {
             calculateFromAdaptiveInfo(context, windowAdaptiveInfo)
         } else {

@@ -73,7 +73,7 @@ private val videoFrameDecoderFactory = VideoFrameDecoder.Factory()
 @Composable
 private fun FileThumbnail(uri: String, onError: () -> Unit) {
     val context = LocalContext.current
-    val imageRequest = remember(uri) {
+    val imageRequest = remember(uri, context) {
         ImageRequest.Builder(context)
             .data(uri)
             .decoderFactory(videoFrameDecoderFactory)
