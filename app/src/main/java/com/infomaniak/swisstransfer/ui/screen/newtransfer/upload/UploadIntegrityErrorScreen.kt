@@ -28,7 +28,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
+import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -47,7 +47,7 @@ fun UploadIntegrityErrorScreen(closeActivity: () -> Unit) {
         }
     ) {
         EmptyState(
-            content = { Image(imageVector = AppIllus.GhostMagnifyingGlassQuestionMark.image(), contentDescription = null) },
+            content = { Image(imageVector = AppIllus.GhostScrollCrossPointing.image(), contentDescription = null) },
             titleRes = R.string.uploadErrorTitle,
             descriptionRes = R.string.errorAppIntegrity,
         )
