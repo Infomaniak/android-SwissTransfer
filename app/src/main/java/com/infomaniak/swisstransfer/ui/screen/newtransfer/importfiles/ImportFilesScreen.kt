@@ -554,7 +554,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
     SwissTransferTheme {
         ImportFilesScreen(
             files = { files },
-            sendButtonStatus = { SendButtonStatus.Available },
+            sendButtonStatus = { SendButtonStatus.Clickable },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),

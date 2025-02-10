@@ -72,7 +72,7 @@ class ImportFilesViewModel @Inject constructor(
 
     val sendStatus by transferSendManager::sendStatus
 
-    private val _sendButtonStatus: MutableStateFlow<SendButtonStatus> = MutableStateFlow(SendButtonStatus.Available)
+    private val _sendButtonStatus: MutableStateFlow<SendButtonStatus> = MutableStateFlow(SendButtonStatus.Clickable)
     val sendButtonStatus: StateFlow<SendButtonStatus> = _sendButtonStatus.asStateFlow()
 
     val filesDetailsUiState = importationFilesManager.importedFiles.map {
@@ -170,7 +170,7 @@ class ImportFilesViewModel @Inject constructor(
             _sendButtonStatus.value = if (fileCount > 0) {
                 SendButtonStatus.Progress(importedBytes / totalBytes.toFloat())
             } else {
-                SendButtonStatus.Available
+                SendButtonStatus.Clickable
             }
         }
     }

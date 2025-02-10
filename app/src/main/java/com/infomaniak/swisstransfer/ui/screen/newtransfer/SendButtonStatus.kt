@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import androidx.annotation.FloatRange
 
 sealed interface SendButtonStatus {
-    data object Available : SendButtonStatus
+    data object Clickable : SendButtonStatus
     // This status usually only lasts for a split seconds if the user doesn't pick multiple hundred of files. So this prevents the
     // button from being clicked but doesn't show a jarring blinking button to the user.
     data object Unclickable : SendButtonStatus
