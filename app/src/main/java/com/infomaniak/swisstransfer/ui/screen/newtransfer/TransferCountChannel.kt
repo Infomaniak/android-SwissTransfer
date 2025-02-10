@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class TransferCountChannel {
+class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
     private val channel = Channel<ImportationFilesManager.PickedFile>(capacity = Channel.UNLIMITED)
 
     private val _count = MutableStateFlow(0)
@@ -34,16 +34,13 @@ class TransferCountChannel {
      * A "session" lasts from when the queue count is greater than 0 until it resets to 0 again.
      * This count is used to track and compute the progress of files being imported during the current session.
      */
-    private val _currentSessionFilesCount = MutableStateFlow(0)
-    val currentSessionFilesCount: StateFlow<Int> = _currentSessionFilesCount
+    private val _currentSessionTotalByteCount: MutableStateFlow<Long> = MutableStateFlow(0)
+    val currentSessionTotalByteCount: StateFlow<Long> = _currentSessionTotalByteCount.asStateFlow()
 
     private val countMutex = Mutex()
 
     suspend fun send(element: ImportationFilesManager.PickedFile) {
-        countMutex.withLock {
-            _count.value += 1
-            _currentSessionFilesCount.value += 1
-        }
+        countMutex.withLock { _count.value += 1 }
         channel.send(element)
     }
 
@@ -52,8 +49,17 @@ class TransferCountChannel {
             process(element)
             countMutex.withLock {
                 _count.value -= 1
-                if (_count.value == 0) _currentSessionFilesCount.value = 0
+                if (_count.value == 0) {
+                    _currentSessionTotalByteCount.value = 0
+                    resetCopiedBytes()
+                }
             }
+        }
+    }
+
+    suspend fun setTotalFileSize(totalFileSize: Long) {
+        countMutex.withLock {
+            _currentSessionTotalByteCount.value += totalFileSize
         }
     }
 }
