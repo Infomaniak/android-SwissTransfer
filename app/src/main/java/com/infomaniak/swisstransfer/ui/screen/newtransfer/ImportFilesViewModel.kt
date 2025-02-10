@@ -72,6 +72,9 @@ class ImportFilesViewModel @Inject constructor(
 
     val sendStatus by transferSendManager::sendStatus
 
+    private val _sendButtonStatus: MutableStateFlow<SendButtonStatus> = MutableStateFlow(SendButtonStatus.Available)
+    val sendButtonStatus: StateFlow<SendButtonStatus> = _sendButtonStatus.asStateFlow()
+
     val filesDetailsUiState = importationFilesManager.importedFiles.map {
         when {
             it.isEmpty() -> FilesDetailsUiState.EmptyFiles
@@ -94,10 +97,6 @@ class ImportFilesViewModel @Inject constructor(
             started = SharingStarted.Lazily,
             initialValue = emptyList(),
         )
-
-    val filesToImportCount: StateFlow<Int> = importationFilesManager.filesToImportCount
-    val currentSessionImportedByteCount: StateFlow<Long> = importationFilesManager.currentSessionImportedByteCount
-    val currentSessionTotalByteCount: StateFlow<Long> = importationFilesManager.currentSessionTotalByteCount
 
     sealed interface FilesDetailsUiState {
         data object EmptyFiles : FilesDetailsUiState
@@ -149,6 +148,8 @@ class ImportFilesViewModel @Inject constructor(
                 importationFilesManager.restoreAlreadyImportedFiles()
             }
 
+            launch { updateSendButtonProgressStatus() }
+
             val wasFirstViewModelCreation = isFirstViewModelCreation
             launch { handleOpenReason(wasFirstViewModelCreation) }
 
@@ -158,9 +159,25 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
+    private suspend fun updateSendButtonProgressStatus() {
+        combine(
+            importationFilesManager.filesToImportCount,
+            importationFilesManager.currentSessionImportedByteCount,
+            importationFilesManager.currentSessionTotalByteCount,
+        ) { fileCount, importedBytes, totalBytes ->
+            Triple(fileCount, importedBytes, totalBytes)
+        }.collect { (fileCount, importedBytes, totalBytes) ->
+            _sendButtonStatus.value = if (fileCount > 0) {
+                SendButtonStatus.Progress(importedBytes / totalBytes.toFloat())
+            } else {
+                SendButtonStatus.Available
+            }
+        }
+    }
+
     fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(ioDispatcher) {
-            importationFilesManager.importFiles(uris)
+            importUris(uris)
         }
     }
 
@@ -197,9 +214,7 @@ class ImportFilesViewModel @Inject constructor(
 
     private suspend fun handleOpenReason(isFirstViewModelCreation: Boolean) {
         when (val reason = newTransferOpenManager.readOpenReason()) {
-            is NewTransferOpenManager.Reason.ExternalShareIncoming -> {
-                importationFilesManager.importFiles(reason.uris)
-            }
+            is NewTransferOpenManager.Reason.ExternalShareIncoming -> importUris(reason.uris)
             NewTransferOpenManager.Reason.Other -> {
                 if (isFirstViewModelCreation) _openFilePickerEvent.send(Unit)
             }
@@ -226,6 +241,11 @@ class ImportFilesViewModel @Inject constructor(
                 }
             },
         )
+    }
+
+    private suspend fun importUris(uris: List<Uri>) {
+        _sendButtonStatus.value = SendButtonStatus.Unclickable
+        importationFilesManager.importFiles(uris)
     }
 
     //region Transfer Type
