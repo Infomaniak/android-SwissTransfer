@@ -100,12 +100,14 @@ class NewTransferActivity : ComponentActivity() {
             value = intent?.extras?.getString(NOTIFICATION_NAVIGATION_KEY),
         )
         val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
+        val authorEmail = intent?.extras?.getString(TRANSFER_AUTHOR_EMAIL_KEY)
 
         return when (notificationNavigation) {
             NotificationNavigation.UploadProgress -> {
                 NewTransferNavigation.UploadProgressDestination(
                     transferType = transferType!!,
                     totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
+                    authorEmail = authorEmail,
                 )
             }
             NotificationNavigation.UploadSuccess -> {
@@ -119,6 +121,7 @@ class NewTransferActivity : ComponentActivity() {
                 NewTransferNavigation.UploadErrorDestination(
                     transferType = transferType!!,
                     totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
+                    authorEmail = authorEmail,
                 )
             }
             null -> NewTransferNavigation.startDestination

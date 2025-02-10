@@ -66,11 +66,11 @@ class ImportFilesViewModel @Inject constructor(
     private val importationFilesManager: ImportationFilesManager,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val uploadManager: UploadManager,
-    private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val sendStatus by transferSendManager::sendStatus
+    val lastUploadSession = uploadManager.lastUploadFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _sendButtonStatus: MutableStateFlow<SendButtonStatus> = MutableStateFlow(SendButtonStatus.Clickable)
     val sendButtonStatus: StateFlow<SendButtonStatus> = _sendButtonStatus.asStateFlow()
@@ -175,6 +175,14 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
+    fun startLoadingSendButton() {
+        _sendButtonStatus.value = SendButtonStatus.Loading
+    }
+
+    fun resetSendButtonStatus() {
+        _sendButtonStatus.value = SendButtonStatus.Clickable
+    }
+
     fun importFiles(uris: List<Uri>) {
         viewModelScope.launch(ioDispatcher) {
             importUris(uris)
@@ -187,18 +195,14 @@ class ImportFilesViewModel @Inject constructor(
         }
     }
 
-    fun sendTransfer() {
-        viewModelScope.launch(ioDispatcher) {
+    // Creating the new upload session will trigger the navigation from the ImportFilesScreen to the UploadProgressScreen which
+    // will start the transfer and the worker.
+    fun createNewUploadSession() {
+        viewModelScope.launch {
             val newUploadSession = generateNewUploadSession()
-
             appSettingsManager.setLastAuthorEmail(newUploadSession.authorEmail)
-
-            transferSendManager.sendNewTransfer(newUploadSession)
+            uploadManager.createAndGetUpload(newUploadSession)
         }
-    }
-
-    fun resetSendActionResult() {
-        transferSendManager.resetSendStatus()
     }
 
     private suspend fun removeOldData() {

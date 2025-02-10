@@ -41,12 +41,14 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
+import com.infomaniak.swisstransfer.ui.utils.totalFileSize
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -93,7 +95,7 @@ class UploadWorker @AssistedInject constructor(
         val uploadSession = uploadManager.getLastUpload() ?: return Result.failure()
         uploadSessionJob.complete(uploadSession)
 
-        val totalSize = uploadSession.files.sumOf { it.size }
+        val totalSize = uploadSession.totalFileSize()
 
         SentryLog.d(TAG, "Work started with ${uploadSession.files.count()} files of $totalSize bytes")
 
@@ -102,7 +104,7 @@ class UploadWorker @AssistedInject constructor(
             uploadSession.files.forEach { fileSession ->
                 uploadFileTask.start(fileSession, uploadSession) { bytesSent ->
                     uploadedBytes += bytesSent
-                    emitProgress(totalSize)
+                    emitProgress(totalSize, uploadSession.authorEmail)
                 }
             }
 
@@ -124,7 +126,7 @@ class UploadWorker @AssistedInject constructor(
                 is CancellationException -> Result.failure()
                 else -> {
                     SentryLog.e(TAG, "UploadWorker result FAILURE", exception)
-                    displayFailureNotification(totalSize)
+                    displayFailureNotification(totalSize, uploadSession.authorEmail)
                     Result.failure()
                 }
             }
@@ -135,29 +137,28 @@ class UploadWorker @AssistedInject constructor(
         SentryLog.i(TAG, "Work finished")
     }
 
-    private suspend fun emitProgress(totalSize: Long) {
+    private suspend fun emitProgress(totalSize: Long, authorEmail: String) {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastUpdateTime > PROGRESS_ELAPSED_TIME) {
             setProgress(workDataOf(UPLOADED_BYTES_TAG to uploadedBytes))
             lastUpdateTime = currentTime
-            displayProgressNotification(totalSize)
+            displayProgressNotification(totalSize, authorEmail)
         }
     }
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
 
         val uploadSession = uploadSessionJob.await()
-        val totalSize = uploadSession.files.sumOf { it.size }
         val builder = notificationsUtils.buildUploadNotification(
             requestCode = serviceNotificationId,
-            intent = createProgressNotificationIntent(totalSize),
+            intent = createProgressNotificationIntent(uploadSession.totalFileSize(), uploadSession.authorEmail),
             title = applicationContext.getString(R.string.uploadProgressIndication),
         )
 
         return ForegroundInfo(serviceNotificationId, builder.build())
     }
 
-    private suspend fun displayProgressNotification(totalSize: Long) {
+    private suspend fun displayProgressNotification(totalSize: Long, authorEmail: String) {
 
         val percent = percent(uploadedBytes, totalSize)
         val current = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, uploadedBytes)
@@ -165,7 +166,7 @@ class UploadWorker @AssistedInject constructor(
 
         val builder = notificationsUtils.buildUploadNotification(
             requestCode = serviceNotificationId,
-            intent = createProgressNotificationIntent(totalSize),
+            intent = createProgressNotificationIntent(totalSize, authorEmail),
             title = applicationContext.getString(R.string.notificationUploadProgressTitle, percent),
             description = "$current / $total",
         )
@@ -179,11 +180,12 @@ class UploadWorker @AssistedInject constructor(
         setForeground(foregroundInfo)
     }
 
-    private fun createProgressNotificationIntent(totalSize: Long): Intent {
+    private fun createProgressNotificationIntent(totalSize: Long, authorEmail: String): Intent {
         return Intent(applicationContext, NewTransferActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
             .putExtra(TRANSFER_TYPE_KEY, transferType.name)
+            .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
             .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
     }
 
@@ -209,13 +211,14 @@ class UploadWorker @AssistedInject constructor(
         )
     }
 
-    private fun displayFailureNotification(totalSize: Long) {
+    private fun displayFailureNotification(totalSize: Long, authorEmail: String) {
         notificationsUtils.sendUploadNotification(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadFailure.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
+                .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
                 .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
             title = applicationContext.getString(R.string.notificationUploadFailureTitle),
             description = applicationContext.getString(R.string.notificationUploadFailureDescription),
@@ -254,6 +257,15 @@ class UploadWorker @AssistedInject constructor(
                     else -> UploadProgressUiState.Default(lastUploadedSize)
                 } ?: UploadProgressUiState.Error(lastUploadedSize)
             }.filterNotNull()
+        }
+
+        suspend fun hasAlreadyBeenScheduled(): Boolean {
+            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
+                .addStates(listOf(State.BLOCKED, State.ENQUEUED, State.RUNNING))
+                .build()
+
+            val workInfo = workManager.getWorkInfosFlow(workQuery).first().firstOrNull()
+            return workInfo != null
         }
 
         fun cancelWork() {

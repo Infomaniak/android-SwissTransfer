@@ -153,6 +153,7 @@
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
     <string name="transferExpiredLimitReachedDescription">Entschuldigung, diese Übertragung hat die Grenze der %d möglichen Downloads erreicht.</string>
     <string name="transferExpiredTitle">Diese Übertragung ist nicht mehr verfügbar</string>
+    <string name="transferInitializing">Laden…</string>
     <string name="transferListSectionFuture">Zukunft</string>
     <string name="transferListSectionLastWeek">Letzte Woche</string>
     <string name="transferListSectionThisMonth">Diesen Monat</string>

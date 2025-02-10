@@ -43,12 +43,24 @@ class UploadProgressViewModel @Inject constructor(
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
+    val sendStatus by transferSendManager::sendStatus
+
     val isNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
         .onEach { SentryLog.d("Internet availability", if (it) "Available" else "Unavailable") }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = true,
+        )
+
+    // This stateflow is required in order to start with `initialValue = false`. We need it to block the initialization of the
+    // upload while we wait for a network connection. If we start with `initialValue = true`, the initialization will go through
+    // because of the initial value.
+    private val uploadInitializationIsNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = false,
         )
 
     private val _transferUuidFlow = MutableSharedFlow<String?>()
@@ -85,7 +97,9 @@ class UploadProgressViewModel @Inject constructor(
                 if (uploadSession == null) {
                     uploadManager.removeAllUploadSession()
                 } else {
-                    uploadManager.cancelUploadSession(uploadSession.uuid)
+                    // We can cancel during the app integrity check, before any remote container creation. In this case, no need
+                    // to cancel any remote upload session.
+                    if (uploadSession.remoteContainer != null) uploadManager.cancelUploadSession(uploadSession.uuid)
                 }
             }.onFailure { exception ->
                 if (exception is CancellationException) throw exception
@@ -103,11 +117,19 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
-    fun resendLastTransfer(onCompletion: () -> Unit) {
-        viewModelScope.launch(ioDispatcher) {
-            transferSendManager.resendLastTransfer()
-            withContext(mainDispatcher) { onCompletion() }
+    fun initializeLastTransfer() {
+        viewModelScope.launch {
+            if (uploadWorkerScheduler.hasAlreadyBeenScheduled()) return@launch
+
+            uploadInitializationIsNetworkAvailable.first { isNetworkAvailable -> isNetworkAvailable }
+
+            SentryLog.i(TAG, "Initializing the upload")
+            transferSendManager.sendLastTransfer()
         }
+    }
+
+    fun resetSendStatus() {
+        transferSendManager.resetSendStatus()
     }
 
     companion object {

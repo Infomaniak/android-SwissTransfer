@@ -15,15 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.ui.utils
 
-import androidx.annotation.FloatRange
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 
-sealed interface SendButtonStatus {
-    data object Clickable : SendButtonStatus
-    // This status usually only lasts for a split seconds if the user doesn't pick multiple hundred of files. So this prevents the
-    // button from being clicked but doesn't show a jarring blinking button to the user.
-    data object Unclickable : SendButtonStatus
-    data object Loading : SendButtonStatus
-    data class Progress(@FloatRange(0.0, 1.0) val progress: Float) : SendButtonStatus
-}
+fun UploadSession.totalFileSize(): Long = files.sumOf { it.size }

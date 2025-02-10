@@ -22,7 +22,10 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.infomaniak.core.percent
@@ -37,15 +40,12 @@ fun Progress(
     totalSizeInBytes: Long,
     modifier: Modifier = Modifier,
 ) {
-    val style = SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor)
-    CompositionLocalProvider(value = LocalTextStyle provides style) {
-        Row(modifier) {
-            Percentage({ progressState().uploadedSize }, totalSizeInBytes)
-            Text(text = " - ")
-            UploadedSize { progressState().uploadedSize }
-            Text(text = " / ")
-            TotalSize(totalSizeInBytes)
-        }
+    Row(modifier) {
+        Percentage({ progressState().uploadedSize }, totalSizeInBytes)
+        Text(text = " - ")
+        UploadedSize { progressState().uploadedSize }
+        Text(text = " / ")
+        TotalSize(totalSizeInBytes)
     }
 }
 

@@ -48,7 +48,7 @@ fun UploadErrorScreen(
             LargeButton(
                 modifier = it,
                 title = stringResource(RCore.string.buttonRetry),
-                onClick = { uploadProgressViewModel.resendLastTransfer(onCompletion = navigateBackToUploadProgress) },
+                onClick = { navigateBackToUploadProgress() },
             )
         },
         bottomButton = {

@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -60,7 +61,7 @@ private val MAX_LAYOUT_WIDTH = 400.dp
 @Composable
 fun ValidateUserEmailScreen(
     closeActivity: () -> Unit,
-    navigateBack: () -> Unit,
+    navigateBackToFileImportation: () -> Unit,
     navigateToUploadInProgress: (totalSize: Long) -> Unit,
     emailToValidate: String,
     validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel<ValidateUserEmailViewModel>(),
@@ -75,6 +76,15 @@ fun ValidateUserEmailScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
+    fun removeUploadSessionAndBack() {
+        scope.launch {
+            validateUserEmailViewModel.removeAllUploadSession()
+            navigateBackToFileImportation()
+        }
+    }
+
+    BackHandler { removeUploadSessionAndBack() }
+
     HandleValidationStatus({ sendStatus }, navigateToUploadInProgress, snackbarHostState)
 
     HandleUnknownValidationError({ uiState }, snackbarHostState)
@@ -88,7 +98,7 @@ fun ValidateUserEmailScreen(
         isLoading = { isLoading },
         isInvalidVerificationCode = { isInvalidVerificationCode },
         snackbarHostState = snackbarHostState,
-        navigateBack = navigateBack,
+        navigateBack = ::removeUploadSessionAndBack,
         closeActivity = closeActivity,
         onResendEmailCode = {
             scope.launch {

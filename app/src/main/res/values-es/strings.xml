@@ -153,6 +153,7 @@
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
     <string name="transferExpiredLimitReachedDescription">Lo sentimos, esta transferencia ha alcanzado el límite de %d descargas posibles.</string>
     <string name="transferExpiredTitle">Esta transferencia ya no está disponible</string>
+    <string name="transferInitializing">Cargando…</string>
     <string name="transferListSectionFuture">Futuro</string>
     <string name="transferListSectionLastWeek">La semana pasada</string>
     <string name="transferListSectionThisMonth">Este mes</string>

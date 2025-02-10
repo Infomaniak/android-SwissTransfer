@@ -54,7 +54,7 @@ class ValidateUserEmailViewModel @Inject constructor(
                 }
             }.onSuccess { token ->
                 uploadManager.updateAuthorEmailToken(email, token.token)
-                transferSendManager.resendLastTransfer()
+                transferSendManager.sendLastTransfer()
             }
         }
     }
@@ -67,6 +67,10 @@ class ValidateUserEmailViewModel @Inject constructor(
         viewModelScope.launch {
             uploadManager.resendEmailCode(email)
         }
+    }
+
+    suspend fun removeAllUploadSession() {
+        uploadManager.removeAllUploadSession()
     }
 
     enum class ValidateEmailUiState {
