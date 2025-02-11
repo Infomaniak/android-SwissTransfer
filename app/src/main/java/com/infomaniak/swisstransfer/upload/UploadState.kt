@@ -17,17 +17,20 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-class Uploader {
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 
-    //TODO:
-    // - Edit UploadFileSession to accommodate
-
-    //TODO: We want take some data:
-    // - pending transfer metadata, if needed
-    // - list of either:
-    //   - non persistable uris
-    //   - persistable uris
-    //   - refs to copied files
-    // If we have non-persistable uris, we want to keep the process active until upload is complete, or cancelled.
-    //
+data class UploadState(
+    val uploadedBytes: Long,
+    val status: Status,
+) {
+    sealed interface Status {
+        data object WaitingForInternet : Status
+        data object InProgress : Status
+        data object Retrying : Status
+        data class Complete(
+            val transferType: TransferTypeUi,
+            val transferUuid: String,
+            val transferUrl: String,
+        ) : Status
+    }
 }

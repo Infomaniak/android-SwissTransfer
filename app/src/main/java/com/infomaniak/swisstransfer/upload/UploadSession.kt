@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,45 +15,70 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.workers
+package com.infomaniak.swisstransfer.upload
 
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
-import kotlinx.coroutines.*
+import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
+import com.infomaniak.swisstransfer.workers.UploadFileTask
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import java.io.BufferedInputStream
-import java.io.File
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 
-class UploadFileTask(
+class UploadSession(
     private val uploadManager: UploadManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
 ) {
 
-    private val mutex = Mutex()
+    companion object {
+        private val TAG = UploadSession::class.java.simpleName
+    }
+
+    //TODO:
+    // - Check if Uris are persistable on Samsung and emulators.
+    // - Check also when shared from the camera, gallery or other system app.
+    //TODO:
+    // - Edit UploadFileSession to integrate:
+    //    - localUri
+
+    //TODO: We want take some data:
+    // - pending transfer metadata, if needed
+    // - list of either:
+    //   - non persistable uris
+    //   - persistable uris
+    //   - refs to copied files
+    // If we have non-persistable uris, we want to keep the process active until upload is complete, or cancelled.
+    //
+
+
+    suspend fun uploadFile(sessionUuid: String) {
+
+    }
 
     suspend fun start(
         uploadFileSession: UploadFileSession,
         uploadSession: UploadSession,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
-        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}, with size ${uploadFileSession.size}")
+        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}")
         val fileUUID: String = checkNotNull(uploadFileSession.remoteUploadFile?.uuid) {
             uploadManager.removeUploadSession(uploadSession.uuid)
             "Remote upload file not found"
         }
 
-        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
-        val chunkSize = chunkConfig.fileChunkSize
-        val totalChunks = chunkConfig.totalChunks
-        val parallelChunks = chunkConfig.parallelChunks
+        val chunkSize = fileChunkSizeManager.computeChunkSize(fileSize = uploadFileSession.size)
+        val totalChunks = fileChunkSizeManager.computeFileChunks(fileSize = uploadFileSession.size, fileChunkSize = chunkSize)
+        val parallelChunks = fileChunkSizeManager.computeParallelChunks(fileChunkSize = chunkSize)
 
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 
@@ -83,7 +108,7 @@ class UploadFileTask(
         val byteArrayPool = ArrayBlockingQueue<ByteArray>(parallelChunks)
 
         val completedChunks = AtomicInteger(0)
-        val lastChunkBarrierJob: CompletableJob = Job()
+        val completableJob: CompletableJob = Job()
         val lastChunkIndex = totalChunks - 1
 
         coroutineScope {
@@ -104,13 +129,10 @@ class UploadFileTask(
 
                 launch {
                     try {
-                        // Wait for all the other jobs to complete
-                        if (totalChunks > 1 && isLastChunk) lastChunkBarrierJob.join()
-
+                        if (totalChunks > 1) {
+                            waitForOthersIfLastChunk(isLastChunk, completableJob, completedChunks, lastChunkIndex)
+                        }
                         startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
-
-                        // Unlock the last chunk to start
-                        if (totalChunks > 1 && completedChunks.incrementAndGet() == lastChunkIndex) lastChunkBarrierJob.complete()
                     } finally {
                         byteArrayPool.offer(dataByteArray)
                         requestSemaphore.release()
@@ -122,12 +144,18 @@ class UploadFileTask(
         byteArrayPool.clear()
     }
 
-    private suspend inline fun UploadFileSession.getLocalIoFile(uploadUuid: String): File {
-        return localPath.toUri().toFile().also {
-            check(it.exists()) {
-                uploadManager.removeUploadSession(uploadUuid)
-                "The file ${it.path} doesn't exists"
-            }
+    private val mutex = Mutex()
+
+    private suspend fun waitForOthersIfLastChunk(
+        isLastChunk: Boolean,
+        completableJob: CompletableJob,
+        completedChunks: AtomicInteger,
+        lastChunkIndex: Int,
+    ) {
+        if (isLastChunk) {
+            completableJob.join() // Wait for all the other jobs to complete
+        } else {
+            if (completedChunks.incrementAndGet() == lastChunkIndex) completableJob.complete()
         }
     }
 
@@ -144,32 +172,29 @@ class UploadFileTask(
     }
 
     private suspend inline fun startUploadChunk(
-        uploadSession: UploadSession,
+        sessionUuid: String,
         fileUUID: String,
         chunkIndex: Int,
         isLastChunk: Boolean,
+        isRetry: Boolean,
         data: ByteArray,
         crossinline onUploadBytes: suspend (Long) -> Unit,
     ) = coroutineScope {
         var oldBytesSentTotal = 0L
         uploadManager.uploadChunk(
-            uuid = uploadSession.uuid,
+            uuid = sessionUuid,
             fileUUID = fileUUID,
             chunkIndex = chunkIndex,
             isLastChunk = isLastChunk,
-            isRetry = false,
+            isRetry = isRetry,
             data = data,
             onUpload = { bytesSentTotal, _ ->
+                ensureActive() // Cancel when this chunk is resumed while parent scope is cancelled
                 mutex.withLock {
-                    ensureActive() // Cancel when this chunk is resumed while parent scope is cancelled
                     onUploadBytes(bytesSentTotal - oldBytesSentTotal)
                     oldBytesSentTotal = bytesSentTotal
                 }
             }
         )
-    }
-
-    companion object {
-        private val TAG = UploadFileTask::class.java.simpleName
     }
 }
