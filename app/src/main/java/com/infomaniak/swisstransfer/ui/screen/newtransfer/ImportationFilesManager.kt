@@ -47,6 +47,7 @@ import javax.inject.Inject
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val importLocalStorage: ImportLocalStorage,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
 
@@ -106,6 +107,8 @@ class ImportationFilesManager @Inject constructor(
                 }.getOrNull()
             } ?: return@consume
 
+            thumbnailsLocalStorage.copyUriDataLocally(fileToImport.uri, copiedFile.nameWithoutExtension, isOngoingTransfer = true)
+
             SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
             // Make sure the file size has to be correct by reading it from local io File
@@ -121,6 +124,7 @@ class ImportationFilesManager @Inject constructor(
                     mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                     path = null,
+                    thumbnailPath = thumbnailsLocalStorage.getOngoingFile(copiedFile.nameWithoutExtension).toUri().toString(),
                 )
             )
         }
@@ -155,6 +159,7 @@ class ImportationFilesManager @Inject constructor(
                 mimeType = null,
                 localPath = localFile.toUri().toString(),
                 path = null,
+                thumbnailPath = null,
             )
         }
     }

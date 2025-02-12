@@ -64,6 +64,7 @@ class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -207,6 +208,7 @@ class ImportFilesViewModel @Inject constructor(
 
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
+        thumbnailsLocalStorage.removeOngoingThumbnailsFolder()
         uploadManager.removeAllUploadSession()
     }
 

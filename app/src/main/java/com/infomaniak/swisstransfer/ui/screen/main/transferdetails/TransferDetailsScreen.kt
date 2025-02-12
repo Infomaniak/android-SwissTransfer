@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import android.Manifest
-import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -72,7 +71,6 @@ import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun TransferDetailsScreen(
@@ -111,7 +109,6 @@ fun TransferDetailsScreen(
                         openFile = { uri -> context.openFile(uri) },
                     )
                 },
-                uriForFile = { transfer, file -> transferDetailsViewModel.uriForFile(transfer, file) },
                 getCheckedFiles = { transferDetailsViewModel.checkedFiles },
                 clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
                 setFileCheckStatus = { fileUid, isChecked ->
@@ -144,7 +141,6 @@ private fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi?) -> Nothing,
-    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
     setFileCheckStatus: (String, Boolean) -> Unit,
@@ -199,7 +195,6 @@ private fun TransferDetailsScreen(
                 navigateToFolder = navigateToFolder,
                 transferFlow = transferFlow,
                 runDownloadUi = runDownloadUi,
-                uriForFile = uriForFile,
             )
 
             BottomBar(getBottomBarPadding()) {
@@ -282,7 +277,6 @@ private fun ColumnScope.FilesList(
     navigateToFolder: ((folderUuid: String) -> Unit)? = null,
     transferFlow: Flow<TransferUi>,
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing,
-    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -317,7 +311,6 @@ private fun ColumnScope.FilesList(
         },
         transferFlow = transferFlow,
         runDownloadUi = runDownloadUi,
-        uriForFile = uriForFile,
     )
 }
 
