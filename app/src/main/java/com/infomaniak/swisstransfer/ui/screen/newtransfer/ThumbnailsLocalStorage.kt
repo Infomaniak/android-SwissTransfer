@@ -20,9 +20,14 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import androidx.core.net.toUri
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.utils.ThumbnailsUtils.getLocalThumbnail
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -30,19 +35,52 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ThumbnailsLocalStorage @Inject constructor(@ApplicationContext private val appContext: Context) {
+class ThumbnailsLocalStorage @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) {
 
     private val thumbnailsFolder by lazy { File(appContext.filesDir, THUMBNAILS_FOLDER) }
     private val ongoingThumbnailsFolder by lazy {
         File(appContext.filesDir, "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER")
     }
 
+    //region Delete 
     fun removeOngoingThumbnailsFolder() {
         if (ongoingThumbnailsFolder.exists()) runCatching { ongoingThumbnailsFolder.deleteRecursively() }
     }
 
+    suspend fun cleanExpiredThumbnails(transfers: List<TransferUi>) = withContext(ioDispatcher) {
+        thumbnailsFolder.listFiles()?.forEach { file ->
+            if (file.name != THUMBNAILS_ONGOING_TRANSFER_FOLDER && transfers.none { it.uuid == file.name }) {
+                file.deleteRecursively()
+            }
+        }
+    }
+    //endregion
+
+    //region Get
     fun getRootUriForTransfer(transferUuid: String) = File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid").toUri()
 
+    fun getFile(transferUuid: String, fileUuid: String): File {
+        return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid/$fileUuid")
+    }
+
+    fun getOngoingFile(fileUuid: String): File {
+        return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
+    }
+
+    private fun getImportFolderOrCreate(isOngoingTransfer: Boolean): File {
+        val folder = if (isOngoingTransfer) {
+            ongoingThumbnailsFolder
+        } else {
+            thumbnailsFolder
+        }
+        return folder.apply { if (!exists()) mkdirs() }
+    }
+    //endregion
+
+    //region Rename
     fun renameFileWith(currentFileName: String, newFileName: String) {
         val ongoingTransferFolder = "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER"
         val currentFile = File(appContext.filesDir, "$ongoingTransferFolder/$currentFileName")
@@ -54,25 +92,26 @@ class ThumbnailsLocalStorage @Inject constructor(@ApplicationContext private val
         val newFolder = File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid")
         ongoingThumbnailsFolder.renameTo(newFolder)
     }
+    //endregion
 
-    fun getFile(transferUuid: String, fileUuid: String): File {
-        return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid/$fileUuid")
-    }
-
-    fun getOngoingFile(fileUuid: String): File {
-        return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
-    }
-
+    //region Copy
     suspend fun copyUriDataLocally(fileUri: Uri, fileName: String, isOngoingTransfer: Boolean) {
         val fileToCreate = File(getImportFolderOrCreate(isOngoingTransfer), fileName)
         appContext.getLocalThumbnail(fileName, fileUri)?.copyTo(fileToCreate)
     }
 
+    @Suppress("DEPRECATION")
     private fun Bitmap.copyTo(outputFile: File): File? {
         var fileOutputStream: FileOutputStream? = null
         try {
             fileOutputStream = FileOutputStream(outputFile)
-            compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+
+            val compressFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Bitmap.CompressFormat.WEBP_LOSSY
+            } else {
+                Bitmap.CompressFormat.WEBP
+            }
+            compress(compressFormat, 100, fileOutputStream)
             return outputFile
         } catch (e: IOException) {
             return null
@@ -80,15 +119,7 @@ class ThumbnailsLocalStorage @Inject constructor(@ApplicationContext private val
             fileOutputStream?.close()
         }
     }
-
-    private fun getImportFolderOrCreate(isOngoingTransfer: Boolean): File {
-        val folder = if (isOngoingTransfer) {
-            ongoingThumbnailsFolder
-        } else {
-            thumbnailsFolder
-        }
-        return folder.apply { if (!exists()) mkdirs() }
-    }
+    //endregion
 
     companion object {
         private const val THUMBNAILS_FOLDER = "thumbnails"

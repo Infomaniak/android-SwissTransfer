@@ -107,7 +107,8 @@ class ImportationFilesManager @Inject constructor(
                 }.getOrNull()
             } ?: return@consume
 
-            thumbnailsLocalStorage.copyUriDataLocally(fileToImport.uri, copiedFile.nameWithoutExtension, isOngoingTransfer = true)
+            // Using the copiedFile instead of the fileToImport because we cannot generate a thumbnail for a video
+            thumbnailsLocalStorage.copyUriDataLocally(copiedFile.toUri(), copiedFile.nameWithoutExtension, isOngoingTransfer = true)
 
             SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
