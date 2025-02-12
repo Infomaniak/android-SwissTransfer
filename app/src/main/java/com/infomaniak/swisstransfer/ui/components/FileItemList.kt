@@ -67,7 +67,6 @@ fun FileItemList(
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
-    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -105,13 +104,6 @@ fun FileItemList(
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
                     else -> writeExternalStoragePermissionState.guardedCallback { downloadUi.onFileClick() }
-                },
-                uriForFile = produceState(file.localPath) {
-                    transferFlow.collectLatest { transfer ->
-                        uriForFile(transfer, file).collect { uri: Uri? ->
-                            value = uri.toString()
-                        }
-                    }
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {

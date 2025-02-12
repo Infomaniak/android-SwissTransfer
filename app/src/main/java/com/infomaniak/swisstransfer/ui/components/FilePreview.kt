@@ -49,16 +49,15 @@ import com.infomaniak.swisstransfer.ui.utils.hasPreview
 @Composable
 fun FilePreview(
     file: FileUi,
-    previewUri: String? = file.localPath,
     circleColor: Color,
     circleSize: Dp,
     showFileName: Boolean,
     fileIconContentPadding: PaddingValues = PaddingValues(),
 ) {
-    var shouldDisplayPreview by rememberSaveable(previewUri) { mutableStateOf(file.hasPreview) }
+    var shouldDisplayPreview by rememberSaveable(file.thumbnailPath) { mutableStateOf(file.hasPreview) }
 
-    if (shouldDisplayPreview && previewUri != null) {
-        FileThumbnail(previewUri, onError = { shouldDisplayPreview = false })
+    if (shouldDisplayPreview && file.thumbnailPath != null) {
+        FileThumbnail(file.thumbnailPath!!, onError = { shouldDisplayPreview = false })
     } else {
         FileIcon(file.fileType, circleColor, circleSize, file.fileName, showFileName, fileIconContentPadding)
     }

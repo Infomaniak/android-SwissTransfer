@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.sentry.SentryLog
@@ -31,6 +32,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.*
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +45,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
@@ -120,7 +123,7 @@ class TransferDetailsViewModel @Inject constructor(
     )
 
     fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.uriForFile(transfer = transfer, file = file)
+        return flowOf(thumbnailsLocalStorage.getFile(transfer.uuid, file.uid).toUri())
     }
 
     @OptIn(UnreliableToastApi::class)

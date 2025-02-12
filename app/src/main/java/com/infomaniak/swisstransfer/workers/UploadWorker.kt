@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.compose.runtime.Immutable
+import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import androidx.work.WorkInfo.State
@@ -30,6 +31,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
@@ -37,6 +39,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
@@ -60,9 +63,11 @@ class UploadWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val appSettingsManager: AppSettingsManager,
     private val importLocalStorage: ImportLocalStorage,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val notificationsUtils: NotificationsUtils,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val uploadManager: UploadManager,
+    private val transferManager: TransferManager,
 ) : BaseCoroutineWorker(appContext, params) {
 
     private val fileChunkSizeManager by lazy {
@@ -106,9 +111,20 @@ class UploadWorker @AssistedInject constructor(
                     uploadedBytes += bytesSent
                     emitProgress(totalSize, uploadSession.authorEmail)
                 }
+                thumbnailsLocalStorage.renameFileWith(
+                    fileSession.name.substring(0, fileSession.name.indexOfLast { it == '.' }),
+                    fileSession.remoteUploadFile!!.uuid,
+                )
             }
 
             val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
+
+            thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transferUuid)
+            transferManager.updateTransferFilesThumbnails(
+                transferUUID = transferUuid,
+                thumbnailRootPath = thumbnailsLocalStorage.getRootUriForTransfer(transferUuid).toString(),
+            )
+
             importLocalStorage.removeImportFolder()
 
             displaySuccessNotification(transferUuid)

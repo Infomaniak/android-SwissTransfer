@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -55,7 +54,6 @@ fun FilesDetailsScreen(
         transfer: TransferUi,
         file: FileUi
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
-    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     isDownloadButtonVisible: Boolean,
@@ -79,7 +77,6 @@ fun FilesDetailsScreen(
             navigateToFolder = { navigateToFolder?.invoke(it) },
             transferFlow = transferFlow,
             runDownloadUi = runDownloadUi,
-            uriForFile = uriForFile,
         )
     }
 }
@@ -97,7 +94,6 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
                 navigateToFolder = {},
                 transferFlow = emptyFlow(),
                 runDownloadUi = { _, _, _ -> awaitCancellation() },
-                uriForFile = { _, _ -> emptyFlow() },
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},

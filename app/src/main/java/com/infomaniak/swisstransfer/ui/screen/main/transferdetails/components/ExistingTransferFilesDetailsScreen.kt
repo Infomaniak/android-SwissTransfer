@@ -72,7 +72,6 @@ fun ExistingTransferFilesDetailsScreen(
                         openFile = { uri -> context.openFile(uri) },
                     )
                 },
-                uriForFile = { transfer, file -> filesDetailsViewModel.uriForFile(transfer, file) },
                 withFileSize = withFilesSize,
                 withSpaceLeft = withSpaceLeft,
                 isDownloadButtonVisible = true,
