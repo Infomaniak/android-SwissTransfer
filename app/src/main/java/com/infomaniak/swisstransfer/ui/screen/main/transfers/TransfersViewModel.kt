@@ -40,8 +40,8 @@ typealias GroupedTransfers = Map<TransfersGroupingManager.TransferSection, List<
 
 @HiltViewModel
 class TransfersViewModel @Inject constructor(
-    private val transferManager: TransferManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val transferManager: TransferManager,
 ) : ViewModel() {
 
     val sentTransfersUiState = transferManager.getTransfers(TransferDirection.SENT)

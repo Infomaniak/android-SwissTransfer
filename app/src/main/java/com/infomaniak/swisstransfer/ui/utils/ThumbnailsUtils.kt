@@ -29,12 +29,16 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Size
+import android.webkit.MimeTypeMap
 import androidx.core.net.toFile
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.filetypes.FileType.Companion.guessFromFileName
+import com.infomaniak.core.filetypes.FileType.Companion.guessFromFileUri
+import com.infomaniak.core.filetypes.FileType.Companion.guessFromMimeType
 import io.sentry.Sentry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.math.min
 
 object ThumbnailsUtils {
@@ -43,18 +47,18 @@ object ThumbnailsUtils {
 
     suspend fun Context.getLocalThumbnail(fileName: String, fileUri: Uri): Bitmap? = withContext(Dispatchers.IO) {
         return@withContext if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            getThumbnailAfterAndroidPie(fileName, fileUri, THUMBNAIL_SIZE)
+            getThumbnailAfterAndroidPie(fileUri, THUMBNAIL_SIZE)
         } else {
             getThumbnailUntilAndroidPie(fileName, fileUri, THUMBNAIL_SIZE)
         }
     }
 
-    private fun Context.getThumbnailAfterAndroidPie(fileName: String, fileUri: Uri, thumbnailSize: Int): Bitmap? {
+    private fun Context.getThumbnailAfterAndroidPie(fileUri: Uri, thumbnailSize: Int): Bitmap? {
         return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             val size = Size(thumbnailSize, thumbnailSize)
             try {
                 if (fileUri.scheme.equals(ContentResolver.SCHEME_FILE)) {
-                    if (guessFromFileName(fileName) == FileType.VIDEO) {
+                    if (guessFromFileUri(fileUri) == FileType.VIDEO) {
                         ThumbnailUtils.createVideoThumbnail(fileUri.toFile(), size, null)
                     } else {
                         ThumbnailUtils.createImageThumbnail(fileUri.toFile(), size, null)

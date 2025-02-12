@@ -20,17 +20,23 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.*
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -49,10 +55,17 @@ class MainApplication : Application(), Configuration.Provider {
     lateinit var transferManager: TransferManager
 
     @Inject
+    lateinit var thumbnailsLocalStorage: ThumbnailsLocalStorage
+
+    @Inject
     lateinit var globalCoroutineScope: CoroutineScope
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    @IoDispatcher
+    lateinit var ioDispatcher: CoroutineDispatcher
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
@@ -64,6 +77,13 @@ class MainApplication : Application(), Configuration.Provider {
 
         globalCoroutineScope.launch {
             accountUtils.init()
+
+            withContext(ioDispatcher) {
+                transferManager.getTransfers(TransferDirection.SENT).collectLatest {
+                    thumbnailsLocalStorage.cleanExpiredThumbnails(it)
+                }
+            }
+
             if (accountUtils.isUserConnected()) transferManager.deleteExpiredTransfers()
         }
 
