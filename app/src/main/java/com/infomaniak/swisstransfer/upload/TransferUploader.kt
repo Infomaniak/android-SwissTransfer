@@ -17,12 +17,13 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.net.Uri
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
-import com.infomaniak.swisstransfer.workers.UploadFileTask
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -31,50 +32,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import splitties.init.appCtx
 import java.io.BufferedInputStream
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 
-class UploadSession(
+class TransferUploader(
     private val uploadManager: UploadManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
+    private val destination: UploadDestination,
 ) {
 
     companion object {
         private val TAG = UploadSession::class.java.simpleName
     }
 
-    //TODO:
-    // - Check if Uris are persistable on Samsung and emulators.
-    // - Check also when shared from the camera, gallery or other system app.
-    //TODO:
-    // - Edit UploadFileSession to integrate:
-    //    - localUri
+    suspend fun uploadAllWithRetries() {
+        TODO()
+        uploadManager.finalizeUploadSession(TODO()) //TODO: Also retry that if needed, and make sure the backend supports it.
+    }
 
-    //TODO: We want take some data:
-    // - pending transfer metadata, if needed
-    // - list of either:
-    //   - non persistable uris
-    //   - persistable uris
-    //   - refs to copied files
-    // If we have non-persistable uris, we want to keep the process active until upload is complete, or cancelled.
-    //
-
-
-    suspend fun uploadFile(sessionUuid: String) {
+    private suspend fun uploadFile(sessionUuid: String) {
 
     }
 
-    suspend fun start(
+    private val contentResolver = appCtx.contentResolver
+
+    private suspend fun start(
+        targetFileUri: Uri,
+        fileUUID: String,
         uploadFileSession: UploadFileSession,
-        uploadSession: UploadSession,
+        uploadSessionUuid: String,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
-        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}")
-        val fileUUID: String = checkNotNull(uploadFileSession.remoteUploadFile?.uuid) {
-            uploadManager.removeUploadSession(uploadSession.uuid)
-            "Remote upload file not found"
-        }
 
         val chunkSize = fileChunkSizeManager.computeChunkSize(fileSize = uploadFileSession.size)
         val totalChunks = fileChunkSizeManager.computeFileChunks(fileSize = uploadFileSession.size, fileChunkSize = chunkSize)
@@ -82,33 +72,31 @@ class UploadSession(
 
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 
-        uploadFileSession.getLocalIoFile(uploadSession.uuid).inputStream().buffered().use { inputStream ->
+        contentResolver.openInputStream(targetFileUri)!!.buffered().use { inputStream ->
             uploadChunks(
-                chunkSize = chunkSize,
                 fileUUID = fileUUID,
+                chunkSize = chunkSize,
                 inputStream = inputStream,
                 parallelChunks = parallelChunks,
                 totalChunks = totalChunks,
-                uploadSession = uploadSession,
                 onUploadBytes = onUploadBytes,
             )
         }
     }
 
     private suspend fun uploadChunks(
-        chunkSize: Long,
         fileUUID: String,
+        chunkSize: Long,
         inputStream: BufferedInputStream,
         parallelChunks: Int,
         totalChunks: Int,
-        uploadSession: UploadSession,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
         val requestSemaphore = Semaphore(parallelChunks)
         val byteArrayPool = ArrayBlockingQueue<ByteArray>(parallelChunks)
 
         val completedChunks = AtomicInteger(0)
-        val completableJob: CompletableJob = Job()
+        val allChunksButLastUploadedSignal: CompletableJob = Job()
         val lastChunkIndex = totalChunks - 1
 
         coroutineScope {
@@ -130,9 +118,21 @@ class UploadSession(
                 launch {
                     try {
                         if (totalChunks > 1) {
-                            waitForOthersIfLastChunk(isLastChunk, completableJob, completedChunks, lastChunkIndex)
+                            waitForOthersIfLastChunk(
+                                isLastChunk = isLastChunk,
+                                allChunksButLastUploadedSignal = allChunksButLastUploadedSignal,
+                                completedChunks = completedChunks,
+                                lastChunkIndex = lastChunkIndex
+                            )
                         }
-                        startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
+                        startUploadChunk(
+                            fileUUID = fileUUID,
+                            chunkIndex = chunkIndex,
+                            isLastChunk = isLastChunk,
+                            isRetry = false,
+                            data = dataByteArray,
+                            onUploadBytes = onUploadBytes
+                        )
                     } finally {
                         byteArrayPool.offer(dataByteArray)
                         requestSemaphore.release()
@@ -148,14 +148,14 @@ class UploadSession(
 
     private suspend fun waitForOthersIfLastChunk(
         isLastChunk: Boolean,
-        completableJob: CompletableJob,
+        allChunksButLastUploadedSignal: CompletableJob,
         completedChunks: AtomicInteger,
         lastChunkIndex: Int,
     ) {
         if (isLastChunk) {
-            completableJob.join() // Wait for all the other jobs to complete
+            allChunksButLastUploadedSignal.join() // Wait for all the other jobs to complete
         } else {
-            if (completedChunks.incrementAndGet() == lastChunkIndex) completableJob.complete()
+            if (completedChunks.incrementAndGet() == lastChunkIndex) allChunksButLastUploadedSignal.complete()
         }
     }
 
@@ -172,7 +172,6 @@ class UploadSession(
     }
 
     private suspend inline fun startUploadChunk(
-        sessionUuid: String,
         fileUUID: String,
         chunkIndex: Int,
         isLastChunk: Boolean,
@@ -182,7 +181,8 @@ class UploadSession(
     ) = coroutineScope {
         var oldBytesSentTotal = 0L
         uploadManager.uploadChunk(
-            uuid = sessionUuid,
+            uploadHost = destination.uploadHost,
+            remoteContainerUuid = destination.containerUuid,
             fileUUID = fileUUID,
             chunkIndex = chunkIndex,
             isLastChunk = isLastChunk,

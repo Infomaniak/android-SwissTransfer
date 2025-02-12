@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.infomaniak.swisstransfer.upload
 
 import android.app.Notification
@@ -23,15 +25,19 @@ import android.net.Uri
 import com.infomaniak.core.ForegroundService
 import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.withPartialWakeLock
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import splitties.init.appCtx
 import splitties.intents.serviceWithoutExtrasSpec
@@ -42,13 +48,20 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         intentSpec = serviceWithoutExtrasSpec<UploadForegroundService>(),
         notificationId = 0
     ) {
+        val state: StateFlow<UploadState?>
         val urisToImport = MutableStateFlow<List<Uri>>(emptyList())
 
-        val state: StateFlow<UploadState?>
+        suspend fun startUpload(signal: StartUploadSignal) {
+            //TODO: Don't require the filesMetadata… or do it another way.
+            //
+            startUploadChannel.send(signal)
+        }
 
         private val _state = MutableStateFlow<UploadState?>(value = null).also {
             state = it.asStateFlow()
         }
+
+        private val startUploadChannel = Channel<StartUploadSignal>()
     }
 
     override fun getStartNotification(intent: Intent, isReDelivery: Boolean): Notification {
@@ -56,26 +69,42 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
     }
 
     override suspend fun run() {
-        //TODO: Wait for start upload signal.
         //TODO: Get the list of Uris to upload
-        val uploadSession = createUploadSession()
+        val startSignal = startUploadChannel.receive()
+        val uploadManager = EntryPointAccessors.fromApplication<UploadManager>(appCtx)
+        val uris = urisToImport.first()
+        val uploader: TransferUploader = createUploadSession(
+            uploadManager = uploadManager,
+            request = startSignal.request,
+            uris = uris,
+            attestationHeaderName = startSignal.attestationHeaderName,
+            attestationToken = startSignal.attestationHeaderName
+        )
         isInternetConnectedFlow.mapLatest { isInternetConnected ->
             if (isInternetConnected.not()) awaitCancellation()
             withPartialWakeLock {
-                //TODO: upload, with retries.
+                uploader.uploadAllWithRetries()
             }
-        }
+        }.first()
     }
 
-    private suspend fun createUploadSession() {
-        val uploadManager = EntryPointAccessors.fromApplication<UploadManager>(appCtx)
-        TODO("Create the upload container (aka. initUpload), bypassing the Realm db")
-        return isInternetConnectedFlow.tryCompletingWhileTrue {
-            UploadSession(
-                uploadManager = uploadManager,
-                fileChunkSizeManager = fileChunkSizeManager
-            )
-        }
+    private suspend fun createUploadSession(
+        uploadManager: UploadManager,
+        request: UploadSessionRequest,
+        attestationHeaderName: String,
+        attestationToken: String,
+    ): TransferUploader = isInternetConnectedFlow.tryCompletingWhileTrue {
+        //TODO: Run code below with retries.
+        val uploadDestination = uploadManager.startUploadSession(
+            request = request,
+            attestationHeaderName = attestationHeaderName,
+            attestationToken = attestationToken
+        )
+        TransferUploader(
+            uploadManager = uploadManager,
+            fileChunkSizeManager = fileChunkSizeManager,
+            destination = uploadDestination
+        )
     }
 
     private val isInternetConnectedFlow: SharedFlow<Boolean> = TODO()
