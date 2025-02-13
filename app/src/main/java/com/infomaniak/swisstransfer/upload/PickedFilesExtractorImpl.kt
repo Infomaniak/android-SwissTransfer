@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import splitties.init.appCtx
 
 class PickedFilesExtractorImpl : PickedFilesExtractor {
@@ -49,26 +48,22 @@ class PickedFilesExtractorImpl : PickedFilesExtractor {
     override val isHandlingUrisFlow: StateFlow<Boolean>
 
     override fun addUris(uris: List<Uri>) {
-        incomingActions.trySend(IncomingAction.Add(uris))
+        incomingActions.trySend(FilePickingAction.Add(uris))
     }
 
     private var isHandlingUris by MutableStateFlow(false).also {
         isHandlingUrisFlow = it.asStateFlow()
     }::value
 
-    sealed interface IncomingAction {
-        class Add(val newUris: List<Uri>) : IncomingAction
-        class Removal(val urisToRemove: List<Uri>) : IncomingAction
-    }
+    private val incomingActions = Channel<FilePickingAction>(capacity = Channel.UNLIMITED)
 
-    private val incomingActions = Channel<IncomingAction>(capacity = Channel.UNLIMITED)
-
-    override val pickedFiles: StateFlow<List<PickedFile>> = flow {
+    override val pickedFilesFlow: StateFlow<List<PickedFile>> = flow {
         val currentPickedFiles = mutableMapOf<Uri, PickedFile>()
         for (action in incomingActions) try {
             isHandlingUris = true
             action.applyTo(currentPickedFiles)
-            emit(currentPickedFiles.values.withDuplicatedNamesFixed())
+            val pickedFiles = currentPickedFiles.values.withDuplicatedNamesFixed()
+            emit(pickedFiles)
         } finally {
             isHandlingUris = false
         }
@@ -77,23 +72,28 @@ class PickedFilesExtractorImpl : PickedFilesExtractor {
         started = SharingStarted.Eagerly,
         initialValue = emptyList()
     )
+}
 
-    private suspend fun IncomingAction.applyTo(pickedFiles: MutableMap<Uri, PickedFile>) {
-        when (this) {
-            is IncomingAction.Add -> {
-                val newPickedFiles = coroutineScope {
-                    newUris.map { uri ->
-                        async {
-                            val pickedFile = extractPickedFile(uri) ?: return@async null
-                            uri to pickedFile
-                        }
-                    }.awaitAll().filterNotNull()
-                }
-                pickedFiles.putAll(newPickedFiles)
+private sealed interface FilePickingAction {
+    class Add(val newUris: List<Uri>) : FilePickingAction
+    class Removal(val urisToRemove: List<Uri>) : FilePickingAction
+}
+
+private suspend fun FilePickingAction.applyTo(pickedFiles: MutableMap<Uri, PickedFile>) {
+    when (this) {
+        is FilePickingAction.Add -> {
+            val newPickedFiles = coroutineScope {
+                newUris.map { uri ->
+                    async {
+                        val pickedFile = extractPickedFile(uri) ?: return@async null
+                        uri to pickedFile
+                    }
+                }.awaitAll().filterNotNull()
             }
-            is IncomingAction.Removal -> {
-                urisToRemove.forEach { pickedFiles.remove(it) }
-            }
+            pickedFiles.putAll(newPickedFiles)
+        }
+        is FilePickingAction.Removal -> {
+            urisToRemove.forEach { pickedFiles.remove(it) }
         }
     }
 }

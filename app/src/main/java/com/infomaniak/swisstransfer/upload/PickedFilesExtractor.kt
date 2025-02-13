@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface PickedFilesExtractor {
 
-    val pickedFiles: StateFlow<List<PickedFile>>
+    val pickedFilesFlow: StateFlow<List<PickedFile>>
     val isHandlingUrisFlow: StateFlow<Boolean>
 
     fun addUris(uris: List<Uri>)

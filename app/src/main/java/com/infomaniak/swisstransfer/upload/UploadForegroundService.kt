@@ -53,7 +53,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         notificationId = 0
     ) {
         val state: StateFlow<UploadState?>
-        val pickedFiles: StateFlow<List<PickedFile>>
+        val pickedFilesFlow: StateFlow<List<PickedFile>>
         val isHandlingPickedFilesFlow: StateFlow<Boolean>
 
         fun addFiles(uris: List<Uri>) = pickedFilesExtractor.addUris(uris)
@@ -63,7 +63,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         }
 
         private val pickedFilesExtractor: PickedFilesExtractor = PickedFilesExtractorImpl().also {
-            pickedFiles = it.pickedFiles
+            pickedFilesFlow = it.pickedFilesFlow
             isHandlingPickedFilesFlow = it.isHandlingUrisFlow
         }
 
@@ -83,7 +83,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         val uploader: TransferUploader = createUploadSession(
             uploadManager = uploadManager,
             startParams = startSignal,
-            pickedFiles = pickedFiles.value,
+            pickedFiles = pickedFilesFlow.value,
             attestationHeaderName = startSignal.attestationHeaderName,
             attestationToken = startSignal.attestationHeaderName
         )
