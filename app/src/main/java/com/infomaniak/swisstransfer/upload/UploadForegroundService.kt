@@ -25,11 +25,14 @@ import android.net.Uri
 import com.infomaniak.core.ForegroundService
 import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.withPartialWakeLock
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.FileToUploadMetadata
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
@@ -39,6 +42,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.invoke
 import splitties.init.appCtx
 import splitties.intents.serviceWithoutExtrasSpec
 
@@ -49,34 +53,37 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         notificationId = 0
     ) {
         val state: StateFlow<UploadState?>
-        val urisToImport = MutableStateFlow<List<Uri>>(emptyList())
+        val pickedFiles: StateFlow<List<PickedFile>>
+        val isHandlingPickedFilesFlow: StateFlow<Boolean>
+
+        fun addFiles(uris: List<Uri>) = pickedFilesExtractor.addUris(uris)
 
         suspend fun startUpload(signal: StartUploadSignal) {
-            //TODO: Don't require the filesMetadata… or do it another way.
-            //
             startUploadChannel.send(signal)
         }
 
-        private val _state = MutableStateFlow<UploadState?>(value = null).also {
-            state = it.asStateFlow()
+        private val pickedFilesExtractor: PickedFilesExtractor = PickedFilesExtractorImpl().also {
+            pickedFiles = it.pickedFiles
+            isHandlingPickedFilesFlow = it.isHandlingUrisFlow
         }
 
         private val startUploadChannel = Channel<StartUploadSignal>()
+        private val _state = MutableStateFlow<UploadState?>(value = null).also {
+            state = it.asStateFlow()
+        }
     }
 
     override fun getStartNotification(intent: Intent, isReDelivery: Boolean): Notification {
         TODO("Show 'Transfer draft' 'Continue where you left off'")
     }
 
-    override suspend fun run() {
-        //TODO: Get the list of Uris to upload
+    override suspend fun run() = Dispatchers.Default {
         val startSignal = startUploadChannel.receive()
         val uploadManager = EntryPointAccessors.fromApplication<UploadManager>(appCtx)
-        val uris = urisToImport.first()
         val uploader: TransferUploader = createUploadSession(
             uploadManager = uploadManager,
-            request = startSignal.request,
-            uris = uris,
+            startParams = startSignal,
+            pickedFiles = pickedFiles.value,
             attestationHeaderName = startSignal.attestationHeaderName,
             attestationToken = startSignal.attestationHeaderName
         )
@@ -90,25 +97,53 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
     private suspend fun createUploadSession(
         uploadManager: UploadManager,
-        request: UploadSessionRequest,
+        startParams: StartUploadSignal,
+        pickedFiles: List<PickedFile>,
         attestationHeaderName: String,
         attestationToken: String,
-    ): TransferUploader = isInternetConnectedFlow.tryCompletingWhileTrue {
-        //TODO: Run code below with retries.
-        val uploadDestination = uploadManager.startUploadSession(
-            request = request,
-            attestationHeaderName = attestationHeaderName,
-            attestationToken = attestationToken
-        )
-        TransferUploader(
-            uploadManager = uploadManager,
-            fileChunkSizeManager = fileChunkSizeManager,
-            destination = uploadDestination
-        )
+    ): TransferUploader {
+        val request = startParams.request.toUploadSessionRequest(pickedFiles.map { it.toFileUploadMetaData() })
+        return isInternetConnectedFlow.tryCompletingWhileTrue {
+            //TODO: Run code below with retries.
+            val uploadDestination = uploadManager.startUploadSession(
+                request = request,
+                attestationHeaderName = attestationHeaderName,
+                attestationToken = attestationToken
+            )
+            TransferUploader(
+                uploadManager = uploadManager,
+                fileChunkSizeManager = fileChunkSizeManager,
+                destination = uploadDestination
+            )
+        }
     }
 
     private val isInternetConnectedFlow: SharedFlow<Boolean> = TODO()
 }
+
+private fun PickedFile.toFileUploadMetaData(): FileToUploadMetadata {
+    return FileToUploadMetadata(
+        name = name,
+        size = size,
+        mimeType = mimeType
+    )
+}
+
+private fun StartUploadSignal.Request.toUploadSessionRequest(
+    filesMetadata: List<FileToUploadMetadata>
+): UploadSessionRequest = UploadSessionRequest(
+    validityPeriod = validityPeriod,
+    authorEmail = authorEmail,
+    authorEmailToken = authorEmailToken,
+    password = password,
+    message = message,
+    sizeOfUpload = filesMetadata.sumOf { it.size },
+    downloadCountLimit = downloadCountLimit,
+    filesCount = filesMetadata.size,
+    languageCode = languageCode,
+    filesMetadata = filesMetadata,
+    recipientsEmails = recipientsEmails
+)
 
 private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
 private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()

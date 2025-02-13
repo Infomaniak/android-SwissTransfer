@@ -25,7 +25,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
-    private val channel = Channel<ImportationFilesManager.PickedFile>(capacity = Channel.UNLIMITED)
+    private val channel = Channel<PickedFile>(capacity = Channel.UNLIMITED)
 
     private val _count = MutableStateFlow(0)
     val count: StateFlow<Int> = _count.asStateFlow()
@@ -39,12 +39,12 @@ class TransferCountChannel(private val resetCopiedBytes: () -> Unit) {
 
     private val countMutex = Mutex()
 
-    suspend fun send(element: ImportationFilesManager.PickedFile) {
+    suspend fun send(element: PickedFile) {
         countMutex.withLock { _count.value += 1 }
         channel.send(element)
     }
 
-    suspend fun consume(process: suspend (ImportationFilesManager.PickedFile) -> Unit) {
+    suspend fun consume(process: suspend (PickedFile) -> Unit) {
         for (element in channel) {
             process(element)
             countMutex.withLock {

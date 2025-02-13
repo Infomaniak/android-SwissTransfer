@@ -19,18 +19,26 @@ package com.infomaniak.swisstransfer.upload
 
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 
-data class UploadState(
-    val uploadedBytes: Long,
-    val status: Status,
-) {
-    sealed interface Status {
-        data object WaitingForInternet : Status
-        data object InProgress : Status
-        data object Retrying : Status
-        data class Complete(
-            val transferType: TransferTypeUi,
-            val transferUuid: String,
-            val transferUrl: String,
-        ) : Status
+sealed interface UploadState {
+
+    data class Ongoing(
+        val uploadedBytes: Long,
+        val status: Status,
+    ) : UploadState {
+        sealed interface Status {
+            data object WaitingForInternet : Status
+            data object InProgress : Status
+            data object Retrying : Status
+        }
+    }
+
+    data class Complete(
+        val transferType: TransferTypeUi,
+        val transferUuid: String,
+        val transferUrl: String,
+    ) : UploadState
+
+    sealed interface Failure : UploadState {
+        data object FilesDisappeared : Failure
     }
 }

@@ -69,7 +69,7 @@ class ImportationFilesManager @Inject constructor(
 
     suspend fun importFiles(uris: List<Uri>) {
         val pickedFiles = uris.extractPickedFiles()
-        filesToImportChannel.setTotalFileSize(pickedFiles.sumOf { it.fileSize })
+        filesToImportChannel.setTotalFileSize(pickedFiles.sumOf { it.size })
         pickedFiles.forEach { filesToImportChannel.send(it) }
     }
 
@@ -102,7 +102,7 @@ class ImportationFilesManager @Inject constructor(
         filesToImportChannel.consume { fileToImport ->
             SentryLog.i(TAG, "Importing ${fileToImport.uri}")
             val copiedFile = ioDispatcher {
-                copyUriDataLocally(fileToImport.uri, fileToImport.fileName).onFailure {
+                copyUriDataLocally(fileToImport.uri, fileToImport.name).onFailure {
                     reportFailedImportation(fileToImport, it)
                 }.getOrNull()
             } ?: return@consume
@@ -121,11 +121,11 @@ class ImportationFilesManager @Inject constructor(
 
             _importedFiles.add(
                 FileUi(
-                    uid = fileToImport.fileName,
-                    fileName = fileToImport.fileName,
+                    uid = fileToImport.name,
+                    fileName = fileToImport.name,
                     isFolder = false,
                     fileSize = fileSizeInBytes,
-                    mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
+                    mimeType = fileToImport.mimeType,
                     localPath = copiedFile.toUri().toString(),
                     path = null,
                     thumbnailPath = thumbnailsLocalStorage.getOngoingThumbnailFor(copiedFile.nameWithoutExtension).toUri()
@@ -134,6 +134,16 @@ class ImportationFilesManager @Inject constructor(
             )
         }
     }
+
+    private fun PickedFile.toFileUiModel(): FileUi = FileUi(
+        uid = uri.toString(),
+        fileName = name,
+        path = null,
+        isFolder = false,
+        fileSize = size,
+        mimeType = mimeType,
+        localPath = null
+    )
 
     private fun copyUriDataLocally(
         uri: Uri,
@@ -191,7 +201,12 @@ class ImportationFilesManager @Inject constructor(
                 )
             })
 
-            PickedFile(uniqueName, uri, size)
+            PickedFile(
+                uri = uri,
+                name = uniqueName,
+                mimeType = FileType.guessMimeTypeFromFileName(uniqueName) ?: "",
+                size = size,
+            )
         }
     }
 
@@ -217,14 +232,12 @@ class ImportationFilesManager @Inject constructor(
         SentryLog.e(TAG, "Failed importation of ${file.uri}", throwable)
 
         // TODO: Make more precise error messages (especially for the low storage issue).
-        val errorMessage = appContext.getString(R.string.cantImportFileX, file.fileName)
+        val errorMessage = appContext.getString(R.string.cantImportFileX, file.name)
         Dispatchers.Main {
             @OptIn(UnreliableToastApi::class)
             longToast(errorMessage) // TODO: Find a better way to show the error in an actionable way.
         }
     }
-
-    data class PickedFile(val fileName: String, val uri: Uri, val fileSize: Long)
 
     companion object {
         private const val TAG = "File importation"

@@ -17,21 +17,14 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import android.net.Uri
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
+import kotlinx.coroutines.flow.StateFlow
 
-data class StartUploadSignal(
-    val request: Request,
-    val attestationHeaderName: String,
-    val attestationToken: String
-) {
-    data class Request(
-        val validityPeriod: ValidityPeriod,
-        val authorEmail: String = "",
-        val authorEmailToken: String? = null,
-        val password: String = "",
-        val message: String = "",
-        val downloadCountLimit: Int = 0,
-        val languageCode: String = "",
-        val recipientsEmails: String = "",
-    )
+interface PickedFilesExtractor {
+
+    val pickedFiles: StateFlow<List<PickedFile>>
+    val isHandlingUrisFlow: StateFlow<Boolean>
+
+    fun addUris(uris: List<Uri>)
 }

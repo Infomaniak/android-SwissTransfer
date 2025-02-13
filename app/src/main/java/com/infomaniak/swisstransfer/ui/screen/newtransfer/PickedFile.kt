@@ -15,23 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.upload
+package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import android.net.Uri
 
-data class StartUploadSignal(
-    val request: Request,
-    val attestationHeaderName: String,
-    val attestationToken: String
-) {
-    data class Request(
-        val validityPeriod: ValidityPeriod,
-        val authorEmail: String = "",
-        val authorEmailToken: String? = null,
-        val password: String = "",
-        val message: String = "",
-        val downloadCountLimit: Int = 0,
-        val languageCode: String = "",
-        val recipientsEmails: String = "",
-    )
-}
+data class PickedFile(
+    val uri: Uri,
+    val name: String,
+    val mimeType: String,
+    val size: Long,
+)
