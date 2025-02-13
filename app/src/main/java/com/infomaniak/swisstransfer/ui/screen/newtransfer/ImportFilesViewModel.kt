@@ -193,6 +193,7 @@ class ImportFilesViewModel @Inject constructor(
     fun removeFileByUid(uid: String) {
         viewModelScope.launch(ioDispatcher) {
             importationFilesManager.removeFileByUid(uid)
+            thumbnailsLocalStorage.removeThumbnailForOngoingTransfer(uid)
         }
     }
 

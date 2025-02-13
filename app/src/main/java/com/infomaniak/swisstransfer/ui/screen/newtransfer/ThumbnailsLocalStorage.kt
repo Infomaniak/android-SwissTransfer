@@ -58,6 +58,10 @@ class ThumbnailsLocalStorage @Inject constructor(
             }
         }
     }
+
+    fun removeThumbnailForOngoingTransfer(fileName: String) {
+        ongoingThumbnailsFolder.listFiles()?.find { fileName.contains(it.name) }?.delete()
+    }
     //endregion
 
     //region Get
