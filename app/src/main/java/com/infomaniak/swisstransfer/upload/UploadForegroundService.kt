@@ -90,7 +90,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         isInternetConnectedFlow.mapLatest { isInternetConnected ->
             if (isInternetConnected.not()) awaitCancellation()
             withPartialWakeLock {
-                uploader.uploadAllWithRetries()
+                uploader.uploadAllRemainingWithRetries()
             }
         }.first()
     }
@@ -113,7 +113,9 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             TransferUploader(
                 uploadManager = uploadManager,
                 fileChunkSizeManager = fileChunkSizeManager,
-                destination = uploadDestination
+                request = request,
+                destination = uploadDestination,
+                pickedFiles = pickedFiles,
             )
         }
     }

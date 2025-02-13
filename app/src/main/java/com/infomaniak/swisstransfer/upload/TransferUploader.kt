@@ -19,10 +19,14 @@ package com.infomaniak.swisstransfer.upload
 
 import android.net.Uri
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
+import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
@@ -40,20 +44,61 @@ import java.util.concurrent.atomic.AtomicInteger
 class TransferUploader(
     private val uploadManager: UploadManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
+    private val request: UploadSessionRequest,
     private val destination: UploadDestination,
+    private val pickedFiles: List<PickedFile>,
 ) {
 
     companion object {
         private val TAG = UploadSession::class.java.simpleName
     }
 
-    suspend fun uploadAllWithRetries() {
-        TODO()
-        uploadManager.finalizeUploadSession(TODO()) //TODO: Also retry that if needed, and make sure the backend supports it.
+    init {
+        require(pickedFiles.size == destination.filesUuid.size)
     }
 
-    private suspend fun uploadFile(sessionUuid: String) {
+    suspend fun uploadAllRemainingWithRetries() {
+        uploadFiles()
+        NewUploadSession(
+            duration = request.validityPeriod,
+            authorEmail = request.authorEmail,
+            authorEmailToken = request.authorEmailToken,
+            password = request.password,
+            message = request.message,
+            numberOfDownload = request.downloadCountLimit,
+            language = request.languageCode,
+            recipientsEmails = request.recipientsEmails,
+            files = pickedFiles.map {
+                TODO()
+            },
+            uuid = "",
+            remoteContainer =
+        )
+        uploadManager.finalizeUploadSession(TODO()) //TODO: Also retry that if needed, and make sure the backend supports it.
+        //TODO: Ensure the thumbnails directory is renamed, as done in UploadWorker
+    }
 
+    private suspend fun uploadFiles() {
+        pickedFiles.forEachIndexed { index, pickedFile ->
+            //TODO: Keep track of where we left off last time, and support retries.
+            start(
+                targetFileUri = pickedFile.uri,
+                fileUUID = destination.filesUuid[index],
+                uploadFileSession = pickedFile.toUploadFileSession(),
+                onUploadBytes = { uploadedBytes ->
+                    //TODO: Forward the progress, possibly using MutableStateFlow.update { }
+                }
+            )
+        }
+    }
+
+    private fun PickedFile.toUploadFileSession(): UploadFileSession = object : UploadFileSession {
+        override val path: String? = null // We currently don't support adding folders to transfers.
+        override val localPath: String get() = "" // Unneeded, but this model is reused.
+        override val mimeType: String = this@toUploadFileSession.mimeType
+        override val name: String = this@toUploadFileSession.name
+        override val remoteUploadFile: RemoteUploadFile? = null // Unneeded, but this model is reused for iOS.
+        override val size: Long = this@toUploadFileSession.size
     }
 
     private val contentResolver = appCtx.contentResolver
@@ -62,7 +107,6 @@ class TransferUploader(
         targetFileUri: Uri,
         fileUUID: String,
         uploadFileSession: UploadFileSession,
-        uploadSessionUuid: String,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
 

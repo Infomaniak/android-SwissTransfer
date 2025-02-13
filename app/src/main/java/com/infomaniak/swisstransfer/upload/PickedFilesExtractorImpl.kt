@@ -102,7 +102,9 @@ private suspend fun extractPickedFile(uri: Uri): PickedFile? = runCatching {
     coroutineScope {
         val fileNameAsync = async { fileNameFor(uri) }
         val mimeTypeAsync = async(Dispatchers.IO) {
-            FileType.guessMimeTypeFromFileName(fileNameAsync.await()) ?: ""
+            appCtx.contentResolver.getType(uri)
+                ?: FileType.guessMimeTypeFromFileName(fileNameAsync.await())
+                ?: ""
         }
         val fileSize = fileSizeFor(uri)
         PickedFile(
