@@ -20,11 +20,14 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
+import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.core.net.toUri
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.core.thumbnails.ThumbnailsUtils
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -107,8 +110,11 @@ class ImportationFilesManager @Inject constructor(
                 }.getOrNull()
             } ?: return@consume
 
-            // Using the copiedFile instead of the fileToImport because we cannot generate a thumbnail for a video
-            thumbnailsLocalStorage.copyUriDataLocally(copiedFile.toUri(), copiedFile.nameWithoutExtension, isOngoingTransfer = true)
+            thumbnailsLocalStorage.generateThumbnailFor(
+                fileUri = fileToImport.uri.toString(),
+                fileName = copiedFile.nameWithoutExtension,
+                extension = copiedFile.extension,
+            )
 
             SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
@@ -125,7 +131,7 @@ class ImportationFilesManager @Inject constructor(
                     mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                     path = null,
-                    thumbnailPath = thumbnailsLocalStorage.getOngoingFile(copiedFile.nameWithoutExtension).toUri().toString(),
+                    thumbnailPath = thumbnailsLocalStorage.getOngoingThumbnailFor(copiedFile.nameWithoutExtension).toUri().toString(),
                 )
             )
         }

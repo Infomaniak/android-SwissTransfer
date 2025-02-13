@@ -123,7 +123,7 @@ class TransferDetailsViewModel @Inject constructor(
     )
 
     fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return flowOf(thumbnailsLocalStorage.getFile(transfer.uuid, file.uid).toUri())
+        return flowOf(thumbnailsLocalStorage.getThumbnailFor(transfer.uuid, file.uid).toUri())
     }
 
     @OptIn(UnreliableToastApi::class)
