@@ -121,7 +121,7 @@ class UploadWorker @AssistedInject constructor(
             thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transferUuid)
             transferManager.updateTransferFilesThumbnails(
                 transferUUID = transferUuid,
-                thumbnailRootPath = thumbnailsLocalStorage.getRootUriForTransfer(transferUuid).toString(),
+                thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transferUuid).toString(),
             )
 
             importLocalStorage.removeImportFolder()

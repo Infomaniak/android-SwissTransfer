@@ -39,4 +39,5 @@ include(
     ":Core:Notifications",
     ":Core:Onboarding",
     ":Core:Sentry",
+    ":Core:Thumbnails",
 )

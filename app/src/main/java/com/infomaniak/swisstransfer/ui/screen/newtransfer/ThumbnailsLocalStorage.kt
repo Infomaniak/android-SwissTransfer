@@ -19,12 +19,13 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import androidx.core.net.toUri
+import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.filetypes.FileType.Companion.guessFromFileName
+import com.infomaniak.core.thumbnails.ThumbnailsUtils.getLocalThumbnail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.di.IoDispatcher
-import com.infomaniak.swisstransfer.ui.utils.ThumbnailsUtils.getLocalThumbnail
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -60,24 +61,17 @@ class ThumbnailsLocalStorage @Inject constructor(
     //endregion
 
     //region Get
-    fun getRootUriForTransfer(transferUuid: String) = File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid").toUri()
+    fun getThumbnailsFolderFor(transferUuid: String) = File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid").toUri()
 
-    fun getFile(transferUuid: String, fileUuid: String): File {
+    fun getThumbnailFor(transferUuid: String, fileUuid: String): File {
         return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid/$fileUuid")
     }
 
-    fun getOngoingFile(fileUuid: String): File {
+    fun getOngoingThumbnailFor(fileUuid: String): File {
         return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
     }
 
-    private fun getImportFolderOrCreate(isOngoingTransfer: Boolean): File {
-        val folder = if (isOngoingTransfer) {
-            ongoingThumbnailsFolder
-        } else {
-            thumbnailsFolder
-        }
-        return folder.apply { if (!exists()) mkdirs() }
-    }
+    private fun getOrCreateOngoingThumbnailsFolder() = ongoingThumbnailsFolder.apply { if (!exists()) mkdirs() }
     //endregion
 
     //region Rename
@@ -95,9 +89,10 @@ class ThumbnailsLocalStorage @Inject constructor(
     //endregion
 
     //region Copy
-    suspend fun copyUriDataLocally(fileUri: Uri, fileName: String, isOngoingTransfer: Boolean) {
-        val fileToCreate = File(getImportFolderOrCreate(isOngoingTransfer), fileName)
-        appContext.getLocalThumbnail(fileName, fileUri)?.copyTo(fileToCreate)
+    fun generateThumbnailFor(fileUri: String, fileName: String, extension: String) {
+        val fileToCreate = File(getOrCreateOngoingThumbnailsFolder(), fileName)
+        val isVideo = guessFromFileName(extension) == FileType.VIDEO
+        appContext.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
     }
 
     @Suppress("DEPRECATION")
