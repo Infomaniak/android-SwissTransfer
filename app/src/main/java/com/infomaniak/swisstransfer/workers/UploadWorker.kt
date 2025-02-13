@@ -111,8 +111,8 @@ class UploadWorker @AssistedInject constructor(
                     emitProgress(totalSize, uploadSession.authorEmail)
                 }
                 thumbnailsLocalStorage.renameFileWith(
-                    fileSession.name.substring(0, fileSession.name.indexOfLast { it == '.' }),
-                    fileSession.remoteUploadFile!!.uuid,
+                    currentFileName = fileSession.name.substringBeforeLast('.'),
+                    newFileName = fileSession.remoteUploadFile!!.uuid,
                 )
             }
 
