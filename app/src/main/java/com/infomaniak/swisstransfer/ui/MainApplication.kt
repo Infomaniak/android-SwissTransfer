@@ -79,9 +79,7 @@ class MainApplication : Application(), Configuration.Provider {
             accountUtils.init()
 
             withContext(ioDispatcher) {
-                transferManager.getTransfers(TransferDirection.SENT).collectLatest {
-                    thumbnailsLocalStorage.cleanExpiredThumbnails(it)
-                }
+                transferManager.getTransfers(TransferDirection.SENT).collectLatest(thumbnailsLocalStorage::cleanExpiredThumbnails)
             }
 
             if (accountUtils.isUserConnected()) transferManager.deleteExpiredTransfers()

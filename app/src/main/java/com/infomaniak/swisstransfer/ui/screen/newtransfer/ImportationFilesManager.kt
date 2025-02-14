@@ -20,14 +20,11 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
-import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.util.Log
 import androidx.core.net.toUri
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.core.thumbnails.ThumbnailsUtils
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -131,8 +128,9 @@ class ImportationFilesManager @Inject constructor(
                     mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                     path = null,
-                    thumbnailPath = thumbnailsLocalStorage.getOngoingThumbnailFor(copiedFile.nameWithoutExtension).toUri().toString(),
-                )
+                    thumbnailPath = thumbnailsLocalStorage.getOngoingThumbnailFor(copiedFile.nameWithoutExtension).toUri()
+                        .toString(),
+                ),
             )
         }
     }
@@ -158,7 +156,7 @@ class ImportationFilesManager @Inject constructor(
 
             SentryLog.v(TAG, "Restoring files after activity recreation with file size in bytes: $fileSizeInBytes")
 
-            FileUi(
+            return@mapNotNull FileUi(
                 uid = localFile.name,
                 fileName = localFile.name,
                 isFolder = false,

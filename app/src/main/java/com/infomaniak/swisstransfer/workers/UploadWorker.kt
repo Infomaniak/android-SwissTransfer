@@ -62,11 +62,11 @@ class UploadWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val appSettingsManager: AppSettingsManager,
     private val importLocalStorage: ImportLocalStorage,
-    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val notificationsUtils: NotificationsUtils,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
-    private val uploadManager: UploadManager,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val transferManager: TransferManager,
+    private val uploadManager: UploadManager,
 ) : BaseCoroutineWorker(appContext, params) {
 
     private val fileChunkSizeManager by lazy {

@@ -34,14 +34,14 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
 
     private val importFolder by lazy { File(appContext.filesDir, IMPORTED_FILES) }
 
-    private val _copiedBytes = MutableStateFlow<Long>(0)
+    private val _copiedBytes = MutableStateFlow(0L)
     val copiedBytes: StateFlow<Long> = _copiedBytes.asStateFlow()
 
     /**
      * This method is used to reset the copied bytes when the session is reset
      */
     fun resetCopiedBytes() {
-        _copiedBytes.update { 0 }
+        _copiedBytes.update { 0L }
     }
 
     fun removeImportFolder() {
@@ -55,7 +55,7 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
     fun copyUriDataLocally(inputStream: InputStream, fileName: String): Result<File> {
         val fileToCreate = File(getImportFolderOrCreate(), fileName)
         return FileUtils.copyUriDataLocally(fileToCreate, inputStream) { copiedBytes ->
-            _copiedBytes.update { it + copiedBytes }
+            _copiedBytes.update { previousBytes -> previousBytes + copiedBytes }
         }
     }
 

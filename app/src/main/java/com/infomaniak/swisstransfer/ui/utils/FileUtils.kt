@@ -28,11 +28,10 @@ object FileUtils {
         inputStream: InputStream,
         copiedBytes: ((Int) -> Unit)? = null,
     ): Result<File> = runCatching {
-        fileToCreate.also { file ->
-            if (file.exists()) file.delete()
-            file.createNewFile()
-            copyStreams(inputStream, file.outputStream(), copiedBytes)
-        }
+        if (fileToCreate.exists()) fileToCreate.delete()
+        fileToCreate.createNewFile()
+        copyStreams(inputStream, fileToCreate.outputStream(), copiedBytes)
+        return@runCatching fileToCreate
     }
 
     private fun copyStreams(inputStream: InputStream, outputStream: OutputStream, copiedBytes: ((Int) -> Unit)?) {
