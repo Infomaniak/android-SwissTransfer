@@ -23,11 +23,7 @@ import androidx.work.Configuration
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.ui.utils.AccountUtils
-import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
-import com.infomaniak.swisstransfer.ui.utils.getPreference
+import com.infomaniak.swisstransfer.ui.utils.*
 import dagger.hilt.android.HiltAndroidApp
 import io.sentry.SentryEvent
 import io.sentry.SentryOptions
