@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import androidx.core.net.toUri
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.filetypes.FileType.Companion.guessFromFileName
@@ -31,7 +31,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,9 +51,9 @@ class ThumbnailsLocalStorage @Inject constructor(
     }
 
     suspend fun cleanExpiredThumbnails(transfers: List<TransferUi>) = withContext(ioDispatcher) {
-        thumbnailsFolder.listFiles()?.forEach { file ->
-            if (file.name != THUMBNAILS_ONGOING_TRANSFER_FOLDER && transfers.none { it.uuid == file.name }) {
-                file.deleteRecursively()
+        thumbnailsFolder.listFiles()?.forEach { transferFolder ->
+            if (transferFolder.name != THUMBNAILS_ONGOING_TRANSFER_FOLDER && transfers.none { it.uuid == transferFolder.name }) {
+                transferFolder.deleteRecursively()
             }
         }
     }
@@ -101,22 +100,12 @@ class ThumbnailsLocalStorage @Inject constructor(
 
     @Suppress("DEPRECATION")
     private fun Bitmap.copyTo(outputFile: File): File? {
-        var fileOutputStream: FileOutputStream? = null
-        try {
-            fileOutputStream = FileOutputStream(outputFile)
-
-            val compressFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Bitmap.CompressFormat.WEBP_LOSSY
-            } else {
-                Bitmap.CompressFormat.WEBP
-            }
+        val fileOutputStream = runCatching { FileOutputStream(outputFile) }.getOrNull() ?: return null
+        return runCatching {
+            val compressFormat = if (SDK_INT >= 30) Bitmap.CompressFormat.WEBP_LOSSY else Bitmap.CompressFormat.WEBP
             compress(compressFormat, 100, fileOutputStream)
-            return outputFile
-        } catch (e: IOException) {
-            return null
-        } finally {
-            fileOutputStream?.close()
-        }
+            return@runCatching outputFile
+        }.getOrNull().also { fileOutputStream.close() }
     }
     //endregion
 

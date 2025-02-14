@@ -62,10 +62,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
-    private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
-    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val newTransferOpenManager: NewTransferOpenManager,
+    private val savedStateHandle: SavedStateHandle,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
