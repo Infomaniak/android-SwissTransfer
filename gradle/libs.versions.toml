@@ -17,7 +17,6 @@ lifecycleRuntimeKtx = "2.8.7"
 lottie = "6.6.2"
 navigation = "2.8.5"
 qrose = "1.0.1"
-recaptcha = "18.6.1"
 sentry = "4.12.0"
 swisstransfer = "1.0.5"
 workmanager = "2.10.0"
@@ -49,7 +48,6 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
-recaptcha = { module = "com.google.android.recaptcha:recaptcha", version.ref = "recaptcha" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
 workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
