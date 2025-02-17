@@ -25,13 +25,15 @@ import android.net.Uri
 import com.infomaniak.core.ForegroundService
 import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.withPartialWakeLock
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.FileToUploadMetadata
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
+import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
-import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
@@ -43,14 +45,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.invoke
-import splitties.init.appCtx
 import splitties.intents.serviceWithoutExtrasSpec
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKilled = true) {
 
     companion object : ForegroundService.Companion.NoExtras<UploadForegroundService>(
         intentSpec = serviceWithoutExtrasSpec<UploadForegroundService>(),
-        notificationId = 0
+        notificationId = NotificationsUtils.Ids.LastUpload
     ) {
         val state: StateFlow<UploadState?>
         val pickedFilesFlow: StateFlow<List<PickedFile>>
@@ -73,13 +76,21 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         }
     }
 
+    @Inject
+    internal lateinit var uploadManager: UploadManager
+
+    @Inject
+    internal lateinit var sharedApiUrlCreator: SharedApiUrlCreator
+
+    @Inject
+    internal lateinit var notificationUtils: NotificationsUtils
+
     override fun getStartNotification(intent: Intent, isReDelivery: Boolean): Notification {
         TODO("Show 'Transfer draft' 'Continue where you left off'")
     }
 
     override suspend fun run() = Dispatchers.Default {
         val startSignal = startUploadChannel.receive()
-        val uploadManager = EntryPointAccessors.fromApplication<UploadManager>(appCtx)
         val uploader: TransferUploader = createUploadSession(
             uploadManager = uploadManager,
             startParams = startSignal,

@@ -27,4 +27,5 @@ interface PickedFilesExtractor {
     val isHandlingUrisFlow: StateFlow<Boolean>
 
     fun addUris(uris: List<Uri>)
+    fun clear()
 }

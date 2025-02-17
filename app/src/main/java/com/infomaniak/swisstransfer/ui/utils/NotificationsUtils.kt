@@ -34,6 +34,8 @@ import com.infomaniak.swisstransfer.ui.navigation.NotificationNavigation
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_AUTHOR_EMAIL_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -91,6 +93,49 @@ class NotificationsUtils @Inject constructor(
         )
     }
 
+    fun uploadSucceeded(
+        transferType: TransferTypeUi,
+        transferUuid: String,
+        transferUrl: String
+    ) {
+        val descriptionResId = if (transferType == TransferTypeUi.Mail) {
+            R.string.notificationUploadSuccessDescriptionMail
+        } else {
+            R.string.notificationUploadSuccessDescriptionOther
+        }
+        val contentIntent = Intent(appContext, NewTransferActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
+            .putExtra(TRANSFER_TYPE_KEY, transferType.name)
+            .putExtra(TRANSFER_UUID_KEY, transferUuid)
+            .putExtra(TRANSFER_URL_KEY, transferUrl)
+        val notification = uploadNotificationBuilder(
+            title = appContext.getString(R.string.notificationUploadSuccessTitle),
+            description = appContext.getString(descriptionResId),
+            intent = contentIntent
+        ).build()
+        notification.post(Ids.LastUpload)
+    }
+
+    fun uploadFailed(
+        transferType: TransferTypeUi,
+        authorEmail: String,
+        totalBytes: Long,
+    ) {
+        val contentIntent = Intent(appContext, NewTransferActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadFailure.name)
+            .putExtra(TRANSFER_TYPE_KEY, transferType.name)
+            .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
+            .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalBytes)
+        val notification = uploadNotificationBuilder(
+            title = appContext.getString(R.string.notificationUploadFailureTitle),
+            description = appContext.getString(R.string.notificationUploadFailureDescription),
+            intent = contentIntent
+        ).build()
+        notification.post(Ids.LastUpload)
+    }
+
     private fun buildUploadProgressNotification(
         title: String,
         description: String? = null,
@@ -104,27 +149,21 @@ class NotificationsUtils @Inject constructor(
             .putExtra(TRANSFER_TYPE_KEY, transferType.name)
             .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
             .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalBytes)
-        return buildUploadNotification(
-            requestCode = 0, // We don't need it to change since we have no concurrent uploads
+        return uploadNotificationBuilder(
             intent = contentIntent,
             title = title,
             description = description,
         ).build()
     }
 
-    fun sendUploadNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
-        sendNotification(notificationId, buildUploadNotification(notificationId, intent, title, description))
-    }
-
-    private fun buildUploadNotification(
-        requestCode: Int,
+    private fun uploadNotificationBuilder(
         intent: Intent,
         title: String,
         description: String? = null,
     ): NotificationCompat.Builder = with(appContext) {
         return@with buildNotification(
             channelId = getString(R.string.notifications_upload_channel_id),
-            requestCode = requestCode,
+            requestCode = 0, // We don't need it to change since we have no concurrent uploads
             intent = intent,
             icon = defaultSmallIcon,
             iconColor = notificationIconColor,
@@ -134,12 +173,16 @@ class NotificationsUtils @Inject constructor(
         )
     }
 
-    private fun sendNotification(notificationId: Int, builder: NotificationCompat.Builder) {
-        notificationManagerCompat.notifyCompat(appContext, notificationId, builder.build())
+    private fun Notification.post(id: Int) {
+        notificationManagerCompat.notifyCompat(appContext, id, this)
     }
 
     fun cancelNotification(notificationId: Int) {
         appContext.cancelNotification(notificationId)
+    }
+
+    object Ids {
+        const val LastUpload = 1
     }
 
     companion object {

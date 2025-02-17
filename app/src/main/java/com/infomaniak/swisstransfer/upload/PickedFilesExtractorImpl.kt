@@ -51,6 +51,10 @@ class PickedFilesExtractorImpl : PickedFilesExtractor {
         incomingActions.trySend(FilePickingAction.Add(uris))
     }
 
+    override fun clear() {
+        incomingActions.trySend(FilePickingAction.ClearAll)
+    }
+
     private var isHandlingUris by MutableStateFlow(false).also {
         isHandlingUrisFlow = it.asStateFlow()
     }::value
@@ -75,8 +79,9 @@ class PickedFilesExtractorImpl : PickedFilesExtractor {
 }
 
 private sealed interface FilePickingAction {
-    class Add(val newUris: List<Uri>) : FilePickingAction
-    class Removal(val urisToRemove: List<Uri>) : FilePickingAction
+    data class Add(val newUris: List<Uri>) : FilePickingAction
+    data class Removal(val urisToRemove: List<Uri>) : FilePickingAction
+    data object ClearAll : FilePickingAction
 }
 
 private suspend fun FilePickingAction.applyTo(pickedFiles: MutableMap<Uri, PickedFile>) {
@@ -95,6 +100,7 @@ private suspend fun FilePickingAction.applyTo(pickedFiles: MutableMap<Uri, Picke
         is FilePickingAction.Removal -> {
             urisToRemove.forEach { pickedFiles.remove(it) }
         }
+        is FilePickingAction.ClearAll -> pickedFiles.clear()
     }
 }
 
@@ -164,6 +170,7 @@ private const val maxBytesPerFile = MAX_FILES_SIZE
 private const val TAG = "PickedFilesExtractorImpl"
 
 private suspend fun Collection<PickedFile>.withDuplicatedNamesFixed(): List<PickedFile> {
+    if (isEmpty()) return emptyList()
     //TODO: Replace AlreadyUsedFileNamesSet with a non-suspend, Mutex-free version.
     // We don't need that since we're processing all picked files sequentially.
     val alreadyUsedFileNames = AlreadyUsedFileNamesSet()

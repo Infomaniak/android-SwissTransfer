@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.workers
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.compose.runtime.Immutable
@@ -34,9 +33,6 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
-import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.NewTransferActivity
-import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
@@ -190,38 +186,18 @@ class UploadWorker @AssistedInject constructor(
     }
 
     private fun displaySuccessNotification(transferUuid: String) {
-
-        val transferUrl = sharedApiUrlCreator.shareTransferUrl(transferUuid)
-        val descriptionResId = if (transferType == TransferTypeUi.Mail) {
-            R.string.notificationUploadSuccessDescriptionMail
-        } else {
-            R.string.notificationUploadSuccessDescriptionOther
-        }
-
-        notificationsUtils.sendUploadNotification(
-            notificationId = NOTIFICATION_ID,
-            intent = Intent(applicationContext, NewTransferActivity::class.java)
-                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
-                .putExtra(TRANSFER_TYPE_KEY, transferType.name)
-                .putExtra(TRANSFER_UUID_KEY, transferUuid)
-                .putExtra(TRANSFER_URL_KEY, transferUrl),
-            title = applicationContext.getString(R.string.notificationUploadSuccessTitle),
-            description = applicationContext.getString(descriptionResId),
+        notificationsUtils.uploadSucceeded(
+            transferType = transferType,
+            transferUuid = transferUuid,
+            transferUrl = sharedApiUrlCreator.shareTransferUrl(transferUuid)
         )
     }
 
     private fun displayFailureNotification(totalSize: Long, authorEmail: String) {
-        notificationsUtils.sendUploadNotification(
-            notificationId = NOTIFICATION_ID,
-            intent = Intent(applicationContext, NewTransferActivity::class.java)
-                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadFailure.name)
-                .putExtra(TRANSFER_TYPE_KEY, transferType.name)
-                .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
-                .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
-            title = applicationContext.getString(R.string.notificationUploadFailureTitle),
-            description = applicationContext.getString(R.string.notificationUploadFailureDescription),
+        notificationsUtils.uploadFailed(
+            transferType = transferType,
+            authorEmail = authorEmail,
+            totalBytes = totalSize
         )
     }
 
