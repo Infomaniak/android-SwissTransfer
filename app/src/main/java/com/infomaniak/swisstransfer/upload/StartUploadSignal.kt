@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 
 data class StartUploadSignal(
@@ -26,12 +28,12 @@ data class StartUploadSignal(
 ) {
     data class Request(
         val validityPeriod: ValidityPeriod,
-        val authorEmail: String = "",
-        val authorEmailToken: String? = null,
-        val password: String = "",
-        val message: String = "",
-        val downloadCountLimit: Int = 0,
-        val languageCode: String = "",
-        val recipientsEmails: String = "",
+        val authorEmail: String,
+        val authorEmailToken: String?,
+        val password: String,
+        val message: String,
+        val downloadCountLimit: DownloadLimit,
+        val languageCode: EmailLanguage,
+        val recipientsEmails: Set<String>,
     )
 }

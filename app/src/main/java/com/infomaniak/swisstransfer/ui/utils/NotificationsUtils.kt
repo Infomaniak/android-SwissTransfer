@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -25,9 +26,18 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.infomaniak.core.notifications.*
+import com.infomaniak.core.percent
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.NewTransferActivity
+import com.infomaniak.swisstransfer.ui.navigation.NOTIFICATION_NAVIGATION_KEY
+import com.infomaniak.swisstransfer.ui.navigation.NotificationNavigation
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_AUTHOR_EMAIL_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext
+import splitties.init.appCtx
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,11 +62,61 @@ class NotificationsUtils @Inject constructor(
         createNotificationChannels(channelList)
     }
 
+    fun buildUploadProgressNotification(
+        authorEmail: String,
+        transferType: TransferTypeUi,
+        totalBytes: Long,
+    ): Notification = buildUploadProgressNotification(
+        title = appContext.getString(R.string.uploadProgressIndication),
+        authorEmail = authorEmail,
+        transferType = transferType,
+        totalBytes = totalBytes
+    )
+
+    fun buildUploadProgressNotification(
+        authorEmail: String,
+        transferType: TransferTypeUi,
+        totalBytes: Long,
+        uploadedBytes: Long,
+    ): Notification {
+        val percent = percent(uploadedBytes, totalBytes)
+        val current = HumanReadableSizeUtils.getHumanReadableSize(appContext, uploadedBytes)
+        val total = HumanReadableSizeUtils.getHumanReadableSize(appContext, totalBytes)
+        return buildUploadProgressNotification(
+            title = appContext.getString(R.string.notificationUploadProgressTitle, percent),
+            description = "$current / $total",
+            authorEmail = authorEmail,
+            transferType = transferType,
+            totalBytes = totalBytes
+        )
+    }
+
+    private fun buildUploadProgressNotification(
+        title: String,
+        description: String? = null,
+        authorEmail: String,
+        transferType: TransferTypeUi,
+        totalBytes: Long
+    ): Notification {
+        val contentIntent = Intent(appCtx, NewTransferActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
+            .putExtra(TRANSFER_TYPE_KEY, transferType.name)
+            .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
+            .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalBytes)
+        return buildUploadNotification(
+            requestCode = 0, // We don't need it to change since we have no concurrent uploads
+            intent = contentIntent,
+            title = title,
+            description = description,
+        ).build()
+    }
+
     fun sendUploadNotification(notificationId: Int, intent: Intent, title: String, description: String? = null) {
         sendNotification(notificationId, buildUploadNotification(notificationId, intent, title, description))
     }
 
-    fun buildUploadNotification(
+    private fun buildUploadNotification(
         requestCode: Int,
         intent: Intent,
         title: String,

@@ -59,7 +59,7 @@ class TransferUploader(
 
     suspend fun uploadAllRemainingWithRetries() {
         uploadFiles()
-        NewUploadSession(
+        val session = NewUploadSession(
             duration = request.validityPeriod,
             authorEmail = request.authorEmail,
             authorEmailToken = request.authorEmailToken,
@@ -68,13 +68,11 @@ class TransferUploader(
             numberOfDownload = request.downloadCountLimit,
             language = request.languageCode,
             recipientsEmails = request.recipientsEmails,
-            files = pickedFiles.map {
-                TODO()
-            },
-            uuid = "",
-            remoteContainer =
+            files = pickedFiles.map { it.toUploadFileSession() },
+            remoteContainer = destination.container,
+            remoteUploadHost = destination.uploadHost
         )
-        uploadManager.finalizeUploadSession(TODO()) //TODO: Also retry that if needed, and make sure the backend supports it.
+        uploadManager.finalizeUploadSession(session) //TODO: Also retry that if needed, and make sure the backend supports it.
         //TODO: Ensure the thumbnails directory is renamed, as done in UploadWorker
     }
 
@@ -226,7 +224,7 @@ class TransferUploader(
         var oldBytesSentTotal = 0L
         uploadManager.uploadChunk(
             uploadHost = destination.uploadHost,
-            remoteContainerUuid = destination.containerUuid,
+            remoteContainerUuid = destination.container.uuid,
             fileUUID = fileUUID,
             chunkIndex = chunkIndex,
             isLastChunk = isLastChunk,

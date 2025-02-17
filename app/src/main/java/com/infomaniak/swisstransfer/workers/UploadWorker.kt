@@ -41,7 +41,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.totalFileSize
 import dagger.assisted.Assisted
@@ -164,44 +163,30 @@ class UploadWorker @AssistedInject constructor(
     override suspend fun getForegroundInfo(): ForegroundInfo {
 
         val uploadSession = uploadSessionJob.await()
-        val builder = notificationsUtils.buildUploadNotification(
-            requestCode = serviceNotificationId,
-            intent = createProgressNotificationIntent(uploadSession.totalFileSize(), uploadSession.authorEmail),
-            title = applicationContext.getString(R.string.uploadProgressIndication),
+        val notification = notificationsUtils.buildUploadProgressNotification(
+            authorEmail = uploadSession.authorEmail,
+            transferType = transferType,
+            totalBytes = uploadSession.totalFileSize()
         )
 
-        return ForegroundInfo(serviceNotificationId, builder.build())
+        return ForegroundInfo(serviceNotificationId, notification)
     }
 
     private suspend fun displayProgressNotification(totalSize: Long, authorEmail: String) {
-
-        val percent = percent(uploadedBytes, totalSize)
-        val current = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, uploadedBytes)
-        val total = HumanReadableSizeUtils.getHumanReadableSize(applicationContext, totalSize)
-
-        val builder = notificationsUtils.buildUploadNotification(
-            requestCode = serviceNotificationId,
-            intent = createProgressNotificationIntent(totalSize, authorEmail),
-            title = applicationContext.getString(R.string.notificationUploadProgressTitle, percent),
-            description = "$current / $total",
+        val notification = notificationsUtils.buildUploadProgressNotification(
+            authorEmail = authorEmail,
+            transferType = transferType,
+            totalBytes = totalSize,
+            uploadedBytes = uploadedBytes
         )
 
         val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(serviceNotificationId, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            ForegroundInfo(serviceNotificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
-            ForegroundInfo(serviceNotificationId, builder.build())
+            ForegroundInfo(serviceNotificationId, notification)
         }
 
         setForeground(foregroundInfo)
-    }
-
-    private fun createProgressNotificationIntent(totalSize: Long, authorEmail: String): Intent {
-        return Intent(applicationContext, NewTransferActivity::class.java)
-            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
-            .putExtra(TRANSFER_TYPE_KEY, transferType.name)
-            .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
-            .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
     }
 
     private fun displaySuccessNotification(transferUuid: String) {
