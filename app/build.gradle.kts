@@ -128,9 +128,10 @@ sentry {
     projectName = "swisstransfer-android"
     authToken = sentryAuthToken
     url = "https://sentry-mobile.infomaniak.com"
-    uploadNativeSymbols = true
+    includeDependenciesReport = false
     includeNativeSources = true
     includeSourceContext = true
+    uploadNativeSymbols = true
 }
 
 dependencies {
