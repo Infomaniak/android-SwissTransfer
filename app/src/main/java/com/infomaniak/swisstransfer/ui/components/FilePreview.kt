@@ -49,15 +49,18 @@ import com.infomaniak.swisstransfer.ui.utils.hasPreview
 @Composable
 fun FilePreview(
     file: FileUi,
+    previewUri: String? = file.localPath,
     circleColor: Color,
     circleSize: Dp,
     showFileName: Boolean,
     fileIconContentPadding: PaddingValues = PaddingValues(),
 ) {
-    var shouldDisplayPreview by rememberSaveable(file.thumbnailPath) { mutableStateOf(file.hasPreview) }
+    var shouldDisplayPreview by rememberSaveable(previewUri) { mutableStateOf(file.hasPreview) }
+    // TODO: use only thumbnailPath but for now, it's incompatible with received transfers
+    val thumbnail = file.thumbnailPath ?: previewUri
 
-    if (shouldDisplayPreview && file.thumbnailPath != null) {
-        FileThumbnail(file.thumbnailPath!!, onError = { shouldDisplayPreview = false })
+    if (shouldDisplayPreview && thumbnail != null) {
+        FileThumbnail(thumbnail, onError = { shouldDisplayPreview = false })
     } else {
         FileIcon(file.fileType, circleColor, circleSize, file.fileName, showFileName, fileIconContentPadding)
     }
