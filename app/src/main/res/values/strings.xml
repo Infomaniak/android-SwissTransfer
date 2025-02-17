@@ -52,7 +52,6 @@
     <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorIncorrectPassword">Incorrect password</string>
     <string name="errorTransferPasswordLength">The password must be between 6 and 25 characters</string>
-    <string name="errorUnknown">An error has occurred</string>
     <string name="expiresIn">Expires in %d days</string>
     <string name="expiresToday">Expires today</string>
     <string name="expiresTomorrow">Expires tomorrow</string>
