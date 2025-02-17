@@ -41,13 +41,12 @@
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="deeplinkPasswordDescription">Gib das Passwort ein, das du erhalten hast, um diese Dateien herunterzuladen.</string>
-    <string name="deeplinkTransferExpired">Diese Überweisung ist abgelaufen</string>
+    <string name="deeplinkTransferExpired">Diese Transfer ist abgelaufen</string>
     <string name="deeplinkTransferNotFound">Diese Übertragung gibt es nicht</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
     <string name="errorAppIntegrity">Ihr Gerät wird nicht als sicher erkannt</string>
     <string name="errorIncorrectPassword">Falsches Kennwort</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
-    <string name="errorUnknown">Ein Fehler ist aufgetreten</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <string name="expiresToday">Läuft heute ab</string>
     <string name="expiresTomorrow">Läuft morgen ab</string>
@@ -55,7 +54,7 @@
         <item quantity="one">%d Datei</item>
         <item quantity="other">%d Dateien</item>
     </plurals>
-    <string name="firstTransferDescription">Mache deine erste Überweisung!</string>
+    <string name="firstTransferDescription">Mach deinen ersten Transfer!</string>
     <string name="fromHeader">Von:</string>
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
     <string name="invalidAddress">Ungültige Adresse</string>
@@ -69,8 +68,8 @@
     <string name="noFileDescription">Fügt bis zu 50 GB an Dateien hinzu</string>
     <string name="noFileTitle">Keine Datei, keine Übertragung!</string>
     <string name="noSettingsSelectedDescription">Wählt einen Parameter zur Anzeige aus</string>
-    <string name="noTransferReceivedDescription">Alle Überweisungen, die du in den letzten 30 Tagen erhältst, werden hier angezeigt.</string>
-    <string name="noTransferReceivedTitle">Keine Überweisungen erhalten</string>
+    <string name="noTransferReceivedDescription">Alle Transfers der letzten 30 Tage, werden hier angezeigt.</string>
+    <string name="noTransferReceivedTitle">Keinen Transfer erhalten</string>
     <string name="noTransferSelectedDescription">Wähle eine Übertragung aus oder erstelle eine neue.</string>
     <string name="noTransferSelectedTitle">Keine Transfers zum Anzeigen</string>
     <string name="notificationUploadFailureDescription">Ein Problem ist aufgetreten, bitte versuchen Sie es erneut</string>
@@ -102,7 +101,7 @@
     <string name="settingsCategoryAbout">Über</string>
     <string name="settingsCategoryDataManagement">Daten &amp; Datenschutz</string>
     <string name="settingsCategoryDefaultSettings">Standardeinstellungen</string>
-    <string name="settingsCategoryGeneral">General</string>
+    <string name="settingsCategoryGeneral">Allgemein</string>
     <string name="settingsDataManagementDescription">Sie können die Nutzungs- und Betriebsdaten, die Infomaniak abruft, individuell anpassen, um Fehler zu beheben und die Anwendung zu verbessern. Beide Tools werden ausschliesslich von uns gehostet und verwaltet.\n\nInfomaniak respektiert Ihre Privatsphäre: Der Quellcode dieser Anwendung kann überprüft werden, die gesammelten Informationen sind anonym und Ihre persönlichen Daten werden streng vertraulich behandelt und niemals an Dritte weitergegeben.</string>
     <string name="settingsDataManagementSourceCode">Siehe Quellcode</string>
     <string name="settingsDownloadsLimitTitle">Lege ein Standardlimit für deine Uploads fest</string>
@@ -124,7 +123,7 @@
     <string name="settingsOptionNotifications">Benachrichtigungen</string>
     <string name="settingsOptionPassword">Passwort</string>
     <string name="settingsOptionShareIdeas">Teile deine Ideen</string>
-    <string name="settingsOptionTheme">Thema</string>
+    <string name="settingsOptionTheme">Design</string>
     <string name="settingsOptionThemeDark">Dunkel</string>
     <string name="settingsOptionThemeLight">Hell</string>
     <string name="settingsOptionThemeSystem">System</string>
@@ -146,7 +145,7 @@
     <string name="shareQrCodeTitle">Schnelles Teilen</string>
     <string name="snackbarLinkCopiedToClipboard">Link in die Zwischenablage kopiert</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
-    <string name="textFieldOptional">(Fakultativ)</string>
+    <string name="textFieldOptional">(Optional)</string>
     <string name="transferContentHeader">Inhalt der Übertragung:</string>
     <string name="transferExpired">Transfer abgelaufen</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
@@ -174,7 +173,7 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Übertragen</string>
     <string name="transferTypeTitle">Schicken per</string>
-    <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Überweisung rückgängig machen willst?</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Transfer rückgängig machen willst?</string>
     <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
     <string name="uploadErrorTitle">Was ist das denn?</string>
     <string name="uploadProgressDescriptionArgumentConfidentiality">einem Internet bei, das den Datenschutz und die Privatsphäre respektiert.</string>
@@ -190,9 +189,9 @@
         <item quantity="one">Der Download-Link wurde erfolgreich an den folgenden Empfänger gesendet:</item>
         <item quantity="other">Der Download-Link wurde an die folgenden Empfänger gesendet:</item>
     </plurals>
-    <string name="uploadSuccessEmailTitle">Hoppla, das ist gesendet!</string>
+    <string name="uploadSuccessEmailTitle">Versand ist erfolgt. Cheers!</string>
     <string name="uploadSuccessLinkDescription">Lass diesen QR-Code in deiner Umgebung scannen, um deine Dateien weiterzugeben, oder kopiere den untenstehenden Link.</string>
-    <string name="uploadSuccessLinkTitle">Deine Überweisung ist fertig!</string>
+    <string name="uploadSuccessLinkTitle">Deine Transfer ist fertig!</string>
     <string name="uploadSuccessQrTitle">Dein QR-Code ist fertig!</string>
     <string name="urlAbout">https://www.infomaniak.com/de/about</string>
     <string name="urlUserReport">https://feedback.userreport.com/9abc7665-a78e-4fd2-aa41-a47a8b867fcd/#ideas/popular</string>

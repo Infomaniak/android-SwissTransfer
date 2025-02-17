@@ -47,7 +47,6 @@
     <string name="errorAppIntegrity">Su dispositivo no es reconocido como seguro</string>
     <string name="errorIncorrectPassword">Contraseña incorrecta</string>
     <string name="errorTransferPasswordLength">La contraseña debe tener entre 6 y 25 caracteres</string>
-    <string name="errorUnknown">Se ha producido un error</string>
     <string name="expiresIn">Caduca en %d días</string>
     <string name="expiresToday">Caduca hoy</string>
     <string name="expiresTomorrow">Expira mañana</string>
@@ -126,7 +125,7 @@
     <string name="settingsOptionShareIdeas">Comparte tus ideas</string>
     <string name="settingsOptionTheme">Tema</string>
     <string name="settingsOptionThemeDark">Oscuro</string>
-    <string name="settingsOptionThemeLight">Luz</string>
+    <string name="settingsOptionThemeLight">Claro</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
     <string name="settingsOptionValidityPeriod">Periodo de validez</string>
     <string name="settingsPasswordDescription">Los destinatarios tendrán que introducir la contraseña para descargar los archivos.</string>
