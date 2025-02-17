@@ -62,9 +62,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ImportFilesViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
-    private val savedStateHandle: SavedStateHandle,
     private val importationFilesManager: ImportationFilesManager,
     private val newTransferOpenManager: NewTransferOpenManager,
+    private val savedStateHandle: SavedStateHandle,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
@@ -192,6 +193,7 @@ class ImportFilesViewModel @Inject constructor(
     fun removeFileByUid(uid: String) {
         viewModelScope.launch(ioDispatcher) {
             importationFilesManager.removeFileByUid(uid)
+            thumbnailsLocalStorage.removeThumbnailForOngoingTransfer(uid)
         }
     }
 
@@ -207,6 +209,7 @@ class ImportFilesViewModel @Inject constructor(
 
     private suspend fun removeOldData() {
         importationFilesManager.removeLocalCopyFolder()
+        thumbnailsLocalStorage.removeOngoingThumbnailsFolder()
         uploadManager.removeAllUploadSession()
     }
 

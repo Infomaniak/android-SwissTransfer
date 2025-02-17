@@ -18,7 +18,7 @@ lottie = "6.6.2"
 navigation = "2.8.5"
 qrose = "1.0.1"
 sentry = "4.12.0"
-swisstransfer = "1.0.5"
+swisstransfer = "1.0.6"
 workmanager = "2.10.0"
 
 [libraries]

@@ -2,6 +2,7 @@ buildscript {
     extra.apply {
         set("appCompileSdk", 35) // Ensure any extra configChanges are added into Activities' manifests.
         set("appMinSdk", 24)
+        set("legacyMinSdk", 21) // Duplicated from `Core/Legacy/build.gradle` : `legacyMinSdk = 21`
         set("javaVersion", JavaVersion.VERSION_17)
     }
 }

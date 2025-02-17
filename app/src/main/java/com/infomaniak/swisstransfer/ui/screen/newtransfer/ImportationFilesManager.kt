@@ -47,6 +47,7 @@ import javax.inject.Inject
 class ImportationFilesManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val importLocalStorage: ImportLocalStorage,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) {
 
@@ -106,6 +107,12 @@ class ImportationFilesManager @Inject constructor(
                 }.getOrNull()
             } ?: return@consume
 
+            thumbnailsLocalStorage.generateThumbnailFor(
+                fileUri = fileToImport.uri.toString(),
+                fileName = copiedFile.nameWithoutExtension,
+                extension = copiedFile.extension,
+            )
+
             SentryLog.i(TAG, "Successfully imported ${fileToImport.uri}")
 
             // Make sure the file size has to be correct by reading it from local io File
@@ -121,7 +128,9 @@ class ImportationFilesManager @Inject constructor(
                     mimeType = FileType.guessMimeTypeFromFileName(fileToImport.fileName),
                     localPath = copiedFile.toUri().toString(),
                     path = null,
-                )
+                    thumbnailPath = thumbnailsLocalStorage.getOngoingThumbnailFor(copiedFile.nameWithoutExtension).toUri()
+                        .toString(),
+                ),
             )
         }
     }
@@ -147,7 +156,7 @@ class ImportationFilesManager @Inject constructor(
 
             SentryLog.v(TAG, "Restoring files after activity recreation with file size in bytes: $fileSizeInBytes")
 
-            FileUi(
+            return@mapNotNull FileUi(
                 uid = localFile.name,
                 fileName = localFile.name,
                 isFolder = false,
@@ -155,6 +164,7 @@ class ImportationFilesManager @Inject constructor(
                 mimeType = null,
                 localPath = localFile.toUri().toString(),
                 path = null,
+                thumbnailPath = null,
             )
         }
     }

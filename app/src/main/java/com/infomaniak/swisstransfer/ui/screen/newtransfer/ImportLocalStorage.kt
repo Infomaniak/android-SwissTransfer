@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.content.Context
+import com.infomaniak.swisstransfer.ui.utils.FileUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.File
 import java.io.InputStream
-import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,14 +34,14 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
 
     private val importFolder by lazy { File(appContext.filesDir, IMPORTED_FILES) }
 
-    private val _copiedBytes = MutableStateFlow<Long>(0)
+    private val _copiedBytes = MutableStateFlow(0L)
     val copiedBytes: StateFlow<Long> = _copiedBytes.asStateFlow()
 
     /**
      * This method is used to reset the copied bytes when the session is reset
      */
     fun resetCopiedBytes() {
-        _copiedBytes.update { 0 }
+        _copiedBytes.update { 0L }
     }
 
     fun removeImportFolder() {
@@ -52,32 +52,16 @@ class ImportLocalStorage @Inject constructor(@ApplicationContext private val app
 
     fun getLocalFiles(): Array<File>? = importFolder.listFiles()
 
-    fun copyUriDataLocally(inputStream: InputStream, fileName: String): Result<File> = runCatching {
-        File(getImportFolderOrCreate(), fileName).also { file ->
-            if (file.exists()) file.delete()
-            file.createNewFile()
-            copyStreams(inputStream, file.outputStream())
-        }
-    }
-
-    private fun copyStreams(inputStream: InputStream, outputStream: OutputStream) {
-        return inputStream.use { input ->
-            outputStream.use { output ->
-                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                var bytes = input.read(buffer)
-                while (bytes >= 0) {
-                    output.write(buffer, 0, bytes)
-                    _copiedBytes.update { it + bytes }
-                    bytes = input.read(buffer)
-                }
-            }
+    fun copyUriDataLocally(inputStream: InputStream, fileName: String): Result<File> {
+        val fileToCreate = File(getImportFolderOrCreate(), fileName)
+        return FileUtils.copyUriDataLocally(fileToCreate, inputStream) { copiedBytes ->
+            _copiedBytes.update { previousBytes -> previousBytes + copiedBytes }
         }
     }
 
     private fun getImportFolderOrCreate() = importFolder.apply { if (!exists()) mkdirs() }
 
     companion object {
-        const val TAG = "Importation stream copy"
         private const val IMPORTED_FILES = "imported_files"
     }
 }

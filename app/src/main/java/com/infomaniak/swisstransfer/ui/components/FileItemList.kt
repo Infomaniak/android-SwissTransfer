@@ -123,7 +123,7 @@ fun FileItemList(
                                 .fillMaxWidth(),
                         )
                     }
-                }
+                },
             )
         }
     }

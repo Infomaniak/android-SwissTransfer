@@ -30,6 +30,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
@@ -37,6 +38,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
@@ -62,6 +64,8 @@ class UploadWorker @AssistedInject constructor(
     private val importLocalStorage: ImportLocalStorage,
     private val notificationsUtils: NotificationsUtils,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
+    private val transferManager: TransferManager,
     private val uploadManager: UploadManager,
 ) : BaseCoroutineWorker(appContext, params) {
 
@@ -106,9 +110,20 @@ class UploadWorker @AssistedInject constructor(
                     uploadedBytes += bytesSent
                     emitProgress(totalSize, uploadSession.authorEmail)
                 }
+                thumbnailsLocalStorage.renameFileWith(
+                    currentFileName = fileSession.name.substringBeforeLast('.'),
+                    newFileName = fileSession.remoteUploadFile!!.uuid,
+                )
             }
 
             val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
+
+            thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transferUuid)
+            transferManager.updateTransferFilesThumbnails(
+                transferUUID = transferUuid,
+                thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transferUuid).toString(),
+            )
+
             importLocalStorage.removeImportFolder()
 
             displaySuccessNotification(transferUuid)
