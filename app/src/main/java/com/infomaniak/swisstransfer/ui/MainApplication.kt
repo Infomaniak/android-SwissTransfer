@@ -22,6 +22,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -53,6 +54,9 @@ class MainApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var transferManager: TransferManager
+
+    @Inject
+    lateinit var fileManager: FileManager
 
     @Inject
     lateinit var thumbnailsLocalStorage: ThumbnailsLocalStorage
