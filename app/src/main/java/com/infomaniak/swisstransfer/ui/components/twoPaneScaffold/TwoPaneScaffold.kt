@@ -18,21 +18,11 @@
 package com.infomaniak.swisstransfer.ui.components.twoPaneScaffold
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.VisibleForTesting
-import androidx.collection.IntList
-import androidx.collection.MutableIntList
-import androidx.collection.emptyIntList
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.*
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.MutatorMutex
-import androidx.compose.foundation.gestures.DragScope
-import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.*
@@ -41,10 +31,7 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,9 +46,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.*
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.TwoPaneScaffoldHorizontalOrder.Companion.defaultPaneOrder
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
-import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToInt
 
 /**
@@ -95,253 +82,47 @@ fun <T> TwoPaneScaffold(
 
     BackHandler(navigator.canPopBackStack()) { navigator.popBackStack() }
 
-    ListDetailPaneScaffold(
-        directive = navigator.scaffoldDirective,
-        value = navigator.scaffoldValue,
-        listPane = { AnimatedPane { navigator.listPane() } },
-        detailPane = { AnimatedPane { navigator.detailPane() } },
-        modifier = modifier,
-    )
-}
-
-@ExperimentalMaterial3AdaptiveApi
-@Composable
-fun ListDetailPaneScaffold(
-    directive: PaneScaffoldDirective,
-    value: ThreePaneScaffoldValue,
-    listPane: @Composable TwoPaneScaffoldScope.() -> Unit,
-    detailPane: @Composable TwoPaneScaffoldScope.() -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    ThreePaneScaffold(
+    TwoPaneScaffold(
         modifier = modifier.fillMaxSize(),
-        scaffoldDirective = directive,
-        scaffoldValue = value,
-        paneOrder = ListDetailPaneScaffoldDefaults.PaneOrder,
-        secondaryPane = listPane,
-        primaryPane = detailPane
+        scaffoldDirective = navigator.scaffoldDirective,
+        scaffoldValue = navigator.scaffoldValue,
+        paneOrder = defaultPaneOrder,
+        primaryPane = { AnimatedPane { navigator.detailPane() } },
+        secondaryPane = { AnimatedPane { navigator.listPane() } },
     )
 }
 
 @ExperimentalMaterial3AdaptiveApi
 @Composable
-internal fun ThreePaneScaffold(
+private fun TwoPaneScaffold(
     modifier: Modifier,
     scaffoldDirective: PaneScaffoldDirective,
     scaffoldValue: ThreePaneScaffoldValue,
     paneOrder: TwoPaneScaffoldHorizontalOrder,
-    secondaryPane: @Composable TwoPaneScaffoldScope.() -> Unit,
     paneExpansionState: PaneExpansionState = remember { PaneExpansionState() },
     paneExpansionDragHandle: (@Composable (PaneExpansionState) -> Unit)? = null,
     primaryPane: @Composable TwoPaneScaffoldScope.() -> Unit,
+    secondaryPane: @Composable TwoPaneScaffoldScope.() -> Unit,
 ) {
     val scaffoldState = remember { SeekableTransitionState(scaffoldValue) }
     LaunchedEffect(key1 = scaffoldValue) { scaffoldState.animateTo(scaffoldValue) }
-    ThreePaneScaffold(
-        modifier = modifier,
-        scaffoldDirective = scaffoldDirective,
-        scaffoldState = scaffoldState,
-        paneOrder = paneOrder,
-        secondaryPane = secondaryPane,
-        paneExpansionState = paneExpansionState,
-        paneExpansionDragHandle = paneExpansionDragHandle,
-        primaryPane = primaryPane
-    )
-}
 
-@ExperimentalMaterial3AdaptiveApi
-@Immutable
-class TwoPaneScaffoldHorizontalOrder(
-    val firstPane: ThreePaneScaffoldRole, val secondPane: ThreePaneScaffoldRole
-) : PaneScaffoldHorizontalOrder<ThreePaneScaffoldRole> {
-    init {
-        require(firstPane != secondPane)
-    }
-
-    override val size = 2
-
-    override fun indexOf(role: ThreePaneScaffoldRole) = when (role) {
-        firstPane -> 0
-        secondPane -> 1
-        else -> -1
-    }
-
-    override fun forEach(action: (ThreePaneScaffoldRole) -> Unit) {
-        action(firstPane)
-        action(secondPane)
-    }
-
-    override fun forEachIndexed(action: (Int, ThreePaneScaffoldRole) -> Unit) {
-        action(0, firstPane)
-        action(1, secondPane)
-    }
-
-    override fun forEachIndexedReversed(action: (Int, ThreePaneScaffoldRole) -> Unit) {
-        action(1, secondPane)
-        action(0, firstPane)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return when {
-            other === this -> true
-            other !is TwoPaneScaffoldHorizontalOrder -> false
-            firstPane != other.firstPane -> false
-            secondPane != other.secondPane -> false
-            else -> true
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = firstPane.hashCode()
-        result = 31 * result + secondPane.hashCode()
-        return result
-    }
-}
-
-@ExperimentalMaterial3AdaptiveApi
-internal interface PaneScaffoldHorizontalOrder<T> {
-    val size: Int
-
-    fun indexOf(role: T): Int
-
-    fun forEach(action: (T) -> Unit)
-
-    fun forEachIndexed(action: (Int, T) -> Unit)
-
-    fun forEachIndexedReversed(action: (Int, T) -> Unit)
-}
-
-@ExperimentalMaterial3AdaptiveApi
-object ListDetailPaneScaffoldDefaults {
-    /**
-     * Denotes [ThreePaneScaffold] to use the list-detail pane-order to arrange its panes
-     * horizontally, which allocates panes in the order of secondary, primary, and tertiary from
-     * start to end.
-     */
-    internal val PaneOrder = TwoPaneScaffoldHorizontalOrder(
-        ThreePaneScaffoldRole.Secondary, ThreePaneScaffoldRole.Primary
-    )
-}
-
-@ExperimentalMaterial3AdaptiveApi
-@Stable
-class PaneExpansionState(val anchors: List<PaneExpansionAnchor> = emptyList()) : DraggableState {
-    private var firstPaneWidthState by mutableIntStateOf(UNSPECIFIED_WIDTH)
-    private var firstPanePercentageState by mutableFloatStateOf(Float.NaN)
-    private var currentDraggingOffsetState by mutableIntStateOf(UNSPECIFIED_WIDTH)
-
-    var firstPaneWidth: Int
-        set(value) {
-            firstPanePercentageState = Float.NaN
-            currentDraggingOffsetState = UNSPECIFIED_WIDTH
-            firstPaneWidthState = value.coerceIn(0, maxExpansionWidth)
-        }
-        get() = firstPaneWidthState
-
-    var firstPanePercentage: Float
-        set(value) {
-            require(value in 0f..1f)
-            firstPaneWidthState = UNSPECIFIED_WIDTH
-            currentDraggingOffsetState = UNSPECIFIED_WIDTH
-            firstPanePercentageState = value
-        }
-        get() = firstPanePercentageState
-
-    internal var currentDraggingOffset
-        get() = currentDraggingOffsetState
-        private set(value) {
-            if (value == currentDraggingOffsetState) return
-
-            val coercedValue = value.coerceIn(0, maxExpansionWidth)
-            currentDraggingOffsetState = coercedValue
-            currentMeasuredDraggingOffset = coercedValue
-        }
-
-    internal var isDragging by mutableStateOf(false)
-        private set
-
-    internal var isSettling by mutableStateOf(false)
-        private set
-
-    internal val isDraggingOrSettling
-        get() = isDragging || isSettling
-
-    @VisibleForTesting
-    internal var maxExpansionWidth = 0
-        private set
-
-    // Use this field to store the dragging offset decided by measuring instead of dragging to
-    // prevent redundant re-composition.
-    @VisibleForTesting
-    internal var currentMeasuredDraggingOffset = UNSPECIFIED_WIDTH
-        private set
-
-    private var anchorPositions: IntList = emptyIntList()
-
-    private val dragScope: DragScope = object : DragScope {
-        override fun dragBy(pixels: Float): Unit = dispatchRawDelta(pixels)
-    }
-
-    private val dragMutex = MutatorMutex()
-
-    fun isUnspecified(): Boolean =
-        firstPaneWidthState == UNSPECIFIED_WIDTH && firstPanePercentage.isNaN() && currentDraggingOffset == UNSPECIFIED_WIDTH
-
-    override fun dispatchRawDelta(delta: Float) {
-        if (currentMeasuredDraggingOffset == UNSPECIFIED_WIDTH) return
-        currentDraggingOffset = (currentMeasuredDraggingOffset + delta).toInt()
-    }
-
-    override suspend fun drag(dragPriority: MutatePriority, block: suspend DragScope.() -> Unit) = coroutineScope {
-        isDragging = true
-        dragMutex.mutateWith(dragScope, dragPriority, block)
-        isDragging = false
-    }
-
-    internal fun onMeasured(measuredWidth: Int, density: Density) {
-        if (measuredWidth == maxExpansionWidth) return
-
-        maxExpansionWidth = measuredWidth
-        if (firstPaneWidth != UNSPECIFIED_WIDTH) firstPaneWidth = firstPaneWidth
-        anchorPositions = anchors.toPositions(measuredWidth, density)
-    }
-
-    internal fun onExpansionOffsetMeasured(measuredOffset: Int) {
-        currentMeasuredDraggingOffset = measuredOffset
-    }
-
-    companion object {
-        const val UNSPECIFIED_WIDTH = -1
-    }
-}
-
-@ExperimentalMaterial3AdaptiveApi
-@Composable
-internal fun ThreePaneScaffold(
-    modifier: Modifier,
-    scaffoldDirective: PaneScaffoldDirective,
-    scaffoldState: SeekableTransitionState<ThreePaneScaffoldValue>,
-    paneOrder: TwoPaneScaffoldHorizontalOrder,
-    secondaryPane: @Composable TwoPaneScaffoldScope.() -> Unit,
-    paneExpansionState: PaneExpansionState = remember { PaneExpansionState() },
-    paneExpansionDragHandle: (@Composable (PaneExpansionState) -> Unit)? = null,
-    primaryPane: @Composable TwoPaneScaffoldScope.() -> Unit,
-) {
     val layoutDirection = LocalLayoutDirection.current
 
-    val leftToRightOrder = remember(paneOrder, layoutDirection) {
-        paneOrder.toLeftToRightOrder(layoutDirection)
+    val paneHorizontalOrder = remember(paneOrder, layoutDirection) {
+        paneOrder.setGoodPaneOrder(layoutDirection)
     }
     val previousScaffoldValue = remember { TwoPaneScaffoldValueHolder(scaffoldState.targetState) }
 
     val spacerSize = with(LocalDensity.current) { scaffoldDirective.horizontalPartitionSpacerSize.roundToPx() }
-    val paneMotion = remember(scaffoldState.targetState, leftToRightOrder, spacerSize) {
+    val paneMotion = remember(scaffoldState.targetState, paneHorizontalOrder, spacerSize) {
         val previousValue = previousScaffoldValue.value
         previousScaffoldValue.value = scaffoldState.targetState
+
         calculateTwoPaneMotion(
             previousScaffoldValue = previousValue,
             currentScaffoldValue = scaffoldState.targetState,
-            paneOrder = leftToRightOrder,
+            paneOrder = paneHorizontalOrder,
             spacerSize = spacerSize
         )
     }
@@ -359,8 +140,8 @@ internal fun ThreePaneScaffold(
             }.apply {
                 positionAnimationSpec = paneMotion.positionAnimationSpec
                 sizeAnimationSpec = paneMotion.sizeAnimationSpec
-                enterTransition = paneMotion.enterTransition(ThreePaneScaffoldRole.Primary, leftToRightOrder)
-                exitTransition = paneMotion.exitTransition(ThreePaneScaffoldRole.Primary, leftToRightOrder)
+                enterTransition = paneMotion.enterTransition(ThreePaneScaffoldRole.Primary, paneHorizontalOrder)
+                exitTransition = paneMotion.exitTransition(ThreePaneScaffoldRole.Primary, paneHorizontalOrder)
             }.primaryPane()
         }, {
             remember(currentTransition, this@LookaheadScope) {
@@ -368,19 +149,19 @@ internal fun ThreePaneScaffold(
             }.apply {
                 positionAnimationSpec = paneMotion.positionAnimationSpec
                 sizeAnimationSpec = paneMotion.sizeAnimationSpec
-                enterTransition = paneMotion.enterTransition(ThreePaneScaffoldRole.Secondary, leftToRightOrder)
-                exitTransition = paneMotion.exitTransition(ThreePaneScaffoldRole.Secondary, leftToRightOrder)
+                enterTransition = paneMotion.enterTransition(ThreePaneScaffoldRole.Secondary, paneHorizontalOrder)
+                exitTransition = paneMotion.exitTransition(ThreePaneScaffoldRole.Secondary, paneHorizontalOrder)
             }.secondaryPane()
         }, {
             if (paneExpansionDragHandle != null) paneExpansionDragHandle(paneExpansionState)
         })
 
         val measurePolicy = remember(paneExpansionState) {
-            TwoPaneContentMeasurePolicy(scaffoldDirective, scaffoldState.targetState, paneExpansionState, leftToRightOrder)
+            TwoPaneContentMeasurePolicy(scaffoldDirective, scaffoldState.targetState, paneExpansionState, paneHorizontalOrder)
         }.apply {
             this.scaffoldDirective = scaffoldDirective
             this.scaffoldValue = scaffoldState.targetState
-            this.paneOrder = leftToRightOrder
+            this.paneOrder = paneHorizontalOrder
         }
 
         Layout(contents = contents, modifier = modifier, measurePolicy = measurePolicy)
@@ -388,7 +169,7 @@ internal fun ThreePaneScaffold(
 }
 
 @ExperimentalMaterial3AdaptiveApi
-internal fun TwoPaneScaffoldHorizontalOrder.toLeftToRightOrder(layoutDirection: LayoutDirection): TwoPaneScaffoldHorizontalOrder {
+private fun TwoPaneScaffoldHorizontalOrder.setGoodPaneOrder(layoutDirection: LayoutDirection): TwoPaneScaffoldHorizontalOrder {
     return if (layoutDirection == LayoutDirection.Rtl) TwoPaneScaffoldHorizontalOrder(secondPane, firstPane) else this
 }
 
@@ -426,7 +207,7 @@ sealed interface PaneScaffoldScope {
     fun Modifier.preferredWidth(width: Dp): Modifier
 }
 
-internal abstract class PaneScaffoldScopeImpl : PaneScaffoldScope {
+private abstract class PaneScaffoldScopeImpl : PaneScaffoldScope {
     override fun Modifier.preferredWidth(width: Dp): Modifier {
         require(width == Dp.Unspecified || width > 0.dp)
         return this.then(PreferredWidthElement(width))
@@ -472,126 +253,26 @@ private class PreferredWidthNode(var width: Dp) : ParentDataModifierNode, Modifi
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-internal fun calculateTwoPaneMotion(
+private fun calculateTwoPaneMotion(
     previousScaffoldValue: ThreePaneScaffoldValue,
     currentScaffoldValue: ThreePaneScaffoldValue,
     paneOrder: TwoPaneScaffoldHorizontalOrder,
     spacerSize: Int
 ): TwoPaneMotion {
-    if (previousScaffoldValue == currentScaffoldValue) {
-        return TwoPaneMotion.NoMotion
-    }
+    if (previousScaffoldValue == currentScaffoldValue) return TwoPaneMotion.NoMotion
+
     val previousExpandedCount = previousScaffoldValue.expandedCount
     val currentExpandedCount = currentScaffoldValue.expandedCount
     if (previousExpandedCount != currentExpandedCount) return TwoPaneMotion.NoMotion
 
-    return when (previousExpandedCount) {
-        1 -> when (PaneAdaptedValue.Expanded) {
-            previousScaffoldValue[paneOrder.firstPane] -> MovePanesToLeftMotion(spacerSize)
-            else -> MovePanesToRightMotion(spacerSize)
-        }
-        2 -> when {
-            previousScaffoldValue[paneOrder.firstPane] == PaneAdaptedValue.Expanded && currentScaffoldValue[paneOrder.firstPane] == PaneAdaptedValue.Expanded -> {
-                SwitchRightTwoPanesMotion(spacerSize)
-            }
-            else -> MovePanesToRightMotion(spacerSize) // The first pane shows, all panes move right
-        }
-        else -> TwoPaneMotion.NoMotion // Should not happen
-    }
-}
-
-@ExperimentalMaterial3AdaptiveApi
-@Immutable
-internal open class TwoPaneMotion
-
-internal constructor(
-    internal val positionAnimationSpec: FiniteAnimationSpec<IntOffset> = snap(),
-    internal val sizeAnimationSpec: FiniteAnimationSpec<IntSize> = snap(),
-    private val firstPaneEnterTransition: EnterTransition = EnterTransition.None,
-    private val firstPaneExitTransition: ExitTransition = ExitTransition.None,
-    private val secondPaneEnterTransition: EnterTransition = EnterTransition.None,
-    private val secondPaneExitTransition: ExitTransition = ExitTransition.None,
-) {
-    fun enterTransition(role: ThreePaneScaffoldRole, paneOrder: TwoPaneScaffoldHorizontalOrder): EnterTransition {
-        // Quick return in case this instance is the NoMotion one.
-        if (this === NoMotion) return EnterTransition.None
-
-        return when (paneOrder.indexOf(role)) {
-            0 -> firstPaneEnterTransition
-            else -> secondPaneEnterTransition
-        }
-    }
-
-    fun exitTransition(role: ThreePaneScaffoldRole, paneOrder: TwoPaneScaffoldHorizontalOrder): ExitTransition {
-        // Quick return in case this instance is the NoMotion one.
-        if (this === NoMotion) return ExitTransition.None
-
-        return when (paneOrder.indexOf(role)) {
-            0 -> firstPaneExitTransition
-            else -> secondPaneExitTransition
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other !is TwoPaneMotion -> false
-            this.positionAnimationSpec != other.positionAnimationSpec -> false
-            this.sizeAnimationSpec != other.sizeAnimationSpec -> false
-            this.firstPaneEnterTransition != other.firstPaneEnterTransition -> false
-            this.firstPaneExitTransition != other.firstPaneExitTransition -> false
-            this.secondPaneEnterTransition != other.secondPaneEnterTransition -> false
-            this.secondPaneExitTransition != other.secondPaneExitTransition -> false
-            else -> true
-        }
-    }
-
-    override fun hashCode(): Int {
-        var result = positionAnimationSpec.hashCode()
-        result = 31 * result + sizeAnimationSpec.hashCode()
-        result = 31 * result + firstPaneEnterTransition.hashCode()
-        result = 31 * result + firstPaneExitTransition.hashCode()
-        result = 31 * result + secondPaneEnterTransition.hashCode()
-        result = 31 * result + secondPaneExitTransition.hashCode()
-        return result
-    }
-
-    companion object {
-        /**
-         * A ThreePaneMotion with all transitions set to [EnterTransition.None] and
-         * [ExitTransition.None].
-         */
-        val NoMotion = TwoPaneMotion()
-
-        @JvmStatic
-        protected fun slideInFromLeft(spacerSize: Int) = slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) {
-            -it - spacerSize
-        }
-
-        @JvmStatic
-        protected fun slideInFromLeftDelayed(spacerSize: Int) =
-            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpecDelayed) { -it - spacerSize }
-
-        @JvmStatic
-        protected fun slideInFromRight(spacerSize: Int) =
-            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) { it + spacerSize }
-
-        @JvmStatic
-        protected fun slideInFromRightDelayed(spacerSize: Int) =
-            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpecDelayed) { it + spacerSize }
-
-        @JvmStatic
-        protected fun slideOutToLeft(spacerSize: Int) =
-            slideOutHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) { -it - spacerSize }
-
-        @JvmStatic
-        protected fun slideOutToRight(spacerSize: Int) =
-            slideOutHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) { it + spacerSize }
+    return when (PaneAdaptedValue.Expanded) {
+        previousScaffoldValue[paneOrder.firstPane] -> MovePanesToLeftMotion(spacerSize)
+        else -> MovePanesToRightMotion(spacerSize)
     }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-internal val ThreePaneScaffoldValue.expandedCount: Int
+private val ThreePaneScaffoldValue.expandedCount: Int
     get() {
         var count = 0
         if (primary == PaneAdaptedValue.Expanded || secondary == PaneAdaptedValue.Expanded) count++
@@ -600,7 +281,7 @@ internal val ThreePaneScaffoldValue.expandedCount: Int
 
 @ExperimentalMaterial3AdaptiveApi
 @Immutable
-internal class MovePanesToLeftMotion(private val spacerSize: Int) : TwoPaneMotion(
+private class MovePanesToLeftMotion(private val spacerSize: Int) : TwoPaneMotion(
     TwoPaneMotionDefaults.PanePositionAnimationSpec,
     TwoPaneMotionDefaults.PaneSizeAnimationSpec,
     slideInFromRight(spacerSize),
@@ -622,7 +303,7 @@ internal class MovePanesToLeftMotion(private val spacerSize: Int) : TwoPaneMotio
 
 @ExperimentalMaterial3AdaptiveApi
 @Immutable
-internal class MovePanesToRightMotion(private val spacerSize: Int) : TwoPaneMotion(
+private class MovePanesToRightMotion(private val spacerSize: Int) : TwoPaneMotion(
     TwoPaneMotionDefaults.PanePositionAnimationSpec,
     TwoPaneMotionDefaults.PaneSizeAnimationSpec,
     slideInFromLeft(spacerSize),
@@ -644,7 +325,7 @@ internal class MovePanesToRightMotion(private val spacerSize: Int) : TwoPaneMoti
 
 @ExperimentalMaterial3AdaptiveApi
 @Immutable
-internal class SwitchLeftTwoPanesMotion(private val spacerSize: Int) : TwoPaneMotion(
+private class SwitchLeftTwoPanesMotion(private val spacerSize: Int) : TwoPaneMotion(
     TwoPaneMotionDefaults.PanePositionAnimationSpec,
     TwoPaneMotionDefaults.PaneSizeAnimationSpec,
     slideInFromLeftDelayed(spacerSize),
@@ -659,14 +340,12 @@ internal class SwitchLeftTwoPanesMotion(private val spacerSize: Int) : TwoPaneMo
         return true
     }
 
-    override fun hashCode(): Int {
-        return spacerSize
-    }
+    override fun hashCode(): Int = spacerSize
 }
 
 @ExperimentalMaterial3AdaptiveApi
 @Immutable
-internal class SwitchRightTwoPanesMotion(private val spacerSize: Int) : TwoPaneMotion(
+private class SwitchRightTwoPanesMotion(private val spacerSize: Int) : TwoPaneMotion(
     TwoPaneMotionDefaults.PanePositionAnimationSpec,
     TwoPaneMotionDefaults.PaneSizeAnimationSpec,
     EnterTransition.None,
@@ -681,12 +360,93 @@ internal class SwitchRightTwoPanesMotion(private val spacerSize: Int) : TwoPaneM
         return true
     }
 
-    override fun hashCode(): Int {
-        return spacerSize
+    override fun hashCode(): Int = spacerSize
+}
+
+class DelayedSpringSpec<T>(
+    dampingRatio: Float = Spring.DampingRatioNoBouncy,
+    stiffness: Float = Spring.StiffnessMedium,
+    private val delayedRatio: Float,
+    visibilityThreshold: T? = null
+) : FiniteAnimationSpec<T> {
+    private val originalSpringSpec = spring(dampingRatio, stiffness, visibilityThreshold)
+
+    override fun <V : AnimationVector> vectorize(converter: TwoWayConverter<T, V>): VectorizedFiniteAnimationSpec<V> {
+        return DelayedVectorizedSpringSpec(originalSpringSpec.vectorize(converter), delayedRatio)
     }
 }
 
-internal object TwoPaneMotionDefaults {
+private class DelayedVectorizedSpringSpec<V : AnimationVector>(
+    val originalVectorizedSpringSpec: VectorizedFiniteAnimationSpec<V>,
+    val delayedRatio: Float,
+) : VectorizedFiniteAnimationSpec<V> {
+    var delayedTimeNanos: Long = 0
+    var cachedInitialValue: V? = null
+    var cachedTargetValue: V? = null
+    var cachedInitialVelocity: V? = null
+    var cachedOriginalDurationNanos: Long = 0
+
+    override fun getValueFromNanos(
+        playTimeNanos: Long,
+        initialValue: V,
+        targetValue: V,
+        initialVelocity: V
+    ): V {
+        updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
+        return if (playTimeNanos <= delayedTimeNanos) {
+            initialValue
+        } else {
+            originalVectorizedSpringSpec.getValueFromNanos(
+                playTimeNanos - delayedTimeNanos,
+                initialValue,
+                targetValue,
+                initialVelocity
+            )
+        }
+    }
+
+    override fun getVelocityFromNanos(
+        playTimeNanos: Long,
+        initialValue: V,
+        targetValue: V,
+        initialVelocity: V
+    ): V {
+        updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
+        return if (playTimeNanos <= delayedTimeNanos) {
+            initialVelocity
+        } else {
+            originalVectorizedSpringSpec.getVelocityFromNanos(
+                playTimeNanos - delayedTimeNanos,
+                initialValue,
+                targetValue,
+                initialVelocity
+            )
+        }
+    }
+
+    override fun getDurationNanos(initialValue: V, targetValue: V, initialVelocity: V): Long {
+        updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
+        return cachedOriginalDurationNanos + delayedTimeNanos
+    }
+
+    private fun updateDelayedTimeNanosIfNeeded(
+        initialValue: V,
+        targetValue: V,
+        initialVelocity: V
+    ) {
+        if (
+            initialValue != cachedInitialValue ||
+            targetValue != cachedTargetValue ||
+            initialVelocity != cachedInitialVelocity
+        ) {
+            cachedOriginalDurationNanos =
+                originalVectorizedSpringSpec.getDurationNanos(initialValue, targetValue, initialVelocity)
+            delayedTimeNanos = (cachedOriginalDurationNanos * delayedRatio).toLong()
+        }
+    }
+}
+
+object TwoPaneMotionDefaults {
     val PanePositionAnimationSpec: SpringSpec<IntOffset> = spring(
         stiffness = Spring.StiffnessMediumLow, visibilityThreshold = IntOffset.VisibilityThreshold
     )
@@ -700,107 +460,14 @@ internal object TwoPaneMotionDefaults {
     )
 }
 
-internal class DelayedSpringSpec<T>(
-    dampingRatio: Float = Spring.DampingRatioNoBouncy,
-    stiffness: Float = Spring.StiffnessMedium,
-    private val delayedRatio: Float,
-    visibilityThreshold: T? = null
-) : FiniteAnimationSpec<T> {
-    private val originalSpringSpec = spring(dampingRatio, stiffness, visibilityThreshold)
-
-    override fun <V : AnimationVector> vectorize(
-        converter: TwoWayConverter<T, V>
-    ): VectorizedFiniteAnimationSpec<V> = DelayedVectorizedSpringSpec(originalSpringSpec.vectorize(converter), delayedRatio)
-}
-
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun List<PaneExpansionAnchor>.toPositions(
-    maxExpansionWidth: Int, density: Density
-): IntList {
-    val anchors = MutableIntList(size)
-    forEach { anchor ->
-        if (anchor.startOffset.isSpecified) {
-            val position = with(density) { anchor.startOffset.toPx() }.toInt().let { if (it < 0) maxExpansionWidth + it else it }
-            if (position in 0..maxExpansionWidth) anchors.add(position)
-        } else {
-            anchors.add(maxExpansionWidth * anchor.percentage / 100)
-        }
-    }
-    anchors.sort()
-    return anchors
-}
-
 @ExperimentalMaterial3AdaptiveApi
 @Immutable
 class PaneExpansionAnchor
 private constructor(val percentage: Int, val startOffset: Dp)
 
-private class DelayedVectorizedSpringSpec<V : AnimationVector>(
-    val originalVectorizedSpringSpec: VectorizedFiniteAnimationSpec<V>,
-    val delayedRatio: Float,
-) : VectorizedFiniteAnimationSpec<V> {
-    var delayedTimeNanos: Long = 0
-    var cachedInitialValue: V? = null
-    var cachedTargetValue: V? = null
-    var cachedInitialVelocity: V? = null
-    var cachedOriginalDurationNanos: Long = 0
-
-    override fun getValueFromNanos(playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V): V {
-        updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
-        return if (playTimeNanos <= delayedTimeNanos) {
-            initialValue
-        } else {
-            originalVectorizedSpringSpec.getValueFromNanos(
-                playTimeNanos - delayedTimeNanos, initialValue, targetValue, initialVelocity
-            )
-        }
-    }
-
-    override fun getVelocityFromNanos(playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V): V {
-        updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
-
-        return if (playTimeNanos <= delayedTimeNanos) {
-            initialVelocity
-        } else {
-            originalVectorizedSpringSpec.getVelocityFromNanos(
-                playTimeNanos - delayedTimeNanos, initialValue, targetValue, initialVelocity
-            )
-        }
-    }
-
-    override fun getDurationNanos(initialValue: V, targetValue: V, initialVelocity: V): Long {
-        updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
-        return cachedOriginalDurationNanos + delayedTimeNanos
-    }
-
-    private fun updateDelayedTimeNanosIfNeeded(initialValue: V, targetValue: V, initialVelocity: V) {
-        if (initialValue != cachedInitialValue || targetValue != cachedTargetValue || initialVelocity != cachedInitialVelocity) {
-            cachedOriginalDurationNanos = originalVectorizedSpringSpec.getDurationNanos(
-                initialValue, targetValue, initialVelocity
-            )
-            delayedTimeNanos = (cachedOriginalDurationNanos * delayedRatio).toLong()
-        }
-    }
-}
-
-@ExperimentalMaterial3AdaptiveApi
-internal object TwoPaneScaffoldDefaults {
-    const val SECONDARY_PANE_PRIORITY = 1
-    const val PRIMARY_PANE_PRIORITY = 2
-
-    /**
-     * The negative z-index of hidden panes to make visible panes always show upon hidden panes
-     * during pane animations.
-     */
-    const val HIDDEN_PANE_Z_INDEX = -0.1f
-}
-
 @ExperimentalMaterial3AdaptiveApi
 @Composable
-fun TwoPaneScaffoldScope.AnimatedPane(
-    modifier: Modifier = Modifier,
-    content: (@Composable AnimatedVisibilityScope.() -> Unit),
-) {
+fun TwoPaneScaffoldScope.AnimatedPane(modifier: Modifier = Modifier, content: (@Composable AnimatedVisibilityScope.() -> Unit)) {
     val keepShowing =
         scaffoldStateTransition.currentState[role] != PaneAdaptedValue.Hidden && scaffoldStateTransition.targetState[role] != PaneAdaptedValue.Hidden
     val animateFraction = { scaffoldStateTransitionFraction }
@@ -832,23 +499,11 @@ private object AnimatedPaneElement : ModifierNodeElement<AnimatedPaneNode>() {
         value = true
     }
 
-    override fun create(): AnimatedPaneNode {
-        return AnimatedPaneNode()
-    }
-
+    override fun create(): AnimatedPaneNode = AnimatedPaneNode()
     override fun update(node: AnimatedPaneNode) {}
-
-    override fun InspectorInfo.inspectableProperties() {
-        inspectorInfo()
-    }
-
-    override fun hashCode(): Int {
-        return 0
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return (other is AnimatedPaneElement)
-    }
+    override fun InspectorInfo.inspectableProperties() = inspectorInfo()
+    override fun hashCode(): Int = 0
+    override fun equals(other: Any?): Boolean = (other is AnimatedPaneElement)
 }
 
 private class AnimatedPaneNode : ParentDataModifierNode, Modifier.Node() {
@@ -858,9 +513,7 @@ private class AnimatedPaneNode : ParentDataModifierNode, Modifier.Node() {
         }
 }
 
-internal data class PaneScaffoldParentData(
-    var preferredWidth: Float? = null, var isAnimatedPane: Boolean = false
-)
+data class PaneScaffoldParentData(var preferredWidth: Float? = null, var isAnimatedPane: Boolean = false)
 
 private data class AnimateBoundsElement(
     private val animateFraction: () -> Float,
@@ -877,12 +530,7 @@ private data class AnimateBoundsElement(
     }
 
     override fun create(): AnimateBoundsNode {
-        return AnimateBoundsNode(
-            animateFraction,
-            sizeAnimationSpec,
-            positionAnimationSpec,
-            lookaheadScope,
-        )
+        return AnimateBoundsNode(animateFraction, sizeAnimationSpec, positionAnimationSpec, lookaheadScope)
     }
 
     override fun update(node: AnimateBoundsNode) {
@@ -918,13 +566,11 @@ private class AnimateBoundsNode(
 
     override fun isMeasurementApproachInProgress(lookaheadSize: IntSize): Boolean = animateFraction() != 1f
 
-    override fun Placeable.PlacementScope.isPlacementApproachInProgress(
-        lookaheadCoordinates: LayoutCoordinates
-    ) = animateFraction() != 1f
+    override fun Placeable.PlacementScope.isPlacementApproachInProgress(lookaheadCoordinates: LayoutCoordinates): Boolean {
+        return animateFraction() != 1f
+    }
 
-    override fun ApproachMeasureScope.approachMeasure(
-        measurable: Measurable, constraints: Constraints
-    ): MeasureResult {
+    override fun ApproachMeasureScope.approachMeasure(measurable: Measurable, constraints: Constraints): MeasureResult {
         // When layout changes, the lookahead pass will calculate a new final size for the
         // child modifier. This lookahead size can be used to animate the size
         // change, such that the animation starts from the current size and gradually

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.roundToIntRect
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.PaneExpansionState.Companion.UNSPECIFIED_WIDTH
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.TwoPaneMotion.Companion.TwoPaneScaffoldDefaults
 import kotlin.math.max
 import kotlin.math.min
 
@@ -287,9 +288,7 @@ class TwoPaneContentMeasurePolicy(
 
     private fun Placeable.PlacementScope.measureAndPlacePane(
         partitionBounds: Rect, measurable: PaneMeasurable, isLookingAhead: Boolean
-    ) = measureAndPlacePaneWithLocalBounds(
-        getLocalBounds(partitionBounds), measurable, isLookingAhead
-    )
+    ) = measureAndPlacePaneWithLocalBounds(getLocalBounds(partitionBounds), measurable, isLookingAhead)
 
     private fun Placeable.PlacementScope.measureAndPlacePaneWithLocalBounds(
         localBounds: IntRect, measurable: PaneMeasurable, isLookingAhead: Boolean
@@ -426,6 +425,5 @@ class TwoPaneContentMeasurePolicy(
                 }
             }
         }
-
     }
 }
