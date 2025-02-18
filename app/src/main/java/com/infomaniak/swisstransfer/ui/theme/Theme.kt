@@ -93,6 +93,7 @@ data class CustomColorScheme(
     val swipeDefault: Color = Color.Unspecified,
     val swipeDelete: Color = Color.Unspecified,
     val swipeIcon: Color = Color.Unspecified,
+    val fileStatusButtonBackground: Color = Color.Unspecified,
 )
 
 private val Shapes = Shapes(
