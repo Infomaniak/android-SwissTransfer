@@ -487,34 +487,23 @@ internal fun calculateTwoPaneMotion(
 
     return when (previousExpandedCount) {
         1 -> when (PaneAdaptedValue.Expanded) {
-            previousScaffoldValue[paneOrder.firstPane] -> {
-                MovePanesToLeftMotion(spacerSize)
-            }
-            else -> {
-                MovePanesToRightMotion(spacerSize)
-            }
+            previousScaffoldValue[paneOrder.firstPane] -> MovePanesToLeftMotion(spacerSize)
+            else -> MovePanesToRightMotion(spacerSize)
         }
         2 -> when {
             previousScaffoldValue[paneOrder.firstPane] == PaneAdaptedValue.Expanded && currentScaffoldValue[paneOrder.firstPane] == PaneAdaptedValue.Expanded -> {
-                // The first pane stays, the right two panes switch
                 SwitchRightTwoPanesMotion(spacerSize)
             }
-
-            else -> {
-                // The first pane shows, all panes move right
-                MovePanesToRightMotion(spacerSize)
-            }
+            else -> MovePanesToRightMotion(spacerSize) // The first pane shows, all panes move right
         }
-        else -> {
-            // Should not happen
-            TwoPaneMotion.NoMotion
-        }
+        else -> TwoPaneMotion.NoMotion // Should not happen
     }
 }
 
 @ExperimentalMaterial3AdaptiveApi
 @Immutable
 internal open class TwoPaneMotion
+
 internal constructor(
     internal val positionAnimationSpec: FiniteAnimationSpec<IntOffset> = snap(),
     internal val sizeAnimationSpec: FiniteAnimationSpec<IntSize> = snap(),
@@ -523,11 +512,6 @@ internal constructor(
     private val secondPaneEnterTransition: EnterTransition = EnterTransition.None,
     private val secondPaneExitTransition: ExitTransition = ExitTransition.None,
 ) {
-
-    /**
-     * Resolves and returns the [EnterTransition] for the given [ThreePaneScaffoldRole] at the given
-     * [TwoPaneScaffoldHorizontalOrder].
-     */
     fun enterTransition(role: ThreePaneScaffoldRole, paneOrder: TwoPaneScaffoldHorizontalOrder): EnterTransition {
         // Quick return in case this instance is the NoMotion one.
         if (this === NoMotion) return EnterTransition.None
@@ -538,13 +522,7 @@ internal constructor(
         }
     }
 
-    /**
-     * Resolves and returns the [ExitTransition] for the given [ThreePaneScaffoldRole] at the given
-     * [TwoPaneScaffoldHorizontalOrder].
-     */
-    fun exitTransition(
-        role: ThreePaneScaffoldRole, paneOrder: TwoPaneScaffoldHorizontalOrder
-    ): ExitTransition {
+    fun exitTransition(role: ThreePaneScaffoldRole, paneOrder: TwoPaneScaffoldHorizontalOrder): ExitTransition {
         // Quick return in case this instance is the NoMotion one.
         if (this === NoMotion) return ExitTransition.None
 
@@ -592,30 +570,23 @@ internal constructor(
 
         @JvmStatic
         protected fun slideInFromLeftDelayed(spacerSize: Int) =
-            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpecDelayed) {
-                -it - spacerSize
-            }
+            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpecDelayed) { -it - spacerSize }
 
         @JvmStatic
-        protected fun slideInFromRight(spacerSize: Int) = slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) {
-            it + spacerSize
-        }
+        protected fun slideInFromRight(spacerSize: Int) =
+            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) { it + spacerSize }
 
         @JvmStatic
         protected fun slideInFromRightDelayed(spacerSize: Int) =
-            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpecDelayed) {
-                it + spacerSize
-            }
+            slideInHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpecDelayed) { it + spacerSize }
 
         @JvmStatic
-        protected fun slideOutToLeft(spacerSize: Int) = slideOutHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) {
-            -it - spacerSize
-        }
+        protected fun slideOutToLeft(spacerSize: Int) =
+            slideOutHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) { -it - spacerSize }
 
         @JvmStatic
-        protected fun slideOutToRight(spacerSize: Int) = slideOutHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) {
-            it + spacerSize
-        }
+        protected fun slideOutToRight(spacerSize: Int) =
+            slideOutHorizontally(TwoPaneMotionDefaults.PanePositionAnimationSpec) { it + spacerSize }
     }
 }
 
@@ -750,9 +721,7 @@ private fun List<PaneExpansionAnchor>.toPositions(
     forEach { anchor ->
         if (anchor.startOffset.isSpecified) {
             val position = with(density) { anchor.startOffset.toPx() }.toInt().let { if (it < 0) maxExpansionWidth + it else it }
-            if (position in 0..maxExpansionWidth) {
-                anchors.add(position)
-            }
+            if (position in 0..maxExpansionWidth) anchors.add(position)
         } else {
             anchors.add(maxExpansionWidth * anchor.percentage / 100)
         }
@@ -776,9 +745,7 @@ private class DelayedVectorizedSpringSpec<V : AnimationVector>(
     var cachedInitialVelocity: V? = null
     var cachedOriginalDurationNanos: Long = 0
 
-    override fun getValueFromNanos(
-        playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V
-    ): V {
+    override fun getValueFromNanos(playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V): V {
         updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
         return if (playTimeNanos <= delayedTimeNanos) {
             initialValue
@@ -789,10 +756,9 @@ private class DelayedVectorizedSpringSpec<V : AnimationVector>(
         }
     }
 
-    override fun getVelocityFromNanos(
-        playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V
-    ): V {
+    override fun getVelocityFromNanos(playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V): V {
         updateDelayedTimeNanosIfNeeded(initialValue, targetValue, initialVelocity)
+
         return if (playTimeNanos <= delayedTimeNanos) {
             initialVelocity
         } else {
@@ -807,9 +773,7 @@ private class DelayedVectorizedSpringSpec<V : AnimationVector>(
         return cachedOriginalDurationNanos + delayedTimeNanos
     }
 
-    private fun updateDelayedTimeNanosIfNeeded(
-        initialValue: V, targetValue: V, initialVelocity: V
-    ) {
+    private fun updateDelayedTimeNanosIfNeeded(initialValue: V, targetValue: V, initialVelocity: V) {
         if (initialValue != cachedInitialValue || targetValue != cachedTargetValue || initialVelocity != cachedInitialVelocity) {
             cachedOriginalDurationNanos = originalVectorizedSpringSpec.getDurationNanos(
                 initialValue, targetValue, initialVelocity
@@ -1039,8 +1003,10 @@ fun Modifier.animateBounds(
     positionAnimationSpec: FiniteAnimationSpec<IntOffset>,
     lookaheadScope: LookaheadScope,
     enabled: Boolean
-) = if (enabled) {
-    this.then(AnimateBoundsElement(animateFraction, sizeAnimationSpec, positionAnimationSpec, lookaheadScope))
-} else {
-    this
+): Modifier {
+    return if (enabled) {
+        this.then(AnimateBoundsElement(animateFraction, sizeAnimationSpec, positionAnimationSpec, lookaheadScope))
+    } else {
+        this
+    }
 }
