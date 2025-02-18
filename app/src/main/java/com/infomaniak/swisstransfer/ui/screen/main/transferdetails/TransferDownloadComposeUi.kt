@@ -164,10 +164,6 @@ class TransferDownloadComposeUi(
     fun CardCornerButton(modifier: Modifier = Modifier) {
         if (removalRequest.isAwaitingCall) {
             DownloadStatus { btnData, action, _ ->
-                if (action == openRequest && supportsPreview) {
-                    // Don't overlay the checkmark once the file is openable and has a preview.
-                    return@DownloadStatus
-                }
                 CardCornerButton(
                     icon = btnData.icon,
                     labelResId = btnData.labelResId,
