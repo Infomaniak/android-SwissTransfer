@@ -19,8 +19,8 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
-import com.infomaniak.swisstransfer.ui.components.canPopBackStack
-import com.infomaniak.swisstransfer.ui.components.popBackStack
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.canPopBackStack
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.popBackStack
 
 object ScreenWrapperUtils {
 

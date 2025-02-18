@@ -34,6 +34,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.TwoPaneScaffold
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.popBackStack
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.safeCurrentContent
+import com.infomaniak.swisstransfer.ui.components.twoPaneScaffold.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
