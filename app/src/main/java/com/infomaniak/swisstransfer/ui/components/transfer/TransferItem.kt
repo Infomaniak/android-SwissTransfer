@@ -57,6 +57,9 @@ fun TransferItem(
 
     val createdDate = transfer.createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_TITLE)
     val uploadedSize = HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, transfer.sizeUploaded)
+
+    if (transfer.files.isEmpty()) return
+
     val files = transfer.files
     val (expiryText, expiryColor) = if (transfer.isExpired) {
         stringResource(R.string.transferExpired) to SwissTransferTheme.materialColors.error
