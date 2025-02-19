@@ -25,6 +25,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -163,10 +164,6 @@ class TransferDownloadComposeUi(
     fun CardCornerButton(modifier: Modifier = Modifier) {
         if (removalRequest.isAwaitingCall) {
             DownloadStatus { btnData, action, _ ->
-                if (action == openRequest && supportsPreview) {
-                    // Don't overlay the checkmark once the file is openable and has a preview.
-                    return@DownloadStatus
-                }
                 CardCornerButton(
                     icon = btnData.icon,
                     labelResId = btnData.labelResId,
@@ -195,14 +192,17 @@ class TransferDownloadComposeUi(
         enabled: Boolean = true,
     ) = IconButton(
         onClick = onClick,
-        modifier = modifier,
-        colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+        modifier = modifier.padding(4.dp),
+        colors = IconButtonDefaults.iconButtonColors(
+            contentColor = Color.White,
+            containerColor = SwissTransferTheme.colors.fileStatusButtonBackground,
+        ),
         enabled = enabled,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = stringResource(labelResId),
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(16.dp),
         )
     }
 

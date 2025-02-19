@@ -83,6 +83,7 @@ val CustomLightColorScheme = CustomColorScheme(
     tertiaryTextColor = Color(shark),
     toolbarTextColor = Color(white),
     toolbarIconColor = Color(green_contrast),
+    fileStatusButtonBackground = Color(black_translucent),
     iconColor = Color(elephant),
     navigationItemBackground = LightColorScheme.background,
     tertiaryButtonBackground = Color(rabbit),
