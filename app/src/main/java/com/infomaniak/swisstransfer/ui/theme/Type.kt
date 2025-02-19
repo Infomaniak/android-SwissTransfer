@@ -101,10 +101,10 @@ object Typography {
         lineHeight = 28.sp,
     )
 
-    val specificLight18 = TextStyle(
+    val specificLight20 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Light,
-        fontSize = 18.sp,
+        fontSize = 20.sp,
         lineHeight = 24.sp,
     )
 }
