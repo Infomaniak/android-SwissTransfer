@@ -53,6 +53,7 @@ fun ReceivedScreen(
     getSelectedTransferUuid: () -> String?,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     hasTransfer: (Boolean) -> Unit,
+    onDeleteTransfer: () -> Unit,
 ) {
 
     val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
@@ -65,7 +66,10 @@ fun ReceivedScreen(
         isFirstTransfer = { sentTransfersAreEmpty },
         navigateToDetails = navigateToDetails,
         getSelectedTransferUuid = getSelectedTransferUuid,
-        onDeleteTransfer = transfersViewModel::deleteTransfer,
+        onDeleteTransfer = { transferUuid ->
+            transfersViewModel.deleteTransfer(transferUuid)
+            onDeleteTransfer()
+        },
     )
 }
 

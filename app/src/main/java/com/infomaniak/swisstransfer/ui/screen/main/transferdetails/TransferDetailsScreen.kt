@@ -61,6 +61,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.NoSelectionEmptyState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -78,6 +79,7 @@ import kotlinx.coroutines.flow.emptyFlow
 fun TransferDetailsScreen(
     transferUuid: String,
     direction: TransferDirection,
+    hasTransfer: () -> Boolean,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
     navigateToFolder: (folderUuid: String) -> Unit,
@@ -86,13 +88,21 @@ fun TransferDetailsScreen(
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
     val isWrongDeeplinkPassword by transferDetailsViewModel.isWrongDeeplinkPassword.collectAsStateWithLifecycle()
 
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid)
     }
 
     val context = LocalContext.current
     when (val state = uiState) {
-        is Deleted -> navigateBack?.invoke()
+        is Deleted -> {
+            if (windowAdaptiveInfo.isWindowSmall()) {
+                navigateBack?.invoke()
+            } else {
+                NoSelectionEmptyState(hasTransfer())
+            }
+        }
         is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
