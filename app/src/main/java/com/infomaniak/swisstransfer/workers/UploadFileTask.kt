@@ -44,7 +44,7 @@ class UploadFileTask(
         uploadSession: UploadSession,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
-        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}")
+        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}, with size ${uploadFileSession.size}")
         val fileUUID: String = uploadFileSession.remoteUploadFile?.uuid
             ?: throwAndDestroyUpload(uploadSession.uuid, "Remote upload file not found")
 
