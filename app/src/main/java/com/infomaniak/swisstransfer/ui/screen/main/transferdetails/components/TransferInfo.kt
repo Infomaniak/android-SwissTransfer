@@ -34,6 +34,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -55,6 +56,7 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
     val downloadedCount by remember { derivedStateOf { getTransfer().downloadLimit - getTransfer().downloadLeft } }
     val downloadLimit by remember { derivedStateOf { getTransfer().downloadLimit } }
     val sizeUploaded by remember { derivedStateOf { getTransfer().sizeUploaded } }
+    val direction by remember { derivedStateOf { getTransfer().direction } }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -77,12 +79,14 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
         text = getTransfer().getFormattedExpiry(),
     )
 
-    HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
+    if (direction == TransferDirection.SENT) {
+        HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
 
-    IconText(
-        icon = AppIcons.ArrowDownFile,
-        text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
-    )
+        IconText(
+            icon = AppIcons.ArrowDownFile,
+            text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
+        )
+    }
 }
 
 @Composable
