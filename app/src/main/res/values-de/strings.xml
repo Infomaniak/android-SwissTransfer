@@ -47,8 +47,10 @@
     <string name="errorAppIntegrity">Ihr Gerät wird nicht als sicher erkannt</string>
     <string name="errorIncorrectPassword">Falsches Kennwort</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
+    <string name="expired">Abgelaufen</string>
+    <string name="expiresAt">Läuft ab bei %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
-    <string name="expiresToday">Läuft heute ab</string>
+    <string name="expiresThe">Läuft am %s um %s</string>
     <string name="expiresTomorrow">Läuft morgen ab</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>

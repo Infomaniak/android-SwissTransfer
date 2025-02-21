@@ -25,14 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.infomaniak.core.FORMAT_DATE_TITLE
-import com.infomaniak.core.format
+import com.infomaniak.core.utils.FORMAT_DATE_TITLE
+import com.infomaniak.core.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
@@ -44,7 +42,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
-import com.infomaniak.swisstransfer.ui.utils.isExpired
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -61,11 +58,7 @@ fun TransferItem(
     if (transfer.files.isEmpty()) return
 
     val files = transfer.files
-    val (expiryText, expiryColor) = if (transfer.isExpired) {
-        stringResource(R.string.transferExpired) to SwissTransferTheme.materialColors.error
-    } else {
-        transfer.getFormattedExpiry() to SwissTransferTheme.colors.secondaryTextColor
-    }
+    val (expiryText, expiryColor) = transfer.getFormattedExpiry()
     val border = if (isSelected()) {
         BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.colors.transferListStroke)
     } else {

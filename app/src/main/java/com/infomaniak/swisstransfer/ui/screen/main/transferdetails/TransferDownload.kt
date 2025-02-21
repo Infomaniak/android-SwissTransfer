@@ -25,6 +25,7 @@ import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import com.infomaniak.core.*
 import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.utils.DownloadManagerUtils
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi

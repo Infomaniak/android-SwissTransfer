@@ -47,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
-import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
+import com.infomaniak.swisstransfer.ui.utils.getWholeDate
 
 @Composable
 fun TransferInfo(getTransfer: () -> TransferUi) {
@@ -76,7 +76,7 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
 
     IconText(
         icon = AppIcons.Clock,
-        text = getTransfer().getFormattedExpiry(),
+        text = getTransfer().getWholeDate(),
     )
 
     if (direction == TransferDirection.SENT) {
