@@ -99,6 +99,7 @@ private fun ListPane(
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
+                EULA -> context.openUrl("https://www.swisstransfer.com/?cgu")
                 DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
                 SHARE_IDEAS -> context.openUrl(userReportURL)
                 GIVE_FEEDBACK -> context.openReviewBottomSheet()
@@ -155,6 +156,7 @@ private fun DetailPane(
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
         NOTIFICATIONS,
+        EULA,
         DISCOVER_INFOMANIAK,
         SHARE_IDEAS,
         GIVE_FEEDBACK,

@@ -146,6 +146,12 @@ fun SettingsScreen(
 
             SettingTitle(R.string.settingsCategoryAbout)
             SettingItem(
+                titleRes = R.string.settingsTermsAndConditions,
+                isSelected = { selectedSetting == EULA },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(EULA) },
+            )
+            SettingItem(
                 titleRes = R.string.settingsOptionDiscoverInfomaniak,
                 isSelected = { selectedSetting == DISCOVER_INFOMANIAK },
                 endIcon = OPEN_OUTSIDE,
@@ -208,7 +214,7 @@ private fun EmailLanguage?.getString(): String {
 enum class SettingsOptionScreens {
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
-    DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
+    EULA, DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
     DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY,
 }
 

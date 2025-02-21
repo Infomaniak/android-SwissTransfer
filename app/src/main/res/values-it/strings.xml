@@ -131,6 +131,7 @@
     <string name="settingsPasswordDescription">I destinatari dovranno inserire la password per scaricare i file.</string>
     <string name="settingsPasswordToggleDescription">Attivare la protezione</string>
     <string name="settingsSentryDescription">Sentry è uno strumento ospitato e gestito esclusivamente da Infomaniak per monitorare la stabilità dell’applicazione in tempo reale e segnalare automaticamente eventuali errori tecnici ai nostri sviluppatori.\n\nQuesti dati consentono al nostro team di correggere e ottimizzare rapidamente l’applicazione, migliorando l’esperienza dell’utente.</string>
+    <string name="settingsTermsAndConditions">Termini e condizioni</string>
     <string name="settingsThemeTitle">Seleziona un tema</string>
     <string name="settingsTitle">Parametri</string>
     <string name="settingsValidityPeriodTitle">Imposta un periodo di validità predefinito per i trasferimenti</string>
