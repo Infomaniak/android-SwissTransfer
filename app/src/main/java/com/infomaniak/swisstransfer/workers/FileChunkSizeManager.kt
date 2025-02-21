@@ -49,8 +49,6 @@ class FileChunkSizeManager(
      * @throws AllowedFileSizeExceededException
      */
     private fun computeChunkSize(fileSize: Long, halfAvailableMemory: Long): Long {
-        require(fileSize > 0) { "fileSize must be greater than 0" }
-
         var fileChunkSize = ceil(fileSize.toDouble() / optimalTotalChunks).toLong()
 
         if (fileChunkSize > chunkMaxSize) {
