@@ -124,6 +124,7 @@
     <string name="settingsOptionNotifications">Notifications</string>
     <string name="settingsOptionPassword">Mot de passe</string>
     <string name="settingsOptionShareIdeas">Partage tes idées</string>
+    <string name="settingsOptionTermsAndConditions">Conditions générales</string>
     <string name="settingsOptionTheme">Thème</string>
     <string name="settingsOptionThemeDark">Sombre</string>
     <string name="settingsOptionThemeLight">Clair</string>
@@ -132,7 +133,6 @@
     <string name="settingsPasswordDescription">Tes destinataires devront saisir le mot de passe pour télécharger les fichiers.</string>
     <string name="settingsPasswordToggleDescription">Activer la protection</string>
     <string name="settingsSentryDescription">Sentry est un outil hébergé et géré exclusivement par Infomaniak pour surveiller en temps réel la stabilité de l’application et signaler automatiquement d’éventuelles erreurs techniques à nos développeurs.\n\nCes données permettent à notre équipe de rapidement corriger et optimiser l’application, ce qui se traduit par une meilleure expérience d’utilisation pour vous.</string>
-    <string name="settingsTermsAndConditions">Conditions générales</string>
     <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
     <string name="settingsValidityPeriodTitle">Défini une durée de validité par défaut pour tes transferts</string>

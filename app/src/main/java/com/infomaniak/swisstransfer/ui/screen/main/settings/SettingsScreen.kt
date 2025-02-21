@@ -146,7 +146,7 @@ fun SettingsScreen(
 
             SettingTitle(R.string.settingsCategoryAbout)
             SettingItem(
-                titleRes = R.string.settingsTermsAndConditions,
+                titleRes = R.string.settingsOptionTermsAndConditions,
                 isSelected = { selectedSetting == EULA },
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(EULA) },
