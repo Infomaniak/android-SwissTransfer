@@ -85,8 +85,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
         LottieAnimation(
             composition,
             isPlaying = true,
-            reverseOnRepeat = adScreenType.shouldReverseOnRepeat,
-            iterations = LottieConstants.IterateForever,
+            iterations = adScreenType.iterations,
         )
 
         WeightOneSpacer(minHeight = Margin.Medium)
