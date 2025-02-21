@@ -27,18 +27,15 @@ class FileChunkSizeManager(
     private val maxChunkCount: Int = MAX_CHUNK_COUNT,
     private val maxParallelChunks: Int = MAX_PARALLEL_CHUNKS,
 ) {
-    private var fileSize: Long = 0L
-    private var halfAvailableMemory: Long = 0L
 
     fun computeChunkConfig(fileSize: Long): ChunkConfig {
-        this.fileSize = fileSize
-        this.halfAvailableMemory = getHalfHeapMemory()
-        val fileChunkSize = computeChunkSize()
-        val totalChunks = computeFileChunks(fileChunkSize)
+        val halfAvailableMemory = getHalfHeapMemory()
+        val fileChunkSize = computeChunkSize(fileSize, halfAvailableMemory)
+        val totalChunks = computeFileChunks(fileSize, fileChunkSize)
         return ChunkConfig(
-            fileChunkSize = computeChunkSize(),
+            fileChunkSize = computeChunkSize(fileSize, halfAvailableMemory),
             totalChunks = totalChunks,
-            parallelChunks = if (totalChunks == 1) 1 else computeParallelChunks(fileChunkSize)
+            parallelChunks = if (totalChunks == 1) 1 else computeParallelChunks(fileChunkSize, halfAvailableMemory.toDouble())
         )
     }
 
@@ -51,7 +48,7 @@ class FileChunkSizeManager(
      *
      * @throws AllowedFileSizeExceededException
      */
-    private fun computeChunkSize(): Long {
+    private fun computeChunkSize(fileSize: Long, halfAvailableMemory: Long): Long {
         require(fileSize > 0) { "fileSize must be greater than 0" }
 
         var fileChunkSize = ceil(fileSize.toDouble() / optimalTotalChunks).toLong()
@@ -62,16 +59,18 @@ class FileChunkSizeManager(
 
         if (fileChunkSize > chunkMaxSize) throw AllowedFileSizeExceededException()
 
-        return adjustChunkSizeByAvailableMemory(fileChunkSize.coerceAtLeast(chunkMinSize))
+        return adjustChunkSizeByAvailableMemory(fileChunkSize.coerceAtLeast(chunkMinSize), halfAvailableMemory)
     }
 
-    private fun computeFileChunks(fileChunkSize: Long): Int = ceil(fileSize.toDouble() / fileChunkSize).toInt()
+    private fun computeFileChunks(fileSize: Long, fileChunkSize: Long): Int = ceil(fileSize.toDouble() / fileChunkSize).toInt()
 
-    private fun computeParallelChunks(fileChunkSize: Long): Int {
-        return floor(halfAvailableMemory.toDouble() / fileChunkSize).toInt().coerceIn(1, maxParallelChunks)
+    private fun computeParallelChunks(fileChunkSize: Long, halfAvailableMemory: Double): Int {
+        return floor(halfAvailableMemory / fileChunkSize).toInt().coerceIn(1, maxParallelChunks)
     }
 
-    private fun adjustChunkSizeByAvailableMemory(fileChunkSize: Long): Long = fileChunkSize.coerceAtMost(halfAvailableMemory)
+    private fun adjustChunkSizeByAvailableMemory(fileChunkSize: Long, halfAvailableMemory: Long): Long {
+        return fileChunkSize.coerceAtMost(halfAvailableMemory)
+    }
 
     private fun getHalfHeapMemory(): Long = Runtime.getRuntime().maxMemory() / 2
 
