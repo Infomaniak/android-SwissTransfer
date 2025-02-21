@@ -44,6 +44,8 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.*
 
+private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
+
 @Composable
 fun SettingsScreenWrapper(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
@@ -99,7 +101,7 @@ private fun ListPane(
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
-                EULA -> context.openUrl("https://www.swisstransfer.com/?cgu")
+                EULA -> context.openUrl(EULA_URL)
                 DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
                 SHARE_IDEAS -> context.openUrl(userReportURL)
                 GIVE_FEEDBACK -> context.openReviewBottomSheet()
