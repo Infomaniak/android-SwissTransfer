@@ -123,6 +123,7 @@
     <string name="settingsOptionNotifications">Benachrichtigungen</string>
     <string name="settingsOptionPassword">Passwort</string>
     <string name="settingsOptionShareIdeas">Teile deine Ideen</string>
+    <string name="settingsOptionTermsAndConditions">Allgemeine Geschäftsbedingungen</string>
     <string name="settingsOptionTheme">Design</string>
     <string name="settingsOptionThemeDark">Dunkel</string>
     <string name="settingsOptionThemeLight">Hell</string>
