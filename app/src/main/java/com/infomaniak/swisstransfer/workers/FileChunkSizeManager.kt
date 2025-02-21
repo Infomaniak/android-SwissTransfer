@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.workers
 
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.min
 
 class FileChunkSizeManager(
     private val chunkMinSize: Long = CHUNK_MIN_SIZE,
@@ -35,7 +36,7 @@ class FileChunkSizeManager(
         return ChunkConfig(
             fileChunkSize = computeChunkSize(fileSize, halfAvailableMemory),
             totalChunks = totalChunks,
-            parallelChunks = if (totalChunks == 1) 1 else computeParallelChunks(fileChunkSize, halfAvailableMemory.toDouble())
+            parallelChunks = computeParallelChunks(totalChunks, fileChunkSize, halfAvailableMemory.toDouble())
         )
     }
 
@@ -62,8 +63,9 @@ class FileChunkSizeManager(
 
     private fun computeFileChunks(fileSize: Long, fileChunkSize: Long): Int = ceil(fileSize.toDouble() / fileChunkSize).toInt()
 
-    private fun computeParallelChunks(fileChunkSize: Long, halfAvailableMemory: Double): Int {
-        return floor(halfAvailableMemory / fileChunkSize).toInt().coerceIn(1, maxParallelChunks)
+    private fun computeParallelChunks(totalChunks: Int, fileChunkSize: Long, halfAvailableMemory: Double): Int {
+        if (totalChunks == 1) return 1
+        return floor(halfAvailableMemory / fileChunkSize).toInt().coerceIn(1, min(totalChunks, maxParallelChunks))
     }
 
     private fun adjustChunkSizeByAvailableMemory(fileChunkSize: Long, halfAvailableMemory: Long): Long {
