@@ -48,10 +48,10 @@ class UploadFileTask(
         val fileUUID: String = uploadFileSession.remoteUploadFile?.uuid
             ?: throwAndDestroyUpload(uploadSession.uuid, "Remote upload file not found")
 
-        fileChunkSizeManager.init(fileSize = uploadFileSession.size)
-        val chunkSize = fileChunkSizeManager.computeChunkSize()
-        val totalChunks = fileChunkSizeManager.computeFileChunks(fileChunkSize = chunkSize)
-        val parallelChunks = if (totalChunks == 1) 1 else fileChunkSizeManager.computeParallelChunks(fileChunkSize = chunkSize)
+        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
+        val chunkSize = chunkConfig.fileChunkSize
+        val totalChunks = chunkConfig.totalChunks
+        val parallelChunks = chunkConfig.parallelChunks
 
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 
