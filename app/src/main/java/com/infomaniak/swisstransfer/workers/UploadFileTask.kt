@@ -81,7 +81,7 @@ class UploadFileTask(
         val byteArrayPool = ArrayBlockingQueue<ByteArray>(parallelChunks)
 
         val completedChunks = AtomicInteger(0)
-        val completableJob: CompletableJob = Job()
+        val lastChunkBarrierJob: CompletableJob = Job()
         val lastChunkIndex = totalChunks - 1
 
         coroutineScope {
@@ -103,12 +103,12 @@ class UploadFileTask(
                 launch {
                     try {
                         // Wait for all the other jobs to complete
-                        if (totalChunks > 1 && isLastChunk) completableJob.join()
+                        if (totalChunks > 1 && isLastChunk) lastChunkBarrierJob.join()
 
                         startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
 
                         // Unlock the last chunk to start
-                        if (totalChunks > 1 && completedChunks.incrementAndGet() == lastChunkIndex) completableJob.complete()
+                        if (totalChunks > 1 && completedChunks.incrementAndGet() == lastChunkIndex) lastChunkBarrierJob.complete()
                     } finally {
                         byteArrayPool.offer(dataByteArray)
                         requestSemaphore.release()
