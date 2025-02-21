@@ -101,10 +101,13 @@ class UploadFileTask(
 
                 launch {
                     try {
-                        if (totalChunks > 1) {
-                            waitForOthersIfLastChunk(isLastChunk, completableJob, completedChunks, lastChunkIndex)
-                        }
+                        // Wait for all the other jobs to complete
+                        if (totalChunks > 1 && isLastChunk) completableJob.join()
+
                         startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
+
+                        // Unlock the last chunk to start
+                        if (totalChunks > 1 && completedChunks.incrementAndGet() == lastChunkIndex) completableJob.complete()
                     } finally {
                         byteArrayPool.offer(dataByteArray)
                         requestSemaphore.release()
@@ -114,19 +117,6 @@ class UploadFileTask(
         }
 
         byteArrayPool.clear()
-    }
-
-    private suspend fun waitForOthersIfLastChunk(
-        isLastChunk: Boolean,
-        completableJob: CompletableJob,
-        completedChunks: AtomicInteger,
-        lastChunkIndex: Int,
-    ) {
-        if (isLastChunk) {
-            completableJob.join() // Wait for all the other jobs to complete
-        } else {
-            if (completedChunks.incrementAndGet() == lastChunkIndex) completableJob.complete()
-        }
     }
 
     private suspend inline fun UploadFileSession.getLocalIoFile(uploadUuid: String): File {
