@@ -44,13 +44,14 @@ class UploadFileTask(
         uploadSession: UploadSession,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
-        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}")
+        SentryLog.i(TAG, "start upload file ${uploadFileSession.localPath}, with size ${uploadFileSession.size}")
         val fileUUID: String = uploadFileSession.remoteUploadFile?.uuid
             ?: throwAndDestroyUpload(uploadSession.uuid, "Remote upload file not found")
 
-        val chunkSize = fileChunkSizeManager.computeChunkSize(fileSize = uploadFileSession.size)
-        val totalChunks = fileChunkSizeManager.computeFileChunks(fileSize = uploadFileSession.size, fileChunkSize = chunkSize)
-        val parallelChunks = fileChunkSizeManager.computeParallelChunks(fileChunkSize = chunkSize)
+        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
+        val chunkSize = chunkConfig.fileChunkSize
+        val totalChunks = chunkConfig.totalChunks
+        val parallelChunks = chunkConfig.parallelChunks
 
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 
@@ -80,7 +81,7 @@ class UploadFileTask(
         val byteArrayPool = ArrayBlockingQueue<ByteArray>(parallelChunks)
 
         val completedChunks = AtomicInteger(0)
-        val completableJob: CompletableJob = Job()
+        val lastChunkBarrierJob: CompletableJob = Job()
         val lastChunkIndex = totalChunks - 1
 
         coroutineScope {
@@ -101,10 +102,13 @@ class UploadFileTask(
 
                 launch {
                     try {
-                        if (totalChunks > 1) {
-                            waitForOthersIfLastChunk(isLastChunk, completableJob, completedChunks, lastChunkIndex)
-                        }
+                        // Wait for all the other jobs to complete
+                        if (totalChunks > 1 && isLastChunk) lastChunkBarrierJob.join()
+
                         startUploadChunk(uploadSession, fileUUID, chunkIndex, isLastChunk, dataByteArray, onUploadBytes)
+
+                        // Unlock the last chunk to start
+                        if (totalChunks > 1 && completedChunks.incrementAndGet() == lastChunkIndex) lastChunkBarrierJob.complete()
                     } finally {
                         byteArrayPool.offer(dataByteArray)
                         requestSemaphore.release()
@@ -114,19 +118,6 @@ class UploadFileTask(
         }
 
         byteArrayPool.clear()
-    }
-
-    private suspend fun waitForOthersIfLastChunk(
-        isLastChunk: Boolean,
-        completableJob: CompletableJob,
-        completedChunks: AtomicInteger,
-        lastChunkIndex: Int,
-    ) {
-        if (isLastChunk) {
-            completableJob.join() // Wait for all the other jobs to complete
-        } else {
-            if (completedChunks.incrementAndGet() == lastChunkIndex) completableJob.complete()
-        }
     }
 
     private suspend inline fun UploadFileSession.getLocalIoFile(uploadUuid: String): File {
