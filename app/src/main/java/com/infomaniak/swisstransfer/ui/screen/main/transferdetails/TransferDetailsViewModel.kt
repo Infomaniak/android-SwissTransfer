@@ -28,6 +28,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DownloadQuotaExceededException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.*
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
@@ -136,8 +137,7 @@ class TransferDetailsViewModel @Inject constructor(
         }.onFailure { exception ->
             when (exception) {
                 is ExpiredDateFetchTransferException -> longToast(R.string.deeplinkTransferExpired)
-                // TODO
-                // is DownloadQuotaExceededException -> longToast(R.string.deeplinkQuota…)
+                is DownloadQuotaExceededException -> longToast(R.string.deeplinkTransferExpired)
                 is NotFoundFetchTransferException -> longToast(R.string.deeplinkTransferNotFound)
                 is PasswordNeededFetchTransferException, is WrongPasswordFetchTransferException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
