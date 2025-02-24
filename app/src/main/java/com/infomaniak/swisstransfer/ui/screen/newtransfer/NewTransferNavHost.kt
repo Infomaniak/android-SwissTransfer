@@ -30,6 +30,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.NewTransf
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AutoResetTransferDataAvailabilityStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadIntegrityErrorScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
@@ -61,11 +63,22 @@ fun NewTransferNavHost(
                 navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
             )
         }
+        composable<PickFilesDestination> {
+            cancelUploadNotification()
+            PickFilesScreen(
+                viewModel = hiltViewModel<PickFilesViewModel>(it),
+                closeActivity = { closeActivity(false) },
+                navigateToUploadProgress = { transferType, totalSize, authorEmail ->
+                    navController.navigate(UploadProgressDestination(transferType, totalSize, authorEmail))
+                },
+                navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
+            )
+        }
         composable<ValidateUserEmailDestination> {
             val args = it.toRoute<ValidateUserEmailDestination>()
             ValidateUserEmailScreen(
                 closeActivity = closeActivityAndPromptForValidation,
-                navigateBackToFileImportation = { navController.popBackStack(ImportFilesDestination, false) },
+                navigateBackToFileImportation = { navController.popBackStack(PickFilesDestination, false) },
                 navigateToUploadInProgress = { totalSize ->
                     navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize, args.authorEmail))
                 },
@@ -84,7 +97,7 @@ fun NewTransferNavHost(
                 },
                 navigateToEmailValidation = { navController.navigateToEmailValidation(args) },
                 navigateToAppIntegrityError = { navController.navigate(UploadIntegrityErrorDestination) },
-                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+                navigateBackToImportFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
                 // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
                 closeActivity = { closeActivity(false) },
             )
@@ -119,7 +132,7 @@ fun NewTransferNavHost(
                         }
                     }
                 },
-                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
+                navigateBackToImportFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
                 // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
                 closeActivity = { closeActivity(true) },
             )
@@ -128,9 +141,9 @@ fun NewTransferNavHost(
             UploadIntegrityErrorScreen(closeActivity = { closeActivity(false) })
         }
         composable<NewTransferFilesDetailsDestination> {
-            val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
+            val backStackEntry = remember(it) { navController.getBackStackEntry(PickFilesDestination) }
             NewTransferFilesDetailsScreen(
-                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
+                viewModel = hiltViewModel<PickFilesViewModel>(backStackEntry),
                 withFilesSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,

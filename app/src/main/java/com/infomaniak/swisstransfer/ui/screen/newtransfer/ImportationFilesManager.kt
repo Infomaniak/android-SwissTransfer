@@ -135,16 +135,6 @@ class ImportationFilesManager @Inject constructor(
         }
     }
 
-    private fun PickedFile.toFileUiModel(): FileUi = FileUi(
-        uid = uri.toString(),
-        fileName = name,
-        path = null,
-        isFolder = false,
-        fileSize = size,
-        mimeType = mimeType,
-        localPath = null
-    )
-
     private fun copyUriDataLocally(
         uri: Uri,
         fileName: String

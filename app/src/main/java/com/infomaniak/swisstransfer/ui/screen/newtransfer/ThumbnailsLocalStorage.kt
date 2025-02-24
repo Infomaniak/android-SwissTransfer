@@ -28,6 +28,8 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
@@ -46,7 +48,7 @@ class ThumbnailsLocalStorage @Inject constructor(
     }
 
     //region Delete 
-    fun removeOngoingThumbnailsFolder() {
+    suspend fun removeOngoingThumbnailsFolder() = Dispatchers.IO {
         if (ongoingThumbnailsFolder.exists()) runCatching { ongoingThumbnailsFolder.deleteRecursively() }
     }
 
@@ -58,7 +60,7 @@ class ThumbnailsLocalStorage @Inject constructor(
         }
     }
 
-    fun removeThumbnailForOngoingTransfer(fileName: String) {
+    suspend fun removeThumbnailForOngoingTransfer(fileName: String) = Dispatchers.IO {
         ongoingThumbnailsFolder.listFiles()?.find { fileName.contains(it.name) }?.delete()
     }
     //endregion

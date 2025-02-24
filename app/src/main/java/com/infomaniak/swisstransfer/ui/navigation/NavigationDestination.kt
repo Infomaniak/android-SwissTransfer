@@ -116,6 +116,9 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object ImportFilesDestination : NewTransferNavigation()
 
     @Serializable
+    data object PickFilesDestination : NewTransferNavigation()
+
+    @Serializable
     data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation()
 
     @Serializable
@@ -146,7 +149,7 @@ sealed class NewTransferNavigation : NavigationDestination() {
     data object NewTransferFilesDetailsDestination : NewTransferNavigation()
 
     companion object {
-        val startDestination = ImportFilesDestination
+        val startDestination: NewTransferNavigation = PickFilesDestination
     }
 }
 

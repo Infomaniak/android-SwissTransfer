@@ -22,7 +22,9 @@ package com.infomaniak.swisstransfer.upload
 import android.app.Notification
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.ForegroundService
+import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.withPartialWakeLock
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
@@ -40,11 +42,16 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.invoke
+import splitties.init.appCtx
 import splitties.intents.serviceWithoutExtrasSpec
 import javax.inject.Inject
 
@@ -59,7 +66,19 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         val pickedFilesFlow: StateFlow<List<PickedFile>>
         val isHandlingPickedFilesFlow: StateFlow<Boolean>
 
-        fun addFiles(uris: List<Uri>) = pickedFilesExtractor.addUris(uris)
+        fun addFiles(uris: List<Uri>) {
+            pickedFilesExtractor.addUris(uris)
+            start() // Will raise the process priority, ensuring we keep access to the Uris.
+        }
+
+        fun removeFiles(uris: List<Uri>) {
+            pickedFilesExtractor.removeUris(uris)
+        }
+
+        fun removeAllFiles() {
+            pickedFilesExtractor.clear()
+            stop()
+        }
 
         suspend fun startUpload(signal: StartUploadSignal) {
             startUploadChannel.send(signal)
@@ -131,7 +150,13 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         }
     }
 
-    private val isInternetConnectedFlow: SharedFlow<Boolean> = TODO()
+    private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability(
+        context = appCtx
+    ).isNetworkAvailable.conflate().distinctUntilChanged().shareIn(
+        scope = lifecycleScope,
+        started = SharingStarted.Lazily,
+        replay = 1
+    )
 }
 
 private fun PickedFile.toFileUploadMetaData(): FileToUploadMetadata {
@@ -147,7 +172,6 @@ private fun StartUploadSignal.Request.toUploadSessionRequest(
 ): UploadSessionRequest = UploadSessionRequest(
     validityPeriod = validityPeriod,
     authorEmail = authorEmail,
-    authorEmailToken = authorEmailToken,
     password = password,
     message = message,
     sizeOfUpload = filesMetadata.sumOf { it.size },

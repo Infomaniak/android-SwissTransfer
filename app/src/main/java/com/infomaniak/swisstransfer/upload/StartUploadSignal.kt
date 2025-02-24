@@ -29,7 +29,6 @@ data class StartUploadSignal(
     data class Request(
         val validityPeriod: ValidityPeriod,
         val authorEmail: String,
-        val authorEmailToken: String?,
         val password: String,
         val message: String,
         val downloadCountLimit: DownloadLimit,

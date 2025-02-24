@@ -19,8 +19,10 @@ package com.infomaniak.swisstransfer.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.core.os.BundleCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.sentry.SentryLog
@@ -89,6 +91,20 @@ class LaunchActivity : ComponentActivity() {
             // We need NewMessageActivity to have its standard launchMode in the Manifest
             // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
             setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            TODO("Grant Uris to the whole process somehwere, until the FG process is done")
+            val extras = intent.extras ?: return@apply
+            when (intent.action) {
+                Intent.ACTION_SEND -> {
+                    val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Uri::class.java)
+                    grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                Intent.ACTION_SEND_MULTIPLE -> {
+                    val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
+                    uris?.forEach { uri ->
+                        grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                }
+            }
         }
     }
 

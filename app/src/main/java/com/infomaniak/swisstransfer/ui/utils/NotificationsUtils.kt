@@ -26,7 +26,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.infomaniak.core.notifications.*
-import com.infomaniak.core.percent
+import com.infomaniak.core.utils.percent
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.NOTIFICATION_NAVIGATION_KEY

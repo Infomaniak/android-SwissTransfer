@@ -62,7 +62,6 @@ class TransferUploader(
         val session = NewUploadSession(
             duration = request.validityPeriod,
             authorEmail = request.authorEmail,
-            authorEmailToken = request.authorEmailToken,
             password = request.password,
             message = request.message,
             numberOfDownload = request.downloadCountLimit,
@@ -108,9 +107,10 @@ class TransferUploader(
         onUploadBytes: suspend (Long) -> Unit,
     ) {
 
-        val chunkSize = fileChunkSizeManager.computeChunkSize(fileSize = uploadFileSession.size)
-        val totalChunks = fileChunkSizeManager.computeFileChunks(fileSize = uploadFileSession.size, fileChunkSize = chunkSize)
-        val parallelChunks = fileChunkSizeManager.computeParallelChunks(fileChunkSize = chunkSize)
+        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
+        val chunkSize = chunkConfig.fileChunkSize
+        val totalChunks = chunkConfig.totalChunks
+        val parallelChunks = chunkConfig.parallelChunks
 
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 

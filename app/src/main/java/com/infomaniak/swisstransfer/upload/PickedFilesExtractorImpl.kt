@@ -51,6 +51,10 @@ class PickedFilesExtractorImpl : PickedFilesExtractor {
         incomingActions.trySend(FilePickingAction.Add(uris))
     }
 
+    override fun removeUris(uris: List<Uri>) {
+        incomingActions.trySend(FilePickingAction.Removal(uris))
+    }
+
     override fun clear() {
         incomingActions.trySend(FilePickingAction.ClearAll)
     }
