@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,20 @@ import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.swisstransfer.ui.navigation.NOTIFICATION_NAVIGATION_KEY
+import com.infomaniak.swisstransfer.ui.navigation.NotificationNavigation
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
+import com.infomaniak.swisstransfer.ui.utils.totalFileSize
+import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,6 +46,15 @@ class LaunchActivity : ComponentActivity() {
 
     @Inject
     lateinit var accountUtils: AccountUtils
+
+    @Inject
+    lateinit var uploadWorkerScheduler: UploadWorker.Scheduler
+
+    @Inject
+    lateinit var appSettingsManager: AppSettingsManager
+
+    @Inject
+    lateinit var uploadManager: UploadManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -61,6 +80,10 @@ class LaunchActivity : ComponentActivity() {
             isSharingFilesToTheApp() -> {
                 connectLoggedOutUser()
                 createNewTransferSharingFileIntent()
+            }
+            isAlreadyUploading() -> {
+                connectLoggedOutUser()
+                createUploadInProgressIntent()
             }
             accountUtils.isUserConnected() -> Intent(this, MainActivity::class.java)
             else -> Intent(this, OnboardingActivity::class.java)
@@ -88,13 +111,31 @@ class LaunchActivity : ComponentActivity() {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
             // We need NewMessageActivity to have its standard launchMode in the Manifest
             // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
-            setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+    }
+
+    private fun createUploadInProgressIntent(): Intent {
+        val transferType = appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi()
+        val uploadSession = runBlocking { uploadManager.getLastUpload() }
+
+        return Intent(intent).apply {
+            setClass(this@LaunchActivity, NewTransferActivity::class.java)
+            putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
+            putExtra(TRANSFER_TYPE_KEY, transferType.name)
+            putExtra(TRANSFER_TOTAL_SIZE_KEY, uploadSession?.totalFileSize())
+
+            // We need NewMessageActivity to have its standard launchMode in the Manifest
+            // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
     }
 
     private fun ComponentActivity.isSharingFilesToTheApp(): Boolean {
         return intent?.action == Intent.ACTION_SEND || intent?.action == Intent.ACTION_SEND_MULTIPLE
     }
+
+    private fun isAlreadyUploading() = runBlocking { uploadWorkerScheduler.hasAlreadyBeenScheduled() }
 
     companion object {
         private val TAG = LaunchActivity::class.java.simpleName
