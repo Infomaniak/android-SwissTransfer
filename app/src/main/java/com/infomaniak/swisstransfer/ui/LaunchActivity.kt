@@ -88,7 +88,7 @@ class LaunchActivity : ComponentActivity() {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
             // We need NewMessageActivity to have its standard launchMode in the Manifest
             // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
-            setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 
