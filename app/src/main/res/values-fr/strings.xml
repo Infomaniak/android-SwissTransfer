@@ -43,12 +43,14 @@
     <string name="deeplinkPasswordDescription">Saisis le mot de passe qui t’a été fourni pour télécharger ces fichiers.</string>
     <string name="deeplinkTransferExpired">Ce transfert a expiré</string>
     <string name="deeplinkTransferNotFound">Ce transfert n’existe pas</string>
-    <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d\u0020</string>
+    <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d</string>
     <string name="errorAppIntegrity">Votre appareil n’est pas reconnu comme sûr</string>
     <string name="errorIncorrectPassword">Mot de passe incorrect</string>
     <string name="errorTransferPasswordLength">Le mot de passe doit comporter entre 6 et 25 caractères</string>
+    <string name="expired">Expiré</string>
+    <string name="expiresAt">Expire à %s</string>
     <string name="expiresIn">Expire dans %d jours</string>
-    <string name="expiresToday">Expire aujourd’hui</string>
+    <string name="expiresThe">Expire le %s à %s</string>
     <string name="expiresTomorrow">Expire demain</string>
     <plurals name="filesCount">
         <item quantity="one">%d fichier</item>

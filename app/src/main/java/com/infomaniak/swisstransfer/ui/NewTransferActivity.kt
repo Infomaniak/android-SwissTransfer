@@ -27,7 +27,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
-import com.infomaniak.core.enumValueOfOrNull
+import com.infomaniak.core.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen

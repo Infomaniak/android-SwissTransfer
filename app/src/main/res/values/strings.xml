@@ -48,12 +48,14 @@
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
     <string name="deeplinkTransferExpired">This transfer has expired</string>
     <string name="deeplinkTransferNotFound">This transfer does not exist</string>
-    <string name="downloadedTransferLabel">Downloaded transfer: %d/%d\u0020</string>
+    <string name="downloadedTransferLabel">Downloaded transfer: %d/%d</string>
     <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorIncorrectPassword">Incorrect password</string>
     <string name="errorTransferPasswordLength">The password must be between 6 and 25 characters</string>
+    <string name="expired">Expired</string>
+    <string name="expiresAt">Expires at %s</string>
     <string name="expiresIn">Expires in %d days</string>
-    <string name="expiresToday">Expires today</string>
+    <string name="expiresThe">Expires on %s at %s</string>
     <string name="expiresTomorrow">Expires tomorrow</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>

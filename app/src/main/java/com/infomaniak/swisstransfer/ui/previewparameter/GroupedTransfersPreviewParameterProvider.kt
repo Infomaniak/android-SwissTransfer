@@ -19,22 +19,24 @@ package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.utils.DateUtils.SECONDS_IN_A_DAY
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
+import kotlinx.datetime.Clock
 import java.util.UUID
 
 class GroupedTransfersPreviewParameterProvider : PreviewParameterProvider<GroupedTransfers> {
-    override val values: Sequence<GroupedTransfers> = sequenceOf(transfersPreviewData.groupBySection(today.toLocalDate()))
+    override val values: Sequence<GroupedTransfers> = sequenceOf(transfersPreviewData.groupBySection(now.toLocalDate()))
 }
 
-private const val today = 1736411401L
+private val now get() = Clock.System.now().epochSeconds
 
 val transfersPreviewData = listOf(
     TransferUi(
         uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = today - 0.5f.toLong() * 86_400L,
-        expirationDateTimestamp = today + 3 * 86_400L,
+        createdDateTimestamp = now - (0.5f * SECONDS_IN_A_DAY).toLong(),
+        expirationDateTimestamp = now + 3 * SECONDS_IN_A_DAY,
         sizeUploaded = 237_866_728L,
         downloadLimit = 250,
         downloadLeft = 123,
@@ -44,8 +46,8 @@ val transfersPreviewData = listOf(
     ),
     TransferUi(
         uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = today - 0.6f.toLong() * 86_400L,
-        expirationDateTimestamp = today + 3 * 86_400L,
+        createdDateTimestamp = now - (0.6f * SECONDS_IN_A_DAY).toLong(),
+        expirationDateTimestamp = now + 3 * SECONDS_IN_A_DAY,
         sizeUploaded = 237_866_728L,
         downloadLimit = 250,
         downloadLeft = 123,
@@ -55,8 +57,8 @@ val transfersPreviewData = listOf(
     ),
     TransferUi(
         uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = today - 5L * 86_400L,
-        expirationDateTimestamp = today + 5 * 86_400L,
+        createdDateTimestamp = now - 5L * SECONDS_IN_A_DAY,
+        expirationDateTimestamp = now + 5L * SECONDS_IN_A_DAY,
         sizeUploaded = 89_723_143L,
         downloadLimit = 20,
         downloadLeft = 0,
@@ -66,8 +68,8 @@ val transfersPreviewData = listOf(
     ),
     TransferUi(
         uuid = UUID.randomUUID().toString(),
-        createdDateTimestamp = today - 30L * 86_400L,
-        expirationDateTimestamp = today - 4 * 86_400L,
+        createdDateTimestamp = now - 30L * SECONDS_IN_A_DAY,
+        expirationDateTimestamp = now - 4L * SECONDS_IN_A_DAY,
         sizeUploaded = 57_689_032L,
         downloadLimit = 1,
         downloadLeft = 1,

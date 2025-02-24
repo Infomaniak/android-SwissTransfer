@@ -22,8 +22,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.infomaniak.core.FORMAT_DATE_SIMPLE
-import com.infomaniak.core.format
+import com.infomaniak.core.utils.FORMAT_DATE_SIMPLE
+import com.infomaniak.core.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.daysBeforeExpiry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +48,7 @@ fun TransferExpiredBottomSheet(
 
     val transfer = expiredTransfer() ?: return
 
-    val descriptionText = if (transfer.expiresInDays < 0) {
+    val descriptionText = if (transfer.daysBeforeExpiry < 0) {
         stringResource(
             R.string.transferExpiredDateReachedDescription,
             transfer.expirationDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_SIMPLE),

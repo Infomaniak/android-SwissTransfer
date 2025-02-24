@@ -47,8 +47,10 @@
     <string name="errorAppIntegrity">Su dispositivo no es reconocido como seguro</string>
     <string name="errorIncorrectPassword">Contraseña incorrecta</string>
     <string name="errorTransferPasswordLength">La contraseña debe tener entre 6 y 25 caracteres</string>
+    <string name="expired">Expirado</string>
+    <string name="expiresAt">Expira a %s</string>
     <string name="expiresIn">Caduca en %d días</string>
-    <string name="expiresToday">Caduca hoy</string>
+    <string name="expiresThe">Expira el %s a las %s</string>
     <string name="expiresTomorrow">Expira mañana</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
