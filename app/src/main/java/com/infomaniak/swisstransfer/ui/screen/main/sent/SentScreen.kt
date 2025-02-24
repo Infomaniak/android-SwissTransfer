@@ -52,6 +52,7 @@ fun SentScreen(
     getSelectedTransferUuid: () -> String?,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     hasTransfer: (Boolean) -> Unit,
+    onDeleteTransfer: () -> Unit,
 ) {
 
     val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
@@ -66,7 +67,10 @@ fun SentScreen(
         uiState = { uiState },
         navigateToDetails = navigateToDetails,
         getSelectedTransferUuid = getSelectedTransferUuid,
-        onDeleteTransfer = transfersViewModel::deleteTransfer,
+        onDeleteTransfer = { transferUuid ->
+            transfersViewModel.deleteTransfer(transferUuid)
+            onDeleteTransfer()
+        },
     )
 }
 

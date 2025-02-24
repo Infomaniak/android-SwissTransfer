@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.parcelize.Parcelize
 
@@ -109,6 +110,7 @@ private fun ListPane(
 ) {
     val context = LocalContext.current
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    val isWindowLarge = windowAdaptiveInfo.isWindowLarge()
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid ->
@@ -117,6 +119,7 @@ private fun ListPane(
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
+            onDeleteTransfer = { if (isWindowLarge) navigator.popBackStack() }
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid ->
@@ -125,6 +128,7 @@ private fun ListPane(
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
+            onDeleteTransfer = { if (isWindowLarge) navigator.popBackStack() }
         )
     }
 }
@@ -159,7 +163,7 @@ private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     hasTransfer: () -> Boolean,
 ) {
-    when (val destinationContent = navigator.safeCurrentContent()) {
+    when (val destinationContent = navigator.currentDestination?.content) {
         null -> {
             NoSelectionEmptyState(hasTransfer())
         }
@@ -167,6 +171,7 @@ private fun DetailPane(
             TransferDetailsScreen(
                 transferUuid = destinationContent.transferUuid,
                 direction = destinationContent.direction,
+                hasTransfer = hasTransfer,
                 navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
                 navigateToFolder = { selectedFolderUuid ->
                     navigator.navigateToFolder(
@@ -230,7 +235,7 @@ private fun ExistingTransferFilesDetails(
 }
 
 @Composable
-private fun NoSelectionEmptyState(hasTransfers: Boolean) {
+fun NoSelectionEmptyState(hasTransfers: Boolean) {
     val (titleRes, descriptionRes) = if (hasTransfers) {
         R.string.noTransferSelectedTitle to R.string.noTransferSelectedDescription
     } else {
