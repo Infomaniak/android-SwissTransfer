@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import android.net.Uri
@@ -22,20 +24,19 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.compose.basics.CallableState
+import com.infomaniak.core.compose.basics.collectAsStateIn
 import com.infomaniak.core.mapSync
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.utils.isValidEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
-import com.infomaniak.multiplatform_swisstransfer.common.utils.mapToList
-import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
-import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toTransferOption
@@ -47,7 +48,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOp
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportationFilesManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.SendButtonStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.EmailTextFieldCallbacks
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
@@ -55,10 +55,13 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOp
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.TransferOptionsCallbacks
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus.No.EmailIssue
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -74,57 +77,100 @@ class PickFilesViewModel @Inject constructor(
     private val newTransferOpenManager: NewTransferOpenManager,
     private val savedStateHandle: SavedStateHandle,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
-    private val uploadManager: UploadManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val lastUploadSession = uploadManager.lastUploadFlow
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val canSendStatus: StateFlow<CanSendStatus>
 
-    private val _sendButtonStatus: MutableStateFlow<SendButtonStatus> = MutableStateFlow(SendButtonStatus.Clickable)
-    val sendButtonStatus: StateFlow<SendButtonStatus> = _sendButtonStatus.asStateFlow()
+    fun send() = sendRequest()
+    fun isReadyToSend() = sendRequest.isAwaitingCall
 
-    private val pickedFiles = UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
-        pickedFiles.map { it.toFileUiModel() }
+    sealed interface CanSendStatus {
+        data object Yes : CanSendStatus
+        sealed interface No : CanSendStatus {
+            data object ProcessingPickedFiles : No
+            data object NoFilesPicked : No
+            data object MaxSizeExceeded : No
+            data object MaxFilesCountExceeded : No
+            enum class EmailIssue : No {
+                AuthorUnspecified,
+                AuthorInvalid,
+                NoValidatedRecipients,
+            }
+        }
     }
 
-    val filesDetailsUiState: StateFlow<FilesDetailsUiState> = pickedFiles.map { pickedFiles ->
-        when {
-            pickedFiles.isEmpty() -> FilesDetailsUiState.EmptyFiles
-            else -> FilesDetailsUiState.Success(pickedFiles)
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = FilesDetailsUiState.Success(emptyList()),
-    )
+    val filesDetailsUiState: StateFlow<FilesDetailsUiState>
 
-    private val _openFilePickerEvent: Channel<Unit> = Channel(capacity = CONFLATED)
-    val openFilePickerEvent: ReceiveChannel<Unit> = _openFilePickerEvent
+    val openFilePickerEvent: ReceiveChannel<Unit>
 
-
-    @OptIn(FlowPreview::class)
-    val importedFilesDebounced: StateFlow<List<FileUi>> = pickedFiles.debounce(50).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = emptyList(),
-    )
+    val importedFilesDebounced: StateFlow<List<FileUi>>
 
     sealed interface FilesDetailsUiState {
         data object EmptyFiles : FilesDetailsUiState
         data class Success(val files: List<FileUi>) : FilesDetailsUiState
     }
 
-    private fun PickedFile.toFileUiModel(): FileUi = FileUi(
-        uid = uri.toString(),
-        fileName = name,
-        path = null,
-        isFolder = false,
-        fileSize = size,
-        mimeType = mimeType,
-        localPath = null,
-        thumbnailPath = null
-    )
+    val selectedTransferTypeFlow = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.QrCode)
+
+    fun importUris(uris: List<Uri>) {
+        UploadForegroundService.addFiles(uris)
+    }
+
+    fun removeFileByUri(uriString: String) {
+        UploadForegroundService.removeFiles(listOf(uriString.toUri()))
+        viewModelScope.launch {
+            thumbnailsLocalStorage.removeThumbnailForOngoingTransfer(uriString)
+        }
+    }
+
+    private val sendRequest = CallableState<Unit>()
+    private val _openFilePickerEvent: Channel<Unit> = Channel<Unit>(capacity = CONFLATED).also { openFilePickerEvent = it }
+
+    init {
+        val pickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
+            pickedFiles.map { it.toFileUiModel() }
+        }
+        filesDetailsUiState = pickedFilesFlow.map { pickedFiles ->
+            when {
+                pickedFiles.isEmpty() -> FilesDetailsUiState.EmptyFiles
+                else -> FilesDetailsUiState.Success(pickedFiles)
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FilesDetailsUiState.Success(emptyList()),
+        )
+        @OptIn(FlowPreview::class)
+        importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList(),
+        )
+    }
+
+    init {
+        val hasPickedFilesFlow = UploadForegroundService.pickedFilesFlow.map { it.isNotEmpty() }.distinctUntilChanged()
+        val transferType by selectedTransferTypeFlow.collectAsStateIn(viewModelScope)
+        val emailIssueFlow: Flow<EmailIssue?> = snapshotFlow {
+            when {
+                transferType != TransferTypeUi.Mail -> null
+                transferAuthorEmail.isEmpty() -> EmailIssue.AuthorUnspecified
+                isAuthorEmailInvalid -> EmailIssue.AuthorInvalid
+                validatedRecipientsEmails.isEmpty() -> EmailIssue.NoValidatedRecipients
+                else -> null
+            }
+        }
+        val noFilesPickedOrEmailIssueOrYesFlow = hasPickedFilesFlow.transformLatest { hasPickedFiles ->
+            if (hasPickedFiles) emailIssueFlow.collect { emailIssue ->
+                emit(emailIssue ?: CanSendStatus.Yes)
+            } else emit(CanSendStatus.No.NoFilesPicked)
+        }
+        canSendStatus = UploadForegroundService.isHandlingPickedFilesFlow.transformLatest { isHandlingPickedFiles ->
+            if (isHandlingPickedFiles) emit(CanSendStatus.No.ProcessingPickedFiles)
+            else emitAll(noFilesPickedOrEmailIssueOrYesFlow)
+        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No.ProcessingPickedFiles)
+    }
 
     //region Transfer Author Email
     private var transferAuthorEmail by mutableStateOf("")
@@ -154,6 +200,7 @@ class PickFilesViewModel @Inject constructor(
         }
 
     init {
+        viewModelScope.launch { handleSessionStart() }
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
                 // Remove old persisted data in case our process was killed, to start with a clean slate.
@@ -164,8 +211,7 @@ class PickFilesViewModel @Inject constructor(
                 // we don't want to erase user's choices about advanced transfer options.
                 initTransferOptionsValues()
 
-                launch { retrieveLastAuthorEmail() }
-
+                retrieveLastAuthorEmail()
             }
 
             val wasFirstViewModelCreation = isFirstViewModelCreation
@@ -175,31 +221,12 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    fun startLoadingSendButton() {
-        _sendButtonStatus.value = SendButtonStatus.Loading
-    }
-
-    fun resetSendButtonStatus() {
-        _sendButtonStatus.value = SendButtonStatus.Clickable
-    }
-
-    fun importUris(uris: List<Uri>) {
-        UploadForegroundService.addFiles(uris)
-    }
-
-    fun removeFileByUri(uriString: String) {
-        UploadForegroundService.removeFiles(listOf(uriString.toUri()))
-        viewModelScope.launch {
-            thumbnailsLocalStorage.removeThumbnailForOngoingTransfer(uriString)
-        }
-    }
-
-    // Creating the new upload session will trigger the navigation from the ImportFilesScreen to the UploadProgressScreen which
-    // will start the transfer and the worker.
-    fun createNewUploadSession() {
-        viewModelScope.launch {
-            val newUploadSession = generateNewUploadSession()
-            appSettingsManager.setLastAuthorEmail(newUploadSession.authorEmail)
+    private suspend fun handleSessionStart() {
+        canSendStatus.map { it == CanSendStatus.Yes }.tryCompletingWhileTrue {
+            awaitSendRequest()
+            val newTransferParams = extractNewTransferParams()
+            appSettingsManager.setLastAuthorEmail(newTransferParams.authorEmail)
+            UploadForegroundService.commitUploadSession(newTransferParams)
         }
     }
 
@@ -222,30 +249,19 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun generateNewUploadSession(): NewUploadSession {
-        return uploadManager.generateNewUploadSession(
-            duration = selectedValidityPeriodOption.value.apiValue,
-            authorEmail = if (selectedTransferType.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
-            password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
-            message = transferMessage,
-            numberOfDownload = selectedDownloadLimitOption.value.apiValue,
-            language = selectedLanguageOption.value.apiValue,
-            recipientsEmails = if (selectedTransferType.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
-            files = importationFilesManager.importedFiles.value.mapToList { fileUi ->
-                object : UploadFileSession {
-                    override val path: String? = null
-                    override val localPath: String = fileUi.localPath ?: ""
-                    override val mimeType: String = fileUi.mimeType ?: ""
-                    override val name: String = fileUi.fileName
-                    override val remoteUploadFile: RemoteUploadFile? = null
-                    override val size: Long = fileUi.fileSize
-                }
-            },
-        )
-    }
+    private suspend fun awaitSendRequest() = sendRequest.awaitOneCall()
+
+    private fun extractNewTransferParams() = NewTransferParams(
+        validityPeriod = selectedValidityPeriodOption.value.apiValue,
+        authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
+        password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
+        message = transferMessage,
+        downloadCountLimit = selectedDownloadLimitOption.value.apiValue,
+        languageCode = selectedLanguageOption.value.apiValue,
+        recipientsEmails = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet()
+    )
 
     //region Transfer Type
-    val selectedTransferType = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.QrCode)
 
     fun selectTransferType(type: TransferTypeUi) {
         savedStateHandle[SELECTED_TRANSFER_TYPE] = type
@@ -357,3 +373,14 @@ class PickFilesViewModel @Inject constructor(
         private const val NO_PASSWORD = ""
     }
 }
+
+private fun PickedFile.toFileUiModel(): FileUi = FileUi(
+    uid = uri.toString(),
+    fileName = name,
+    path = null,
+    isFolder = false,
+    fileSize = size,
+    mimeType = mimeType,
+    localPath = null,
+    thumbnailPath = null
+)

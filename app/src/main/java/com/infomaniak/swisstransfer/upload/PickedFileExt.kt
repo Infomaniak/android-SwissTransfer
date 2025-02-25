@@ -17,9 +17,13 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.FileToUploadMetadata
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 
-data class StartUploadSignal(
-    val newTransferParams: NewTransferParams,
-    val uploadDestination: UploadDestination,
-)
+fun PickedFile.toFileUploadMetaData(): FileToUploadMetadata {
+    return FileToUploadMetadata(
+        name = name,
+        size = size,
+        mimeType = mimeType
+    )
+}

@@ -17,9 +17,15 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 
 sealed interface UploadState {
+
+    data class Pending(
+        val params: NewTransferParams,
+        val files: List<PickedFile>,
+    ) : UploadState
 
     data class Ongoing(
         val uploadedBytes: Long,

@@ -80,7 +80,13 @@ fun UploadProgressScreen(
         uploadProgressViewModel.initializeLastTransfer()
     }
 
-    HandleProgressState({ uiState }, navigateToUploadSuccess, navigateToUploadError, navigateBackToImportFiles, closeActivity)
+    HandleProgressState(
+        uiState = { uiState },
+        navigateToUploadSuccess = navigateToUploadSuccess,
+        navigateToUploadError = navigateToUploadError,
+        navigateBackToImportFiles = navigateBackToImportFiles,
+        closeActivity = closeActivity
+    )
 
     UploadProgressScreen(
         progressState = { uiState },

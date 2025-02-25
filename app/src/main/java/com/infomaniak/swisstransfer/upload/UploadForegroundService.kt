@@ -25,11 +25,8 @@ import android.net.Uri
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.ForegroundService
 import com.infomaniak.core.network.NetworkAvailability
-import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.withPartialWakeLock
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.FileToUploadMetadata
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
@@ -80,6 +77,15 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             stop()
         }
 
+        fun commitUploadSession(params: NewTransferParams) {
+            check(isHandlingPickedFilesFlow.value.not())
+            check(state.value == null)
+            _state.value = UploadState.Pending(
+                params = params,
+                files = pickedFilesFlow.value
+            )
+        }
+
         suspend fun startUpload(signal: StartUploadSignal) {
             startUploadChannel.send(signal)
         }
@@ -110,12 +116,15 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
     override suspend fun run() = Dispatchers.Default {
         val startSignal = startUploadChannel.receive()
-        val uploader: TransferUploader = createUploadSession(
+        val pickedFiles = pickedFilesFlow.value
+        TODO("Revamp to use state and simplify startSignal")
+        val request = startSignal.newTransferParams.toUploadSessionRequest(pickedFiles.map { it.toFileUploadMetaData() })
+        val uploader = TransferUploader(
             uploadManager = uploadManager,
-            startParams = startSignal,
-            pickedFiles = pickedFilesFlow.value,
-            attestationHeaderName = startSignal.attestationHeaderName,
-            attestationToken = startSignal.attestationHeaderName
+            fileChunkSizeManager = fileChunkSizeManager,
+            request = request,
+            destination = startSignal.uploadDestination,
+            pickedFiles = pickedFiles,
         )
         isInternetConnectedFlow.mapLatest { isInternetConnected ->
             if (isInternetConnected.not()) awaitCancellation()
@@ -123,31 +132,6 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                 uploader.uploadAllRemainingWithRetries()
             }
         }.first()
-    }
-
-    private suspend fun createUploadSession(
-        uploadManager: UploadManager,
-        startParams: StartUploadSignal,
-        pickedFiles: List<PickedFile>,
-        attestationHeaderName: String,
-        attestationToken: String,
-    ): TransferUploader {
-        val request = startParams.request.toUploadSessionRequest(pickedFiles.map { it.toFileUploadMetaData() })
-        return isInternetConnectedFlow.tryCompletingWhileTrue {
-            //TODO: Run code below with retries.
-            val uploadDestination = uploadManager.startUploadSession(
-                request = request,
-                attestationHeaderName = attestationHeaderName,
-                attestationToken = attestationToken
-            )
-            TransferUploader(
-                uploadManager = uploadManager,
-                fileChunkSizeManager = fileChunkSizeManager,
-                request = request,
-                destination = uploadDestination,
-                pickedFiles = pickedFiles,
-            )
-        }
     }
 
     private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability(
@@ -158,29 +142,6 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         replay = 1
     )
 }
-
-private fun PickedFile.toFileUploadMetaData(): FileToUploadMetadata {
-    return FileToUploadMetadata(
-        name = name,
-        size = size,
-        mimeType = mimeType
-    )
-}
-
-private fun StartUploadSignal.Request.toUploadSessionRequest(
-    filesMetadata: List<FileToUploadMetadata>
-): UploadSessionRequest = UploadSessionRequest(
-    validityPeriod = validityPeriod,
-    authorEmail = authorEmail,
-    password = password,
-    message = message,
-    sizeOfUpload = filesMetadata.sumOf { it.size },
-    downloadCountLimit = downloadCountLimit,
-    filesCount = filesMetadata.size,
-    languageCode = languageCode,
-    filesMetadata = filesMetadata,
-    recipientsEmails = recipientsEmails
-)
 
 private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
 private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()

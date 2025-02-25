@@ -29,9 +29,10 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.Uploa
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.swisstransfer.BuildConfig
+import javax.inject.Inject
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException as KmpNetworkException
 
-class UploadSessionStarter(
+class UploadSessionStarter @Inject constructor(
     private val appIntegrityManager: AppIntegrityManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val uploadManager: UploadManager,
@@ -43,6 +44,7 @@ class UploadSessionStarter(
         data object EmailValidationRequired : Result
 
         sealed interface Issue : Result
+        data object RestrictedLocation : Issue
         data object AppIntegrityIssue : Issue
         data object NetworkIssue : Issue
         data class OtherIssue(val t: Throwable) : Issue
@@ -61,6 +63,7 @@ class UploadSessionStarter(
             is NetworkException, is KmpNetworkException -> Result.NetworkIssue
             is IntegrityException -> Result.AppIntegrityIssue
             is ContainerErrorsException.EmailValidationRequired -> Result.EmailValidationRequired
+            is ContainerErrorsException.DomainBlockedException -> Result.RestrictedLocation
             else -> Result.OtherIssue(t)
         }
     }.getOrThrow()

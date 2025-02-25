@@ -15,22 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalSplittiesApi::class)
+
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.MainDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
+import com.infomaniak.swisstransfer.upload.UploadForegroundService
+import com.infomaniak.swisstransfer.upload.UploadSessionStarter
+import com.infomaniak.swisstransfer.upload.UploadState
+import com.infomaniak.swisstransfer.upload.toFileUploadMetaData
+import com.infomaniak.swisstransfer.upload.toUploadSessionRequest
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import splitties.coroutines.repeatWhileActive
+import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +49,7 @@ class UploadProgressViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val uploadWorkerScheduler: UploadWorker.Scheduler,
     private val uploadManager: UploadManager,
+    private val uploadSessionStarter: UploadSessionStarter,
     private val transferSendManager: TransferSendManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
@@ -130,6 +142,31 @@ class UploadProgressViewModel @Inject constructor(
 
     fun resetSendStatus() {
         transferSendManager.resetSendStatus()
+    }
+
+    private val retryButton = CallableState<Unit>()
+
+    init {
+        viewModelScope.launch { run() }
+    }
+
+    private suspend fun run(): Nothing {
+        do {
+            val pendingUpload = UploadForegroundService.state.filterIsInstance<UploadState.Pending>().first()
+            val uploadSessionRequest = pendingUpload.params.toUploadSessionRequest(
+                filesMetadata = pendingUpload.files.map { it.toFileUploadMetaData() }
+            )
+            val result = uploadSessionStarter.tryStarting(uploadSessionRequest)
+            when (result) {
+                UploadSessionStarter.Result.EmailValidationRequired -> TODO()
+                UploadSessionStarter.Result.AppIntegrityIssue -> TODO()
+                UploadSessionStarter.Result.NetworkIssue -> TODO()
+                is UploadSessionStarter.Result.OtherIssue -> TODO()
+                UploadSessionStarter.Result.RestrictedLocation -> TODO()
+                is UploadSessionStarter.Result.Success -> TODO()
+            }
+            retryButton.awaitOneCall()
+        } while (true)
     }
 
     companion object {

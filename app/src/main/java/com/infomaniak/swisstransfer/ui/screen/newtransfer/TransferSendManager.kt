@@ -64,7 +64,7 @@ class TransferSendManager @Inject constructor(
             uploadManager.initUploadSession(
                 attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
                 attestationToken = attestationToken,
-            )!! // TODO: Handle ContainerErrorsException here
+            )!!
             uploadWorkerScheduler.scheduleWork(uploadSession.uuid)
             _sendStatus.update {
                 SendStatus.Success(uploadSession.totalFileSize())

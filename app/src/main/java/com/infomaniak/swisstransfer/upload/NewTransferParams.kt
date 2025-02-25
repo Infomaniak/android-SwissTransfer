@@ -17,9 +17,16 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 
-data class StartUploadSignal(
-    val newTransferParams: NewTransferParams,
-    val uploadDestination: UploadDestination,
+data class NewTransferParams(
+    val validityPeriod: ValidityPeriod,
+    val authorEmail: String,
+    val password: String,
+    val message: String,
+    val downloadCountLimit: DownloadLimit,
+    val languageCode: EmailLanguage,
+    val recipientsEmails: Set<String>,
 )

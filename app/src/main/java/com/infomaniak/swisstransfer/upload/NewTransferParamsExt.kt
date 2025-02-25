@@ -17,9 +17,20 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.FileToUploadMetadata
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 
-data class StartUploadSignal(
-    val newTransferParams: NewTransferParams,
-    val uploadDestination: UploadDestination,
+fun NewTransferParams.toUploadSessionRequest(
+    filesMetadata: List<FileToUploadMetadata>
+): UploadSessionRequest = UploadSessionRequest(
+    validityPeriod = validityPeriod,
+    authorEmail = authorEmail,
+    password = password,
+    message = message,
+    sizeOfUpload = filesMetadata.sumOf { it.size },
+    downloadCountLimit = downloadCountLimit,
+    filesCount = filesMetadata.size,
+    languageCode = languageCode,
+    filesMetadata = filesMetadata,
+    recipientsEmails = recipientsEmails
 )
