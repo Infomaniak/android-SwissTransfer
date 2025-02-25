@@ -96,6 +96,7 @@
         <item quantity="one">A:</item>
         <item quantity="other">A:</item>
     </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer non è disponibile nella tua località</string>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
     <string name="sentFilesTitle">File condivisi</string>
     <string name="sentTitle">Inviato a</string>
@@ -147,6 +148,7 @@
     <string name="shareQrCodeDescription">Scansionate questo codice QR intorno a voi per condividere il vostro trasferimento:</string>
     <string name="shareQrCodeTitle">Condivisione rapida</string>
     <string name="snackbarLinkCopiedToClipboard">Link copiato negli appunti</string>
+    <string name="sorry">Ci dispiace</string>
     <string name="startActivityCantHandleAction">Non è stata trovata alcuna applicazione in grado di gestire questa azione</string>
     <string name="textFieldOptional">(Opzionale)</string>
     <string name="transferContentHeader">Contenuto del trasferimento:</string>
