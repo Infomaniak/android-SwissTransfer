@@ -25,7 +25,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException.EmailValidationRequired
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.totalFileSize
 import com.infomaniak.swisstransfer.workers.UploadWorker
@@ -61,20 +61,21 @@ class TransferSendManager @Inject constructor(
 
         runCatching {
             val attestationToken = getAttestationToken()
+
             uploadManager.initUploadSession(
                 attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
                 attestationToken = attestationToken,
-            )!! // TODO: Handle ContainerErrorsException here
+            )!!
+
             uploadWorkerScheduler.scheduleWork(uploadSession.uuid)
-            _sendStatus.update {
-                SendStatus.Success(uploadSession.totalFileSize())
-            }
+            _sendStatus.update { SendStatus.Success(uploadSession.totalFileSize()) }
+
         }.onFailure { exception ->
             SentryLog.w(TAG, "Exception during sendTransfer", exception)
             val status = when (exception) {
                 is NetworkException, is KmpNetworkException -> SendStatus.NoNetwork
                 is IntegrityException -> SendStatus.Refused
-                is ContainerErrorsException.EmailValidationRequired -> SendStatus.RequireEmailValidation
+                is EmailValidationRequired -> SendStatus.RequireEmailValidation
                 else -> {
                     reportToSentry(exception)
                     SendStatus.Failure
