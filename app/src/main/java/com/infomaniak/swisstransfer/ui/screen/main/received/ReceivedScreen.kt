@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedEmptyFab
@@ -117,7 +117,7 @@ private fun ReceivedContent(
         val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
         EmptyState(
             content = if (shouldDisplayIcon) {
-                { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) }
+                { Image(imageVector = AppIllus.MascotWithMagnifyingGlass.image(), contentDescription = null) }
             } else null,
             titleRes = R.string.noTransferReceivedTitle,
             descriptionRes = R.string.noTransferReceivedDescription,
