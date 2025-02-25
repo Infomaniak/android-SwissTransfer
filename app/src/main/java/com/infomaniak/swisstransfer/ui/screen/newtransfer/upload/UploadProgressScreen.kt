@@ -63,16 +63,16 @@ fun UploadProgressScreen(
     val sendStatus by uploadProgressViewModel.sendStatus.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
-    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
 
-    BackHandler(enabled = !showBottomSheet, onBack = { showBottomSheet = true })
+    BackHandler(enabled = !showCancelBottomSheet, onBack = { showCancelBottomSheet = true })
 
     HandleSendStatus(
         sendStatus = { sendStatus },
         navigateToUploadError = { navigateToUploadError() },
         navigateToEmailValidation = { navigateToEmailValidation() },
         navigateToAppIntegrityError = { navigateToAppIntegrityError() },
-        resetSendStatus = { uploadProgressViewModel.resetSendStatus() }
+        resetSendStatus = { uploadProgressViewModel.resetSendStatus() },
     )
 
     LaunchedEffect(Unit) {
@@ -89,7 +89,7 @@ fun UploadProgressScreen(
         totalSizeInBytes = totalSizeInBytes,
         adScreenType = adScreenType,
         onCancel = { uploadProgressViewModel.cancelUpload(onFailedCancellation = closeActivity) },
-        showBottomSheet = GetSetCallbacks(get = { showBottomSheet }, set = { showBottomSheet = it }),
+        showCancelBottomSheet = GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it }),
     )
 }
 
@@ -149,12 +149,12 @@ private fun UploadProgressScreen(
     totalSizeInBytes: Long,
     adScreenType: UploadProgressAdType,
     onCancel: () -> Unit,
-    showBottomSheet: GetSetCallbacks<Boolean>,
+    showCancelBottomSheet: GetSetCallbacks<Boolean>,
 ) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(stringResource(RCore.string.buttonCancel), modifier = it, onClick = { showBottomSheet.set(true) })
+            LargeButton(stringResource(RCore.string.buttonCancel), modifier = it, onClick = { showCancelBottomSheet.set(true) })
         },
     ) {
         Column(
@@ -174,13 +174,13 @@ private fun UploadProgressScreen(
             Spacer(Modifier.height(Margin.Huge))
         }
 
-        if (showBottomSheet.get()) {
+        if (showCancelBottomSheet.get()) {
             CancelUploadBottomSheet(
                 onCancel = {
-                    showBottomSheet.set(false)
+                    showCancelBottomSheet.set(false)
                     onCancel()
                 },
-                closeButtonSheet = { showBottomSheet.set(false) },
+                closeButtonSheet = { showCancelBottomSheet.set(false) },
             )
         }
     }
@@ -209,7 +209,7 @@ private fun UploadStatus(
         modifier = Modifier.fillMaxWidth(),
         targetState = progressUiState,
         label = "upload progress status",
-    ) { progressUiState ->
+    ) { state ->
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center,
@@ -220,7 +220,7 @@ private fun UploadStatus(
                 // constrained to its height. Having a constant height in all ProgressUiState makes the crossfade smoother looking
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
-                when (progressUiState) {
+                when (state) {
                     ProgressUiState.Initializing -> Text(stringResource(R.string.transferInitializing))
                     ProgressUiState.Progress -> Progress(progressState, totalSizeInBytes)
                     ProgressUiState.NoNetwork -> NetworkUnavailable()
@@ -271,7 +271,7 @@ private fun Preview() {
             totalSizeInBytes = 76_321_894L,
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
-            showBottomSheet = GetSetCallbacks(get = { false }, set = {}),
+            showCancelBottomSheet = GetSetCallbacks(get = { false }, set = {}),
         )
     }
 }
