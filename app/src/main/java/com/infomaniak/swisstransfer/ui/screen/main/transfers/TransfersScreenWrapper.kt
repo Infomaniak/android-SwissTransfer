@@ -35,7 +35,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirectio
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
@@ -246,7 +246,7 @@ fun NoSelectionEmptyState(hasTransfers: Boolean) {
         topBar = { SwissTransferTopAppBar(title = "") }
     ) {
         EmptyState(
-            content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) },
+            content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass.image(), contentDescription = null) },
             titleRes = titleRes,
             descriptionRes = descriptionRes
         )

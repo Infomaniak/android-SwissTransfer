@@ -37,7 +37,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.*
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -172,7 +172,7 @@ private fun NoSelectionEmptyState() {
         topBar = { SwissTransferTopAppBar(title = "") }
     ) {
         EmptyState(
-            content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass, contentDescription = null) },
+            content = { Image(imageVector = AppIllus.MascotWithMagnifyingGlass.image(), contentDescription = null) },
             descriptionRes = R.string.noSettingsSelectedDescription
         )
     }

@@ -60,19 +60,19 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF2B383B)), stroke = SolidColor(Color(0xFFDCE4E5)),
-                strokeLineWidth = 0.5f, strokeLineCap = Butt, strokeLineJoin = Miter,
+                strokeLineWidth = 1.0f, strokeLineCap = Butt, strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f, pathFillType = NonZero
             ) {
-                moveTo(56.09f, 52.92f)
-                curveTo(58.09f, 34.48f, 73.65f, 20.51f, 92.2f, 20.51f)
-                curveTo(110.75f, 20.51f, 126.32f, 34.48f, 128.31f, 52.92f)
-                lineTo(138.65f, 148.57f)
-                lineTo(127.5f, 133.27f)
-                curveTo(121.62f, 125.19f, 109.58f, 125.19f, 103.7f, 133.27f)
-                curveTo(98.02f, 141.07f, 86.38f, 141.07f, 80.7f, 133.27f)
-                curveTo(74.82f, 125.19f, 62.78f, 125.19f, 56.9f, 133.27f)
-                lineTo(45.75f, 148.57f)
-                lineTo(56.09f, 52.92f)
+                moveTo(56.34f, 52.95f)
+                curveTo(58.32f, 34.64f, 73.78f, 20.76f, 92.2f, 20.76f)
+                curveTo(110.62f, 20.76f, 126.08f, 34.64f, 128.06f, 52.95f)
+                lineTo(138.3f, 147.67f)
+                lineTo(127.71f, 133.12f)
+                curveTo(121.73f, 124.91f, 109.48f, 124.91f, 103.5f, 133.12f)
+                curveTo(97.92f, 140.78f, 86.49f, 140.78f, 80.91f, 133.12f)
+                curveTo(74.93f, 124.91f, 62.68f, 124.91f, 56.7f, 133.12f)
+                lineTo(46.1f, 147.67f)
+                lineTo(56.34f, 52.95f)
                 close()
             }
             path(
@@ -169,13 +169,13 @@ val AppIllus.MascotDeadDark: ImageVector
                 pathFillType = EvenOdd
             ) {
                 moveTo(75.37f, 57.74f)
-                lineTo(72.41f, 60.7f)
+                lineTo(72.4f, 60.7f)
                 lineTo(76.36f, 64.65f)
                 lineTo(72.4f, 68.6f)
                 lineTo(75.37f, 71.57f)
                 lineTo(79.32f, 67.61f)
                 lineTo(83.27f, 71.57f)
-                lineTo(86.24f, 68.6f)
+                lineTo(86.23f, 68.6f)
                 lineTo(82.28f, 64.65f)
                 lineTo(86.23f, 60.7f)
                 lineTo(83.27f, 57.74f)
@@ -192,7 +192,7 @@ val AppIllus.MascotDeadDark: ImageVector
                 lineTo(96.85f, 60.7f)
                 lineTo(100.8f, 64.65f)
                 lineTo(96.85f, 68.6f)
-                lineTo(99.82f, 71.57f)
+                lineTo(99.81f, 71.57f)
                 lineTo(103.77f, 67.61f)
                 lineTo(107.72f, 71.57f)
                 lineTo(110.68f, 68.6f)
@@ -218,7 +218,7 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFDCE4E5)),
-                strokeLineWidth = 0.5f, strokeLineCap = Butt, strokeLineJoin = Miter,
+                strokeLineWidth = 1.0f, strokeLineCap = Butt, strokeLineJoin = Miter,
                 strokeLineMiter = 4.0f, pathFillType = NonZero
             ) {
                 moveTo(115.33f, 88.78f)
@@ -306,7 +306,7 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 0.5f, strokeLineCap =
+                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
                 Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
                 NonZero
             ) {
@@ -323,16 +323,16 @@ val AppIllus.MascotDeadDark: ImageVector
                 4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(24.52f, 102.28f)
-                curveTo(24.52f, 100.34f, 26.09f, 98.76f, 28.03f, 98.76f)
+                curveTo(24.52f, 100.34f, 26.1f, 98.76f, 28.04f, 98.76f)
                 curveTo(29.98f, 98.76f, 31.55f, 100.34f, 31.55f, 102.28f)
-                curveTo(31.55f, 104.22f, 29.98f, 105.79f, 28.03f, 105.79f)
-                curveTo(26.09f, 105.79f, 24.52f, 104.22f, 24.52f, 102.28f)
+                curveTo(31.55f, 104.22f, 29.98f, 105.79f, 28.04f, 105.79f)
+                curveTo(26.1f, 105.79f, 24.52f, 104.22f, 24.52f, 102.28f)
                 close()
-                moveTo(28.03f, 99.85f)
+                moveTo(28.04f, 99.85f)
                 curveTo(26.69f, 99.85f, 25.6f, 100.93f, 25.6f, 102.28f)
-                curveTo(25.6f, 103.62f, 26.69f, 104.71f, 28.03f, 104.71f)
+                curveTo(25.6f, 103.62f, 26.69f, 104.71f, 28.04f, 104.71f)
                 curveTo(29.38f, 104.71f, 30.47f, 103.62f, 30.47f, 102.28f)
-                curveTo(30.47f, 100.93f, 29.38f, 99.85f, 28.03f, 99.85f)
+                curveTo(30.47f, 100.93f, 29.38f, 99.85f, 28.04f, 99.85f)
                 close()
             }
             path(
@@ -348,11 +348,11 @@ val AppIllus.MascotDeadDark: ImageVector
                 curveTo(29.78f, 110.66f, 30.02f, 110.9f, 30.02f, 111.2f)
                 curveTo(30.02f, 111.5f, 29.78f, 111.74f, 29.48f, 111.74f)
                 horizontalLineTo(23.17f)
-                curveTo(23.02f, 111.74f, 22.89f, 111.69f, 22.79f, 111.58f)
-                curveTo(22.68f, 111.48f, 22.63f, 111.35f, 22.63f, 111.2f)
+                curveTo(23.03f, 111.74f, 22.89f, 111.69f, 22.79f, 111.58f)
+                curveTo(22.69f, 111.48f, 22.63f, 111.35f, 22.63f, 111.2f)
                 curveTo(22.63f, 110.18f, 22.92f, 109.17f, 23.47f, 108.31f)
-                curveTo(24.02f, 107.44f, 24.8f, 106.75f, 25.73f, 106.31f)
-                curveTo(26.66f, 105.87f, 27.69f, 105.71f, 28.71f, 105.84f)
+                curveTo(24.02f, 107.44f, 24.81f, 106.75f, 25.73f, 106.31f)
+                curveTo(26.66f, 105.88f, 27.7f, 105.71f, 28.71f, 105.84f)
                 curveTo(29.73f, 105.97f, 30.69f, 106.38f, 31.48f, 107.04f)
                 curveTo(31.71f, 107.23f, 31.74f, 107.57f, 31.55f, 107.8f)
                 curveTo(31.36f, 108.03f, 31.02f, 108.06f, 30.79f, 107.87f)
@@ -366,28 +366,28 @@ val AppIllus.MascotDeadDark: ImageVector
             ) {
                 moveTo(33.59f, 112.81f)
                 curveTo(33.29f, 113.15f, 32.85f, 113.36f, 32.36f, 113.36f)
-                curveTo(31.46f, 113.36f, 30.74f, 112.64f, 30.74f, 111.74f)
-                curveTo(30.74f, 110.85f, 31.46f, 110.12f, 32.36f, 110.12f)
+                curveTo(31.47f, 113.36f, 30.74f, 112.64f, 30.74f, 111.74f)
+                curveTo(30.74f, 110.85f, 31.47f, 110.12f, 32.36f, 110.12f)
                 curveTo(32.76f, 110.12f, 33.12f, 110.26f, 33.4f, 110.5f)
-                curveTo(33.42f, 110.48f, 33.44f, 110.46f, 33.47f, 110.45f)
+                curveTo(33.42f, 110.48f, 33.45f, 110.46f, 33.47f, 110.45f)
                 lineTo(36.1f, 108.87f)
-                curveTo(36.13f, 108.85f, 36.15f, 108.84f, 36.18f, 108.83f)
+                curveTo(36.13f, 108.85f, 36.16f, 108.84f, 36.18f, 108.83f)
                 curveTo(36.16f, 108.72f, 36.15f, 108.61f, 36.15f, 108.5f)
                 curveTo(36.15f, 107.6f, 36.87f, 106.88f, 37.77f, 106.88f)
-                curveTo(38.66f, 106.88f, 39.39f, 107.6f, 39.39f, 108.5f)
-                curveTo(39.39f, 109.39f, 38.66f, 110.12f, 37.77f, 110.12f)
-                curveTo(37.37f, 110.12f, 37.01f, 109.98f, 36.73f, 109.74f)
-                curveTo(36.71f, 109.76f, 36.68f, 109.78f, 36.66f, 109.79f)
+                curveTo(38.67f, 106.88f, 39.39f, 107.6f, 39.39f, 108.5f)
+                curveTo(39.39f, 109.39f, 38.67f, 110.12f, 37.77f, 110.12f)
+                curveTo(37.38f, 110.12f, 37.01f, 109.98f, 36.73f, 109.74f)
+                curveTo(36.71f, 109.76f, 36.69f, 109.78f, 36.66f, 109.79f)
                 lineTo(34.03f, 111.37f)
                 curveTo(34.0f, 111.39f, 33.98f, 111.4f, 33.95f, 111.41f)
-                curveTo(33.97f, 111.52f, 33.98f, 111.63f, 33.98f, 111.74f)
-                curveTo(33.98f, 111.77f, 33.98f, 111.79f, 33.98f, 111.82f)
+                curveTo(33.97f, 111.52f, 33.99f, 111.63f, 33.99f, 111.74f)
+                curveTo(33.99f, 111.77f, 33.98f, 111.79f, 33.98f, 111.82f)
                 curveTo(34.01f, 111.82f, 34.04f, 111.83f, 34.07f, 111.84f)
-                lineTo(36.46f, 112.8f)
-                curveTo(36.49f, 112.81f, 36.52f, 112.83f, 36.54f, 112.84f)
+                lineTo(36.47f, 112.8f)
+                curveTo(36.49f, 112.81f, 36.52f, 112.83f, 36.55f, 112.84f)
                 curveTo(36.84f, 112.5f, 37.28f, 112.28f, 37.77f, 112.28f)
-                curveTo(38.66f, 112.28f, 39.39f, 113.01f, 39.39f, 113.91f)
-                curveTo(39.39f, 114.8f, 38.66f, 115.53f, 37.77f, 115.53f)
+                curveTo(38.67f, 112.28f, 39.39f, 113.01f, 39.39f, 113.91f)
+                curveTo(39.39f, 114.8f, 38.67f, 115.53f, 37.77f, 115.53f)
                 curveTo(36.87f, 115.53f, 36.15f, 114.8f, 36.15f, 113.91f)
                 curveTo(36.15f, 113.88f, 36.15f, 113.86f, 36.15f, 113.83f)
                 curveTo(36.12f, 113.83f, 36.09f, 113.82f, 36.06f, 113.81f)
