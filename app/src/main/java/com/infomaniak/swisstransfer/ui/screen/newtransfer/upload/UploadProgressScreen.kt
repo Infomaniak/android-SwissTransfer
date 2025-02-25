@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager.SendStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.areTransferDataStillAvailable
@@ -64,6 +65,7 @@ fun UploadProgressScreen(
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showLocationBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(enabled = !showCancelBottomSheet, onBack = { showCancelBottomSheet = true })
 
@@ -73,6 +75,7 @@ fun UploadProgressScreen(
         navigateToEmailValidation = { navigateToEmailValidation() },
         navigateToAppIntegrityError = { navigateToAppIntegrityError() },
         resetSendStatus = { uploadProgressViewModel.resetSendStatus() },
+        showLocationBottomSheet = GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it }),
     )
 
     LaunchedEffect(Unit) {
@@ -90,6 +93,8 @@ fun UploadProgressScreen(
         adScreenType = adScreenType,
         onCancel = { uploadProgressViewModel.cancelUpload(onFailedCancellation = closeActivity) },
         showCancelBottomSheet = GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it }),
+        showLocationBottomSheet = GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it }),
+        closeActivity = closeActivity,
     )
 }
 
@@ -100,6 +105,7 @@ fun HandleSendStatus(
     navigateToEmailValidation: () -> Unit,
     navigateToAppIntegrityError: () -> Unit,
     resetSendStatus: () -> Unit,
+    showLocationBottomSheet: GetSetCallbacks<Boolean>,
 ) {
     LaunchedEffect(sendStatus()) {
         when (sendStatus()) {
@@ -115,6 +121,7 @@ fun HandleSendStatus(
                 resetSendStatus()
             }
             is SendStatus.RequireEmailValidation -> navigateToEmailValidation()
+            is SendStatus.RestrictedLocation -> showLocationBottomSheet.set(true)
             SendStatus.Initial,
             SendStatus.Pending,
             is SendStatus.Success -> Unit
@@ -150,6 +157,8 @@ private fun UploadProgressScreen(
     adScreenType: UploadProgressAdType,
     onCancel: () -> Unit,
     showCancelBottomSheet: GetSetCallbacks<Boolean>,
+    showLocationBottomSheet: GetSetCallbacks<Boolean>,
+    closeActivity: () -> Unit,
 ) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
@@ -181,6 +190,15 @@ private fun UploadProgressScreen(
                     onCancel()
                 },
                 closeButtonSheet = { showCancelBottomSheet.set(false) },
+            )
+        }
+
+        if (showLocationBottomSheet.get()) {
+            LocationBottomSheet(
+                closeButtonSheet = {
+                    showLocationBottomSheet.set(false)
+                    closeActivity()
+                },
             )
         }
     }
@@ -260,6 +278,25 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LocationBottomSheet(closeButtonSheet: () -> Unit) {
+    SwissTransferBottomSheet(
+        title = stringResource(R.string.sorry),
+        description = stringResource(R.string.restrictedLocation),
+        imageVector = AppIllus.MascotSearching.image(),
+        bottomButton = {
+            LargeButton(
+                title = stringResource(R.string.contentDescriptionButtonClose),
+                modifier = it,
+                style = ButtonType.Primary,
+                onClick = closeButtonSheet,
+            )
+        },
+        onDismissRequest = closeButtonSheet,
+    )
+}
+
 @PreviewAllWindows
 @Composable
 private fun Preview() {
@@ -272,6 +309,8 @@ private fun Preview() {
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
             showCancelBottomSheet = GetSetCallbacks(get = { false }, set = {}),
+            showLocationBottomSheet = GetSetCallbacks(get = { false }, set = {}),
+            closeActivity = {},
         )
     }
 }

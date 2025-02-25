@@ -25,6 +25,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException.DomainBlockedException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException.EmailValidationRequired
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.utils.totalFileSize
@@ -76,6 +77,7 @@ class TransferSendManager @Inject constructor(
                 is NetworkException, is KmpNetworkException -> SendStatus.NoNetwork
                 is IntegrityException -> SendStatus.Refused
                 is EmailValidationRequired -> SendStatus.RequireEmailValidation
+                is DomainBlockedException -> SendStatus.RestrictedLocation
                 else -> {
                     reportToSentry(exception)
                     SendStatus.Failure
@@ -123,6 +125,7 @@ class TransferSendManager @Inject constructor(
         data object Failure : SendStatus()
         data object NoNetwork : SendStatus()
         data object RequireEmailValidation : SendStatus()
+        data object RestrictedLocation : SendStatus()
     }
 
     companion object {
