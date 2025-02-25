@@ -89,15 +89,6 @@ class TransferUploader(
         }
     }
 
-    private fun PickedFile.toUploadFileSession(): UploadFileSession = object : UploadFileSession {
-        override val path: String? = null // We currently don't support adding folders to transfers.
-        override val localPath: String get() = "" // Unneeded, but this model is reused.
-        override val mimeType: String = this@toUploadFileSession.mimeType
-        override val name: String = this@toUploadFileSession.name
-        override val remoteUploadFile: RemoteUploadFile? = null // Unneeded, but this model is reused for iOS.
-        override val size: Long = this@toUploadFileSession.size
-    }
-
     private val contentResolver = appCtx.contentResolver
 
     private suspend fun start(
@@ -106,6 +97,7 @@ class TransferUploader(
         uploadFileSession: UploadFileSession,
         onUploadBytes: suspend (Long) -> Unit,
     ) {
+        SentryLog.i(TAG, "start upload file ${fileUUID}, with size ${uploadFileSession.size}")
 
         val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
         val chunkSize = chunkConfig.fileChunkSize
@@ -159,13 +151,9 @@ class TransferUploader(
 
                 launch {
                     try {
-                        if (totalChunks > 1) {
-                            waitForOthersIfLastChunk(
-                                isLastChunk = isLastChunk,
-                                allChunksButLastUploadedSignal = allChunksButLastUploadedSignal,
-                                completedChunks = completedChunks,
-                                lastChunkIndex = lastChunkIndex
-                            )
+                        // Wait for all the other jobs to complete
+                        if (totalChunks > 1 && isLastChunk) {
+                            allChunksButLastUploadedSignal.join()
                         }
                         startUploadChunk(
                             fileUUID = fileUUID,
@@ -175,6 +163,10 @@ class TransferUploader(
                             data = dataByteArray,
                             onUploadBytes = onUploadBytes
                         )
+                        // Allow the last chunk to start being uploaded
+                        if (totalChunks > 1 && completedChunks.incrementAndGet() == lastChunkIndex) {
+                            allChunksButLastUploadedSignal.complete()
+                        }
                     } finally {
                         byteArrayPool.offer(dataByteArray)
                         requestSemaphore.release()
@@ -187,19 +179,6 @@ class TransferUploader(
     }
 
     private val mutex = Mutex()
-
-    private suspend fun waitForOthersIfLastChunk(
-        isLastChunk: Boolean,
-        allChunksButLastUploadedSignal: CompletableJob,
-        completedChunks: AtomicInteger,
-        lastChunkIndex: Int,
-    ) {
-        if (isLastChunk) {
-            allChunksButLastUploadedSignal.join() // Wait for all the other jobs to complete
-        } else {
-            if (completedChunks.incrementAndGet() == lastChunkIndex) allChunksButLastUploadedSignal.complete()
-        }
-    }
 
     private fun getReusableByteArray(
         byteArrayPool: ArrayBlockingQueue<ByteArray>,
@@ -239,4 +218,13 @@ class TransferUploader(
             }
         )
     }
+}
+
+private fun PickedFile.toUploadFileSession(): UploadFileSession = object : UploadFileSession {
+    override val path: String? = null // We currently don't support adding folders to transfers.
+    override val localPath: String get() = "" // Unneeded, but this model is reused.
+    override val mimeType: String = this@toUploadFileSession.mimeType
+    override val name: String = this@toUploadFileSession.name
+    override val remoteUploadFile: RemoteUploadFile? = null // Unneeded, but this model is reused for iOS.
+    override val size: Long = this@toUploadFileSession.size
 }
