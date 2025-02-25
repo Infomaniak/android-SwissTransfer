@@ -66,6 +66,7 @@ fun UploadProgressScreen(
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showLocationBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val locationCallbacks = GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it })
 
     BackHandler(enabled = !showCancelBottomSheet, onBack = { showCancelBottomSheet = true })
 
@@ -75,7 +76,7 @@ fun UploadProgressScreen(
         navigateToEmailValidation = { navigateToEmailValidation() },
         navigateToAppIntegrityError = { navigateToAppIntegrityError() },
         resetSendStatus = { uploadProgressViewModel.resetSendStatus() },
-        showLocationBottomSheet = GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it }),
+        showLocationBottomSheet = locationCallbacks,
     )
 
     LaunchedEffect(Unit) {
@@ -93,7 +94,7 @@ fun UploadProgressScreen(
         adScreenType = adScreenType,
         onCancel = { uploadProgressViewModel.cancelUpload(onFailedCancellation = closeActivity) },
         showCancelBottomSheet = GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it }),
-        showLocationBottomSheet = GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it }),
+        showLocationBottomSheet = locationCallbacks,
         closeActivity = closeActivity,
     )
 }
