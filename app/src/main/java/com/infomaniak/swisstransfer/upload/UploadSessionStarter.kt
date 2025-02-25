@@ -24,7 +24,6 @@ import com.infomaniak.core.appintegrity.exceptions.NetworkException
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
@@ -39,7 +38,7 @@ class UploadSessionStarter @Inject constructor(
 ) {
 
     sealed interface Result {
-        data class Success(val uploadDestination: UploadDestination) : Result
+        data object Success : Result
 
         data object EmailValidationRequired : Result
 
@@ -50,15 +49,23 @@ class UploadSessionStarter @Inject constructor(
         data class OtherIssue(val t: Throwable) : Issue
     }
 
-    suspend fun tryStarting(request: UploadSessionRequest): Result = runCatching {
+    suspend fun tryStarting(pendingUpload: UploadState.Pending): Result {
+        val uploadSessionRequest = pendingUpload.params.toUploadSessionRequest(
+            filesMetadata = pendingUpload.files.map { it.toFileUploadMetaData() }
+        )
+        return tryStarting(uploadSessionRequest)
+    }
+
+    private suspend fun tryStarting(request: UploadSessionRequest): Result = runCatching {
         val attestationToken = getAttestationToken()
         val destination = uploadManager.startUploadSession(
             request = request,
             attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
             attestationToken = attestationToken
         )
-        Result.Success(destination)
-    }.cancellable().recover { t ->
+        UploadForegroundService.startUpload(request, destination)
+        Result.Success
+    }.cancellable().getOrElse { t ->
         when (t) {
             is NetworkException, is KmpNetworkException -> Result.NetworkIssue
             is IntegrityException -> Result.AppIntegrityIssue
@@ -66,7 +73,7 @@ class UploadSessionStarter @Inject constructor(
             is ContainerErrorsException.DomainBlockedException -> Result.RestrictedLocation
             else -> Result.OtherIssue(t)
         }
-    }.getOrThrow()
+    }
 
     @Throws(IntegrityException::class)
     private suspend inline fun getAttestationToken(): String {

@@ -121,11 +121,11 @@ fun PickFilesScreen(
 
     HandleStartupFilePick(viewModel.openFilePickerEvent, ::pickFiles)
 
-    HandleNavigationToUploadInProgress(
-        navigateToUploadProgress = { totalSize, authorEmail ->
+    LaunchedEffect(Unit) {
+        handleOnPendingUpload { totalSize, authorEmail ->
             navigateToUploadProgress(selectedTransferType, totalSize, authorEmail)
         }
-    )
+    }
 
     val transferOptionsCallbacks: TransferOptionsCallbacks = viewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
@@ -179,20 +179,15 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
     }
 }
 
-@Composable
-fun HandleNavigationToUploadInProgress(
-    navigateToUploadProgress: (totalSize: Long, authorEmail: String) -> Unit
-) {
-    LaunchedEffect(Unit) {
-        UploadForegroundService.state.collect { uploadState ->
-            when (uploadState) {
-                is UploadState.Pending -> {
-                    val totalFileSize = uploadState.files.sumOf { it.size }
-                    navigateToUploadProgress(totalFileSize, uploadState.params.authorEmail)
-                }
-                else -> Unit
-            }
+private suspend fun handleOnPendingUpload(
+    onPendingUpload: (totalSize: Long, authorEmail: String) -> Unit
+): Nothing = UploadForegroundService.state.collect { uploadState ->
+    when (uploadState) {
+        is UploadState.Pending -> {
+            val totalFileSize = uploadState.files.sumOf { it.size }
+            onPendingUpload(totalFileSize, uploadState.params.authorEmail)
         }
+        else -> Unit
     }
 }
 
@@ -255,7 +250,7 @@ private fun FilesToImport(
     navigateToFilesDetails: () -> Unit,
     pickFiles: () -> Unit,
 ) {
-    ImportFilesTitle(modifier, R.string.myFilesTitle)
+    PickFilesTitle(modifier, R.string.myFilesTitle)
     ImportedFilesCard(
         modifier,
         files,
@@ -332,7 +327,7 @@ private fun getEmailError(isError: Boolean): @Composable (() -> Unit)? {
 
 @Composable
 private fun SendByOptions(modifier: Modifier, selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
-    ImportFilesTitle(modifier, R.string.transferTypeTitle)
+    PickFilesTitle(modifier, R.string.transferTypeTitle)
     TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
@@ -345,7 +340,7 @@ private fun TransferOptions(modifier: Modifier, transferOptionsCallbacks: Transf
         showTransferOption = null
     }
 
-    ImportFilesTitle(modifier, R.string.advancedSettingsTitle)
+    PickFilesTitle(modifier, R.string.advancedSettingsTitle)
     TransferOptionsTypes(
         modifier = modifier,
         transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
@@ -390,7 +385,7 @@ private fun TransferOptionsDialogs(
 }
 
 @Composable
-private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+private fun PickFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
     Text(
         modifier = modifier.padding(vertical = Margin.Medium),
         style = SwissTransferTheme.typography.bodySmallRegular,

@@ -58,7 +58,7 @@ fun UploadProgressScreen(
     closeActivity: () -> Unit,
     uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
 ) {
-    val uiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
+    val uiState: UploadProgressUiState by uploadProgressViewModel.transferProgressUiState.collectAsStateWithLifecycle()
     val isNetworkAvailable by uploadProgressViewModel.isNetworkAvailable.collectAsStateWithLifecycle()
     val sendStatus by uploadProgressViewModel.sendStatus.collectAsStateWithLifecycle()
 
@@ -100,7 +100,7 @@ fun UploadProgressScreen(
 }
 
 @Composable
-fun HandleSendStatus(
+private fun HandleSendStatus(
     sendStatus: () -> SendStatus,
     navigateToUploadError: () -> Unit,
     navigateToEmailValidation: () -> Unit,

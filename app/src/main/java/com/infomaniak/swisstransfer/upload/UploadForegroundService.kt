@@ -27,6 +27,8 @@ import com.infomaniak.core.ForegroundService
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.withPartialWakeLock
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
@@ -86,7 +88,16 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             )
         }
 
-        suspend fun startUpload(signal: StartUploadSignal) {
+        suspend fun startUpload(request: UploadSessionRequest, destination: UploadDestination) {
+            val currentState = _state.value
+            val pendingUpload = checkNotNull(currentState as? UploadState.Pending) {
+                "currentState was expected to be Pending but was $currentState instead"
+            }
+            val signal = StartUploadSignal(
+                request = request,
+                uploadDestination = destination,
+                files = pendingUpload.files,
+            )
             startUploadChannel.send(signal)
         }
 
@@ -100,6 +111,12 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             state = it.asStateFlow()
         }
     }
+
+    private data class StartUploadSignal(
+        val request: UploadSessionRequest,
+        val uploadDestination: UploadDestination,
+        val files: List<PickedFile>,
+    )
 
     @Inject
     internal lateinit var uploadManager: UploadManager
@@ -116,15 +133,12 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
     override suspend fun run() = Dispatchers.Default {
         val startSignal = startUploadChannel.receive()
-        val pickedFiles = pickedFilesFlow.value
-        TODO("Revamp to use state and simplify startSignal")
-        val request = startSignal.newTransferParams.toUploadSessionRequest(pickedFiles.map { it.toFileUploadMetaData() })
         val uploader = TransferUploader(
             uploadManager = uploadManager,
             fileChunkSizeManager = fileChunkSizeManager,
-            request = request,
+            request = startSignal.request,
             destination = startSignal.uploadDestination,
-            pickedFiles = pickedFiles,
+            pickedFiles = startSignal.files,
         )
         isInternetConnectedFlow.mapLatest { isInternetConnected ->
             if (isInternetConnected.not()) awaitCancellation()

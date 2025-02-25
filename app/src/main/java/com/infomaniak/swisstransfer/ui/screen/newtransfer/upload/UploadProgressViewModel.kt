@@ -25,7 +25,6 @@ import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.MainDispatcher
@@ -33,14 +32,11 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import com.infomaniak.swisstransfer.upload.UploadSessionStarter
 import com.infomaniak.swisstransfer.upload.UploadState
-import com.infomaniak.swisstransfer.upload.toFileUploadMetaData
-import com.infomaniak.swisstransfer.upload.toUploadSessionRequest
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
 
@@ -144,7 +140,7 @@ class UploadProgressViewModel @Inject constructor(
         transferSendManager.resetSendStatus()
     }
 
-    private val retryButton = CallableState<Unit>()
+    private val retryRequest = CallableState<Unit>()
 
     init {
         viewModelScope.launch { run() }
@@ -153,10 +149,7 @@ class UploadProgressViewModel @Inject constructor(
     private suspend fun run(): Nothing {
         do {
             val pendingUpload = UploadForegroundService.state.filterIsInstance<UploadState.Pending>().first()
-            val uploadSessionRequest = pendingUpload.params.toUploadSessionRequest(
-                filesMetadata = pendingUpload.files.map { it.toFileUploadMetaData() }
-            )
-            val result = uploadSessionStarter.tryStarting(uploadSessionRequest)
+            val result = uploadSessionStarter.tryStarting(pendingUpload)
             when (result) {
                 UploadSessionStarter.Result.EmailValidationRequired -> TODO()
                 UploadSessionStarter.Result.AppIntegrityIssue -> TODO()
@@ -165,7 +158,7 @@ class UploadProgressViewModel @Inject constructor(
                 UploadSessionStarter.Result.RestrictedLocation -> TODO()
                 is UploadSessionStarter.Result.Success -> TODO()
             }
-            retryButton.awaitOneCall()
+            retryRequest.awaitOneCall()
         } while (true)
     }
 
