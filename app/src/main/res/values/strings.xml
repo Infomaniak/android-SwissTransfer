@@ -204,7 +204,7 @@
     <string name="uploadSuccessLinkTitle">Your transfer is ready!</string>
     <string name="uploadSuccessQrTitle">Your QR code is ready!</string>
     <string name="urlAbout">https://www.infomaniak.com/en/about</string>
-    <string name="urlUserReport">https://feedback.userreport.com/f12466ad-db5b-4f5c-b24c-a54b0a5117ca/#ideas/popular</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
     <string name="validateMailCodeIncorrectError">The code entered is incorrect</string>
     <string name="validateMailCodeResentFeedback">The code was sent to the %s email address</string>
     <string name="validateMailDescription">We’ve sent a code to %s. Enter it below to have your email address verified in the app:</string>
