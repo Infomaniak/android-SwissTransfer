@@ -154,7 +154,7 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = downloadRequest,
+                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -177,7 +177,7 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = downloadRequest,
+                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
                 modifier = modifier,
             )
         }
