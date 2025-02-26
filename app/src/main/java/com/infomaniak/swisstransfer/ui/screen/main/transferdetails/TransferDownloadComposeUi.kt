@@ -183,6 +183,7 @@ class TransferDownloadComposeUi(
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CardCornerButton(
         icon: ImageVector,
@@ -190,20 +191,24 @@ class TransferDownloadComposeUi(
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
-    ) = IconButton(
-        onClick = onClick,
-        modifier = modifier.padding(4.dp),
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = Color.White,
-            containerColor = SwissTransferTheme.colors.fileStatusButtonBackground,
-        ),
-        enabled = enabled,
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = stringResource(labelResId),
-            modifier = Modifier.size(16.dp),
-        )
+        CompositionLocalProvider(LocalRippleConfiguration provides RippleConfiguration(color = Color.White)) {
+            IconButton(
+                onClick = onClick,
+                modifier = modifier.padding(4.dp),
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = Color.White,
+                    containerColor = SwissTransferTheme.colors.fileStatusButtonBackground,
+                ),
+                enabled = enabled,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = stringResource(labelResId),
+                    modifier = Modifier.size(16.dp),
+                )
+            }
+        }
     }
 
     @Composable
