@@ -35,6 +35,7 @@ import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -87,6 +88,12 @@ class MainApplication : Application(), Configuration.Provider {
             }
 
             if (accountUtils.isUserConnected()) transferManager.deleteExpiredTransfers()
+        }
+        globalCoroutineScope.launch(Dispatchers.IO) {
+            // We're no longer importing files into the app's local storage,
+            // so we clean it up if there are remaining files.
+            val oldImportDir = filesDir.resolve("imported_files")
+            if (oldImportDir.exists()) kotlin.runCatching { oldImportDir.deleteRecursively() }
         }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->

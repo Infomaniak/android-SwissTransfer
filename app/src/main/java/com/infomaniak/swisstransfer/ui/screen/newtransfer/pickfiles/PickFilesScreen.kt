@@ -91,7 +91,7 @@ fun PickFilesScreen(
     areTransferDataStillAvailable = true
 
     val files by viewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val canSendStatus: PickFilesViewModel.CanSendStatus by viewModel.canSendStatus.collectAsState()
+    val canSendStatus: PickFilesViewModel.CanSendStatus by viewModel.canSendStatusFlow.collectAsState()
 
     val selectedTransferType: TransferTypeUi by viewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
 

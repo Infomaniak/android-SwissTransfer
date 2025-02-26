@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@file:OptIn(ExperimentalCoroutinesApi::class)
+
+@file:OptIn(ExperimentalSplittiesApi::class)
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
@@ -61,13 +62,14 @@ import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import splitties.coroutines.repeatWhileActive
+import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,7 +82,7 @@ class PickFilesViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val canSendStatus: StateFlow<CanSendStatus>
+    val canSendStatusFlow: StateFlow<CanSendStatus>
 
     fun send() = sendRequest()
     fun isReadyToSend() = sendRequest.isAwaitingCall
@@ -88,6 +90,7 @@ class PickFilesViewModel @Inject constructor(
     sealed interface CanSendStatus {
         data object Yes : CanSendStatus
         sealed interface No : CanSendStatus {
+            companion object : No
             data object ProcessingPickedFiles : No
             data object NoFilesPicked : No
             data object MaxSizeExceeded : No
@@ -150,26 +153,23 @@ class PickFilesViewModel @Inject constructor(
     }
 
     init {
-        val hasPickedFilesFlow = UploadForegroundService.pickedFilesFlow.map { it.isNotEmpty() }.distinctUntilChanged()
+        val hasPickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { it.isNotEmpty() }
         val transferType by selectedTransferTypeFlow.collectAsStateIn(viewModelScope)
-        val emailIssueFlow: Flow<EmailIssue?> = snapshotFlow {
+        val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsStateIn(viewModelScope)
+        val hasPickedFiles by hasPickedFilesFlow.collectAsStateIn(viewModelScope)
+        val uploadOngoing by UploadForegroundService.state.mapSync { it != null }.collectAsStateIn(viewModelScope)
+        canSendStatusFlow = snapshotFlow {
             when {
-                transferType != TransferTypeUi.Mail -> null
+                uploadOngoing -> CanSendStatus.No
+                isHandlingPickedFiles -> CanSendStatus.No.ProcessingPickedFiles
+                hasPickedFiles -> CanSendStatus.No.NoFilesPicked
+                transferType != TransferTypeUi.Mail -> CanSendStatus.Yes
                 transferAuthorEmail.isEmpty() -> EmailIssue.AuthorUnspecified
                 isAuthorEmailInvalid -> EmailIssue.AuthorInvalid
                 validatedRecipientsEmails.isEmpty() -> EmailIssue.NoValidatedRecipients
-                else -> null
+                else -> CanSendStatus.Yes
             }
-        }
-        val noFilesPickedOrEmailIssueOrYesFlow = hasPickedFilesFlow.transformLatest { hasPickedFiles ->
-            if (hasPickedFiles) emailIssueFlow.collect { emailIssue ->
-                emit(emailIssue ?: CanSendStatus.Yes)
-            } else emit(CanSendStatus.No.NoFilesPicked)
-        }
-        canSendStatus = UploadForegroundService.isHandlingPickedFilesFlow.transformLatest { isHandlingPickedFiles ->
-            if (isHandlingPickedFiles) emit(CanSendStatus.No.ProcessingPickedFiles)
-            else emitAll(noFilesPickedOrEmailIssueOrYesFlow)
-        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No.ProcessingPickedFiles)
+        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No)
     }
 
     //region Transfer Author Email
@@ -222,11 +222,13 @@ class PickFilesViewModel @Inject constructor(
     }
 
     private suspend fun handleSessionStart() {
-        canSendStatus.map { it == CanSendStatus.Yes }.tryCompletingWhileTrue {
-            awaitSendRequest()
-            val newTransferParams = extractNewTransferParams()
-            appSettingsManager.setLastAuthorEmail(newTransferParams.authorEmail)
-            UploadForegroundService.commitUploadSession(newTransferParams)
+        canSendStatusFlow.map { it == CanSendStatus.Yes }.tryCompletingWhileTrue {
+            repeatWhileActive {
+                awaitSendRequest()
+                val newTransferParams = extractNewTransferParams()
+                appSettingsManager.setLastAuthorEmail(newTransferParams.authorEmail)
+                UploadForegroundService.commitUploadSession(newTransferParams)
+            }
         }
     }
 

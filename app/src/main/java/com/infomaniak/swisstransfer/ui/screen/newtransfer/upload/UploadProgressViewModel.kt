@@ -22,6 +22,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.cancellable
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
@@ -51,7 +52,7 @@ class UploadProgressViewModel @Inject constructor(
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val sendStatus by transferSendManager::sendStatus
+    val sendStatus: StateFlow<TransferSendManager.SendStatus> by transferSendManager::sendStatus
 
     val isNetworkAvailable = NetworkAvailability(appContext).isNetworkAvailable
         .onEach { SentryLog.d("Internet availability", if (it) "Available" else "Unavailable") }
@@ -85,17 +86,6 @@ class UploadProgressViewModel @Inject constructor(
         initialValue = UploadWorker.UploadProgressUiState.Default(),
     )
 
-    fun trackUploadProgress() {
-        viewModelScope.launch(ioDispatcher) {
-            runCatching {
-                _transferUuidFlow.emit(uploadManager.getLastUpload()?.uuid)
-            }.onFailure {
-                SentryLog.e(TAG, "Failed to retrieve the last upload", it)
-                _transferUuidFlow.emit(null)
-            }
-        }
-    }
-
     fun cancelUpload(onFailedCancellation: () -> Unit) {
         uploadWorkerScheduler.cancelWork()
 
@@ -109,8 +99,7 @@ class UploadProgressViewModel @Inject constructor(
                     // to cancel any remote upload session.
                     if (uploadSession.remoteContainer != null) uploadManager.cancelUploadSession(uploadSession.uuid)
                 }
-            }.onFailure { exception ->
-                if (exception is CancellationException) throw exception
+            }.cancellable().onFailure { exception ->
 
                 SentryLog.e(TAG, "Failure on cancel upload", exception)
                 onFailedCancellation()
@@ -125,21 +114,6 @@ class UploadProgressViewModel @Inject constructor(
         }
     }
 
-    fun initializeLastTransfer() {
-        viewModelScope.launch {
-            if (uploadWorkerScheduler.hasAlreadyBeenScheduled()) return@launch
-
-            uploadInitializationIsNetworkAvailable.first { isNetworkAvailable -> isNetworkAvailable }
-
-            SentryLog.i(TAG, "Initializing the upload")
-            transferSendManager.sendLastTransfer()
-        }
-    }
-
-    fun resetSendStatus() {
-        transferSendManager.resetSendStatus()
-    }
-
     private val retryRequest = CallableState<Unit>()
 
     init {
@@ -147,19 +121,37 @@ class UploadProgressViewModel @Inject constructor(
     }
 
     private suspend fun run(): Nothing {
+        UploadForegroundService.state.collectLatest { uploadState ->
+            when (uploadState) {
+                is UploadState.Pending -> handlePendingUpload(uploadState)
+                is UploadState.Ongoing -> handleOngoingUpload(uploadState)
+                is UploadState.Complete -> TODO("Navigate to success")
+                UploadState.Failure.FilesDisappeared -> TODO("Navigate to the error")
+                null -> Unit // Not supposed to be possible
+            }
+        }
+        awaitCancellation()
+    }
+
+    private suspend fun handlePendingUpload(pendingUpload: UploadState.Pending): Nothing {
         do {
-            val pendingUpload = UploadForegroundService.state.filterIsInstance<UploadState.Pending>().first()
-            val result = uploadSessionStarter.tryStarting(pendingUpload)
-            when (result) {
+            SentryLog.i(TAG, "Initializing the upload")
+            when (val result = uploadSessionStarter.tryStarting(pendingUpload)) {
+                is UploadSessionStarter.Result.Success -> Unit
                 UploadSessionStarter.Result.EmailValidationRequired -> TODO()
-                UploadSessionStarter.Result.AppIntegrityIssue -> TODO()
-                UploadSessionStarter.Result.NetworkIssue -> TODO()
-                is UploadSessionStarter.Result.OtherIssue -> TODO()
-                UploadSessionStarter.Result.RestrictedLocation -> TODO()
-                is UploadSessionStarter.Result.Success -> TODO()
+                is UploadSessionStarter.Result.Issue -> when (result) {
+                    UploadSessionStarter.Result.AppIntegrityIssue -> TODO()
+                    UploadSessionStarter.Result.NetworkIssue -> TODO()
+                    is UploadSessionStarter.Result.OtherIssue -> TODO()
+                    UploadSessionStarter.Result.RestrictedLocation -> TODO()
+                }
             }
             retryRequest.awaitOneCall()
         } while (true)
+    }
+
+    private suspend fun handleOngoingUpload(state: UploadState.Ongoing): Nothing {
+        TODO("Avoid doing heavy stuff since it'll be cancelled and called again frequently")
     }
 
     companion object {

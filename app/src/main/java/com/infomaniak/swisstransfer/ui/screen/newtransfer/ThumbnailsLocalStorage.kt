@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build.VERSION.SDK_INT
 import androidx.core.net.toUri
@@ -25,26 +24,22 @@ import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.filetypes.FileType.Companion.guessFromFileName
 import com.infomaniak.core.thumbnails.ThumbnailsUtils.getLocalThumbnail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
-import com.infomaniak.swisstransfer.di.IoDispatcher
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
+import splitties.init.appCtx
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ThumbnailsLocalStorage @Inject constructor(
-    @ApplicationContext private val appContext: Context,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-) {
+class ThumbnailsLocalStorage @Inject constructor() {
 
-    private val thumbnailsFolder by lazy { File(appContext.filesDir, THUMBNAILS_FOLDER) }
+    private val filesDir = appCtx.filesDir
+    private val thumbnailsFolder by lazy { filesDir.resolve(THUMBNAILS_FOLDER) }
     private val ongoingThumbnailsFolder by lazy {
-        File(appContext.filesDir, "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER")
+        filesDir.resolve("$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER")
     }
 
     //region Delete 
@@ -52,7 +47,7 @@ class ThumbnailsLocalStorage @Inject constructor(
         if (ongoingThumbnailsFolder.exists()) runCatching { ongoingThumbnailsFolder.deleteRecursively() }
     }
 
-    suspend fun cleanExpiredThumbnails(transfers: List<TransferUi>) = withContext(ioDispatcher) {
+    suspend fun cleanExpiredThumbnails(transfers: List<TransferUi>) = withContext(Dispatchers.IO) {
         thumbnailsFolder.listFiles()?.forEach { transferFolder ->
             if (transferFolder.name != THUMBNAILS_ONGOING_TRANSFER_FOLDER && transfers.none { it.uuid == transferFolder.name }) {
                 transferFolder.deleteRecursively()
@@ -66,14 +61,14 @@ class ThumbnailsLocalStorage @Inject constructor(
     //endregion
 
     //region Get
-    fun getThumbnailsFolderFor(transferUuid: String) = File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid").toUri()
+    fun getThumbnailsFolderFor(transferUuid: String) = filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid").toUri()
 
     fun getThumbnailFor(transferUuid: String, fileUuid: String): File {
-        return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid/$fileUuid")
+        return filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid/$fileUuid")
     }
 
     fun getOngoingThumbnailFor(fileUuid: String): File {
-        return File(appContext.filesDir, "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
+        return filesDir.resolve("$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
     }
 
     private fun getOrCreateOngoingThumbnailsFolder() = ongoingThumbnailsFolder.apply { if (!exists()) mkdirs() }
@@ -82,22 +77,22 @@ class ThumbnailsLocalStorage @Inject constructor(
     //region Rename
     fun renameFileWith(currentFileName: String, newFileName: String) {
         val ongoingTransferFolder = "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER"
-        val currentFile = File(appContext.filesDir, "$ongoingTransferFolder/$currentFileName")
-        val newFile = File(appContext.filesDir, "$ongoingTransferFolder/$newFileName")
+        val currentFile = filesDir.resolve("$ongoingTransferFolder/$currentFileName")
+        val newFile = filesDir.resolve("$ongoingTransferFolder/$newFileName")
         currentFile.renameTo(newFile)
     }
 
     fun renameOngoingThumbnailsFolderWith(transferUuid: String) {
-        val newFolder = File(appContext.filesDir, "$THUMBNAILS_FOLDER/$transferUuid")
+        val newFolder = filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid")
         ongoingThumbnailsFolder.renameTo(newFolder)
     }
     //endregion
 
     //region Copy
     fun generateThumbnailFor(fileUri: String, fileName: String, extension: String) {
-        val fileToCreate = File(getOrCreateOngoingThumbnailsFolder(), fileName)
+        val fileToCreate = getOrCreateOngoingThumbnailsFolder().resolve(fileName)
         val isVideo = guessFromFileName(extension) == FileType.VIDEO
-        appContext.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
+        appCtx.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
     }
 
     @Suppress("DEPRECATION")
