@@ -42,4 +42,6 @@ jobs:
         run: ./gradlew clean
 
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: |
+          env
+          ./gradlew testDebugUnitTest --stacktrace
