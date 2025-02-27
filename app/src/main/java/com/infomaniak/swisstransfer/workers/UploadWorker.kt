@@ -117,6 +117,8 @@ class UploadWorker @AssistedInject constructor(
 
             val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
 
+            // We save the transfer UUID in case the transfer completes when the application
+            // is killed, so that we can redirect the user to the UploadSuccessScreen.
             applicationContext.lastTransferDataStore.edit { preferences ->
                 preferences[LastTransferPreferences.lastTransferUuid] = transferUuid
             }
