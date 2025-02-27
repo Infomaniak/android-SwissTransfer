@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,28 +96,28 @@ class NewTransferActivity : ComponentActivity() {
 
     private fun getStartDestination(): NewTransferNavigation {
 
-        val notificationNavigation = enumValueOfOrNull<NotificationNavigation>(
+        val externalNavigation = enumValueOfOrNull<ExternalNavigation>(
             value = intent?.extras?.getString(NOTIFICATION_NAVIGATION_KEY),
         )
         val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
         val authorEmail = intent?.extras?.getString(TRANSFER_AUTHOR_EMAIL_KEY)
 
-        return when (notificationNavigation) {
-            NotificationNavigation.UploadProgress -> {
+        return when (externalNavigation) {
+            ExternalNavigation.UploadProgress -> {
                 NewTransferNavigation.UploadProgressDestination(
                     transferType = transferType!!,
                     totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
                     authorEmail = authorEmail,
                 )
             }
-            NotificationNavigation.UploadSuccess -> {
+            ExternalNavigation.UploadSuccess -> {
                 NewTransferNavigation.UploadSuccessDestination(
                     transferType = transferType!!,
                     transferUuid = intent?.extras?.getString(TRANSFER_UUID_KEY)!!,
                     transferUrl = intent?.extras?.getString(TRANSFER_URL_KEY)!!,
                 )
             }
-            NotificationNavigation.UploadFailure -> {
+            ExternalNavigation.UploadFailure -> {
                 NewTransferNavigation.UploadErrorDestination(
                     transferType = transferType!!,
                     totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
