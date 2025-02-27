@@ -163,7 +163,10 @@ private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     hasTransfer: () -> Boolean,
 ) {
-    when (val destinationContent = navigator.currentDestination?.content) {
+    val isWindowLarge =  LocalWindowAdaptiveInfo.current.isWindowLarge()
+    val destinationContent = if (isWindowLarge) navigator.currentDestination?.content else navigator.safeCurrentContent()
+
+    when (destinationContent) {
         null -> {
             NoSelectionEmptyState(hasTransfer())
         }
