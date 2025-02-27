@@ -22,18 +22,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
-import com.infomaniak.swisstransfer.ui.navigation.NOTIFICATION_NAVIGATION_KEY
-import com.infomaniak.swisstransfer.ui.navigation.NotificationNavigation
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
+import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
-import com.infomaniak.swisstransfer.ui.utils.AccountUtils
-import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
-import com.infomaniak.swisstransfer.ui.utils.totalFileSize
+import com.infomaniak.swisstransfer.ui.utils.*
 import com.infomaniak.swisstransfer.workers.UploadWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -55,6 +52,9 @@ class LaunchActivity : ComponentActivity() {
 
     @Inject
     lateinit var uploadManager: UploadManager
+
+    @Inject
+    lateinit var sharedApiUrlCreator: SharedApiUrlCreator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -84,6 +84,10 @@ class LaunchActivity : ComponentActivity() {
             isAlreadyUploading() -> {
                 connectLoggedOutUser()
                 createUploadInProgressIntent()
+            }
+            hasBeenSuccessful() -> {
+                connectLoggedOutUser()
+                createUploadSuccessfulIntent()
             }
             accountUtils.isUserConnected() -> Intent(this, MainActivity::class.java)
             else -> Intent(this, OnboardingActivity::class.java)
@@ -131,11 +135,37 @@ class LaunchActivity : ComponentActivity() {
         }
     }
 
+    private suspend fun createUploadSuccessfulIntent(): Intent {
+        val transferType = appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi()
+        val lastTransferUuid =
+            applicationContext.lastTransferDataStore.getPreference(LastTransferPreferences.lastTransferUuid)
+        val lastTransferUrl = sharedApiUrlCreator.shareTransferUrl(lastTransferUuid)
+
+        applicationContext.lastTransferDataStore.edit { it.clear() }
+
+        return Intent(intent).apply {
+            setClass(this@LaunchActivity, NewTransferActivity::class.java)
+            putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
+            putExtra(TRANSFER_TYPE_KEY, transferType.name)
+            putExtra(TRANSFER_UUID_KEY, lastTransferUuid)
+            putExtra(TRANSFER_URL_KEY, lastTransferUrl)
+
+            // We need NewMessageActivity to have its standard launchMode in the Manifest
+            // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+    }
+
     private fun ComponentActivity.isSharingFilesToTheApp(): Boolean {
         return intent?.action == Intent.ACTION_SEND || intent?.action == Intent.ACTION_SEND_MULTIPLE
     }
 
     private fun isAlreadyUploading() = runBlocking { uploadWorkerScheduler.hasAlreadyBeenScheduled() }
+
+    private fun hasBeenSuccessful() =
+        runBlocking { uploadWorkerScheduler.hasBeenSuccessful() } && applicationContext.lastTransferDataStore.getPreference(
+            LastTransferPreferences.lastTransferUuid
+        ).isNotEmpty()
 
     companion object {
         private val TAG = LaunchActivity::class.java.simpleName

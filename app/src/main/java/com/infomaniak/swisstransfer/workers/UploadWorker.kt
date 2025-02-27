@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.compose.runtime.Immutable
+import androidx.datastore.preferences.core.edit
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import androidx.work.WorkInfo.State
@@ -41,9 +42,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import com.infomaniak.swisstransfer.ui.utils.totalFileSize
+import com.infomaniak.swisstransfer.ui.utils.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CompletableDeferred
@@ -117,6 +116,10 @@ class UploadWorker @AssistedInject constructor(
             }
 
             val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
+
+            applicationContext.lastTransferDataStore.edit { preferences ->
+                preferences[LastTransferPreferences.lastTransferUuid] = transferUuid
+            }
 
             thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transferUuid)
             transferManager.updateTransferFilesThumbnails(
@@ -277,6 +280,15 @@ class UploadWorker @AssistedInject constructor(
         suspend fun hasAlreadyBeenScheduled(): Boolean {
             val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
                 .addStates(listOf(State.BLOCKED, State.ENQUEUED, State.RUNNING))
+                .build()
+
+            val workInfo = workManager.getWorkInfosFlow(workQuery).first().firstOrNull()
+            return workInfo != null
+        }
+
+        suspend fun hasBeenSuccessful(): Boolean {
+            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
+                .addStates(listOf(State.SUCCEEDED))
                 .build()
 
             val workInfo = workManager.getWorkInfosFlow(workQuery).first().firstOrNull()
