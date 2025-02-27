@@ -191,7 +191,12 @@ private fun TransferDetailsScreen(
             SwissTransferTopAppBar(
                 title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
                 navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
-                actions = { downloadUi.TopAppBarButton() }
+                actions = {
+                    when (direction) {
+                        TransferDirection.SENT -> downloadUi.TopAppBarButton()
+                        TransferDirection.RECEIVED -> TopAppBarButtons.QrCode { showQrCodeBottomSheet = true }
+                    }
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

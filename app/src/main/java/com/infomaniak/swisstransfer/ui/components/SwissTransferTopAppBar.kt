@@ -25,10 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.Add
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowLeft
-import com.infomaniak.swisstransfer.ui.images.icons.Cross
+import com.infomaniak.swisstransfer.ui.images.icons.*
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
@@ -89,6 +86,13 @@ object TopAppBarButtons {
     )
 
     @Composable
+    fun QrCode(onClick: () -> Unit) = TopAppBarButton(
+        icon = AppIcons.QrCode,
+        contentDescResId = R.string.transferTypeQrCode,
+        onClick = onClick,
+    )
+
+    @Composable
     fun Download(
         onClick: () -> Unit,
         enabled: Boolean = true,
@@ -110,6 +114,7 @@ private fun SwissTransferTopAppBarPreview() {
             actions = {
                 TopAppBarButton(AppIcons.Add, R.string.appName, onClick = {})
                 TopAppBarButtons.Close {}
+                TopAppBarButtons.QrCode {}
                 TopAppBarButtons.Download(onClick = {})
             }
         )
