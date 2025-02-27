@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,8 +139,8 @@ class TransferDetailsViewModel @Inject constructor(
             _isDeeplinkNeedingPassword.emit(false)
         }.cancellable().onFailure { exception ->
             when (exception) {
-                is ExpiredDateFetchTransferException -> longToast(R.string.deeplinkTransferExpired)
-                is DownloadQuotaExceededException -> longToast(R.string.deeplinkTransferExpired)
+                is ExpiredDateFetchTransferException -> Unit
+                is DownloadQuotaExceededException -> Unit
                 is NotFoundFetchTransferException -> longToast(R.string.deeplinkTransferNotFound)
                 is PasswordNeededFetchTransferException, is WrongPasswordFetchTransferException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
