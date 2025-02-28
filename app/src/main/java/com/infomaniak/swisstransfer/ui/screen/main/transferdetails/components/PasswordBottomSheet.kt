@@ -73,7 +73,7 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.contentDescriptionButtonClose),
-                style = ButtonType.Secondary,
+                style = ButtonType.Tertiary,
                 onClick = closeBottomSheet,
             )
         },
