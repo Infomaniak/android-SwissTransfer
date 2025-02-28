@@ -22,6 +22,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -48,8 +49,8 @@ fun UploadIntegrityErrorScreen(closeActivity: () -> Unit) {
     ) {
         EmptyState(
             content = { Image(imageVector = AppIllus.GhostScrollCrossPointing.image(), contentDescription = null) },
-            titleRes = R.string.uploadErrorTitle,
-            descriptionRes = R.string.errorAppIntegrity,
+            title = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
+            description = stringResource(R.string.errorAppIntegrity),
         )
     }
 }
