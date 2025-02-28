@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.core.DownloadStatus
+import com.infomaniak.core.DownloadStatus.InProgress
 import com.infomaniak.core.autoCancelScope
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.core.compose.basics.withForwardTo
@@ -222,7 +223,7 @@ class TransferDownloadComposeUi(
                     color = MaterialTheme.colorScheme.error,
                 )
             }
-            is DownloadStatus.InProgress -> {
+            is InProgress -> {
                 DownloadProgressBar(rememberUpdatedState(status), modifier = modifier)
             }
             is DownloadStatus.Paused, DownloadStatus.Pending -> {
@@ -247,7 +248,7 @@ class TransferDownloadComposeUi(
             is DownloadStatus.Failed -> {
                 button(ButtonData.failed, removalRequest) {}
             }
-            is DownloadStatus.InProgress -> {
+            is InProgress -> {
                 button(ButtonData.downloading, removalRequest) {
                     DownloadProgress(rememberUpdatedState(status))
                 }
@@ -286,23 +287,22 @@ class TransferDownloadComposeUi(
 
     @Composable
     private fun DownloadProgressBar(
-        progressStatus: State<DownloadStatus.InProgress>,
+        progressStatus: State<InProgress>,
         modifier: Modifier = Modifier,
     ) {
         val status by progressStatus
-        LinearProgressIndicator(
-            progress = { status.let { it.downloadedBytes.toFloat() / it.totalSizeInBytes } },
-            modifier = modifier,
-        )
+        LinearProgressIndicator(progress = status::getProgress, modifier = modifier)
     }
 
     @Composable
-    private fun DownloadProgress(progressStatus: State<DownloadStatus.InProgress>) {
+    private fun DownloadProgress(progressStatus: State<InProgress>) {
         val status by progressStatus
-        CircularProgressIndicator(
-            progress = { status.let { it.downloadedBytes.toFloat() / it.totalSizeInBytes } },
-        )
+        CircularProgressIndicator(progress = status::getProgress)
     }
+}
+
+private fun InProgress.getProgress(): Float {
+    return (if (totalSizeInBytes == 0L) 0 else downloadedBytes / totalSizeInBytes).toFloat()
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -320,7 +320,7 @@ private fun Preview() = SwissTransferTheme {
     LaunchedEffect(Unit) {
         while (coroutineContext.isActive) autoCancelScope {
             val statusFlow = flow {
-                emit(DownloadStatus.InProgress(downloadedBytes = 9_345_064L, totalSizeInBytes = 84_234_122L))
+                emit(InProgress(downloadedBytes = 9_345_064L, totalSizeInBytes = 84_234_122L))
                 awaitCancellation()
             }.stateIn(scope = this)
             ui.showStatusAndAwaitRemovalRequest(statusFlow, supportsPreview = false)
