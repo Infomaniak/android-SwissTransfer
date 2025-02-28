@@ -103,7 +103,7 @@ class MainApplication : Application(), Configuration.Provider {
                  * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
                  */
                 when {
-                    !BuildConfig.DEBUG -> null
+                    BuildConfig.DEBUG -> null
                     exception is CancellationException -> null
                     exception is KmpNetworkException -> null
                     exception is NetworkException -> null
