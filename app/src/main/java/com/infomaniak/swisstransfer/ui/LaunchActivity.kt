@@ -140,7 +140,7 @@ class LaunchActivity : ComponentActivity() {
             applicationContext.lastTransferDataStore.getPreference(LastTransferPreferences.lastTransferUuid)
         val lastTransferUrl = sharedApiUrlCreator.shareTransferUrl(lastTransferUuid)
 
-        return Intent(intent).apply {
+        return Intent().apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
             putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
             putExtra(TRANSFER_TYPE_KEY, transferType.name)
