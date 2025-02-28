@@ -29,11 +29,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.core.inappstore.openReviewBottomSheet
+import com.infomaniak.core.extensions.goToPlayStore
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -104,7 +105,12 @@ private fun ListPane(
                 EULA -> context.openUrl(EULA_URL)
                 DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
                 SHARE_IDEAS -> context.openUrl(userReportURL)
-                GIVE_FEEDBACK -> context.openReviewBottomSheet()
+                GIVE_FEEDBACK -> if (BuildConfig.DEBUG) {
+                    // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
+                    context.goToPlayStore("com.infomaniak.swisstransfer")
+                } else {
+                    context.goToPlayStore()
+                }
                 else -> {
                     // Navigate to the detail pane with the passed item
                     navigator.selectItem(context, windowAdaptiveInfo, item)
