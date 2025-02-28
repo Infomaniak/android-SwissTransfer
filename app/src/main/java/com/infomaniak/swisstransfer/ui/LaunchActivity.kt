@@ -159,10 +159,11 @@ class LaunchActivity : ComponentActivity() {
 
     private fun isAlreadyUploading() = runBlocking { uploadWorkerScheduler.hasAlreadyBeenScheduled() }
 
-    private fun hasBeenSuccessful() =
-        runBlocking { uploadWorkerScheduler.hasBeenSuccessful() } && applicationContext.lastTransferDataStore.getPreference(
-            LastTransferPreferences.lastTransferUuid
-        ).isNotEmpty()
+    private fun hasBeenSuccessful(): Boolean {
+        val hasBeenSuccessful = runBlocking { uploadWorkerScheduler.hasBeenSuccessful() }
+        val lastTransferUuid = applicationContext.lastTransferDataStore.getPreference(LastTransferPreferences.lastTransferUuid)
+        return hasBeenSuccessful && lastTransferUuid.isNotEmpty()
+    }
 
     companion object {
         private val TAG = LaunchActivity::class.java.simpleName
