@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.navigation
 
-const val NOTIFICATION_NAVIGATION_KEY = "notificationNavigationKey"
+const val EXTERNAL_NAVIGATION_KEY = "externalNavigationKey"
 const val TRANSFER_UUID_KEY = "transferUuidKey"
 const val TRANSFER_TYPE_KEY = "transferTypeKey"
 const val TRANSFER_TOTAL_SIZE_KEY = "transferTotalSizeKey"

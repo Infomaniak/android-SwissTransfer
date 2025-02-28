@@ -203,7 +203,7 @@ class UploadWorker @AssistedInject constructor(
     private fun createProgressNotificationIntent(totalSize: Long, authorEmail: String): Intent {
         return Intent(applicationContext, NewTransferActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            .putExtra(NOTIFICATION_NAVIGATION_KEY, ExternalNavigation.UploadProgress.name)
+            .putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadProgress.name)
             .putExtra(TRANSFER_TYPE_KEY, transferType.name)
             .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
             .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
@@ -222,7 +222,7 @@ class UploadWorker @AssistedInject constructor(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
+                .putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_UUID_KEY, transferUuid)
                 .putExtra(TRANSFER_URL_KEY, transferUrl),
@@ -236,7 +236,7 @@ class UploadWorker @AssistedInject constructor(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, ExternalNavigation.UploadFailure.name)
+                .putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadFailure.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
                 .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),

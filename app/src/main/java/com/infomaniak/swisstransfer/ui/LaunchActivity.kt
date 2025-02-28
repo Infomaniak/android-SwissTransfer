@@ -124,7 +124,7 @@ class LaunchActivity : ComponentActivity() {
 
         return Intent(intent).apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
-            putExtra(NOTIFICATION_NAVIGATION_KEY, ExternalNavigation.UploadProgress.name)
+            putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadProgress.name)
             putExtra(TRANSFER_TYPE_KEY, transferType.name)
             putExtra(TRANSFER_TOTAL_SIZE_KEY, uploadSession?.totalFileSize())
 
@@ -142,7 +142,7 @@ class LaunchActivity : ComponentActivity() {
 
         return Intent(intent).apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
-            putExtra(NOTIFICATION_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
+            putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
             putExtra(TRANSFER_TYPE_KEY, transferType.name)
             putExtra(TRANSFER_UUID_KEY, lastTransferUuid)
             putExtra(TRANSFER_URL_KEY, lastTransferUrl)

@@ -97,7 +97,7 @@ class NewTransferActivity : ComponentActivity() {
     private fun getStartDestination(): NewTransferNavigation {
 
         val externalNavigation = enumValueOfOrNull<ExternalNavigation>(
-            value = intent?.extras?.getString(NOTIFICATION_NAVIGATION_KEY),
+            value = intent?.extras?.getString(EXTERNAL_NAVIGATION_KEY),
         )
         val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
         val authorEmail = intent?.extras?.getString(TRANSFER_AUTHOR_EMAIL_KEY)
