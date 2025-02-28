@@ -33,11 +33,8 @@ import io.sentry.SentryEvent
 import io.sentry.SentryOptions
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.core.SentryAndroidOptions
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -92,12 +89,13 @@ class MainApplication : Application(), Configuration.Provider {
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
             // Register the callback as an option
             options.beforeSend = SentryOptions.BeforeSendCallback { event: SentryEvent, _: Any? ->
+                if (event.throwable is CancellationException) return@BeforeSendCallback null
                 val isNetworkException = event.exceptions?.any { it.type == "ApiController\$NetworkException" } ?: false
                 /**
                  * Reasons to discard Sentry events :
                  * - Application is in Debug mode
                  * - User deactivated Sentry tracking in DataManagement settings
-                 * - The exception was a NetworkException, and we don't want to send them to Sentry
+                 * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
                  */
                 val isSentryAuthorized = dataManagementDataStore.getPreference(DataManagementPreferences.IsSentryAuthorized)
                 if (!BuildConfig.DEBUG && isSentryAuthorized && !isNetworkException) event else null
