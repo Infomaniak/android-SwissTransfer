@@ -37,6 +37,9 @@ fun UploadSuccessScreen(
 ) {
     val context = LocalContext.current
 
+    // We saved the transfer UUID in case the transfer completes when the application
+    // is killed, so that we can redirect the user to the UploadSuccessScreen.
+    // Now that we are done redirecting, we clear the value stored.
     LaunchedEffect(Unit) {
         context.lastTransferDataStore.edit { it.clear() }
     }
