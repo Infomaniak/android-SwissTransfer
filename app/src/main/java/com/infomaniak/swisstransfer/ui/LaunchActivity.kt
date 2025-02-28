@@ -22,7 +22,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
@@ -135,13 +134,11 @@ class LaunchActivity : ComponentActivity() {
         }
     }
 
-    private suspend fun createUploadSuccessfulIntent(): Intent {
+    private fun createUploadSuccessfulIntent(): Intent {
         val transferType = appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi()
         val lastTransferUuid =
             applicationContext.lastTransferDataStore.getPreference(LastTransferPreferences.lastTransferUuid)
         val lastTransferUrl = sharedApiUrlCreator.shareTransferUrl(lastTransferUuid)
-
-        applicationContext.lastTransferDataStore.edit { it.clear() }
 
         return Intent(intent).apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
