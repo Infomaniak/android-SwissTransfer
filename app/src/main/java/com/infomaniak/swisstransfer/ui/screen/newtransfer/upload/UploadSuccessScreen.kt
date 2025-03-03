@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,13 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.preferences.core.edit
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.ui.utils.lastTransferDataStore
 
 @Composable
 fun UploadSuccessScreen(
@@ -31,6 +35,15 @@ fun UploadSuccessScreen(
     transferUrl: String,
     closeActivity: () -> Unit,
 ) {
+    val context = LocalContext.current
+
+    // We saved the transfer UUID in case the transfer completes when the application
+    // is killed, so that we can redirect the user to the UploadSuccessScreen.
+    // Now that we are done redirecting, we clear the value stored.
+    LaunchedEffect(Unit) {
+        context.lastTransferDataStore.edit { it.clear() }
+    }
+
     BackHandler(onBack = closeActivity)
 
     if (transferType == TransferTypeUi.Mail) {

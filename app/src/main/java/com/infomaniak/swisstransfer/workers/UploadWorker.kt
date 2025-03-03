@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.compose.runtime.Immutable
+import androidx.datastore.preferences.core.edit
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import androidx.work.WorkInfo.State
@@ -41,9 +42,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
-import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import com.infomaniak.swisstransfer.ui.utils.totalFileSize
+import com.infomaniak.swisstransfer.ui.utils.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CompletableDeferred
@@ -117,6 +116,12 @@ class UploadWorker @AssistedInject constructor(
             }
 
             val transferUuid = uploadManager.finishUploadSession(uploadSession.uuid)
+
+            // We save the transfer UUID in case the transfer completes when the application
+            // is killed, so that we can redirect the user to the UploadSuccessScreen.
+            applicationContext.lastTransferDataStore.edit { preferences ->
+                preferences[LastTransferPreferences.lastTransferUuid] = transferUuid
+            }
 
             thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transferUuid)
             transferManager.updateTransferFilesThumbnails(
@@ -198,7 +203,7 @@ class UploadWorker @AssistedInject constructor(
     private fun createProgressNotificationIntent(totalSize: Long, authorEmail: String): Intent {
         return Intent(applicationContext, NewTransferActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadProgress.name)
+            .putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadProgress.name)
             .putExtra(TRANSFER_TYPE_KEY, transferType.name)
             .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
             .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize)
@@ -217,7 +222,7 @@ class UploadWorker @AssistedInject constructor(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadSuccess.name)
+                .putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_UUID_KEY, transferUuid)
                 .putExtra(TRANSFER_URL_KEY, transferUrl),
@@ -231,7 +236,7 @@ class UploadWorker @AssistedInject constructor(
             notificationId = NOTIFICATION_ID,
             intent = Intent(applicationContext, NewTransferActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(NOTIFICATION_NAVIGATION_KEY, NotificationNavigation.UploadFailure.name)
+                .putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadFailure.name)
                 .putExtra(TRANSFER_TYPE_KEY, transferType.name)
                 .putExtra(TRANSFER_AUTHOR_EMAIL_KEY, authorEmail)
                 .putExtra(TRANSFER_TOTAL_SIZE_KEY, totalSize),
@@ -277,6 +282,15 @@ class UploadWorker @AssistedInject constructor(
         suspend fun hasAlreadyBeenScheduled(): Boolean {
             val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
                 .addStates(listOf(State.BLOCKED, State.ENQUEUED, State.RUNNING))
+                .build()
+
+            val workInfo = workManager.getWorkInfosFlow(workQuery).first().firstOrNull()
+            return workInfo != null
+        }
+
+        suspend fun hasBeenSuccessful(): Boolean {
+            val workQuery = WorkQuery.Builder.fromUniqueWorkNames(listOf(TAG))
+                .addStates(listOf(State.SUCCEEDED))
                 .build()
 
             val workInfo = workManager.getWorkInfosFlow(workQuery).first().firstOrNull()
