@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 @Composable
 fun IllustratedMessageBlock(
     content: (@Composable () -> Unit)?,
-    @StringRes title: Int?,
+    title: String?,
     description: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -56,7 +55,7 @@ fun IllustratedMessageBlock(
 
         title?.let {
             Text(
-                text = stringResource(it),
+                text = it,
                 textAlign = TextAlign.Center,
                 style = SwissTransferTheme.typography.h1,
             )
@@ -83,7 +82,7 @@ private fun IllustratedMessageBlockPreview() {
         Surface {
             IllustratedMessageBlock(
                 content = { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) },
-                title = R.string.noTransferReceivedTitle,
+                title = stringResource(R.string.noTransferReceivedTitle),
                 description = stringResource(R.string.noTransferReceivedDescription),
             )
         }

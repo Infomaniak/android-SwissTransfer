@@ -42,12 +42,12 @@ fun EmptyState(
     @StringRes titleRes: Int? = null,
     @StringRes descriptionRes: Int? = null,
     modifier: Modifier = Modifier,
-) = EmptyState(content, titleRes, descriptionRes?.let { stringResource(it) }, modifier)
+) = EmptyState(content, titleRes?.let { stringResource(it) }, descriptionRes?.let { stringResource(it) }, modifier)
 
 @Composable
 fun EmptyState(
     content: (@Composable () -> Unit)? = null,
-    @StringRes titleRes: Int?,
+    title: String?,
     description: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -59,7 +59,7 @@ fun EmptyState(
     ) {
         IllustratedMessageBlock(
             content = content,
-            title = titleRes,
+            title = title,
             description = description,
             modifier = modifier.padding(horizontal = Margin.Medium),
         )
