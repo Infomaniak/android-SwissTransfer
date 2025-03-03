@@ -47,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.NetworkUnavailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress

@@ -15,19 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
-enum class PasswordTransferOption(
-    override val title: @Composable () -> String,
-    override val imageVector: ImageVector? = null,
-    override val imageVectorResId: Int? = null,
-) : SettingOption {
-    NONE({ stringResource(R.string.settingsOptionNone) }),
-    ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
-}
+data class TransferOptionsCallbacks(
+    val transferOptionsStates: () -> List<TransferOptionState>,
+    val onTransferOptionValueSelected: (SettingOption) -> Unit,
+    val password: GetSetCallbacks<String>,
+    val isPasswordValid: () -> Boolean,
+)

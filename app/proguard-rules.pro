@@ -21,4 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 # The TransferTypeUi class is removed when minifying, we don't want that.
--keep class com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi{*;}
+-keep class com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi{*;}

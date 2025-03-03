@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import splitties.init.appCtx

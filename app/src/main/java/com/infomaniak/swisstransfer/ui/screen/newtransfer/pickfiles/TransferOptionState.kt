@@ -15,23 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferOptionType
 
-data class EmailTextFieldCallbacks(
-    val transferAuthorEmail: GetSetCallbacks<String>,
-    val isAuthorEmailInvalid: () -> Boolean,
-    val recipientEmail: GetSetCallbacks<String>,
-    val isRecipientEmailInvalid: () -> Boolean,
-    val validatedRecipientsEmails: GetSetCallbacks<Set<String>>
-) {
-
-    fun checkEmailError(isAuthor: Boolean): Boolean {
-        return if (isAuthor) {
-            isAuthorEmailInvalid() && transferAuthorEmail.get().isNotEmpty()
-        } else {
-            isRecipientEmailInvalid() && recipientEmail.get().isNotEmpty()
-        }
-    }
-}
+data class TransferOptionState(
+    val transferOptionType: TransferOptionType,
+    val settingState: () -> SettingOption?,
+)

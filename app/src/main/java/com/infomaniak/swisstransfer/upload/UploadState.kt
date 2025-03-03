@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 
 sealed interface UploadState {
 
