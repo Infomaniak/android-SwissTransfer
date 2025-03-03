@@ -31,7 +31,6 @@ import com.infomaniak.core.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -99,8 +98,6 @@ class NewTransferActivity : ComponentActivity() {
         val externalNavigation = enumValueOfOrNull<ExternalNavigation>(
             value = intent?.extras?.getString(EXTERNAL_NAVIGATION_KEY),
         )
-        val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
-        val authorEmail = intent?.extras?.getString(TRANSFER_AUTHOR_EMAIL_KEY)
 
         return when (externalNavigation) {
             ExternalNavigation.UploadOngoing -> {
