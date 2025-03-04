@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,6 @@ import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
@@ -54,82 +53,51 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.openMailApp
+import com.infomaniak.swisstransfer.upload.UploadState
 import kotlinx.coroutines.launch
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 
 @Composable
 fun ValidateUserEmailScreen(
-    closeActivity: () -> Unit,
-    navigateBackToFileImportation: () -> Unit,
-    navigateToUploadInProgress: (totalSize: Long) -> Unit,
-    emailToValidate: String,
-    validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel<ValidateUserEmailViewModel>(),
+    cancelTransfer: () -> Unit,
+    editTransfer: () -> Unit,
+    state: UploadState.Retry.EmailValidationRequired,
+    viewModel: ValidateUserEmailViewModel = hiltViewModel(),
 ) {
-    val uiState by validateUserEmailViewModel.uiState.collectAsStateWithLifecycle()
+    val emailToValidate = state.info.authorEmail
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
     val isInvalidVerificationCode by remember { derivedStateOf { uiState == ValidateEmailUiState.InvalidVerificationCode } }
-
-    val sendStatus by validateUserEmailViewModel.sendStatus.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    fun removeUploadSessionAndBack() {
-        scope.launch {
-            validateUserEmailViewModel.removeAllUploadSession()
-            navigateBackToFileImportation()
-        }
-    }
-
-    BackHandler { removeUploadSessionAndBack() }
-
-    HandleValidationStatus({ sendStatus }, navigateToUploadInProgress, snackbarHostState)
+    BackHandler { editTransfer() }
 
     HandleUnknownValidationError({ uiState }, snackbarHostState)
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
         validateEmailWithOtpCode = { code ->
-            validateUserEmailViewModel.validateEmailWithOtpCode(emailToValidate, code)
+            viewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, code))
         },
-        resetErrorState = validateUserEmailViewModel::resetErrorState,
+        resetErrorState = viewModel.resetErrorReq,
         isLoading = { isLoading },
         isInvalidVerificationCode = { isInvalidVerificationCode },
         snackbarHostState = snackbarHostState,
-        navigateBack = ::removeUploadSessionAndBack,
-        closeActivity = closeActivity,
+        navigateBack = editTransfer,
+        exitNewTransfer = cancelTransfer,
         onResendEmailCode = {
             scope.launch {
                 snackbarHostState.showSnackbar(
                     context.getString(R.string.validateMailCodeResentFeedback, emailToValidate)
                 )
             }
-            validateUserEmailViewModel.resendEmailCode(emailToValidate)
+            viewModel.resendEmailReq(emailToValidate)
         }
     )
-}
-
-@Composable
-fun HandleValidationStatus(
-    sendStatus: () -> TransferSendManager.SendStatus,
-    navigateToUploadInProgress: (totalSize: Long) -> Unit,
-    snackbarHostState: SnackbarHostState,
-) {
-    val context = LocalContext.current
-    LaunchedEffect(sendStatus(), context) {
-        when (val status = sendStatus()) {
-            is TransferSendManager.SendStatus.Success -> navigateToUploadInProgress(status.totalSize)
-            is TransferSendManager.SendStatus.Failure -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
-            }
-            is TransferSendManager.SendStatus.NoNetwork -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
-            }
-            else -> Unit
-        }
-    }
 }
 
 @Composable
@@ -161,7 +129,7 @@ private fun ValidateUserEmailScreen(
     isInvalidVerificationCode: () -> Boolean,
     snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
-    closeActivity: () -> Unit,
+    exitNewTransfer: () -> Unit,
     onResendEmailCode: () -> Unit,
 ) {
     var otpCode by rememberSaveable { mutableStateOf("") }
@@ -174,7 +142,7 @@ private fun ValidateUserEmailScreen(
             SwissTransferTopAppBar(
                 titleRes = R.string.transferTypeScreenTitle,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
-                actions = { TopAppBarButtons.Close(onClick = closeActivity) },
+                actions = { TopAppBarButtons.Close(onClick = exitNewTransfer) },
             )
         },
         topButton = {
@@ -279,7 +247,7 @@ private fun Preview() {
                 isInvalidVerificationCode = { false },
                 snackbarHostState = remember { SnackbarHostState() },
                 navigateBack = {},
-                closeActivity = {},
+                exitNewTransfer = {},
                 onResendEmailCode = {},
             )
         }

@@ -62,7 +62,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.Pa
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.NoSelectionEmptyState
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.DeeplinkPasswordAlertDialog
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme

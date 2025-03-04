@@ -74,6 +74,8 @@
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="noTransferSelectedDescription">Selecciona una transferencia o crea una nueva.</string>
     <string name="noTransferSelectedTitle">No hay transferencias que mostrar</string>
+    <string name="notificationTransferDraftDescription">Continúa donde lo dejaste</string>
+    <string name="notificationTransferDraftTitle">Transferir borrador</string>
     <string name="notificationUploadFailureDescription">Se ha producido un problema, inténtelo de nuevo</string>
     <string name="notificationUploadFailureTitle">La transferencia falló</string>
     <string name="notificationUploadProgressTitle">Transferencia en curso… (%s%%)</string>
@@ -155,7 +157,6 @@
     <string name="transferExpired">Transferencia caducada</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
-    <string name="transferExpiredLimitReachedDescription">Lo sentimos, esta transferencia ha alcanzado el límite de %d descargas posibles.</string>
     <string name="transferExpiredTitle">Esta transferencia ya no está disponible</string>
     <string name="transferInitializing">Cargando…</string>
     <string name="transferListSectionFuture">Futuro</string>

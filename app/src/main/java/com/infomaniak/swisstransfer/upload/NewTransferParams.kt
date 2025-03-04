@@ -15,19 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.upload
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
-
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
-    }
-}
+data class NewTransferParams(
+    val validityPeriod: ValidityPeriod,
+    val authorEmail: String,
+    val password: String,
+    val message: String,
+    val downloadCountLimit: DownloadLimit,
+    val languageCode: EmailLanguage,
+    val recipientsEmails: Set<String>,
+    val type: TransferTypeUi,
+)

@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
-
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
-    }
+enum class PasswordTransferOption(
+    override val title: @Composable () -> String,
+    override val imageVector: ImageVector? = null,
+    override val imageVectorResId: Int? = null,
+) : SettingOption {
+    NONE({ stringResource(R.string.settingsOptionNone) }),
+    ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
 }
