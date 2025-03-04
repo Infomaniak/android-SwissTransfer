@@ -74,6 +74,8 @@
     <string name="noTransferReceivedTitle">Keinen Transfer erhalten</string>
     <string name="noTransferSelectedDescription">Wähle eine Übertragung aus oder erstelle eine neue.</string>
     <string name="noTransferSelectedTitle">Keine Transfers zum Anzeigen</string>
+    <string name="notificationTransferDraftDescription">Weitermachen, wo Sie aufgehört haben</string>
+    <string name="notificationTransferDraftTitle">Entwurf übertragen</string>
     <string name="notificationUploadFailureDescription">Ein Problem ist aufgetreten, bitte versuchen Sie es erneut</string>
     <string name="notificationUploadFailureTitle">Die Übertragung ist fehlgeschlagen</string>
     <string name="notificationUploadProgressTitle">Transfer wird durchgeführt… (%s%%)</string>
@@ -155,7 +157,6 @@
     <string name="transferExpired">Transfer abgelaufen</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
-    <string name="transferExpiredLimitReachedDescription">Entschuldigung, diese Übertragung hat die Grenze der %d möglichen Downloads erreicht.</string>
     <string name="transferExpiredTitle">Diese Übertragung ist nicht mehr verfügbar</string>
     <string name="transferInitializing">Laden…</string>
     <string name="transferListSectionFuture">Zukunft</string>

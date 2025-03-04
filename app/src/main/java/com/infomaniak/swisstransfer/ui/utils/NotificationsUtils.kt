@@ -128,8 +128,8 @@ class NotificationsUtils @Inject constructor(
         val contentIntent = Intent(appContext, NewTransferActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         return uploadNotificationBuilder(
-            title = "Transfer draft",
-            description = "Continue where you left off",
+            title = appContext.getString(R.string.notificationTransferDraftTitle),
+            description = appContext.getString(R.string.notificationTransferDraftDescription),
             intent = contentIntent
         ).build()
     }
