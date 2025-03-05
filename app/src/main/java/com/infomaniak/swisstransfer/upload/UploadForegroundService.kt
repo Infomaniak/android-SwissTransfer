@@ -201,7 +201,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                 info = startRequest.info
             )
 
-            //TODO: Once we support resuming the upload:
+            //TODO[UL-retry]: Once we support resuming the upload:
             // 1. Remove this big `isInternetConnectedFlow` thing and move it to just the uploader part.
             // 2. Remove the loop (repeatWhileActive) below.
             // 3. In the uploader, use a function named `uploadAllRemainingWithRetries` or something.
@@ -262,7 +262,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     transferUrl = url
                 )
             }
-            //TODO: On give up, schedule a worker to cancel the upload
+            //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
         }
     }
 

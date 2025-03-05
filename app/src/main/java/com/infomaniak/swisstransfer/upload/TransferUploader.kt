@@ -59,8 +59,11 @@ class TransferUploader(
      * Returns the transfer UUID once the upload completes successfully.
      */
     suspend fun uploadAllOrThrow(updateState: (UploadState.Ongoing) -> Unit): String {
-        //TODO: To count bytes,
+        //TODO[UL-retry]: To count bytes,
         // consider using AtomicInteger + MutableStateFlow<Unit>, or MutableStateFlow.update { }
+        // while making sure we don't exceed the max when there are retries,
+        // and properly go back to start when we retry a chunk.
+        // Also, how is ktor dealing with that?
         var uploadedBytes = 0L
         uploadFiles(onUploadBytes = { bytesSent ->
             uploadedBytes += bytesSent
@@ -82,8 +85,8 @@ class TransferUploader(
             remoteContainer = destination.container,
             remoteUploadHost = destination.uploadHost
         )
-        return uploadManager.finalizeUploadSession(session) //TODO: Also retry that if needed, and make sure the backend supports it.
-        //TODO: Ensure the thumbnails directory is renamed, as done in UploadWorker
+        return uploadManager.finalizeUploadSession(session) //TODO[UL-retry]: Also retry that if needed, and make sure the backend supports it.
+        //TODO[Thumbnails]: Ensure the thumbnails directory is renamed, as done in UploadWorker
     }
 
     private fun newUploadState(uploadedBytes: Long): UploadState.Ongoing {
@@ -96,7 +99,7 @@ class TransferUploader(
 
     private suspend fun uploadFiles(onUploadBytes: suspend (bytesSent: Long) -> Unit) {
         pickedFiles.forEachIndexed { index, pickedFile ->
-            //TODO: Keep track of where we left off last time, and support retries.
+            //TODO[UL-retry]: Keep track of where we left off last time, and support retries.
             start(
                 targetFileUri = pickedFile.uri,
                 fileUUID = destination.filesUuid[index],
@@ -155,7 +158,7 @@ class TransferUploader(
             for (chunkIndex in 0..lastChunkIndex) {
                 requestSemaphore.acquire()
                 SentryLog.i(TAG, "start for chunkIndex:$chunkIndex")
-                // TODO: Skip already uploaded chunks
+                //TODO[UL-retry]: Skip already uploaded chunks
 
                 val isLastChunk = chunkIndex == lastChunkIndex
                 val dataByteArray = getReusableByteArray(byteArrayPool, inputStream, chunkSize, isLastChunk)
