@@ -60,7 +60,6 @@ private val MAX_LAYOUT_WIDTH = 400.dp
 
 @Composable
 fun ValidateUserEmailScreen(
-    cancelTransfer: () -> Unit,
     editTransfer: () -> Unit,
     state: UploadState.Retry.EmailValidationRequired,
     viewModel: ValidateUserEmailViewModel = hiltViewModel(),
@@ -88,7 +87,6 @@ fun ValidateUserEmailScreen(
         isInvalidVerificationCode = { isInvalidVerificationCode },
         snackbarHostState = snackbarHostState,
         navigateBack = editTransfer,
-        exitNewTransfer = cancelTransfer,
         onResendEmailCode = {
             scope.launch {
                 snackbarHostState.showSnackbar(
@@ -129,7 +127,6 @@ private fun ValidateUserEmailScreen(
     isInvalidVerificationCode: () -> Boolean,
     snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
-    exitNewTransfer: () -> Unit,
     onResendEmailCode: () -> Unit,
 ) {
     var otpCode by rememberSaveable { mutableStateOf("") }
@@ -142,7 +139,6 @@ private fun ValidateUserEmailScreen(
             SwissTransferTopAppBar(
                 titleRes = R.string.transferTypeScreenTitle,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
-                actions = { TopAppBarButtons.Close(onClick = exitNewTransfer) },
             )
         },
         topButton = {
@@ -247,7 +243,6 @@ private fun Preview() {
                 isInvalidVerificationCode = { false },
                 snackbarHostState = remember { SnackbarHostState() },
                 navigateBack = {},
-                exitNewTransfer = {},
                 onResendEmailCode = {},
             )
         }

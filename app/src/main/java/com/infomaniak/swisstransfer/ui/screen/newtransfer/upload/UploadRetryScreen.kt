@@ -45,7 +45,6 @@ fun UploadRetryScreen(
     when (val error: UploadState.Retry = errorState.value) {
         is UploadState.Retry.EmailValidationRequired -> {
             ValidateUserEmailScreen(
-                cancelTransfer = cancel,
                 editTransfer = edit,
                 state = error
             )
