@@ -48,6 +48,10 @@ object MatomoSwissTransfer : Matomo {
         }
     }
 
+    fun trackScreen(title: String) {
+        trackScreen(path = "/$title", title = title)
+    }
+
     fun trackTransferTypeEvent(name: String) {
         trackEvent("transferType", name)
     }

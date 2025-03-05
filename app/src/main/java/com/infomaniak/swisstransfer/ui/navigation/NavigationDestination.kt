@@ -51,7 +51,7 @@ sealed class MainNavigation(override val matomoValue: String) : NavigationDestin
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class SentDestination(val transferUuid: String? = null) : MainNavigation("SentScreen") {
+    data class SentDestination(val transferUuid: String? = null) : MainNavigation("SentView") {
 
         companion object {
             fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
@@ -62,7 +62,7 @@ sealed class MainNavigation(override val matomoValue: String) : NavigationDestin
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation("ReceivedScreen") {
+    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation("ReceivedView") {
 
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
@@ -72,7 +72,7 @@ sealed class MainNavigation(override val matomoValue: String) : NavigationDestin
     }
 
     @Serializable
-    data object SettingsDestination : MainNavigation("SettingsScreen")
+    data object SettingsDestination : MainNavigation("SettingsView")
 
     companion object {
         private val TAG = MainNavigation::class.java.simpleName
@@ -114,37 +114,37 @@ sealed class MainNavigation(override val matomoValue: String) : NavigationDestin
 sealed class NewTransferNavigation(override val matomoValue: String) : NavigationDestination() {
 
     @Serializable
-    data object ImportFilesDestination : NewTransferNavigation("ImportFileScreen")
+    data object ImportFilesDestination : NewTransferNavigation("ImportFileView")
 
     @Serializable
-    data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation("ValidateUserEmailScreen")
+    data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation("ValidateUserEmailView")
 
     @Serializable
     data class UploadProgressDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
         val authorEmail: String?,
-    ) : NewTransferNavigation("UploadProgressScreen")
+    ) : NewTransferNavigation("UploadProgressView")
 
     @Serializable
     data class UploadSuccessDestination(
         val transferType: TransferTypeUi,
         val transferUuid: String,
         val transferUrl: String,
-    ) : NewTransferNavigation("UploadSuccessScreen")
+    ) : NewTransferNavigation("UploadSuccessView")
 
     @Serializable
     data class UploadErrorDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
         val authorEmail: String?,
-    ) : NewTransferNavigation("UploadErrorScreen")
+    ) : NewTransferNavigation("UploadErrorView")
 
     @Serializable
-    data object UploadIntegrityErrorDestination : NewTransferNavigation("UploadIntegrityErrorScreen")
+    data object UploadIntegrityErrorDestination : NewTransferNavigation("UploadIntegrityErrorView")
 
     @Serializable
-    data object NewTransferFilesDetailsDestination : NewTransferNavigation("NewTransferFilesDetailsScreen")
+    data object NewTransferFilesDetailsDestination : NewTransferNavigation("NewTransferFilesDetailsView")
 
     companion object {
         val startDestination = ImportFilesDestination
@@ -198,6 +198,6 @@ sealed class NavigationDestination {
     abstract val matomoValue: String
 
     fun trackScreen() {
-        MatomoSwissTransfer.trackScreen(path = "/$matomoValue", title = matomoValue)
+        MatomoSwissTransfer.trackScreen(title = matomoValue)
     }
 }

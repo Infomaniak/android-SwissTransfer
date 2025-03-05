@@ -141,8 +141,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    val destinationName = "${direction.name.lowercase()}TransferDetail"
-    MatomoSwissTransfer.trackScreen(path = destinationName, title = destinationName)
+    MatomoSwissTransfer.trackScreen("${direction.name.lowercase()}TransferDetailView")
     selectItem(context, windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
 }
 
