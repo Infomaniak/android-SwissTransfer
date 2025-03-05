@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.toFloat
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.PasswordTransferOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.WeightOneSpacer
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme

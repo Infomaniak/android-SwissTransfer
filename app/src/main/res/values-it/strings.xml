@@ -74,6 +74,8 @@
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
     <string name="noTransferSelectedDescription">Selezionare un trasferimento o crearne uno nuovo.</string>
     <string name="noTransferSelectedTitle">Nessun trasferimento da visualizzare</string>
+    <string name="notificationTransferDraftDescription">Continuare da dove si è interrotto</string>
+    <string name="notificationTransferDraftTitle">Bozza di trasferimento</string>
     <string name="notificationUploadFailureDescription">Si è verificato un problema, riprovare</string>
     <string name="notificationUploadFailureTitle">Il trasferimento non è riuscito</string>
     <string name="notificationUploadProgressTitle">Trasferimento in corso… (%s%%)</string>

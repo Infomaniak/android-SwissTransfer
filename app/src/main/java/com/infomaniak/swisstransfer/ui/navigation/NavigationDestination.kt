@@ -28,7 +28,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import kotlinx.serialization.Serializable
 
 /**
@@ -113,18 +113,12 @@ sealed class MainNavigation : NavigationDestination() {
 sealed class NewTransferNavigation : NavigationDestination() {
 
     @Serializable
-    data object ImportFilesDestination : NewTransferNavigation()
+    data object PickFilesDestination : NewTransferNavigation()
 
     @Serializable
-    data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation()
+    data object UploadDestination : NewTransferNavigation()
 
-    @Serializable
-    data class UploadProgressDestination(
-        val transferType: TransferTypeUi,
-        val totalSize: Long,
-        val authorEmail: String?,
-    ) : NewTransferNavigation()
-
+    /** Designed to navigate to success even if the process was killed. */
     @Serializable
     data class UploadSuccessDestination(
         val transferType: TransferTypeUi,
@@ -133,20 +127,10 @@ sealed class NewTransferNavigation : NavigationDestination() {
     ) : NewTransferNavigation()
 
     @Serializable
-    data class UploadErrorDestination(
-        val transferType: TransferTypeUi,
-        val totalSize: Long,
-        val authorEmail: String?,
-    ) : NewTransferNavigation()
-
-    @Serializable
-    data object UploadIntegrityErrorDestination : NewTransferNavigation()
-
-    @Serializable
     data object NewTransferFilesDetailsDestination : NewTransferNavigation()
 
     companion object {
-        val startDestination = ImportFilesDestination
+        val startDestination: NewTransferNavigation = PickFilesDestination
     }
 }
 
