@@ -237,7 +237,10 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                         startRequest = startRequest,
                     )
                     runCatching {
-                        withPartialWakeLock {
+                        withPartialWakeLock(
+                            appName = "SwissTransfer",
+                            tagSuffix = "upload"
+                        ) {
                             uploader.uploadAllOrThrow(updateState = { currentState = it})
                         }
                     }.cancellable().onFailure { t ->
