@@ -15,19 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.upload
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import android.net.Uri
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
+import kotlinx.coroutines.flow.StateFlow
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
+interface PickedFilesExtractor {
 
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
-    }
+    val pickedFilesFlow: StateFlow<List<PickedFile>>
+    val isHandlingUrisFlow: StateFlow<Boolean>
+
+    fun addUris(uris: List<Uri>)
+    fun removeUris(uris: List<Uri>)
+    fun clear()
 }

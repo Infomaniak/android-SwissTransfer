@@ -47,7 +47,6 @@ fun NewTransferScreen(
         navController = navController,
         startDestination = startDestination,
         closeActivity = closeActivity,
-        closeActivityAndPromptForValidation = { displayConfirmationDialog = true },
         cancelUploadNotification = { newTransferViewModel.cancelUploadNotification() }
     )
 

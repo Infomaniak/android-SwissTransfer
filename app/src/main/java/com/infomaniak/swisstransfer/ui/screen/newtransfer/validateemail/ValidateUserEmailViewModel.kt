@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,65 +15,102 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalSplittiesApi::class)
+
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.core.cancellable
+import com.infomaniak.core.compose.basics.CallableState
+import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.TransferSendManager
+import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import splitties.coroutines.raceOf
+import splitties.coroutines.repeatWhileActive
+import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
-    private val uploadManager: UploadManager,
-    private val transferSendManager: TransferSendManager
+    private val uploadManager: InMemoryUploadManager
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
-    val uiState = _uiState.asStateFlow()
-
-    val sendStatus by transferSendManager::sendStatus
-
-    fun validateEmailWithOtpCode(email: String, otpCode: String) {
-        viewModelScope.launch {
-            _uiState.value = ValidateEmailUiState.Loading
-
-            runCatching {
-                uploadManager.verifyEmailCode(otpCode, email)
-            }.onFailure {
-                _uiState.value = when (it) {
-                    is EmailValidationException.InvalidPasswordException -> ValidateEmailUiState.InvalidVerificationCode
-                    is NetworkException -> ValidateEmailUiState.NoNetwork
-                    else -> ValidateEmailUiState.UnknownError
-                }
-            }.onSuccess { token ->
-                uploadManager.updateAuthorEmailToken(email, token.token)
-                transferSendManager.sendLastTransfer()
-            }
-        }
-    }
-
-    fun resetErrorState() {
-        _uiState.compareAndSet(ValidateEmailUiState.InvalidVerificationCode, ValidateEmailUiState.Default)
-    }
-
-    fun resendEmailCode(email: String) {
-        viewModelScope.launch {
-            uploadManager.resendEmailCode(email)
-        }
-    }
-
-    suspend fun removeAllUploadSession() {
-        uploadManager.removeAllUploadSession()
-    }
 
     enum class ValidateEmailUiState {
         Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
+    }
+
+    data class ValidationRequest(val email: String, val otpCode: String)
+
+    val validationRequests = CallableState<ValidationRequest>()
+    val resendEmailReq = CallableState<String>()
+    val resetErrorReq = CallableState<Unit>()
+
+    private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
+    val uiState: StateFlow<ValidateEmailUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch { run() }
+    }
+
+    private fun updateState(newState: ValidateEmailUiState) {
+        _uiState.value = newState
+    }
+
+    private suspend fun run() {
+        var lastIssue: Result.Issue? = null
+        repeatWhileActive {
+            val request: ValidationRequest = raceOf({
+                validationRequests.awaitOneCall()
+            }, {
+                repeatWhileActive {
+                    val email = resendEmailReq.awaitOneCall()
+                    uploadManager.resendEmailCode(email)
+                }
+            }, {
+                lastIssue ?: awaitCancellation()
+                resetErrorReq.awaitOneCall()
+                updateState(ValidateEmailUiState.Default)
+                awaitCancellation()
+            })
+            updateState(ValidateEmailUiState.Loading)
+            val result = tryValidating(email = request.email, otpCode = request.otpCode)
+            val newState: ValidateEmailUiState = when (result) {
+                Result.InvalidVerificationCode -> ValidateEmailUiState.InvalidVerificationCode
+                Result.NoNetwork -> ValidateEmailUiState.NoNetwork
+                Result.UnknownError -> ValidateEmailUiState.UnknownError
+                Result.Success -> awaitCancellation()
+            }
+            lastIssue = result as? Result.Issue
+            updateState(newState)
+        }
+    }
+
+    private sealed interface Result {
+        data object Success : Result
+        sealed interface Issue : Result
+        data object UnknownError : Issue
+        data object NoNetwork : Issue
+        data object InvalidVerificationCode : Issue
+    }
+
+    private suspend fun tryValidating(email: String, otpCode: String): Result = runCatching {
+        val token = uploadManager.verifyEmailCode(otpCode, email)
+        uploadManager.saveAuthorEmailToken(authorEmail = email, emailToken = token.token)
+        UploadForegroundService.retry()
+        Result.Success
+    }.cancellable().getOrElse { t ->
+        when (t) {
+            is EmailValidationException.InvalidPasswordException -> Result.InvalidVerificationCode
+            is NetworkException -> Result.NoNetwork
+            else -> Result.UnknownError
+        }
     }
 }

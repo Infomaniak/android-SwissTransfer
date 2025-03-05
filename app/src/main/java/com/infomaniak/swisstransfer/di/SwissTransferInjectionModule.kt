@@ -54,7 +54,7 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesUploadManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.uploadManager
+    fun providesUploadManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.inMemoryUploadManager
 
     @Provides
     @Singleton

@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,73 +17,93 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.R
+import com.infomaniak.core.R
+import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.areTransferDataStillAvailable
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.core.R as RCore
+import com.infomaniak.swisstransfer.upload.UploadState
 
 @Composable
-fun UploadErrorScreen(
-    navigateBackToUploadProgress: () -> Unit,
-    navigateBackToImportFiles: () -> Unit,
-    closeActivity: () -> Unit,
-    uploadProgressViewModel: UploadProgressViewModel = hiltViewModel<UploadProgressViewModel>(),
+fun UploadRetryScreen(
+    errorState: State<UploadState.Retry>,
+    retry: CallableState<Unit>,
+    edit: CallableState<Unit>,
+    cancel: CallableState<Unit>,
 ) {
+    when (val error: UploadState.Retry = errorState.value) {
+        is UploadState.Retry.EmailValidationRequired -> {
+            ValidateUserEmailScreen(
+                cancelTransfer = cancel,
+                editTransfer = edit,
+                state = error
+            )
+        }
+        is UploadState.Retry.NetworkIssue -> UploadRetryScreen(retry = retry, edit = edit)
+        is UploadState.Retry.OtherIssue -> UploadRetryScreen(retry = retry, edit = edit)
+    }
+}
 
-    BackHandler(onBack = {})
-
+@Composable
+private fun UploadRetryScreen(
+    retry: CallableState<Unit>,
+    edit: CallableState<Unit>,
+) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         topButton = {
             LargeButton(
                 modifier = it,
-                title = stringResource(RCore.string.buttonRetry),
-                onClick = { navigateBackToUploadProgress() },
+                title = stringResource(R.string.buttonRetry),
+                onClick = retry,
             )
         },
         bottomButton = {
-            if (areTransferDataStillAvailable) {
-                LargeButton(
-                    modifier = it,
-                    title = stringResource(R.string.buttonEditTransfer),
-                    style = ButtonType.Tertiary,
-                    onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = navigateBackToImportFiles) },
-                )
-            } else {
-                LargeButton(
-                    modifier = it,
-                    title = stringResource(R.string.buttonCancelTransfer),
-                    style = ButtonType.DestructiveText,
-                    onClick = { uploadProgressViewModel.removeAllUploadSession(onCompletion = closeActivity) },
-                )
-            }
+            LargeButton(
+                modifier = it,
+                title = stringResource(com.infomaniak.swisstransfer.R.string.buttonEditTransfer),
+                style = ButtonType.Secondary,
+                onClick = edit,
+            )
         }
     ) {
         EmptyState(
             content = { Image(imageVector = AppIllus.GhostMagnifyingGlassQuestionMark.image(), contentDescription = null) },
-            title = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
-            description = stringResource(R.string.uploadErrorDescription),
+            titleRes = com.infomaniak.swisstransfer.R.string.uploadErrorTitle,
+            descriptionRes = com.infomaniak.swisstransfer.R.string.uploadErrorDescription,
         )
     }
 }
 
 @PreviewAllWindows
 @Composable
-private fun UploadErrorScreenPreview() {
+private fun UploadRetryScreenPreview() {
     SwissTransferTheme {
         Surface {
-            UploadErrorScreen({}, {}, {})
+            val info = remember {
+                UploadState.Info(
+                    authorEmail = "test@infomaniak.com",
+                    totalSize = 0L,
+                    type = TransferTypeUi.Mail
+                )
+            }
+            UploadRetryScreen(
+                errorState = rememberUpdatedState(UploadState.Retry.EmailValidationRequired(info)),
+                edit = CallableState<Unit>(),
+                retry = CallableState<Unit>(),
+                cancel = CallableState<Unit>(),
+            )
         }
     }
 }

@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -46,25 +46,25 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun UploadSuccessEmailScreen(
     transferUuid: String,
-    closeActivity: () -> Unit,
+    exitNewTransfer: () -> Unit,
     uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
 ) {
     val recipientsEmails by uploadSuccessViewModel.recipientsEmails.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) { uploadSuccessViewModel.fetchTransfer(transferUuid) }
 
-    UploadSuccessEmailScreen({ recipientsEmails }, closeActivity)
+    UploadSuccessEmailScreen({ recipientsEmails }, exitNewTransfer)
 }
 
 @Composable
-fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, closeActivity: () -> Unit) {
+fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, exitNewTransfer: () -> Unit) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.buttonFinished),
-                onClick = closeActivity,
+                onClick = exitNewTransfer,
             )
         },
     ) {

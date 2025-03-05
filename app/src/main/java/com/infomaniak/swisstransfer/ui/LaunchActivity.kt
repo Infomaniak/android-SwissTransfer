@@ -26,14 +26,11 @@ import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
-import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
 import com.infomaniak.swisstransfer.ui.navigation.*
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.*
-import com.infomaniak.swisstransfer.workers.UploadWorker
+import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,13 +41,7 @@ class LaunchActivity : ComponentActivity() {
     lateinit var accountUtils: AccountUtils
 
     @Inject
-    lateinit var uploadWorkerScheduler: UploadWorker.Scheduler
-
-    @Inject
     lateinit var appSettingsManager: AppSettingsManager
-
-    @Inject
-    lateinit var uploadManager: UploadManager
 
     @Inject
     lateinit var sharedApiUrlCreator: SharedApiUrlCreator
@@ -71,6 +62,7 @@ class LaunchActivity : ComponentActivity() {
     }
 
     private suspend fun startTargetActivity() {
+        val uploadState = UploadForegroundService.uploadStateFlow.value
         val intent = when {
             hasValidTransferDeeplink() -> {
                 connectLoggedOutUser()
@@ -80,16 +72,12 @@ class LaunchActivity : ComponentActivity() {
                 connectLoggedOutUser()
                 createNewTransferSharingFileIntent()
             }
-            isAlreadyUploading() -> {
+            uploadState != null -> {
                 connectLoggedOutUser()
-                createUploadInProgressIntent()
+                createUploadOngoingIntent()
             }
-            hasBeenSuccessful() -> {
-                connectLoggedOutUser()
-                createUploadSuccessfulIntent()
-            }
-            accountUtils.isUserConnected() -> Intent(this, MainActivity::class.java)
-            else -> Intent(this, OnboardingActivity::class.java)
+            accountUtils.isUserConnected().not() -> Intent(this, OnboardingActivity::class.java)
+            else -> Intent(this, MainActivity::class.java)
         }
 
         startActivity(intent)
@@ -118,34 +106,11 @@ class LaunchActivity : ComponentActivity() {
         }
     }
 
-    private fun createUploadInProgressIntent(): Intent {
-        val transferType = appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi()
-        val uploadSession = runBlocking { uploadManager.getLastUpload() }
+    private fun createUploadOngoingIntent(): Intent {
 
         return Intent(intent).apply {
             setClass(this@LaunchActivity, NewTransferActivity::class.java)
-            putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadProgress.name)
-            putExtra(TRANSFER_TYPE_KEY, transferType.name)
-            putExtra(TRANSFER_TOTAL_SIZE_KEY, uploadSession?.totalFileSize())
-
-            // We need NewMessageActivity to have its standard launchMode in the Manifest
-            // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-    }
-
-    private fun createUploadSuccessfulIntent(): Intent {
-        val transferType = appSettingsManager.getAppSettings()!!.lastTransferType.toTransferTypeUi()
-        val lastTransferUuid =
-            applicationContext.lastTransferDataStore.getPreference(LastTransferPreferences.lastTransferUuid)
-        val lastTransferUrl = sharedApiUrlCreator.shareTransferUrl(lastTransferUuid)
-
-        return Intent().apply {
-            setClass(this@LaunchActivity, NewTransferActivity::class.java)
-            putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadSuccess.name)
-            putExtra(TRANSFER_TYPE_KEY, transferType.name)
-            putExtra(TRANSFER_UUID_KEY, lastTransferUuid)
-            putExtra(TRANSFER_URL_KEY, lastTransferUrl)
+            putExtra(EXTERNAL_NAVIGATION_KEY, ExternalNavigation.UploadOngoing.name)
 
             // We need NewMessageActivity to have its standard launchMode in the Manifest
             // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
@@ -155,14 +120,6 @@ class LaunchActivity : ComponentActivity() {
 
     private fun ComponentActivity.isSharingFilesToTheApp(): Boolean {
         return intent?.action == Intent.ACTION_SEND || intent?.action == Intent.ACTION_SEND_MULTIPLE
-    }
-
-    private fun isAlreadyUploading() = runBlocking { uploadWorkerScheduler.hasAlreadyBeenScheduled() }
-
-    private fun hasBeenSuccessful(): Boolean {
-        val hasBeenSuccessful = runBlocking { uploadWorkerScheduler.hasBeenSuccessful() }
-        val lastTransferUuid = applicationContext.lastTransferDataStore.getPreference(LastTransferPreferences.lastTransferUuid)
-        return hasBeenSuccessful && lastTransferUuid.isNotEmpty()
     }
 
     companion object {

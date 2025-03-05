@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ShareAndCopyButtons
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, closeActivity: () -> Unit) {
+fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     BottomStickyButtonScaffold(
@@ -53,7 +53,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, clo
                 modifier = it,
                 style = ButtonType.Primary,
                 title = stringResource(R.string.buttonFinished),
-                onClick = closeActivity,
+                onClick = exitNewTransfer,
             )
         },
     ) {
@@ -117,7 +117,7 @@ private fun UploadSuccessQrScreenPreview() {
             UploadSuccessQrScreen(
                 transferType = TransferTypeUi.QrCode,
                 transferUrl = "https://chk.me/83azQOl",
-                closeActivity = {}
+                exitNewTransfer = {}
             )
         }
     }
