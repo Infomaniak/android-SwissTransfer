@@ -59,7 +59,10 @@ class UploadSessionStarter @Inject constructor(
             is IntegrityException -> Result.AppIntegrityIssue
             is ContainerErrorsException.EmailValidationRequired -> Result.EmailValidationRequired
             is ContainerErrorsException.DomainBlockedException -> Result.RestrictedLocation
-            else -> Result.OtherIssue(t)
+            else -> {
+                SentryLog.e(TAG, "Unexpected issue while starting the upload session", t)
+                Result.OtherIssue(t)
+            }
         }
     }
 
@@ -98,3 +101,5 @@ class UploadSessionStarter @Inject constructor(
         data class OtherIssue(val t: Throwable) : Issue
     }
 }
+
+private const val TAG = "UploadSessionStarter"
