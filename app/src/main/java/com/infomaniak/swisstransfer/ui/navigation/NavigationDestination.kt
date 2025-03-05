@@ -84,7 +84,7 @@ sealed class MainNavigation(override val matomoValue: String) : NavigationDestin
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
         private const val settingsDestinationName = "SettingsDestination"
-        val destinationsNames = listOf(
+        val mainDestinationsNames = listOf(
             sentDestinationName,
             receivedDestinationName,
             settingsDestinationName,
@@ -93,10 +93,10 @@ sealed class MainNavigation(override val matomoValue: String) : NavigationDestin
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
                 val destinationRoute = destination.route ?: error("Destination route cannot be empty")
-                when (destinationsNames.firstOrNull { destinationRoute.contains(it) }) {
-                    sentDestinationName -> this.toRoute<SentDestination>()
-                    receivedDestinationName -> this.toRoute<ReceivedDestination>()
-                    settingsDestinationName -> this.toRoute<SettingsDestination>()
+                when (mainDestinationsNames.firstOrNull { destinationRoute.contains(it) }) {
+                    sentDestinationName -> toRoute<SentDestination>()
+                    receivedDestinationName -> toRoute<ReceivedDestination>()
+                    settingsDestinationName -> toRoute<SettingsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
@@ -151,34 +151,37 @@ sealed class NewTransferNavigation(override val matomoValue: String) : Navigatio
 
         private val TAG = NewTransferNavigation::class.java.simpleName
 
+        // Because of the minification, we can't directly use the classes names here. It won't work in production environment.
+        // So, if these classes have to be renamed, they need to be renamed here too.
+        // Don't worry if you forget, there's a unit test about that.
         private const val importFilesDestinationName = "ImportFilesDestination"
-        private const val ValidateUserEmailDestinationName = "ValidateUserEmailDestination"
-        private const val UploadProgressDestinationName = "UploadProgressDestination"
-        private const val UploadSuccessDestinationName = "UploadSuccessDestination"
-        private const val UploadErrorDestinationName = "UploadErrorDestination"
-        private const val UploadIntegrityErrorDestinationName = "UploadIntegrityErrorDestination"
-        private const val NewTransferFilesDetailsDestinationName = "NewTransferFilesDetailsDestination"
+        private const val validateUserEmailDestinationName = "ValidateUserEmailDestination"
+        private const val uploadProgressDestinationName = "UploadProgressDestination"
+        private const val uploadSuccessDestinationName = "UploadSuccessDestination"
+        private const val uploadErrorDestinationName = "UploadErrorDestination"
+        private const val uploadIntegrityErrorDestinationName = "UploadIntegrityErrorDestination"
+        private const val newTransferFilesDetailsDestinationName = "NewTransferFilesDetailsDestination"
         val newTransferDestinationsNames = listOf(
             importFilesDestinationName,
-            ValidateUserEmailDestinationName,
-            UploadProgressDestinationName,
-            UploadSuccessDestinationName,
-            UploadErrorDestinationName,
-            UploadIntegrityErrorDestinationName,
-            NewTransferFilesDetailsDestinationName,
+            validateUserEmailDestinationName,
+            uploadProgressDestinationName,
+            uploadSuccessDestinationName,
+            uploadErrorDestinationName,
+            uploadIntegrityErrorDestinationName,
+            newTransferFilesDetailsDestinationName,
         )
 
         fun NavBackStackEntry.toNewTransferDestination(): NewTransferNavigation? {
             return runCatching {
                 val destinationRoute = destination.route ?: error("Destination route cannot be empty")
                 when (newTransferDestinationsNames.firstOrNull(destinationRoute::contains)) {
-                    importFilesDestinationName -> this.toRoute<ImportFilesDestination>()
-                    ValidateUserEmailDestinationName -> this.toRoute<ValidateUserEmailDestination>()
-                    UploadProgressDestinationName -> this.toRoute<UploadProgressDestination>()
-                    UploadSuccessDestinationName -> this.toRoute<UploadSuccessDestination>()
-                    UploadErrorDestinationName -> this.toRoute<UploadErrorDestination>()
-                    UploadIntegrityErrorDestinationName -> this.toRoute<UploadIntegrityErrorDestination>()
-                    NewTransferFilesDetailsDestinationName -> this.toRoute<NewTransferFilesDetailsDestination>()
+                    importFilesDestinationName -> toRoute<ImportFilesDestination>()
+                    validateUserEmailDestinationName -> toRoute<ValidateUserEmailDestination>()
+                    uploadProgressDestinationName -> toRoute<UploadProgressDestination>()
+                    uploadSuccessDestinationName -> toRoute<UploadSuccessDestination>()
+                    uploadErrorDestinationName -> toRoute<UploadErrorDestination>()
+                    uploadIntegrityErrorDestinationName -> toRoute<UploadIntegrityErrorDestination>()
+                    newTransferFilesDetailsDestinationName -> toRoute<NewTransferFilesDetailsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
