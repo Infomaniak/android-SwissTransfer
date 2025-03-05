@@ -55,11 +55,18 @@ class NotificationsUtils @Inject constructor(
         val channelList = mutableListOf<NotificationChannel>()
 
         val uploadChannel = buildNotificationChannel(
-            channelId = getString(R.string.notifications_upload_channel_id),
+            channelId = ChannelIds.ongoingUploads,
             name = getString(R.string.notificationsUploadChannelName),
             importance = NotificationManager.IMPORTANCE_LOW,
         )
         channelList.add(uploadChannel)
+
+        val transferDraftChannel = buildNotificationChannel(
+            channelId = ChannelIds.transferDraft,
+            name = getString(R.string.notificationTransferDraftTitle),
+            importance = NotificationManager.IMPORTANCE_MIN,
+        )
+        channelList.add(transferDraftChannel)
 
         createNotificationChannels(channelList)
     }
@@ -128,6 +135,8 @@ class NotificationsUtils @Inject constructor(
         val contentIntent = Intent(appContext, NewTransferActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         return uploadNotificationBuilder(
+            channelId = ChannelIds.transferDraft,
+            priority = NotificationCompat.PRIORITY_MIN,
             title = appContext.getString(R.string.notificationTransferDraftTitle),
             description = appContext.getString(R.string.notificationTransferDraftDescription),
             intent = contentIntent
@@ -155,12 +164,14 @@ class NotificationsUtils @Inject constructor(
     }
 
     private fun uploadNotificationBuilder(
+        channelId: String = ChannelIds.ongoingUploads,
+        priority: Int = NotificationCompat.PRIORITY_LOW,
         intent: Intent,
         title: String,
         description: String? = null,
     ): NotificationCompat.Builder = with(appContext) {
         return@with buildNotification(
-            channelId = getString(R.string.notifications_upload_channel_id),
+            channelId = channelId,
             requestCode = 0, // We don't need it to change since we have no concurrent uploads
             intent = intent,
             icon = defaultSmallIcon,
@@ -168,7 +179,7 @@ class NotificationsUtils @Inject constructor(
             title = title,
             description = description,
             onlyAlertOnce = true,
-        )
+        ).setPriority(priority)
     }
 
     private fun Notification.post(id: Int) {
@@ -182,6 +193,11 @@ class NotificationsUtils @Inject constructor(
     object Ids {
         const val OngoingUpload = 1
         const val LastUpload = 2
+    }
+
+    private object ChannelIds {
+        val ongoingUploads = appCtx.getString(R.string.notifications_upload_channel_id)
+        val transferDraft = "transfer_draft"
     }
 
     companion object {
