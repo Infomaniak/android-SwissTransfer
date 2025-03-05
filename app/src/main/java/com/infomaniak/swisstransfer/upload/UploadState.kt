@@ -21,6 +21,10 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 
 sealed interface UploadState {
 
+    /**
+     * This is not part of the [UploadState] hierarchy, but is used in its entries,
+     * so the UI can display relevant metadata.
+     */
     data class Info(
         val authorEmail: String,
         val totalSize: Long,
