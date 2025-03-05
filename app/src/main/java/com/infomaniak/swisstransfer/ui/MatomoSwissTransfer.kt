@@ -47,4 +47,8 @@ object MatomoSwissTransfer : Matomo {
             }
         }
     }
+
+    fun trackTransferTypeEvent(name: String) {
+        trackEvent("transferType", name)
+    }
 }
