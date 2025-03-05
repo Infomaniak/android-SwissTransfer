@@ -34,6 +34,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkExce
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -165,12 +166,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     // it should be because we have uris of picked/shared files, i.e. a transfer draft.
                     notificationsUtils.buildTransferDraftNotification()
                 }
-                is UploadState.Ongoing -> notificationsUtils.buildUploadProgressNotification(
-                    authorEmail = state.info.authorEmail,
-                    transferType = state.info.type,
-                    totalBytes = state.info.totalSize,
-                    uploadedBytes = state.uploadedBytes,
-                )
+                is UploadState.Ongoing -> buildOngoingNotification(state)
                 is UploadState.Retry -> {
                     notificationsUtils.buildUploadFailedNotification(canRetry = true)
                 }
@@ -182,6 +178,17 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         }
     }
 
+    private fun buildOngoingNotification(state: UploadState.Ongoing): Notification = when (state.status) {
+        Status.InProgress, Status.Initializing -> notificationsUtils.buildUploadProgressNotification(
+            authorEmail = state.info.authorEmail,
+            transferType = state.info.type,
+            totalBytes = state.info.totalSize,
+            uploadedBytes = state.uploadedBytes,
+        )
+        //TODO[UL-retry]: Show the progress as above but change the message once we support retries.
+        Status.WaitingForInternet -> notificationsUtils.buildUploadFailedNotification(canRetry = true)
+    }
+
     private var currentState by _state::value
 
     override suspend fun run(): Nothing = Dispatchers.Default {
@@ -189,7 +196,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         repeatWhileActive {
             val startRequest: StartUploadRequest = startSignal.receive()
             currentState = UploadState.Ongoing(
-                status = UploadState.Ongoing.Status.Initializing,
+                status = Status.Initializing,
                 uploadedBytes = 0L,
                 info = startRequest.info
             )
@@ -201,7 +208,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             val transferUuid = isInternetConnectedFlow.mapLatest { isInternetConnected ->
                 if (isInternetConnected.not()) {
                     currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>().first().copy(
-                        status = UploadState.Ongoing.Status.WaitingForInternet
+                        status = Status.WaitingForInternet
                     )
                     awaitCancellation()
                 }
@@ -269,7 +276,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         val info = startRequest.info
         updateState(
             UploadState.Ongoing(
-                status = UploadState.Ongoing.Status.Initializing,
+                status = Status.Initializing,
                 uploadedBytes = 0L,
                 info = info,
             )
