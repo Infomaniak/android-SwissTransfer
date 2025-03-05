@@ -24,12 +24,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.Companion.toNewTransferDestination
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
@@ -41,7 +43,11 @@ fun NewTransferScreen(
 ) {
 
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
+
+    navBackStackEntry?.toNewTransferDestination()?.trackScreen()
 
     NewTransferNavHost(
         navController = navController,
