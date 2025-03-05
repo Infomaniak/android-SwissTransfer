@@ -64,6 +64,7 @@ import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import splitties.intents.serviceWithoutExtrasSpec
+import splitties.systemservices.notificationManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -111,6 +112,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         fun dismissCompleteUpload() {
             if (uploadStateFlow.value is UploadState.Complete) {
                 _state.value = null
+                notificationManager.cancel(NotificationsUtils.Ids.LastUpload)
             }
         }
 
