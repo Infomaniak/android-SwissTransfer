@@ -36,9 +36,11 @@ fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
     val hideBottomBar = rememberSaveable { mutableStateOf(false) }
 
     val currentDestination by remember(navBackStackEntry) {
-        val destination = navBackStackEntry?.toMainDestination()
-        destination?.trackScreen()
-        derivedStateOf { destination ?: MainNavigation.startDestination }
+        derivedStateOf { navBackStackEntry?.toMainDestination() ?: MainNavigation.startDestination }
+    }
+
+    LaunchedEffect(currentDestination) {
+        currentDestination.trackScreen()
     }
 
     MainScaffold(

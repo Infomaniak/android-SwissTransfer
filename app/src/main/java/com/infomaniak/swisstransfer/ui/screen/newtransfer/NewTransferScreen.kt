@@ -17,11 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -44,10 +41,15 @@ fun NewTransferScreen(
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination by remember(navBackStackEntry) {
+        derivedStateOf { navBackStackEntry?.toNewTransferDestination() ?: NewTransferNavigation.startDestination }
+    }
 
     var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
 
-    navBackStackEntry?.toNewTransferDestination()?.trackScreen()
+    LaunchedEffect(currentDestination) {
+        currentDestination.trackScreen()
+    }
 
     NewTransferNavHost(
         navController = navController,
