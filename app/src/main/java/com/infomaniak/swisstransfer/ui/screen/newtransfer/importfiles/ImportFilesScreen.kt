@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
@@ -166,7 +167,10 @@ fun ImportFilesScreen(
         transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
-            set = importFilesViewModel::selectTransferType,
+            set = { type ->
+                MatomoSwissTransfer.trackTransferTypeEvent(type.matomoValue)
+                importFilesViewModel.selectTransferType(type)
+            },
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,

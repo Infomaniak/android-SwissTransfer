@@ -18,19 +18,37 @@
 package com.infomaniak.swisstransfer
 
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class NavigationDestinationUnitTest {
 
     /**
-     * Make sure that NavigationDestination names are not changed without changing the `entries` list, because of minification issue.
+     * Make sure that MainNavigationDestination names are not changed without changing the `entries` list,
+     * because of minification issue.
      */
     @Test
-    fun check_destinations_names_are_correct() {
-        val destinationsNames = MainNavigation.Companion.destinationsNames
+    fun check_main_destinations_names_are_correct() {
+        val destinationsNames = MainNavigation.Companion.mainDestinationsNames
         assertNotNull(destinationsNames.find { it == MainNavigation.SentDestination::class.simpleName })
         assertNotNull(destinationsNames.find { it == MainNavigation.ReceivedDestination::class.simpleName })
         assertNotNull(destinationsNames.find { it == MainNavigation.SettingsDestination::class.simpleName })
+    }
+
+    /**
+     * Make sure that NewTransferNavigationDestination names are not changed without changing the `entries` list,
+     * because of minification issue.
+     */
+    @Test
+    fun check_new_transfer_destinations_names_are_correct() {
+        val destinationsNames = NewTransferNavigation.Companion.newTransferDestinationsNames
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.ImportFilesDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.ValidateUserEmailDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.UploadProgressDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.UploadSuccessDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.UploadIntegrityErrorDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.UploadIntegrityErrorDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == NewTransferNavigation.NewTransferFilesDetailsDestination::class.simpleName })
     }
 }

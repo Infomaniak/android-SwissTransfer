@@ -26,6 +26,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
@@ -35,7 +36,7 @@ import kotlinx.serialization.Serializable
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 @Serializable
-sealed class MainNavigation : NavigationDestination() {
+sealed class MainNavigation(override val matomoValue: String) : NavigationDestination() {
 
     protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
         noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
@@ -50,7 +51,7 @@ sealed class MainNavigation : NavigationDestination() {
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class SentDestination(val transferUuid: String? = null) : MainNavigation() {
+    data class SentDestination(val transferUuid: String? = null) : MainNavigation("SentView") {
 
         companion object {
             fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
@@ -61,7 +62,7 @@ sealed class MainNavigation : NavigationDestination() {
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
+    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation("ReceivedView") {
 
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
@@ -71,7 +72,7 @@ sealed class MainNavigation : NavigationDestination() {
     }
 
     @Serializable
-    data object SettingsDestination : MainNavigation()
+    data object SettingsDestination : MainNavigation("SettingsView")
 
     companion object {
         private val TAG = MainNavigation::class.java.simpleName
@@ -83,7 +84,7 @@ sealed class MainNavigation : NavigationDestination() {
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
         private const val settingsDestinationName = "SettingsDestination"
-        val destinationsNames = listOf(
+        val mainDestinationsNames = listOf(
             sentDestinationName,
             receivedDestinationName,
             settingsDestinationName,
@@ -92,10 +93,10 @@ sealed class MainNavigation : NavigationDestination() {
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
             return runCatching {
                 val destinationRoute = destination.route ?: error("Destination route cannot be empty")
-                when (destinationsNames.firstOrNull { destinationRoute.contains(it) }) {
-                    sentDestinationName -> this.toRoute<SentDestination>()
-                    receivedDestinationName -> this.toRoute<ReceivedDestination>()
-                    settingsDestinationName -> this.toRoute<SettingsDestination>()
+                when (mainDestinationsNames.firstOrNull { destinationRoute.contains(it) }) {
+                    sentDestinationName -> toRoute<SentDestination>()
+                    receivedDestinationName -> toRoute<ReceivedDestination>()
+                    settingsDestinationName -> toRoute<SettingsDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
@@ -110,43 +111,84 @@ sealed class MainNavigation : NavigationDestination() {
  * Sealed class representing the navigation arguments for the new transfer flow.
  */
 @Serializable
-sealed class NewTransferNavigation : NavigationDestination() {
+sealed class NewTransferNavigation(override val matomoValue: String) : NavigationDestination() {
 
     @Serializable
-    data object ImportFilesDestination : NewTransferNavigation()
+    data object ImportFilesDestination : NewTransferNavigation("ImportFileView")
 
     @Serializable
-    data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation()
+    data class ValidateUserEmailDestination(val authorEmail: String) : NewTransferNavigation("ValidateUserEmailView")
 
     @Serializable
     data class UploadProgressDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
         val authorEmail: String?,
-    ) : NewTransferNavigation()
+    ) : NewTransferNavigation("UploadProgressView")
 
     @Serializable
     data class UploadSuccessDestination(
         val transferType: TransferTypeUi,
         val transferUuid: String,
         val transferUrl: String,
-    ) : NewTransferNavigation()
+    ) : NewTransferNavigation("UploadSuccessView")
 
     @Serializable
     data class UploadErrorDestination(
         val transferType: TransferTypeUi,
         val totalSize: Long,
         val authorEmail: String?,
-    ) : NewTransferNavigation()
+    ) : NewTransferNavigation("UploadErrorView")
 
     @Serializable
-    data object UploadIntegrityErrorDestination : NewTransferNavigation()
+    data object UploadIntegrityErrorDestination : NewTransferNavigation("UploadIntegrityErrorView")
 
     @Serializable
-    data object NewTransferFilesDetailsDestination : NewTransferNavigation()
+    data object NewTransferFilesDetailsDestination : NewTransferNavigation("NewTransferFilesDetailsView")
 
     companion object {
         val startDestination = ImportFilesDestination
+
+        private val TAG = NewTransferNavigation::class.java.simpleName
+
+        // Because of the minification, we can't directly use the classes names here. It won't work in production environment.
+        // So, if these classes have to be renamed, they need to be renamed here too.
+        // Don't worry if you forget, there's a unit test about that.
+        private const val importFilesDestinationName = "ImportFilesDestination"
+        private const val validateUserEmailDestinationName = "ValidateUserEmailDestination"
+        private const val uploadProgressDestinationName = "UploadProgressDestination"
+        private const val uploadSuccessDestinationName = "UploadSuccessDestination"
+        private const val uploadErrorDestinationName = "UploadErrorDestination"
+        private const val uploadIntegrityErrorDestinationName = "UploadIntegrityErrorDestination"
+        private const val newTransferFilesDetailsDestinationName = "NewTransferFilesDetailsDestination"
+        val newTransferDestinationsNames = listOf(
+            importFilesDestinationName,
+            validateUserEmailDestinationName,
+            uploadProgressDestinationName,
+            uploadSuccessDestinationName,
+            uploadErrorDestinationName,
+            uploadIntegrityErrorDestinationName,
+            newTransferFilesDetailsDestinationName,
+        )
+
+        fun NavBackStackEntry.toNewTransferDestination(): NewTransferNavigation? {
+            return runCatching {
+                val destinationRoute = destination.route ?: error("Destination route cannot be empty")
+                when (newTransferDestinationsNames.firstOrNull(destinationRoute::contains)) {
+                    importFilesDestinationName -> toRoute<ImportFilesDestination>()
+                    validateUserEmailDestinationName -> toRoute<ValidateUserEmailDestination>()
+                    uploadProgressDestinationName -> toRoute<UploadProgressDestination>()
+                    uploadSuccessDestinationName -> toRoute<UploadSuccessDestination>()
+                    uploadErrorDestinationName -> toRoute<UploadErrorDestination>()
+                    uploadIntegrityErrorDestinationName -> toRoute<UploadIntegrityErrorDestination>()
+                    newTransferFilesDetailsDestinationName -> toRoute<NewTransferFilesDetailsDestination>()
+                    else -> error("Destination $destinationRoute is not handled")
+                }
+            }.getOrElse { exception ->
+                SentryLog.e(TAG, "toNewTransferDestination: Failure", exception)
+                null
+            }
+        }
     }
 }
 
@@ -154,4 +196,11 @@ sealed class NewTransferNavigation : NavigationDestination() {
  * Sealed class representing navigation arguments with a title resource.
  */
 @Serializable
-sealed class NavigationDestination
+sealed class NavigationDestination {
+
+    abstract val matomoValue: String
+
+    fun trackScreen() {
+        MatomoSwissTransfer.trackScreen(title = matomoValue)
+    }
+}
