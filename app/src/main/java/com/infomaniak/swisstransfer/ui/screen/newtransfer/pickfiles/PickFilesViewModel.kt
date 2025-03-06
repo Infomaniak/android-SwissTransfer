@@ -81,22 +81,6 @@ class PickFilesViewModel @Inject constructor(
     fun send() = sendRequest()
     fun isReadyToSend() = sendRequest.isAwaitingCall
 
-    sealed interface CanSendStatus {
-        data object Yes : CanSendStatus
-        sealed interface No : CanSendStatus {
-            companion object : No
-            data object ProcessingPickedFiles : No
-            data object NoFilesPicked : No
-            data object MaxSizeExceeded : No
-            data object MaxFilesCountExceeded : No
-            enum class EmailIssue : No {
-                AuthorUnspecified,
-                AuthorInvalid,
-                NoValidatedRecipients,
-            }
-        }
-    }
-
     val filesDetailsUiState: StateFlow<FilesDetailsUiState>
 
     val openFilePickerEvent: ReceiveChannel<Unit>
@@ -118,6 +102,22 @@ class PickFilesViewModel @Inject constructor(
 
     private val sendRequest = CallableState<Unit>()
     private val _openFilePickerEvent: Channel<Unit> = Channel<Unit>(capacity = CONFLATED).also { openFilePickerEvent = it }
+
+    sealed interface CanSendStatus {
+        data object Yes : CanSendStatus
+        sealed interface No : CanSendStatus {
+            companion object : No
+            data object ProcessingPickedFiles : No
+            data object NoFilesPicked : No
+            data object MaxSizeExceeded : No
+            data object MaxFilesCountExceeded : No
+            enum class EmailIssue : No {
+                AuthorUnspecified,
+                AuthorInvalid,
+                NoValidatedRecipients,
+            }
+        }
+    }
 
     sealed interface FilesDetailsUiState {
         data object EmptyFiles : FilesDetailsUiState
