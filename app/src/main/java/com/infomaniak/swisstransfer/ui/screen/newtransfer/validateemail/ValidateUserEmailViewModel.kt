@@ -43,12 +43,6 @@ class ValidateUserEmailViewModel @Inject constructor(
     private val uploadManager: InMemoryUploadManager
 ) : ViewModel() {
 
-    enum class ValidateEmailUiState {
-        Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
-    }
-
-    data class ValidationRequest(val email: String, val otpCode: String)
-
     val validationRequests = CallableState<ValidationRequest>()
     val resendEmailReq = CallableState<String>()
     val resetErrorReq = CallableState<Unit>()
@@ -92,6 +86,12 @@ class ValidateUserEmailViewModel @Inject constructor(
             updateState(newState)
         }
     }
+
+    enum class ValidateEmailUiState {
+        Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
+    }
+
+    data class ValidationRequest(val email: String, val otpCode: String)
 
     private sealed interface Result {
         data object Success : Result
