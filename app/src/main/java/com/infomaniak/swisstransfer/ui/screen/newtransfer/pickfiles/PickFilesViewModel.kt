@@ -218,7 +218,7 @@ class PickFilesViewModel @Inject constructor(
     private suspend fun handleSessionStart() {
         canSendStatusFlow.map { it == CanSendStatus.Yes }.tryCompletingWhileTrue {
             repeatWhileActive {
-                awaitSendRequest()
+                sendRequest.awaitOneCall()
                 val newTransferParams = extractNewTransferParams()
                 appSettingsManager.setLastAuthorEmail(newTransferParams.authorEmail)
                 UploadForegroundService.commitUploadSession(newTransferParams)
@@ -244,8 +244,6 @@ class PickFilesViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun awaitSendRequest() = sendRequest.awaitOneCall()
 
     private fun extractNewTransferParams() = NewTransferParams(
         validityPeriod = selectedValidityPeriodOption.value.apiValue,
