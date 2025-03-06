@@ -119,51 +119,9 @@ class PickFilesViewModel @Inject constructor(
     private val sendRequest = CallableState<Unit>()
     private val _openFilePickerEvent: Channel<Unit> = Channel<Unit>(capacity = CONFLATED).also { openFilePickerEvent = it }
 
-    init {
-        val pickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
-            pickedFiles.map { it.toFileUiModel() }
-        }
-        filesDetailsUiState = pickedFilesFlow.map { pickedFiles ->
-            when {
-                pickedFiles.isEmpty() -> FilesDetailsUiState.EmptyFiles
-                else -> FilesDetailsUiState.Success(pickedFiles)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = FilesDetailsUiState.Success(emptyList()),
-        )
-        @OptIn(FlowPreview::class)
-        importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = emptyList(),
-        )
-    }
-
     sealed interface FilesDetailsUiState {
         data object EmptyFiles : FilesDetailsUiState
         data class Success(val files: List<FileUi>) : FilesDetailsUiState
-    }
-
-    init {
-        val hasPickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { it.isNotEmpty() }
-        val transferType by selectedTransferTypeFlow.collectAsStateIn(viewModelScope)
-        val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsStateIn(viewModelScope)
-        val hasPickedFiles by hasPickedFilesFlow.collectAsStateIn(viewModelScope)
-        val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsStateIn(viewModelScope)
-        canSendStatusFlow = snapshotFlow {
-            when {
-                uploadOngoing -> CanSendStatus.No
-                isHandlingPickedFiles -> CanSendStatus.No.ProcessingPickedFiles
-                !hasPickedFiles -> CanSendStatus.No.NoFilesPicked
-                transferType != TransferTypeUi.Mail -> CanSendStatus.Yes
-                transferAuthorEmail.isEmpty() -> EmailIssue.AuthorUnspecified
-                isAuthorEmailInvalid -> EmailIssue.AuthorInvalid
-                validatedRecipientsEmails.isEmpty() -> EmailIssue.NoValidatedRecipients
-                else -> CanSendStatus.Yes // The emails form is valid.
-            }
-        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No)
     }
 
     //region Transfer Author Email
@@ -194,6 +152,30 @@ class PickFilesViewModel @Inject constructor(
         }
 
     init {
+        canSendStatusFlow = buildCanSendStatusFlow()
+
+        val pickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
+            pickedFiles.map { it.toFileUiModel() }
+        }
+
+        filesDetailsUiState = pickedFilesFlow.map { pickedFiles ->
+            when {
+                pickedFiles.isEmpty() -> FilesDetailsUiState.EmptyFiles
+                else -> FilesDetailsUiState.Success(pickedFiles)
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FilesDetailsUiState.Success(emptyList()),
+        )
+
+        @OptIn(FlowPreview::class)
+        importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList(),
+        )
+
         viewModelScope.launch { handleSessionStart() }
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
@@ -213,6 +195,26 @@ class PickFilesViewModel @Inject constructor(
 
             isFirstViewModelCreation = false
         }
+    }
+
+    private fun buildCanSendStatusFlow(): StateFlow<CanSendStatus> {
+        val hasPickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { it.isNotEmpty() }
+        val transferType by selectedTransferTypeFlow.collectAsStateIn(viewModelScope)
+        val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsStateIn(viewModelScope)
+        val hasPickedFiles by hasPickedFilesFlow.collectAsStateIn(viewModelScope)
+        val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsStateIn(viewModelScope)
+        return snapshotFlow {
+            when {
+                uploadOngoing -> CanSendStatus.No
+                isHandlingPickedFiles -> CanSendStatus.No.ProcessingPickedFiles
+                !hasPickedFiles -> CanSendStatus.No.NoFilesPicked
+                transferType != TransferTypeUi.Mail -> CanSendStatus.Yes
+                transferAuthorEmail.isEmpty() -> EmailIssue.AuthorUnspecified
+                isAuthorEmailInvalid -> EmailIssue.AuthorInvalid
+                validatedRecipientsEmails.isEmpty() -> EmailIssue.NoValidatedRecipients
+                else -> CanSendStatus.Yes // The emails form is valid.
+            }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No)
     }
 
     private suspend fun handleSessionStart() {
