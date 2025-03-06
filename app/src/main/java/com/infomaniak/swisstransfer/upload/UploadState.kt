@@ -59,7 +59,6 @@ sealed interface UploadState {
 
     sealed interface Failure : UploadState {
         data object RestrictedLocation : Failure
-        data object FilesDisappeared : Failure
         data object AppIntegrityIssue : Failure
     }
 }

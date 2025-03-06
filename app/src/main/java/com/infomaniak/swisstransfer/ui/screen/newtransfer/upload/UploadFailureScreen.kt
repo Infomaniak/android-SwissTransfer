@@ -48,10 +48,6 @@ fun UploadFailureScreen(
             exitNewTransfer = cancel,
             desc = stringResource(R.string.errorAppIntegrity)
         )
-        UploadState.Failure.FilesDisappeared -> UploadFailureScreen(
-            exitNewTransfer = cancel,
-            desc = "Files disappeared"
-        )
         UploadState.Failure.RestrictedLocation -> UploadFailureScreen(
             exitNewTransfer = cancel,
             desc = "SwissTransfer doesn't work here yet"
