@@ -371,13 +371,16 @@ class PickFilesViewModel @Inject constructor(
     }
 }
 
-private fun PickedFile.toFileUiModel(): FileUi = FileUi(
-    uid = uri.toString(),
-    fileName = name,
-    path = null,
-    isFolder = false,
-    fileSize = size,
-    mimeType = mimeType,
-    localPath = null,
-    thumbnailPath = null
-)
+private fun PickedFile.toFileUiModel(): FileUi {
+    val uriString = uri.toString()
+    return FileUi(
+        uid = uriString,
+        fileName = name,
+        path = null,
+        isFolder = false,
+        fileSize = size,
+        mimeType = mimeType,
+        localPath = null,
+        thumbnailPath = uriString
+    )
+}
