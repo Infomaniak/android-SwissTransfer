@@ -261,8 +261,10 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     transferUuid = transferUuid,
                     transferUrl = url
                 )
-            } else null
-            //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
+            } else {
+                //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
+                null
+            }
         }
     }
 
