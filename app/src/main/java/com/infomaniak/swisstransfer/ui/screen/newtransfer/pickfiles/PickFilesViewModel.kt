@@ -109,8 +109,8 @@ class PickFilesViewModel @Inject constructor(
             companion object : No
             data object ProcessingPickedFiles : No
             data object NoFilesPicked : No
-            data object MaxSizeExceeded : No
-            data object MaxFilesCountExceeded : No
+            data object MaxSizeExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed, and generated.
+            data object MaxFilesCountExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed, and generated.
             enum class EmailIssue : No {
                 AuthorUnspecified,
                 AuthorInvalid,
