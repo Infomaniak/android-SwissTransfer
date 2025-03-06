@@ -238,7 +238,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                             appName = "SwissTransfer",
                             tagSuffix = "upload"
                         ) {
-                            uploader.uploadAllOrThrow(updateState = { currentState = it})
+                            uploader.uploadAllOrThrow(updateState = { currentState = it })
                         }
                     }.cancellable().onFailure { t ->
                         currentState = when (t) {
