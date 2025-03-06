@@ -50,7 +50,7 @@ fun UploadFailureScreen(
         )
         UploadState.Failure.RestrictedLocation -> UploadFailureScreen(
             exitNewTransfer = cancel,
-            desc = "SwissTransfer doesn't work here yet"
+            desc = stringResource(R.string.restrictedLocation)
         )
     }
 }
