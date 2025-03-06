@@ -40,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
@@ -60,6 +61,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
         private val startSignal = Channel<StartUploadRequest>()
 
+        private val cancelTransferSignals = Channel<Unit>()
         private val shouldRetrySignals = Channel<Boolean>()
 
         private val pickedFilesExtractor: PickedFilesExtractor = PickedFilesExtractorImpl().also {
@@ -121,6 +123,10 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
         suspend fun giveUp() {
             shouldRetrySignals.send(false)
+        }
+
+        suspend fun cancelUpload() {
+            cancelTransferSignals.send(Unit)
         }
 
         private fun keepServiceRunningWhileNeeded() {
@@ -202,21 +208,24 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             )
 
             //TODO[UL-retry]: Once we support resuming the upload:
-            // 1. Remove this big `isInternetConnectedFlow` thing and move it to just the uploader part.
+            // 1. Remove `isInternetConnectedFlow.mapLatest` from `tryCompletingWithInternetUnlessCancelled`,
+            //    and move it to just the uploader part.
             // 2. Remove the loop (repeatWhileActive) below.
             // 3. In the uploader, use a function named `uploadAllRemainingWithRetries` or something.
-            val transferUuid = isInternetConnectedFlow.mapLatest { isInternetConnected ->
-                if (isInternetConnected.not()) {
+            val transferUuid = tryCompletingWithInternetUnlessCancelled(
+                valueIfCancelled = null,
+                withoutInternet = {
                     currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>().first().copy(
                         status = Status.WaitingForInternet
                     )
                     awaitCancellation()
                 }
+            ) {
                 repeatWhileActive retryLoop@{
                     val result = startUploadSession(
                         startRequest = startRequest,
                         updateState = { currentState = it }
-                    ) ?: return@mapLatest null
+                    ) ?: return@tryCompletingWithInternetUnlessCancelled null
                     val uploader = TransferUploader(
                         uploadManager = uploadManager,
                         fileChunkSizeManager = fileChunkSizeManager,
@@ -242,11 +251,11 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                         if (shouldRetry()) {
                             return@retryLoop
                         } else {
-                            return@mapLatest null
+                            return@tryCompletingWithInternetUnlessCancelled null
                         }
-                    }.onSuccess { uuid -> return@mapLatest uuid }
+                    }.onSuccess { uuid -> return@tryCompletingWithInternetUnlessCancelled uuid }
                 }
-            }.first()
+            }
             currentState = if (transferUuid != null) {
                 val url = sharedApiUrlCreator.shareTransferUrl(transferUuid)
                 val transferType = startRequest.info.type
@@ -267,6 +276,19 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             }
         }
     }
+
+    private suspend fun <R> tryCompletingWithInternetUnlessCancelled(
+        valueIfCancelled: R,
+        withoutInternet: suspend () -> R,
+        block: suspend () -> R
+    ): R? = raceOf({
+        isInternetConnectedFlow.mapLatest { isInternetConnected ->
+            if (isInternetConnected) block() else withoutInternet()
+        }.first()
+    }, {
+        cancelTransferSignals.receive()
+        valueIfCancelled
+    })
 
     private suspend fun shouldRetry(): Boolean = shouldRetrySignals.receive()
 

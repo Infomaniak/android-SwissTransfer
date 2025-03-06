@@ -45,6 +45,7 @@ class UploadViewModel @Inject constructor() : ViewModel() {
     val abandonUploadRequest = CallableState<Unit>()
 
     init {
+        viewModelScope.launch { handleCancellationRequests() }
         viewModelScope.launch {
             UploadForegroundService.uploadStateFlow.collectLatest { uploadState ->
                 if (uploadState is UploadState.Retry) handleRetryRequests()
@@ -52,19 +53,19 @@ class UploadViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    private suspend fun handleCancellationRequests(): Nothing = repeatWhileActive {
+        abandonUploadRequest.awaitOneCall()
+        UploadForegroundService.cancelUpload()
+    }
+
     private suspend fun handleRetryRequests(): Nothing = repeatWhileActive {
         val shouldRetry = raceOf(
             { retryRequest.awaitOneCall(); true },
             { editRequest.awaitOneCall(); false },
-            { abandonUploadRequest.awaitOneCall(); null },
         )
         when (shouldRetry) {
             true -> UploadForegroundService.retry()
             false -> UploadForegroundService.giveUp()
-            null -> {
-                UploadForegroundService.removeAllFiles()
-                UploadForegroundService.giveUp()
-            }
         }
     }
 }
