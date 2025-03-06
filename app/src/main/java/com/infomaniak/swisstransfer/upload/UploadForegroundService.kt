@@ -133,14 +133,12 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     is UploadState.Complete, null -> emitAll(needsToKeepFileUris)
                     else -> emit(true) // Ongoing upload
                 }
-            }
-            shouldRunFlow.onEach { shouldRun ->
-                if (shouldRun) {
-                    start() // Will raise the process priority, ensuring we keep access to the Uris.
-                } else {
-                    stop()
+            }.distinctUntilChanged()
+            scope.launch {
+                shouldRunFlow.collectLatest { shouldRun ->
+                    if (shouldRun) runUntilCancelled() // Will raise the process priority, ensuring we keep access to the Uris.
                 }
-            }.launchIn(scope)
+            }
         }
     }
 
