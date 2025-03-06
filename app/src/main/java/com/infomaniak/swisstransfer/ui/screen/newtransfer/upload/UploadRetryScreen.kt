@@ -40,7 +40,6 @@ fun UploadRetryScreen(
     errorState: State<UploadState.Retry>,
     retry: CallableState<Unit>,
     edit: CallableState<Unit>,
-    cancel: CallableState<Unit>,
 ) {
     when (val error: UploadState.Retry = errorState.value) {
         is UploadState.Retry.EmailValidationRequired -> {
@@ -99,9 +98,8 @@ private fun UploadRetryScreenPreview() {
             }
             UploadRetryScreen(
                 errorState = rememberUpdatedState(UploadState.Retry.EmailValidationRequired(info)),
-                edit = CallableState<Unit>(),
                 retry = CallableState<Unit>(),
-                cancel = CallableState<Unit>(),
+                edit = CallableState<Unit>(),
             )
         }
     }

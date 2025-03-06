@@ -81,7 +81,6 @@ fun UploadScreen(
             errorState = rememberUpdatedState(state),
             retry = viewModel.retryRequest,
             edit = viewModel.editRequest,
-            cancel = viewModel.abandonUploadRequest
         )
         is UploadState.Failure -> UploadFailureScreen(
             failureState = rememberUpdatedState(state),
