@@ -58,6 +58,25 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         val pickedFilesFlow: StateFlow<List<PickedFile>>
         val isHandlingPickedFilesFlow: StateFlow<Boolean>
 
+        private val startSignal = Channel<StartUploadRequest>()
+
+        private val shouldRetrySignals = Channel<Boolean>()
+
+        private val pickedFilesExtractor: PickedFilesExtractor = PickedFilesExtractorImpl().also {
+            pickedFilesFlow = it.pickedFilesFlow
+            isHandlingPickedFilesFlow = it.isHandlingUrisFlow
+        }
+
+        private val _state = MutableStateFlow<UploadState?>(value = null).also {
+            uploadStateFlow = it.asStateFlow()
+        }
+
+        private val scope = CoroutineScope(Dispatchers.Default)
+
+        init {
+            keepServiceRunningWhileNeeded()
+        }
+
         fun addFiles(uris: List<Uri>) {
             pickedFilesExtractor.addUris(uris)
             // Give the URI permissions to our app process, to ensure we aren't limited by the receiving Activity lifecycle.
@@ -104,34 +123,17 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             shouldRetrySignals.send(false)
         }
 
-        private val startSignal = Channel<StartUploadRequest>()
-
-        private val shouldRetrySignals = Channel<Boolean>()
-
-        private val pickedFilesExtractor: PickedFilesExtractor = PickedFilesExtractorImpl().also {
-            pickedFilesFlow = it.pickedFilesFlow
-            isHandlingPickedFilesFlow = it.isHandlingUrisFlow
-        }
-
-        private val _state = MutableStateFlow<UploadState?>(value = null).also {
-            uploadStateFlow = it.asStateFlow()
-        }
-
-        private val needsToKeepFileUris = isHandlingPickedFilesFlow.transformLatest { isHandlingFiles ->
-            if (isHandlingFiles) emit(true)
-            else emitAll(pickedFilesFlow.map { it.isNotEmpty() })
-        }
-
-        private val scope = CoroutineScope(Dispatchers.Default)
-
-        private val shouldRunFlow = uploadStateFlow.transformLatest { state ->
-            when (state) {
-                is UploadState.Complete, null -> emitAll(needsToKeepFileUris)
-                else -> emit(true)
+        private fun keepServiceRunningWhileNeeded() {
+            val needsToKeepFileUris = isHandlingPickedFilesFlow.transformLatest { isHandlingFiles ->
+                if (isHandlingFiles) emit(true)
+                else emitAll(pickedFilesFlow.map { it.isNotEmpty() })
             }
-        }.stateIn(scope, SharingStarted.Eagerly, initialValue = false)
-
-        init {
+            val shouldRunFlow = uploadStateFlow.transformLatest { state ->
+                when (state) {
+                    is UploadState.Complete, null -> emitAll(needsToKeepFileUris)
+                    else -> emit(true) // Ongoing upload
+                }
+            }
             shouldRunFlow.onEach { shouldRun ->
                 if (shouldRun) {
                     start() // Will raise the process priority, ensuring we keep access to the Uris.
@@ -247,7 +249,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     }.onSuccess { uuid -> return@mapLatest uuid }
                 }
             }.first()
-            if (transferUuid != null) {
+            currentState = if (transferUuid != null) {
                 val url = sharedApiUrlCreator.shareTransferUrl(transferUuid)
                 val transferType = startRequest.info.type
                 removeAllFiles()
@@ -256,12 +258,12 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     transferUuid = transferUuid,
                     transferUrl = url
                 )
-                currentState = UploadState.Complete(
+                UploadState.Complete(
                     transferType = transferType,
                     transferUuid = transferUuid,
                     transferUrl = url
                 )
-            }
+            } else null
             //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
         }
     }
