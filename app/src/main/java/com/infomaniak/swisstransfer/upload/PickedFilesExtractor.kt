@@ -15,8 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.utils
+package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
+import android.net.Uri
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
+import kotlinx.coroutines.flow.StateFlow
 
-fun UploadSession.totalFileSize(): Long = files.sumOf { it.size }
+interface PickedFilesExtractor {
+
+    val pickedFilesFlow: StateFlow<List<PickedFile>>
+    val isHandlingUrisFlow: StateFlow<Boolean>
+
+    fun addUris(uris: List<Uri>)
+    fun removeUris(uris: List<Uri>)
+    fun clear()
+}

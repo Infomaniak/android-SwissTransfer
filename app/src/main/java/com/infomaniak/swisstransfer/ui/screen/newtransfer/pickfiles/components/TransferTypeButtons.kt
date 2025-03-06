@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components
 
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
@@ -32,7 +32,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Chain
 import com.infomaniak.swisstransfer.ui.images.icons.Envelope
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi.Companion.toTransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
