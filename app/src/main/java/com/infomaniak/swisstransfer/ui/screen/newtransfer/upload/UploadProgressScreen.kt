@@ -178,15 +178,17 @@ private fun LocationBottomSheet(closeButtonSheet: () -> Unit) {
 private fun Preview() {
     SwissTransferTheme {
         UploadOngoingScreen(
-            progressState = rememberUpdatedState(UploadState.Ongoing(
-                status = UploadState.Ongoing.Status.InProgress,
-                info = UploadState.Info(
-                    authorEmail = "",
-                    totalSize = 50_000_000L,
-                    type = TransferTypeUi.Link
-                ),
-                uploadedBytes = 44_321_654L,
-            )),
+            progressState = rememberUpdatedState(
+                UploadState.Ongoing(
+                    status = UploadState.Ongoing.Status.InProgress,
+                    info = UploadState.Info(
+                        authorEmail = "",
+                        totalSize = 50_000_000L,
+                        type = TransferTypeUi.Link
+                    ),
+                    uploadedBytes = 44_321_654L,
+                )
+            ),
             adScreenType = UploadProgressAdType.INDEPENDENCE,
             onCancel = {},
             showCancelBottomSheet = GetSetCallbacks(get = { false }, set = {}),
