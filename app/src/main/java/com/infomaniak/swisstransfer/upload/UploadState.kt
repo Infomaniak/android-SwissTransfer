@@ -52,6 +52,7 @@ sealed interface UploadState {
 
     sealed interface Retry : UploadState {
         val info: Info
+
         data class EmailValidationRequired(override val info: Info) : Retry
         data class NetworkIssue(override val info: Info) : Retry
         data class OtherIssue(override val info: Info, val t: Throwable) : Retry
