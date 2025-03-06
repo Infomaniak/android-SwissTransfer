@@ -18,11 +18,21 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
 
 @Composable
@@ -49,10 +59,16 @@ fun UploadScreen(
         }
     )
 
+    @Composable
+    fun exit() {
+        if (hasPickedFiles) LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
+        else LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
+    }
+
     when (val state = uploadState) {
-        null -> when {
-            hasPickedFiles -> LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
-            else -> LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
+        null -> {
+            exit()
+            NoUploadOngoingEmptyState()
         }
         is UploadState.Ongoing -> UploadOngoingScreen(
             progressState = rememberUpdatedState(state),
@@ -83,4 +99,28 @@ fun UploadScreen(
             )
         }
     }
+}
+
+@Composable
+private fun NoUploadOngoingEmptyState() {
+    val snackbarHostState = remember { SnackbarHostState() }
+    BottomStickyButtonScaffold(
+        snackbarHostState = snackbarHostState,
+        topBar = { BrandTopAppBar() },
+        bottomButton = {
+            LargeButton(
+                modifier = it,
+                style = ButtonType.Primary,
+                title = stringResource(R.string.buttonFinished),
+                enabled = { false },
+                onClick = {},
+            )
+        },
+    ) {}
+}
+
+@PreviewAllWindows
+@Composable
+private fun NoUploadOngoingEmptyStatePreview() {
+    SwissTransferTheme { Surface { NoUploadOngoingEmptyState() } }
 }
