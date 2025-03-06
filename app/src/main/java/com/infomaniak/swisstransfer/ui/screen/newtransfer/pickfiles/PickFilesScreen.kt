@@ -121,7 +121,7 @@ fun PickFilesScreen(
     val transferOptionsCallbacks: TransferOptionsCallbacks = viewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
             buildList {
-                 this += TransferOptionState(
+                this += TransferOptionState(
                     transferOptionType = TransferOptionType.VALIDITY_DURATION,
                     settingState = { validityPeriod },
                 )
