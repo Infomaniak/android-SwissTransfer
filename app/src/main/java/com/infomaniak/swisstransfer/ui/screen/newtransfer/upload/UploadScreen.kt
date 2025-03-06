@@ -76,7 +76,6 @@ fun UploadScreen(
             onCancel = viewModel.abandonUploadRequest,
             showCancelBottomSheet = GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it }),
             showLocationBottomSheet = locationCallbacks,
-            exitNewTransfer = exitNewTransfer
         )
         is UploadState.Retry -> UploadRetryScreen(
             errorState = rememberUpdatedState(state),

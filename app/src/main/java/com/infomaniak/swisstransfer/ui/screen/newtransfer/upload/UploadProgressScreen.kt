@@ -50,7 +50,6 @@ fun UploadOngoingScreen(
     onCancel: () -> Unit,
     showCancelBottomSheet: GetSetCallbacks<Boolean>,
     showLocationBottomSheet: GetSetCallbacks<Boolean>,
-    exitNewTransfer: () -> Unit,
 ) {
     val progress by progressState
     BottomStickyButtonScaffold(
@@ -89,7 +88,7 @@ fun UploadOngoingScreen(
             LocationBottomSheet(
                 closeButtonSheet = {
                     showLocationBottomSheet.set(false)
-                    exitNewTransfer()
+                    onCancel()
                 },
             )
         }
@@ -192,7 +191,6 @@ private fun Preview() {
             onCancel = {},
             showCancelBottomSheet = GetSetCallbacks(get = { false }, set = {}),
             showLocationBottomSheet = GetSetCallbacks(get = { false }, set = {}),
-            exitNewTransfer = {},
         )
     }
 }
