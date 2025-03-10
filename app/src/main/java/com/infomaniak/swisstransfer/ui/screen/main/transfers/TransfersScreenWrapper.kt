@@ -141,7 +141,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     direction: TransferDirection,
     transferUuid: String,
 ) {
-    MatomoSwissTransfer.trackScreen("${direction.name.lowercase()}TransferDetailView")
+    MatomoSwissTransfer.trackScreen("${direction.matomoValue}TransferDetailView")
     selectItem(context, windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
 }
 
