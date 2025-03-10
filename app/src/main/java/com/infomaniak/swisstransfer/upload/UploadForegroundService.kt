@@ -30,9 +30,11 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.withPartialWakeLock
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
@@ -152,6 +154,9 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
     internal lateinit var uploadManager: InMemoryUploadManager
 
     @Inject
+    internal lateinit var transferManager: TransferManager
+
+    @Inject
     internal lateinit var sharedApiUrlCreator: SharedApiUrlCreator
 
     @Inject
@@ -159,6 +164,9 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
     @Inject
     internal lateinit var uploadSessionStarter: UploadSessionStarter
+
+    @Inject
+    internal lateinit var thumbnailsLocalStorage: ThumbnailsLocalStorage
 
     override fun getStartNotification(intent: Intent, isReDelivery: Boolean): Notification {
         return notificationsUtils.buildTransferDraftNotification()
@@ -228,10 +236,12 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     ) ?: return@tryCompletingWithInternetUnlessCancelled null
                     val uploader = TransferUploader(
                         uploadManager = uploadManager,
+                        transferManager = transferManager,
                         fileChunkSizeManager = fileChunkSizeManager,
                         request = result.request,
                         destination = result.destination,
                         startRequest = startRequest,
+                        thumbnailsLocalStorage = thumbnailsLocalStorage,
                     )
                     runCatching {
                         withPartialWakeLock(

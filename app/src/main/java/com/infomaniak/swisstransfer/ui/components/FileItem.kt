@@ -47,7 +47,7 @@ fun FileItem(
     isChecked: () -> Boolean = { false },
     onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
-    uriForFile: State<String?> = rememberUpdatedState(file.localPath),
+    uriForFile: State<String?> = rememberUpdatedState(file.thumbnailPath),
     previewOverlay: @Composable BoxScope.() -> Unit = {}
 ) {
     FileItemContent(
