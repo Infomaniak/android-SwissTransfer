@@ -17,17 +17,16 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.content.ContentResolver
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadStatus
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.*
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
@@ -43,10 +42,12 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class TransferUploader(
     private val uploadManager: InMemoryUploadManager,
+    private val transferManager: TransferManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
     private val request: UploadSessionRequest,
     private val destination: UploadDestination,
     private val startRequest: StartUploadRequest,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ) {
 
     private val pickedFiles: List<PickedFile> = startRequest.files
@@ -85,7 +86,15 @@ class TransferUploader(
             remoteContainer = destination.container,
             remoteUploadHost = destination.uploadHost
         )
-        return uploadManager.finalizeUploadSession(session) //TODO[UL-retry]: Also retry that if needed, and make sure the backend supports it.
+        val transferUuid = uploadManager.finalizeUploadSession(session)
+
+        thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transferUuid)
+        transferManager.updateTransferFilesThumbnails(
+            transferUUID = transferUuid,
+            thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transferUuid).toString(),
+        )
+
+        return transferUuid //TODO[UL-retry]: Also retry that if needed, and make sure the backend supports it.
         //TODO[Thumbnails]: Ensure the thumbnails directory is renamed, as done in UploadWorker
     }
 
@@ -127,6 +136,14 @@ class TransferUploader(
         SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
 
         contentResolver.openInputStream(targetFileUri)!!.buffered().use { inputStream ->
+            targetFileUri.getMimeType()?.let { mimeType ->
+                thumbnailsLocalStorage.generateThumbnailFor(
+                    fileUri = targetFileUri.toString(),
+                    fileName = fileUUID,
+                    extension = mimeType.substring(mimeType.indexOfLast { it == '/' }),
+                )
+            }
+
             uploadChunks(
                 fileUUID = fileUUID,
                 chunkSize = chunkSize,
@@ -135,6 +152,16 @@ class TransferUploader(
                 totalChunks = totalChunks,
                 onUploadBytes = onUploadBytes,
             )
+        }
+    }
+
+    private fun Uri.getMimeType(): String? {
+        return when (scheme) {
+            ContentResolver.SCHEME_CONTENT -> contentResolver.getType(this)
+            ContentResolver.SCHEME_FILE -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                MimeTypeMap.getFileExtensionFromUrl(toString()).lowercase()
+            )
+            else -> null
         }
     }
 
