@@ -36,7 +36,8 @@ import kotlinx.serialization.Serializable
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 @Serializable
-sealed class MainNavigation(override val matomoValue: String) : NavigationDestination() {
+// The matomoValue must have a default value so that the deeplink generation works
+sealed class MainNavigation(override val matomoValue: String = "") : NavigationDestination() {
 
     protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
         noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
@@ -198,7 +199,7 @@ sealed class NewTransferNavigation(override val matomoValue: String) : Navigatio
 @Serializable
 sealed class NavigationDestination {
 
-    abstract val matomoValue: String
+    protected abstract val matomoValue: String
 
     fun trackScreen() {
         MatomoSwissTransfer.trackScreen(title = matomoValue)
