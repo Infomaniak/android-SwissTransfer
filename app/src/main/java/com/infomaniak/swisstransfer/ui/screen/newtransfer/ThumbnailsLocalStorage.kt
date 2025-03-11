@@ -74,6 +74,10 @@ class ThumbnailsLocalStorage @Inject constructor(
         return filesDir.resolve("$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
     }
 
+    private fun getOrCreateThumbnailsFolder(transferUuid: String): File {
+        return filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid").apply { if (!exists()) mkdirs() }
+    }
+
     private fun getOrCreateOngoingThumbnailsFolder() = ongoingThumbnailsFolder.apply { if (!exists()) mkdirs() }
     //endregion
 
@@ -92,8 +96,10 @@ class ThumbnailsLocalStorage @Inject constructor(
     //endregion
 
     //region Copy
-    fun generateThumbnailFor(fileUri: String, fileName: String, extension: String) {
-        val fileToCreate = getOrCreateOngoingThumbnailsFolder().resolve(fileName)
+    fun generateThumbnailFor(transferUuid: String? = null, fileUri: String, fileName: String, extension: String) {
+        val fileToCreate = transferUuid?.let {
+            getOrCreateThumbnailsFolder(it).resolve(fileName)
+        } ?: getOrCreateOngoingThumbnailsFolder().resolve(fileName)
         val isVideo = guessFromFileName(extension) == FileType.VIDEO
         appCtx.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
     }

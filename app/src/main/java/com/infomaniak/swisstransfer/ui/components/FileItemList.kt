@@ -106,6 +106,13 @@ fun FileItemList(
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
                     else -> writeExternalStoragePermissionState.guardedCallback { downloadUi.onFileClick() }
                 },
+                uriForFile = produceState(file.thumbnailPath ?: file.localPath) {
+                    transferFlow.collectLatest { transfer ->
+                        uriForFile(transfer, file).collect { uri: Uri? ->
+                            value = uri.toString()
+                        }
+                    }
+                },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
                     if (isDownloadButtonVisible) {

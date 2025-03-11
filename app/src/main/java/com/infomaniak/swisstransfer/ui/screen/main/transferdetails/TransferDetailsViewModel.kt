@@ -32,6 +32,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DownloadQuo
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.*
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,6 +46,7 @@ import javax.inject.Inject
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
 
@@ -121,7 +123,7 @@ class TransferDetailsViewModel @Inject constructor(
     )
 
     fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.uriForFile(transfer = transfer, file = file)
+        return transferManager.uriForFile(transfer, file, thumbnailsLocalStorage)
     }
 
     @OptIn(UnreliableToastApi::class)

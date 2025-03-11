@@ -95,7 +95,6 @@ class TransferUploader(
         )
 
         return transferUuid //TODO[UL-retry]: Also retry that if needed, and make sure the backend supports it.
-        //TODO[Thumbnails]: Ensure the thumbnails directory is renamed, as done in UploadWorker
     }
 
     private fun newUploadState(uploadedBytes: Long): UploadState.Ongoing {
