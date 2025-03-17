@@ -102,7 +102,7 @@ class NewTransferActivity : ComponentActivity() {
 
         return when (externalNavigation) {
             ExternalNavigation.UploadOngoing -> {
-                NewTransferNavigation.UploadDestination
+                NewTransferNavigation.startDestination
             }
             ExternalNavigation.UploadSuccess -> {
                 val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))

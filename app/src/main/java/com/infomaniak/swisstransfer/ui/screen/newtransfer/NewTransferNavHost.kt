@@ -46,7 +46,7 @@ fun NewTransferNavHost(
             cancelUploadNotification()
             PickFilesScreen(
                 viewModel = hiltViewModel<PickFilesViewModel>(it),
-                exitNewTransfer = { closeActivity(false) },
+                exitNewTransfer = { closeActivity(true) },
                 navigateToUploadProgress = { navController.navigate(UploadDestination) },
                 navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
             )
@@ -54,7 +54,7 @@ fun NewTransferNavHost(
         composable<UploadDestination> {
             UploadScreen(
                 navigateBackToPickFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
-                exitNewTransfer = { closeActivity(false) },
+                exitNewTransfer = { closeActivity(true) },
             )
         }
         composable<UploadSuccessDestination> {

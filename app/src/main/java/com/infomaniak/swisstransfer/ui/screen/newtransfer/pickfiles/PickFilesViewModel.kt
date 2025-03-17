@@ -242,7 +242,9 @@ class PickFilesViewModel @Inject constructor(
         when (val reason = newTransferOpenManager.readOpenReason()) {
             is NewTransferOpenManager.Reason.ExternalShareIncoming -> importUris(reason.uris)
             NewTransferOpenManager.Reason.Other -> {
-                if (isFirstViewModelCreation) _openFilePickerEvent.send(Unit)
+                if (UploadForegroundService.uploadStateFlow.value == null) {
+                    if (isFirstViewModelCreation) _openFilePickerEvent.send(Unit)
+                }
             }
         }
     }
