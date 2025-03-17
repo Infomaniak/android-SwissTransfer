@@ -91,7 +91,7 @@ private sealed interface FilePickingAction {
     data object ClearAll : FilePickingAction
 }
 
-private fun FilePickingAction.isNoOp(currentPickedFiles: MutableMap<Uri, PickedFile>): Boolean = when (this) {
+private fun FilePickingAction.isNoOp(currentPickedFiles: Map<Uri, PickedFile>): Boolean = when (this) {
     is FilePickingAction.Add -> this.newUris.isEmpty()
     FilePickingAction.ClearAll -> currentPickedFiles.isEmpty()
     is FilePickingAction.Removal -> this.urisToRemove.isEmpty() || currentPickedFiles.isEmpty()
