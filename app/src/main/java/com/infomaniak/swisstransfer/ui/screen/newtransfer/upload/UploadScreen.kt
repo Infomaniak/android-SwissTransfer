@@ -46,7 +46,10 @@ fun UploadScreen(
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showLocationBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val locationCallbacks = GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it })
+    val locationCallbacks = remember { GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it }) }
+    val showCancelCallbacks = remember {
+        GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it })
+    }
 
     BackHandler(
         enabled = !showCancelBottomSheet && uploadState !is UploadState.Complete,
@@ -70,7 +73,7 @@ fun UploadScreen(
             progressState = rememberUpdatedState(state),
             adScreenType = adScreenType,
             onCancel = viewModel.abandonUploadRequest,
-            showCancelBottomSheet = GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it }),
+            showCancelBottomSheet = showCancelCallbacks,
             showLocationBottomSheet = locationCallbacks,
         )
         is UploadState.Retry -> UploadRetryScreen(
