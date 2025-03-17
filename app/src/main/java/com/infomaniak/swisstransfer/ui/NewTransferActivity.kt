@@ -25,6 +25,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.utils.enumValueOfOrNull
@@ -51,7 +52,7 @@ class NewTransferActivity : ComponentActivity() {
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(
-                    startDestination = getStartDestination(),
+                    startDestination = remember { getStartDestination() },
                     closeActivity = { startMainActivityIfTaskIsEmpty ->
                         finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
                     },
