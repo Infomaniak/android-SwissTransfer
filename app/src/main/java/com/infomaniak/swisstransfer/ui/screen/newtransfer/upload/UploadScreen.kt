@@ -42,7 +42,6 @@ fun UploadScreen(
     viewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
 ) {
     val uploadState: UploadState? by viewModel.stateFlow.collectAsStateWithLifecycle()
-    val hasPickedFiles by viewModel.hasPickedFiles.collectAsState()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -61,6 +60,7 @@ fun UploadScreen(
 
     when (val state = uploadState) {
         null -> {
+            val hasPickedFiles by viewModel.hasPickedFiles.collectAsState()
             // Extracting the if/else below to a local composable function causes flickering, so leave it here.
             if (hasPickedFiles) LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
             else LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
