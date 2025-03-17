@@ -67,13 +67,16 @@ class PickedFilesExtractorImpl : PickedFilesExtractor {
 
     override val pickedFilesFlow: StateFlow<List<PickedFile>> = flow {
         val currentPickedFiles = mutableMapOf<Uri, PickedFile>()
-        for (action in incomingActions) try {
-            isHandlingUris = true
-            action.applyTo(currentPickedFiles)
-            val pickedFiles = currentPickedFiles.values.withDuplicatedNamesFixed()
-            emit(pickedFiles)
-        } finally {
-            isHandlingUris = false
+        for (action in incomingActions) {
+            if (action.isNoOp(currentPickedFiles)) continue
+            try {
+                isHandlingUris = true
+                action.applyTo(currentPickedFiles)
+                val pickedFiles = currentPickedFiles.values.withDuplicatedNamesFixed()
+                emit(pickedFiles)
+            } finally {
+                isHandlingUris = false
+            }
         }
     }.stateIn(
         scope = CoroutineScope(Dispatchers.Default),
@@ -86,6 +89,12 @@ private sealed interface FilePickingAction {
     data class Add(val newUris: List<Uri>) : FilePickingAction
     data class Removal(val urisToRemove: List<Uri>) : FilePickingAction
     data object ClearAll : FilePickingAction
+}
+
+private fun FilePickingAction.isNoOp(currentPickedFiles: MutableMap<Uri, PickedFile>): Boolean = when (this) {
+    is FilePickingAction.Add -> this.newUris.isEmpty()
+    FilePickingAction.ClearAll -> currentPickedFiles.isEmpty()
+    is FilePickingAction.Removal -> this.urisToRemove.isEmpty() || currentPickedFiles.isEmpty()
 }
 
 private suspend fun FilePickingAction.applyTo(pickedFiles: MutableMap<Uri, PickedFile>) {
