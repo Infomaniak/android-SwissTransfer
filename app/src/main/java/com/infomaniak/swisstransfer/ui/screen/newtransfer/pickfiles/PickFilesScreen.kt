@@ -42,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.infomaniak.core.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
@@ -113,8 +114,10 @@ fun PickFilesScreen(
     HandleStartupFilePick(viewModel.openFilePickerEvent, ::pickFiles)
 
     LaunchedEffect(Unit) {
-        UploadForegroundService.uploadStateFlow.collect { uploadState ->
-            if (uploadState != null) navigateToUploadProgress()
+        UploadForegroundService.uploadStateFlow.mapSync { it != null }.collect { isUploadOngoing ->
+            if (isUploadOngoing) {
+                navigateToUploadProgress()
+            }
         }
     }
 
