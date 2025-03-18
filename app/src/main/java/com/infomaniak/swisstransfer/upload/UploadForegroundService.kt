@@ -169,12 +169,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
     }
 
     private suspend fun keepNotificationUpToDate() {
-        var lastEmitElapsedNanos = 0L
         uploadStateFlow.rateLimit(minInterval = 1.seconds / 5).collect { state ->
-            val now = SystemClock.elapsedRealtimeNanos()
-            val elapsedNanos = now - lastEmitElapsedNanos
-            lastEmitElapsedNanos = now
-            println(elapsedNanos.nanoseconds)
             val newNotification = when (state) {
                 is UploadState.Complete, null -> {
                     // If we're kept running while the upload state is null or complete,
