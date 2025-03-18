@@ -22,6 +22,7 @@ package com.infomaniak.swisstransfer.upload
 import android.app.Notification
 import android.content.Intent
 import android.net.Uri
+import android.os.SystemClock
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.ForegroundService
 import com.infomaniak.core.cancellable
@@ -47,6 +48,9 @@ import splitties.init.appCtx
 import splitties.intents.serviceWithoutExtrasSpec
 import splitties.systemservices.notificationManager
 import javax.inject.Inject
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKilled = true) {
@@ -164,8 +168,13 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         return notificationsUtils.buildTransferDraftNotification()
     }
 
-    private suspend fun keepNotificationUpToDate(): Notification {
-        uploadStateFlow.collect { state ->
+    private suspend fun keepNotificationUpToDate() {
+        var lastEmitElapsedNanos = 0L
+        uploadStateFlow.rateLimit(minInterval = 1.seconds / 5).collect { state ->
+            val now = SystemClock.elapsedRealtimeNanos()
+            val elapsedNanos = now - lastEmitElapsedNanos
+            lastEmitElapsedNanos = now
+            println(elapsedNanos.nanoseconds)
             val newNotification = when (state) {
                 is UploadState.Complete, null -> {
                     // If we're kept running while the upload state is null or complete,
@@ -345,3 +354,15 @@ private val fileChunkSizeManager = FileChunkSizeManager(
     chunkMaxSize = EXPECTED_CHUNK_SIZE,
     maxChunkCount = MAX_CHUNK_COUNT,
 )
+
+private fun <T> Flow<T>.rateLimit(minInterval: Duration): Flow<T> = channelFlow {
+    var lastEmitElapsedNanos = 0L
+    collectLatest { newValue ->
+        val nanosSinceLastEmit = SystemClock.elapsedRealtimeNanos() - lastEmitElapsedNanos
+        val timeSinceLastEmit = nanosSinceLastEmit.nanoseconds
+        val timeToWait = minInterval - timeSinceLastEmit.coerceAtMost(minInterval)
+        delay(timeToWait)
+        send(newValue) // We don't handle the case where cancellation happens after it's received.
+        lastEmitElapsedNanos = SystemClock.elapsedRealtimeNanos()
+    }
+}.buffer(Channel.RENDEZVOUS)
