@@ -116,7 +116,7 @@ class NotificationsUtils @Inject constructor(
             title = appContext.getString(R.string.notificationUploadSuccessTitle),
             description = appContext.getString(descriptionResId),
             intent = contentIntent
-        ).build()
+        ).setOngoing(false).build()
         notification.post(Ids.LastUpload)
     }
 
@@ -179,7 +179,7 @@ class NotificationsUtils @Inject constructor(
             title = title,
             description = description,
             onlyAlertOnce = true,
-        ).setPriority(priority)
+        ).setOngoing(true).setPriority(priority)
     }
 
     private fun Notification.post(id: Int) {
