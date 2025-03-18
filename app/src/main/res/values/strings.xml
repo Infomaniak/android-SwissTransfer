@@ -80,7 +80,7 @@
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
     <string name="noTransferSelectedTitle">No transfers to display</string>
     <string name="notificationTransferDraftDescription">Continue where you left off</string>
-    <string name="notificationTransferDraftTitle">Transfer draft</string>
+    <string name="notificationTransferDraftTitle">Pending transfer</string>
     <string name="notificationUploadFailureDescription">A problem has occurred, please try again</string>
     <string name="notificationUploadFailureTitle">The transfer failed</string>
     <string name="notificationUploadProgressTitle">Transfer in progress… (%s%%)</string>

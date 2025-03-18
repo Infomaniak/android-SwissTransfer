@@ -75,7 +75,7 @@
     <string name="noTransferSelectedDescription">Wähle eine Übertragung aus oder erstelle eine neue.</string>
     <string name="noTransferSelectedTitle">Keine Transfers zum Anzeigen</string>
     <string name="notificationTransferDraftDescription">Weitermachen, wo Sie aufgehört haben</string>
-    <string name="notificationTransferDraftTitle">Entwurf übertragen</string>
+    <string name="notificationTransferDraftTitle">Ausstehende Übertragung</string>
     <string name="notificationUploadFailureDescription">Ein Problem ist aufgetreten, bitte versuchen Sie es erneut</string>
     <string name="notificationUploadFailureTitle">Die Übertragung ist fehlgeschlagen</string>
     <string name="notificationUploadProgressTitle">Transfer wird durchgeführt… (%s%%)</string>
