@@ -191,7 +191,13 @@ class PickFilesViewModel @Inject constructor(
             }
 
             val wasFirstViewModelCreation = isFirstViewModelCreation
-            launch { handleOpenReason(wasFirstViewModelCreation) }
+            launch {
+                var isFirstOpen = wasFirstViewModelCreation
+                repeatWhileActive {
+                    handleOpenReason(isFirstOpen)
+                    isFirstOpen = false
+                }
+            }
 
             isFirstViewModelCreation = false
         }
@@ -238,12 +244,17 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleOpenReason(isFirstViewModelCreation: Boolean) {
+    private suspend fun handleOpenReason(isFirstOpen: Boolean) {
         when (val reason = newTransferOpenManager.readOpenReason()) {
             is NewTransferOpenManager.Reason.ExternalShareIncoming -> importUris(reason.uris)
             NewTransferOpenManager.Reason.Other -> {
                 val noUploadOngoing = UploadForegroundService.uploadStateFlow.value == null
-                if (noUploadOngoing && isFirstViewModelCreation) _openFilePickerEvent.send(Unit)
+                val hasNoPickedFiles = with(UploadForegroundService) {
+                    pickedFilesFlow.value.isEmpty() && !isHandlingPickedFilesFlow.value
+                }
+                if (noUploadOngoing && hasNoPickedFiles && isFirstOpen) {
+                    _openFilePickerEvent.send(Unit)
+                }
             }
         }
     }

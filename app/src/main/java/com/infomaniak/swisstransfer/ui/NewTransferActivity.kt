@@ -48,7 +48,10 @@ class NewTransferActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
-        handleSharedFiles()
+        handleSharedFiles(intent)
+        addOnNewIntentListener { newIntent ->
+            handleSharedFiles(newIntent)
+        }
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(
@@ -61,23 +64,23 @@ class NewTransferActivity : ComponentActivity() {
         }
     }
 
-    private fun handleSharedFiles() {
-        val openReason: OpenReason = when (intent?.action) {
-            Intent.ACTION_SEND -> OpenReason.ExternalShareIncoming(getSingleUri())
-            Intent.ACTION_SEND_MULTIPLE -> OpenReason.ExternalShareIncoming(getMultipleUris())
+    private fun handleSharedFiles(intent: Intent) {
+        val openReason: OpenReason = when (intent.action) {
+            Intent.ACTION_SEND -> OpenReason.ExternalShareIncoming(getSingleUri(intent))
+            Intent.ACTION_SEND_MULTIPLE -> OpenReason.ExternalShareIncoming(getMultipleUris(intent))
             else -> OpenReason.Other
         }
         lifecycleScope.launch { newTransferOpenManager.setOpenReason(openReason) }
     }
 
-    private fun getSingleUri(): List<Uri> {
+    private fun getSingleUri(intent: Intent): List<Uri> {
         val extras = intent.extras ?: return emptyList()
         val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
         return if (uri == null) emptyList() else listOf(uri)
     }
 
-    private fun getMultipleUris(): List<Uri> {
+    private fun getMultipleUris(intent: Intent): List<Uri> {
         val extras = intent.extras ?: return emptyList()
         val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
 

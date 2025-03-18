@@ -63,6 +63,9 @@ class LaunchActivity : ComponentActivity() {
 
     private suspend fun startTargetActivity() {
         val uploadState = UploadForegroundService.uploadStateFlow.value
+        val hasPickedFiles = with(UploadForegroundService) {
+            pickedFilesFlow.value.isNotEmpty() || isHandlingPickedFilesFlow.value
+        }
         val intent = when {
             hasValidTransferDeeplink() -> {
                 connectLoggedOutUser()
@@ -75,6 +78,10 @@ class LaunchActivity : ComponentActivity() {
             uploadState != null -> {
                 connectLoggedOutUser()
                 createUploadOngoingIntent()
+            }
+            hasPickedFiles -> {
+                connectLoggedOutUser()
+                createPickFilesIntent()
             }
             accountUtils.isUserConnected().not() -> Intent(this, OnboardingActivity::class.java)
             else -> Intent(this, MainActivity::class.java)
@@ -104,6 +111,10 @@ class LaunchActivity : ComponentActivity() {
             // in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
+    }
+
+    private fun createPickFilesIntent(): Intent {
+        return Intent(this@LaunchActivity, NewTransferActivity::class.java)
     }
 
     private fun createUploadOngoingIntent(): Intent {
