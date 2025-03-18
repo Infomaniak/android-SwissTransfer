@@ -21,10 +21,12 @@ import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
 import com.infomaniak.core.appintegrity.exceptions.IntegrityException
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
+import com.infomaniak.core.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.AttestationTokenException.InvalidAttestationTokenException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException.DomainBlockedException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException.EmailValidationRequired
 import com.infomaniak.swisstransfer.BuildConfig
@@ -57,15 +59,13 @@ class TransferSendManager @Inject constructor(
         sendTransfer(uploadSession)
     }
 
-    private suspend fun sendTransfer(uploadSession: UploadSession) {
+    private suspend fun sendTransfer(uploadSession: UploadSession, isRetrying: Boolean = false) {
         _sendStatus.value = SendStatus.Pending
 
         runCatching {
-            val attestationToken = getAttestationToken()
-
             uploadManager.initUploadSession(
                 attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
-                attestationToken = attestationToken,
+                isRetrying = isRetrying,
             )!!
 
             uploadWorkerScheduler.scheduleWork(uploadSession.uuid)
@@ -76,6 +76,16 @@ class TransferSendManager @Inject constructor(
             val status = when (exception) {
                 is NetworkException, is KmpNetworkException -> SendStatus.NoNetwork
                 is IntegrityException -> SendStatus.Refused
+                is InvalidAttestationTokenException -> {
+                    runCatching {
+                        uploadManager.updateAttestationToken(fetchNewAttestationToken())
+                        sendTransfer(uploadSession, isRetrying = true)
+                        return@onFailure
+                    }.cancellable().getOrElse {
+                        reportToSentry(exception)
+                        SendStatus.Failure
+                    }
+                }
                 is EmailValidationRequired -> SendStatus.RequireEmailValidation
                 is DomainBlockedException -> SendStatus.RestrictedLocation
                 else -> {
@@ -96,7 +106,7 @@ class TransferSendManager @Inject constructor(
 
     //region App Integrity
     /** Don't forget to handle [IntegrityException] and all the different exceptions that can be thrown at call site*/
-    private suspend inline fun getAttestationToken(): String {
+    private suspend inline fun fetchNewAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
 
         val appIntegrityToken = appIntegrityManager.requestClassicIntegrityVerdictToken(challenge)
