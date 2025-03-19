@@ -115,7 +115,8 @@ class NotificationsUtils @Inject constructor(
         val notification = uploadNotificationBuilder(
             title = appContext.getString(R.string.notificationUploadSuccessTitle),
             description = appContext.getString(descriptionResId),
-            intent = contentIntent
+            intent = contentIntent,
+            pendingIntentRequestCode = Ids.LastUpload
         ).setOngoing(false).build()
         notification.post(Ids.LastUpload)
     }
@@ -167,12 +168,13 @@ class NotificationsUtils @Inject constructor(
         channelId: String = ChannelIds.ongoingUploads,
         priority: Int = NotificationCompat.PRIORITY_LOW,
         intent: Intent,
+        pendingIntentRequestCode: Int = Ids.OngoingUpload,
         title: String,
         description: String? = null,
     ): NotificationCompat.Builder = with(appContext) {
         return@with buildNotification(
             channelId = channelId,
-            requestCode = 0, // We don't need it to change since we have no concurrent uploads
+            requestCode = pendingIntentRequestCode,
             intent = intent,
             icon = defaultSmallIcon,
             iconColor = notificationIconColor,
