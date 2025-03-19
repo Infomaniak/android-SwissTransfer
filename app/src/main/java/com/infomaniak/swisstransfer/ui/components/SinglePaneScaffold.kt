@@ -32,12 +32,14 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun SinglePaneScaffold(
+    modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = topBar,
         bottomBar = bottomBar,
         snackbarHost = snackbarHost,

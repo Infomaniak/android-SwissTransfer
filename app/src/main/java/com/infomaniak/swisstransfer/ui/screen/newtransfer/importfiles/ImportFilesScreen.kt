@@ -232,6 +232,7 @@ private fun ImportFilesScreen(
     }
 
     BottomStickyButtonScaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.importFilesScreenTitle,
