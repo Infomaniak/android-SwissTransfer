@@ -84,7 +84,7 @@ class MainApplication : Application(), Configuration.Provider {
         globalCoroutineScope.launch {
             accountUtils.init()
 
-            withContext(ioDispatcher) {
+            launch(ioDispatcher) {
                 transferManager.getTransfers().collectLatest(thumbnailsLocalStorage::cleanExpiredThumbnails)
             }
 
