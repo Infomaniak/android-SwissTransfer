@@ -117,7 +117,9 @@
 
         <!-- We need NewMessageActivity to have its standard launchMode in the Manifest
             in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity -->
-        <activity android:name=".ui.NewTransferActivity" />
+        <activity
+            android:name=".ui.NewTransferActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
