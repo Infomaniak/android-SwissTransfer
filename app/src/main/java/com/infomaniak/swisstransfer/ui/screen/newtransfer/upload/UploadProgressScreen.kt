@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -29,17 +28,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.R
 import com.infomaniak.swisstransfer.R.string
-import com.infomaniak.swisstransfer.ui.components.*
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
-import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
+import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHeader
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.NetworkUnavailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
 
@@ -47,15 +44,13 @@ import com.infomaniak.swisstransfer.upload.UploadState
 fun UploadOngoingScreen(
     progressState: State<UploadState.Ongoing>,
     adScreenType: UploadProgressAdType,
-    onCancel: () -> Unit,
-    showCancelBottomSheet: GetSetCallbacks<Boolean>,
-    showLocationBottomSheet: GetSetCallbacks<Boolean>,
+    onCancelClick: () -> Unit,
 ) {
     val progress by progressState
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(stringResource(R.string.buttonCancel), modifier = it, onClick = { showCancelBottomSheet.set(true) })
+            LargeButton(stringResource(R.string.buttonCancel), modifier = it, onClick = onCancelClick)
         },
     ) {
         Column(
@@ -73,24 +68,6 @@ fun UploadOngoingScreen(
             UploadStatus(progress = { progress })
 
             Spacer(Modifier.height(Margin.Huge))
-        }
-
-        if (showCancelBottomSheet.get()) {
-            CancelUploadBottomSheet(
-                onCancel = {
-                    showCancelBottomSheet.set(false)
-                    onCancel()
-                },
-                closeButtonSheet = { showCancelBottomSheet.set(false) },
-            )
-        }
-        if (showLocationBottomSheet.get()) {
-            LocationBottomSheet(
-                closeButtonSheet = {
-                    showLocationBottomSheet.set(false)
-                    onCancel()
-                },
-            )
         }
     }
 }
@@ -128,51 +105,6 @@ private fun UploadStatus(progress: () -> UploadState.Ongoing) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -> Unit) {
-    SwissTransferBottomSheet(
-        title = stringResource(string.uploadCancelConfirmBottomSheetTitle),
-        imageVector = AppIllus.RedCrossPaperPlanes.image(),
-        topButton = {
-            LargeButton(
-                title = stringResource(string.buttonCancelTransfer),
-                modifier = it,
-                style = ButtonType.Destructive,
-                onClick = onCancel,
-            )
-        },
-        bottomButton = {
-            LargeButton(
-                title = stringResource(string.buttonCloseAndContinue),
-                modifier = it,
-                style = ButtonType.Tertiary,
-                onClick = closeButtonSheet,
-            )
-        },
-        onDismissRequest = closeButtonSheet,
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun LocationBottomSheet(closeButtonSheet: () -> Unit) {
-    SwissTransferBottomSheet(
-        title = stringResource(string.sorry),
-        description = stringResource(string.restrictedLocation),
-        imageVector = AppIllus.MascotSearching.image(),
-        bottomButton = {
-            LargeButton(
-                title = stringResource(string.contentDescriptionButtonClose),
-                modifier = it,
-                style = ButtonType.Primary,
-                onClick = closeButtonSheet,
-            )
-        },
-        onDismissRequest = closeButtonSheet,
-    )
-}
-
 @PreviewAllWindows
 @Composable
 private fun Preview() {
@@ -190,9 +122,7 @@ private fun Preview() {
                 )
             ),
             adScreenType = UploadProgressAdType.INDEPENDENCE,
-            onCancel = {},
-            showCancelBottomSheet = GetSetCallbacks(get = { false }, set = {}),
-            showLocationBottomSheet = GetSetCallbacks(get = { false }, set = {}),
+            onCancelClick = {},
         )
     }
 }

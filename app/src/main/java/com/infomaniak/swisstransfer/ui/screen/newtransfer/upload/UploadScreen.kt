@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
@@ -26,12 +27,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.ButtonType
-import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.illus.uploadCancelBottomSheet.RedCrossPaperPlanes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
 
@@ -45,11 +44,6 @@ fun UploadScreen(
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showLocationBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val locationCallbacks = remember { GetSetCallbacks(get = { showLocationBottomSheet }, set = { showLocationBottomSheet = it }) }
-    val showCancelCallbacks = remember {
-        GetSetCallbacks(get = { showCancelBottomSheet }, set = { showCancelBottomSheet = it })
-    }
 
     BackHandler(
         enabled = !showCancelBottomSheet && uploadState !is UploadState.Complete,
@@ -74,9 +68,7 @@ fun UploadScreen(
         is UploadState.Ongoing -> UploadOngoingScreen(
             progressState = rememberUpdatedState(state),
             adScreenType = adScreenType,
-            onCancel = viewModel.abandonUploadRequest,
-            showCancelBottomSheet = showCancelCallbacks,
-            showLocationBottomSheet = locationCallbacks,
+            onCancelClick = { showCancelBottomSheet = true },
         )
         is UploadState.Retry -> UploadRetryScreen(
             errorState = rememberUpdatedState(state),
@@ -98,6 +90,16 @@ fun UploadScreen(
             )
         }
     }
+
+    if (showCancelBottomSheet) {
+        CancelUploadBottomSheet(
+            onCancel = {
+                showCancelBottomSheet = false
+                viewModel.abandonUploadRequest()
+            },
+            closeButtonSheet = { showCancelBottomSheet = false },
+        )
+    }
 }
 
 @Composable
@@ -116,6 +118,32 @@ private fun NoUploadOngoingEmptyState() {
             )
         },
     ) {}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -> Unit) {
+    SwissTransferBottomSheet(
+        title = stringResource(R.string.uploadCancelConfirmBottomSheetTitle),
+        imageVector = AppIllus.RedCrossPaperPlanes.image(),
+        topButton = {
+            LargeButton(
+                title = stringResource(R.string.buttonCancelTransfer),
+                modifier = it,
+                style = ButtonType.Destructive,
+                onClick = onCancel,
+            )
+        },
+        bottomButton = {
+            LargeButton(
+                title = stringResource(R.string.buttonCloseAndContinue),
+                modifier = it,
+                style = ButtonType.Tertiary,
+                onClick = closeButtonSheet,
+            )
+        },
+        onDismissRequest = closeButtonSheet,
+    )
 }
 
 @PreviewAllWindows
