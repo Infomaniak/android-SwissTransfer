@@ -54,6 +54,7 @@ class UploadSessionStarter @Inject constructor(
         )
         Result.Success(sessionRequest, destination)
     }.cancellable().getOrElse { t ->
+        SentryLog.w(TAG, "Throwable while trying to start the upload session", t)
         when (t) {
             is NetworkException, is KmpNetworkException -> Result.NetworkIssue
             is IntegrityException -> Result.AppIntegrityIssue
