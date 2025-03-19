@@ -192,6 +192,7 @@ private fun PickFilesScreen(
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.Mail } }
 
     BottomStickyButtonScaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.importFilesScreenTitle,

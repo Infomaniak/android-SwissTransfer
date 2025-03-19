@@ -126,7 +126,7 @@
         <activity
             android:name=".ui.NewTransferActivity"
             android:launchMode="singleTask"
-            />
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

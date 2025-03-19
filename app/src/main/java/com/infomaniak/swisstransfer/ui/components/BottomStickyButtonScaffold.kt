@@ -43,11 +43,12 @@ fun BottomStickyButtonScaffold(
     content: @Composable BoxScope.() -> Unit,
 ) {
     SinglePaneScaffold(
+        modifier = modifier,
         snackbarHost = { snackbarHostState?.let { SnackbarHost(hostState = it) } },
         topBar = topBar,
     ) { contentPaddings ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(contentPaddings),
             horizontalAlignment = Alignment.CenterHorizontally,
