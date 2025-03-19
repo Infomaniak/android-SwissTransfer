@@ -181,7 +181,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     notificationsUtils.buildUploadFailedNotification(canRetry = true)
                 }
                 is UploadState.Failure -> {
-                    notificationsUtils.buildUploadFailedNotification(canRetry = true)
+                    notificationsUtils.buildUploadFailedNotification(canRetry = false)
                 }
             }
             updateNotification(newNotification)
