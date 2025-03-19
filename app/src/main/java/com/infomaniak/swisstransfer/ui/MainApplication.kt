@@ -91,6 +91,12 @@ class MainApplication : Application(), Configuration.Provider {
 
             if (accountUtils.isUserConnected()) transferManager.deleteExpiredTransfers()
         }
+        globalCoroutineScope.launch(Dispatchers.IO) {
+            // We're no longer importing files into the app's local storage,
+            // so we clean it up if there are remaining files.
+            val oldImportDir = filesDir.resolve("imported_files")
+            if (oldImportDir.exists()) kotlin.runCatching { oldImportDir.deleteRecursively() }
+        }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
             // Register the callback as an option

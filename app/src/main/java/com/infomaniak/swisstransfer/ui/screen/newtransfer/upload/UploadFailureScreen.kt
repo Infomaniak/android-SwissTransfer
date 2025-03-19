@@ -19,23 +19,50 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.EmptyState
-import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing
+import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.swisstransfer.upload.UploadState
 
 @Composable
-fun UploadIntegrityErrorScreen(closeActivity: () -> Unit) {
-    BackHandler { closeActivity() }
+fun UploadFailureScreen(
+    failureState: State<UploadState.Failure>,
+    cancel: CallableState<Unit>,
+) {
+    val failure: UploadState.Failure by failureState
+    when (failure) {
+        UploadState.Failure.AppIntegrityIssue -> UploadFailureScreen(
+            exitNewTransfer = cancel,
+            desc = stringResource(R.string.errorAppIntegrity)
+        )
+        UploadState.Failure.RestrictedLocation -> UploadFailureScreen(
+            exitNewTransfer = cancel,
+            desc = stringResource(R.string.restrictedLocation)
+        )
+    }
+    if (failure == UploadState.Failure.RestrictedLocation) {
+        LocationBottomSheet(closeButtonSheet = cancel)
+    }
+}
+
+@Composable
+private fun UploadFailureScreen(
+    exitNewTransfer: () -> Unit,
+    desc: String
+) {
+    BackHandler { exitNewTransfer() }
 
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
@@ -43,16 +70,35 @@ fun UploadIntegrityErrorScreen(closeActivity: () -> Unit) {
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.contentDescriptionButtonClose),
-                onClick = { closeActivity() },
+                onClick = { exitNewTransfer() },
             )
         }
     ) {
         EmptyState(
             content = { Image(imageVector = AppIllus.GhostScrollCrossPointing.image(), contentDescription = null) },
             title = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
-            description = stringResource(R.string.errorAppIntegrity),
+            description = desc,
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LocationBottomSheet(closeButtonSheet: () -> Unit) {
+    SwissTransferBottomSheet(
+        title = stringResource(R.string.sorry),
+        description = stringResource(R.string.restrictedLocation),
+        imageVector = AppIllus.MascotSearching.image(),
+        bottomButton = {
+            LargeButton(
+                title = stringResource(R.string.contentDescriptionButtonClose),
+                modifier = it,
+                style = ButtonType.Primary,
+                onClick = closeButtonSheet,
+            )
+        },
+        onDismissRequest = closeButtonSheet,
+    )
 }
 
 @PreviewAllWindows
@@ -60,7 +106,7 @@ fun UploadIntegrityErrorScreen(closeActivity: () -> Unit) {
 private fun Preview() {
     SwissTransferTheme {
         Surface {
-            UploadIntegrityErrorScreen({})
+            UploadFailureScreen(exitNewTransfer = {}, stringResource(R.string.errorAppIntegrity))
         }
     }
 }

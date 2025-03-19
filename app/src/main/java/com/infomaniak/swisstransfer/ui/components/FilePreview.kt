@@ -57,7 +57,7 @@ fun FilePreview(
 ) {
     var shouldDisplayPreview by rememberSaveable(previewUri) { mutableStateOf(file.hasPreview) }
     // TODO: use only thumbnailPath but for now, it's incompatible with received transfers
-    val thumbnail = file.thumbnailPath ?: previewUri
+    val thumbnail = previewUri ?: file.thumbnailPath
 
     if (shouldDisplayPreview && thumbnail != null) {
         FileThumbnail(thumbnail, onError = { shouldDisplayPreview = false })

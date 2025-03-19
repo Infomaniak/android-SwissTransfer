@@ -28,6 +28,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
@@ -64,6 +66,10 @@
             android:name="androidx.work.impl.foreground.SystemForegroundService"
             android:foregroundServiceType="dataSync"
             tools:node="merge" />
+
+        <service android:name=".upload.UploadForegroundService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false"/>
 
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -113,12 +119,13 @@
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="colorMode|density|fontScale|fontWeightAdjustment|grammaticalGender|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTop" />
 
         <!-- We need NewMessageActivity to have its standard launchMode in the Manifest
             in order for FLAG_ACTIVITY_CLEAR_TOP to kill and recreate NewMessageActivity -->
         <activity
             android:name=".ui.NewTransferActivity"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" />
     </application>
 

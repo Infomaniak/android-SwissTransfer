@@ -27,126 +27,58 @@ import androidx.navigation.toRoute
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.NewTransferFilesDetailsScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.AutoResetTransferDataAvailabilityStatus
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.ImportFilesScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadErrorScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadIntegrityErrorScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
-import io.sentry.Sentry
-import io.sentry.SentryLevel
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessViewModel
 
 @Composable
 fun NewTransferNavHost(
     navController: NavHostController,
     startDestination: NewTransferNavigation,
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
-    closeActivityAndPromptForValidation: () -> Unit,
     cancelUploadNotification: () -> Unit,
 ) {
 
-    AutoResetTransferDataAvailabilityStatus()
-
     NavHost(navController, startDestination) {
-        composable<ImportFilesDestination> {
+        composable<PickFilesDestination> {
             cancelUploadNotification()
-            ImportFilesScreen(
-                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(it),
-                closeActivity = { closeActivity(false) },
-                navigateToUploadProgress = { transferType, totalSize, authorEmail ->
-                    navController.navigate(UploadProgressDestination(transferType, totalSize, authorEmail))
-                },
+            PickFilesScreen(
+                pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
+                exitNewTransfer = { closeActivity(true) },
+                navigateToUploadProgress = { navController.navigate(UploadDestination) },
                 navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
             )
         }
-        composable<ValidateUserEmailDestination> {
-            val args = it.toRoute<ValidateUserEmailDestination>()
-            ValidateUserEmailScreen(
-                closeActivity = closeActivityAndPromptForValidation,
-                navigateBackToFileImportation = { navController.popBackStack(ImportFilesDestination, false) },
-                navigateToUploadInProgress = { totalSize ->
-                    navController.navigate(UploadProgressDestination(TransferTypeUi.Mail, totalSize, args.authorEmail))
-                },
-                emailToValidate = args.authorEmail,
-            )
-        }
-        composable<UploadProgressDestination> {
-            val args = it.toRoute<UploadProgressDestination>()
-            UploadProgressScreen(
-                totalSizeInBytes = args.totalSize,
-                navigateToUploadSuccess = { transferUuid, transferUrl ->
-                    navController.navigate(UploadSuccessDestination(args.transferType, transferUuid, transferUrl))
-                },
-                navigateToUploadError = {
-                    navController.navigate(UploadErrorDestination(args.transferType, args.totalSize, args.authorEmail))
-                },
-                navigateToEmailValidation = { navController.navigateToEmailValidation(args) },
-                navigateToAppIntegrityError = { navController.navigate(UploadIntegrityErrorDestination) },
-                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
-                // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
-                closeActivity = { closeActivity(false) },
+        composable<UploadDestination> {
+            UploadScreen(
+                navigateBackToPickFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
+                exitNewTransfer = { closeActivity(true) },
             )
         }
         composable<UploadSuccessDestination> {
-            cancelUploadNotification()
             val args = it.toRoute<UploadSuccessDestination>()
+            val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
             UploadSuccessScreen(
                 transferType = args.transferType,
                 transferUuid = args.transferUuid,
                 transferUrl = args.transferUrl,
-                closeActivity = { closeActivity(true) },
+                dismissCompleteUpload = {
+                    uploadSuccessViewModel.dismissCompleteUpload()
+                    closeActivity(true)
+                }
             )
-        }
-        composable<UploadErrorDestination> {
-            cancelUploadNotification()
-            val args = it.toRoute<UploadErrorDestination>()
-            UploadErrorScreen(
-                navigateBackToUploadProgress = {
-                    val hasPoppedBack = navController.popBackStack(
-                        route = UploadProgressDestination(args.transferType, args.totalSize, args.authorEmail),
-                        inclusive = false,
-                    )
-                    if (!hasPoppedBack) {
-                        navController.navigate(UploadProgressDestination(args.transferType, args.totalSize, args.authorEmail))
-                        Sentry.captureMessage(
-                            "PopBackStack to retry transfer after error has failed",
-                            SentryLevel.ERROR,
-                        ) { scope ->
-                            scope.setExtra("transferType", args.transferType.toString())
-                            scope.setExtra("totalSize", args.totalSize.toString())
-                        }
-                    }
-                },
-                navigateBackToImportFiles = { navController.popBackStack(route = ImportFilesDestination, inclusive = false) },
-                // Called instead of `navigateBackToImportFiles()` when the app has been killed while uploading
-                closeActivity = { closeActivity(true) },
-            )
-        }
-        composable<UploadIntegrityErrorDestination> {
-            UploadIntegrityErrorScreen(closeActivity = { closeActivity(false) })
         }
         composable<NewTransferFilesDetailsDestination> {
-            val backStackEntry = remember(it) { navController.getBackStackEntry(ImportFilesDestination) }
+            val backStackEntry = remember(it) { navController.getBackStackEntry(PickFilesDestination) }
             NewTransferFilesDetailsScreen(
-                importFilesViewModel = hiltViewModel<ImportFilesViewModel>(backStackEntry),
+                pickFilesViewModel = hiltViewModel<PickFilesViewModel>(backStackEntry),
                 withFilesSize = true,
                 withSpaceLeft = true,
                 withFileDelete = true,
                 navigateBack = { navController.navigateUp() },
             )
         }
-    }
-}
-
-private fun NavHostController.navigateToEmailValidation(args: UploadProgressDestination) {
-    args.authorEmail?.let { userEmail ->
-        navigate(ValidateUserEmailDestination(userEmail))
-    } ?: run {
-        Sentry.captureMessage(
-            "Tried navigating to email validation but we received no email to validate",
-            SentryLevel.WARNING,
-        )
     }
 }

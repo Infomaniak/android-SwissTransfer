@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles
+package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import android.Manifest
+import android.content.ActivityNotFoundException
+import android.os.Build.VERSION.SDK_INT
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,14 +34,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
+import com.infomaniak.core.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSession
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
@@ -46,139 +51,116 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.SendButtonStatus
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.*
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.NotificationPermissionUtils
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.swisstransfer.ui.utils.totalFileSize
+import com.infomaniak.swisstransfer.ui.utils.guardedCallback
+import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
-/**
- * If the user kills the task while the upload is in progress, we lose the ImportFilesScreen and its information.
- * So, in every places we want to go back to ImportFilesScreen, instead we need to go back to the MainActivity.
- */
-var areTransferDataStillAvailable = false
-    private set
-
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun AutoResetTransferDataAvailabilityStatus() {
-    DisposableEffect(Unit) { onDispose { areTransferDataStillAvailable = false } }
-}
-
-@Composable
-fun ImportFilesScreen(
-    importFilesViewModel: ImportFilesViewModel,
-    closeActivity: () -> Unit,
-    navigateToUploadProgress: (transferType: TransferTypeUi, totalSize: Long, authorEmail: String?) -> Unit,
+fun PickFilesScreen(
+    pickFilesViewModel: PickFilesViewModel,
+    exitNewTransfer: () -> Unit,
+    navigateToUploadProgress: () -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
 
-    areTransferDataStillAvailable = true
+    val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val canSendStatus: PickFilesViewModel.CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
 
-    val files by importFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val sendButtonStatus by importFilesViewModel.sendButtonStatus.collectAsStateWithLifecycle()
+    val selectedTransferType: TransferTypeUi by pickFilesViewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
 
-    val selectedTransferType by importFilesViewModel.selectedTransferType.collectAsStateWithLifecycle()
-
-    val validityPeriodState by importFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
-    val downloadLimitState by importFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
-    val passwordOptionState by importFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
-    val emailLanguageState by importFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
-
-    val lastUploadSession by importFilesViewModel.lastUploadSession.collectAsStateWithLifecycle()
-
-    val context = LocalContext.current
+    val validityPeriod: ValidityPeriodOption by pickFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimit: DownloadLimitOption by pickFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOption: PasswordTransferOption by pickFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguage: EmailLanguageOption by pickFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments(),
-        onResult = importFilesViewModel::importFiles,
+        onResult = pickFilesViewModel::importUris,
     )
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        importFilesViewModel.createNewUploadSession()
-    }
+    val notificationPermissionState: PermissionState? = if (SDK_INT >= 33) {
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    } else null
 
     fun pickFiles() {
-        filePickerLauncher.launch(arrayOf("*/*"))
+        try {
+            filePickerLauncher.launch(arrayOf("*/*"))
+        } catch (e: ActivityNotFoundException) {
+            longToast(R.string.startActivityCantHandleAction)
+        }
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val emailTextFieldCallbacks = importFilesViewModel.getEmailTextFieldCallbacks()
+    val emailTextFieldCallbacks = pickFilesViewModel.getEmailTextFieldCallbacks()
 
-    BackHandler { closeActivity() }
+    fun exit() {
+        exitNewTransfer()
+        UploadForegroundService.removeAllFiles()
+    }
 
-    HandleStartupFilePick(importFilesViewModel.openFilePickerEvent, ::pickFiles)
+    BackHandler { exit() }
 
-    HandleNavigationToUploadInProgress(
-        lastUploadSession = { lastUploadSession },
-        navigateToUploadProgress = { totalSize ->
-            navigateToUploadProgress(selectedTransferType, totalSize, lastUploadSession?.authorEmail)
-        },
-        resetSendButtonStatus = importFilesViewModel::resetSendButtonStatus
-    )
+    HandleStartupFilePick(pickFilesViewModel.openFilePickerEvent, ::pickFiles)
 
-    val transferOptionsCallbacks = importFilesViewModel.getTransferOptionsCallbacks(
+    LaunchedEffect(Unit) {
+        UploadForegroundService.uploadStateFlow.mapSync { it != null }.collect { isUploadOngoing ->
+            if (isUploadOngoing) {
+                navigateToUploadProgress()
+            }
+        }
+    }
+
+    val transferOptionsCallbacks: TransferOptionsCallbacks = pickFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
             buildList {
-                add(
-                    TransferOptionState(
-                        transferOptionType = TransferOptionType.VALIDITY_DURATION,
-                        settingState = { validityPeriodState },
-                    )
+                this += TransferOptionState(
+                    transferOptionType = TransferOptionType.VALIDITY_DURATION,
+                    settingState = { validityPeriod },
                 )
-                add(
-                    TransferOptionState(
-                        transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
-                        settingState = { downloadLimitState },
-                    )
+                this += TransferOptionState(
+                    transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
+                    settingState = { downloadLimit },
                 )
-                add(
-                    TransferOptionState(
-                        transferOptionType = TransferOptionType.PASSWORD,
-                        settingState = { passwordOptionState },
-                    )
+                this += TransferOptionState(
+                    transferOptionType = TransferOptionType.PASSWORD,
+                    settingState = { passwordOption },
                 )
 
                 if (selectedTransferType == TransferTypeUi.Mail) {
-                    add(
-                        TransferOptionState(
-                            transferOptionType = TransferOptionType.LANGUAGE,
-                            settingState = { emailLanguageState },
-                        )
+                    this += TransferOptionState(
+                        transferOptionType = TransferOptionType.LANGUAGE,
+                        settingState = { emailLanguage },
                     )
                 }
             }
         },
     )
 
-    ImportFilesScreen(
+    PickFilesScreen(
         files = { files },
-        sendButtonStatus = { sendButtonStatus },
+        canSendStatus = { canSendStatus },
         emailTextFieldCallbacks = emailTextFieldCallbacks,
-        transferMessageCallbacks = importFilesViewModel.transferMessageCallbacks,
+        transferMessageCallbacks = pickFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
-            set = importFilesViewModel::selectTransferType,
+            set = pickFilesViewModel::selectTransferType,
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
-        closeActivity = closeActivity,
-        onSendButtonClick = {
-            importFilesViewModel.startLoadingSendButton()
-            if (NotificationPermissionUtils.hasNotificationPermission(context)) {
-                importFilesViewModel.createNewUploadSession()
-            } else {
-                NotificationPermissionUtils.askNotificationPermission(launcher)
-            }
-        },
+        exitNewTransfer = { exit() },
+        onSendButtonClick = notificationPermissionState.guardedCallback { pickFilesViewModel.send() },
+        isAwaitingSend = { pickFilesViewModel.isReadyToSend() },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
     )
@@ -192,59 +174,36 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 }
 
 @Composable
-fun HandleNavigationToUploadInProgress(
-    lastUploadSession: () -> UploadSession?,
-    navigateToUploadProgress: (Long) -> Unit,
-    resetSendButtonStatus: () -> Unit,
-) {
-    LaunchedEffect(lastUploadSession()) {
-        val uploadSession = lastUploadSession() ?: return@LaunchedEffect
-
-        resetSendButtonStatus()
-        navigateToUploadProgress(uploadSession.totalFileSize())
-    }
-}
-
-@Composable
-private fun ImportFilesScreen(
+private fun PickFilesScreen(
     files: () -> List<FileUi>,
-    sendButtonStatus: () -> SendButtonStatus,
+    canSendStatus: () -> PickFilesViewModel.CanSendStatus,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
-    closeActivity: () -> Unit,
+    exitNewTransfer: () -> Unit,
+    isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
     navigateToFilesDetails: () -> Unit,
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.Mail } }
-    val areEmailsCorrects by remember {
-        derivedStateOf {
-            with(emailTextFieldCallbacks) {
-                val areAuthorAndRecipientsCorrects = transferAuthorEmail.get().isNotEmpty() && !isAuthorEmailInvalid()
-                        && validatedRecipientsEmails.get().isNotEmpty()
-                !shouldShowEmailAddressesFields || areAuthorAndRecipientsCorrects
-            }
-        }
-    }
 
     BottomStickyButtonScaffold(
         modifier = Modifier.imePadding(),
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = R.string.importFilesScreenTitle,
-                actions = { TopAppBarButtons.Close(onClick = { closeActivity() }) }
+                actions = { TopAppBarButtons.Close(onClick = { exitNewTransfer() }) }
             )
         },
         topButton = { modifier ->
             SendButton(
                 modifier = modifier,
-                sendButtonStatus = sendButtonStatus,
-                importedFiles = files,
-                areEmailsCorrects = { areEmailsCorrects },
+                canSendStatus = canSendStatus,
+                expectsClick = isAwaitingSend,
                 onClick = onSendButtonClick,
             )
         },
@@ -274,7 +233,7 @@ private fun FilesToImport(
     navigateToFilesDetails: () -> Unit,
     pickFiles: () -> Unit,
 ) {
-    ImportFilesTitle(modifier, R.string.myFilesTitle)
+    PickFilesTitle(modifier, R.string.myFilesTitle)
     ImportedFilesCard(
         modifier,
         files,
@@ -351,7 +310,7 @@ private fun getEmailError(isError: Boolean): @Composable (() -> Unit)? {
 
 @Composable
 private fun SendByOptions(modifier: Modifier, selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
-    ImportFilesTitle(modifier, R.string.transferTypeTitle)
+    PickFilesTitle(modifier, R.string.transferTypeTitle)
     TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
@@ -364,7 +323,7 @@ private fun TransferOptions(modifier: Modifier, transferOptionsCallbacks: Transf
         showTransferOption = null
     }
 
-    ImportFilesTitle(modifier, R.string.advancedSettingsTitle)
+    PickFilesTitle(modifier, R.string.advancedSettingsTitle)
     TransferOptionsTypes(
         modifier = modifier,
         transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
@@ -409,7 +368,7 @@ private fun TransferOptionsDialogs(
 }
 
 @Composable
-private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+private fun PickFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
     Text(
         modifier = modifier.padding(vertical = Margin.Medium),
         style = SwissTransferTheme.typography.bodySmallRegular,
@@ -420,32 +379,18 @@ private fun ImportFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes:
 @Composable
 private fun SendButton(
     modifier: Modifier,
-    sendButtonStatus: () -> SendButtonStatus,
-    importedFiles: () -> List<FileUi>,
-    areEmailsCorrects: () -> Boolean,
+    canSendStatus: () -> PickFilesViewModel.CanSendStatus,
+    expectsClick: () -> Boolean,
     onClick: () -> Unit,
 ) {
-    fun isImporting() = sendButtonStatus() is SendButtonStatus.Progress
-
-    val status = sendButtonStatus()
-    val progress: (() -> Float)? = if (status is SendButtonStatus.Progress) fun() = status.progress else null
-
     LargeButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.Primary,
-        showIndeterminateProgress = { sendButtonStatus() == SendButtonStatus.Loading },
-        enabled = { importedFiles().isNotEmpty() && !isImporting() && areEmailsCorrects() && sendButtonStatus().canEnableButton() },
-        progress = progress,
-        onClick = { if (sendButtonStatus() !is SendButtonStatus.Unclickable) onClick() },
+        showIndeterminateProgress = { canSendStatus() == PickFilesViewModel.CanSendStatus.No.ProcessingPickedFiles },
+        enabled = expectsClick,
+        onClick = onClick,
     )
-}
-
-private fun SendButtonStatus.canEnableButton(): Boolean = when (this) {
-    is SendButtonStatus.Unclickable,
-    is SendButtonStatus.Clickable,
-    is SendButtonStatus.Progress -> true
-    SendButtonStatus.Loading -> false
 }
 
 data class EmailTextFieldCallbacks(
@@ -524,16 +469,17 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
     )
 
     SwissTransferTheme {
-        ImportFilesScreen(
+        PickFilesScreen(
             files = { files },
-            sendButtonStatus = { SendButtonStatus.Clickable },
+            canSendStatus = { PickFilesViewModel.CanSendStatus.Yes },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
             transferOptionsCallbacks = transferOptionsCallbacks,
             pickFiles = {},
-            closeActivity = {},
+            exitNewTransfer = {},
             onSendButtonClick = {},
+            isAwaitingSend = { true },
             navigateToFilesDetails = {},
         )
     }

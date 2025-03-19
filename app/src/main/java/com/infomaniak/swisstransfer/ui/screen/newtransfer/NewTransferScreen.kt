@@ -18,20 +18,9 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.ButtonType
-import com.infomaniak.swisstransfer.ui.components.SmallButton
-import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
-import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun NewTransferScreen(
@@ -39,53 +28,10 @@ fun NewTransferScreen(
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
 ) {
-
-    val navController = rememberNavController()
-    var displayConfirmationDialog by rememberSaveable { mutableStateOf(false) }
-
     NewTransferNavHost(
-        navController = navController,
+        navController = rememberNavController(),
         startDestination = startDestination,
         closeActivity = closeActivity,
-        closeActivityAndPromptForValidation = { displayConfirmationDialog = true },
         cancelUploadNotification = { newTransferViewModel.cancelUploadNotification() }
     )
-
-    if (displayConfirmationDialog) {
-        ConfirmLeavingDialog(
-            onLeave = { closeActivity(false) },
-            onCancel = { displayConfirmationDialog = false },
-        )
-    }
-}
-
-@Composable
-fun ConfirmLeavingDialog(onLeave: () -> Unit, onCancel: () -> Unit) {
-    SwissTransferAlertDialog(
-        titleRes = R.string.newTransferConfirmLeavingDialogTitle,
-        descriptionRes = R.string.newTransferLeavingDialogDescription,
-        positiveButton = {
-            SmallButton(
-                title = stringResource(R.string.newTransferLeavingDialogPositiveButton),
-                style = ButtonType.DestructiveText,
-                onClick = onLeave,
-            )
-        },
-        negativeButton = {
-            SmallButton(
-                title = stringResource(R.string.newTransferLeavingDialogNegativeButton),
-                style = ButtonType.Tertiary,
-                onClick = onCancel,
-            )
-        },
-        onDismiss = onCancel,
-    )
-}
-
-@PreviewAllWindows
-@Composable
-private fun Preview() {
-    SwissTransferTheme {
-        ConfirmLeavingDialog({}, {})
-    }
 }

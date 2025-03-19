@@ -33,20 +33,20 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ImportFilesViewModel.FilesDetailsUiState
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.FilesDetailsUiState
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun NewTransferFilesDetailsScreen(
-    importFilesViewModel: ImportFilesViewModel,
+    pickFilesViewModel: PickFilesViewModel,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     withFileDelete: Boolean,
     navigateBack: (() -> Unit),
 ) {
-    val uiState by importFilesViewModel.filesDetailsUiState.collectAsStateWithLifecycle()
+    val uiState by pickFilesViewModel.filesDetailsUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState) {
         if (uiState is FilesDetailsUiState.EmptyFiles) navigateBack()
@@ -56,17 +56,17 @@ fun NewTransferFilesDetailsScreen(
         files = (uiState as? FilesDetailsUiState.Success)?.files?.asReversed() ?: emptyList(),
         withFilesSize = withFilesSize,
         withSpaceLeft = withSpaceLeft,
-        onFileRemoved = getOnFileRemoveCallback(importFilesViewModel, withFileDelete),
+        onFileRemoved = getOnFileRemoveCallback(pickFilesViewModel, withFileDelete),
         navigateBack = navigateBack,
     )
 }
 
 private fun getOnFileRemoveCallback(
-    importFilesViewModel: ImportFilesViewModel,
+    pickFilesViewModel: PickFilesViewModel,
     withFileDelete: Boolean,
 ): ((String) -> Unit)? {
     return if (withFileDelete) {
-        { importFilesViewModel.removeFileByUid(it) }
+        { pickFilesViewModel.removeFileByUri(it) }
     } else null
 }
 
@@ -75,7 +75,7 @@ private fun NewTransferFilesDetailsScreen(
     files: List<FileUi>,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
-    onFileRemoved: ((uuid: String) -> Unit)? = null,
+    onFileRemoved: ((uriString: String) -> Unit)? = null,
     navigateBack: (() -> Unit),
 ) {
     val snackbarHostState = remember { SnackbarHostState() }

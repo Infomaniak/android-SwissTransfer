@@ -25,13 +25,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -47,11 +48,14 @@ class NewTransferActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
-        handleSharedFiles()
+        handleSharedFiles(intent)
+        addOnNewIntentListener { newIntent ->
+            handleSharedFiles(newIntent)
+        }
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(
-                    startDestination = getStartDestination(),
+                    startDestination = remember { getStartDestination() },
                     closeActivity = { startMainActivityIfTaskIsEmpty ->
                         finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
                     },
@@ -60,23 +64,23 @@ class NewTransferActivity : ComponentActivity() {
         }
     }
 
-    private fun handleSharedFiles() {
-        val openReason: OpenReason = when (intent?.action) {
-            Intent.ACTION_SEND -> OpenReason.ExternalShareIncoming(getSingleUri())
-            Intent.ACTION_SEND_MULTIPLE -> OpenReason.ExternalShareIncoming(getMultipleUris())
+    private fun handleSharedFiles(intent: Intent) {
+        val openReason: OpenReason = when (intent.action) {
+            Intent.ACTION_SEND -> OpenReason.ExternalShareIncoming(getSingleUri(intent))
+            Intent.ACTION_SEND_MULTIPLE -> OpenReason.ExternalShareIncoming(getMultipleUris(intent))
             else -> OpenReason.Other
         }
         lifecycleScope.launch { newTransferOpenManager.setOpenReason(openReason) }
     }
 
-    private fun getSingleUri(): List<Uri> {
+    private fun getSingleUri(intent: Intent): List<Uri> {
         val extras = intent.extras ?: return emptyList()
         val uri = BundleCompat.getParcelable(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
         return if (uri == null) emptyList() else listOf(uri)
     }
 
-    private fun getMultipleUris(): List<Uri> {
+    private fun getMultipleUris(intent: Intent): List<Uri> {
         val extras = intent.extras ?: return emptyList()
         val uris = BundleCompat.getParcelableArrayList(extras, Intent.EXTRA_STREAM, Uri::class.java)
 
@@ -99,29 +103,17 @@ class NewTransferActivity : ComponentActivity() {
         val externalNavigation = enumValueOfOrNull<ExternalNavigation>(
             value = intent?.extras?.getString(EXTERNAL_NAVIGATION_KEY),
         )
-        val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
-        val authorEmail = intent?.extras?.getString(TRANSFER_AUTHOR_EMAIL_KEY)
 
         return when (externalNavigation) {
-            ExternalNavigation.UploadProgress -> {
-                NewTransferNavigation.UploadProgressDestination(
-                    transferType = transferType!!,
-                    totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
-                    authorEmail = authorEmail,
-                )
+            ExternalNavigation.UploadOngoing -> {
+                NewTransferNavigation.startDestination
             }
             ExternalNavigation.UploadSuccess -> {
+                val transferType = enumValueOfOrNull<TransferTypeUi>(intent?.extras?.getString(TRANSFER_TYPE_KEY))
                 NewTransferNavigation.UploadSuccessDestination(
                     transferType = transferType!!,
                     transferUuid = intent?.extras?.getString(TRANSFER_UUID_KEY)!!,
                     transferUrl = intent?.extras?.getString(TRANSFER_URL_KEY)!!,
-                )
-            }
-            ExternalNavigation.UploadFailure -> {
-                NewTransferNavigation.UploadErrorDestination(
-                    transferType = transferType!!,
-                    totalSize = intent?.extras?.getLong(TRANSFER_TOTAL_SIZE_KEY)!!,
-                    authorEmail = authorEmail,
                 )
             }
             null -> NewTransferNavigation.startDestination

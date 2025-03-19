@@ -23,7 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.importfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.lastTransferDataStore
@@ -33,7 +33,7 @@ fun UploadSuccessScreen(
     transferType: TransferTypeUi,
     transferUuid: String,
     transferUrl: String,
-    closeActivity: () -> Unit,
+    dismissCompleteUpload: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -44,12 +44,12 @@ fun UploadSuccessScreen(
         context.lastTransferDataStore.edit { it.clear() }
     }
 
-    BackHandler(onBack = closeActivity)
+    BackHandler(onBack = dismissCompleteUpload)
 
     if (transferType == TransferTypeUi.Mail) {
-        UploadSuccessEmailScreen(transferUuid, closeActivity)
+        UploadSuccessEmailScreen(transferUuid, dismissCompleteUpload)
     } else {
-        UploadSuccessQrScreen(transferType, transferUrl, closeActivity)
+        UploadSuccessQrScreen(transferType, transferUrl, dismissCompleteUpload)
     }
 }
 
@@ -62,7 +62,7 @@ private fun UploadSuccessScreenPreview() {
                 transferType = TransferTypeUi.QrCode,
                 transferUuid = "",
                 transferUrl = "https://chk.me/83azQOl",
-                closeActivity = {},
+                dismissCompleteUpload = {},
             )
         }
     }

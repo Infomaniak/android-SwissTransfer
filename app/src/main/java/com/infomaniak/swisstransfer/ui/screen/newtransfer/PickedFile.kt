@@ -17,17 +17,11 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import android.net.Uri
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
-
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
-    }
-}
+data class PickedFile(
+    val uri: Uri,
+    val name: String,
+    val mimeType: String,
+    val size: Long,
+)

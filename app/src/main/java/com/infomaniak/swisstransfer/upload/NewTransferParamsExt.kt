@@ -15,19 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.newtransfer
+package com.infomaniak.swisstransfer.upload
 
-import androidx.lifecycle.ViewModel
-import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.FileToUploadMetadata
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 
-@HiltViewModel
-class NewTransferViewModel @Inject constructor(
-    private val notificationsUtils: NotificationsUtils,
-) : ViewModel() {
-
-    fun cancelUploadNotification() {
-        notificationsUtils.cancelNotification(NotificationsUtils.Ids.LastUpload)
-    }
-}
+fun NewTransferParams.toUploadSessionRequest(
+    filesMetadata: List<FileToUploadMetadata>
+): UploadSessionRequest = UploadSessionRequest(
+    validityPeriod = validityPeriod,
+    authorEmail = authorEmail,
+    password = password,
+    message = message,
+    sizeOfUpload = filesMetadata.sumOf { it.size },
+    downloadCountLimit = downloadCountLimit,
+    filesCount = filesMetadata.size,
+    languageCode = languageCode,
+    filesMetadata = filesMetadata,
+    recipientsEmails = recipientsEmails
+)
