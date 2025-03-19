@@ -27,7 +27,8 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.uriForFile
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
@@ -38,6 +39,7 @@ class FilesDetailsViewModel @Inject constructor(
     private val fileManager: FileManager,
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
+    private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
 
@@ -47,8 +49,8 @@ class FilesDetailsViewModel @Inject constructor(
 
     fun transferFlow(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
 
-    fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.uriForFile(transfer = transfer, file = file)
+    fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
+        return transferManager.previewUriForFile(transfer = transfer, file = file, thumbnailsLocalStorage)
     }
 
     suspend fun handleTransferDownload(

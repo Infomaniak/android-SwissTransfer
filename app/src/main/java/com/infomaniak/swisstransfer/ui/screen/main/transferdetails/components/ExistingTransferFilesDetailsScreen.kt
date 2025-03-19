@@ -72,7 +72,7 @@ fun ExistingTransferFilesDetailsScreen(
                         openFile = { uri -> context.openFile(uri) },
                     )
                 },
-                uriForFile = { transfer, file -> filesDetailsViewModel.uriForFile(transfer, file) },
+                previewUriForFile = { transfer, file -> filesDetailsViewModel.previewUriForFile(transfer, file) },
                 withFileSize = withFilesSize,
                 withSpaceLeft = withSpaceLeft,
                 isDownloadButtonVisible = true,

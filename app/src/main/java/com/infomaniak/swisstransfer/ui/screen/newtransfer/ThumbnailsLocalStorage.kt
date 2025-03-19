@@ -66,36 +66,42 @@ class ThumbnailsLocalStorage @Inject constructor(
     //region Get
     fun getThumbnailsFolderFor(transferUuid: String) = filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid").toUri()
 
-    fun getThumbnailFor(transferUuid: String, fileUuid: String): File {
-        return filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid/$fileUuid")
+    private suspend fun getOrCreateThumbnailsFolder(transferUuid: String): File {
+        return filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid").apply {
+            withContext(ioDispatcher) {
+                if (!exists()) mkdirs()
+            }
+        }
     }
 
-    fun getOngoingThumbnailFor(fileUuid: String): File {
-        return filesDir.resolve("$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER/$fileUuid")
+    private suspend fun getOrCreateOngoingThumbnailsFolder() = ongoingThumbnailsFolder.apply {
+        withContext(ioDispatcher) {
+            if (!exists()) mkdirs()
+        }
     }
-
-    private fun getOrCreateOngoingThumbnailsFolder() = ongoingThumbnailsFolder.apply { if (!exists()) mkdirs() }
     //endregion
 
     //region Rename
-    fun renameFileWith(currentFileName: String, newFileName: String) {
-        val ongoingTransferFolder = "$THUMBNAILS_FOLDER/$THUMBNAILS_ONGOING_TRANSFER_FOLDER"
-        val currentFile = filesDir.resolve("$ongoingTransferFolder/$currentFileName")
-        val newFile = filesDir.resolve("$ongoingTransferFolder/$newFileName")
-        currentFile.renameTo(newFile)
-    }
 
-    fun renameOngoingThumbnailsFolderWith(transferUuid: String) {
+    suspend fun renameOngoingThumbnailsFolderWith(transferUuid: String) {
         val newFolder = filesDir.resolve("$THUMBNAILS_FOLDER/$transferUuid")
-        ongoingThumbnailsFolder.renameTo(newFolder)
+
+        withContext(ioDispatcher) {
+            ongoingThumbnailsFolder.renameTo(newFolder)
+        }
     }
     //endregion
 
     //region Copy
-    fun generateThumbnailFor(fileUri: String, fileName: String, extension: String) {
-        val fileToCreate = getOrCreateOngoingThumbnailsFolder().resolve(fileName)
-        val isVideo = guessFromFileName(extension) == FileType.VIDEO
-        appCtx.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
+    suspend fun generateThumbnailFor(transferUuid: String? = null, fileUri: String, fileName: String, extension: String) {
+        val fileToCreate = transferUuid?.let {
+            getOrCreateThumbnailsFolder(it).resolve(fileName)
+        } ?: getOrCreateOngoingThumbnailsFolder().resolve(fileName)
+
+        withContext(ioDispatcher) {
+            val isVideo = guessFromFileName(extension) == FileType.VIDEO
+            appCtx.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
+        }
     }
 
     @Suppress("DEPRECATION")

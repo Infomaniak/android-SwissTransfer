@@ -18,12 +18,14 @@
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import android.net.Uri
+import androidx.core.net.toUri
 import com.infomaniak.core.DownloadStatus
 import com.infomaniak.core.downloadStatusFlow
 import com.infomaniak.core.uriFor
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
@@ -33,11 +35,20 @@ import kotlinx.coroutines.flow.transformLatest
 import splitties.systemservices.downloadManager
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun TransferManager.uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> = downloadManagerId(
+fun TransferManager.previewUriForFile(
+    transfer: TransferUi,
+    file: FileUi,
+    thumbnailsLocalStorage: ThumbnailsLocalStorage,
+): Flow<Uri?> = downloadManagerId(
     transferManager = this,
     transferUuid = transfer.uuid,
     fileUid = file.uid,
 ).transformLatest { uniqueDownloadId ->
+    if (file.thumbnailPath != null) {
+        emit(file.thumbnailPath!!.toUri())
+        return@transformLatest
+    }
+
     if (uniqueDownloadId == null) {
         emit(null)
         return@transformLatest
@@ -47,7 +58,23 @@ fun TransferManager.uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> =
             emit(null)
             awaitCancellation()
         }
+
         val uri = downloadManager.uriFor(uniqueDownloadId)
+
+        file.mimeType?.let { mimeType ->
+            thumbnailsLocalStorage.generateThumbnailFor(
+                transferUuid = transfer.uuid,
+                fileUri = uri.toString(),
+                fileName = file.uid,
+                extension = mimeType.substring(mimeType.indexOfLast { it == '/' })
+            )
+
+            updateTransferFilesThumbnails(
+                transferUUID = transfer.uuid,
+                thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transfer.uuid).toString(),
+            )
+        }
+
         emit(uri)
     }
     emitAll(uriFlow)

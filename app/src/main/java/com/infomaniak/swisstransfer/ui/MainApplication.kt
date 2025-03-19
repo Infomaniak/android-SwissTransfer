@@ -21,7 +21,6 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -85,8 +84,8 @@ class MainApplication : Application(), Configuration.Provider {
         globalCoroutineScope.launch {
             accountUtils.init()
 
-            withContext(ioDispatcher) {
-                transferManager.getTransfers(TransferDirection.SENT).collectLatest(thumbnailsLocalStorage::cleanExpiredThumbnails)
+            launch(ioDispatcher) {
+                transferManager.getTransfers().collectLatest(thumbnailsLocalStorage::cleanExpiredThumbnails)
             }
 
             if (accountUtils.isUserConnected()) transferManager.deleteExpiredTransfers()
@@ -95,7 +94,7 @@ class MainApplication : Application(), Configuration.Provider {
             // We're no longer importing files into the app's local storage,
             // so we clean it up if there are remaining files.
             val oldImportDir = filesDir.resolve("imported_files")
-            if (oldImportDir.exists()) kotlin.runCatching { oldImportDir.deleteRecursively() }
+            if (oldImportDir.exists()) runCatching { oldImportDir.deleteRecursively() }
         }
 
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
