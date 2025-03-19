@@ -122,8 +122,8 @@ class TransferDetailsViewModel @Inject constructor(
         openFile = openFile,
     )
 
-    fun uriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.uriForFile(transfer, file, thumbnailsLocalStorage)
+    fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
+        return transferManager.previewUriForFile(transfer, file, thumbnailsLocalStorage)
     }
 
     @OptIn(UnreliableToastApi::class)

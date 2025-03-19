@@ -55,7 +55,7 @@ fun FilesDetailsScreen(
         transfer: TransferUi,
         file: FileUi
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
-    uriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     isDownloadButtonVisible: Boolean,
@@ -79,7 +79,7 @@ fun FilesDetailsScreen(
             navigateToFolder = { navigateToFolder?.invoke(it) },
             transferFlow = transferFlow,
             runDownloadUi = runDownloadUi,
-            uriForFile = uriForFile,
+            previewUriForFile = previewUriForFile,
         )
     }
 }
@@ -97,7 +97,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
                 navigateToFolder = {},
                 transferFlow = emptyFlow(),
                 runDownloadUi = { _, _, _ -> awaitCancellation() },
-                uriForFile = { _, _ -> emptyFlow() },
+                previewUriForFile = { _, _ -> emptyFlow() },
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},

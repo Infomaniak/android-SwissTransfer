@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.transformLatest
 import splitties.systemservices.downloadManager
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun TransferManager.uriForFile(
+fun TransferManager.previewUriForFile(
     transfer: TransferUi,
     file: FileUi,
     thumbnailsLocalStorage: ThumbnailsLocalStorage,
