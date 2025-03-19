@@ -51,7 +51,7 @@ fun UploadScreen(
             when (uploadState) {
                 null, is UploadState.Complete -> Unit // Let automatic exit navigation happen
                 is UploadState.Ongoing -> showCancelBottomSheet = true
-                is UploadState.Retry -> viewModel.editRequest()
+                is UploadState.Retry -> showCancelBottomSheet = true
                 is UploadState.Failure -> viewModel.abandonUploadRequest()
             }
         }
