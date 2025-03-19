@@ -46,11 +46,10 @@ class UploadSessionStarter @Inject constructor(
     }
 
     private suspend fun tryStarting(sessionRequest: UploadSessionRequest): Result = runCatching {
-        val attestationToken = getAttestationToken()
         val destination = uploadManager.startUploadSession(
             request = sessionRequest,
             attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
-            attestationToken = attestationToken
+            generateAttestationToken = { fetchNewAttestationToken() },
         )
         Result.Success(sessionRequest, destination)
     }.cancellable().getOrElse { t ->
@@ -69,7 +68,7 @@ class UploadSessionStarter @Inject constructor(
 
     //region App Integrity
     @Throws(IntegrityException::class)
-    private suspend inline fun getAttestationToken(): String {
+    private suspend inline fun fetchNewAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
 
         val appIntegrityToken = appIntegrityManager.requestClassicIntegrityVerdictToken(challenge)
