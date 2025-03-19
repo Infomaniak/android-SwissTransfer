@@ -45,7 +45,7 @@ fun NewTransferNavHost(
         composable<PickFilesDestination> {
             cancelUploadNotification()
             PickFilesScreen(
-                viewModel = hiltViewModel<PickFilesViewModel>(it),
+                pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
                 exitNewTransfer = { closeActivity(true) },
                 navigateToUploadProgress = { navController.navigate(UploadDestination) },
                 navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
@@ -59,13 +59,13 @@ fun NewTransferNavHost(
         }
         composable<UploadSuccessDestination> {
             val args = it.toRoute<UploadSuccessDestination>()
-            val viewModel: UploadSuccessViewModel = hiltViewModel()
+            val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
             UploadSuccessScreen(
                 transferType = args.transferType,
                 transferUuid = args.transferUuid,
                 transferUrl = args.transferUrl,
                 dismissCompleteUpload = {
-                    viewModel.dismissCompleteUpload()
+                    uploadSuccessViewModel.dismissCompleteUpload()
                     closeActivity(true)
                 }
             )

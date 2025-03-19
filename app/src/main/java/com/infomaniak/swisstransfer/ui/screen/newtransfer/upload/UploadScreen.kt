@@ -38,9 +38,9 @@ import com.infomaniak.swisstransfer.upload.UploadState
 fun UploadScreen(
     navigateBackToPickFiles: () -> Unit,
     exitNewTransfer: () -> Unit,
-    viewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
+    uploadViewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
 ) {
-    val uploadState: UploadState? by viewModel.stateFlow.collectAsStateWithLifecycle()
+    val uploadState: UploadState? by uploadViewModel.stateFlow.collectAsStateWithLifecycle()
 
     val adScreenType = rememberSaveable { UploadProgressAdType.entries.random() }
     var showCancelBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -52,14 +52,14 @@ fun UploadScreen(
                 null, is UploadState.Complete -> Unit // Let automatic exit navigation happen
                 is UploadState.Ongoing -> showCancelBottomSheet = true
                 is UploadState.Retry -> showCancelBottomSheet = true
-                is UploadState.Failure -> viewModel.abandonUploadRequest()
+                is UploadState.Failure -> uploadViewModel.abandonUploadRequest()
             }
         }
     )
 
     when (val state = uploadState) {
         null -> {
-            val hasPickedFiles by viewModel.hasPickedFiles.collectAsState()
+            val hasPickedFiles by uploadViewModel.hasPickedFiles.collectAsState()
             // Extracting the if/else below to a local composable function causes flickering, so leave it here.
             if (hasPickedFiles) LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
             else LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
@@ -72,12 +72,12 @@ fun UploadScreen(
         )
         is UploadState.Retry -> UploadRetryScreen(
             errorState = rememberUpdatedState(state),
-            retry = viewModel.retryRequest,
-            edit = viewModel.editRequest,
+            retry = uploadViewModel.retryRequest,
+            edit = uploadViewModel.editRequest,
         )
         is UploadState.Failure -> UploadFailureScreen(
             failureState = rememberUpdatedState(state),
-            cancel = viewModel.abandonUploadRequest
+            cancel = uploadViewModel.abandonUploadRequest
         )
         is UploadState.Complete -> {
             showCancelBottomSheet = false // Ensure we dismiss any pending cancel attempt.
@@ -95,7 +95,7 @@ fun UploadScreen(
         CancelUploadBottomSheet(
             onCancel = {
                 showCancelBottomSheet = false
-                viewModel.abandonUploadRequest()
+                uploadViewModel.abandonUploadRequest()
             },
             closeButtonSheet = { showCancelBottomSheet = false },
         )

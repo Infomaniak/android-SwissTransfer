@@ -67,25 +67,25 @@ private val HORIZONTAL_PADDING = Margin.Medium
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PickFilesScreen(
-    viewModel: PickFilesViewModel,
+    pickFilesViewModel: PickFilesViewModel,
     exitNewTransfer: () -> Unit,
     navigateToUploadProgress: () -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
 
-    val files by viewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val canSendStatus: PickFilesViewModel.CanSendStatus by viewModel.canSendStatusFlow.collectAsState()
+    val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val canSendStatus: PickFilesViewModel.CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
 
-    val selectedTransferType: TransferTypeUi by viewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
+    val selectedTransferType: TransferTypeUi by pickFilesViewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
 
-    val validityPeriod: ValidityPeriodOption by viewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
-    val downloadLimit: DownloadLimitOption by viewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
-    val passwordOption: PasswordTransferOption by viewModel.selectedPasswordOption.collectAsStateWithLifecycle()
-    val emailLanguage: EmailLanguageOption by viewModel.selectedLanguageOption.collectAsStateWithLifecycle()
+    val validityPeriod: ValidityPeriodOption by pickFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val downloadLimit: DownloadLimitOption by pickFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
+    val passwordOption: PasswordTransferOption by pickFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
+    val emailLanguage: EmailLanguageOption by pickFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenMultipleDocuments(),
-        onResult = viewModel::importUris,
+        onResult = pickFilesViewModel::importUris,
     )
 
     val notificationPermissionState: PermissionState? = if (SDK_INT >= 33) {
@@ -102,7 +102,7 @@ fun PickFilesScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val emailTextFieldCallbacks = viewModel.getEmailTextFieldCallbacks()
+    val emailTextFieldCallbacks = pickFilesViewModel.getEmailTextFieldCallbacks()
 
     fun exit() {
         exitNewTransfer()
@@ -111,7 +111,7 @@ fun PickFilesScreen(
 
     BackHandler { exit() }
 
-    HandleStartupFilePick(viewModel.openFilePickerEvent, ::pickFiles)
+    HandleStartupFilePick(pickFilesViewModel.openFilePickerEvent, ::pickFiles)
 
     LaunchedEffect(Unit) {
         UploadForegroundService.uploadStateFlow.mapSync { it != null }.collect { isUploadOngoing ->
@@ -121,7 +121,7 @@ fun PickFilesScreen(
         }
     }
 
-    val transferOptionsCallbacks: TransferOptionsCallbacks = viewModel.getTransferOptionsCallbacks(
+    val transferOptionsCallbacks: TransferOptionsCallbacks = pickFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
             buildList {
                 this += TransferOptionState(
@@ -151,16 +151,16 @@ fun PickFilesScreen(
         files = { files },
         canSendStatus = { canSendStatus },
         emailTextFieldCallbacks = emailTextFieldCallbacks,
-        transferMessageCallbacks = viewModel.transferMessageCallbacks,
+        transferMessageCallbacks = pickFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
-            set = viewModel::selectTransferType,
+            set = pickFilesViewModel::selectTransferType,
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
         exitNewTransfer = { exit() },
-        onSendButtonClick = notificationPermissionState.guardedCallback { viewModel.send() },
-        isAwaitingSend = { viewModel.isReadyToSend() },
+        onSendButtonClick = notificationPermissionState.guardedCallback { pickFilesViewModel.send() },
+        isAwaitingSend = { pickFilesViewModel.isReadyToSend() },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
     )

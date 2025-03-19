@@ -62,10 +62,10 @@ private val MAX_LAYOUT_WIDTH = 400.dp
 fun ValidateUserEmailScreen(
     editTransfer: () -> Unit,
     state: UploadState.Retry.EmailValidationRequired,
-    viewModel: ValidateUserEmailViewModel = hiltViewModel(),
+    validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel(),
 ) {
     val emailToValidate = state.info.authorEmail
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by validateUserEmailViewModel.uiState.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
     val isInvalidVerificationCode by remember { derivedStateOf { uiState == ValidateEmailUiState.InvalidVerificationCode } }
 
@@ -80,9 +80,9 @@ fun ValidateUserEmailScreen(
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
         validateEmailWithOtpCode = { code ->
-            viewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, code))
+            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, code))
         },
-        resetErrorState = viewModel.resetErrorReq,
+        resetErrorState = validateUserEmailViewModel.resetErrorReq,
         isLoading = { isLoading },
         isInvalidVerificationCode = { isInvalidVerificationCode },
         snackbarHostState = snackbarHostState,
@@ -93,7 +93,7 @@ fun ValidateUserEmailScreen(
                     context.getString(R.string.validateMailCodeResentFeedback, emailToValidate)
                 )
             }
-            viewModel.resendEmailReq(emailToValidate)
+            validateUserEmailViewModel.resendEmailReq(emailToValidate)
         }
     )
 }
