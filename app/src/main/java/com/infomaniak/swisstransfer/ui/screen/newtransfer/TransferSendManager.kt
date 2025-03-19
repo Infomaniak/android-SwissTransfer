@@ -59,13 +59,13 @@ class TransferSendManager @Inject constructor(
         sendTransfer(uploadSession)
     }
 
-    private suspend fun sendTransfer(uploadSession: UploadSession, isRetrying: Boolean = false) {
+    private suspend fun sendTransfer(uploadSession: UploadSession, isRetryingWithNewAttestationToken: Boolean = false) {
         _sendStatus.value = SendStatus.Pending
 
         runCatching {
             uploadManager.initUploadSession(
                 attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
-                isRetrying = isRetrying,
+                isRetrying = isRetryingWithNewAttestationToken,
             )!!
 
             uploadWorkerScheduler.scheduleWork(uploadSession.uuid)
@@ -79,7 +79,7 @@ class TransferSendManager @Inject constructor(
                 is InvalidAttestationTokenException -> {
                     runCatching {
                         uploadManager.updateAttestationToken(fetchNewAttestationToken())
-                        sendTransfer(uploadSession, isRetrying = true)
+                        sendTransfer(uploadSession, isRetryingWithNewAttestationToken = true)
                         return@onFailure
                     }.cancellable().getOrElse {
                         reportToSentry(exception)
