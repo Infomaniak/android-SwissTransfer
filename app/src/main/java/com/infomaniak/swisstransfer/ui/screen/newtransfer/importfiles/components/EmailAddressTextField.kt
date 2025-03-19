@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -72,7 +73,13 @@ fun EmailAddressTextField(
     val isImeVisible = WindowInsets.isImeVisible
     LaunchedEffect(isImeVisible) { if (!isImeVisible) state.addRecipientAddress() }
 
-    val keyboardActions = KeyboardActions(onDone = { state.addRecipientAddress() })
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val keyboardActions = KeyboardActions(onDone = {
+        // Using the default onDone behaviours and waiting for the ime launchedEffect to validate the recipient make a small
+        // visible lag to the email transformation, so we enforce the addRecipientAddress here before closing the keyboard
+        state.addRecipientAddress()
+        keyboardController?.hide()
+    })
 
     val keyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Email,
@@ -260,7 +267,6 @@ private fun EmailAddressDecorationBox(
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class)
 private fun EmailChipsAndInnerTextField(
     validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
     selectedChipIndexState: MutableIntState,
