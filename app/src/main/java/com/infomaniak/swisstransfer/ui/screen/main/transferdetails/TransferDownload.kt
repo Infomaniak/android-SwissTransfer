@@ -25,6 +25,7 @@ import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import com.infomaniak.core.*
 import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.utils.DownloadManagerUtils
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -196,10 +197,20 @@ private suspend fun buildDownloadRequest(
             name = "SwissTransfer/$fileName.zip"
         }
     }
-    return DownloadManagerUtils.requestFor(
-        url = url,
-        nameWithoutProblematicChars = name,
-        mimeType = FileType.guessMimeTypeFromFileName(name),
-        userAgent = userAgent,
-    )
+    return runCatching {
+        DownloadManagerUtils.requestFor(
+            url = url,
+            nameWithoutProblematicChars = name,
+            mimeType = FileType.guessMimeTypeFromFileName(name),
+            userAgent = userAgent,
+        )
+    }.onFailure {
+        // On some Xiaomi devices, `setDestinationInExternalPublicDir` might need to create
+        // the Download directory, and might fail at it with an `IllegalStateException`.
+        SentryLog.w(TAG, "Failed to create the DownloadManager request", it)
+        // It's very likely that trying again will work, so we don't bother showing the error,
+        // and just let the user try again.
+    }.getOrNull()
 }
+
+private const val TAG = "TransferDownload"
