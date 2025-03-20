@@ -19,13 +19,11 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.R
 import com.infomaniak.core.compose.basics.CallableState
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
@@ -41,6 +39,8 @@ fun UploadRetryScreen(
     retry: CallableState<Unit>,
     edit: CallableState<Unit>,
 ) {
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("UploadRetryView") }
+
     when (val error: UploadState.Retry = errorState.value) {
         is UploadState.Retry.EmailValidationRequired -> {
             ValidateUserEmailScreen(

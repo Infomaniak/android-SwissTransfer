@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.SinglePaneScaffold
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -48,6 +49,7 @@ fun NewTransferFilesDetailsScreen(
 ) {
     val uiState by pickFilesViewModel.filesDetailsUiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("NewTransferFileListView") }
     LaunchedEffect(uiState) {
         if (uiState is FilesDetailsUiState.EmptyFiles) navigateBack()
     }

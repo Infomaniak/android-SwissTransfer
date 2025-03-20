@@ -36,7 +36,11 @@ import kotlinx.serialization.Serializable
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 @Serializable
-sealed class MainNavigation(override val matomoValue: String? = null) : NavigationDestination() {
+sealed class MainNavigation(private val matomoValue: String? = null) : NavigationDestination() {
+
+    fun trackScreen() {
+        matomoValue?.let { MatomoSwissTransfer.trackScreen(title = it) }
+    }
 
     protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
         noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
@@ -111,7 +115,7 @@ sealed class MainNavigation(override val matomoValue: String? = null) : Navigati
  * Sealed class representing the navigation arguments for the new transfer flow.
  */
 @Serializable
-sealed class NewTransferNavigation(override val matomoValue: String? = null) : NavigationDestination() {
+sealed class NewTransferNavigation : NavigationDestination() {
 
     @Serializable
     data object PickFilesDestination : NewTransferNavigation()
@@ -139,11 +143,4 @@ sealed class NewTransferNavigation(override val matomoValue: String? = null) : N
  * Sealed class representing navigation arguments with a title resource.
  */
 @Serializable
-sealed class NavigationDestination {
-
-    protected abstract val matomoValue: String?
-
-    fun trackScreen() {
-        matomoValue?.let { MatomoSwissTransfer.trackScreen(title = it) }
-    }
-}
+sealed class NavigationDestination

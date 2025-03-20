@@ -22,12 +22,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing
@@ -41,6 +43,9 @@ fun UploadFailureScreen(
     failureState: State<UploadState.Failure>,
     cancel: CallableState<Unit>,
 ) {
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("UploadErrorView") }
+
     val failure: UploadState.Failure by failureState
     when (failure) {
         UploadState.Failure.AppIntegrityIssue -> UploadFailureScreen(

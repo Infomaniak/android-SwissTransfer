@@ -115,6 +115,7 @@ fun PickFilesScreen(
     HandleStartupFilePick(pickFilesViewModel.openFilePickerEvent, ::pickFiles)
 
     LaunchedEffect(Unit) {
+        MatomoSwissTransfer.trackScreen("NewTransferView")
         UploadForegroundService.uploadStateFlow.mapSync { it != null }.collect { isUploadOngoing ->
             if (isUploadOngoing) {
                 navigateToUploadProgress()
