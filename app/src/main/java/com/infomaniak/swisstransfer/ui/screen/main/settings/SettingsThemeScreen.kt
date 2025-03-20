@@ -43,6 +43,7 @@ fun SettingsThemeScreen(
         optionTitleRes = R.string.settingsThemeTitle,
         enumEntries = ThemeOption.entries,
         selectedSettingOptionPosition = theme.ordinal,
+        matomoValue = "Theme",
         setSelectedSettingOptionPosition = { position -> onThemeUpdate(Theme.entries[position]) },
         navigateBack = navigateBack,
     )

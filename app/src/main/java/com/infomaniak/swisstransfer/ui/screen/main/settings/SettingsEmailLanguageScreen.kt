@@ -39,6 +39,7 @@ fun SettingsEmailLanguageScreen(
         optionTitleRes = R.string.settingsEmailLanguageTitle,
         enumEntries = EmailLanguageOption.entries,
         selectedSettingOptionPosition = emailLanguage.ordinal,
+        matomoValue = "EmailLanguage",
         setSelectedSettingOptionPosition = { position -> onEmailLanguageChange(EmailLanguage.entries[position]) },
         navigateBack = navigateBack,
     )

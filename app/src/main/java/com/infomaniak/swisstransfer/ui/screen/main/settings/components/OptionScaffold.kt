@@ -21,13 +21,11 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -43,10 +41,14 @@ fun OptionScaffold(
     @StringRes optionTitleRes: Int,
     enumEntries: List<SettingOption>,
     selectedSettingOptionPosition: Int,
+    matomoValue: String,
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)?,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("${matomoValue}SettingView") }
+
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -80,6 +82,7 @@ private fun Preview() {
             optionTitleRes = R.string.settingsThemeTitle,
             enumEntries = ThemeOption.entries,
             selectedSettingOptionPosition = 0,
+            matomoValue = "",
             setSelectedSettingOptionPosition = {},
             navigateBack = {},
         )

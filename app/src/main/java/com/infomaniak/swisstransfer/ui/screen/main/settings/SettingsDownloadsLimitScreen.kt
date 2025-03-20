@@ -38,6 +38,7 @@ fun SettingsDownloadsLimitScreen(
         optionTitleRes = R.string.settingsDownloadsLimitTitle,
         enumEntries = DownloadLimitOption.entries,
         selectedSettingOptionPosition = downloadLimit.ordinal,
+        matomoValue = "DownloadLimit",
         setSelectedSettingOptionPosition = { position -> onDownloadLimitChange(DownloadLimit.entries[position]) },
         navigateBack = navigateBack,
     )

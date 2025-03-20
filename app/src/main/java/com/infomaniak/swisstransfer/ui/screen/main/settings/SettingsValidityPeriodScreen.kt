@@ -39,6 +39,7 @@ fun SettingsValidityPeriodScreen(
         optionTitleRes = R.string.settingsValidityPeriodTitle,
         enumEntries = ValidityPeriodOption.entries,
         selectedSettingOptionPosition = validityPeriod.ordinal,
+        matomoValue = "ValidityPeriod",
         setSelectedSettingOptionPosition = { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
         navigateBack = navigateBack,
     )
