@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
@@ -140,6 +141,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     direction: TransferDirection,
     transferUuid: String,
 ) {
+    MatomoSwissTransfer.trackScreen("${direction.matomoValue}TransferDetailsView")
     selectItem(context, windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
 }
 
