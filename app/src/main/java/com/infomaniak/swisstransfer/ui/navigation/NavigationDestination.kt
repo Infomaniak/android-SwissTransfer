@@ -26,7 +26,6 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
@@ -36,11 +35,7 @@ import kotlinx.serialization.Serializable
  * Sealed class representing the navigation arguments for the main navigation flow.
  */
 @Serializable
-sealed class MainNavigation(private val matomoValue: String? = null) : NavigationDestination() {
-
-    fun trackScreen() {
-        matomoValue?.let { MatomoSwissTransfer.trackScreen(title = it) }
-    }
+sealed class MainNavigation : NavigationDestination() {
 
     protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
         noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
@@ -55,7 +50,7 @@ sealed class MainNavigation(private val matomoValue: String? = null) : Navigatio
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class SentDestination(val transferUuid: String? = null) : MainNavigation("SentView") {
+    data class SentDestination(val transferUuid: String? = null) : MainNavigation() {
 
         companion object {
             fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
@@ -66,7 +61,7 @@ sealed class MainNavigation(private val matomoValue: String? = null) : Navigatio
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation("ReceivedView") {
+    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
 
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
@@ -76,7 +71,7 @@ sealed class MainNavigation(private val matomoValue: String? = null) : Navigatio
     }
 
     @Serializable
-    data object SettingsDestination : MainNavigation("SettingsView")
+    data object SettingsDestination : MainNavigation()
 
     companion object {
         private val TAG = MainNavigation::class.java.simpleName

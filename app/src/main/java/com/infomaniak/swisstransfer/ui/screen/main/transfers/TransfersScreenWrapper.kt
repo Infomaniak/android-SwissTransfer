@@ -151,6 +151,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
     transferUuid: String,
     folderUuid: String,
 ) {
+    MatomoSwissTransfer.trackScreen("TransferDetailsFileListView")
     navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent.FolderLevel(direction, transferUuid, folderUuid))
 }
 
