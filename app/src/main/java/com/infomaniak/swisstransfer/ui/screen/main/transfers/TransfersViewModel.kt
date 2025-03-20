@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -62,7 +63,7 @@ class TransfersViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 transferManager.fetchWaitingTransfers()
-            }.onFailure {
+            }.cancellable().onFailure {
                 SentryLog.e(TAG, "Failure for fetchWaitingTransfers", it)
             }
         }
@@ -72,7 +73,7 @@ class TransfersViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             runCatching {
                 transferManager.deleteTransfer(transferUuid)
-            }.onFailure {
+            }.cancellable().onFailure {
                 SentryLog.e(TAG, "Failure for deleteTransfer", it)
             }
         }
