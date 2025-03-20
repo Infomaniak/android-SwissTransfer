@@ -30,6 +30,8 @@ import splitties.init.appCtx
 
 object MatomoSwissTransfer : Matomo {
 
+    const val UPLOAD_ERROR_SCREEN_TITLE = "UploadErrorView"
+
     private val scope = CoroutineScope(Dispatchers.Default)
 
     override val tracker: Tracker = with(appCtx) {

@@ -44,7 +44,7 @@ fun UploadFailureScreen(
     cancel: CallableState<Unit>,
 ) {
 
-    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("UploadErrorView") }
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoSwissTransfer.UPLOAD_ERROR_SCREEN_TITLE) }
 
     val failure: UploadState.Failure by failureState
     when (failure) {

@@ -39,8 +39,6 @@ fun UploadRetryScreen(
     retry: CallableState<Unit>,
     edit: CallableState<Unit>,
 ) {
-    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("UploadRetryView") }
-
     when (val error: UploadState.Retry = errorState.value) {
         is UploadState.Retry.EmailValidationRequired -> {
             ValidateUserEmailScreen(
@@ -58,6 +56,8 @@ private fun UploadRetryScreen(
     retry: CallableState<Unit>,
     edit: CallableState<Unit>,
 ) {
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoSwissTransfer.UPLOAD_ERROR_SCREEN_TITLE) }
+
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         topButton = {
