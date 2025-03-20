@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -95,7 +96,7 @@ class TransferDetailsViewModel @Inject constructor(
                     _transferUuidFlow.emit(transferUuid)
                     transferManager.fetchTransfer(transferUuid)
                 }
-            }.onFailure { exception ->
+            }.cancellable().onFailure { exception ->
                 when (exception) {
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
@@ -136,7 +137,7 @@ class TransferDetailsViewModel @Inject constructor(
             )
             _isWrongDeeplinkPassword.emit(false)
             _isDeeplinkNeedingPassword.emit(false)
-        }.onFailure { exception ->
+        }.cancellable().onFailure { exception ->
             when (exception) {
                 is ExpiredDateFetchTransferException -> longToast(R.string.deeplinkTransferExpired)
                 is DownloadQuotaExceededException -> longToast(R.string.deeplinkTransferExpired)
