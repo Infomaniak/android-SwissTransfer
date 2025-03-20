@@ -72,6 +72,7 @@ enum class TransferTypeUi(
     @StringRes val titleRes: Int,
     @StringRes @PluralsRes val descriptionRes: Int?,
     val dbValue: TransferType,
+    val matomoValue: String,
 ) {
     QrCode(
         buttonIcon = AppIcons.QrCode,
@@ -79,6 +80,7 @@ enum class TransferTypeUi(
         titleRes = R.string.uploadSuccessQrTitle,
         descriptionRes = null,
         dbValue = TransferType.QR_CODE,
+        matomoValue = "qrCode",
     ),
     Mail(
         buttonIcon = AppIcons.Envelope,
@@ -86,6 +88,7 @@ enum class TransferTypeUi(
         titleRes = R.string.uploadSuccessEmailTitle,
         descriptionRes = R.plurals.uploadSuccessEmailDescription,
         dbValue = TransferType.MAIL,
+        matomoValue = "email",
     ),
     Link(
         buttonIcon = AppIcons.Chain,
@@ -93,6 +96,7 @@ enum class TransferTypeUi(
         titleRes = R.string.uploadSuccessLinkTitle,
         descriptionRes = R.string.uploadSuccessLinkDescription,
         dbValue = TransferType.LINK,
+        matomoValue = "link",
     ),
     Proximity(
         buttonIcon = AppIcons.WifiWave,
@@ -100,6 +104,7 @@ enum class TransferTypeUi(
         titleRes = R.string.uploadSuccessLinkTitle,
         descriptionRes = R.string.uploadSuccessLinkDescription,
         dbValue = TransferType.PROXIMITY,
+        matomoValue = "proximity",
     );
 
     companion object {
