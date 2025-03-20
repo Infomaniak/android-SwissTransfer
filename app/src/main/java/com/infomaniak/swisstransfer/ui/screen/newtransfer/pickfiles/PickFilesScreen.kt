@@ -157,7 +157,7 @@ fun PickFilesScreen(
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
             set = { type ->
-                MatomoSwissTransfer.trackTransferTypeEvent(type.matomoValue)
+                MatomoSwissTransfer.trackTransferTypeEvent(type.dbValue.matomoValue)
                 pickFilesViewModel.selectTransferType(type)
             },
         ),
