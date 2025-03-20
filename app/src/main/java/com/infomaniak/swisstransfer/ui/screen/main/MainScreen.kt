@@ -39,6 +39,10 @@ fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
         derivedStateOf { navBackStackEntry?.toMainDestination() ?: MainNavigation.startDestination }
     }
 
+    LaunchedEffect(currentDestination) {
+        currentDestination.trackScreen()
+    }
+
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
