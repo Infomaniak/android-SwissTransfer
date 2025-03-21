@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,6 +30,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -60,6 +63,8 @@ fun ReceivedScreen(
     val sentTransfersAreEmpty by transfersViewModel.sentTransfersAreEmpty.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Received) }
 
     ReceivedScreen(
         uiState = { uiState },

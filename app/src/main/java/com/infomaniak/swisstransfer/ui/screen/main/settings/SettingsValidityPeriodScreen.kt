@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -39,6 +40,7 @@ fun SettingsValidityPeriodScreen(
         optionTitleRes = R.string.settingsValidityPeriodTitle,
         enumEntries = ValidityPeriodOption.entries,
         selectedSettingOptionPosition = validityPeriod.ordinal,
+        matomoValue = MatomoScreen.ValidityPeriodSetting,
         setSelectedSettingOptionPosition = { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
         navigateBack = navigateBack,
     )

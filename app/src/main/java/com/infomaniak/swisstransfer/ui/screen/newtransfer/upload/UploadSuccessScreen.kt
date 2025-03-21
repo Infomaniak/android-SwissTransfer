@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
@@ -42,6 +44,7 @@ fun UploadSuccessScreen(
     // Now that we are done redirecting, we clear the value stored.
     LaunchedEffect(Unit) {
         context.lastTransferDataStore.edit { it.clear() }
+        MatomoSwissTransfer.trackScreen(MatomoScreen.UploadSuccess)
     }
 
     BackHandler(onBack = dismissCompleteUpload)

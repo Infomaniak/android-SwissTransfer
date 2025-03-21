@@ -26,6 +26,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,8 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -65,6 +68,8 @@ fun SettingsScreen(
 ) {
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Settings) }
 
     SwissTransferScaffold(
         topBar = {

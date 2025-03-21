@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -38,6 +39,7 @@ fun SettingsDownloadsLimitScreen(
         optionTitleRes = R.string.settingsDownloadsLimitTitle,
         enumEntries = DownloadLimitOption.entries,
         selectedSettingOptionPosition = downloadLimit.ordinal,
+        matomoValue = MatomoScreen.DownloadLimitSetting,
         setSelectedSettingOptionPosition = { position -> onDownloadLimitChange(DownloadLimit.entries[position]) },
         navigateBack = navigateBack,
     )

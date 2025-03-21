@@ -39,6 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -64,6 +66,7 @@ fun ValidateUserEmailScreen(
     state: UploadState.Retry.EmailValidationRequired,
     validateUserEmailViewModel: ValidateUserEmailViewModel = hiltViewModel(),
 ) {
+
     val emailToValidate = state.info.authorEmail
     val uiState by validateUserEmailViewModel.uiState.collectAsStateWithLifecycle()
     val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
@@ -72,6 +75,8 @@ fun ValidateUserEmailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VerifyMail) }
 
     BackHandler { editTransfer() }
 

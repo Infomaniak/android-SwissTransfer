@@ -33,6 +33,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
@@ -140,6 +142,11 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     direction: TransferDirection,
     transferUuid: String,
 ) {
+    val matomoScreen = when (direction) {
+        TransferDirection.SENT -> MatomoScreen.SentTransferDetails
+        TransferDirection.RECEIVED -> MatomoScreen.ReceivedTransferDetails
+    }
+    MatomoSwissTransfer.trackScreen(matomoScreen)
     selectItem(context, windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
 }
 
@@ -149,6 +156,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
     transferUuid: String,
     folderUuid: String,
 ) {
+    MatomoSwissTransfer.trackScreen(MatomoScreen.TransferDetailsFileList)
     navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent.FolderLevel(direction, transferUuid, folderUuid))
 }
 

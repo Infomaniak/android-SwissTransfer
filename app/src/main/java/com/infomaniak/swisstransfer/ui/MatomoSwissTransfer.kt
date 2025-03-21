@@ -30,6 +30,27 @@ import splitties.init.appCtx
 
 object MatomoSwissTransfer : Matomo {
 
+    enum class MatomoScreen {
+        Sent,
+        Received,
+        Settings,
+        NewTransfer,
+        NewTransferFileList,
+        VerifyMail,
+        UploadProgress,
+        UploadError,
+        UploadSuccess,
+        SentTransferDetails,
+        ReceivedTransferDetails,
+        TransferDetailsFileList,
+        ThemeSetting,
+        ValidityPeriodSetting,
+        DownloadLimitSetting,
+        EmailLanguageSetting;
+
+        override fun toString() = "${name}View"
+    }
+
     private val scope = CoroutineScope(Dispatchers.Default)
 
     override val tracker: Tracker = with(appCtx) {
@@ -46,5 +67,13 @@ object MatomoSwissTransfer : Matomo {
                 }
             }
         }
+    }
+
+    fun trackScreen(screen: MatomoScreen) {
+        trackScreen(path = "/$screen", title = screen.toString())
+    }
+
+    fun trackTransferTypeEvent(name: String) {
+        trackEvent("transferType", name)
     }
 }

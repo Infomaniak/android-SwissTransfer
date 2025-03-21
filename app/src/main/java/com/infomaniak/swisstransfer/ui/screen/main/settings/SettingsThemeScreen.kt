@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.CircleBlack
 import com.infomaniak.swisstransfer.ui.images.icons.CircleBlackAndWhite
@@ -43,6 +44,7 @@ fun SettingsThemeScreen(
         optionTitleRes = R.string.settingsThemeTitle,
         enumEntries = ThemeOption.entries,
         selectedSettingOptionPosition = theme.ordinal,
+        matomoValue = MatomoScreen.ThemeSetting,
         setSelectedSettingOptionPosition = { position -> onThemeUpdate(Theme.entries[position]) },
         navigateBack = navigateBack,
     )

@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.sent
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,6 +31,8 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
@@ -58,6 +61,8 @@ fun SentScreen(
     val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Sent) }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         transfersViewModel.fetchPendingTransfers()

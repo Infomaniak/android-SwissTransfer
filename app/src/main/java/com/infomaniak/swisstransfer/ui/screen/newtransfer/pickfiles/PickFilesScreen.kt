@@ -45,6 +45,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.infomaniak.core.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
@@ -114,6 +116,7 @@ fun PickFilesScreen(
     HandleStartupFilePick(pickFilesViewModel.openFilePickerEvent, ::pickFiles)
 
     LaunchedEffect(Unit) {
+        MatomoSwissTransfer.trackScreen(MatomoScreen.NewTransfer)
         UploadForegroundService.uploadStateFlow.mapSync { it != null }.collect { isUploadOngoing ->
             if (isUploadOngoing) {
                 navigateToUploadProgress()
@@ -154,7 +157,10 @@ fun PickFilesScreen(
         transferMessageCallbacks = pickFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
-            set = pickFilesViewModel::selectTransferType,
+            set = { type ->
+                MatomoSwissTransfer.trackTransferTypeEvent(type.dbValue.matomoValue)
+                pickFilesViewModel.selectTransferType(type)
+            },
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
