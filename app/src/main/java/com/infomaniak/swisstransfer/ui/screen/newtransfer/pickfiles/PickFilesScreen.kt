@@ -46,6 +46,7 @@ import com.infomaniak.core.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
@@ -115,7 +116,7 @@ fun PickFilesScreen(
     HandleStartupFilePick(pickFilesViewModel.openFilePickerEvent, ::pickFiles)
 
     LaunchedEffect(Unit) {
-        MatomoSwissTransfer.trackScreen("NewTransferView")
+        MatomoSwissTransfer.trackScreen(MatomoScreen.NewTransfer)
         UploadForegroundService.uploadStateFlow.mapSync { it != null }.collect { isUploadOngoing ->
             if (isUploadOngoing) {
                 navigateToUploadProgress()

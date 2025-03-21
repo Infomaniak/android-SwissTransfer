@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.R
 import com.infomaniak.swisstransfer.R.string
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -48,7 +49,7 @@ fun UploadOngoingScreen(
     onCancelClick: () -> Unit,
 ) {
 
-    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("UploadProgressView") }
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.UploadProgress) }
 
     val progress by progressState
     BottomStickyButtonScaffold(

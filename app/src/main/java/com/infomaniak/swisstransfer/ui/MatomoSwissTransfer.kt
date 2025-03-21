@@ -30,7 +30,26 @@ import splitties.init.appCtx
 
 object MatomoSwissTransfer : Matomo {
 
-    const val UPLOAD_ERROR_SCREEN_TITLE = "UploadErrorView"
+    enum class MatomoScreen {
+        Sent,
+        Received,
+        Settings,
+        NewTransfer,
+        NewTransferFileList,
+        VerifyMail,
+        UploadProgress,
+        UploadError,
+        UploadSuccess,
+        SentTransferDetails,
+        ReceivedTransferDetails,
+        TransferDetailsFileList,
+        ThemeSetting,
+        ValidityPeriodSetting,
+        DownloadLimitSetting,
+        EmailLanguageSetting;
+
+        override fun toString() = "${name}View"
+    }
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -50,8 +69,8 @@ object MatomoSwissTransfer : Matomo {
         }
     }
 
-    fun trackScreen(title: String) {
-        trackScreen(path = "/$title", title = title)
+    fun trackScreen(screen: MatomoScreen) {
+        trackScreen(path = "/$screen", title = screen.toString())
     }
 
     fun trackTransferTypeEvent(name: String) {

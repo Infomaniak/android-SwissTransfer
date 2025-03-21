@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.R
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingGlassQuestionMark
@@ -56,7 +57,7 @@ private fun UploadRetryScreen(
     retry: CallableState<Unit>,
     edit: CallableState<Unit>,
 ) {
-    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoSwissTransfer.UPLOAD_ERROR_SCREEN_TITLE) }
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.UploadError) }
 
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },

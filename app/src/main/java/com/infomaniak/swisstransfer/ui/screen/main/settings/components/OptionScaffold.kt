@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -41,13 +42,13 @@ fun OptionScaffold(
     @StringRes optionTitleRes: Int,
     enumEntries: List<SettingOption>,
     selectedSettingOptionPosition: Int,
-    matomoValue: String,
+    matomoValue: MatomoScreen,
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit)?,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen("${matomoValue}SettingView") }
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(matomoValue) }
 
     SwissTransferScaffold(
         topBar = {
@@ -82,7 +83,7 @@ private fun Preview() {
             optionTitleRes = R.string.settingsThemeTitle,
             enumEntries = ThemeOption.entries,
             selectedSettingOptionPosition = 0,
-            matomoValue = "",
+            matomoValue = MatomoScreen.Sent,
             setSelectedSettingOptionPosition = {},
             navigateBack = {},
         )
