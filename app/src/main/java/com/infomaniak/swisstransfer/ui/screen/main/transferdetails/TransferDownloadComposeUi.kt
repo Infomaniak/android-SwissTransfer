@@ -48,7 +48,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
 import com.infomaniak.swisstransfer.ui.images.icons.Stop
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.guardedCallback
+import com.infomaniak.swisstransfer.ui.utils.guardedCallbackWithDialog
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
@@ -132,7 +132,7 @@ class TransferDownloadComposeUi(
         } else {
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
+                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadRequest() },
             )
         }
     }
@@ -155,7 +155,7 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
+                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -178,7 +178,7 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
+                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadRequest() },
                 modifier = modifier,
             )
         }

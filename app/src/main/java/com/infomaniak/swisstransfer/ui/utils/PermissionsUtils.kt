@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.first
 // faire POC
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
+fun PermissionState?.guardedCallbackWithDialog(action: () -> Unit): () -> Unit {
     if (this == null) return action
 
     val isGrantedFlow = remember(permission) { snapshotFlow { status.isGranted } }

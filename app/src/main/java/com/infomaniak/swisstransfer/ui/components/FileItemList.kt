@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownl
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
-import com.infomaniak.swisstransfer.ui.utils.guardedCallback
+import com.infomaniak.swisstransfer.ui.utils.guardedCallbackWithDialog
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -104,7 +104,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> writeExternalStoragePermissionState.guardedCallback { downloadUi.onFileClick() }
+                    else -> writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadUi.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->

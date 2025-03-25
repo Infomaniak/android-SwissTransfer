@@ -58,7 +58,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.swisstransfer.ui.utils.guardedCallback
+import com.infomaniak.swisstransfer.ui.utils.guardedCallbackWithDialog
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -165,7 +165,7 @@ fun PickFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
         exitNewTransfer = { exit() },
-        onSendButtonClick = notificationPermissionState.guardedCallback { pickFilesViewModel.send() },
+        onSendButtonClick = notificationPermissionState.guardedCallbackWithDialog { pickFilesViewModel.send() },
         isAwaitingSend = { pickFilesViewModel.isReadyToSend() },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
