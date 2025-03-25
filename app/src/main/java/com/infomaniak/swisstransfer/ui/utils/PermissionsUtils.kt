@@ -17,17 +17,23 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
+import android.util.Log
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.google.accompanist.permissions.*
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.SmallButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 
+// faire POC
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
@@ -35,6 +41,8 @@ fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
 
     val isGrantedFlow = remember(permission) { snapshotFlow { status.isGranted } }
     val actionFired: CompletableJob = remember(permission) { Job() }
+    val shouldShowDialog = rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
     LaunchedEffect(permission) {
         actionFired.join()
@@ -42,12 +50,50 @@ fun PermissionState?.guardedCallback(action: () -> Unit): () -> Unit {
         action()
     }
 
+    if (status is PermissionStatus.Denied && !status.shouldShowRationale && shouldShowDialog.value) {
+        DialogRequirePermission(
+            onDismiss = { shouldShowDialog.value = false },
+            onAuthorize = { context.openAppNotificationSettings() },
+        )
+    }
+
     return {
         if (status.isGranted) {
             action()
         } else {
-            launchPermissionRequest()
+            if (status is PermissionStatus.Denied && status.shouldShowRationale) { // verif shouldShowRationale
+                launchPermissionRequest()
+            } else {
+                shouldShowDialog.value = true
+            }
             actionFired.complete()
         }
+    }
+}
+
+@Composable
+fun DialogRequirePermission(onDismiss: () -> Unit, onAuthorize: () -> Unit) {
+    SwissTransferAlertDialog(
+        titleRes = R.string.authorizeNotificationTitle,
+        descriptionRes = R.string.authorizeNotificationDescription,
+        positiveButton = {
+            SmallButton(
+                style = ButtonType.Tertiary,
+                title = stringResource(R.string.authorizeNotificationTitleButton),
+                enabled = { true },
+                onClick = onAuthorize,
+            )
+        },
+        negativeButton = {},
+        onDismiss = onDismiss,
+        content = {}
+    )
+}
+
+@Preview
+@Composable
+fun PreviewDialogRequirePermission() {
+    SwissTransferTheme {
+        DialogRequirePermission(onDismiss = {}, onAuthorize = {})
     }
 }
