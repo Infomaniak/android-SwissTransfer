@@ -17,6 +17,9 @@
   -->
 <resources>
     <string name="advancedSettingsTitle">Paramètres avancés</string>
+    <string name="authorizeNotificationDescription">Vous devez autoriser les notifications pour suivre la progression de votre téléchargement.</string>
+    <string name="authorizeNotificationTitle">Permission requise</string>
+    <string name="authorizeNotificationTitleButton">Autoriser</string>
     <string name="awaitingNetwork">En attente de réseau</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
     <string name="buttonCancelTransfer">Annuler le transfert</string>
