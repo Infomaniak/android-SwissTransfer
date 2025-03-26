@@ -142,7 +142,7 @@ fun SettingsScreen(
             SettingTitle(R.string.settingsCategoryDataManagement)
             SettingItem(
                 titleRes = R.string.settingsOptionDataManagement,
-                isSelected = { selectedSetting == DATA_MANAGEMENT },
+                isSelected = { selectedSetting?.isDataManagementSetting() == true },
                 icon = AppIcons.Shield,
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DATA_MANAGEMENT) },
@@ -220,7 +220,9 @@ enum class SettingsOptionScreens {
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     EULA, DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
-    DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY,
+    DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY;
+
+    fun isDataManagementSetting() = this == DATA_MANAGEMENT || this == DATA_MANAGEMENT_MATOMO || this == DATA_MANAGEMENT_SENTRY
 }
 
 @PreviewAllWindows
