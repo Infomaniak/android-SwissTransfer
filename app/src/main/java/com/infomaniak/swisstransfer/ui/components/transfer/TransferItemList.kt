@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -60,6 +61,10 @@ fun TransferItemList(
         TransferDirection.RECEIVED -> R.string.receivedFilesTitle
     }
 
+    // stickyHeader seems to over-remember, causing theme to not be applied.
+    // Hoisting it outside of the LazyColumn fixes it.
+    val stickyHeaderBackground = SwissTransferTheme.materialColors.background
+
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Mini),
@@ -73,9 +78,13 @@ fun TransferItemList(
                 Box(
                     modifier = Modifier
                         .fillParentMaxWidth()
-                        .background(SwissTransferTheme.materialColors.background)
+                        .background(stickyHeaderBackground)
                         .animateItem()
                 ) {
+                    // Needed for section.title below, because the context stays the same on configuration changes.
+                    // Reading this makes sure composition happens.
+                    LocalConfiguration.current
+
                     Text(
                         section.title(LocalContext.current),
                         style = SwissTransferTheme.typography.bodySmallRegular,
