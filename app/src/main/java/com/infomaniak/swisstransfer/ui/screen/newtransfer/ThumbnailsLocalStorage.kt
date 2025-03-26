@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import androidx.core.net.toUri
 import com.infomaniak.core.filetypes.FileType
@@ -93,14 +94,14 @@ class ThumbnailsLocalStorage @Inject constructor(
     //endregion
 
     //region Copy
-    suspend fun generateThumbnailFor(transferUuid: String? = null, fileUri: String, fileName: String, extension: String) {
+    suspend fun generateThumbnailFor(transferUuid: String? = null, fileUri: Uri, fileName: String, extension: String) {
         val fileToCreate = transferUuid?.let {
             getOrCreateThumbnailsFolder(it).resolve(fileName)
         } ?: getOrCreateOngoingThumbnailsFolder().resolve(fileName)
 
         withContext(ioDispatcher) {
             val isVideo = guessFromFileName(extension) == FileType.VIDEO
-            appCtx.getLocalThumbnail(fileUri.toUri(), isVideo)?.copyTo(fileToCreate)
+            appCtx.getLocalThumbnail(fileUri, isVideo)?.copyTo(fileToCreate)
         }
     }
 
