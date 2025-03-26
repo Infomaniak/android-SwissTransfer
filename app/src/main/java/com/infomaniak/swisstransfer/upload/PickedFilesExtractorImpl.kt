@@ -138,20 +138,24 @@ private suspend fun extractPickedFile(uri: Uri): PickedFile? = runCatching {
 }.getOrNull()
 
 private suspend fun fileNameFor(uri: Uri): String = Dispatchers.IO {
-    appCtx.contentResolver.query(
-        /* uri = */ uri,
-        /* projection = */ null,
-        /* selection = */ null,
-        /* selectionArgs = */ null,
-        /* sortOrder = */ null
-    )?.use { c ->
-        if (c.moveToFirst()) {
-            when (val nameColumnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)) {
-                -1 -> null
-                else -> c.getStringOrNull(nameColumnIndex)
-            }
-        } else null
-    }
+    runCatching {
+        appCtx.contentResolver.query(
+            /* uri = */ uri,
+            // Not supplying a projection might lead to `NullPointerException` with message "Attempt to get length of null array"
+            // being thrown on some devices, despite what is written in the Javadoc, so we provide one.
+            /* projection = */ displayNameProjection,
+            /* selection = */ null,
+            /* selectionArgs = */ null,
+            /* sortOrder = */ null
+        )?.use { c ->
+            if (c.moveToFirst()) {
+                when (val nameColumnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)) {
+                    -1 -> null
+                    else -> c.getStringOrNull(nameColumnIndex)
+                }
+            } else null
+        }
+    }.onFailure { t -> SentryLog.e(TAG, "Failed to read the display name for uri: $uri", t) }.getOrNull()
 } ?: fallbackName
 
 private suspend fun fileSizeFor(uri: Uri): Long = Dispatchers.IO {
@@ -173,6 +177,8 @@ private suspend fun fileSizeFor(uri: Uri): Long = Dispatchers.IO {
         totalBytes
     }
 }
+
+private val displayNameProjection = arrayOf(OpenableColumns.DISPLAY_NAME)
 
 //TODO: Check that sharing the array to count the size actually works 100% bug-free.
 private val sharedByteArrayForCountingBytes = ByteArray(DEFAULT_BUFFER_SIZE) // 8kiB only
