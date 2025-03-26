@@ -25,15 +25,14 @@ import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import com.infomaniak.core.*
 import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.utils.DownloadManagerUtils
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
@@ -196,10 +195,18 @@ private suspend fun buildDownloadRequest(
             name = "SwissTransfer/$fileName.zip"
         }
     }
-    return DownloadManagerUtils.requestFor(
-        url = url,
-        nameWithoutProblematicChars = name,
-        mimeType = FileType.guessMimeTypeFromFileName(name),
-        userAgent = userAgent,
-    )
+    return runCatching {
+        DownloadManagerUtils.requestFor(
+            url = url,
+            nameWithoutProblematicChars = name,
+            mimeType = Dispatchers.IO { FileType.guessMimeTypeFromFileName(name) },
+            userAgent = userAgent,
+        )
+    }.cancellable().onFailure {
+        // Unlikely to happen since mitigation in requestFor, but we don't want to crash the app if it happens.
+        SentryLog.wtf(TAG, "Failed to create the DownloadManager request", it)
+        // We don't show the error, and we let the user try again.
+    }.getOrNull()
 }
+
+private const val TAG = "TransferDownload"
