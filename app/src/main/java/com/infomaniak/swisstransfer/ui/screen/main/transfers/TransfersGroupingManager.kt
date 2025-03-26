@@ -41,7 +41,7 @@ object TransfersGroupingManager {
                 transfer.isIn(TransferSectionWithContains.ThisWeek, relativeTo = today) -> TransferSectionWithContains.ThisWeek
                 transfer.isIn(TransferSectionWithContains.LastWeek, relativeTo = today) -> TransferSectionWithContains.LastWeek
                 transfer.isIn(TransferSectionWithContains.ThisMonth, relativeTo = today) -> TransferSectionWithContains.ThisMonth
-                else -> TransferSection.ByMonth(getMonthNameFromEpoch(transfer.createdDateTimestamp))
+                else -> TransferSection.ByMonth(transfer.createdDateTimestamp)
             }
         }
     }
@@ -49,7 +49,7 @@ object TransfersGroupingManager {
     sealed class TransferSection(val title: Context.() -> String) {
         val uid get() = toString()
 
-        data class ByMonth(val monthName: String) : TransferSection({ monthName })
+        data class ByMonth(private val timestamp: Long) : TransferSection({ getMonthNameFromEpoch(timestamp) })
     }
 
     sealed class TransferSectionWithContains(
