@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
+import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -55,17 +55,18 @@ fun UploadFailureScreen(
         )
         UploadState.Failure.RestrictedLocation -> UploadFailureScreen(
             exitNewTransfer = cancel,
+            illustration = AppIllus.MascotSearching,
+            title = stringResource(R.string.sorry),
             desc = stringResource(R.string.restrictedLocation)
         )
-    }
-    if (failure == UploadState.Failure.RestrictedLocation) {
-        LocationBottomSheet(closeButtonSheet = cancel)
     }
 }
 
 @Composable
 private fun UploadFailureScreen(
     exitNewTransfer: () -> Unit,
+    illustration: ThemedImage = AppIllus.GhostScrollCrossPointing,
+    title: String = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
     desc: String
 ) {
     BackHandler { exitNewTransfer() }
@@ -81,38 +82,34 @@ private fun UploadFailureScreen(
         }
     ) {
         EmptyState(
-            content = { Image(imageVector = AppIllus.GhostScrollCrossPointing.image(), contentDescription = null) },
-            title = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
+            content = { Image(imageVector = illustration.image(), contentDescription = null) },
+            title = title,
             description = desc,
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@PreviewAllWindows
 @Composable
-private fun LocationBottomSheet(closeButtonSheet: () -> Unit) {
-    SwissTransferBottomSheet(
-        title = stringResource(R.string.sorry),
-        description = stringResource(R.string.restrictedLocation),
-        imageVector = AppIllus.MascotSearching.image(),
-        bottomButton = {
-            LargeButton(
-                title = stringResource(R.string.contentDescriptionButtonClose),
-                modifier = it,
-                style = ButtonType.Primary,
-                onClick = closeButtonSheet,
-            )
-        },
-        onDismissRequest = closeButtonSheet,
-    )
+private fun AppIntegrityIssuePreview() {
+    SwissTransferTheme {
+        Surface {
+            UploadFailureScreen(exitNewTransfer = {}, desc = stringResource(R.string.errorAppIntegrity))
+        }
+    }
 }
 
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun RestrictedLocationPreview() {
     SwissTransferTheme {
         Surface {
-            UploadFailureScreen(exitNewTransfer = {}, stringResource(R.string.errorAppIntegrity))
+            UploadFailureScreen(
+                exitNewTransfer = {},
+                illustration = AppIllus.MascotSearching,
+                title = stringResource(R.string.sorry),
+                desc = stringResource(R.string.restrictedLocation)
+            )
         }
     }
 }
