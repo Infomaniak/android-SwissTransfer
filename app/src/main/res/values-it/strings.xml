@@ -17,9 +17,10 @@
   -->
 <resources>
     <string name="advancedSettingsTitle">Impostazioni avanzate</string>
-    <string name="authorizeNotificationDescription">È necessario consentire le notifiche per seguire l’avanzamento del download.</string>
+    <string name="authorizeDownloadNotificationDescription">È necessario consentire le notifiche per seguire l’avanzamento del download.</string>
     <string name="authorizeNotificationTitle">Autorizzazione necessaria</string>
     <string name="authorizeNotificationTitleButton">Autorizza</string>
+    <string name="authorizeUploadNotificationDescription">È necessario consentire le notifiche per seguire l’avanzamento del caricamento.</string>
     <string name="awaitingNetwork">In attesa della rete</string>
     <string name="buttonAddFiles">Aggiunta di file</string>
     <string name="buttonCancelTransfer">Annullamento del trasferimento</string>

@@ -36,6 +36,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
@@ -104,7 +105,12 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadUi.onFileClick() }
+                    else -> {
+                        writeExternalStoragePermissionState.guardedCallbackWithDialog(
+                            action = downloadUi::onFileClick::invoke,
+                            descriptionRes = R.string.authorizeDownloadNotificationDescription,
+                        )
+                    }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->

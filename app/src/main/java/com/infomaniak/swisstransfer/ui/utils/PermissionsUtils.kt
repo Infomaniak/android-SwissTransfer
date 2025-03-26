@@ -17,70 +17,112 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.accompanist.permissions.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.shouldShowRationale
+import com.infomaniak.core.isResumedFlow
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 
-// faire POC
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PermissionState?.guardedCallbackWithDialog(action: () -> Unit): () -> Unit {
+private fun PermissionState?.guardedCallback(action: () -> Unit, onShowDialog: (() -> Unit)): () -> Unit {
     if (this == null) return action
 
-    val isGrantedFlow = remember(permission) { snapshotFlow { status.isGranted } }
-    val actionFired: CompletableJob = remember(permission) { Job() }
-    val shouldShowDialog = rememberSaveable { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    LaunchedEffect(permission) {
-        actionFired.join()
-        isGrantedFlow.first { it }
-        action()
-    }
-
-    if (status is PermissionStatus.Denied && !status.shouldShowRationale && shouldShowDialog.value) {
-        DialogRequirePermission(
-            onDismiss = { shouldShowDialog.value = false },
-            onAuthorize = { context.openAppNotificationSettings() },
-        )
-    }
+    val scope = rememberCoroutineScope()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     return {
         if (status.isGranted) {
             action()
         } else {
-            if (status is PermissionStatus.Denied && status.shouldShowRationale) { // verif shouldShowRationale
-                launchPermissionRequest()
-            } else {
-                shouldShowDialog.value = true
+            scope.launch {
+                snapshotFlow { status.isGranted }.first { granted ->
+                    if (granted) {
+                        action()
+                    } else if (!status.shouldShowRationale) {
+                        onShowDialog.invoke()
+                    } else {
+                        launchPermissionRequest()
+                        val userSelection = getUserSelection(lifecycle)
+                        if (userSelection == UserSelection.No) onShowDialog.invoke()
+                    }
+                    granted
+                }
             }
-            actionFired.complete()
         }
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
+private suspend fun PermissionState.getUserSelection(lifecycle: Lifecycle): UserSelection {
+    val userSelection = lifecycle
+        .isResumedFlow()
+        .mapNotNull {
+            when {
+                status.isGranted -> UserSelection.Yes
+                !status.shouldShowRationale -> UserSelection.No
+                else -> null
+            }
+        }
+        .first()
+    return userSelection
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun DialogRequirePermission(onDismiss: () -> Unit, onAuthorize: () -> Unit) {
+fun PermissionState?.guardedCallbackWithDialog(action: () -> Unit, @StringRes descriptionRes: Int): () -> Unit {
+    if (this == null) return action
+
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+    val launchAction = guardedCallback(action, onShowDialog = { showDialog = true })
+    val context = LocalContext.current
+
+    if (showDialog) {
+        LaunchedEffect(Unit) {
+            snapshotFlow { status.isGranted }.first { granted ->
+                if (granted) action()
+                granted
+            }
+        }
+
+        DialogRequirePermission(
+            onDismiss = { showDialog = false },
+            onAuthorize = {
+                showDialog = false
+                context.openAppNotificationSettings()
+            },
+            descriptionRes = descriptionRes,
+        )
+    }
+
+    return launchAction
+}
+
+@Composable
+private fun DialogRequirePermission(onDismiss: () -> Unit, onAuthorize: () -> Unit, @StringRes descriptionRes: Int) {
     SwissTransferAlertDialog(
         titleRes = R.string.authorizeNotificationTitle,
-        descriptionRes = R.string.authorizeNotificationDescription,
+        descriptionRes = descriptionRes,
         positiveButton = {
             SmallButton(
                 style = ButtonType.Tertiary,
                 title = stringResource(R.string.authorizeNotificationTitleButton),
-                enabled = { true },
                 onClick = onAuthorize,
             )
         },
@@ -94,6 +136,14 @@ fun DialogRequirePermission(onDismiss: () -> Unit, onAuthorize: () -> Unit) {
 @Composable
 fun PreviewDialogRequirePermission() {
     SwissTransferTheme {
-        DialogRequirePermission(onDismiss = {}, onAuthorize = {})
+        DialogRequirePermission(
+            onDismiss = {},
+            onAuthorize = {},
+            descriptionRes = R.string.authorizeDownloadNotificationDescription
+        )
     }
+}
+
+private enum class UserSelection {
+    Yes, No
 }

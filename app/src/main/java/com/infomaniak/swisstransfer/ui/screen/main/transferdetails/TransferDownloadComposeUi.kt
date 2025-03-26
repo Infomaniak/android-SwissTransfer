@@ -132,7 +132,10 @@ class TransferDownloadComposeUi(
         } else {
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadRequest() },
+                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog(
+                    action = ::downloadRequest::invoke,
+                    descriptionRes = R.string.authorizeDownloadNotificationDescription,
+                ),
             )
         }
     }
@@ -155,7 +158,10 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadRequest() },
+                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog(
+                    action = ::downloadRequest::invoke,
+                    descriptionRes = R.string.authorizeDownloadNotificationDescription,
+                ),
                 modifier = modifier,
             )
         }
@@ -178,7 +184,10 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog { downloadRequest() },
+                onClick = writeExternalStoragePermissionState.guardedCallbackWithDialog(
+                    action = ::downloadRequest::invoke,
+                    descriptionRes = R.string.authorizeDownloadNotificationDescription,
+                ),
                 modifier = modifier,
             )
         }

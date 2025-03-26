@@ -22,9 +22,10 @@
     <string name="notifications_upload_channel_id" translatable="false">upload_channel_id</string>
 
     <string name="advancedSettingsTitle">Advanced settings</string>
-    <string name="authorizeNotificationDescription">You need to allow notifications to track the progress of your download.</string>
+    <string name="authorizeDownloadNotificationDescription">You need to allow notifications to track the progress of your download.</string>
     <string name="authorizeNotificationTitle">Permission required</string>
     <string name="authorizeNotificationTitleButton">Authorize</string>
+    <string name="authorizeUploadNotificationDescription">You need to allow notifications to track the progress of your upload.</string>
     <string name="awaitingNetwork">Waiting for network</string>
     <string name="buttonAddFiles">Add files</string>
     <string name="buttonCancelTransfer">Cancel the transfer</string>

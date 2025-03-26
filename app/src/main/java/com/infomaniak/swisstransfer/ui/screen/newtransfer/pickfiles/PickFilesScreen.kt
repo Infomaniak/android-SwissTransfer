@@ -165,7 +165,10 @@ fun PickFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
         exitNewTransfer = { exit() },
-        onSendButtonClick = notificationPermissionState.guardedCallbackWithDialog { pickFilesViewModel.send() },
+        onSendButtonClick = notificationPermissionState.guardedCallbackWithDialog(
+            action = pickFilesViewModel::send,
+            descriptionRes = R.string.authorizeUploadNotificationDescription
+        ),
         isAwaitingSend = { pickFilesViewModel.isReadyToSend() },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
