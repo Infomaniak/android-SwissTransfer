@@ -199,7 +199,7 @@ private suspend fun buildDownloadRequest(
         DownloadManagerUtils.requestFor(
             url = url,
             nameWithoutProblematicChars = name,
-            mimeType = FileType.guessMimeTypeFromFileName(name),
+            mimeType = Dispatchers.IO { FileType.guessMimeTypeFromFileName(name) },
             userAgent = userAgent,
         )
     }.cancellable().onFailure {
