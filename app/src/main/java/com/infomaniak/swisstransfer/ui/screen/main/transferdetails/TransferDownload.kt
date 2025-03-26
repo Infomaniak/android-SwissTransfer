@@ -32,9 +32,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
@@ -204,12 +202,10 @@ private suspend fun buildDownloadRequest(
             mimeType = FileType.guessMimeTypeFromFileName(name),
             userAgent = userAgent,
         )
-    }.onFailure {
-        // On some Xiaomi devices, `setDestinationInExternalPublicDir` might need to create
-        // the Download directory, and might fail at it with an `IllegalStateException`.
-        SentryLog.w(TAG, "Failed to create the DownloadManager request", it)
-        // It's very likely that trying again will work, so we don't bother showing the error,
-        // and just let the user try again.
+    }.cancellable().onFailure {
+        // Unlikely to happen since mitigation in requestFor, but we don't want to crash the app if it happens.
+        SentryLog.wtf(TAG, "Failed to create the DownloadManager request", it)
+        // We don't show the error, and we let the user try again.
     }.getOrNull()
 }
 
