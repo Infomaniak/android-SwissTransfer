@@ -64,7 +64,7 @@ fun TransferManager.previewUriForFile(
         file.mimeType?.let { mimeType ->
             thumbnailsLocalStorage.generateThumbnailFor(
                 transferUuid = transfer.uuid,
-                fileUri = uri.toString(),
+                fileUri = uri ?: return@let,
                 fileName = file.uid,
                 extension = mimeType.substring(mimeType.indexOfLast { it == '/' })
             )
