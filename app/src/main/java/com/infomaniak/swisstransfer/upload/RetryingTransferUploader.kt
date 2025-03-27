@@ -184,20 +184,24 @@ class RetryingTransferUploader(
         }
     }
 
-    private suspend fun syncFileChunksUploadStatuses(metadata: FileToUploadMetaData, totalChunks: Int) {
-        if (true) return //TODO: Unsupported yet
-        coroutineScope {
-            for (chunkIndex in 0..<totalChunks) {
-                when (metadata.chunksUploadStatus[chunkIndex]) {
-                    null, DefinitelyComplete -> continue // Leave as is.
-                    StartedOrComplete -> launch {
-                        val exists: Boolean = TODO("Check if exists")
-                        metadata.chunksUploadStatus[chunkIndex] = if (exists) DefinitelyComplete else null
-                    }
+    private suspend fun syncFileChunksUploadStatuses(metadata: FileToUploadMetaData, totalChunks: Int) = coroutineScope {
+        for (chunkIndex in 0..<totalChunks) {
+            when (metadata.chunksUploadStatus[chunkIndex]) {
+                null, DefinitelyComplete -> continue // Leave as is.
+                StartedOrComplete -> launch {
+                    val exists: Boolean = uploadManager.doesChunkExist(
+                        remoteContainerUuid = destination.container.uuid,
+                        fileUUID = metadata.uuid,
+                        chunkIndex = chunkIndex,
+                        chunkSize = metadata.chunkConfig.fileChunkSize
+                    )
+                    metadata.chunksUploadStatus[chunkIndex] = if (exists) DefinitelyComplete else null
                 }
             }
         }
     }
+
+    private var failFirstChunkForTesting = true
 
     private suspend fun uploadFileInChunks(
         metadata: FileToUploadMetaData,
