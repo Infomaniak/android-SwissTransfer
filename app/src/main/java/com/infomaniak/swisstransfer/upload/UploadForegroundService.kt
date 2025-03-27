@@ -225,16 +225,16 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                     startRequest = startRequest,
                     updateState = { currentState = it }
                 ) ?: return@tryCompletingUnlessCancelled null
+                val uploader = RetryingTransferUploader(
+                    uploadManager = uploadManager,
+                    transferManager = transferManager,
+                    fileChunkSizeManager = fileChunkSizeManager,
+                    request = result.request,
+                    destination = result.destination,
+                    startRequest = startRequest,
+                    thumbnailsLocalStorage = thumbnailsLocalStorage,
+                )
                 repeatWhileActive retryLoop@{
-                    val uploader = RetryingTransferUploader(
-                        uploadManager = uploadManager,
-                        transferManager = transferManager,
-                        fileChunkSizeManager = fileChunkSizeManager,
-                        request = result.request,
-                        destination = result.destination,
-                        startRequest = startRequest,
-                        thumbnailsLocalStorage = thumbnailsLocalStorage,
-                    )
                     runCatching {
                         tryCompletingWithInternet(
                             withoutInternet = {
