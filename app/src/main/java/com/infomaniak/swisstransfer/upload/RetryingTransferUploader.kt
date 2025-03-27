@@ -324,7 +324,7 @@ class RetryingTransferUploader(
     }
 
     private companion object {
-        private val TAG = TransferUploader::class.java.simpleName
+        private val TAG = RetryingTransferUploader::class.java.simpleName
     }
 }
 
