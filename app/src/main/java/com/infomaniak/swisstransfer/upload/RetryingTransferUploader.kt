@@ -154,8 +154,6 @@ class RetryingTransferUploader(
         val uploadFileSession: UploadFileSession = metadata.uploadFileSession
         SentryLog.i(TAG, "start upload file ${fileUUID}, with size ${uploadFileSession.size}")
 
-
-
         contentResolver.openInputStream(targetFileUri)!!.buffered().use { inputStream ->
             if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
                 thumbnailsLocalStorage.generateThumbnailFor(
