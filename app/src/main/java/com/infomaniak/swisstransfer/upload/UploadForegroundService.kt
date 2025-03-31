@@ -219,40 +219,37 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                 info = startRequest.info
             )
 
-            //TODO[UL-retry]: Once we support resuming the upload:
-            // 1. Remove `isInternetConnectedFlow.mapLatest` from `tryCompletingWithInternetUnlessCancelled`,
-            //    and move it to just the uploader part.
-            // 2. Remove the loop (repeatWhileActive) below.
-            // 3. In the uploader, use a function named `uploadAllRemainingWithRetries` or something.
-            val transferUuid = tryCompletingWithInternetUnlessCancelled(
-                valueIfCancelled = null,
-                withoutInternet = {
-                    currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>().first().copy(
-                        status = Status.WaitingForInternet
-                    )
-                    awaitCancellation()
-                }
-            ) {
+            //TODO[UL-retry]: Extract retries into the uploader maybe?
+            val transferUuid = tryCompletingUnlessCancelled(valueIfCancelled = null) {
+                val result = startUploadSession(
+                    startRequest = startRequest,
+                    updateState = { currentState = it }
+                ) ?: return@tryCompletingUnlessCancelled null
+                val uploader = TransferUploader(
+                    uploadManager = uploadManager,
+                    transferManager = transferManager,
+                    fileChunkSizeManager = fileChunkSizeManager,
+                    request = result.request,
+                    destination = result.destination,
+                    startRequest = startRequest,
+                    thumbnailsLocalStorage = thumbnailsLocalStorage,
+                )
                 repeatWhileActive retryLoop@{
-                    val result = startUploadSession(
-                        startRequest = startRequest,
-                        updateState = { currentState = it }
-                    ) ?: return@tryCompletingWithInternetUnlessCancelled null
-                    val uploader = TransferUploader(
-                        uploadManager = uploadManager,
-                        transferManager = transferManager,
-                        fileChunkSizeManager = fileChunkSizeManager,
-                        request = result.request,
-                        destination = result.destination,
-                        startRequest = startRequest,
-                        thumbnailsLocalStorage = thumbnailsLocalStorage,
-                    )
                     runCatching {
-                        withPartialWakeLock(
-                            appName = "SwissTransfer",
-                            tagSuffix = "upload"
+                        tryCompletingWithInternet(
+                            withoutInternet = {
+                                currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>().first().copy(
+                                    status = Status.WaitingForInternet
+                                )
+                                awaitCancellation()
+                            }
                         ) {
-                            uploader.uploadAllOrThrow(updateState = { currentState = it })
+                            withPartialWakeLock(
+                                appName = "SwissTransfer",
+                                tagSuffix = "upload"
+                            ) {
+                                uploader.uploadRemainderOrThrow(updateState = { currentState = it })
+                            }
                         }
                     }.cancellable().onFailure { t ->
                         currentState = when (t) {
@@ -265,9 +262,9 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
                         if (shouldRetry()) {
                             return@retryLoop
                         } else {
-                            return@tryCompletingWithInternetUnlessCancelled null
+                            return@tryCompletingUnlessCancelled null
                         }
-                    }.onSuccess { uuid -> return@tryCompletingWithInternetUnlessCancelled uuid }
+                    }.onSuccess { uuid -> return@tryCompletingUnlessCancelled uuid }
                 }
             }
             currentState = if (transferUuid != null) {
@@ -291,14 +288,20 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         }
     }
 
-    private suspend fun <R> tryCompletingWithInternetUnlessCancelled(
-        valueIfCancelled: R,
+    private suspend fun <R> tryCompletingWithInternet(
         withoutInternet: suspend () -> R,
         block: suspend () -> R
-    ): R? = raceOf({
-        isInternetConnectedFlow.mapLatest { isInternetConnected ->
+    ): R? {
+        return isInternetConnectedFlow.mapLatest { isInternetConnected ->
             if (isInternetConnected) block() else withoutInternet()
         }.first()
+    }
+
+    private suspend fun <R> tryCompletingUnlessCancelled(
+        valueIfCancelled: R,
+        block: suspend () -> R
+    ): R? = raceOf({
+        block()
     }, {
         cancelTransferSignals.receive()
         valueIfCancelled
