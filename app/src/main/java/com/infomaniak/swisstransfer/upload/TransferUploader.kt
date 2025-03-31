@@ -66,7 +66,6 @@ class TransferUploader(
     private val filesToUploadMetadata = pickedFiles.mapIndexed { index, pickedFile ->
         FileToUploadMetaData(
             pickedFile = pickedFile,
-            uploadFileSession = pickedFile.toUploadFileSession(),
             fileChunkSizeManager = fileChunkSizeManager,
             uuid = destination.filesUuid[index],
         )
@@ -74,12 +73,11 @@ class TransferUploader(
 
     private class FileToUploadMetaData(
         val pickedFile: PickedFile,
-        val uploadFileSession: UploadFileSession,
         fileChunkSizeManager: FileChunkSizeManager,
         val uuid: String
     ) {
 
-        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = uploadFileSession.size)
+        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = pickedFile.size)
 
         val chunksUploadStatus = Array<ChunkUploadStatus?>(chunkConfig.totalChunks) { null }
         var thumbnailSaved = false
@@ -151,8 +149,7 @@ class TransferUploader(
 
         val targetFileUri: Uri = metadata.pickedFile.uri
         val fileUUID: String = metadata.uuid
-        val uploadFileSession: UploadFileSession = metadata.uploadFileSession
-        SentryLog.i(TAG, "start upload file ${fileUUID}, with size ${uploadFileSession.size}")
+        SentryLog.i(TAG, "start upload file ${fileUUID}, with size ${metadata.pickedFile.size}")
 
         contentResolver.openInputStream(targetFileUri)!!.buffered().use { inputStream ->
             if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
