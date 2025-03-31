@@ -82,7 +82,12 @@ class TransferUploader(
     }
 
     private enum class ChunkUploadStatus {
-        StartedOrComplete, DefinitelyComplete;
+
+        /** Upload started but might not have come to completion. */
+        StartedOrComplete,
+
+        /** Upload completed, because we successfully received the confirmation from the backend. */
+        DefinitelyComplete;
     }
 
     /**
@@ -147,7 +152,7 @@ class TransferUploader(
 
         val targetFileUri: Uri = metadata.pickedFile.uri
         val fileUUID: String = metadata.uuid
-        SentryLog.i(TAG, "start upload file ${fileUUID}, with size ${metadata.pickedFile.size}")
+        SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
 
         contentResolver.openInputStream(targetFileUri)!!.buffered().use { inputStream ->
             if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
