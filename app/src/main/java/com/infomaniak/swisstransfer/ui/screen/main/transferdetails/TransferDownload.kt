@@ -145,15 +145,15 @@ private suspend fun isFileDeleted(id: UniqueDownloadId): Boolean {
     repeat(2) { attemptIndex ->
         runCatching {
             return downloadManager.doesFileExist(id).not()
-        }.cancellable().onFailure { t ->
-            when (t) {
+        }.cancellable().onFailure { throwable ->
+            when (throwable) {
                 is SecurityException, is IOException -> {
                     // SecurityException can be thrown when the file is deleted, sometimes.
                     if (attemptIndex > 0) {
-                        SentryLog.e(TAG, "Unable to check if the downloaded file exists", t)
+                        SentryLog.e(TAG, "Unable to check if the downloaded file exists", throwable)
                     }
                 }
-                else -> throw t
+                else -> throw throwable
             }
         }
         delay(.5.seconds) // Give a chance for the deletion to complete if it was ongoing.
