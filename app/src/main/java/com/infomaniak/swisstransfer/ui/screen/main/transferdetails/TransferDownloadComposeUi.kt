@@ -302,7 +302,7 @@ class TransferDownloadComposeUi(
 }
 
 private fun InProgress.getProgress(): Float {
-    return (if (totalSizeInBytes == 0L) 0 else downloadedBytes / totalSizeInBytes).toFloat()
+    return (if (totalSizeInBytes == 0L) 0 else downloadedBytes.toDouble() / totalSizeInBytes).toFloat()
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
