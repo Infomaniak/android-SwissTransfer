@@ -38,6 +38,7 @@ import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.systemservices.downloadManager
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.time.Duration.Companion.seconds
@@ -134,14 +135,30 @@ private suspend fun awaitFileDeletion(
     when (status) {
         null -> return@mapLatest
         DownloadStatus.Complete -> lifecycle.isResumedFlow().transformLatest { isResumed ->
-            if (isResumed) {
-                val isFileDeleted = downloadManager.doesFileExist(id).not()
-                emit(isFileDeleted)
-            }
+            if (isResumed) emit(isFileDeleted(id))
         }.first { deleted -> deleted }
         else -> awaitCancellation()
     }
 }.first()
+
+private suspend fun isFileDeleted(id: UniqueDownloadId): Boolean {
+    repeat(2) { attemptIndex ->
+        try {
+            return downloadManager.doesFileExist(id).not()
+        } catch (e: IOException) {
+            if (attemptIndex > 0) {
+                SentryLog.e(TAG, "Unable to check if the downloaded file exists", e)
+            }
+        } catch (e: SecurityException) {
+            // Can be thrown when the file is deleted, sometimes.
+            if (attemptIndex > 0) {
+                SentryLog.e(TAG, "Unable to check if the downloaded file exists", e)
+            }
+        }
+        delay(.5.seconds) // Give a chance for the deletion to complete if it was ongoing.
+    }
+    return false
+}
 
 private suspend fun getNewDownloadId(
     ui: TransferDownloadUi,
