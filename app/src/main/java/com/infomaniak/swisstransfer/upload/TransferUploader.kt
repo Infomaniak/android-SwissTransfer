@@ -234,9 +234,7 @@ class TransferUploader(
                     continue
                 }
 
-                SentryLog.i(TAG, "Waiting for permit to start chunk #$chunkIndex of $fileUUID")
                 requestSemaphore.acquire()
-                SentryLog.i(TAG, "Got for permit to start chunk #$chunkIndex of $fileUUID")
 
                 val isLastChunk = chunkIndex == lastChunkIndex
                 val dataByteArray = getReusableByteArray(byteArrayPool, inputStream, chunkSize, isLastChunk)
@@ -251,9 +249,7 @@ class TransferUploader(
 
                         // Wait for all the other jobs to complete
                         if (totalChunks > 1 && isLastChunk) {
-                            SentryLog.i(TAG, "Waiting for allChunksButLastUploadedSignal for $fileUUID")
                             allChunksButLastUploadedSignal.join()
-                            SentryLog.i(TAG, "Received the allChunksButLastUploadedSignal for $fileUUID")
                         }
                         metadata.chunksUploadStatus[chunkIndex] = StartedOrComplete
                         SentryLog.i(TAG, "Uploading chunk #$chunkIndex of $fileUUID")
