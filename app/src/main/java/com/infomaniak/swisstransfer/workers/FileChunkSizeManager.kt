@@ -34,7 +34,7 @@ class FileChunkSizeManager(
         val fileChunkSize = computeChunkSize(fileSize, halfAvailableMemory)
         val totalChunks = computeFileChunks(fileSize, fileChunkSize)
         return ChunkConfig(
-            fileChunkSize = computeChunkSize(fileSize, halfAvailableMemory),
+            fileChunkSize = fileChunkSize,
             totalChunks = totalChunks,
             parallelChunks = computeParallelChunks(totalChunks, fileChunkSize, halfAvailableMemory.toDouble())
         )
