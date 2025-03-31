@@ -226,7 +226,7 @@ class TransferUploader(
             for (chunkIndex in 0..lastChunkIndex)  {
                 val uploadStatus = metadata.chunksUploadStatus[chunkIndex]
                 if (uploadStatus == DefinitelyComplete) {
-                    SentryLog.i(TAG, "skipping chunk #$chunkIndex since it's already been uploaded")
+                    SentryLog.d(TAG, "skipping chunk #$chunkIndex since it's already been uploaded")
                     inputStream.skip(chunkSize)
                     if (totalChunks > 1 && completedChunks.incrementAndFetch() == lastChunkIndex) {
                         allChunksButLastUploadedSignal.complete()
@@ -241,7 +241,7 @@ class TransferUploader(
 
                 val isEndOfFile = inputStream.read(dataByteArray, 0, dataByteArray.size) == -1
                 if (isEndOfFile) {
-                    SentryLog.i(TAG, "endOfFile for chunk #$chunkIndex of $fileUUID")
+                    SentryLog.w(TAG, "endOfFile for chunk #$chunkIndex of $fileUUID")
                     continue
                 }
                 launch {
@@ -252,14 +252,14 @@ class TransferUploader(
                             allChunksButLastUploadedSignal.join()
                         }
                         metadata.chunksUploadStatus[chunkIndex] = StartedOrComplete
-                        SentryLog.i(TAG, "Uploading chunk #$chunkIndex of $fileUUID")
+                        SentryLog.d(TAG, "Uploading chunk #$chunkIndex of $fileUUID")
                         startUploadChunk(
                             fileUUID = fileUUID,
                             chunkIndex = chunkIndex,
                             isLastChunk = isLastChunk,
                             data = dataByteArray
                         )
-                        SentryLog.i(TAG, "Completed uploading chunk #$chunkIndex of $fileUUID")
+                        SentryLog.d(TAG, "Uploaded chunk #$chunkIndex of $fileUUID")
                         metadata.chunksUploadStatus[chunkIndex] = DefinitelyComplete
                         // Allow the last chunk to start being uploaded
                         if (totalChunks > 1 && completedChunks.incrementAndFetch() == lastChunkIndex) {
