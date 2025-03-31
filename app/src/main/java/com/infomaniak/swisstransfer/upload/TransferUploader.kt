@@ -66,18 +66,16 @@ class TransferUploader(
     private val filesToUploadMetadata = pickedFiles.mapIndexed { index, pickedFile ->
         FileToUploadMetaData(
             pickedFile = pickedFile,
-            fileChunkSizeManager = fileChunkSizeManager,
+            chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = pickedFile.size),
             uuid = destination.filesUuid[index],
         )
     }
 
     private class FileToUploadMetaData(
         val pickedFile: PickedFile,
-        fileChunkSizeManager: FileChunkSizeManager,
-        val uuid: String
+        val chunkConfig: FileChunkSizeManager.ChunkConfig,
+        val uuid: String,
     ) {
-
-        val chunkConfig = fileChunkSizeManager.computeChunkConfig(fileSize = pickedFile.size)
 
         val chunksUploadStatus = Array<ChunkUploadStatus?>(chunkConfig.totalChunks) { null }
         var thumbnailSaved = false
