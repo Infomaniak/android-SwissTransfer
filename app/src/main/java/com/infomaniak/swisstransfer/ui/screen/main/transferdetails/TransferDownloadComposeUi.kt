@@ -291,7 +291,7 @@ class TransferDownloadComposeUi(
         modifier: Modifier = Modifier,
     ) {
         val status by progressStatus
-        LinearProgressIndicator(progress = status::getProgress, modifier = modifier)
+        LinearProgressIndicator(progress = status::getProgress, modifier = modifier, drawStopIndicator = {})
     }
 
     @Composable
