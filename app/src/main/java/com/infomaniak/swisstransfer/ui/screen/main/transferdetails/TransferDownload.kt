@@ -158,7 +158,7 @@ private suspend fun isFileDeleted(id: UniqueDownloadId): Boolean {
         }
         delay(.5.seconds) // Give a chance for the deletion to complete if it was ongoing.
     }
-    return false
+    return true // Don't assume the file still exists if we couldn't read it
 }
 
 private suspend fun getNewDownloadId(
