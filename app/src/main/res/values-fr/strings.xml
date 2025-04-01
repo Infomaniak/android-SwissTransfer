@@ -111,7 +111,7 @@
     <string name="settingsDataManagementDescription">Vous pouvez personnaliser les données d’utilisation et opérationnelles qui sont récupérées par Infomaniak pour corriger des bugs et faire évoluer l’application. Les deux outils utilisés sont hébergés et gérés exclusivement chez nous.\n\nInfomaniak respecte votre vie privée : le code source de cette application peut être vérifié, les informations récoltées sont anonymes et vos informations personnelles restent strictement confidentielles et ne sont jamais partagées avec des tiers.</string>
     <string name="settingsDataManagementSourceCode">Voir le code source</string>
     <string name="settingsDownloadsLimitTitle">Défini une limite de téléchargements par défaut pour tes transferts</string>
-    <string name="settingsEmailLanguageTitle">Défini une langue par défaut pour vos transferts par e-mail</string>
+    <string name="settingsEmailLanguageTitle">Défini une langue par défaut pour tes transferts par e-mail</string>
     <string name="settingsEmailLanguageValueEnglish">Anglais</string>
     <string name="settingsEmailLanguageValueFrench">Francais</string>
     <string name="settingsEmailLanguageValueGerman">Allemand</string>
