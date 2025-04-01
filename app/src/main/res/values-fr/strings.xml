@@ -158,7 +158,12 @@
     <string name="transferExpired">Transfert expiré</string>
     <string name="transferExpiredButton">Supprimer de l’historique</string>
     <string name="transferExpiredDateReachedDescription">Désolé, ce transfert a expiré le %s. Tu ne peux plus télécharger ni consulter les fichiers.</string>
-    <string name="transferExpiredLimitReachedDescription">Désolé, ce transfert a atteint la limite de %d téléchargements possibles.</string>
+    <string name="transferExpiredDescription">Désolé, ce transfert a expiré. Tu ne peux plus télécharger ni consulter les fichiers.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Désolé, ce transfert a atteint la limite de %d téléchargement possible.</item>
+        <item quantity="other">Désolé, ce transfert a atteint la limite de %d téléchargements possibles.</item>
+        <item quantity="many">Désolé, ce transfert a atteint la limite de %d téléchargement possible.</item>
+    </plurals>
     <string name="transferExpiredTitle">Ce transfert n’est plus disponible</string>
     <string name="transferInitializing">Chargement…</string>
     <string name="transferListSectionFuture">Futur</string>

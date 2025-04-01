@@ -157,7 +157,11 @@
     <string name="transferExpired">Trasferimento scaduto</string>
     <string name="transferExpiredButton">Cancellare dalla cronologia</string>
     <string name="transferExpiredDateReachedDescription">Spiacente, questo trasferimento è scaduto il %s. Non è più possibile scaricare o visualizzare i file.</string>
-    <string name="transferExpiredLimitReachedDescription">Spiacente, questo trasferimento ha raggiunto il limite di %d download possibili.</string>
+    <string name="transferExpiredDescription">Siamo spiacenti, questo trasferimento è scaduto. Non è più possibile scaricare o visualizzare i file.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Spiacenti, questo trasferimento ha raggiunto il limite di %d download possibile.</item>
+        <item quantity="other">Spiacente, questo trasferimento ha raggiunto il limite di %d download possibili.</item>
+    </plurals>
     <string name="transferExpiredTitle">Questo trasferimento non è più disponibile</string>
     <string name="transferInitializing">Caricamento…</string>
     <string name="transferListSectionFuture">Futuro</string>

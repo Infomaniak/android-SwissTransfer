@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components.transfer
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.utils.FORMAT_DATE_SIMPLE
@@ -54,10 +55,7 @@ fun TransferExpiredBottomSheet(
             transfer.expirationDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_SIMPLE),
         )
     } else {
-        stringResource(
-            R.string.transferExpiredLimitReachedDescription,
-            transfer.downloadLimit,
-        )
+        pluralStringResource(R.plurals.transferExpiredLimitReachedDescription, transfer.downloadLimit, transfer.downloadLimit)
     }
 
     SwissTransferBottomSheet(
