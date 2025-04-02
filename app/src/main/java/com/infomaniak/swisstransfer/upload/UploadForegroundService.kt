@@ -55,7 +55,7 @@ import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
-class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKilled = true) {
+class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKilled = false) {
 
     companion object : ForegroundService.Companion.NoExtras<UploadForegroundService>(
         intentSpec = serviceWithoutExtrasSpec<UploadForegroundService>(),
