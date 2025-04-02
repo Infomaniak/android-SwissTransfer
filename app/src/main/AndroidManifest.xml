@@ -67,9 +67,10 @@
             android:foregroundServiceType="dataSync"
             tools:node="merge" />
 
-        <service android:name=".upload.UploadForegroundService"
-            android:foregroundServiceType="dataSync"
-            android:exported="false"/>
+        <service
+            android:name=".upload.UploadForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
