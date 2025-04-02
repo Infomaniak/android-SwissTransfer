@@ -26,8 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.R
-import com.infomaniak.swisstransfer.R.string
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
@@ -41,6 +40,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun UploadOngoingScreen(
@@ -55,7 +55,7 @@ fun UploadOngoingScreen(
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
-            LargeButton(stringResource(R.string.buttonCancel), modifier = it, onClick = onCancelClick)
+            LargeButton(stringResource(RCore.string.buttonCancel), modifier = it, onClick = onCancelClick)
         },
     ) {
         Column(
@@ -66,7 +66,7 @@ fun UploadOngoingScreen(
 
             Spacer(Modifier.height(Margin.Medium))
 
-            Text(text = stringResource(string.uploadProgressIndication), style = SwissTransferTheme.typography.h2)
+            Text(text = stringResource(R.string.uploadProgressIndication), style = SwissTransferTheme.typography.h2)
 
             Spacer(Modifier.height(Margin.Mini))
 
@@ -98,7 +98,7 @@ private fun UploadStatus(progress: () -> UploadState.Ongoing) {
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
                 when (status) {
-                    UploadState.Ongoing.Status.Initializing -> Text(stringResource(string.transferInitializing))
+                    UploadState.Ongoing.Status.Initializing -> Text(stringResource(R.string.transferInitializing))
                     UploadState.Ongoing.Status.InProgress -> Progress(
                         uploadedSize = { progress().uploadedBytes },
                         totalSizeInBytes = totalSizeInBytes
@@ -121,7 +121,7 @@ private fun Preview() {
                     info = UploadState.Info(
                         authorEmail = "",
                         totalSize = 50_000_000L,
-                        type = TransferTypeUi.Link
+                        type = TransferTypeUi.Link,
                     ),
                     uploadedBytes = 44_321_654L,
                 )
