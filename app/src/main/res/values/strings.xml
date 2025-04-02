@@ -162,7 +162,11 @@
     <string name="transferExpired">Transfer expired</string>
     <string name="transferExpiredButton">Delete from history</string>
     <string name="transferExpiredDateReachedDescription">Sorry, this transfer expired on %s. You can no longer download or view the files.</string>
-    <string name="transferExpiredLimitReachedDescription">Sorry, this transfer has reached the limit of %d possible downloads.</string>
+    <string name="transferExpiredDescription">Sorry, this transfer has expired. You can no longer download or view the files.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Sorry, this transfer has reached the limit of %d possible download.</item>
+        <item quantity="other">Sorry, this transfer has reached the limit of %d possible downloads.</item>
+    </plurals>
     <string name="transferExpiredTitle">This transfer is no longer available</string>
     <string name="transferInitializing">Loading…</string>
     <string name="transferListSectionFuture">Future</string>

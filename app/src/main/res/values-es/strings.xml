@@ -157,7 +157,11 @@
     <string name="transferExpired">Transferencia caducada</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
-    <string name="transferExpiredLimitReachedDescription">Lo sentimos, esta transferencia ha alcanzado el límite de %d descargas posibles.</string>
+    <string name="transferExpiredDescription">Lo sentimos, esta transferencia ha caducado. Ya no puede descargar ni ver los archivos.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Lo sentimos, esta transferencia ha alcanzado el límite de %d descarga posible.</item>
+        <item quantity="other">Lo sentimos, esta transferencia ha alcanzado el límite de %d descargas posibles.</item>
+    </plurals>
     <string name="transferExpiredTitle">Esta transferencia ya no está disponible</string>
     <string name="transferInitializing">Cargando…</string>
     <string name="transferListSectionFuture">Futuro</string>
