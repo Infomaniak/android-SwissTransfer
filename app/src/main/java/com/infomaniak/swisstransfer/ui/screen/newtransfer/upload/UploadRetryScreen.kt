@@ -21,8 +21,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.R
 import com.infomaniak.core.compose.basics.CallableState
+import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.*
@@ -33,6 +34,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.Validate
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun UploadRetryScreen(
@@ -41,12 +43,7 @@ fun UploadRetryScreen(
     edit: CallableState<Unit>,
 ) {
     when (val error: UploadState.Retry = errorState.value) {
-        is UploadState.Retry.EmailValidationRequired -> {
-            ValidateUserEmailScreen(
-                editTransfer = edit,
-                state = error
-            )
-        }
+        is UploadState.Retry.EmailValidationRequired -> ValidateUserEmailScreen(editTransfer = edit, state = error)
         is UploadState.Retry.NetworkIssue -> UploadRetryScreen(retry = retry, edit = edit)
         is UploadState.Retry.OtherIssue -> UploadRetryScreen(retry = retry, edit = edit)
     }
@@ -64,14 +61,14 @@ private fun UploadRetryScreen(
         topButton = {
             LargeButton(
                 modifier = it,
-                title = stringResource(R.string.buttonRetry),
+                title = stringResource(RCore.string.buttonRetry),
                 onClick = retry,
             )
         },
         bottomButton = {
             LargeButton(
                 modifier = it,
-                title = stringResource(com.infomaniak.swisstransfer.R.string.buttonEditTransfer),
+                title = stringResource(R.string.buttonEditTransfer),
                 style = ButtonType.Secondary,
                 onClick = edit,
             )
@@ -79,8 +76,8 @@ private fun UploadRetryScreen(
     ) {
         EmptyState(
             content = { Image(imageVector = AppIllus.GhostMagnifyingGlassQuestionMark.image(), contentDescription = null) },
-            titleRes = com.infomaniak.swisstransfer.R.string.uploadErrorTitle,
-            descriptionRes = com.infomaniak.swisstransfer.R.string.uploadErrorDescription,
+            title = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
+            description = stringResource(R.string.uploadErrorDescription),
         )
     }
 }
@@ -94,7 +91,7 @@ private fun UploadRetryScreenPreview() {
                 UploadState.Info(
                     authorEmail = "test@infomaniak.com",
                     totalSize = 0L,
-                    type = TransferTypeUi.Mail
+                    type = TransferTypeUi.Mail,
                 )
             }
             UploadRetryScreen(
