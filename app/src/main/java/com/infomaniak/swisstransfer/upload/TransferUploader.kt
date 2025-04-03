@@ -26,20 +26,26 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.*
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
-import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.*
+import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.DefinitelyComplete
+import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.StartedOrComplete
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
+import io.ktor.http.content.OutgoingContent
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import splitties.init.appCtx
-import java.io.BufferedInputStream
-import java.util.concurrent.ArrayBlockingQueue
-import kotlin.concurrent.atomics.*
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.minusAssign
+import kotlin.concurrent.atomics.plusAssign
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 @OptIn(ExperimentalAtomicApi::class)
 class TransferUploader(
@@ -154,22 +160,16 @@ class TransferUploader(
         val fileUUID: String = metadata.uuid
         SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
 
-        contentResolver.openInputStream(targetFileUri)!!.buffered().use { inputStream ->
-            if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
-                thumbnailsLocalStorage.generateThumbnailFor(
-                    fileUri = targetFileUri,
-                    fileName = fileUUID,
-                    extension = mimeType.substring(mimeType.indexOfLast { it == '/' }),
-                )
-                metadata.thumbnailSaved = true
-            }
 
-            uploadFileInChunks(
-                metadata = metadata,
-                fileUUID = fileUUID,
-                inputStream = inputStream,
+        if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
+            thumbnailsLocalStorage.generateThumbnailFor(
+                fileUri = targetFileUri,
+                fileName = fileUUID,
+                extension = mimeType.substring(mimeType.indexOfLast { it == '/' }),
             )
+            metadata.thumbnailSaved = true
         }
+        uploadFileInChunks(metadata = metadata)
     }
 
     private fun Uri.getMimeType(): String? {
@@ -199,101 +199,66 @@ class TransferUploader(
         }
     }
 
-    private suspend fun uploadFileInChunks(
-        metadata: FileToUploadMetaData,
-        fileUUID: String,
-        inputStream: BufferedInputStream,
-    ) {
+    private suspend fun uploadFileInChunks(metadata: FileToUploadMetaData) = Dispatchers.IO {
 
         val chunkConfig = metadata.chunkConfig
-        val chunkSize = chunkConfig.fileChunkSize
         val totalChunks = chunkConfig.totalChunks
-        val parallelChunks = chunkConfig.parallelChunks
 
         syncFileChunksUploadStatuses(metadata, totalChunks)
-        val completedChunks = AtomicInt(value = 0)
 
-        val requestSemaphore = Semaphore(parallelChunks.coerceAtLeast(if (totalChunks > 1) 2 else 1))
-        val byteArrayPool = ArrayBlockingQueue<ByteArray>(parallelChunks)
+        val requestSemaphore = Semaphore(chunkConfig.parallelChunks.coerceIn(3, 8))
 
-        val allChunksButLastUploadedSignal: CompletableJob = Job()
         val lastChunkIndex = totalChunks - 1
 
-        SentryLog.d(TAG, "chunkSize:$chunkSize | totalChunks:$totalChunks | parallelChunks:$parallelChunks")
+        SentryLog.d(TAG, "$chunkConfig")
 
         coroutineScope {
-
-            for (chunkIndex in 0..lastChunkIndex)  {
-                val uploadStatus = metadata.chunksUploadStatus[chunkIndex]
-                if (uploadStatus == DefinitelyComplete) {
-                    SentryLog.d(TAG, "skipping chunk #$chunkIndex since it's already been uploaded")
-                    inputStream.skip(chunkSize)
-                    if (totalChunks > 1 && completedChunks.incrementAndFetch() == lastChunkIndex) {
-                        allChunksButLastUploadedSignal.complete()
-                    }
-                    continue
-                }
-
-                requestSemaphore.acquire()
-
-                val isLastChunk = chunkIndex == lastChunkIndex
-                val dataByteArray = getReusableByteArray(byteArrayPool, inputStream, chunkSize, isLastChunk)
-
-                val isEndOfFile = inputStream.read(dataByteArray, 0, dataByteArray.size) == -1
-                if (isEndOfFile) {
-                    SentryLog.w(TAG, "endOfFile for chunk #$chunkIndex of $fileUUID")
-                    continue
-                }
-                launch {
-                    try {
-
-                        // Wait for all the other jobs to complete
-                        if (totalChunks > 1 && isLastChunk) {
-                            allChunksButLastUploadedSignal.join()
-                        }
-                        metadata.chunksUploadStatus[chunkIndex] = StartedOrComplete
-                        SentryLog.d(TAG, "Uploading chunk #$chunkIndex of $fileUUID")
-                        startUploadChunk(
-                            fileUUID = fileUUID,
-                            chunkIndex = chunkIndex,
-                            isLastChunk = isLastChunk,
-                            data = dataByteArray
-                        )
-                        SentryLog.d(TAG, "Uploaded chunk #$chunkIndex of $fileUUID")
-                        metadata.chunksUploadStatus[chunkIndex] = DefinitelyComplete
-                        // Allow the last chunk to start being uploaded
-                        if (totalChunks > 1 && completedChunks.incrementAndFetch() == lastChunkIndex) {
-                            allChunksButLastUploadedSignal.complete()
-                        }
-                    } finally {
-                        byteArrayPool.offer(dataByteArray)
-                        requestSemaphore.release()
-                    }
+            for (chunkIndex in 0 until lastChunkIndex) launch {
+                requestSemaphore.withPermit {
+                    uploadChunkIfNeeded(metadata = metadata, chunkIndex = chunkIndex, isLastChunk = false)
                 }
             }
         }
-
-        byteArrayPool.clear()
+        uploadChunkIfNeeded(metadata = metadata, chunkIndex = lastChunkIndex, isLastChunk = true)
     }
 
-    private fun getReusableByteArray(
-        byteArrayPool: ArrayBlockingQueue<ByteArray>,
-        inputStream: BufferedInputStream,
-        chunkSize: Long,
-        isLastChunk: Boolean,
-    ): ByteArray {
-        val currentChunkSize = if (isLastChunk) inputStream.available() else chunkSize.toInt()
-        val reusableByteArray = if (isLastChunk) null else byteArrayPool.poll()
+    private suspend fun uploadChunkIfNeeded(metadata: FileToUploadMetaData, chunkIndex: Int, isLastChunk: Boolean) {
+        val uploadStatus = metadata.chunksUploadStatus[chunkIndex]
+        val fileUuid = metadata.uuid
+        if (uploadStatus == DefinitelyComplete) {
+            SentryLog.d(TAG, "skipping chunk #$chunkIndex since it's already been uploaded (file $fileUuid)")
+            return
+        }
+        val targetFileUri = metadata.pickedFile.uri
 
-        return reusableByteArray ?: ByteArray(currentChunkSize)
+        val chunkSize = metadata.chunkConfig.fileChunkSize
+        val totalFileSize = metadata.pickedFile.size
+        val content = targetFileUri.toContentChunk(
+            offset = chunkSize * chunkIndex,
+            length = if (isLastChunk) {
+                (totalFileSize % chunkSize).let { if (it == 0L) chunkSize.toLong() else it }
+            } else chunkSize
+        )
+        metadata.chunksUploadStatus[chunkIndex] = StartedOrComplete
+        run {
+            SentryLog.i(TAG, "Uploading chunk #$chunkIndex of $fileUuid") {
+                uploadChunk(
+                    fileUUID = fileUuid,
+                    chunkIndex = chunkIndex,
+                    isLastChunk = isLastChunk,
+                    data = content
+                )
+            }
+        }
+        metadata.chunksUploadStatus[chunkIndex] = DefinitelyComplete
     }
 
-    private suspend inline fun startUploadChunk(
+    private suspend fun uploadChunk(
         fileUUID: String,
         chunkIndex: Int,
         isLastChunk: Boolean,
-        data: ByteArray,
-    ) = coroutineScope {
+        data: OutgoingContent.WriteChannelContent,
+    ) {
         var oldBytesSentTotal = 0L
         try {
             uploadManager.uploadChunk(
