@@ -32,23 +32,18 @@ import java.io.OutputStream
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-fun Uri.toContentChunk(
+fun Uri.toOutgoingContent(
     offset: Long,
     length: Long,
-): OutgoingContent.WriteChannelContent = UriContent(targetFileUri = this, offset = offset, contentLength = length)
-
-private class UriContent(
-    private val targetFileUri: Uri,
-    private val offset: Long,
-    override val contentLength: Long
-) : OutgoingContent.WriteChannelContent() {
+): OutgoingContent.WriteChannelContent = object : OutgoingContent.WriteChannelContent() {
 
     override suspend fun writeTo(channel: ByteWriteChannel) = Dispatchers.IO {
+        val targetFileUri = this@toOutgoingContent
         val stream = appCtx.contentResolver.openInputStream(targetFileUri)
             ?: throw IOException("The provider for the following Uri recently crashed: $targetFileUri")
         stream.buffered().use { inputStream ->
             inputStream.skipExactly(numberOfBytes = offset, coroutineContext)
-            inputStream.copyToUntil(channel.toOutputStream(), count = contentLength, coroutineContext = coroutineContext)
+            inputStream.copyToUntil(channel.toOutputStream(), count = length, coroutineContext = coroutineContext)
         }
     }
 }

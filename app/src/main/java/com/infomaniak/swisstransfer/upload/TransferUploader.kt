@@ -234,7 +234,7 @@ class TransferUploader(
 
         val chunkSize = metadata.chunkConfig.fileChunkSize
         val totalFileSize = metadata.pickedFile.size
-        val content = metadata.pickedFile.uri.toContentChunk(
+        val chunkedContent = metadata.pickedFile.uri.toOutgoingContent(
             offset = chunkSize * chunkIndex,
             length = if (isLastChunk) {
                 (totalFileSize % chunkSize).let { if (it == 0L) chunkSize.toLong() else it }
@@ -256,7 +256,7 @@ class TransferUploader(
                     fileUUID = fileUuid,
                     chunkIndex = chunkIndex,
                     isLastChunk = isLastChunk,
-                    data = content
+                    data = chunkedContent
                 )
             }
         }
