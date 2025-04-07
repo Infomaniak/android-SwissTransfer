@@ -49,6 +49,8 @@ fun Uri.toOutgoingContent(
 }
 
 /**
+ * **DISCLAIMER: Code copied from the JDK, might not follow all our coding conventions.**
+ *
  * The implementation is copied from [InputStream.skipNBytes] that is only available starting API 34,
  * but also supports cancellation if the [coroutineContext] is passed.
  */
