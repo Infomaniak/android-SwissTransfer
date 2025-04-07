@@ -92,11 +92,10 @@ private fun InputStream.copyToUntil(
 ) {
     var bytesRemaining: Long = count
     val buffer = ByteArray(bufferSize)
-    var readBytesCount = 0
     do {
         coroutineContext.ensureActive()
         val bytesToCopy = minOf(bytesRemaining, bufferSize.toLong()).toInt()
-        readBytesCount = read(buffer, 0, bytesToCopy)
+        val readBytesCount = read(/* b = */ buffer, /* off = */ 0, /* len = */ bytesToCopy)
         if (readBytesCount == 0) {
             throw IOException("Wanted to read $bytesToCopy bytes but got zero. $bytesRemaining/$count bytes couldn't be copied.")
         } else if (readBytesCount < 0) {
