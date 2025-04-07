@@ -266,7 +266,8 @@ class TransferUploader(
                 if (timeUntilGiveUp < Duration.ZERO) throw e
                 val retryIn = (minDelayBetweenRetries * attemptNumber)
                     .coerceAtMost(maxDelayBetweenRetries)
-                    .coerceAtMost(timeUntilGiveUp)
+                    .coerceAtMost(timeUntilGiveUp) // Ensure the last retry doesn't happen after `giveUpDelay`,
+                // so that we don't need to mentally calculate when the last retry could happen.
                 delay(retryIn)
             }
         }
