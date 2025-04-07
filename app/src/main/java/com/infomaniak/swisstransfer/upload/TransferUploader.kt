@@ -252,7 +252,7 @@ class TransferUploader(
     }
 
     private suspend inline fun <R> withRetries(block: () -> R): R {
-        val giveUpDelay = 40.seconds
+        val maxGiveUpDelay = 40.seconds
         val maxDelayBetweenRetries = 10.seconds
         val minDelayBetweenRetries = 500.milliseconds
         var attemptNumber = 0
@@ -262,12 +262,9 @@ class TransferUploader(
                 attemptNumber++
                 return block()
             } catch (e: NetworkException) {
-                val timeUntilGiveUp = giveUpDelay - attemptTimeMark.elapsedNow()
-                if (timeUntilGiveUp < Duration.ZERO) throw e
-                val retryIn = (minDelayBetweenRetries * attemptNumber)
-                    .coerceAtMost(maxDelayBetweenRetries)
-                    .coerceAtMost(timeUntilGiveUp) // Ensure the last retry doesn't happen after `giveUpDelay`,
-                // so that we don't need to mentally calculate when the last retry could happen.
+                val timeUntilGiveUp = maxGiveUpDelay - attemptTimeMark.elapsedNow()
+                val retryIn = (minDelayBetweenRetries * attemptNumber).coerceAtMost(maxDelayBetweenRetries)
+                if (retryIn > timeUntilGiveUp) throw e
                 delay(retryIn)
             }
         }
