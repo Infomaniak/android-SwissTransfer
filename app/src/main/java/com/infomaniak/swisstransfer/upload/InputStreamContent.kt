@@ -53,6 +53,10 @@ private class UriContent(
     }
 }
 
+/**
+ * The implementation is copied from [InputStream.skipNBytes] that is only available starting API 34,
+ * but also supports cancellation if the [coroutineContext] is passed.
+ */
 @Throws(java.io.IOException::class)
 private fun InputStream.skipExactly(
     numberOfBytes: Long,
@@ -82,6 +86,10 @@ private fun InputStream.skipExactly(
  * Copies [count] bytes of this [InputStream] to [out].
  *
  * **Note** It is the caller's responsibility to close both of these resources.
+ *
+ * The implementation is based on the [copyTo] extension from kotlin.io,
+ * but also handles cancellation if the [coroutineContext] is passed,
+ * in addition to copying only the passed number of bytes in [count].
  */
 @Throws(java.io.IOException::class)
 private fun InputStream.copyToUntil(
