@@ -185,16 +185,20 @@ class TransferUploader(
             when (metadata.chunksUploadStatus[chunkIndex]) {
                 null, DefinitelyComplete -> continue // Leave as is.
                 StartedOrComplete -> launch {
-                    val exists: Boolean = uploadManager.doesChunkExist(
-                        remoteContainerUuid = destination.container.uuid,
-                        fileUUID = metadata.uuid,
-                        chunkIndex = chunkIndex,
-                        chunkSize = metadata.chunkConfig.fileChunkSize
-                    )
-                    metadata.chunksUploadStatus[chunkIndex] = if (exists) DefinitelyComplete else null
+                    syncChunkUploadStatus(metadata, chunkIndex)
                 }
             }
         }
+    }
+
+    private suspend fun syncChunkUploadStatus(metadata: FileToUploadMetaData, chunkIndex: Int) {
+        val exists: Boolean = uploadManager.doesChunkExist(
+            remoteContainerUuid = destination.container.uuid,
+            fileUUID = metadata.uuid,
+            chunkIndex = chunkIndex,
+            chunkSize = metadata.chunkConfig.fileChunkSize
+        )
+        metadata.chunksUploadStatus[chunkIndex] = if (exists) DefinitelyComplete else null
     }
 
     private suspend fun uploadFileInChunks(metadata: FileToUploadMetaData) = Dispatchers.IO {
@@ -237,7 +241,16 @@ class TransferUploader(
             } else chunkSize
         )
         metadata.chunksUploadStatus[chunkIndex] = StartedOrComplete
-        withRetries {
+        withRetries { isRetrying ->
+            if (isRetrying) {
+                syncChunkUploadStatus(metadata, chunkIndex)
+                val uploadStatus = metadata.chunksUploadStatus[chunkIndex]
+                if (uploadStatus == DefinitelyComplete) {
+                    SentryLog.d(TAG, "no need to retry")
+                    SentryLog.d(TAG, "skipping chunk #$chunkIndex since it's already been uploaded (file $fileUuid)")
+                    return
+                }
+            }
             SentryLog.i(TAG, "Uploading chunk #$chunkIndex of $fileUuid") {
                 uploadChunk(
                     fileUUID = fileUuid,
@@ -250,7 +263,7 @@ class TransferUploader(
         metadata.chunksUploadStatus[chunkIndex] = DefinitelyComplete
     }
 
-    private suspend inline fun <R> withRetries(block: () -> R): R {
+    private suspend inline fun <R> withRetries(block: (isRetrying: Boolean) -> R): R {
         val maxGiveUpDelay = 40.seconds
         val maxDelayBetweenRetries = 10.seconds
         val minDelayBetweenRetries = 500.milliseconds
@@ -259,7 +272,7 @@ class TransferUploader(
         while (true) {
             try {
                 attemptNumber++
-                return block()
+                return block(attemptNumber > 1)
             } catch (e: NetworkException) {
                 val timeUntilGiveUp = maxGiveUpDelay - attemptTimeMark.elapsedNow()
                 val retryIn = (minDelayBetweenRetries * attemptNumber).coerceAtMost(maxDelayBetweenRetries)
