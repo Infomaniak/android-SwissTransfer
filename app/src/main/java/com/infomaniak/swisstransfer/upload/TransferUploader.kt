@@ -160,7 +160,6 @@ class TransferUploader(
         val fileUUID: String = metadata.uuid
         SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
 
-
         if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
             thumbnailsLocalStorage.generateThumbnailFor(
                 fileUri = targetFileUri,
