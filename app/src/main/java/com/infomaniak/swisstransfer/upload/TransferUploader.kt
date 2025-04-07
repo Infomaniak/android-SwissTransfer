@@ -205,7 +205,7 @@ class TransferUploader(
 
         syncFileChunksUploadStatuses(metadata, totalChunks)
 
-        val requestSemaphore = Semaphore(chunkConfig.parallelChunks.coerceIn(3, 8))
+        val requestSemaphore = Semaphore(chunkConfig.parallelChunks)
 
         val lastChunkIndex = totalChunks - 1
 
