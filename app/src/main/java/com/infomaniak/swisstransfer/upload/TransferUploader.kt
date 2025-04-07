@@ -228,11 +228,10 @@ class TransferUploader(
             SentryLog.d(TAG, "skipping chunk #$chunkIndex since it's already been uploaded (file $fileUuid)")
             return
         }
-        val targetFileUri = metadata.pickedFile.uri
 
         val chunkSize = metadata.chunkConfig.fileChunkSize
         val totalFileSize = metadata.pickedFile.size
-        val content = targetFileUri.toContentChunk(
+        val content = metadata.pickedFile.uri.toContentChunk(
             offset = chunkSize * chunkIndex,
             length = if (isLastChunk) {
                 (totalFileSize % chunkSize).let { if (it == 0L) chunkSize.toLong() else it }
