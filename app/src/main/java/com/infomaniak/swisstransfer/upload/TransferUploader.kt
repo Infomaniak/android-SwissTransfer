@@ -255,8 +255,8 @@ class TransferUploader(
         val maxGiveUpDelay = 40.seconds
         val maxDelayBetweenRetries = 10.seconds
         val minDelayBetweenRetries = 500.milliseconds
-        var attemptNumber = 0
         val attemptTimeMark = TimeSource.Monotonic.markNow()
+        var attemptNumber = 0
         while (true) {
             try {
                 attemptNumber++
