@@ -238,7 +238,9 @@ class TransferUploader(
             offset = chunkSize * chunkIndex,
             length = if (isLastChunk) {
                 (totalFileSize % chunkSize).let { if (it == 0L) chunkSize.toLong() else it }
-            } else chunkSize
+            } else {
+                chunkSize
+            }
         )
         metadata.chunksUploadStatus[chunkIndex] = StartedOrComplete
         withRetries { isRetrying ->
