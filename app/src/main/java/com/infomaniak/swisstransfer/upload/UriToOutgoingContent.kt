@@ -36,6 +36,7 @@ fun Uri.toOutgoingContent(
     offset: Long,
     length: Long,
 ): OutgoingContent.WriteChannelContent = object : OutgoingContent.WriteChannelContent() {
+    override val contentLength = length
 
     override suspend fun writeTo(channel: ByteWriteChannel) = Dispatchers.IO {
         val targetFileUri = this@toOutgoingContent
