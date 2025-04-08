@@ -50,7 +50,7 @@
     <string name="expired">Abgelaufen</string>
     <string name="expiresAt">Läuft ab bei %s</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
-    <string name="expiresThe">Läuft am %s um %s</string>
+    <string name="expiresOn">Läuft am %s um %s</string>
     <string name="expiresTomorrow">Läuft morgen ab</string>
     <plurals name="filesCount">
         <item quantity="one">%d Datei</item>
@@ -154,7 +154,6 @@
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Optional)</string>
     <string name="transferContentHeader">Inhalt der Übertragung:</string>
-    <string name="transferExpired">Transfer abgelaufen</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
     <string name="transferExpiredDescription">Diese Übertragung ist leider abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>

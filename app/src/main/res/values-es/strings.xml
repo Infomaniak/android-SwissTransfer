@@ -50,7 +50,7 @@
     <string name="expired">Expirado</string>
     <string name="expiresAt">Expira a %s</string>
     <string name="expiresIn">Caduca en %d días</string>
-    <string name="expiresThe">Expira el %s a las %s</string>
+    <string name="expiresOn">Expira el %s a las %s</string>
     <string name="expiresTomorrow">Expira mañana</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
@@ -154,7 +154,6 @@
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
     <string name="transferContentHeader">Contenido de la transferencia:</string>
-    <string name="transferExpired">Transferencia caducada</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
     <string name="transferExpiredDescription">Lo sentimos, esta transferencia ha caducado. Ya no puede descargar ni ver los archivos.</string>
