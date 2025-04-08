@@ -88,7 +88,7 @@ fun TransferUi.getFormattedExpiry(): Pair<String, Color> {
 fun TransferUi.getWholeDate(): String {
     val expiry = expirationDateTimestamp.toDateFromSeconds()
     return stringResource(
-        R.string.expiresThe,
+        R.string.expiresOn,
         expiry.format(),
         expiry.format(FORMAT_HOUR_MINUTES),
     )
