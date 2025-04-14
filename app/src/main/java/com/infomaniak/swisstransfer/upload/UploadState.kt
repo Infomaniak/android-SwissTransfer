@@ -38,7 +38,10 @@ sealed interface UploadState {
     ) : UploadState {
 
         sealed interface Status {
-            data object Initializing : Status
+            sealed interface Initializing : Status {
+                companion object : Initializing
+                data object CheckingFiles : Initializing
+            }
             data object InProgress : Status
             data object WaitingForInternet : Status
         }

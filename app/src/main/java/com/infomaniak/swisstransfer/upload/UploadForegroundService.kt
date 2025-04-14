@@ -175,7 +175,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
     }
 
     private fun buildOngoingNotification(state: UploadState.Ongoing): Notification = when (state.status) {
-        Status.InProgress, Status.Initializing -> notificationsUtils.buildUploadProgressNotification(
+        Status.InProgress, is Status.Initializing -> notificationsUtils.buildUploadProgressNotification(
             authorEmail = state.info.authorEmail,
             transferType = state.info.type,
             totalBytes = state.info.totalSize,
@@ -189,7 +189,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         launch { keepNotificationUpToDate() }
         repeatWhileActive {
             val startRequest: StartUploadRequest = startSignal.receive()
-            uploadSessionManager.handleNewTransfer(
+            uploadSessionManager.handleNewTransferWithApproximateSize(
                 startRequest = startRequest,
                 uploadState = _state,
                 cancelTransferSignals = cancelTransferSignals,

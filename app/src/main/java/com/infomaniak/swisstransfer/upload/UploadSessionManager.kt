@@ -19,6 +19,8 @@
 
 package com.infomaniak.swisstransfer.upload
 
+import androidx.compose.runtime.LongState
+import androidx.compose.runtime.mutableLongStateOf
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
@@ -28,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.removeAllFiles
@@ -38,14 +41,18 @@ import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.yield
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import javax.inject.Inject
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 class UploadSessionManager @Inject constructor(
     private val uploadManager: InMemoryUploadManager,
@@ -56,7 +63,47 @@ class UploadSessionManager @Inject constructor(
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ) {
 
-    suspend fun handleNewTransfer(
+    suspend fun handleNewTransferWithApproximateSize(
+        startRequest: StartUploadRequest,
+        uploadState: MutableStateFlow<UploadState?>,
+        cancelTransferSignals: Channel<Unit>,
+        shouldRetrySignals: Channel<Boolean>,
+    ) {
+        var currentState by uploadState::value
+
+        val startRequestWithExactSize: StartUploadRequest = tryCompletingUnlessCancelled(
+            waitForCancellationSignal = { cancelTransferSignals.receive() },
+            valueIfCancelled = null
+        ) {
+            repeatWhileActive retryLoop@{
+                return@tryCompletingUnlessCancelled runCatching {
+                    currentState = UploadState.Ongoing(
+                        status = Status.Initializing.CheckingFiles,
+                        uploadedBytes = 0L,
+                        info = startRequest.info
+                    )
+                    startRequest.withExactSizes()
+                }.cancellable().getOrElse { t ->
+                    val newState: UploadState = Retry.OtherIssue(info = startRequest.info, t = t)
+                    currentState = newState
+                    val shouldRetry = shouldRetrySignals.receive()// && newState is UploadState.Retry
+                    if (shouldRetry) return@retryLoop else return@tryCompletingUnlessCancelled null
+                }
+            }
+        } ?: run {
+            currentState = null
+            return
+        }
+
+        handleNewTransferWithExactSizes(
+            startRequest = startRequestWithExactSize,
+            uploadState = uploadState,
+            cancelTransferSignals = cancelTransferSignals,
+            shouldRetrySignals = shouldRetrySignals
+        )
+    }
+
+    private suspend fun handleNewTransferWithExactSizes(
         startRequest: StartUploadRequest,
         uploadState: MutableStateFlow<UploadState?>,
         cancelTransferSignals: Channel<Unit>,
@@ -230,3 +277,38 @@ private val fileChunkSizeManager = FileChunkSizeManager(
     chunkMaxSize = EXPECTED_CHUNK_SIZE,
     maxChunkCount = MAX_CHUNK_COUNT,
 )
+
+private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
+    val pickedFilesWithExactSizes = measureSizes(files)
+    return copy(
+        files = pickedFilesWithExactSizes,
+        info = info.copy(
+            totalSize = pickedFilesWithExactSizes.sumOf { it.size }
+        )
+    )
+}
+
+@OptIn(ExperimentalAtomicApi::class)
+private suspend fun measureSizes(
+    files: List<PickedFile>,
+    handleTotalsProgression: suspend (Map<PickedFile, LongState>) -> Nothing = { awaitCancellation() },
+): List<PickedFile> {
+    val pickedFilesWithCountedByteTotals = files.associateWith { mutableLongStateOf(0) }
+    return raceOf({
+        val counter = InputStreamCounter()
+        pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
+            async(Dispatchers.IO) {
+                val exactSize = counter.fileSizeFor(
+                    uri = pickedFile.uri,
+                    onTotalBytesUpdate = {
+                        totalBytesState.longValue = it
+                        yield()
+                    }
+                )
+                pickedFile.copy(size = exactSize)
+            }
+        }.awaitAll()
+    }, {
+        handleTotalsProgression(pickedFilesWithCountedByteTotals)
+    })
+}

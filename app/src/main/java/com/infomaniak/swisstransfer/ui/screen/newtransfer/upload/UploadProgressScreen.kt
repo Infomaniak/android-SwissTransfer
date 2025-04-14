@@ -40,11 +40,12 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing
 import com.infomaniak.core.R as RCore
 
 @Composable
 fun UploadOngoingScreen(
-    progressState: State<UploadState.Ongoing>,
+    progressState: State<Ongoing>,
     adScreenType: UploadProgressAdType,
     onCancelClick: () -> Unit,
 ) {
@@ -78,7 +79,7 @@ fun UploadOngoingScreen(
 }
 
 @Composable
-private fun UploadStatus(progress: () -> UploadState.Ongoing) {
+private fun UploadStatus(progress: () -> Ongoing) {
 
     val progressStatus by remember { derivedStateOf { progress().status } }
     val totalSizeInBytes by remember { derivedStateOf { progress().info.totalSize } }
@@ -99,16 +100,25 @@ private fun UploadStatus(progress: () -> UploadState.Ongoing) {
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
                 when (status) {
-                    UploadState.Ongoing.Status.Initializing -> Text(stringResource(R.string.transferInitializing))
-                    UploadState.Ongoing.Status.InProgress -> Progress(
+                    is Ongoing.Status.Initializing -> InitializingText(status)
+                    Ongoing.Status.InProgress -> Progress(
                         uploadedSize = { progress().uploadedBytes },
                         totalSizeInBytes = totalSizeInBytes
                     )
-                    UploadState.Ongoing.Status.WaitingForInternet -> NetworkUnavailable()
+                    Ongoing.Status.WaitingForInternet -> NetworkUnavailable()
                 }
             }
         }
     }
+}
+
+@Composable
+private fun InitializingText(status: Ongoing.Status.Initializing) {
+    val textResId = when (status) {
+        Ongoing.Status.Initializing -> R.string.transferInitializing
+        Ongoing.Status.Initializing.CheckingFiles -> R.string.transferInitializing //TODO: Replace
+    }
+    Text(stringResource(textResId))
 }
 
 @PreviewAllWindows
@@ -117,8 +127,8 @@ private fun Preview() {
     SwissTransferTheme {
         UploadOngoingScreen(
             progressState = rememberUpdatedState(
-                UploadState.Ongoing(
-                    status = UploadState.Ongoing.Status.InProgress,
+                Ongoing(
+                    status = Ongoing.Status.InProgress,
                     info = UploadState.Info(
                         authorEmail = "",
                         totalSize = 50_000_000L,
