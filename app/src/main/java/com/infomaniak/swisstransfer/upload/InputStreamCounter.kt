@@ -24,7 +24,6 @@ internal class InputStreamCounter(
     sizeOfByteArrayToCountBytes: Int = DEFAULT_BUFFER_SIZE // 8kiB only
 ) {
 
-    //TODO: Check that sharing the array to count the size actually works 100% bug-free.
     private val sharedByteArrayForCountingBytes = ByteArray(sizeOfByteArrayToCountBytes)
 
     inline fun fileSizeFor(
