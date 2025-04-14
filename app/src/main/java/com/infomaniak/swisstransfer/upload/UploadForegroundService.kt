@@ -140,6 +140,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             }
         }
     }
+
     @Inject
     internal lateinit var notificationsUtils: NotificationsUtils
 
