@@ -96,7 +96,7 @@ class UploadSessionManager @Inject constructor(
             )
         }
 
-        currentState = transferUuid?.let {
+        currentState = if (transferUuid != null) {
             val url = sharedApiUrlCreator.shareTransferUrl(transferUuid)
             val transferType = startRequest.info.type
 
@@ -113,6 +113,9 @@ class UploadSessionManager @Inject constructor(
                 transferUuid = transferUuid,
                 transferUrl = url,
             )
+        } else {
+            //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
+            null
         }
     }
 
