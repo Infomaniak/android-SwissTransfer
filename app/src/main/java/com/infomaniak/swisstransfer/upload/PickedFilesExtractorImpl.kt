@@ -19,11 +19,11 @@ package com.infomaniak.swisstransfer.upload
 
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils.MAX_FILES_SIZE
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.AlreadyUsedFileNamesSet
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.utils.FileNameUtils
@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.invoke
-import kotlinx.coroutines.isActive
 import splitties.init.appCtx
 
 class PickedFilesExtractorImpl : PickedFilesExtractor {
@@ -159,33 +158,32 @@ private suspend fun fileNameFor(uri: Uri): String = Dispatchers.IO {
 } ?: fallbackName
 
 private suspend fun fileSizeFor(uri: Uri): Long = Dispatchers.IO {
-    // OpenableColumns.SIZE isn't reliable, so we're counting the bytes from the stream instead.
-    appCtx.contentResolver.openInputStream(uri)!!.buffered(DEFAULT_BUFFER_SIZE).use { stream ->
-        var totalBytes = 0L
-        while (coroutineContext.isActive) {
-            if (totalBytes > maxBytesPerFile) {
-                error("The incoming file is too large!")
-            }
-            // The skip() method might skip beyond EOF. From FileInputStream's JavaDoc:
-            // "This method may skip more bytes than what are remaining in the backing file."
-            // (from https://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html#skip-long-)
-            // That's we're using read instead.
-            val skippedBytes = stream.read(sharedByteArrayForCountingBytes)
-            if (skippedBytes == -1) break
-            totalBytes += skippedBytes
-        }
-        totalBytes
-    }
+    runCatching {
+        appCtx.contentResolver.query(
+            /* uri = */ uri,
+            // Not supplying a projection might lead to `NullPointerException` with message "Attempt to get length of null array"
+            // being thrown on some devices, despite what is written in the Javadoc, so we provide one.
+            /* projection = */ sizeProjection,
+            /* selection = */ null,
+            /* selectionArgs = */ null,
+            /* sortOrder = */ null
+        )?.use { c ->
+            if (c.moveToFirst()) {
+                when (val sizeColumnIndex = c.getColumnIndex(OpenableColumns.SIZE)) {
+                    -1 -> -1L
+                    else -> c.getLongOrNull(sizeColumnIndex)
+                }
+            } else -1L
+        } ?: -1L
+    }.onFailure { t ->
+        SentryLog.e(TAG, "Failed to read the size for uri: $uri", t)
+    }.getOrElse { -1L }
 }
 
 private val displayNameProjection = arrayOf(OpenableColumns.DISPLAY_NAME)
-
-//TODO: Check that sharing the array to count the size actually works 100% bug-free.
-private val sharedByteArrayForCountingBytes = ByteArray(DEFAULT_BUFFER_SIZE) // 8kiB only
+private val sizeProjection = arrayOf(OpenableColumns.SIZE)
 
 private const val fallbackName = "untitled"
-
-private const val maxBytesPerFile = MAX_FILES_SIZE
 
 private const val TAG = "PickedFilesExtractorImpl"
 
