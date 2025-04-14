@@ -23,27 +23,14 @@ import android.app.Notification
 import android.content.Intent
 import android.net.Uri
 import android.os.SystemClock
-import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.ForegroundService
-import com.infomaniak.core.cancellable
-import com.infomaniak.core.network.NetworkAvailability
-import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.core.withPartialWakeLock
-import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
-import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
-import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
-import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
-import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
@@ -153,24 +140,11 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
             }
         }
     }
-
-    @Inject
-    internal lateinit var uploadManager: InMemoryUploadManager
-
-    @Inject
-    internal lateinit var transferManager: TransferManager
-
-    @Inject
-    internal lateinit var sharedApiUrlCreator: SharedApiUrlCreator
-
     @Inject
     internal lateinit var notificationsUtils: NotificationsUtils
 
     @Inject
-    internal lateinit var uploadSessionStarter: UploadSessionStarter
-
-    @Inject
-    internal lateinit var thumbnailsLocalStorage: ThumbnailsLocalStorage
+    internal lateinit var uploadSessionManager: UploadSessionManager
 
     override fun getStartNotification(intent: Intent, isReDelivery: Boolean): Notification {
         return notificationsUtils.buildTransferDraftNotification()
@@ -207,161 +181,19 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         Status.WaitingForInternet -> notificationsUtils.buildUploadFailedNotification(canRetry = true)
     }
 
-    private var currentState by _state::value
-
     override suspend fun run(): Nothing = Dispatchers.Default {
         launch { keepNotificationUpToDate() }
         repeatWhileActive {
             val startRequest: StartUploadRequest = startSignal.receive()
-            currentState = UploadState.Ongoing(
-                status = Status.Initializing,
-                uploadedBytes = 0L,
-                info = startRequest.info
+            uploadSessionManager.handleNewTransfer(
+                startRequest = startRequest,
+                uploadState = _state,
+                cancelTransferSignals = cancelTransferSignals,
+                shouldRetrySignals = shouldRetrySignals,
             )
-
-            //TODO[UL-retry]: Extract retries into the uploader maybe?
-            val transferUuid = tryCompletingUnlessCancelled(valueIfCancelled = null) {
-                val result = startUploadSession(
-                    startRequest = startRequest,
-                    updateState = { currentState = it }
-                ) ?: return@tryCompletingUnlessCancelled null
-                val uploader = TransferUploader(
-                    uploadManager = uploadManager,
-                    transferManager = transferManager,
-                    fileChunkSizeManager = fileChunkSizeManager,
-                    request = result.request,
-                    destination = result.destination,
-                    startRequest = startRequest,
-                    thumbnailsLocalStorage = thumbnailsLocalStorage,
-                )
-                repeatWhileActive retryLoop@{
-                    runCatching {
-                        tryCompletingWithInternet(
-                            withoutInternet = {
-                                currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>().first().copy(
-                                    status = Status.WaitingForInternet
-                                )
-                                awaitCancellation()
-                            }
-                        ) {
-                            withPartialWakeLock(
-                                appName = "SwissTransfer",
-                                tagSuffix = "upload"
-                            ) {
-                                uploader.uploadRemainderOrThrow(updateState = { currentState = it })
-                            }
-                        }
-                    }.cancellable().onFailure { t ->
-                        currentState = when (t) {
-                            is NetworkException -> UploadState.Retry.NetworkIssue(startRequest.info)
-                            else -> {
-                                SentryLog.e(TAG, "Upload FAILURE", t)
-                                UploadState.Retry.OtherIssue(startRequest.info, t)
-                            }
-                        }
-                        if (shouldRetry()) {
-                            return@retryLoop
-                        } else {
-                            return@tryCompletingUnlessCancelled null
-                        }
-                    }.onSuccess { uuid -> return@tryCompletingUnlessCancelled uuid }
-                }
-            }
-            currentState = if (transferUuid != null) {
-                val url = sharedApiUrlCreator.shareTransferUrl(transferUuid)
-                val transferType = startRequest.info.type
-                removeAllFiles()
-                notificationsUtils.uploadSucceeded(
-                    transferType = transferType,
-                    transferUuid = transferUuid,
-                    transferUrl = url
-                )
-                UploadState.Complete(
-                    transferType = transferType,
-                    transferUuid = transferUuid,
-                    transferUrl = url
-                )
-            } else {
-                //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
-                null
-            }
         }
     }
-
-    private suspend fun <R> tryCompletingWithInternet(
-        withoutInternet: suspend () -> R,
-        block: suspend () -> R
-    ): R? {
-        return isInternetConnectedFlow.mapLatest { isInternetConnected ->
-            if (isInternetConnected) block() else withoutInternet()
-        }.first()
-    }
-
-    private suspend fun <R> tryCompletingUnlessCancelled(
-        valueIfCancelled: R,
-        block: suspend () -> R
-    ): R? = raceOf({
-        block()
-    }, {
-        cancelTransferSignals.receive()
-        valueIfCancelled
-    })
-
-    private suspend fun shouldRetry(): Boolean = shouldRetrySignals.receive()
-
-    private suspend fun startUploadSession(
-        startRequest: StartUploadRequest,
-        updateState: (newState: UploadState?) -> Unit
-    ): UploadSessionStarter.Result.Success? = repeatWhileActive {
-
-        val info = startRequest.info
-        updateState(
-            UploadState.Ongoing(
-                status = Status.Initializing,
-                uploadedBytes = 0L,
-                info = info,
-            )
-        )
-
-        val newState: UploadState = when (val result = uploadSessionStarter.tryStarting(startRequest)) {
-            is UploadSessionStarter.Result.Success -> return result
-            UploadSessionStarter.Result.EmailValidationRequired -> UploadState.Retry.EmailValidationRequired(info)
-            UploadSessionStarter.Result.AppIntegrityIssue -> UploadState.Failure.AppIntegrityIssue
-            UploadSessionStarter.Result.NetworkIssue -> UploadState.Retry.NetworkIssue(info)
-            is UploadSessionStarter.Result.OtherIssue -> UploadState.Retry.OtherIssue(info, result.t)
-            UploadSessionStarter.Result.RestrictedLocation -> UploadState.Failure.RestrictedLocation
-        }
-
-        updateState(newState)
-
-        // We are protecting against any improper UI implementation, by checking retrying was expected.
-        if (shouldRetry() && newState is UploadState.Retry) {
-            return@repeatWhileActive
-        } else {
-            updateState(null)
-            return null
-        }
-    }
-
-    private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability(
-        context = appCtx
-    ).isNetworkAvailable.conflate().distinctUntilChanged().shareIn(
-        scope = lifecycleScope,
-        started = SharingStarted.Lazily,
-        replay = 1
-    )
 }
-
-private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
-private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
-
-private const val TAG = "UploadForegroundService"
-
-private val fileChunkSizeManager = FileChunkSizeManager(
-    chunkMinSize = EXPECTED_CHUNK_SIZE,
-    chunkMaxSize = EXPECTED_CHUNK_SIZE,
-    maxChunkCount = MAX_CHUNK_COUNT,
-)
 
 private fun <T> Flow<T>.rateLimit(minInterval: Duration): Flow<T> = channelFlow {
     var lastEmitElapsedNanos = 0L
