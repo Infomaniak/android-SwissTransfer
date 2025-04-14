@@ -142,7 +142,7 @@ class UploadSessionManager @Inject constructor(
                         uploadRemainderOrThrow(updateState = { currentState = it })
                     }
                 }
-            }.cancellable().getOrElse { throwable ->
+            }.cancellable().onFailure { throwable ->
                 currentState = when (throwable) {
                     is NetworkException -> Retry.NetworkIssue(startRequest.info)
                     else -> {
