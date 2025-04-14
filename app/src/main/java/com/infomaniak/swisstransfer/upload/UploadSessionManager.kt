@@ -33,6 +33,7 @@ import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.removeAllFiles
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.uploadStateFlow
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
+import com.infomaniak.swisstransfer.upload.UploadState.Retry
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,77 +69,87 @@ class UploadSessionManager @Inject constructor(
         currentState = UploadState.Ongoing(
             status = Status.Initializing,
             uploadedBytes = 0L,
-            info = startRequest.info
+            info = startRequest.info,
         )
 
         val transferUuid = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
             valueIfCancelled = null
         ) {
-            val result = startUploadSession(
+            val (request, destination) = startUploadSession(
                 startRequest = startRequest,
                 updateState = { currentState = it },
                 shouldRetry = ::shouldRetry
             ) ?: return@tryCompletingUnlessCancelled null
-            val uploader = TransferUploader(
+
+            TransferUploader(
+                startRequest = startRequest,
                 uploadManager = uploadManager,
                 transferManager = transferManager,
                 fileChunkSizeManager = fileChunkSizeManager,
-                request = result.request,
-                destination = result.destination,
-                startRequest = startRequest,
+                request = request,
+                destination = destination,
                 thumbnailsLocalStorage = thumbnailsLocalStorage,
+            ).getUuidFromUploadWithRetries(
+                uploadState = uploadState,
+                shouldRetry = ::shouldRetry,
             )
-            repeatWhileActive retryLoop@{
-                runCatching {
-                    tryCompletingWithInternet(
-                        withoutInternet = {
-                            currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>().first().copy(
-                                status = Status.WaitingForInternet
-                            )
-                            awaitCancellation()
-                        }
-                    ) {
-                        withPartialWakeLock(
-                            appName = "SwissTransfer",
-                            tagSuffix = "upload"
-                        ) {
-                            uploader.uploadRemainderOrThrow(updateState = { currentState = it })
-                        }
-                    }
-                }.cancellable().onFailure { t ->
-                    currentState = when (t) {
-                        is NetworkException -> UploadState.Retry.NetworkIssue(startRequest.info)
-                        else -> {
-                            SentryLog.e(TAG, "Upload FAILURE", t)
-                            UploadState.Retry.OtherIssue(startRequest.info, t)
-                        }
-                    }
-                    if (shouldRetry()) {
-                        return@retryLoop
-                    } else {
-                        return@tryCompletingUnlessCancelled null
-                    }
-                }.onSuccess { uuid -> return@tryCompletingUnlessCancelled uuid }
-            }
         }
-        currentState = if (transferUuid != null) {
+
+        currentState = transferUuid?.let {
             val url = sharedApiUrlCreator.shareTransferUrl(transferUuid)
             val transferType = startRequest.info.type
+
             removeAllFiles()
+
             notificationsUtils.uploadSucceeded(
                 transferType = transferType,
                 transferUuid = transferUuid,
-                transferUrl = url
+                transferUrl = url,
             )
+
             UploadState.Complete(
                 transferType = transferType,
                 transferUuid = transferUuid,
-                transferUrl = url
+                transferUrl = url,
             )
-        } else {
-            //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
-            null
+        }
+    }
+
+    /**
+     * @return The uuid of the transfer if it completed successfully, null otherwise
+     */
+    private suspend fun TransferUploader.getUuidFromUploadWithRetries(
+        uploadState: MutableStateFlow<UploadState?>,
+        shouldRetry: suspend () -> Boolean,
+    ): String? {
+        repeatWhileActive retryLoop@{
+            var currentState by uploadState::value
+
+            runCatching {
+                return tryCompletingWithInternet(
+                    withoutInternet = {
+                        currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>()
+                            .first()
+                            .copy(status = Status.WaitingForInternet)
+                        awaitCancellation()
+                    },
+                ) {
+                    withPartialWakeLock(appName = "SwissTransfer", tagSuffix = "upload") {
+                        uploadRemainderOrThrow(updateState = { currentState = it })
+                    }
+                }
+            }.cancellable().getOrElse { throwable ->
+                currentState = when (throwable) {
+                    is NetworkException -> Retry.NetworkIssue(startRequest.info)
+                    else -> {
+                        SentryLog.e(TAG, "Upload FAILURE", throwable)
+                        Retry.OtherIssue(startRequest.info, throwable)
+                    }
+                }
+
+                if (!shouldRetry()) return null
+            }
         }
     }
 
@@ -159,17 +170,17 @@ class UploadSessionManager @Inject constructor(
 
         val newState: UploadState = when (val result = uploadSessionStarter.tryStarting(startRequest)) {
             is UploadSessionStarter.Result.Success -> return result
-            UploadSessionStarter.Result.EmailValidationRequired -> UploadState.Retry.EmailValidationRequired(info)
+            UploadSessionStarter.Result.EmailValidationRequired -> Retry.EmailValidationRequired(info)
             UploadSessionStarter.Result.AppIntegrityIssue -> UploadState.Failure.AppIntegrityIssue
-            UploadSessionStarter.Result.NetworkIssue -> UploadState.Retry.NetworkIssue(info)
-            is UploadSessionStarter.Result.OtherIssue -> UploadState.Retry.OtherIssue(info, result.t)
+            UploadSessionStarter.Result.NetworkIssue -> Retry.NetworkIssue(info)
+            is UploadSessionStarter.Result.OtherIssue -> Retry.OtherIssue(info, result.t)
             UploadSessionStarter.Result.RestrictedLocation -> UploadState.Failure.RestrictedLocation
         }
 
         updateState(newState)
 
         // We are protecting against any improper UI implementation, by checking retrying was expected.
-        if (shouldRetry() && newState is UploadState.Retry) {
+        if (shouldRetry() && newState is Retry) {
             return@repeatWhileActive
         } else {
             updateState(null)

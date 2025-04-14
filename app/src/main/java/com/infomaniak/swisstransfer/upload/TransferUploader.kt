@@ -48,12 +48,12 @@ import kotlin.time.TimeSource
 
 @OptIn(ExperimentalAtomicApi::class)
 class TransferUploader(
+    val startRequest: StartUploadRequest,
     private val uploadManager: InMemoryUploadManager,
     private val transferManager: TransferManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
     private val request: UploadSessionRequest,
     private val destination: UploadDestination,
-    private val startRequest: StartUploadRequest,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ) {
 
