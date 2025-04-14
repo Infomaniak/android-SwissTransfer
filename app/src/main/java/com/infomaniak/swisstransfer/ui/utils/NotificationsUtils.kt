@@ -68,6 +68,13 @@ class NotificationsUtils @Inject constructor(
         )
         channelList.add(transferDraftChannel)
 
+        val transferCompleteChannel = buildNotificationChannel(
+            channelId = ChannelIds.transferComplete,
+            name = getString(R.string.notificationUploadSuccessTitle),
+            importance = NotificationManager.IMPORTANCE_HIGH
+        )
+        channelList.add(transferCompleteChannel)
+
         createNotificationChannels(channelList)
     }
 
@@ -113,7 +120,9 @@ class NotificationsUtils @Inject constructor(
             .putExtra(TRANSFER_UUID_KEY, transferUuid)
             .putExtra(TRANSFER_URL_KEY, transferUrl)
         val notification = uploadNotificationBuilder(
+            channelId = ChannelIds.transferComplete,
             title = appContext.getString(R.string.notificationUploadSuccessTitle),
+            priority = NotificationCompat.PRIORITY_HIGH,
             description = appContext.getString(descriptionResId),
             intent = contentIntent,
             pendingIntentRequestCode = Ids.LastUpload
@@ -200,6 +209,7 @@ class NotificationsUtils @Inject constructor(
     private object ChannelIds {
         val ongoingUploads = appCtx.getString(R.string.notifications_upload_channel_id)
         val transferDraft = "transfer_draft"
+        val transferComplete = "transfer_complete"
     }
 
     companion object {
