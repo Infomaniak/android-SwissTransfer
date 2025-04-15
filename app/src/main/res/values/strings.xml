@@ -48,6 +48,7 @@
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
     <string name="deeplinkTransferExpired">This transfer has expired</string>
     <string name="deeplinkTransferNotFound">This transfer does not exist</string>
+    <string name="descTooLargeFiles">The max transfer size has been exceeded.</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d</string>
     <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorIncorrectPassword">Incorrect password</string>
@@ -158,6 +159,7 @@
     <string name="sorry">We’re sorry</string>
     <string name="startActivityCantHandleAction">No application has been found to handle this action</string>
     <string name="textFieldOptional">(Optional)</string>
+    <string name="titleTooLargeFiles">That’s a bit much…</string>
     <string name="transferContentHeader">Transfer content:</string>
     <string name="transferExpiredButton">Delete from history</string>
     <string name="transferExpiredDateReachedDescription">Sorry, this transfer expired on %s. You can no longer download or view the files.</string>

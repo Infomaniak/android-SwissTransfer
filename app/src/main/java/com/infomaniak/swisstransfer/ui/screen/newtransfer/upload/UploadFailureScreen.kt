@@ -53,6 +53,11 @@ fun UploadFailureScreen(
             exitNewTransfer = cancel,
             desc = stringResource(R.string.errorAppIntegrity)
         )
+        UploadState.Failure.SizeExceeded -> UploadFailureScreen(
+            exitNewTransfer = cancel,
+            title = stringResource(R.string.titleTooLargeFiles),
+            desc = stringResource(R.string.descTooLargeFiles)
+        )
         UploadState.Failure.RestrictedLocation -> UploadFailureScreen(
             exitNewTransfer = cancel,
             illustration = AppIllus.MascotSearching,

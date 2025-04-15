@@ -52,6 +52,7 @@ import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 class UploadSessionManager @Inject constructor(
@@ -84,9 +85,13 @@ class UploadSessionManager @Inject constructor(
                     )
                     startRequest.withExactSizes()
                 }.cancellable().getOrElse { t ->
-                    val newState: UploadState = Retry.OtherIssue(info = startRequest.info, t = t)
+                    SentryLog.e(TAG, "Failed to measure the exact size of a picked file", t)
+                    val newState: UploadState = when (t) {
+                        is FileSizeExceededException -> UploadState.Failure.SizeExceeded
+                        else -> Retry.OtherIssue(info = startRequest.info, t = t)
+                    }
                     currentState = newState
-                    val shouldRetry = shouldRetrySignals.receive()// && newState is UploadState.Retry
+                    val shouldRetry = shouldRetrySignals.receive() && newState is Retry
                     if (shouldRetry) return@retryLoop else return@tryCompletingUnlessCancelled null
                 }
             }
@@ -270,7 +275,7 @@ class UploadSessionManager @Inject constructor(
 private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
 private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
-private const val TAG = "RetryingTransferUploader"
+private const val TAG = "UploadSessionManager"
 
 private val fileChunkSizeManager = FileChunkSizeManager(
     chunkMinSize = EXPECTED_CHUNK_SIZE,
@@ -288,20 +293,31 @@ private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
     )
 }
 
+private class FileSizeExceededException(message: String) : Exception(message)
+
+@Throws(FileSizeExceededException::class)
 @OptIn(ExperimentalAtomicApi::class)
 private suspend fun measureSizes(
     files: List<PickedFile>,
+    maxSize: Long = FileUtils.MAX_FILES_SIZE,
     handleTotalsProgression: suspend (Map<PickedFile, LongState>) -> Nothing = { awaitCancellation() },
 ): List<PickedFile> {
     val pickedFilesWithCountedByteTotals = files.associateWith { mutableLongStateOf(0) }
     return raceOf({
         val counter = InputStreamCounter()
+        val total = AtomicLong(0)
         pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
             async(Dispatchers.IO) {
                 val exactSize = counter.fileSizeFor(
                     uri = pickedFile.uri,
-                    onTotalBytesUpdate = {
-                        totalBytesState.longValue = it
+                    onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                        if (totalBytes >= maxSize) {
+                            throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
+                        }
+                        if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
+                            throw FileSizeExceededException("Files are exceeding the size limit")
+                        }
+                        totalBytesState.longValue = totalBytes
                         yield()
                     }
                 )
