@@ -32,7 +32,7 @@ internal class InputStreamCounter(
      */
     inline fun fileSizeFor(
         uri: Uri,
-        onTotalBytesUpdate: (Long) -> Unit,
+        onTotalBytesUpdate: (skippedBytes: Int, totalBytes: Long) -> Unit,
     ): Long = appCtx.contentResolver.openInputStream(uri)!!.buffered(sharedByteArrayForCountingBytes.size).use { stream ->
         var totalBytes = 0L
         while (true) {
@@ -43,7 +43,7 @@ internal class InputStreamCounter(
             val skippedBytes = stream.read(sharedByteArrayForCountingBytes)
             if (skippedBytes == -1) break
             totalBytes += skippedBytes
-            onTotalBytesUpdate(totalBytes)
+            onTotalBytesUpdate(skippedBytes, totalBytes)
         }
         totalBytes
     }
