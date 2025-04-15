@@ -21,29 +21,30 @@ import android.net.Uri
 import splitties.init.appCtx
 
 internal class InputStreamCounter(
-    sizeOfByteArrayToCountBytes: Int = DEFAULT_BUFFER_SIZE // 8kiB only
+    bufferSize: Int = DEFAULT_BUFFER_SIZE // 8kiB only
 ) {
 
-    private val sharedByteArrayForCountingBytes = ByteArray(sizeOfByteArrayToCountBytes)
+    private val sharedByteArrayForCountingBytes = ByteArray(bufferSize)
 
+    /**
+     * [android.provider.OpenableColumns.SIZE] is declarative, and could therefore have an inaccurate value,
+     * so we're counting the bytes from the stream instead.
+     */
     inline fun fileSizeFor(
         uri: Uri,
         onTotalBytesUpdate: (Long) -> Unit,
-    ): Long {
-        // OpenableColumns.SIZE isn't reliable, so we're counting the bytes from the stream instead.
-        return appCtx.contentResolver.openInputStream(uri)!!.buffered(DEFAULT_BUFFER_SIZE).use { stream ->
-            var totalBytes = 0L
-            while (true) {
-                // The skip() method might skip beyond EOF. From FileInputStream's JavaDoc:
-                // "This method may skip more bytes than what are remaining in the backing file."
-                // (from https://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html#skip-long-)
-                // That's we're using read instead.
-                val skippedBytes = stream.read(sharedByteArrayForCountingBytes)
-                if (skippedBytes == -1) break
-                totalBytes += skippedBytes
-                onTotalBytesUpdate(totalBytes)
-            }
-            totalBytes
+    ): Long = appCtx.contentResolver.openInputStream(uri)!!.buffered(sharedByteArrayForCountingBytes.size).use { stream ->
+        var totalBytes = 0L
+        while (true) {
+            // The skip() method might skip beyond EOF. From FileInputStream's JavaDoc:
+            // "This method may skip more bytes than what are remaining in the backing file."
+            // (from https://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html#skip-long-)
+            // That's we're using read instead.
+            val skippedBytes = stream.read(sharedByteArrayForCountingBytes)
+            if (skippedBytes == -1) break
+            totalBytes += skippedBytes
+            onTotalBytesUpdate(totalBytes)
         }
+        totalBytes
     }
 }
