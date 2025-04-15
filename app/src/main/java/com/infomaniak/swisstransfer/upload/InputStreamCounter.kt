@@ -39,7 +39,7 @@ internal class InputStreamCounter(
             // The skip() method might skip beyond EOF. From FileInputStream's JavaDoc:
             // "This method may skip more bytes than what are remaining in the backing file."
             // (from https://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html#skip-long-)
-            // That's we're using read instead.
+            // That's why we're using read instead.
             val skippedBytes = stream.read(sharedByteArrayForCountingBytes)
             if (skippedBytes == -1) break
             totalBytes += skippedBytes
