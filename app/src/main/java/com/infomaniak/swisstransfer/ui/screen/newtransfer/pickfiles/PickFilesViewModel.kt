@@ -38,6 +38,7 @@ import com.infomaniak.core.tryCompletingWhileTrue
 import com.infomaniak.core.utils.isValidEmail
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.Companion.toTransferOption
@@ -109,8 +110,8 @@ class PickFilesViewModel @Inject constructor(
             companion object : No
             data object ProcessingPickedFiles : No
             data object NoFilesPicked : No
-            data object MaxSizeExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed, and generated.
-            data object MaxFilesCountExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed, and generated.
+            data object MaxSizeExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed.
+            data object MaxFilesCountExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed.
             enum class EmailIssue : No {
                 AuthorUnspecified,
                 AuthorInvalid,
@@ -209,11 +210,15 @@ class PickFilesViewModel @Inject constructor(
         val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsStateIn(viewModelScope)
         val hasPickedFiles by hasPickedFilesFlow.collectAsStateIn(viewModelScope)
         val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsStateIn(viewModelScope)
+        val sizeExceeded by sizeExceededFlow().collectAsStateIn(viewModelScope)
+        val tooManyFiles by tooManyFilesFlow().collectAsStateIn(viewModelScope)
         return snapshotFlow {
             when {
                 uploadOngoing -> CanSendStatus.No
                 isHandlingPickedFiles -> CanSendStatus.No.ProcessingPickedFiles
                 !hasPickedFiles -> CanSendStatus.No.NoFilesPicked
+                tooManyFiles -> CanSendStatus.No.MaxFilesCountExceeded
+                sizeExceeded -> CanSendStatus.No.MaxSizeExceeded
                 transferType != TransferTypeUi.Mail -> CanSendStatus.Yes
                 transferAuthorEmail.isEmpty() -> EmailIssue.AuthorUnspecified
                 isAuthorEmailInvalid -> EmailIssue.AuthorInvalid
@@ -221,6 +226,17 @@ class PickFilesViewModel @Inject constructor(
                 else -> CanSendStatus.Yes // The emails form is valid.
             }
         }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No)
+    }
+
+    private fun sizeExceededFlow(maxFilesSize: Long = FileUtils.MAX_FILES_SIZE): StateFlow<Boolean> {
+        return UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
+            val totalSize = pickedFiles.sumOf { it.size }
+            totalSize >= maxFilesSize
+        }
+    }
+
+    private fun tooManyFilesFlow(maxFilesCount: Int = FileUtils.MAX_FILE_COUNT): StateFlow<Boolean> {
+        return UploadForegroundService.pickedFilesFlow.mapSync { it.size > maxFilesCount }
     }
 
     private suspend fun handleSessionStart() {
