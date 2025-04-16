@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -78,9 +79,9 @@ fun ImportedFilesCard(
             TextDotText(
                 firstText = {
                     val fileCount = files().count()
-                    pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
+                    Text(pluralStringResource(R.plurals.filesCount, fileCount, fileCount))
                 },
-                secondText = { formatSpaceLeft { humanReadableSize } },
+                secondText = { Text(formatSpaceLeft { humanReadableSize }) },
                 modifier = Modifier.padding(start = Margin.Medium),
             )
             Spacer(Modifier.weight(1.0f))

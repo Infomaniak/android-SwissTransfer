@@ -15,40 +15,49 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalTypeInference::class)
+
 package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import kotlin.experimental.ExperimentalTypeInference
 
 @Composable
 fun TextDotText(
-    firstText: @Composable () -> String,
-    secondText: @Composable () -> String,
+    firstText: @Composable () -> Unit,
+    secondText: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
     color: Color = SwissTransferTheme.colors.secondaryTextColor,
     style: TextStyle = SwissTransferTheme.typography.bodySmallRegular,
     optionalSecondTextColor: Color? = null,
-) {
-    Row(modifier) {
-        CustomText(text = firstText, style = style, color = color)
-        if (secondText().isNotEmpty()) {
+) = Row(modifier) {
+    CompositionLocalProvider(LocalTextStyle provides style.copy(color = color)) {
+        firstText()
+        secondText?.let { secondText ->
             Spacer(Modifier.width(Margin.Mini))
-            Text(text = "•", style = style, color = color)
+            Text(
+                text = "•",
+                modifier = Modifier.semantics { hideFromAccessibility() },
+                style = style,
+                color = color
+            )
             Spacer(Modifier.width(Margin.Mini))
-            CustomText(text = secondText, style = style, color = optionalSecondTextColor ?: color)
+            CompositionLocalProvider(LocalTextStyle provides style.copy(color = optionalSecondTextColor ?: color)) {
+                secondText()
+            }
         }
     }
-}
-
-@Composable
-private fun CustomText(text: @Composable () -> String, style: TextStyle, color: Color) {
-    Text(text = text(), style = style, color = color)
 }
