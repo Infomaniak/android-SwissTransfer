@@ -50,9 +50,10 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOp
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus.Issue
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus.No.EmailIssue
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
@@ -106,13 +107,17 @@ class PickFilesViewModel @Inject constructor(
 
     sealed interface CanSendStatus {
         data object Yes : CanSendStatus
-        sealed interface No : CanSendStatus {
-            companion object : No
-            data object ProcessingPickedFiles : No
-            data object NoFilesPicked : No
-            data object MaxSizeExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed.
-            data object MaxFilesCountExceeded : No //TODO[UL-pre-checks]: Ensure the error is displayed.
-            enum class EmailIssue : No {
+        data class No(val issues: Set<Issue>) : CanSendStatus
+
+        sealed interface Issue {
+            data object UploadOngoing : Issue
+            sealed interface Files : Issue {
+                data object Processing : Files
+                data object NonePicked : Files
+                data class MaxSizeExceeded(val actualSize: Long, val maxSize: Long) : Files
+                data class MaxCountExceeded(val maxCount: Int) : Files
+            }
+            enum class Email : Issue {
                 AuthorUnspecified,
                 AuthorInvalid,
                 NoValidatedRecipients,
@@ -205,38 +210,36 @@ class PickFilesViewModel @Inject constructor(
     }
 
     private fun buildCanSendStatusFlow(): StateFlow<CanSendStatus> {
-        val hasPickedFilesFlow = UploadForegroundService.pickedFilesFlow.mapSync { it.isNotEmpty() }
         val transferType by selectedTransferTypeFlow.collectAsStateIn(viewModelScope)
         val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsStateIn(viewModelScope)
-        val hasPickedFiles by hasPickedFilesFlow.collectAsStateIn(viewModelScope)
         val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsStateIn(viewModelScope)
-        val sizeExceeded by sizeExceededFlow().collectAsStateIn(viewModelScope)
-        val tooManyFiles by tooManyFilesFlow().collectAsStateIn(viewModelScope)
+        val pickedFilesIssues by pickedFilesIssues().collectAsStateIn(viewModelScope)
         return snapshotFlow {
-            when {
-                uploadOngoing -> CanSendStatus.No
-                isHandlingPickedFiles -> CanSendStatus.No.ProcessingPickedFiles
-                !hasPickedFiles -> CanSendStatus.No.NoFilesPicked
-                tooManyFiles -> CanSendStatus.No.MaxFilesCountExceeded
-                sizeExceeded -> CanSendStatus.No.MaxSizeExceeded
-                transferType != TransferTypeUi.Mail -> CanSendStatus.Yes
-                transferAuthorEmail.isEmpty() -> EmailIssue.AuthorUnspecified
-                isAuthorEmailInvalid -> EmailIssue.AuthorInvalid
-                validatedRecipientsEmails.isEmpty() -> EmailIssue.NoValidatedRecipients
-                else -> CanSendStatus.Yes // The emails form is valid.
+            val issues = buildSet<Issue> {
+                if (uploadOngoing) this += Issue.UploadOngoing
+                if (isHandlingPickedFiles) this += Issue.Files.Processing
+                addAll(pickedFilesIssues)
+                if (transferType == TransferTypeUi.Mail) {
+                    if (transferAuthorEmail.isEmpty()) this += Issue.Email.AuthorUnspecified
+                    if (isAuthorEmailInvalid) this += Issue.Email.AuthorInvalid
+                    if (validatedRecipientsEmails.isEmpty()) this += Issue.Email.NoValidatedRecipients
+                }
             }
-        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No)
+            if (issues.isEmpty()) CanSendStatus.Yes else CanSendStatus.No(issues)
+        }.stateIn(viewModelScope, SharingStarted.Lazily, initialValue = CanSendStatus.No(emptySet()))
     }
 
-    private fun sizeExceededFlow(maxFilesSize: Long = FileUtils.MAX_FILES_SIZE): StateFlow<Boolean> {
-        return UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
+    private fun pickedFilesIssues(
+        maxFilesSize: Long = FileUtils.MAX_FILES_SIZE,
+        maxFilesCount: Int = FileUtils.MAX_FILE_COUNT
+    ): StateFlow<Set<Issue>> = UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
+        if (pickedFiles.isEmpty()) {
+            setOf(Issue.Files.NonePicked)
+        } else buildSet {
+            if (pickedFiles.size > maxFilesCount) this += Issue.Files.MaxCountExceeded(maxFilesCount)
             val totalSize = pickedFiles.sumOf { it.size }
-            totalSize >= maxFilesSize
+            if (totalSize > maxFilesSize) this += Issue.Files.MaxSizeExceeded(actualSize = totalSize, maxSize = maxFilesSize)
         }
-    }
-
-    private fun tooManyFilesFlow(maxFilesCount: Int = FileUtils.MAX_FILE_COUNT): StateFlow<Boolean> {
-        return UploadForegroundService.pickedFilesFlow.mapSync { it.size > maxFilesCount }
     }
 
     private suspend fun handleSessionStart() {
@@ -397,6 +400,13 @@ class PickFilesViewModel @Inject constructor(
 
         private const val NO_PASSWORD = ""
     }
+}
+
+fun CanSendStatus.hasIssue(issue: Issue): Boolean = this is CanSendStatus.No && issue in issues
+
+inline fun <reified T : Issue> CanSendStatus.findIssueOrNull(): T? = when (this) {
+    is CanSendStatus.Yes -> null
+    is CanSendStatus.No -> issues.firstNotNullOf { it as? T }
 }
 
 private fun PickedFile.toFileUiModel(): FileUi {

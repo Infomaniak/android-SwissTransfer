@@ -53,6 +53,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.*
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -75,7 +76,7 @@ fun PickFilesScreen(
 ) {
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val canSendStatus: PickFilesViewModel.CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
+    val canSendStatus: CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
 
     val selectedTransferType: TransferTypeUi by pickFilesViewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
 
@@ -185,7 +186,7 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 @Composable
 private fun PickFilesScreen(
     files: () -> List<FileUi>,
-    canSendStatus: () -> PickFilesViewModel.CanSendStatus,
+    canSendStatus: () -> CanSendStatus,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
@@ -220,7 +221,7 @@ private fun PickFilesScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
                 SendByOptions(modifier, selectedTransferType)
-                FilesToImport(modifier, files, navigateToFilesDetails, pickFiles)
+                FilesToImport(modifier, files, canSendStatus, navigateToFilesDetails, pickFiles)
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
@@ -239,6 +240,7 @@ private fun PickFilesScreen(
 private fun FilesToImport(
     modifier: Modifier,
     files: () -> List<FileUi>,
+    canSendStatus: () -> CanSendStatus,
     navigateToFilesDetails: () -> Unit,
     pickFiles: () -> Unit,
 ) {
@@ -246,6 +248,7 @@ private fun FilesToImport(
     ImportedFilesCard(
         modifier,
         files,
+        canSendStatus,
         pickFiles,
         navigateToFilesDetails,
     )
@@ -388,7 +391,7 @@ private fun PickFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: I
 @Composable
 private fun SendButton(
     modifier: Modifier,
-    canSendStatus: () -> PickFilesViewModel.CanSendStatus,
+    canSendStatus: () -> CanSendStatus,
     expectsClick: () -> Boolean,
     onClick: () -> Unit,
 ) {
@@ -396,7 +399,7 @@ private fun SendButton(
         modifier = modifier,
         title = stringResource(R.string.transferSendButton),
         style = ButtonType.Primary,
-        showIndeterminateProgress = { canSendStatus() == PickFilesViewModel.CanSendStatus.No.ProcessingPickedFiles },
+        showIndeterminateProgress = { canSendStatus().hasIssue(CanSendStatus.Issue.Files.Processing) },
         enabled = expectsClick,
         onClick = onClick,
     )
@@ -480,7 +483,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
     SwissTransferTheme {
         PickFilesScreen(
             files = { files },
-            canSendStatus = { PickFilesViewModel.CanSendStatus.Yes },
+            canSendStatus = { CanSendStatus.Yes },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),

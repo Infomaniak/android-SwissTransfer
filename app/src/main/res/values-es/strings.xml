@@ -53,6 +53,10 @@
     <string name="expiresIn">Caduca en %d días</string>
     <string name="expiresOn">Expira el %s a las %s</string>
     <string name="expiresTomorrow">Expira mañana</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d archivos</string>
+    <string name="fileCountOverTtsFriendly">%1$d de %2$d archivos</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s de %2$s</string>
     <plurals name="filesCount">
         <item quantity="one">%d archivo</item>
         <item quantity="other">%d archivos</item>

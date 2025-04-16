@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -31,8 +32,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -46,9 +52,12 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.AddThick
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.findIssueOrNull
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -58,6 +67,7 @@ import kotlinx.parcelize.Parcelize
 fun ImportedFilesCard(
     modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
+    canSendStatus: () -> CanSendStatus,
     pickFiles: () -> Unit,
     navigateToFilesDetails: () -> Unit,
 ) {
@@ -79,9 +89,51 @@ fun ImportedFilesCard(
             TextDotText(
                 firstText = {
                     val fileCount = files().count()
-                    Text(pluralStringResource(R.plurals.filesCount, fileCount, fileCount))
+                    val maxCountExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxCountExceeded>()
+                    val string = when (maxCountExceeded) {
+                        null -> pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
+                        else -> stringResource(R.string.fileCountOverDisplayOnly, fileCount, maxCountExceeded.maxCount)
+                    }
+                    val ttsFriendlyText = maxCountExceeded?.let {
+                        stringResource(R.string.fileCountOverTtsFriendly, fileCount, maxCountExceeded.maxCount)
+                    }
+                    Text(
+                        text = string,
+                        modifier = when (ttsFriendlyText) {
+                            null -> Modifier
+                            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
+                        },
+                        color = if (maxCountExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
+                    )
+                    //TODO: Extract this code into a separate function
                 },
-                secondText = { Text(formatSpaceLeft { humanReadableSize }) },
+                secondText = {
+                    val maxSizeExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxSizeExceeded>()
+                    val string = when (maxSizeExceeded) {
+                        null -> formatSpaceLeft { humanReadableSize }
+                        else -> HumanReadableSizeUtils.formatSpaceOver(
+                            actualSize = maxSizeExceeded.actualSize,
+                            maxSize = maxSizeExceeded.maxSize,
+                            ttsFriendly = false,
+                        )
+                    }
+                    val ttsFriendlyText = maxSizeExceeded?.let {
+                        HumanReadableSizeUtils.formatSpaceOver(
+                            actualSize = maxSizeExceeded.actualSize,
+                            maxSize = maxSizeExceeded.maxSize,
+                            ttsFriendly = true,
+                        )
+                    }
+                    Text(
+                        text = string,
+                        modifier = when (ttsFriendlyText) {
+                            null -> Modifier
+                            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
+                        },
+                        color = if (maxSizeExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
+                    )
+                    //TODO: Extract this code into a separate function
+                },
                 modifier = Modifier.padding(start = Margin.Medium),
             )
             Spacer(Modifier.weight(1.0f))
@@ -152,6 +204,7 @@ private fun ImportedFilesCardPreview(@PreviewParameter(FileUiListPreviewParamete
         ImportedFilesCard(
             modifier = Modifier.padding(Margin.Medium),
             files = { files },
+            canSendStatus = { CanSendStatus.Yes },
             pickFiles = {},
             navigateToFilesDetails = {},
         )
