@@ -72,68 +72,14 @@ fun ImportedFilesCard(
     navigateToFilesDetails: () -> Unit,
 ) {
 
-    val context = LocalContext.current
-    val humanReadableSize by remember {
-        derivedStateOf {
-            val usedSpace = files().sumOf { it.fileSize }
-            val spaceLeft = (FileUtils.MAX_FILES_SIZE - usedSpace).coerceAtLeast(0)
-            getHumanReadableSize(context, spaceLeft)
-        }
-    }
-
     SwissTransferCard(
         modifier = modifier,
         onClick = if (files().isNotEmpty()) navigateToFilesDetails else null,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextDotText(
-                firstText = {
-                    val fileCount = files().count()
-                    val maxCountExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxCountExceeded>()
-                    val string = when (maxCountExceeded) {
-                        null -> pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
-                        else -> stringResource(R.string.fileCountOverDisplayOnly, fileCount, maxCountExceeded.maxCount)
-                    }
-                    val ttsFriendlyText = maxCountExceeded?.let {
-                        stringResource(R.string.fileCountOverTtsFriendly, fileCount, maxCountExceeded.maxCount)
-                    }
-                    Text(
-                        text = string,
-                        modifier = when (ttsFriendlyText) {
-                            null -> Modifier
-                            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
-                        },
-                        color = if (maxCountExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
-                    )
-                    //TODO: Extract this code into a separate function
-                },
-                secondText = {
-                    val maxSizeExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxSizeExceeded>()
-                    val string = when (maxSizeExceeded) {
-                        null -> formatSpaceLeft { humanReadableSize }
-                        else -> HumanReadableSizeUtils.formatSpaceOver(
-                            actualSize = maxSizeExceeded.actualSize,
-                            maxSize = maxSizeExceeded.maxSize,
-                            ttsFriendly = false,
-                        )
-                    }
-                    val ttsFriendlyText = maxSizeExceeded?.let {
-                        HumanReadableSizeUtils.formatSpaceOver(
-                            actualSize = maxSizeExceeded.actualSize,
-                            maxSize = maxSizeExceeded.maxSize,
-                            ttsFriendly = true,
-                        )
-                    }
-                    Text(
-                        text = string,
-                        modifier = when (ttsFriendlyText) {
-                            null -> Modifier
-                            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
-                        },
-                        color = if (maxSizeExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
-                    )
-                    //TODO: Extract this code into a separate function
-                },
+                firstText = { FilesCountText(files().count(), canSendStatus) },
+                secondText = { FilesSizeText({ files().sumOf { it.fileSize } }, canSendStatus) },
                 modifier = Modifier.padding(start = Margin.Medium),
             )
             Spacer(Modifier.weight(1.0f))
@@ -166,6 +112,62 @@ fun ImportedFilesCard(
             }
         }
     }
+}
+
+@Composable
+private fun FilesCountText(fileCount: Int, canSendStatus: () -> CanSendStatus) {
+    val maxCountExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxCountExceeded>()
+    val string = when (maxCountExceeded) {
+        null -> pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
+        else -> stringResource(R.string.fileCountOverDisplayOnly, fileCount, maxCountExceeded.maxCount)
+    }
+    val ttsFriendlyText = maxCountExceeded?.let {
+        stringResource(R.string.fileCountOverTtsFriendly, fileCount, maxCountExceeded.maxCount)
+    }
+    Text(
+        text = string,
+        modifier = when (ttsFriendlyText) {
+            null -> Modifier
+            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
+        },
+        color = if (maxCountExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
+    )
+}
+
+@Composable
+private fun FilesSizeText(filesSize: () -> Long, canSendStatus: () -> CanSendStatus) {
+    val context = LocalContext.current
+    val humanReadableSize by remember {
+        derivedStateOf {
+            val usedSpace = filesSize()
+            val spaceLeft = (FileUtils.MAX_FILES_SIZE - usedSpace).coerceAtLeast(0)
+            getHumanReadableSize(context, spaceLeft)
+        }
+    }
+    val maxSizeExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxSizeExceeded>()
+    val string = when (maxSizeExceeded) {
+        null -> formatSpaceLeft { humanReadableSize }
+        else -> HumanReadableSizeUtils.formatSpaceOver(
+            actualSize = maxSizeExceeded.actualSize,
+            maxSize = maxSizeExceeded.maxSize,
+            ttsFriendly = false,
+        )
+    }
+    val ttsFriendlyText = maxSizeExceeded?.let {
+        HumanReadableSizeUtils.formatSpaceOver(
+            actualSize = maxSizeExceeded.actualSize,
+            maxSize = maxSizeExceeded.maxSize,
+            ttsFriendly = true,
+        )
+    }
+    Text(
+        text = string,
+        modifier = when (ttsFriendlyText) {
+            null -> Modifier
+            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
+        },
+        color = if (maxSizeExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
+    )
 }
 
 @Composable
