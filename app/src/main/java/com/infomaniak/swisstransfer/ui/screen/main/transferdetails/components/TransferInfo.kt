@@ -66,8 +66,8 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
         )
         Spacer(Modifier.width(Margin.Mini))
         TextDotText(
-            firstText = { pluralStringResource(R.plurals.filesCount, filesCount, filesCount) },
-            secondText = { HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded) },
+            firstText = { Text(pluralStringResource(R.plurals.filesCount, filesCount, filesCount)) },
+            secondText = { Text(HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded)) },
             color = SwissTransferTheme.colors.primaryTextColor,
         )
     }
