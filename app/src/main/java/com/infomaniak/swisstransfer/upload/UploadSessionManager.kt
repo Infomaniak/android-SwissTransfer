@@ -54,6 +54,9 @@ import splitties.init.appCtx
 import javax.inject.Inject
 import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.experimental.ExperimentalTypeInference
+import kotlin.time.Duration
+import kotlin.time.measureTime
 
 class UploadSessionManager @Inject constructor(
     private val uploadManager: InMemoryUploadManager,
@@ -308,23 +311,63 @@ private suspend fun measureSizes(
         val total = AtomicLong(0)
         pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
             async(Dispatchers.IO) {
-                val exactSize = counter.fileSizeFor(
-                    uri = pickedFile.uri,
-                    onTotalBytesUpdate = { skippedBytes, totalBytes ->
-                        if (totalBytes >= maxSize) {
-                            throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
+                var totalTimeYielding = Duration.ZERO
+                var totalTimeUpdatingAtomicLong = Duration.ZERO
+                var totalTimeUpdatingMutableLongState = Duration.ZERO
+                val exactSize: Long
+                val totalTimeRunning = measureTime {
+                    exactSize = counter.fileSizeFor(
+                        uri = pickedFile.uri,
+                        onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                            if (totalBytes >= maxSize) {
+                                throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
+                            }
+                            totalTimeUpdatingAtomicLong += measureTime {
+                                if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
+                                    throw FileSizeExceededException("Files are exceeding the size limit")
+                                }
+                            }
+                            totalTimeUpdatingMutableLongState += measureTime { totalBytesState.longValue = totalBytes }
+                            totalTimeYielding += measureTime { yield() }
                         }
-                        if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
-                            throw FileSizeExceededException("Files are exceeding the size limit")
-                        }
-                        totalBytesState.longValue = totalBytes
-                        yield()
-                    }
+                    )
+                }
+                pickedFile.copy(size = exactSize) to TotalTimes(
+                    totalTimeRunning = totalTimeRunning,
+                    yielding = totalTimeYielding,
+                    updatingAtomicLong = totalTimeUpdatingAtomicLong,
+                    updatingMutableLongState = totalTimeUpdatingMutableLongState
                 )
-                pickedFile.copy(size = exactSize)
             }
-        }.awaitAll()
+        }.awaitAll().let { list ->
+            val totalTimes = TotalTimes(
+                totalTimeRunning = list.sumOfDuration { it.second.totalTimeRunning },
+                yielding = list.sumOfDuration { it.second.yielding },
+                updatingAtomicLong = list.sumOfDuration { it.second.updatingAtomicLong },
+                updatingMutableLongState = list.sumOfDuration { it.second.updatingMutableLongState },
+            )
+            SentryLog.i(TAG, "total time spent: $totalTimes")
+            list.map { (pickedFileWithExactSize, _) -> pickedFileWithExactSize }
+        }
     }, {
         handleTotalsProgression(pickedFilesWithCountedByteTotals)
     })
+}
+
+private data class TotalTimes(
+    val totalTimeRunning: Duration,
+    val yielding: Duration,
+    val updatingAtomicLong: Duration,
+    val updatingMutableLongState: Duration,
+)
+
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
+@JvmName("sumOfDuration")
+inline fun <T> Iterable<T>.sumOfDuration(selector: (T) -> Duration): Duration {
+    var sum: Duration = Duration.ZERO
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
 }
