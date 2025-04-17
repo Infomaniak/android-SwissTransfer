@@ -38,7 +38,10 @@ sealed interface UploadState {
     ) : UploadState {
 
         sealed interface Status {
-            data object Initializing : Status
+            sealed interface Initializing : Status {
+                companion object : Initializing
+                data object CheckingFiles : Initializing
+            }
             data object InProgress : Status
             data object WaitingForInternet : Status
         }
@@ -61,5 +64,6 @@ sealed interface UploadState {
     sealed interface Failure : UploadState {
         data object RestrictedLocation : Failure
         data object AppIntegrityIssue : Failure
+        data object SizeExceeded : Failure
     }
 }

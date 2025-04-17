@@ -19,6 +19,8 @@
 
 package com.infomaniak.swisstransfer.upload
 
+import androidx.compose.runtime.LongState
+import androidx.compose.runtime.mutableLongStateOf
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
@@ -28,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.removeAllFiles
@@ -38,14 +41,25 @@ import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.yield
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.experimental.ExperimentalTypeInference
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
+import kotlin.time.measureTime
 
 class UploadSessionManager @Inject constructor(
     private val uploadManager: InMemoryUploadManager,
@@ -56,7 +70,51 @@ class UploadSessionManager @Inject constructor(
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ) {
 
-    suspend fun handleNewTransfer(
+    suspend fun handleNewTransferWithApproximateSize(
+        startRequest: StartUploadRequest,
+        uploadState: MutableStateFlow<UploadState?>,
+        cancelTransferSignals: Channel<Unit>,
+        shouldRetrySignals: Channel<Boolean>,
+    ) {
+        var currentState by uploadState::value
+
+        val startRequestWithExactSize: StartUploadRequest = tryCompletingUnlessCancelled(
+            waitForCancellationSignal = { cancelTransferSignals.receive() },
+            valueIfCancelled = null
+        ) {
+            repeatWhileActive retryLoop@{
+                return@tryCompletingUnlessCancelled runCatching {
+                    currentState = UploadState.Ongoing(
+                        status = Status.Initializing.CheckingFiles,
+                        uploadedBytes = 0L,
+                        info = startRequest.info
+                    )
+                    startRequest.withExactSizes()
+                }.cancellable().getOrElse { t ->
+                    SentryLog.e(TAG, "Failed to measure the exact size of a picked file", t)
+                    val newState: UploadState = when (t) {
+                        is FileSizeExceededException -> UploadState.Failure.SizeExceeded
+                        else -> Retry.OtherIssue(info = startRequest.info, t = t)
+                    }
+                    currentState = newState
+                    val shouldRetry = shouldRetrySignals.receive() && newState is Retry
+                    if (shouldRetry) return@retryLoop else return@tryCompletingUnlessCancelled null
+                }
+            }
+        } ?: run {
+            currentState = null
+            return
+        }
+
+        handleNewTransferWithExactSizes(
+            startRequest = startRequestWithExactSize,
+            uploadState = uploadState,
+            cancelTransferSignals = cancelTransferSignals,
+            shouldRetrySignals = shouldRetrySignals
+        )
+    }
+
+    private suspend fun handleNewTransferWithExactSizes(
         startRequest: StartUploadRequest,
         uploadState: MutableStateFlow<UploadState?>,
         cancelTransferSignals: Channel<Unit>,
@@ -223,10 +281,105 @@ class UploadSessionManager @Inject constructor(
 private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
 private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
-private const val TAG = "RetryingTransferUploader"
+private const val TAG = "UploadSessionManager"
 
 private val fileChunkSizeManager = FileChunkSizeManager(
     chunkMinSize = EXPECTED_CHUNK_SIZE,
     chunkMaxSize = EXPECTED_CHUNK_SIZE,
     maxChunkCount = MAX_CHUNK_COUNT,
 )
+
+private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
+    val pickedFilesWithExactSizes = measureSizes(files)
+    return copy(
+        files = pickedFilesWithExactSizes,
+        info = info.copy(
+            totalSize = pickedFilesWithExactSizes.sumOf { it.size }
+        )
+    )
+}
+
+private class FileSizeExceededException(message: String) : Exception(message)
+
+@Throws(FileSizeExceededException::class)
+@OptIn(ExperimentalAtomicApi::class)
+private suspend fun measureSizes(
+    files: List<PickedFile>,
+    maxSize: Long = FileUtils.MAX_FILES_SIZE,
+    handleTotalsProgression: suspend (Map<PickedFile, LongState>) -> Nothing = { awaitCancellation() },
+): List<PickedFile> {
+    val pickedFilesWithCountedByteTotals = files.associateWith { mutableLongStateOf(0) }
+    return raceOf({
+        val counter = InputStreamCounter()
+        val total = AtomicLong(0)
+        val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
+        val start = TimeSource.Monotonic.markNow()
+        pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
+            async(Dispatchers.IO) {
+                var lastYield = TimeSource.Monotonic.markNow()
+                var totalTimeYielding = Duration.ZERO
+                var totalTimeUpdatingAtomicLong = Duration.ZERO
+                var totalTimeUpdatingMutableLongState = Duration.ZERO
+                val exactSize: Long
+                val totalTimeRunning = measureTime {
+                    exactSize = counter.fileSizeFor(
+                        uri = pickedFile.uri,
+                        onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                            if (totalBytes >= maxSize) {
+                                throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
+                            }
+                            totalTimeUpdatingAtomicLong += measureTime {
+                                if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
+                                    throw FileSizeExceededException("Files are exceeding the size limit")
+                                }
+                            }
+                            if (lastYield.elapsedNow() >= updateInterval) {
+                                totalTimeUpdatingMutableLongState += measureTime { totalBytesState.longValue = totalBytes }
+                                lastYield = TimeSource.Monotonic.markNow()
+                                totalTimeYielding += measureTime { yield() }
+                            } else {
+                                ensureActive()
+                            }
+                        }
+                    )
+                }
+                pickedFile.copy(size = exactSize) to TotalTimes(
+                    totalTimeRunning = totalTimeRunning,
+                    yielding = totalTimeYielding,
+                    updatingAtomicLong = totalTimeUpdatingAtomicLong,
+                    updatingMutableLongState = totalTimeUpdatingMutableLongState
+                )
+            }
+        }.awaitAll().let { list ->
+            val totalTimes = TotalTimes(
+                totalTimeRunning = list.sumOfDuration { it.second.totalTimeRunning },
+                yielding = list.sumOfDuration { it.second.yielding },
+                updatingAtomicLong = list.sumOfDuration { it.second.updatingAtomicLong },
+                updatingMutableLongState = list.sumOfDuration { it.second.updatingMutableLongState },
+            )
+            val executionDuration = start.elapsedNow()
+            SentryLog.i(TAG, "Actual execution duration: $executionDuration | total thread times: $totalTimes")
+            list.map { (pickedFileWithExactSize, _) -> pickedFileWithExactSize }
+        }
+    }, {
+        handleTotalsProgression(pickedFilesWithCountedByteTotals)
+    })
+}
+
+private data class TotalTimes(
+    val totalTimeRunning: Duration,
+    val yielding: Duration,
+    val updatingAtomicLong: Duration,
+    val updatingMutableLongState: Duration,
+)
+
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
+@JvmName("sumOfDuration")
+inline fun <T> Iterable<T>.sumOfDuration(selector: (T) -> Duration): Duration {
+    var sum: Duration = Duration.ZERO
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}

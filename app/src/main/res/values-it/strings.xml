@@ -153,6 +153,8 @@
     <string name="sorry">Ci dispiace</string>
     <string name="startActivityCantHandleAction">Non è stata trovata alcuna applicazione in grado di gestire questa azione</string>
     <string name="textFieldOptional">(Opzionale)</string>
+    <string name="tooLargeFilesDescription">È stata superata la dimensione massima di trasferimento.</string>
+    <string name="tooLargeFilesTitle">E’ un po’ troppo..</string>
     <string name="transferContentHeader">Contenuto del trasferimento:</string>
     <string name="transferExpiredButton">Cancellare dalla cronologia</string>
     <string name="transferExpiredDateReachedDescription">Spiacente, questo trasferimento è scaduto il %s. Non è più possibile scaricare o visualizzare i file.</string>
