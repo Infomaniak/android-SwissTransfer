@@ -22,6 +22,7 @@ package com.infomaniak.swisstransfer.upload
 import androidx.compose.runtime.LongState
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.work.WorkManager
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
@@ -59,6 +60,7 @@ class UploadSessionManager @Inject constructor(
     private val notificationsUtils: NotificationsUtils,
     private val uploadSessionStarter: UploadSessionStarter,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
+    private val workManager: WorkManager,
 ) {
 
     suspend fun handleNewTransfer(
@@ -113,16 +115,24 @@ class UploadSessionManager @Inject constructor(
 
         currentState = UploadState.Ongoing.CheckingAppIntegrity(startRequest.info)
 
-        val transferUuid = tryCompletingUnlessCancelled(
+        val (request, destination) = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
             valueIfCancelled = null
         ) {
-            val (request, destination) = startUploadSession(
+            startUploadSession(
                 startRequest = startRequest,
                 updateState = { currentState = it },
                 shouldRetry = ::shouldRetry
             ) ?: return@tryCompletingUnlessCancelled null
+        } ?: run {
+            currentState = null
+            return
+        }
 
+        val transferUuid = tryCompletingUnlessCancelled(
+            waitForCancellationSignal = { cancelTransferSignals.receive() },
+            valueIfCancelled = null
+        ) {
             TransferUploader(
                 startRequest = startRequest,
                 uploadManager = uploadManager,
@@ -155,7 +165,7 @@ class UploadSessionManager @Inject constructor(
                 transferUrl = url,
             )
         } else {
-            //TODO[UL-cancel]: On give up, schedule a worker to cancel the upload
+            with(AbandonedTransferCleanupWorker) { workManager.schedule(destination.container.uuid) }
             null
         }
     }
