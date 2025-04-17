@@ -147,11 +147,11 @@ private suspend fun fileNameFor(uri: Uri): String = Dispatchers.IO {
             /* selection = */ null,
             /* selectionArgs = */ null,
             /* sortOrder = */ null
-        )?.use { c: Cursor ->
-            if (c.moveToFirst()) {
-                when (val nameColumnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)) {
+        )?.use { cursor: Cursor ->
+            if (cursor.moveToFirst()) {
+                when (val nameColumnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)) {
                     -1 -> null
-                    else -> c.getStringOrNull(nameColumnIndex)
+                    else -> cursor.getStringOrNull(nameColumnIndex)
                 }
             } else null
         }
@@ -168,11 +168,11 @@ private suspend fun fileSizeFor(uri: Uri): Long = Dispatchers.IO {
             /* selection = */ null,
             /* selectionArgs = */ null,
             /* sortOrder = */ null
-        )?.use { c: Cursor ->
-            if (c.moveToFirst()) {
-                when (val sizeColumnIndex = c.getColumnIndex(OpenableColumns.SIZE)) {
+        )?.use { cursor: Cursor ->
+            if (cursor.moveToFirst()) {
+                when (val sizeColumnIndex = cursor.getColumnIndex(OpenableColumns.SIZE)) {
                     -1 -> -1L
-                    else -> c.getLongOrNull(sizeColumnIndex)
+                    else -> cursor.getLongOrNull(sizeColumnIndex)
                 }
             } else -1L
         } ?: -1L
