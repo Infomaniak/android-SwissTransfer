@@ -42,8 +42,8 @@ fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolea
     Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
         val filesInfo = getFilesInfo(files, withFilesSize)
         TextDotText(
-            firstText = { filesInfo.filesCountText },
-            secondText = { filesInfo.filesSizeText },
+            firstText = { Text(filesInfo.filesCountText) },
+            secondText = { Text(filesInfo.filesSizeText) },
         )
         Spacer(modifier = Modifier.weight(1f))
         if (withSpaceLeft) {
