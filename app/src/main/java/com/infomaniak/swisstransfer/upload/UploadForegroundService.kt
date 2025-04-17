@@ -30,7 +30,10 @@ import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.selects.SelectBuilder
+import kotlinx.coroutines.selects.select
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
@@ -203,7 +206,42 @@ private fun <T> Flow<T>.rateLimit(minInterval: Duration): Flow<T> = channelFlow 
         val timeSinceLastEmit = nanosSinceLastEmit.nanoseconds
         val timeToWait = minInterval - timeSinceLastEmit.coerceAtMost(minInterval)
         delay(timeToWait)
-        send(newValue) // We don't handle the case where cancellation happens after it's received.
+        sendAtomic(newValue)
         lastEmitElapsedNanos = SystemClock.elapsedRealtimeNanos()
     }
 }.buffer(Channel.RENDEZVOUS)
+
+
+/**
+ * [SendChannel.send] can throw a [CancellationException] after the value was sent,
+ * which might not be desirable if we want to take factor-in whether the value was actually
+ * sent.
+ *
+ * That's why this atomic version exists.
+ * It supports cancellation, but if the value is sent, it will return instead, even if it's
+ * happening concurrently to cancellation.
+ *
+ * See [this issue](https://github.com/Kotlin/kotlinx.coroutines/issues/4414) for more details.
+ */
+private suspend fun <T> SendChannel<T>.sendAtomic(element: T) {
+    trySelectAtomically<Unit?>(onCancellation = { null }) {
+        onSend(element) {}
+    } ?: currentCoroutineContext().ensureActive()
+}
+
+private suspend inline fun <R> trySelectAtomically(
+    crossinline onCancellation: suspend () -> R,
+    crossinline builder: SelectBuilder<R>.() -> Unit
+): R? {
+    val cancellationSignal = Job(parent = currentCoroutineContext().job)
+    try {
+        return withContext(NonCancellable) {
+            select {
+                builder() // We need to be biased towards this clause, so it comes first.
+                cancellationSignal.onJoin { onCancellation() }
+            }
+        }
+    } finally {
+        cancellationSignal.cancel() // The `builder()` clause could throw, so we need this in the finally block.
+    }
+}
