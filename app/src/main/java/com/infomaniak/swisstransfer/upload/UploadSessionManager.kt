@@ -313,6 +313,7 @@ private suspend fun measureSizes(
         val counter = InputStreamCounter()
         val total = AtomicLong(0)
         val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
+        val start = TimeSource.Monotonic.markNow()
         pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
             async(Dispatchers.IO) {
                 var lastYield = TimeSource.Monotonic.markNow()
@@ -356,7 +357,8 @@ private suspend fun measureSizes(
                 updatingAtomicLong = list.sumOfDuration { it.second.updatingAtomicLong },
                 updatingMutableLongState = list.sumOfDuration { it.second.updatingMutableLongState },
             )
-            SentryLog.i(TAG, "total time spent: $totalTimes")
+            val executionDuration = start.elapsedNow()
+            SentryLog.i(TAG, "Actual execution duration: $executionDuration | total thread times: $totalTimes")
             list.map { (pickedFileWithExactSize, _) -> pickedFileWithExactSize }
         }
     }, {
