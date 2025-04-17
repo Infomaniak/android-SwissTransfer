@@ -55,8 +55,8 @@ fun UploadFailureScreen(
         )
         UploadState.Failure.SizeExceeded -> UploadFailureScreen(
             exitNewTransfer = cancel,
-            title = stringResource(R.string.titleTooLargeFiles),
-            desc = stringResource(R.string.descTooLargeFiles)
+            title = stringResource(R.string.tooLargeFilesTitle),
+            desc = stringResource(R.string.tooLargeFilesDescription)
         )
         UploadState.Failure.RestrictedLocation -> UploadFailureScreen(
             exitNewTransfer = cancel,

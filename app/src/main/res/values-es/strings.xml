@@ -43,7 +43,6 @@
     <string name="deeplinkPasswordDescription">Introduzca la contraseña que se le ha dado para descargar estos archivos.</string>
     <string name="deeplinkTransferExpired">Esta transferencia ha expirado</string>
     <string name="deeplinkTransferNotFound">Esta transferencia no existe</string>
-    <string name="descTooLargeFiles">Se ha superado el tamaño máximo de transferencia.</string>
     <string name="downloadedTransferLabel">Transferencia descargada: %d/%d</string>
     <string name="errorAppIntegrity">Su dispositivo no es reconocido como seguro</string>
     <string name="errorIncorrectPassword">Contraseña incorrecta</string>
@@ -154,7 +153,8 @@
     <string name="sorry">Lo sentimos</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
-    <string name="titleTooLargeFiles">Eso es demasiado..</string>
+    <string name="tooLargeFilesDescription">Se ha superado el tamaño máximo de transferencia.</string>
+    <string name="tooLargeFilesTitle">Eso es demasiado..</string>
     <string name="transferContentHeader">Contenido de la transferencia:</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>
