@@ -45,6 +45,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.yield
 import splitties.coroutines.raceOf
@@ -56,6 +57,8 @@ import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.experimental.ExperimentalTypeInference
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 import kotlin.time.measureTime
 
 class UploadSessionManager @Inject constructor(
@@ -309,8 +312,10 @@ private suspend fun measureSizes(
     return raceOf({
         val counter = InputStreamCounter()
         val total = AtomicLong(0)
+        val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
         pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
             async(Dispatchers.IO) {
+                var lastYield = TimeSource.Monotonic.markNow()
                 var totalTimeYielding = Duration.ZERO
                 var totalTimeUpdatingAtomicLong = Duration.ZERO
                 var totalTimeUpdatingMutableLongState = Duration.ZERO
@@ -327,8 +332,13 @@ private suspend fun measureSizes(
                                     throw FileSizeExceededException("Files are exceeding the size limit")
                                 }
                             }
-                            totalTimeUpdatingMutableLongState += measureTime { totalBytesState.longValue = totalBytes }
-                            totalTimeYielding += measureTime { yield() }
+                            if (lastYield.elapsedNow() >= updateInterval) {
+                                totalTimeUpdatingMutableLongState += measureTime { totalBytesState.longValue = totalBytes }
+                                lastYield = TimeSource.Monotonic.markNow()
+                                totalTimeYielding += measureTime { yield() }
+                            } else {
+                                ensureActive()
+                            }
                         }
                     )
                 }
