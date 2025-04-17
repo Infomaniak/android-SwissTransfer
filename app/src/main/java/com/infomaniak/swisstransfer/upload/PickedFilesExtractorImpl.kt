@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.core.database.getLongOrNull
@@ -146,7 +147,7 @@ private suspend fun fileNameFor(uri: Uri): String = Dispatchers.IO {
             /* selection = */ null,
             /* selectionArgs = */ null,
             /* sortOrder = */ null
-        )?.use { c ->
+        )?.use { c: Cursor ->
             if (c.moveToFirst()) {
                 when (val nameColumnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)) {
                     -1 -> null
@@ -167,7 +168,7 @@ private suspend fun fileSizeFor(uri: Uri): Long = Dispatchers.IO {
             /* selection = */ null,
             /* selectionArgs = */ null,
             /* sortOrder = */ null
-        )?.use { c ->
+        )?.use { c: Cursor ->
             if (c.moveToFirst()) {
                 when (val sizeColumnIndex = c.getColumnIndex(OpenableColumns.SIZE)) {
                     -1 -> -1L
