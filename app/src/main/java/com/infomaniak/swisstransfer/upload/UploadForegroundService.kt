@@ -30,7 +30,10 @@ import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.selects.SelectBuilder
+import kotlinx.coroutines.selects.select
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
@@ -203,7 +206,54 @@ private fun <T> Flow<T>.rateLimit(minInterval: Duration): Flow<T> = channelFlow 
         val timeSinceLastEmit = nanosSinceLastEmit.nanoseconds
         val timeToWait = minInterval - timeSinceLastEmit.coerceAtMost(minInterval)
         delay(timeToWait)
-        send(newValue) // We don't handle the case where cancellation happens after it's received.
+        // We use `sendAtomic` instead of just `send` to ensure `lastEmitElapsedNanos` is updated
+        // if the value was successfully sent while cancellation was happening.
+        // That ensures we count every value being sent, and respect the desired rate limiting.
+        // FYI, as its documentation states, `send` can deliver the value to the receiver,
+        // and throw a `CancellationException` instead of returning (if coroutine's `Job` gets cancelled).
+        sendAtomic(newValue)
         lastEmitElapsedNanos = SystemClock.elapsedRealtimeNanos()
     }
 }.buffer(Channel.RENDEZVOUS)
+
+
+/**
+ * [SendChannel.send] can throw a [CancellationException] after the value was sent,
+ * which might not be desirable if we want to factor-in whether the value was actually sent.
+ *
+ * That's why this atomic version exists.
+ * It supports cancellation, but if the value is sent, it will return instead, even if it's
+ * happening concurrently to cancellation.
+ *
+ * See [this issue](https://github.com/Kotlin/kotlinx.coroutines/issues/4414) for more details.
+ */
+private suspend fun <T> SendChannel<T>.sendAtomic(element: T) {
+    trySelectAtomically<Unit?>(onCancellation = { null }) {
+        onSend(element) {}
+    } ?: currentCoroutineContext().ensureActive()
+}
+
+/**
+ * Always return if a select clause from [builder] was selected,
+ * while allowing cancellation, if it happened strictly before one
+ * of these clauses could be selected.
+ */
+private suspend inline fun <R> trySelectAtomically(
+    crossinline onCancellation: suspend () -> R,
+    crossinline builder: SelectBuilder<R>.() -> Unit
+): R? = coroutineScope {
+    // We connect `cancellationSignal` to the current job, so it can be used as
+    // a secondary select clause below, even though cancellation is blocked
+    // using `withContext(NonCancellable)`.
+    // The atomic behavior of `select` allows us to get the desired behavior.
+    val cancellationSignal = launch { awaitCancellation() }
+    withContext(NonCancellable) {
+        select {
+            builder() // We need to be biased towards this/these clause(s), so it comes first.
+            cancellationSignal.onJoin { onCancellation() }
+        }.also {
+            // If a builder clause was selected, stop this job to allow coroutineScope to complete.
+            cancellationSignal.cancel()
+        }
+    }
+}
