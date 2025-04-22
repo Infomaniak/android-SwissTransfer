@@ -20,6 +20,7 @@
 package com.infomaniak.swisstransfer.upload
 
 import androidx.compose.runtime.LongState
+import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.mutableLongStateOf
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.network.NetworkAvailability
@@ -45,6 +46,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.yield
@@ -287,7 +289,7 @@ private val fileChunkSizeManager = FileChunkSizeManager(
 )
 
 private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
-    val pickedFilesWithExactSizes = measureSizes(files)
+    val pickedFilesWithExactSizes = files.measureSizes()
     return copy(
         files = pickedFilesWithExactSizes,
         info = info.copy(
@@ -308,45 +310,59 @@ private fun interface FilesCheckProgressObserver {
 
 @Throws(FileSizeExceededException::class)
 @OptIn(ExperimentalAtomicApi::class)
-private suspend fun measureSizes(
-    files: List<PickedFile>,
+private suspend fun List<PickedFile>.measureSizes(
     maxSize: Long = FileUtils.MAX_FILES_SIZE,
     progressObserver: FilesCheckProgressObserver = FilesCheckProgressObserver { _, _, _ -> awaitCancellation() },
 ): List<PickedFile> {
-    val pickedFilesWithCountedByteTotals = files.associateWith { mutableLongStateOf(0) }
+    val pickedFilesWithCountedByteTotals = associateWith { mutableLongStateOf(0) }
     val total = AtomicLong(0)
     return raceOf({
-        val counter = InputStreamCounter()
-        val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
-        pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
-            async(Dispatchers.IO) {
-                var lastYield = TimeSource.Monotonic.markNow()
-                val exactSize = counter.fileSizeFor(
-                    uri = pickedFile.uri,
-                    onTotalBytesUpdate = { skippedBytes, totalBytes ->
-                        if (totalBytes >= maxSize) {
-                            throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
-                        }
-                        if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
-                            throw FileSizeExceededException("Files are exceeding the size limit")
-                        }
-                        if (lastYield.elapsedNow() >= updateInterval) {
-                            totalBytesState.longValue = totalBytes
-                            lastYield = TimeSource.Monotonic.markNow()
-                            yield()
-                        } else {
-                            ensureActive()
-                        }
-                    }
-                )
-                pickedFile.copy(size = exactSize)
-            }
-        }.awaitAll()
+        measureFilesSizesInParallel(
+            files = this@measureSizes,
+            pickedFilesWithCountedByteTotals = pickedFilesWithCountedByteTotals,
+            maxSize = maxSize,
+            total = total
+        )
     }, {
         progressObserver.handleProgression(
             perFileProgress = pickedFilesWithCountedByteTotals,
-            theoreticalTotalBytes = files.sumOf { it.size },
+            theoreticalTotalBytes = this@measureSizes.sumOf { it.size },
             getCurrentTotalReadBytes = { total.load() }
         )
     })
+}
+
+@OptIn(ExperimentalAtomicApi::class)
+private suspend fun measureFilesSizesInParallel(
+    files: List<PickedFile>,
+    pickedFilesWithCountedByteTotals: Map<PickedFile, MutableLongState>,
+    maxSize: Long,
+    total: AtomicLong
+): List<PickedFile> = coroutineScope {
+    val counter = InputStreamCounter()
+    val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
+    pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
+        async(Dispatchers.IO) {
+            var lastYield = TimeSource.Monotonic.markNow()
+            val exactSize = counter.fileSizeFor(
+                uri = pickedFile.uri,
+                onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                    if (totalBytes >= maxSize) {
+                        throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
+                    }
+                    if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
+                        throw FileSizeExceededException("Files are exceeding the size limit")
+                    }
+                    if (lastYield.elapsedNow() >= updateInterval) {
+                        totalBytesState.longValue = totalBytes
+                        lastYield = TimeSource.Monotonic.markNow()
+                        yield()
+                    } else {
+                        ensureActive()
+                    }
+                }
+            )
+            pickedFile.copy(size = exactSize)
+        }
+    }.awaitAll()
 }
