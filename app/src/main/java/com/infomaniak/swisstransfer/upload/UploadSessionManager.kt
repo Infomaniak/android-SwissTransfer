@@ -301,17 +301,25 @@ private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
 
 private class FileSizeExceededException(message: String) : Exception(message)
 
+private fun interface FilesCheckProgressObserver {
+    suspend fun handleProgression(
+        perFileProgress: Map<PickedFile, LongState>,
+        theoreticalTotalBytes: Long,
+        getCurrentTotalReadBytes: () -> Long
+    ): Nothing
+}
+
 @Throws(FileSizeExceededException::class)
 @OptIn(ExperimentalAtomicApi::class)
 private suspend fun measureSizes(
     files: List<PickedFile>,
     maxSize: Long = FileUtils.MAX_FILES_SIZE,
-    handleTotalsProgression: suspend (Map<PickedFile, LongState>) -> Nothing = { awaitCancellation() },
+    progressObserver: FilesCheckProgressObserver = FilesCheckProgressObserver { _, _, _ -> awaitCancellation() },
 ): List<PickedFile> {
     val pickedFilesWithCountedByteTotals = files.associateWith { mutableLongStateOf(0) }
+    val total = AtomicLong(0)
     return raceOf({
         val counter = InputStreamCounter()
-        val total = AtomicLong(0)
         val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
         val start = TimeSource.Monotonic.markNow()
         pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
@@ -362,7 +370,11 @@ private suspend fun measureSizes(
             list.map { (pickedFileWithExactSize, _) -> pickedFileWithExactSize }
         }
     }, {
-        handleTotalsProgression(pickedFilesWithCountedByteTotals)
+        progressObserver.handleProgression(
+            perFileProgress = pickedFilesWithCountedByteTotals,
+            theoreticalTotalBytes = files.sumOf { it.size },
+            getCurrentTotalReadBytes = { total.load() }
+        )
     })
 }
 
