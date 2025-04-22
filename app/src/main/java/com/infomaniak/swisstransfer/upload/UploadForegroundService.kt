@@ -241,20 +241,19 @@ private suspend fun <T> SendChannel<T>.sendAtomic(element: T) {
 private suspend inline fun <R> trySelectAtomically(
     crossinline onCancellation: suspend () -> R,
     crossinline builder: SelectBuilder<R>.() -> Unit
-): R? {
+): R? = coroutineScope {
     // We connect `cancellationSignal` to the current job, so it can be used as
     // a secondary select clause below, even though cancellation is blocked
     // using `withContext(NonCancellable)`.
     // The atomic behavior of `select` allows us to get the desired behavior.
-    val cancellationSignal = Job(parent = currentCoroutineContext().job)
-    try {
-        return withContext(NonCancellable) {
-            select {
-                builder() // We need to be biased towards this/these clause(s), so it comes first.
-                cancellationSignal.onJoin { onCancellation() }
-            }
+    val cancellationSignal = launch { awaitCancellation() }
+    withContext(NonCancellable) {
+        select {
+            builder() // We need to be biased towards this/these clause(s), so it comes first.
+            cancellationSignal.onJoin { onCancellation() }
+        }.also {
+            // If a builder clause was selected, stop this job to allow coroutineScope to complete.
+            cancellationSignal.cancel()
         }
-    } finally {
-        cancellationSignal.cancel() // The `builder()` clause could throw, so we need this in the finally block.
     }
 }
