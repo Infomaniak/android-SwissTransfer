@@ -76,6 +76,7 @@ fun UploadOngoingScreen(
         }
     }
 }
+
 @Composable
 private fun UploadStatus(progress: () -> UploadState.Ongoing) {
 
