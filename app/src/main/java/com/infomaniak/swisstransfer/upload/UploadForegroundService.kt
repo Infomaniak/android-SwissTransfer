@@ -175,9 +175,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
 
     private fun buildOngoingNotification(state: UploadState.Ongoing): Notification = when (state) {
         is UploadState.Ongoing.Uploading -> notificationsUtils.buildUploadProgressNotification(
-            authorEmail = state.info.authorEmail,
-            transferType = state.info.type,
-            totalBytes = state.info.totalSize,
+            info = state.info,
             uploadedBytes = state.uploadedBytes,
             isWaitingForInternet = when (state.status) {
                 UploadState.Ongoing.Uploading.Status.InProgress -> false
@@ -186,9 +184,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         )
         is UploadState.Ongoing.CheckingFiles, is UploadState.Ongoing.CheckingAppIntegrity -> {
             notificationsUtils.buildUploadProgressNotification(
-                authorEmail = state.info.authorEmail,
-                transferType = state.info.type,
-                totalBytes = state.info.totalSize,
+                info = state.info,
                 uploadedBytes = 0L,
                 isWaitingForInternet = false,
             )
