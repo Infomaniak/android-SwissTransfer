@@ -31,6 +31,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.DefinitelyComplete
 import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.StartedOrComplete
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import io.ktor.http.content.OutgoingContent
 import kotlinx.coroutines.*
@@ -110,7 +111,7 @@ class TransferUploader(
     private fun newUploadState(uploadedBytes: Long): UploadState.Ongoing {
         return UploadState.Ongoing.Uploading(
             uploadedBytes = uploadedBytes,
-            status = UploadState.Ongoing.Uploading.Status.InProgress,
+            status = Status.InProgress,
             info = startRequest.info
         )
     }
