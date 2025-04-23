@@ -45,29 +45,6 @@ class AbandonedTransferCleanupWorker @AssistedInject constructor(
     private val uploadManager: InMemoryUploadManager,
 ) : CoroutineWorker(appContext, params) {
 
-    companion object {
-
-        suspend fun WorkManager.schedule(containerUuid: String): kotlin.Result<Unit> = runCatching {
-            val inputData = Data.Builder()
-                .putString(DataKeys.CONTAINER_UUID, containerUuid)
-                .putLong(DataKeys.REQUEST_UTC_TIMESTAMP_MILLIS, System.currentTimeMillis())
-                .build()
-            enqueueUniqueWork(
-                uniqueWorkName = containerUuid,
-                existingWorkPolicy = ExistingWorkPolicy.KEEP,
-                request = OneTimeWorkRequestBuilder<AbandonedTransferCleanupWorker>()
-                    .setInputData(inputData)
-                    .setBackoffCriteria(backoffPolicy = BackoffPolicy.LINEAR, 10L, TimeUnit.MINUTES)
-                    .build()
-            ).await()
-            Unit
-        }.cancellable()
-
-        private val backendAutoCleanupDelay = 24.hours
-
-        private const val TAG = "AbandonedTransferCleanupWorker"
-    }
-
     private object DataKeys {
         const val CONTAINER_UUID = "container_uuid"
         const val REQUEST_UTC_TIMESTAMP_MILLIS = "request_utc_timestamp_millis"
@@ -95,5 +72,28 @@ class AbandonedTransferCleanupWorker @AssistedInject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+
+        suspend fun WorkManager.schedule(containerUuid: String): kotlin.Result<Unit> = runCatching {
+            val inputData = Data.Builder()
+                .putString(DataKeys.CONTAINER_UUID, containerUuid)
+                .putLong(DataKeys.REQUEST_UTC_TIMESTAMP_MILLIS, System.currentTimeMillis())
+                .build()
+            enqueueUniqueWork(
+                uniqueWorkName = containerUuid,
+                existingWorkPolicy = ExistingWorkPolicy.KEEP,
+                request = OneTimeWorkRequestBuilder<AbandonedTransferCleanupWorker>()
+                    .setInputData(inputData)
+                    .setBackoffCriteria(backoffPolicy = BackoffPolicy.LINEAR, 10L, TimeUnit.MINUTES)
+                    .build()
+            ).await()
+            Unit
+        }.cancellable()
+
+        private val backendAutoCleanupDelay = 24.hours
+
+        private const val TAG = "AbandonedTransferCleanupWorker"
     }
 }
