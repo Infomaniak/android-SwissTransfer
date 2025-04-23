@@ -39,7 +39,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Prog
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.swisstransfer.upload.UploadState
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing
 import com.infomaniak.core.R as RCore
 
@@ -81,14 +80,11 @@ fun UploadOngoingScreen(
 @Composable
 private fun UploadStatus(progress: () -> Ongoing) {
 
-    val progressStatus by remember { derivedStateOf { progress().status } }
-    val totalSizeInBytes by remember { derivedStateOf { progress().info.totalSize } }
-
     Crossfade(
         modifier = Modifier.fillMaxWidth(),
-        targetState = progressStatus,
+        targetState = progress(),
         label = "upload progress status",
-    ) { status ->
+    ) { state ->
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center,
@@ -99,13 +95,10 @@ private fun UploadStatus(progress: () -> Ongoing) {
                 // constrained to its height. Having a constant height in all ProgressUiState makes the crossfade smoother looking
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
-                when (status) {
-                    is Ongoing.Status.Initializing -> InitializingText(status)
-                    Ongoing.Status.InProgress -> Progress(
-                        uploadedSize = { progress().uploadedBytes },
-                        totalSizeInBytes = totalSizeInBytes
-                    )
-                    Ongoing.Status.WaitingForInternet -> NetworkUnavailable()
+                when (state) {
+                    is Ongoing.CheckingFiles -> Text(stringResource(R.string.transferInitializing)) //TODO: Replace
+                    is Ongoing.CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
+                    is Ongoing.Uploading -> UploadProgress(state)
                 }
             }
         }
@@ -113,23 +106,50 @@ private fun UploadStatus(progress: () -> Ongoing) {
 }
 
 @Composable
-private fun InitializingText(status: Ongoing.Status.Initializing) {
-    val textResId = when (status) {
-        Ongoing.Status.Initializing -> R.string.transferInitializing
-        Ongoing.Status.Initializing.CheckingFiles -> R.string.transferInitializing //TODO: Replace
+private fun UploadProgress(state: Ongoing.Uploading) = Column(
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+    when (state.status) {
+        Ongoing.Uploading.Status.InProgress -> Unit
+        Ongoing.Uploading.Status.WaitingForInternet -> NetworkUnavailable()
     }
-    Text(stringResource(textResId))
+    Progress(
+        uploadedSize = { state.uploadedBytes },
+        totalSizeInBytes = state.info.totalSize
+    )
 }
 
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun UploadingPreview() {
     SwissTransferTheme {
         UploadOngoingScreen(
             progressState = rememberUpdatedState(
-                Ongoing(
-                    status = Ongoing.Status.InProgress,
-                    info = UploadState.Info(
+                Ongoing.Uploading(
+                    status = Ongoing.Uploading.Status.InProgress,
+                    info = Ongoing.TransferInfo(
+                        authorEmail = "",
+                        totalSize = 50_000_000L,
+                        type = TransferTypeUi.Link,
+                    ),
+                    uploadedBytes = 44_321_654L,
+                )
+            ),
+            adScreenType = UploadProgressAdType.INDEPENDENCE,
+            onCancelClick = {},
+        )
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun WaitingForInternetPreview() {
+    SwissTransferTheme {
+        UploadOngoingScreen(
+            progressState = rememberUpdatedState(
+                Ongoing.Uploading(
+                    status = Ongoing.Uploading.Status.WaitingForInternet,
+                    info = Ongoing.TransferInfo(
                         authorEmail = "",
                         totalSize = 50_000_000L,
                         type = TransferTypeUi.Link,

@@ -36,20 +36,12 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.removeAllFiles
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.uploadStateFlow
-import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.swisstransfer.upload.UploadState.Retry
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.yield
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
@@ -83,11 +75,7 @@ class UploadSessionManager @Inject constructor(
         ) {
             repeatWhileActive retryLoop@{
                 return@tryCompletingUnlessCancelled runCatching {
-                    currentState = UploadState.Ongoing(
-                        status = Status.Initializing.CheckingFiles,
-                        uploadedBytes = 0L,
-                        info = startRequest.info
-                    )
+                    currentState = UploadState.Ongoing.CheckingFiles(startRequest.info)
                     startRequest.withExactSizes()
                 }.cancellable().getOrElse { t ->
                     SentryLog.e(TAG, "Failed to measure the exact size of a picked file", t)
@@ -123,11 +111,7 @@ class UploadSessionManager @Inject constructor(
 
         suspend fun shouldRetry(): Boolean = shouldRetrySignals.receive()
 
-        currentState = UploadState.Ongoing(
-            status = Status.Initializing,
-            uploadedBytes = 0L,
-            info = startRequest.info,
-        )
+        currentState = UploadState.Ongoing.CheckingAppIntegrity(startRequest.info)
 
         val transferUuid = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
@@ -189,7 +173,7 @@ class UploadSessionManager @Inject constructor(
             runCatching {
                 return tryCompletingWithInternet(
                     withoutInternet = {
-                        currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>()
+                        currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing.Uploading>()
                             .first()
                             .copy(status = Status.WaitingForInternet)
                         awaitCancellation()
@@ -220,13 +204,7 @@ class UploadSessionManager @Inject constructor(
     ): UploadSessionStarter.Result.Success? = repeatWhileActive {
 
         val info = startRequest.info
-        updateState(
-            UploadState.Ongoing(
-                status = Status.Initializing,
-                uploadedBytes = 0L,
-                info = info,
-            )
-        )
+        updateState(UploadState.Ongoing.CheckingAppIntegrity(info))
 
         val newState: UploadState = when (val result = uploadSessionStarter.tryStarting(startRequest)) {
             is UploadSessionStarter.Result.Success -> return result
@@ -332,6 +310,7 @@ private suspend fun List<PickedFile>.measureSizes(
     })
 }
 
+@Throws(FileSizeExceededException::class)
 @OptIn(ExperimentalAtomicApi::class)
 private suspend fun measureFilesSizesInParallel(
     files: List<PickedFile>,

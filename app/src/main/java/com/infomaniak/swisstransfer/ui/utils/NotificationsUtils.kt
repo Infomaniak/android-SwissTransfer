@@ -29,13 +29,7 @@ import com.infomaniak.core.notifications.*
 import com.infomaniak.core.utils.percent
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
-import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
-import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_AUTHOR_EMAIL_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
+import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -83,8 +77,10 @@ class NotificationsUtils @Inject constructor(
         transferType: TransferTypeUi,
         totalBytes: Long,
         uploadedBytes: Long,
+        isWaitingForInternet: Boolean,
     ): Notification = buildUploadProgressNotification(
         title = when {
+            isWaitingForInternet -> appContext.getString(R.string.awaitingNetwork)
             uploadedBytes > 0L -> {
                 val percent = percent(uploadedBytes, totalBytes)
                 appContext.getString(R.string.notificationUploadProgressTitle, percent)

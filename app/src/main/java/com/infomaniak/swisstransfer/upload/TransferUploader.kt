@@ -108,9 +108,9 @@ class TransferUploader(
     }
 
     private fun newUploadState(uploadedBytes: Long): UploadState.Ongoing {
-        return UploadState.Ongoing(
+        return UploadState.Ongoing.Uploading(
             uploadedBytes = uploadedBytes,
-            status = UploadState.Ongoing.Status.InProgress,
+            status = UploadState.Ongoing.Uploading.Status.InProgress,
             info = startRequest.info
         )
     }
