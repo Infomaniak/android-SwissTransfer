@@ -199,8 +199,8 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         launch { keepNotificationUpToDate() }
         repeatWhileActive {
             val startRequest: StartUploadRequest = startSignal.receive()
-            uploadSessionManager.handleNewTransferWithApproximateSize(
-                startRequest = startRequest,
+            uploadSessionManager.handleNewTransfer(
+                startRequestWithTheoreticalSizes = startRequest,
                 uploadState = _state,
                 cancelTransferSignals = cancelTransferSignals,
                 shouldRetrySignals = shouldRetrySignals,

@@ -61,8 +61,8 @@ class UploadSessionManager @Inject constructor(
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ) {
 
-    suspend fun handleNewTransferWithApproximateSize(
-        startRequest: StartUploadRequest,
+    suspend fun handleNewTransfer(
+        startRequestWithTheoreticalSizes: StartUploadRequest,
         uploadState: MutableStateFlow<UploadState?>,
         cancelTransferSignals: Channel<Unit>,
         shouldRetrySignals: Channel<Boolean>,
@@ -75,13 +75,13 @@ class UploadSessionManager @Inject constructor(
         ) {
             repeatWhileActive retryLoop@{
                 return@tryCompletingUnlessCancelled runCatching {
-                    currentState = UploadState.Ongoing.CheckingFiles(startRequest.info)
-                    startRequest.withExactSizes()
+                    currentState = UploadState.Ongoing.CheckingFiles(startRequestWithTheoreticalSizes.info)
+                    startRequestWithTheoreticalSizes.withExactSizes()
                 }.cancellable().getOrElse { t ->
                     SentryLog.e(TAG, "Failed to measure the exact size of a picked file", t)
                     val newState: UploadState = when (t) {
                         is FileSizeExceededException -> UploadState.Failure.SizeExceeded
-                        else -> Retry.OtherIssue(info = startRequest.info, t = t)
+                        else -> Retry.OtherIssue(info = startRequestWithTheoreticalSizes.info, t = t)
                     }
                     currentState = newState
                     val shouldRetry = shouldRetrySignals.receive() && newState is Retry
