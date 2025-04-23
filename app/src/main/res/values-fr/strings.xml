@@ -33,6 +33,7 @@
     <string name="buttonShare">Partager</string>
     <string name="buttonStart">Démarrer</string>
     <string name="cantImportFileX">Impossible d’importer le fichier %s</string>
+    <string name="checkingFiles">Vérification des fichiers…</string>
     <string name="contentDescriptionButtonBack">Retour</string>
     <string name="contentDescriptionButtonClose">Fermer</string>
     <string name="contentDescriptionButtonHidePassword">Cacher le mot de passe</string>

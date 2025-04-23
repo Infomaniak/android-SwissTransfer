@@ -38,6 +38,7 @@
     <string name="buttonShare">Share</string>
     <string name="buttonStart">Start</string>
     <string name="cantImportFileX">Can’t import the file %s</string>
+    <string name="checkingFiles">Checking files…</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>

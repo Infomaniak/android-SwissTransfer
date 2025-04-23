@@ -96,7 +96,7 @@ private fun UploadStatus(progress: () -> Ongoing) {
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
                 when (state) {
-                    is Ongoing.CheckingFiles -> Text(stringResource(R.string.transferInitializing)) //TODO: Replace
+                    is Ongoing.CheckingFiles -> Text(stringResource(R.string.checkingFiles))
                     is Ongoing.CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
                     is Ongoing.Uploading -> UploadProgress(state)
                 }
