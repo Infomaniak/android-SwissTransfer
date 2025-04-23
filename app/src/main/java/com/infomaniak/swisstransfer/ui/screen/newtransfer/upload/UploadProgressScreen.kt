@@ -40,6 +40,8 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.*
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.core.R as RCore
 
 @Composable
@@ -96,9 +98,9 @@ private fun UploadStatus(progress: () -> Ongoing) {
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
                 when (state) {
-                    is Ongoing.CheckingFiles -> Text(stringResource(R.string.checkingFiles))
-                    is Ongoing.CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
-                    is Ongoing.Uploading -> UploadProgress(state)
+                    is CheckingFiles -> Text(stringResource(R.string.checkingFiles))
+                    is CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
+                    is Uploading -> UploadProgress(state)
                 }
             }
         }
@@ -106,12 +108,12 @@ private fun UploadStatus(progress: () -> Ongoing) {
 }
 
 @Composable
-private fun UploadProgress(state: Ongoing.Uploading) = Column(
+private fun UploadProgress(state: Uploading) = Column(
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
     when (state.status) {
-        Ongoing.Uploading.Status.InProgress -> Unit
-        Ongoing.Uploading.Status.WaitingForInternet -> NetworkUnavailable()
+        Status.InProgress -> Unit
+        Status.WaitingForInternet -> NetworkUnavailable()
     }
     Progress(
         uploadedSize = { state.uploadedBytes },
@@ -125,9 +127,9 @@ private fun UploadingPreview() {
     SwissTransferTheme {
         UploadOngoingScreen(
             progressState = rememberUpdatedState(
-                Ongoing.Uploading(
-                    status = Ongoing.Uploading.Status.InProgress,
-                    info = Ongoing.TransferInfo(
+                Uploading(
+                    status = Status.InProgress,
+                    info = TransferInfo(
                         authorEmail = "",
                         totalSize = 50_000_000L,
                         type = TransferTypeUi.Link,
@@ -147,9 +149,9 @@ private fun WaitingForInternetPreview() {
     SwissTransferTheme {
         UploadOngoingScreen(
             progressState = rememberUpdatedState(
-                Ongoing.Uploading(
-                    status = Ongoing.Uploading.Status.WaitingForInternet,
-                    info = Ongoing.TransferInfo(
+                Uploading(
+                    status = Status.WaitingForInternet,
+                    info = TransferInfo(
                         authorEmail = "",
                         totalSize = 50_000_000L,
                         type = TransferTypeUi.Link,
