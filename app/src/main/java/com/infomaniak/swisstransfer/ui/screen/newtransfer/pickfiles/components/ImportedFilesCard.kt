@@ -159,10 +159,7 @@ private fun FilesSizeText(filesSize: () -> Long, canSendStatus: () -> CanSendSta
     }
     Text(
         text = string,
-        modifier = when (ttsFriendlyText) {
-            null -> Modifier
-            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
-        },
+        modifier = if (ttsFriendlyText == null) Modifier else Modifier.semantics { text = AnnotatedString(ttsFriendlyText) },
         color = if (maxSizeExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
     )
 }
