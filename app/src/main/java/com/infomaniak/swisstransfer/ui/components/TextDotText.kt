@@ -22,10 +22,9 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.hideFromAccessibility
@@ -42,22 +41,14 @@ fun TextDotText(
     modifier: Modifier = Modifier,
     color: Color = SwissTransferTheme.colors.secondaryTextColor,
     style: TextStyle = SwissTransferTheme.typography.bodySmallRegular,
-    optionalSecondTextColor: Color? = null,
 ) = Row(modifier) {
-    CompositionLocalProvider(LocalTextStyle provides style.copy(color = color)) {
+    ProvideTextStyle(style.copy(color = color)) {
         firstText()
         secondText?.let { secondText ->
             Spacer(Modifier.width(Margin.Mini))
-            Text(
-                text = "•",
-                modifier = Modifier.semantics { hideFromAccessibility() },
-                style = style,
-                color = color
-            )
+            Text(text = "•", modifier = Modifier.semantics { hideFromAccessibility() })
             Spacer(Modifier.width(Margin.Mini))
-            CompositionLocalProvider(LocalTextStyle provides style.copy(color = optionalSecondTextColor ?: color)) {
-                secondText()
-            }
+            secondText()
         }
     }
 }
