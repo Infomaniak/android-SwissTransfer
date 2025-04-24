@@ -165,7 +165,9 @@ class UploadSessionManager @Inject constructor(
                 transferUrl = url,
             )
         } else {
-            AbandonedTransferCleanupWorker.schedule(workManager, destination.container.uuid)
+            AbandonedTransferCleanupWorker.schedule(workManager, destination.container.uuid).onFailure {
+                SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferCleanupWorker!", it)
+            }
             null
         }
     }
