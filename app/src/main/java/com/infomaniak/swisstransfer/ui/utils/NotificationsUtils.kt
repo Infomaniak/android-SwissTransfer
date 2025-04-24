@@ -29,15 +29,10 @@ import com.infomaniak.core.notifications.*
 import com.infomaniak.core.utils.percent
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
-import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
-import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_AUTHOR_EMAIL_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TOTAL_SIZE_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
-import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
+import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.notificationIconColor
+import com.infomaniak.swisstransfer.upload.UploadState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import splitties.init.appCtx
 import javax.inject.Inject
@@ -79,28 +74,28 @@ class NotificationsUtils @Inject constructor(
     }
 
     fun buildUploadProgressNotification(
-        authorEmail: String,
-        transferType: TransferTypeUi,
-        totalBytes: Long,
+        info: UploadState.Ongoing.TransferInfo,
         uploadedBytes: Long,
+        isWaitingForInternet: Boolean,
     ): Notification = buildUploadProgressNotification(
         title = when {
+            isWaitingForInternet -> appContext.getString(R.string.awaitingNetwork)
             uploadedBytes > 0L -> {
-                val percent = percent(uploadedBytes, totalBytes)
+                val percent = percent(uploadedBytes, info.totalSize)
                 appContext.getString(R.string.notificationUploadProgressTitle, percent)
             }
             else -> appContext.getString(R.string.uploadProgressIndication)
         },
         description = if (uploadedBytes > 0L) {
             val current = HumanReadableSizeUtils.getHumanReadableSize(appContext, uploadedBytes)
-            val total = HumanReadableSizeUtils.getHumanReadableSize(appContext, totalBytes)
+            val total = HumanReadableSizeUtils.getHumanReadableSize(appContext, info.totalSize)
             "$current / $total"
         } else {
             null
         },
-        authorEmail = authorEmail,
-        transferType = transferType,
-        totalBytes = totalBytes
+        authorEmail = info.authorEmail,
+        transferType = info.type,
+        totalBytes = info.totalSize
     )
 
     fun uploadSucceeded(

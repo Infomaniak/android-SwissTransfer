@@ -22,5 +22,5 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 data class StartUploadRequest(
     val params: NewTransferParams,
     val files: List<PickedFile>,
-    val info: UploadState.Info
+    val info: UploadState.Ongoing.TransferInfo
 )

@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -39,12 +41,14 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Prog
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
-import com.infomaniak.swisstransfer.upload.UploadState
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.*
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.core.R as RCore
 
 @Composable
 fun UploadOngoingScreen(
-    progressState: State<UploadState.Ongoing>,
+    progressState: State<Ongoing>,
     adScreenType: UploadProgressAdType,
     onCancelClick: () -> Unit,
 ) {
@@ -77,17 +81,16 @@ fun UploadOngoingScreen(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-private fun UploadStatus(progress: () -> UploadState.Ongoing) {
-
-    val progressStatus by remember { derivedStateOf { progress().status } }
-    val totalSizeInBytes by remember { derivedStateOf { progress().info.totalSize } }
-
-    Crossfade(
+private fun UploadStatus(progress: () -> Ongoing) {
+    updateTransition(
+        targetState = progress(),
+        label = "ongoing upload state"
+    ).Crossfade(
         modifier = Modifier.fillMaxWidth(),
-        targetState = progressStatus,
-        label = "upload progress status",
-    ) { status ->
+        contentKey = { it::class },
+    ) { state ->
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center,
@@ -98,28 +101,64 @@ private fun UploadStatus(progress: () -> UploadState.Ongoing) {
                 // constrained to its height. Having a constant height in all ProgressUiState makes the crossfade smoother looking
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
-                when (status) {
-                    UploadState.Ongoing.Status.Initializing -> Text(stringResource(R.string.transferInitializing))
-                    UploadState.Ongoing.Status.InProgress -> Progress(
-                        uploadedSize = { progress().uploadedBytes },
-                        totalSizeInBytes = totalSizeInBytes
-                    )
-                    UploadState.Ongoing.Status.WaitingForInternet -> NetworkUnavailable()
+                when (state) {
+                    is CheckingFiles -> Text(stringResource(R.string.checkingFiles))
+                    is CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
+                    is Uploading -> UploadProgress(progress)
                 }
             }
         }
     }
 }
 
+@Composable
+private fun UploadProgress(state: () -> Ongoing) = Column(
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+    val status by remember { derivedStateOf { (state() as? Uploading)?.status } }
+    val totalSize by remember { derivedStateOf { state().info.totalSize } }
+    val uploadedBytes by remember { derivedStateOf { (state() as? Uploading)?.uploadedBytes ?: 0L } }
+    when (status) {
+        null -> Unit
+        Status.WaitingForInternet -> NetworkUnavailable()
+        Status.InProgress -> Progress(
+            uploadedSize = { uploadedBytes },
+            totalSizeInBytes = totalSize
+        )
+    }
+}
+
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun UploadingPreview() {
     SwissTransferTheme {
         UploadOngoingScreen(
             progressState = rememberUpdatedState(
-                UploadState.Ongoing(
-                    status = UploadState.Ongoing.Status.InProgress,
-                    info = UploadState.Info(
+                Uploading(
+                    status = Status.InProgress,
+                    info = TransferInfo(
+                        authorEmail = "",
+                        totalSize = 50_000_000L,
+                        type = TransferTypeUi.Link,
+                    ),
+                    uploadedBytes = 44_321_654L,
+                )
+            ),
+            adScreenType = UploadProgressAdType.INDEPENDENCE,
+            onCancelClick = {},
+        )
+    }
+}
+
+@PreviewAllWindows
+@Composable
+private fun WaitingForInternetPreview() {
+    SwissTransferTheme {
+        UploadOngoingScreen(
+            progressState = rememberUpdatedState(
+                Uploading(
+                    status = Status.WaitingForInternet,
+                    info = TransferInfo(
                         authorEmail = "",
                         totalSize = 50_000_000L,
                         type = TransferTypeUi.Link,

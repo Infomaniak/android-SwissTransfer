@@ -21,26 +21,29 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 
 sealed interface UploadState {
 
-    /**
-     * This is not part of the [UploadState] hierarchy, but is used in its entries,
-     * so the UI can display relevant metadata.
-     */
-    data class Info(
-        val authorEmail: String,
-        val totalSize: Long,
-        val type: TransferTypeUi
-    )
+    sealed interface Ongoing : UploadState {
 
-    data class Ongoing(
-        val uploadedBytes: Long,
-        val status: Status,
-        val info: Info,
-    ) : UploadState {
+        data class TransferInfo(
+            val authorEmail: String,
+            val totalSize: Long,
+            val type: TransferTypeUi
+        )
 
-        sealed interface Status {
-            data object Initializing : Status
-            data object InProgress : Status
-            data object WaitingForInternet : Status
+        val info: TransferInfo
+
+        data class CheckingFiles(override val info: TransferInfo) : Ongoing
+        data class CheckingAppIntegrity(override val info: TransferInfo) : Ongoing
+
+        data class Uploading(
+            val uploadedBytes: Long,
+            val status: Status,
+            override val info: TransferInfo,
+        ) : Ongoing {
+
+            sealed interface Status {
+                data object InProgress : Status
+                data object WaitingForInternet : Status
+            }
         }
     }
 
@@ -51,15 +54,16 @@ sealed interface UploadState {
     ) : UploadState
 
     sealed interface Retry : UploadState {
-        val info: Info
+        val info: Ongoing.TransferInfo
 
-        data class EmailValidationRequired(override val info: Info) : Retry
-        data class NetworkIssue(override val info: Info) : Retry
-        data class OtherIssue(override val info: Info, val t: Throwable) : Retry
+        data class EmailValidationRequired(override val info: Ongoing.TransferInfo) : Retry
+        data class NetworkIssue(override val info: Ongoing.TransferInfo) : Retry
+        data class OtherIssue(override val info: Ongoing.TransferInfo, val t: Throwable) : Retry
     }
 
     sealed interface Failure : UploadState {
         data object RestrictedLocation : Failure
         data object AppIntegrityIssue : Failure
+        data object SizeExceeded : Failure
     }
 }

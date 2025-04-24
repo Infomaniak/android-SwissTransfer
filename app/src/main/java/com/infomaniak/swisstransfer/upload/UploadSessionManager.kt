@@ -19,6 +19,9 @@
 
 package com.infomaniak.swisstransfer.upload
 
+import androidx.compose.runtime.LongState
+import androidx.compose.runtime.MutableLongState
+import androidx.compose.runtime.mutableLongStateOf
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
@@ -28,17 +31,15 @@ import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.removeAllFiles
 import com.infomaniak.swisstransfer.upload.UploadForegroundService.Companion.uploadStateFlow
-import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Status
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.swisstransfer.upload.UploadState.Retry
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import splitties.coroutines.raceOf
@@ -46,6 +47,10 @@ import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 class UploadSessionManager @Inject constructor(
     private val uploadManager: InMemoryUploadManager,
@@ -57,6 +62,46 @@ class UploadSessionManager @Inject constructor(
 ) {
 
     suspend fun handleNewTransfer(
+        startRequestWithTheoreticalSizes: StartUploadRequest,
+        uploadState: MutableStateFlow<UploadState?>,
+        cancelTransferSignals: Channel<Unit>,
+        shouldRetrySignals: Channel<Boolean>,
+    ) {
+        var currentState by uploadState::value
+
+        val startRequestWithExactSize: StartUploadRequest = tryCompletingUnlessCancelled(
+            waitForCancellationSignal = { cancelTransferSignals.receive() },
+            valueIfCancelled = null
+        ) {
+            repeatWhileActive retryLoop@{
+                return@tryCompletingUnlessCancelled runCatching {
+                    currentState = UploadState.Ongoing.CheckingFiles(startRequestWithTheoreticalSizes.info)
+                    startRequestWithTheoreticalSizes.withExactSizes()
+                }.cancellable().getOrElse { t ->
+                    SentryLog.e(TAG, "Failed to measure the exact size of a picked file", t)
+                    val newState: UploadState = when (t) {
+                        is FileSizeExceededException -> UploadState.Failure.SizeExceeded
+                        else -> Retry.OtherIssue(info = startRequestWithTheoreticalSizes.info, t = t)
+                    }
+                    currentState = newState
+                    val shouldRetry = shouldRetrySignals.receive() && newState is Retry
+                    if (shouldRetry) return@retryLoop else return@tryCompletingUnlessCancelled null
+                }
+            }
+        } ?: run {
+            currentState = null
+            return
+        }
+
+        handleNewTransferWithExactSizes(
+            startRequest = startRequestWithExactSize,
+            uploadState = uploadState,
+            cancelTransferSignals = cancelTransferSignals,
+            shouldRetrySignals = shouldRetrySignals
+        )
+    }
+
+    private suspend fun handleNewTransferWithExactSizes(
         startRequest: StartUploadRequest,
         uploadState: MutableStateFlow<UploadState?>,
         cancelTransferSignals: Channel<Unit>,
@@ -66,11 +111,7 @@ class UploadSessionManager @Inject constructor(
 
         suspend fun shouldRetry(): Boolean = shouldRetrySignals.receive()
 
-        currentState = UploadState.Ongoing(
-            status = Status.Initializing,
-            uploadedBytes = 0L,
-            info = startRequest.info,
-        )
+        currentState = UploadState.Ongoing.CheckingAppIntegrity(startRequest.info)
 
         val transferUuid = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
@@ -132,7 +173,7 @@ class UploadSessionManager @Inject constructor(
             runCatching {
                 return tryCompletingWithInternet(
                     withoutInternet = {
-                        currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing>()
+                        currentState = uploadStateFlow.filterIsInstance<UploadState.Ongoing.Uploading>()
                             .first()
                             .copy(status = Status.WaitingForInternet)
                         awaitCancellation()
@@ -163,13 +204,7 @@ class UploadSessionManager @Inject constructor(
     ): UploadSessionStarter.Result.Success? = repeatWhileActive {
 
         val info = startRequest.info
-        updateState(
-            UploadState.Ongoing(
-                status = Status.Initializing,
-                uploadedBytes = 0L,
-                info = info,
-            )
-        )
+        updateState(UploadState.Ongoing.CheckingAppIntegrity(info))
 
         val newState: UploadState = when (val result = uploadSessionStarter.tryStarting(startRequest)) {
             is UploadSessionStarter.Result.Success -> return result
@@ -223,10 +258,90 @@ class UploadSessionManager @Inject constructor(
 private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB
 private const val MAX_CHUNK_COUNT = (FileUtils.MAX_FILES_SIZE / EXPECTED_CHUNK_SIZE).toInt()
 
-private const val TAG = "RetryingTransferUploader"
+private const val TAG = "UploadSessionManager"
 
 private val fileChunkSizeManager = FileChunkSizeManager(
     chunkMinSize = EXPECTED_CHUNK_SIZE,
     chunkMaxSize = EXPECTED_CHUNK_SIZE,
     maxChunkCount = MAX_CHUNK_COUNT,
 )
+
+private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
+    val pickedFilesWithExactSizes = files.measureSizes()
+    return copy(
+        files = pickedFilesWithExactSizes,
+        info = info.copy(
+            totalSize = pickedFilesWithExactSizes.sumOf { it.size }
+        )
+    )
+}
+
+private class FileSizeExceededException(message: String) : Exception(message)
+
+private fun interface FilesCheckProgressObserver {
+    suspend fun handleProgression(
+        perFileProgress: Map<PickedFile, LongState>,
+        theoreticalTotalBytes: Long,
+        getCurrentTotalReadBytes: () -> Long
+    ): Nothing
+}
+
+@Throws(FileSizeExceededException::class)
+@OptIn(ExperimentalAtomicApi::class)
+private suspend fun List<PickedFile>.measureSizes(
+    maxSize: Long = FileUtils.MAX_FILES_SIZE,
+    progressObserver: FilesCheckProgressObserver = FilesCheckProgressObserver { _, _, _ -> awaitCancellation() },
+): List<PickedFile> {
+    val pickedFilesWithCountedByteTotals = associateWith { mutableLongStateOf(0) }
+    val total = AtomicLong(0)
+    return raceOf({
+        measureFilesSizesInParallel(
+            files = this@measureSizes,
+            pickedFilesWithCountedByteTotals = pickedFilesWithCountedByteTotals,
+            maxSize = maxSize,
+            total = total
+        )
+    }, {
+        progressObserver.handleProgression(
+            perFileProgress = pickedFilesWithCountedByteTotals,
+            theoreticalTotalBytes = this@measureSizes.sumOf { it.size },
+            getCurrentTotalReadBytes = { total.load() }
+        )
+    })
+}
+
+@Throws(FileSizeExceededException::class)
+@OptIn(ExperimentalAtomicApi::class)
+private suspend fun measureFilesSizesInParallel(
+    files: List<PickedFile>,
+    pickedFilesWithCountedByteTotals: Map<PickedFile, MutableLongState>,
+    maxSize: Long,
+    total: AtomicLong
+): List<PickedFile> = coroutineScope {
+    val counter = InputStreamCounter()
+    val updateInterval = ((1.seconds / 60.0) * files.size).coerceAtLeast(1.seconds)
+    pickedFilesWithCountedByteTotals.map { (pickedFile, totalBytesState) ->
+        async(Dispatchers.IO) {
+            var lastYield = TimeSource.Monotonic.markNow()
+            val exactSize = counter.fileSizeFor(
+                uri = pickedFile.uri,
+                onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                    if (totalBytes >= maxSize) {
+                        throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
+                    }
+                    if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
+                        throw FileSizeExceededException("Files are exceeding the size limit")
+                    }
+                    if (lastYield.elapsedNow() >= updateInterval) {
+                        totalBytesState.longValue = totalBytes
+                        lastYield = TimeSource.Monotonic.markNow()
+                        yield()
+                    } else {
+                        ensureActive()
+                    }
+                }
+            )
+            pickedFile.copy(size = exactSize)
+        }
+    }.awaitAll()
+}

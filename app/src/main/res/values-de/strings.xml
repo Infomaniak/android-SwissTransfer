@@ -33,6 +33,7 @@
     <string name="buttonShare">Teilen</string>
     <string name="buttonStart">Starten</string>
     <string name="cantImportFileX">Die Datei %s kann nicht importiert werden</string>
+    <string name="checkingFiles">Überprüfung der Dateien…</string>
     <string name="contentDescriptionButtonBack">Zurück</string>
     <string name="contentDescriptionButtonClose">Schliessen</string>
     <string name="contentDescriptionButtonHidePassword">Passwort verbergen</string>
@@ -153,6 +154,8 @@
     <string name="sorry">Es tut uns leid</string>
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Optional)</string>
+    <string name="tooLargeFilesDescription">Die maximale Grösse einer Übertragung wurde überschritten.</string>
+    <string name="tooLargeFilesTitle">Das ist ein bisschen viel..</string>
     <string name="transferContentHeader">Inhalt der Übertragung:</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>

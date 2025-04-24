@@ -33,6 +33,7 @@
     <string name="buttonShare">Compartir</string>
     <string name="buttonStart">Inicio</string>
     <string name="cantImportFileX">No se puede importar el archivo %s</string>
+    <string name="checkingFiles">Comprobando archivos…</string>
     <string name="contentDescriptionButtonBack">Volver</string>
     <string name="contentDescriptionButtonClose">Cerrar</string>
     <string name="contentDescriptionButtonHidePassword">Ocultar contraseña</string>
@@ -153,6 +154,8 @@
     <string name="sorry">Lo sentimos</string>
     <string name="startActivityCantHandleAction">No se ha encontrado ninguna aplicación que gestione esta acción</string>
     <string name="textFieldOptional">(Opcional)</string>
+    <string name="tooLargeFilesDescription">Se ha superado el tamaño máximo de transferencia.</string>
+    <string name="tooLargeFilesTitle">Eso es demasiado..</string>
     <string name="transferContentHeader">Contenido de la transferencia:</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>

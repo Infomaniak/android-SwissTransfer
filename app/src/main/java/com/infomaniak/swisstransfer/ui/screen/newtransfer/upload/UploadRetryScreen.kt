@@ -88,7 +88,7 @@ private fun UploadRetryScreenPreview() {
     SwissTransferTheme {
         Surface {
             val info = remember {
-                UploadState.Info(
+                UploadState.Ongoing.TransferInfo(
                     authorEmail = "test@infomaniak.com",
                     totalSize = 0L,
                     type = TransferTypeUi.Mail,
