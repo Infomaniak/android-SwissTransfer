@@ -216,13 +216,13 @@ class PickFilesViewModel @Inject constructor(
         val pickedFilesIssues by pickedFilesIssues().collectAsStateIn(viewModelScope)
         return snapshotFlow {
             val issues = buildSet<Issue> {
-                if (uploadOngoing) this += Issue.UploadOngoing
-                if (isHandlingPickedFiles) this += Issue.Files.Processing
+                if (uploadOngoing) add(Issue.UploadOngoing)
+                if (isHandlingPickedFiles) add(Issue.Files.Processing)
                 addAll(pickedFilesIssues)
                 if (transferType == TransferTypeUi.Mail) {
-                    if (transferAuthorEmail.isEmpty()) this += Issue.Email.AuthorUnspecified
-                    if (isAuthorEmailInvalid) this += Issue.Email.AuthorInvalid
-                    if (validatedRecipientsEmails.isEmpty()) this += Issue.Email.NoValidatedRecipients
+                    if (transferAuthorEmail.isEmpty()) add(Issue.Email.AuthorUnspecified)
+                    if (isAuthorEmailInvalid) add(Issue.Email.AuthorInvalid)
+                    if (validatedRecipientsEmails.isEmpty()) add(Issue.Email.NoValidatedRecipients)
                 }
             }
             if (issues.isEmpty()) CanSendStatus.Yes else CanSendStatus.No(issues)
@@ -236,9 +236,9 @@ class PickFilesViewModel @Inject constructor(
         if (pickedFiles.isEmpty()) {
             setOf(Issue.Files.NonePicked)
         } else buildSet {
-            if (pickedFiles.size > maxFilesCount) this += Issue.Files.MaxCountExceeded(maxFilesCount)
+            if (pickedFiles.size > maxFilesCount) add(Issue.Files.MaxCountExceeded(maxFilesCount))
             val totalSize = pickedFiles.sumOf { it.size }
-            if (totalSize > maxFilesSize) this += Issue.Files.MaxSizeExceeded(actualSize = totalSize, maxSize = maxFilesSize)
+            if (totalSize > maxFilesSize) add(Issue.Files.MaxSizeExceeded(actualSize = totalSize, maxSize = maxFilesSize))
         }
     }
 
