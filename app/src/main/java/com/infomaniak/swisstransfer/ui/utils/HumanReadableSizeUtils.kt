@@ -19,9 +19,14 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
 import android.icu.text.NumberFormat
+import android.icu.util.MeasureUnit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.FormatterFileSize.formatFileSize
 import com.infomaniak.core.FormatterFileSize.formatShortFileSize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
@@ -36,6 +41,28 @@ object HumanReadableSizeUtils {
     fun Context.getSpaceLeft(files: List<FileUi>): String {
         val spaceLeft = (FileUtils.MAX_FILES_SIZE - getFilesSizeInBytes(files)).coerceAtLeast(0)
         return getHumanReadableSize(this, spaceLeft)
+    }
+
+    @Composable
+    fun formatSpaceOver(
+        actualSize: Long,
+        maxSize: Long,
+        useIecUnits: Boolean = false,
+        ttsFriendly: Boolean
+    ): String {
+        val context = LocalContext.current
+        val configuration = LocalConfiguration.current
+
+        val actualSizeText = remember(actualSize, configuration, context) {
+            context.formatFileSize(actualSize, useIecUnits = useIecUnits, valueOnly = true, maxUnit = MeasureUnit.GIGABYTE)
+        }
+        val maxSizeText = remember(maxSize, configuration, context) {
+            context.formatFileSize(maxSize, useIecUnits = useIecUnits, valueOnly = false, maxUnit = MeasureUnit.GIGABYTE)
+        }
+        return stringResource(
+            id = if (ttsFriendly) R.string.fileSizeOverTtsFriendly else R.string.fileSizeOverDisplayOnly,
+            actualSizeText, maxSizeText
+        )
     }
 
     @Composable

@@ -88,9 +88,8 @@ fun TransferItem(
 
                 Spacer(Modifier.height(Margin.Mini))
                 TextDotText(
-                    firstText = { uploadedSize },
-                    secondText = { expiryText },
-                    optionalSecondTextColor = expiryColor,
+                    firstText = { Text(uploadedSize) },
+                    secondText = { Text(expiryText, color = expiryColor) },
                 )
 
                 Spacer(Modifier.height(Margin.Mini))

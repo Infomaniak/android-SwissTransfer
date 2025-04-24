@@ -58,6 +58,10 @@
     <string name="expiresIn">Expires in %d days</string>
     <string name="expiresOn">Expires on %s at %s</string>
     <string name="expiresTomorrow">Expires tomorrow</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d files</string>
+    <string name="fileCountOverTtsFriendly">%1$d out of %2$d files</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s out of %2$s</string>
     <plurals name="filesCount">
         <item quantity="one">%d file</item>
         <item quantity="other">%d files</item>
