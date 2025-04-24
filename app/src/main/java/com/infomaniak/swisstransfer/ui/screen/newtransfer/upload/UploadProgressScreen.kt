@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -79,13 +81,15 @@ fun UploadOngoingScreen(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun UploadStatus(progress: () -> Ongoing) {
-
-    Crossfade(
-        modifier = Modifier.fillMaxWidth(),
+    updateTransition(
         targetState = progress(),
-        label = "upload progress status",
+        label = "ongoing upload state"
+    ).Crossfade(
+        modifier = Modifier.fillMaxWidth(),
+        contentKey = { it::class },
     ) { state ->
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -100,7 +104,7 @@ private fun UploadStatus(progress: () -> Ongoing) {
                 when (state) {
                     is CheckingFiles -> Text(stringResource(R.string.checkingFiles))
                     is CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
-                    is Uploading -> UploadProgress(state)
+                    is Uploading -> UploadProgress(progress)
                 }
             }
         }
@@ -108,16 +112,19 @@ private fun UploadStatus(progress: () -> Ongoing) {
 }
 
 @Composable
-private fun UploadProgress(state: Uploading) = Column(
+private fun UploadProgress(state: () -> Ongoing) = Column(
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
-    when (state.status) {
-        Status.InProgress -> Unit
+    val status by remember { derivedStateOf { (state() as? Uploading)?.status } }
+    val totalSize by remember { derivedStateOf { state().info.totalSize } }
+    val uploadedBytes by remember { derivedStateOf { (state() as? Uploading)?.uploadedBytes ?: 0L } }
+    when (status) {
+        null, Status.InProgress -> Unit
         Status.WaitingForInternet -> NetworkUnavailable()
     }
     Progress(
-        uploadedSize = { state.uploadedBytes },
-        totalSizeInBytes = state.info.totalSize
+        uploadedSize = { uploadedBytes },
+        totalSizeInBytes = totalSize
     )
 }
 
