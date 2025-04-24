@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -122,10 +123,16 @@ private fun UploadProgress(state: () -> Ongoing) = Column(
     val status by remember { derivedStateOf { (state() as? Uploading)?.status } }
     val totalSize by remember { derivedStateOf { state().info.totalSize } }
     val uploadedBytes by remember { derivedStateOf { (state() as? Uploading)?.uploadedBytes ?: 0L } }
-    when (status) {
-        null, Status.InProgress -> Unit
-        Status.WaitingForInternet -> NetworkUnavailable()
+    AnimatedVisibility(
+        when (status) {
+            null, Status.InProgress -> false
+            Status.WaitingForInternet -> true
+        }
+
+    ) {
+        NetworkUnavailable()
     }
+
     Progress(
         uploadedSize = { uploadedBytes },
         totalSizeInBytes = totalSize
