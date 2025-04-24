@@ -119,13 +119,13 @@ private fun UploadProgress(state: () -> Ongoing) = Column(
     val totalSize by remember { derivedStateOf { state().info.totalSize } }
     val uploadedBytes by remember { derivedStateOf { (state() as? Uploading)?.uploadedBytes ?: 0L } }
     when (status) {
-        null, Status.InProgress -> Unit
+        null -> Unit
         Status.WaitingForInternet -> NetworkUnavailable()
+        Status.InProgress -> Progress(
+            uploadedSize = { uploadedBytes },
+            totalSizeInBytes = totalSize
+        )
     }
-    Progress(
-        uploadedSize = { uploadedBytes },
-        totalSizeInBytes = totalSize
-    )
 }
 
 @PreviewAllWindows
