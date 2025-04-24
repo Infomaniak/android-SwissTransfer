@@ -406,7 +406,7 @@ fun CanSendStatus.hasIssue(issue: Issue): Boolean = this is CanSendStatus.No && 
 
 inline fun <reified T : Issue> CanSendStatus.findIssueOrNull(): T? = when (this) {
     is CanSendStatus.Yes -> null
-    is CanSendStatus.No -> issues.firstNotNullOf { it as? T }
+    is CanSendStatus.No -> issues.firstNotNullOfOrNull { it as? T }
 }
 
 private fun PickedFile.toFileUiModel(): FileUi {
