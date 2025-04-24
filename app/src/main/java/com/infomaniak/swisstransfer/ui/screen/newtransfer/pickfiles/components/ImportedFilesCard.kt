@@ -126,10 +126,7 @@ private fun FilesCountText(fileCount: Int, canSendStatus: () -> CanSendStatus) {
     }
     Text(
         text = string,
-        modifier = when (ttsFriendlyText) {
-            null -> Modifier
-            else -> Modifier.semantics { text = AnnotatedString(ttsFriendlyText) }
-        },
+        modifier = if (ttsFriendlyText == null) Modifier else Modifier.semantics { text = AnnotatedString(ttsFriendlyText) },
         color = if (maxCountExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
     )
 }
