@@ -147,6 +147,7 @@ private fun FilesSizeText(filesSize: () -> Long, canSendStatus: () -> CanSendSta
         else -> HumanReadableSizeUtils.formatSpaceOver(
             actualSize = maxSizeExceeded.actualSize,
             maxSize = maxSizeExceeded.maxSize,
+            useIecUnits = true,
             ttsFriendly = false,
         )
     }
@@ -154,6 +155,7 @@ private fun FilesSizeText(filesSize: () -> Long, canSendStatus: () -> CanSendSta
         HumanReadableSizeUtils.formatSpaceOver(
             actualSize = maxSizeExceeded.actualSize,
             maxSize = maxSizeExceeded.maxSize,
+            useIecUnits = true,
             ttsFriendly = true,
         )
     }

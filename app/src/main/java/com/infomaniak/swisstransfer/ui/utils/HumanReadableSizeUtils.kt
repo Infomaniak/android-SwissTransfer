@@ -44,15 +44,20 @@ object HumanReadableSizeUtils {
     }
 
     @Composable
-    fun formatSpaceOver(actualSize: Long, maxSize: Long, ttsFriendly: Boolean): String {
+    fun formatSpaceOver(
+        actualSize: Long,
+        maxSize: Long,
+        useIecUnits: Boolean = false,
+        ttsFriendly: Boolean
+    ): String {
         val context = LocalContext.current
         val configuration = LocalConfiguration.current
 
         val actualSizeText = remember(actualSize, configuration, context) {
-            context.formatFileSize(actualSize, valueOnly = true, maxUnit = MeasureUnit.GIGABYTE)
+            context.formatFileSize(actualSize, useIecUnits = useIecUnits, valueOnly = true, maxUnit = MeasureUnit.GIGABYTE)
         }
         val maxSizeText = remember(maxSize, configuration, context) {
-            context.formatFileSize(maxSize, valueOnly = false, maxUnit = MeasureUnit.GIGABYTE)
+            context.formatFileSize(maxSize, useIecUnits = useIecUnits, valueOnly = false, maxUnit = MeasureUnit.GIGABYTE)
         }
         return stringResource(
             id = if (ttsFriendly) R.string.fileSizeOverTtsFriendly else R.string.fileSizeOverDisplayOnly,
