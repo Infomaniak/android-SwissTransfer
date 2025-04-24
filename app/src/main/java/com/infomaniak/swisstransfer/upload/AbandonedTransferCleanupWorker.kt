@@ -83,6 +83,7 @@ class AbandonedTransferCleanupWorker @AssistedInject constructor(
                 .putString(DataKeys.CONTAINER_UUID, containerUuid)
                 .putLong(DataKeys.REQUEST_UTC_TIMESTAMP_MILLIS, System.currentTimeMillis())
                 .build()
+
             workManager.enqueueUniqueWork(
                 uniqueWorkName = containerUuid,
                 existingWorkPolicy = ExistingWorkPolicy.KEEP,
@@ -92,7 +93,7 @@ class AbandonedTransferCleanupWorker @AssistedInject constructor(
                     .setBackoffCriteria(backoffPolicy = BackoffPolicy.LINEAR, 10L, TimeUnit.MINUTES)
                     .build()
             ).await()
-            Unit
+            Unit // We don't need the fancy completion type Operation.State.SUCCESS from androidx.work
         }.cancellable()
 
         private val backendAutoCleanupDelay = 24.hours
