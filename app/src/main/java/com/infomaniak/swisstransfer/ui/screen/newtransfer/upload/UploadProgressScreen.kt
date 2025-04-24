@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalTextStyle
@@ -26,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -88,7 +89,7 @@ private fun UploadStatus(progress: () -> Ongoing) {
         targetState = progress(),
         label = "ongoing upload state"
     ).Crossfade(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().animateContentSize(),
         contentKey = { it::class },
     ) { state ->
         Box(
@@ -97,9 +98,12 @@ private fun UploadStatus(progress: () -> Ongoing) {
         ) {
             val style = SwissTransferTheme.typography.labelRegular.copy(color = SwissTransferTheme.colors.secondaryTextColor)
             CompositionLocalProvider(value = LocalTextStyle provides style) {
-                // NetworkUnavailable is always the biggest item of the three. It's composed here in order for the Box to be
-                // constrained to its height. Having a constant height in all ProgressUiState makes the crossfade smoother looking
-                NetworkUnavailable(modifier = Modifier.alpha(0f))
+                // The block below prevents small height changes for the containing Box and its host layout.
+                with(LocalDensity.current) {
+                    val linesCount = 3
+                    val lineHeight = style.fontSize.toDp()
+                    Spacer(Modifier.height(lineHeight * linesCount))
+                }
 
                 when (state) {
                     is CheckingFiles -> Text(stringResource(R.string.checkingFiles))
