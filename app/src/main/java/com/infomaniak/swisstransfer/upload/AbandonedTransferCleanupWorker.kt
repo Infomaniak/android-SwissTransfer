@@ -78,12 +78,12 @@ class AbandonedTransferCleanupWorker @AssistedInject constructor(
 
     companion object {
 
-        suspend fun WorkManager.schedule(containerUuid: String): kotlin.Result<Unit> = runCatching {
+        suspend fun schedule(workManager: WorkManager, containerUuid: String): kotlin.Result<Unit> = runCatching {
             val inputData = Data.Builder()
                 .putString(DataKeys.CONTAINER_UUID, containerUuid)
                 .putLong(DataKeys.REQUEST_UTC_TIMESTAMP_MILLIS, System.currentTimeMillis())
                 .build()
-            enqueueUniqueWork(
+            workManager.enqueueUniqueWork(
                 uniqueWorkName = containerUuid,
                 existingWorkPolicy = ExistingWorkPolicy.KEEP,
                 request = OneTimeWorkRequestBuilder<AbandonedTransferCleanupWorker>()

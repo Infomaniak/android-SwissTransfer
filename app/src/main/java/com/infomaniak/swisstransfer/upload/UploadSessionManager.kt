@@ -165,7 +165,7 @@ class UploadSessionManager @Inject constructor(
                 transferUrl = url,
             )
         } else {
-            with(AbandonedTransferCleanupWorker) { workManager.schedule(destination.container.uuid) }
+            AbandonedTransferCleanupWorker.schedule(workManager, destination.container.uuid)
             null
         }
     }
