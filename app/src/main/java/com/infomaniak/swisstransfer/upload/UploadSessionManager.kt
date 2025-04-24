@@ -338,10 +338,10 @@ private suspend fun measureFilesSizesInParallel(
             val exactSize = counter.fileSizeFor(
                 uri = pickedFile.uri,
                 onTotalBytesUpdate = { skippedBytes, totalBytes ->
-                    if (totalBytes >= maxSize) {
+                    if (totalBytes > maxSize) {
                         throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
                     }
-                    if (total.addAndFetch(skippedBytes.toLong()) >= maxSize) {
+                    if (total.addAndFetch(skippedBytes.toLong()) > maxSize) {
                         throw FileSizeExceededException("Files are exceeding the size limit")
                     }
                     if (lastYield.elapsedNow() >= updateInterval) {
