@@ -117,7 +117,7 @@ fun ImportedFilesCard(
 @Composable
 private fun FilesCountText(fileCount: Int, canSendStatus: () -> CanSendStatus) {
     val maxCountExceeded = canSendStatus().findIssueOrNull<CanSendStatus.Issue.Files.MaxCountExceeded>()
-    val string = when (maxCountExceeded) {
+    val fileCountText = when (maxCountExceeded) {
         null -> pluralStringResource(R.plurals.filesCount, fileCount, fileCount)
         else -> stringResource(R.string.fileCountOverDisplayOnly, fileCount, maxCountExceeded.maxCount)
     }
@@ -125,7 +125,7 @@ private fun FilesCountText(fileCount: Int, canSendStatus: () -> CanSendStatus) {
         stringResource(R.string.fileCountOverTtsFriendly, fileCount, maxCountExceeded.maxCount)
     }
     Text(
-        text = string,
+        text = fileCountText,
         modifier = if (ttsFriendlyText == null) Modifier else Modifier.semantics { text = AnnotatedString(ttsFriendlyText) },
         color = if (maxCountExceeded == null) Color.Unspecified else MaterialTheme.colorScheme.error,
     )
