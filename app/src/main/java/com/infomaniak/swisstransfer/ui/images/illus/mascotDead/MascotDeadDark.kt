@@ -230,8 +230,8 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(145.44f, 110.91f)
                 curveTo(144.46f, 110.91f, 143.55f, 110.56f, 142.85f, 109.86f)
@@ -261,8 +261,8 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(151.62f, 108.45f)
                 curveTo(150.7f, 108.45f, 149.86f, 108.17f, 149.23f, 107.54f)
@@ -293,8 +293,8 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF2B383B)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(59.6f, 104.2f)
                 lineTo(68.5f, 88.78f)
@@ -306,9 +306,9 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(57.01f, 82.14f)
                 lineTo(48.1f, 97.57f)
@@ -319,8 +319,8 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = EvenOdd
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(24.52f, 102.28f)
                 curveTo(24.52f, 100.34f, 26.1f, 98.76f, 28.04f, 98.76f)
@@ -337,8 +337,8 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(28.58f, 106.91f)
                 curveTo(27.76f, 106.81f, 26.94f, 106.94f, 26.19f, 107.29f)
@@ -361,8 +361,8 @@ val AppIllus.MascotDeadDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(33.59f, 112.81f)
                 curveTo(33.29f, 113.15f, 32.85f, 113.36f, 32.36f, 113.36f)

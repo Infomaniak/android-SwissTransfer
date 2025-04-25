@@ -26,8 +26,10 @@ import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
-import com.infomaniak.swisstransfer.ui.navigation.*
-import com.infomaniak.swisstransfer.ui.utils.*
+import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
+import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

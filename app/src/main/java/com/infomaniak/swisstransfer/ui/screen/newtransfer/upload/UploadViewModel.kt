@@ -26,8 +26,9 @@ import com.infomaniak.core.mapSync
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import com.infomaniak.swisstransfer.upload.UploadState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi

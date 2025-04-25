@@ -52,9 +52,9 @@ val AppIllus.BeersLight: ImageVector
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF3CB572)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 2.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFF014958)), strokeLineWidth = 2.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(36.57f, 46.26f)
                 curveTo(33.08f, 45.41f, 29.44f, 45.37f, 25.93f, 46.15f)
@@ -79,8 +79,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFE3F6DC)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = EvenOdd
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(85.62f, 25.67f)
                 curveTo(86.7f, 25.94f, 87.8f, 25.27f, 88.06f, 24.19f)
@@ -127,8 +127,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(31.58f, 81.83f)
                 lineTo(29.46f, 96.29f)
@@ -139,8 +139,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(43.2f, 84.67f)
                 lineTo(41.07f, 99.12f)
@@ -151,8 +151,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(54.82f, 87.51f)
                 lineTo(52.69f, 101.96f)
@@ -163,8 +163,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(36.18f, 58.81f)
                 arcToRelative(0.95f, 0.95f, 103.78f, true, false, 1.85f, 0.45f)
@@ -173,8 +173,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(57.22f, 62.96f)
                 moveToRelative(-1.45f, -0.35f)
@@ -183,8 +183,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(59.54f, 68.15f)
                 moveToRelative(-0.48f, -0.12f)
@@ -193,8 +193,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(39.53f, 76.59f)
                 moveToRelative(-0.48f, -0.12f)
@@ -203,8 +203,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(45.91f, 71.48f)
                 moveToRelative(-0.97f, -0.24f)
@@ -213,8 +213,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(58.96f, 84.16f)
                 moveToRelative(-0.73f, -0.18f)
@@ -223,8 +223,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(73.46f, 60.52f)
                 moveToRelative(-0.73f, -0.18f)
@@ -233,8 +233,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(36.67f, 30.25f)
                 curveTo(35.51f, 29.97f, 34.36f, 30.73f, 34.17f, 31.91f)
@@ -249,8 +249,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(22.27f, 99.42f)
                 curveTo(22.33f, 98.96f, 22.77f, 98.66f, 23.22f, 98.76f)
@@ -265,9 +265,9 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)), stroke =
-                SolidColor(Color(0xFF014958)), strokeLineWidth = 2.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFF014958)), strokeLineWidth = 2.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(129.77f, 37.24f)
                 curveTo(133.05f, 35.77f, 136.63f, 35.07f, 140.22f, 35.21f)
@@ -292,8 +292,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFE3F6DC)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = EvenOdd
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(86.44f, 38.22f)
                 curveTo(85.8f, 36.51f, 86.59f, 34.58f, 88.28f, 33.83f)
@@ -320,8 +320,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(141.09f, 71.32f)
                 lineTo(145.78f, 85.16f)
@@ -332,8 +332,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(130.17f, 76.21f)
                 lineTo(134.87f, 90.04f)
@@ -344,8 +344,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Round, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(119.26f, 81.09f)
                 lineTo(123.96f, 94.93f)
@@ -356,8 +356,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(132.41f, 49.5f)
                 arcToRelative(0.95f, 0.95f, 65.84f, true, true, -1.74f, 0.78f)
@@ -366,8 +366,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(112.47f, 57.39f)
                 moveToRelative(1.36f, -0.61f)
@@ -376,8 +376,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(111.12f, 62.9f)
                 moveToRelative(0.45f, -0.2f)
@@ -386,8 +386,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(132.33f, 67.6f)
                 moveToRelative(0.45f, -0.2f)
@@ -396,8 +396,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(125.13f, 63.73f)
                 moveToRelative(0.91f, -0.41f)
@@ -406,8 +406,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(114.57f, 78.55f)
                 moveToRelative(0.68f, -0.31f)
@@ -416,8 +416,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(96.06f, 57.91f)
                 moveToRelative(0.68f, -0.31f)
@@ -426,8 +426,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 stroke = SolidColor(Color(0xFF014958)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(126.79f, 21.5f)
                 curveTo(127.87f, 21.02f, 129.14f, 21.56f, 129.54f, 22.68f)
@@ -442,8 +442,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(153.42f, 86.95f)
                 curveTo(153.28f, 86.5f, 152.79f, 86.28f, 152.37f, 86.47f)
@@ -458,8 +458,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3CB572)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(78.16f, 6.88f)
                 lineTo(79.59f, 2.35f)
@@ -481,8 +481,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(64.0f, 25.58f)
                 lineTo(64.5f, 24.0f)
@@ -504,8 +504,8 @@ val AppIllus.BeersLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(97.28f, 16.51f)
                 lineTo(98.03f, 14.15f)

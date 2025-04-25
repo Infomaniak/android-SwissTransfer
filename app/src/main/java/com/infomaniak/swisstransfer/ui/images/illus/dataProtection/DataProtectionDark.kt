@@ -290,8 +290,8 @@ val AppIllus.DataProtectionDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(15.8f, 9.1f)
                 curveTo(16.05f, 9.07f, 16.28f, 9.25f, 16.31f, 9.49f)
@@ -304,8 +304,8 @@ val AppIllus.DataProtectionDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = EvenOdd
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(14.89f, 20.03f)
                 curveTo(14.19f, 19.74f, 13.57f, 19.28f, 13.09f, 18.68f)
@@ -357,8 +357,8 @@ val AppIllus.DataProtectionDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(10.3f, 16.19f)
                 curveTo(10.05f, 16.22f, 9.87f, 16.45f, 9.9f, 16.7f)
@@ -371,8 +371,8 @@ val AppIllus.DataProtectionDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(10.77f, 11.7f)
                 curveTo(10.92f, 11.5f, 11.21f, 11.46f, 11.41f, 11.61f)
@@ -385,8 +385,8 @@ val AppIllus.DataProtectionDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(21.99f, 14.72f)
                 curveTo(21.74f, 14.75f, 21.57f, 14.98f, 21.6f, 15.23f)
@@ -399,8 +399,8 @@ val AppIllus.DataProtectionDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(21.32f, 10.38f)
                 curveTo(21.51f, 10.53f, 21.54f, 10.82f, 21.39f, 11.01f)

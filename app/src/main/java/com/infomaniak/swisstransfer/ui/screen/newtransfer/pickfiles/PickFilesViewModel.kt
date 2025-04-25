@@ -21,11 +21,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import android.net.Uri
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -117,6 +113,7 @@ class PickFilesViewModel @Inject constructor(
                 data class MaxSizeExceeded(val actualSize: Long, val maxSize: Long) : Files
                 data class MaxCountExceeded(val maxCount: Int) : Files
             }
+
             enum class Email : Issue {
                 AuthorUnspecified,
                 AuthorInvalid,

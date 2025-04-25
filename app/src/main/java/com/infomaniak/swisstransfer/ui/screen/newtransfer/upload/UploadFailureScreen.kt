@@ -30,7 +30,10 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
-import com.infomaniak.swisstransfer.ui.components.*
+import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.EmptyState
+import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing

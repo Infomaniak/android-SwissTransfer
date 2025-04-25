@@ -85,8 +85,8 @@ val AppIcons.MatomoLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3253A0)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(19.596f, 8.647f)
                 curveTo(19.597f, 8.108f, 19.473f, 7.577f, 19.232f, 7.095f)
@@ -130,8 +130,8 @@ val AppIcons.MatomoLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFF38334)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(19.581f, 8.647f)
                 curveTo(19.581f, 7.965f, 19.379f, 7.298f, 19.0f, 6.731f)
@@ -147,8 +147,8 @@ val AppIcons.MatomoLight: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3152A0)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(16.143f, 12.095f)
                 curveTo(15.571f, 12.095f, 15.009f, 11.953f, 14.506f, 11.682f)

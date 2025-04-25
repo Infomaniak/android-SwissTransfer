@@ -50,9 +50,9 @@ val AppIllus.MascotSearchingDark: ImageVector
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF3C4F52)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(181.3f, 59.58f)
                 lineTo(202.19f, 55.64f)
@@ -66,9 +66,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(220.61f, 74.56f)
                 curveTo(219.87f, 84.68f, 211.96f, 92.35f, 202.96f, 91.69f)
@@ -79,8 +79,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = EvenOdd
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(194.98f, 86.47f)
                 curveTo(196.0f, 86.86f, 197.08f, 87.11f, 198.22f, 87.19f)
@@ -93,8 +93,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(0.0f, 136.53f)
                 arcToRelative(132.04f, 20.53f, 0.0f, true, false, 264.08f, 0.0f)
@@ -103,9 +103,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF2B383B)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(181.96f, 87.89f)
                 lineTo(178.39f, 110.09f)
@@ -116,8 +116,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF2B383B)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(90.13f, 62.62f)
                 curveTo(92.45f, 41.22f, 110.51f, 25.0f, 132.04f, 25.0f)
@@ -135,9 +135,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(183.99f, 155.5f)
                 lineTo(173.95f, 62.62f)
@@ -156,9 +156,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF2B383B)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(116.52f, 68.78f)
                 lineTo(142.15f, 63.29f)
@@ -170,9 +170,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3C4F52)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(144.37f, 61.58f)
                 lineTo(165.26f, 57.64f)
@@ -186,9 +186,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF014958)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(183.69f, 76.56f)
                 curveTo(182.95f, 86.68f, 175.04f, 94.35f, 166.03f, 93.69f)
@@ -199,8 +199,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = EvenOdd
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = EvenOdd
             ) {
                 moveTo(157.98f, 88.47f)
                 curveTo(159.0f, 88.86f, 160.08f, 89.11f, 161.22f, 89.19f)
@@ -213,8 +213,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF2B383B)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(134.22f, 96.16f)
                 lineTo(140.8f, 84.95f)
@@ -227,9 +227,9 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0x00000000)), stroke =
-                SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
-                Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
-                NonZero
+                    SolidColor(Color(0xFFDCE4E5)), strokeLineWidth = 1.0f, strokeLineCap =
+                    Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType =
+                    NonZero
             ) {
                 moveTo(130.55f, 102.44f)
                 lineTo(140.8f, 84.95f)
@@ -239,8 +239,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(93.29f, 14.96f)
                 curveTo(94.01f, 16.24f, 93.61f, 17.65f, 93.03f, 18.75f)
@@ -265,8 +265,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(162.74f, 1.85f)
                 curveTo(162.74f, 2.85f, 162.04f, 3.54f, 161.32f, 4.0f)
@@ -291,8 +291,8 @@ val AppIllus.MascotSearchingDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF67DD95)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(179.53f, 15.05f)
                 curveTo(178.9f, 16.81f, 177.21f, 17.6f, 175.66f, 17.97f)
