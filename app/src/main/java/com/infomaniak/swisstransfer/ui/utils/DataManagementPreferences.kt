@@ -27,5 +27,4 @@ val Context.dataManagementDataStore: DataStore<Preferences> by preferencesDataSt
 
 object DataManagementPreferences {
     data object IsSentryAuthorized : DataStorePreference<Boolean>(booleanPreferencesKey("IsSentryAuthorized"), true)
-    data object IsMatomoAuthorized : DataStorePreference<Boolean>(booleanPreferencesKey("IsMatomoAuthorized"), true)
 }

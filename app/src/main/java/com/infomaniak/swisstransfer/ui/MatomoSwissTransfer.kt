@@ -19,17 +19,24 @@ package com.infomaniak.swisstransfer.ui
 
 import com.infomaniak.core.matomo.Matomo
 import com.infomaniak.core.matomo.Matomo.TrackerAction
-import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
-import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
-import com.infomaniak.swisstransfer.ui.utils.get
-import com.infomaniak.swisstransfer.ui.utils.getPreference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.matomo.sdk.Tracker
-import splitties.init.appCtx
 
 object MatomoSwissTransfer : Matomo {
+
+    override val siteId: Int = 24
+    override val tracker: Tracker by lazy(::buildTracker)
+
+    fun trackScreen(screen: MatomoScreen) {
+        trackScreen(path = "/$screen", title = screen.toString())
+    }
+
+    fun trackTransferTypeEvent(name: String) {
+        trackEvent(MatomoCategory.TransferType.toString(), name)
+    }
+
+    fun trackNewTransferDataEvent(name: String) {
+        trackEvent(MatomoCategory.NewTransferData.toString(), name, action = TrackerAction.DATA)
+    }
 
     enum class MatomoScreen {
         Sent,
@@ -58,37 +65,5 @@ object MatomoSwissTransfer : Matomo {
         NewTransferData;
 
         override fun toString() = name.replaceFirstChar(Char::lowercase)
-    }
-
-    private val scope = CoroutineScope(Dispatchers.Default)
-
-    override val tracker: Tracker by lazy {
-        with(appCtx) {
-            buildTracker(shouldOptOut = dataManagementDataStore.getPreference(DataManagementPreferences.IsMatomoAuthorized).not())
-        }
-    }
-
-    override val siteId: Int = 24
-
-    init {
-        scope.launch {
-            with(appCtx) {
-                dataManagementDataStore.data.collect {
-                    tracker.isOptOut = it[DataManagementPreferences.IsMatomoAuthorized].not()
-                }
-            }
-        }
-    }
-
-    fun trackScreen(screen: MatomoScreen) {
-        trackScreen(path = "/$screen", title = screen.toString())
-    }
-
-    fun trackTransferTypeEvent(name: String) {
-        trackEvent(MatomoCategory.TransferType.toString(), name)
-    }
-
-    fun trackNewTransferDataEvent(name: String) {
-        trackEvent(MatomoCategory.NewTransferData.toString(), name, action = TrackerAction.DATA)
     }
 }
