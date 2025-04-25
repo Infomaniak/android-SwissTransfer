@@ -51,8 +51,8 @@ val AppIllus.MatomoDark: ImageVector
             group {
                 path(
                     fill = SolidColor(Color(0xFFFFFFFF)), stroke = null, strokeLineWidth =
-                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                    4.0f, pathFillType = NonZero
+                        0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                        4.0f, pathFillType = NonZero
                 ) {
                     moveTo(16.5f, 16.0f)
                     moveToRelative(-16.0f, 0.0f)
@@ -61,8 +61,8 @@ val AppIllus.MatomoDark: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFF95C748)), stroke = null, strokeLineWidth =
-                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                    4.0f, pathFillType = NonZero
+                        0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                        4.0f, pathFillType = NonZero
                 ) {
                     moveTo(28.2f, 17.84f)
                     lineTo(28.14f, 17.74f)
@@ -79,8 +79,8 @@ val AppIllus.MatomoDark: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFF35BFC0)), stroke = null, strokeLineWidth =
-                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                    4.0f, pathFillType = NonZero
+                        0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                        4.0f, pathFillType = NonZero
                 ) {
                     moveTo(11.13f, 19.71f)
                     curveTo(11.13f, 19.01f, 10.92f, 18.32f, 10.53f, 17.73f)
@@ -98,8 +98,8 @@ val AppIllus.MatomoDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3253A0)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(24.25f, 12.87f)
                 curveTo(24.25f, 12.31f, 24.12f, 11.76f, 23.88f, 11.26f)
@@ -143,8 +143,8 @@ val AppIllus.MatomoDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFF38334)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(24.24f, 12.87f)
                 curveTo(24.24f, 12.16f, 24.03f, 11.47f, 23.64f, 10.88f)
@@ -160,8 +160,8 @@ val AppIllus.MatomoDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFF3152A0)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(20.68f, 16.43f)
                 curveTo(20.09f, 16.43f, 19.51f, 16.28f, 18.99f, 16.0f)
@@ -190,8 +190,8 @@ val AppIllus.MatomoDark: ImageVector
             }
             path(
                 fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth =
-                0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
-                4.0f, pathFillType = NonZero
+                    0.0f, strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter =
+                    4.0f, pathFillType = NonZero
             ) {
                 moveTo(180.11f, 17.84f)
                 curveTo(180.11f, 19.64f, 179.58f, 21.39f, 178.58f, 22.89f)
