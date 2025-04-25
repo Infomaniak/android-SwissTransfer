@@ -97,6 +97,8 @@ class MainApplication : Application(), Configuration.Provider {
             if (oldImportDir.exists()) runCatching { oldImportDir.deleteRecursively() }
         }
 
+        MatomoSwissTransfer.addTrackingCallbackForDebugLog()
+
         SentryAndroid.init(this) { options: SentryAndroidOptions ->
             // Register the callback as an option
             options.beforeSend = SentryOptions.BeforeSendCallback { event: SentryEvent, _: Any? ->

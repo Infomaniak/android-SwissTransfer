@@ -25,12 +25,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -42,16 +42,17 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun SettingsDataManagementMatomoScreen(
-    navigateBack: (() -> Unit)?,
-    settingsMatomoViewModel: SettingsMatomoViewModel = hiltViewModel<SettingsMatomoViewModel>()
-) {
-    val isMatomoAuthorized by settingsMatomoViewModel.isMatomoAuthorized.collectAsStateWithLifecycle()
+fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
+
+    var isAuthorized by rememberSaveable { mutableStateOf(!MatomoSwissTransfer.tracker.isOptOut) }
 
     SettingsDataManagementMatomoScreen(
         navigateBack = navigateBack,
-        isMatomoAuthorized = { isMatomoAuthorized },
-        setMatomoAuthorization = { settingsMatomoViewModel.setMatomoAuthorization(it) }
+        isMatomoAuthorized = { isAuthorized },
+        setMatomoAuthorization = {
+            isAuthorized = it
+            MatomoSwissTransfer.tracker.isOptOut = !it
+        }
     )
 }
 
