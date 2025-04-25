@@ -62,8 +62,10 @@ object MatomoSwissTransfer : Matomo {
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
-    override val tracker: Tracker = with(appCtx) {
-        buildTracker(shouldOptOut = dataManagementDataStore.getPreference(DataManagementPreferences.IsMatomoAuthorized).not())
+    override val tracker: Tracker by lazy {
+        with(appCtx) {
+            buildTracker(shouldOptOut = dataManagementDataStore.getPreference(DataManagementPreferences.IsMatomoAuthorized).not())
+        }
     }
 
     override val siteId: Int = 24
