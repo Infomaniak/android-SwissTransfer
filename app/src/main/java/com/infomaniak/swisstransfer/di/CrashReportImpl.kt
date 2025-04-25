@@ -34,13 +34,11 @@ val CrashReportLevel.sentryLevel: SentryLevel
 
 val crashReport = object: CrashReportInterface {
     override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, Any>?) {
-        var breadcrumb = Breadcrumb()
+        val breadcrumb = Breadcrumb()
         breadcrumb.message = message
         breadcrumb.category = category
         breadcrumb.level = level.sentryLevel
-        data?.forEach { (key, value) ->
-            breadcrumb.setData(key, value)
-        }
+        data?.forEach { (key, value) -> breadcrumb.setData(key, value) }
         Sentry.addBreadcrumb(breadcrumb)
     }
 
