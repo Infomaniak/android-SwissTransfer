@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui
 
 import com.infomaniak.core.matomo.Matomo
+import com.infomaniak.core.matomo.Matomo.TrackerAction
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
 import com.infomaniak.swisstransfer.ui.utils.get
@@ -51,6 +52,14 @@ object MatomoSwissTransfer : Matomo {
         override fun toString() = "${name}View"
     }
 
+    enum class MatomoCategory {
+        TransferType,
+        AppUpdate,
+        NewTransferData;
+
+        override fun toString() = name.replaceFirstChar(Char::lowercase)
+    }
+
     private val scope = CoroutineScope(Dispatchers.Default)
 
     override val tracker: Tracker = with(appCtx) {
@@ -74,6 +83,10 @@ object MatomoSwissTransfer : Matomo {
     }
 
     fun trackTransferTypeEvent(name: String) {
-        trackEvent("transferType", name)
+        trackEvent(MatomoCategory.TransferType.toString(), name)
+    }
+
+    fun trackNewTransferDataEvent(name: String) {
+        trackEvent(MatomoCategory.NewTransferData.toString(), name, action = TrackerAction.DATA)
     }
 }
