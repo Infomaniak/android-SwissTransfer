@@ -33,7 +33,11 @@ object SwissTransferInjectionModule {
     @Provides
     @Singleton
     fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
-        return SwissTransferInjection(environment = ApiEnvironment.Custom(BuildConfig.BASE_URL), userAgent = userAgent)
+        return SwissTransferInjection(
+            environment = ApiEnvironment.Custom(BuildConfig.BASE_URL),
+            userAgent = userAgent,
+            crashReport = crashReport
+        )
     }
 
     @Provides

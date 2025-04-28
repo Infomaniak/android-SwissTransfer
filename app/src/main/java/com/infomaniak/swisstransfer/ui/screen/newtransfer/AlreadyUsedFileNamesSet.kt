@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.AlreadyUsedFileNamesSet.AlreadyUsedStrategy
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
