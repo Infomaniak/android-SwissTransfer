@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.di
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportInterface
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportLevel
 import io.sentry.Breadcrumb
-import io.sentry.ScopeCallback
 import io.sentry.Sentry
 import io.sentry.SentryLevel
 
@@ -33,7 +32,7 @@ val CrashReportLevel.sentryLevel: SentryLevel
         CrashReportLevel.FATAL -> SentryLevel.FATAL
     }
 
-val crashReport = object: CrashReportInterface {
+val crashReport = object : CrashReportInterface {
     override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, Any>?) {
         val breadcrumb = Breadcrumb()
         breadcrumb.message = message
