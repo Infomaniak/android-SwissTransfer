@@ -48,7 +48,7 @@ object HumanReadableSizeUtils {
         actualSize: Long,
         maxSize: Long,
         useIecUnits: Boolean = false,
-        ttsFriendly: Boolean
+        ttsFriendly: Boolean,
     ): String {
         val context = LocalContext.current
         val configuration = LocalConfiguration.current

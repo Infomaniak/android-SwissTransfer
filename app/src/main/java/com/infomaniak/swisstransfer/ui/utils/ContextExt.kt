@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.ui.utils
 import android.app.Activity
 import android.content.*
 import android.net.Uri
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
@@ -43,7 +43,7 @@ fun Context.openUrl(url: String) {
 fun Context.openAppNotificationSettings() {
     Intent().apply {
         when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+            SDK_INT >= 26 -> {
                 action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
                 putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
             }
@@ -96,7 +96,7 @@ fun Context.copyText(text: String, showSnackbar: (String) -> Unit) {
     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboardManager.setPrimaryClip(ClipData.newPlainText(text, text))
 
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) showSnackbar(getString(R.string.snackbarLinkCopiedToClipboard))
+    if (SDK_INT < 33) showSnackbar(getString(R.string.snackbarLinkCopiedToClipboard))
 }
 
 fun Context.shareText(text: String) {
