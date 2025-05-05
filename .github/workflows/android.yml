@@ -43,7 +43,7 @@ jobs:
 
       # Making sure the app compiles
       - name: Build app
-        run: ./gradlew build
+        run: ./gradlew assembleDebug
 
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew testProdDebugUnitTest --stacktrace

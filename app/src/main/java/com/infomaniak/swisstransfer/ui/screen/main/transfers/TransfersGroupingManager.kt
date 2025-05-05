@@ -22,13 +22,10 @@ import androidx.annotation.StringRes
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSectionWithContains.Companion.isIn
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
+import java.time.*
 import java.time.format.TextStyle
 import java.time.temporal.TemporalAdjusters
-import java.util.Locale
+import java.util.*
 
 object TransfersGroupingManager {
 
@@ -41,7 +38,10 @@ object TransfersGroupingManager {
                 transfer.isIn(TransferSectionWithContains.ThisWeek, relativeTo = today) -> TransferSectionWithContains.ThisWeek
                 transfer.isIn(TransferSectionWithContains.LastWeek, relativeTo = today) -> TransferSectionWithContains.LastWeek
                 transfer.isIn(TransferSectionWithContains.ThisMonth, relativeTo = today) -> TransferSectionWithContains.ThisMonth
-                else -> TransferSection.ByMonth(transfer.createdDateTimestamp)
+                else -> {
+                    val transferCreatedLocalDate = transfer.createdDateTimestamp.toLocalDate()
+                    TransferSection.ByMonth(transferCreatedLocalDate.year, transferCreatedLocalDate.month.value)
+                }
             }
         }
     }
@@ -49,7 +49,7 @@ object TransfersGroupingManager {
     sealed class TransferSection(val title: Context.() -> String) {
         val uid get() = toString()
 
-        data class ByMonth(private val timestamp: Long) : TransferSection({ getMonthNameFromEpoch(timestamp) })
+        data class ByMonth(private val year: Int, private val month: Int) : TransferSection({ getMonthNameFromEpoch(month) })
     }
 
     sealed class TransferSectionWithContains(
@@ -98,8 +98,7 @@ object TransfersGroupingManager {
     // TODO: Adapt the first day of the week according to the local
     private fun LocalDate.firstDayOfWeek(): LocalDate = with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
-    fun getMonthNameFromEpoch(epochSeconds: Long): String {
-        val localDate = epochSeconds.toLocalDate()
-        return localDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault()).replaceFirstChar { it.uppercase() }
+    fun getMonthNameFromEpoch(month: Int): String {
+        return Month.of(month).getDisplayName(TextStyle.FULL, Locale.getDefault()).replaceFirstChar { it.uppercase() }
     }
 }

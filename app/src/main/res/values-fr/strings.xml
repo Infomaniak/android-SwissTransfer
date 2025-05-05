@@ -15,7 +15,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ImpliedQuantity">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="awaitingNetwork">En attente de réseau</string>
     <string name="buttonAddFiles">Ajouter des fichiers</string>
@@ -103,6 +103,7 @@
     <plurals name="recipientHeader">
         <item quantity="one">Destinataire :</item>
         <item quantity="other">Destinataires :</item>
+        <item quantity="many">Destinataires :</item>
     </plurals>
     <string name="restrictedLocation">Infomaniak SwissTransfer n’est pas disponible dans votre région</string>
     <string name="sentEmptyTitle">Notre histoire commence ici</string>
@@ -149,6 +150,7 @@
     <plurals name="settingsValidityPeriodValue">
         <item quantity="one">%d jour</item>
         <item quantity="other">%d jours</item>
+        <item quantity="many">%d jours</item>
     </plurals>
     <string name="sharePasswordButton">Copier le mot de passe</string>
     <string name="sharePasswordDescription">Voilà le sésame pour télécharger les fichiers !</string>
@@ -208,6 +210,7 @@
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Le lien de téléchargement a bien été envoyé au destinataire suivant :</item>
         <item quantity="other">Le lien de téléchargement a été envoyé aux destinataires suivants :</item>
+        <item quantity="many">Le lien de téléchargement a été envoyé aux destinataires suivants :</item>
     </plurals>
     <string name="uploadSuccessEmailTitle">Hop c’est envoyé !</string>
     <string name="uploadSuccessLinkDescription">Fais scanner ce QR code autour de toi pour partager tes fichiers ou copie le lien ci-dessous.</string>
