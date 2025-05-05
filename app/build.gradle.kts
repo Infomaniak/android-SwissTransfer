@@ -74,6 +74,7 @@ android {
     }
 
     productFlavors {
+        // Don't forget to update the command to build the app in android.yml if necessary
         create("preprod") {
             dimension = "env"
             applicationIdSuffix = ".preprod"
