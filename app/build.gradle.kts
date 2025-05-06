@@ -19,9 +19,6 @@ val envProperties = rootProject.file("env.properties").takeIf { it.exists() }?.l
     Properties().also { it.load(file.reader()) }
 }
 
-val sentryAuthToken = envProperties?.getProperty("sentryAuthToken").takeUnless { it.isNullOrBlank() }
-    ?: error("The `sentryAuthToken` property in `env.properties` must be specified (see `env.example.properties`).")
-
 android {
     namespace = "com.infomaniak.swisstransfer"
     compileSdk = appCompileSdk
@@ -123,15 +120,21 @@ kapt {
     correctErrorTypes = true
 }
 
+val isRelease = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
+
+val sentryAuthToken = envProperties?.getProperty("sentryAuthToken")
+    .takeUnless { it.isNullOrBlank() }
+    ?: if (isRelease) error("The `sentryAuthToken` property in `env.properties` must be specified (see `env.example.properties`).") else ""
+
 sentry {
     org = "sentry"
     projectName = "swisstransfer-android"
     authToken = sentryAuthToken
     url = "https://sentry-mobile.infomaniak.com"
     includeDependenciesReport = false
-    includeNativeSources = true
-    includeSourceContext = true
-    uploadNativeSymbols = true
+    includeNativeSources = isRelease
+    includeSourceContext = isRelease
+    uploadNativeSymbols = isRelease
 }
 
 dependencies {
