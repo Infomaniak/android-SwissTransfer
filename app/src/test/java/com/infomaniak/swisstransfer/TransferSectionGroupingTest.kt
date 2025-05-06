@@ -27,12 +27,13 @@ import com.infomaniak.swisstransfer.dataset.TransferSectionGroupingData.today
 import com.infomaniak.swisstransfer.dataset.TransferSectionGroupingData.yesterday
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSectionWithContains
-import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.getMonthNameFromEpoch
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import java.time.Instant
+import java.time.ZoneId
 import kotlin.reflect.full.primaryConstructor
 
 class TransferSectionGroupingTest {
@@ -63,7 +64,8 @@ class TransferSectionGroupingTest {
 
     @Test
     fun months_areGroupedCorrectly() {
-        val decemberSection = TransferSection.ByMonth(getMonthNameFromEpoch(december.first()))
+        val yearMonth = december.first().pairOfYearMonth()
+        val decemberSection = TransferSection.ByMonth(yearMonth.first, yearMonth.second)
         assertEpochsAreGroupedInSection(december, decemberSection)
     }
 
@@ -79,7 +81,8 @@ class TransferSectionGroupingTest {
 
     @Test
     fun sections_areOrderCorrectly() {
-        val decemberSection = TransferSection.ByMonth(getMonthNameFromEpoch(december.first()))
+        val yearMonth = december.first().pairOfYearMonth()
+        val decemberSection = TransferSection.ByMonth(yearMonth.first, yearMonth.second)
         assertEquals(groupedTransferUi.keys.elementAt(0), TransferSectionWithContains.Future)
         assertEquals(groupedTransferUi.keys.elementAt(1), TransferSectionWithContains.Today)
         assertEquals(groupedTransferUi.keys.elementAt(2), TransferSectionWithContains.Yesterday)
@@ -106,13 +109,13 @@ class TransferSectionGroupingTest {
                 // Case: data class with one parameter
                 val constructor = subClass.primaryConstructor
                 assertNotNull("This test needs to create instances of this class ${subClass.simpleName}", constructor)
-                assertEquals(1, constructor?.parameters?.count())
+                assertEquals(2, constructor?.parameters?.count())
 
-                val firstInstanceUid = constructor!!.call("aaa").uid
+                val firstInstanceUid = constructor!!.call(1, 1).uid
                 assert(firstInstanceUid !in previousUids)
                 previousUids.add(firstInstanceUid)
 
-                val secondInstanceUid = constructor.call("bbb").uid
+                val secondInstanceUid = constructor.call(2, 2).uid
                 assert(secondInstanceUid !in previousUids)
                 previousUids.add(secondInstanceUid)
             }
@@ -155,6 +158,13 @@ class TransferSectionGroupingTest {
                 password = "",
                 files = emptyList(),
             )
+        }
+
+        fun Long.pairOfYearMonth(): Pair<Int, Int> {
+            val localDate = Instant.ofEpochSecond(this).atZone(ZoneId.systemDefault()).toLocalDate()
+            val year = localDate.year
+            val month = localDate.month.value
+            return Pair(year, month)
         }
     }
 }

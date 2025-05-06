@@ -41,5 +41,9 @@ jobs:
       - name: Clean gradle cache
         run: ./gradlew clean
 
+      # Making sure the app compiles
+      - name: Build app
+        run: ./gradlew assembleDebug
+
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew testProdDebugUnitTest --stacktrace
