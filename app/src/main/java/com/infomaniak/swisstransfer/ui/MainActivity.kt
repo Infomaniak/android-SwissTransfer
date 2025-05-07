@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,13 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.infomaniak.core.inappstore.updaterequired.UpdateRequiredActivity.Companion.startUpdateRequiredActivity
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
-import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferUuid
@@ -74,10 +75,25 @@ class MainActivity : ComponentActivity() {
                 intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
             }
 
+            /*
+                private val appId = intent.getStringExtra(EXTRA_APP_ID) ?: ""
+                private val versionCode = intent.getIntExtra(EXTRA_VERSION_CODE, 0)
+                private val appIllustration = intent.getIntExtra(EXTRA_APP_ILLUSTRATION, -1)
+            */
+
+            startUpdateRequiredActivity(
+                context = this@MainActivity,
+                "com.infomaniak.swisstransfer",
+                0,
+                0,
+                R.drawable.splashscreen_icon, // TODO.
+            )
+
             setContent {
                 val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
                 SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                    MainScreen(deeplinkTransferDirection = transferDirection)
+                    //UpdateRequiredScreen()
+                    //MainScreen(deeplinkTransferDirection = transferDirection)
                 }
             }
         }

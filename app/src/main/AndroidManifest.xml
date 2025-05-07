@@ -128,6 +128,13 @@
             android:name=".ui.NewTransferActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.infomaniak.core.inappstore.updaterequired.UpdateRequiredActivity"
+            android:exported="false" />
+
+        <!-- TODO -->
+        <!--android:theme="@style/AppThemeUpdateRequired" />-->
     </application>
 
 </manifest>

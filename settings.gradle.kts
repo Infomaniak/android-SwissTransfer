@@ -40,4 +40,5 @@ include(
     ":Core:Onboarding",
     ":Core:Sentry",
     ":Core:Thumbnails",
+    ":Core:Ui:DesignToken",
 )
