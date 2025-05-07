@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 import android.content.Context
 import androidx.annotation.StringRes
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager.SortedTransfers
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.TransferSectionWithContains.Companion.isIn
 import java.time.*
@@ -28,6 +29,10 @@ import java.time.temporal.TemporalAdjusters
 import java.util.*
 
 object TransfersGroupingManager {
+
+    fun SortedTransfers.groupBySection(): Map<TransferSection, List<TransferUi>> {
+        return validTransfers.groupBySection() + expiredTransfers.groupBy { TransferSectionWithContains.Expired }
+    }
 
     fun List<TransferUi>.groupBySection(today: LocalDate = LocalDate.now()): Map<TransferSection, List<TransferUi>> {
         return groupBy { transfer ->
@@ -85,6 +90,8 @@ object TransfersGroupingManager {
         data object ThisMonth : TransferSectionWithContains(R.string.transferListSectionThisMonth, { date, today ->
             date.year == today.year && date.month == today.month
         })
+
+        data object Expired : TransferSectionWithContains(R.string.expired, { _, _ -> true })
 
         companion object {
             fun TransferUi.isIn(section: TransferSectionWithContains, relativeTo: LocalDate): Boolean {

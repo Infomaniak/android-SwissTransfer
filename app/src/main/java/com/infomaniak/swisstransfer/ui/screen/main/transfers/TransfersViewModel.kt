@@ -45,11 +45,11 @@ class TransfersViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    val sentTransfersUiState = transferManager.getTransfers(TransferDirection.SENT)
+    val sentTransfersUiState = transferManager.getSortedTransfers(TransferDirection.SENT)
         .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
-    val receivedTransfersUiState = transferManager.getTransfers(TransferDirection.RECEIVED)
+    val receivedTransfersUiState = transferManager.getSortedTransfers(TransferDirection.RECEIVED)
         .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
