@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -92,7 +92,7 @@ fun SettingsScreen(
 
             SettingTitle(R.string.settingsCategoryGeneral)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (SDK_INT >= 29) {
                 SettingItem(
                     titleRes = R.string.settingsOptionTheme,
                     isSelected = { selectedSetting == THEME },
