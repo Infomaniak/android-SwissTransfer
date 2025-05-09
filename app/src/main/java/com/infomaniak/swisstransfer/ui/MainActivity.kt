@@ -27,14 +27,18 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.ReviewAlertDialog
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
@@ -53,6 +57,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var transferManager: TransferManager
+
+    private val inAppReviewManager by lazy { InAppReviewManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
@@ -74,10 +80,24 @@ class MainActivity : ComponentActivity() {
                 intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
             }
 
-            setContent {
-                val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-                SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                    MainScreen(deeplinkTransferDirection = transferDirection)
+            with(inAppReviewManager) {
+                init()
+                setContent {
+                    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+                    val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
+
+                    SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
+                        if (shouldDisplayReviewDialog == true) {
+                            val feedbackUrl = stringResource(R.string.urlUserReport)
+                            ReviewAlertDialog(
+                                onUserWantsToReview = { onUserWantsToReview() },
+                                onUserWantsToGiveFeedback = { onUserWantsToGiveFeedback(feedbackUrl) },
+                                onDismiss = { onUserWantsToDismiss() },
+                            )
+                        }
+
+                        MainScreen(deeplinkTransferDirection = transferDirection)
+                    }
                 }
             }
         }
