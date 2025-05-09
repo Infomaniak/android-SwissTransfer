@@ -64,8 +64,8 @@ fun DeeplinkPasswordAlertDialog(
     }
 
     SwissTransferAlertDialog(
-        titleRes = R.string.sharePasswordTitle,
-        descriptionRes = R.string.deeplinkPasswordDescription,
+        title = stringResource(R.string.sharePasswordTitle),
+        description = stringResource(R.string.deeplinkPasswordDescription),
         onDismiss = closeAlertDialog,
         positiveButton = {
             SwissTransferAlertDialogDefaults.ConfirmButton(
@@ -119,8 +119,8 @@ fun PasswordOptionAlertDialog(
     }
 
     SwissTransferAlertDialog(
-        titleRes = R.string.settingsOptionPassword,
-        descriptionRes = R.string.settingsPasswordDescription,
+        title = stringResource(R.string.settingsOptionPassword),
+        description = stringResource(R.string.settingsPasswordDescription),
         positiveButton = {
             SwissTransferAlertDialogDefaults.ConfirmButton(
                 isEnabled = { !isPasswordActivated || isPasswordValid() },
