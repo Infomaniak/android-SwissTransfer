@@ -40,4 +40,6 @@ include(
     ":Core:Onboarding",
     ":Core:Sentry",
     ":Core:Thumbnails",
+    ":Core:InAppReview",
+    ":Core:WebView",
 )
