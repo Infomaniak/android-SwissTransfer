@@ -20,26 +20,26 @@ package com.infomaniak.swisstransfer.ui.utils
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 object NotificationPermissionUtils {
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @RequiresApi(33)
     private val permission = Manifest.permission.POST_NOTIFICATIONS
 
     fun hasNotificationPermission(context: Context): Boolean {
         return when {
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> true
+            SDK_INT < 33 -> true
             ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED -> true
             else -> false
         }
     }
 
     fun askNotificationPermission(launcher: ManagedActivityResultLauncher<String, Boolean>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (SDK_INT >= 33) {
             // TODO: Manage with a custom dialog if not handled by the system
             launcher.launch(permission)
         }

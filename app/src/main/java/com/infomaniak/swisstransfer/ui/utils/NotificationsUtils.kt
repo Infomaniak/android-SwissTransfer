@@ -22,7 +22,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.infomaniak.core.notifications.*
@@ -45,7 +45,7 @@ class NotificationsUtils @Inject constructor(
 ) {
 
     fun initNotificationsChannel() = with(appContext) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return@with
+        if (SDK_INT < 26) return@with
 
         val channelList = mutableListOf<NotificationChannel>()
 

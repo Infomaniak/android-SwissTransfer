@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -47,7 +47,7 @@ class OnboardingActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) window.isNavigationBarContrastEnforced = false
+        if (SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
 
         setContent {
             val scope = rememberCoroutineScope()

@@ -172,7 +172,7 @@ private fun TransferDetailsScreen(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val snackbarHostState = remember { SnackbarHostState() }
     val writeExternalStoragePermissionState: PermissionState? = when {
-        SDK_INT > 28 -> null
+        SDK_INT >= 29 -> null
         else -> rememberPermissionState(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
     val downloadUi = remember(lifecycle) {
