@@ -42,17 +42,17 @@ val crashReport = object : CrashReportInterface {
         Sentry.addBreadcrumb(breadcrumb)
     }
 
-    override fun capture(error: Throwable, data: Map<String, Any>?, category: String?) {
+    override fun capture(message: String, error: Throwable, data: Map<String, Any>?, dataKey: String?) {
         Sentry.captureException(error) { scope ->
             data?.forEach { (key, value) -> scope.setExtra(key, value.toString()) }
-            scope.setTag("category", category)
+            scope.setTag("category", dataKey)
         }
     }
 
-    override fun capture(message: String, data: Map<String, Any>?, category: String?, level: CrashReportLevel?) {
+    override fun capture(message: String, data: Map<String, Any>?, dataKey: String?, level: CrashReportLevel?) {
         Sentry.captureMessage(message, level?.sentryLevel ?: SentryLevel.INFO) { scope ->
             data?.forEach { (key, value) -> scope.setExtra(key, value.toString()) }
-            scope.setTag("category", category)
+            scope.setTag("category", dataKey)
         }
     }
 }
