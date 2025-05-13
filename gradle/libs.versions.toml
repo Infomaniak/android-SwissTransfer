@@ -7,19 +7,19 @@ coil = "3.0.2"
 composeAlpha = "1.8.0-rc03"
 constraintlayoutCompose = "1.1.1"
 coreSplashscreen = "1.0.1"
-datastorePreferences = "1.1.4"
+datastorePreferences = "1.1.4" # Upgrade to 1.1.6+ once https://issuetracker.google.com/issues/413078297 is fixed, or this temporary R8/proguard rule workaround is used: https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-preferences-core/src/jvmMain/resources/META-INF/proguard/androidx.datastore_datastore-preferences-core.pro
 desugarJDK = "2.1.5"
 hiltAndroid = "2.56.2"
 hiltAndroidx = "1.2.0"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.1.20"
-lifecycleRuntimeKtx = "2.8.7"
+lifecycleRuntimeKtx = "2.9.0"
 lottie = "6.6.2"
-navigation = "2.8.9"
+navigation = "2.9.0"
 qrose = "1.0.1"
 sentry = "5.4.0"
 swisstransfer = "4.0.0"
-workmanager = "2.10.0"
+workmanager = "2.10.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -48,7 +48,7 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
-room-processing = { module = "androidx.room:room-compiler-processing", version = "2.7.0" }
+room-processing = { module = "androidx.room:room-compiler-processing", version = "2.7.1" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
 workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
