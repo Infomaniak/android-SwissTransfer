@@ -17,7 +17,7 @@ lifecycleRuntimeKtx = "2.9.0"
 lottie = "6.6.2"
 navigation = "2.9.0"
 qrose = "1.0.1"
-sentry = "5.4.0"
+sentry = "5.5.0"
 swisstransfer = "4.0.0"
 workmanager = "2.10.1"
 
