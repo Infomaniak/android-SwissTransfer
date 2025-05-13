@@ -26,7 +26,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingMa
 import java.time.*
 import java.time.format.TextStyle
 import java.time.temporal.TemporalAdjusters
-import java.util.*
+import java.util.Locale
 
 object TransfersGroupingManager {
 
@@ -59,7 +59,7 @@ object TransfersGroupingManager {
 
     sealed class TransferSectionWithContains(
         @StringRes val titleRes: Int,
-        private val contains: (LocalDate, LocalDate) -> Boolean,
+        private val contains: (date: LocalDate, today: LocalDate) -> Boolean,
     ) : TransferSection(title = { getString(titleRes) }) {
 
         data object Future : TransferSectionWithContains(R.string.transferListSectionFuture, { date, today ->
