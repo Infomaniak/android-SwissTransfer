@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -56,8 +55,8 @@ object SwissTransferAlertDialogDefaults {
 @Composable
 fun SwissTransferAlertDialog(
     modifier: Modifier = Modifier,
-    @StringRes titleRes: Int,
-    @StringRes descriptionRes: Int,
+    title: String,
+    description: String? = null,
     positiveButton: @Composable () -> Unit,
     negativeButton: @Composable () -> Unit,
     onDismiss: () -> Unit,
@@ -72,10 +71,10 @@ fun SwissTransferAlertDialog(
         Card(shape = RoundedCornerShape(Margin.Medium)) {
             BasicAlertDialogContent(
                 modifier = modifier,
-                titleRes = titleRes,
+                title = title,
                 positiveButton = positiveButton,
                 negativeButton = negativeButton,
-                descriptionRes = descriptionRes,
+                description = description,
                 additionalContent = content,
             )
         }
@@ -85,14 +84,14 @@ fun SwissTransferAlertDialog(
 @Composable
 private fun BasicAlertDialogContent(
     modifier: Modifier,
-    @StringRes titleRes: Int,
-    @StringRes descriptionRes: Int,
+    title: String,
+    description: String?,
     positiveButton: @Composable () -> Unit,
     negativeButton: @Composable () -> Unit,
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     Column(modifier.padding(Margin.Large)) {
-        TitleAndDescription(titleRes, descriptionRes)
+        TitleAndDescription(title, description)
         Spacer(Modifier.height(Margin.Large))
         additionalContent?.let {
             it()
@@ -103,18 +102,20 @@ private fun BasicAlertDialogContent(
 }
 
 @Composable
-private fun TitleAndDescription(titleRes: Int, descriptionRes: Int) {
+private fun TitleAndDescription(title: String, description: String?) {
     Text(
-        text = stringResource(titleRes),
+        text = title,
         style = SwissTransferTheme.typography.bodyMedium,
         color = SwissTransferTheme.colors.primaryTextColor,
     )
-    Spacer(Modifier.height(Margin.Large))
-    Text(
-        text = stringResource(descriptionRes),
-        style = SwissTransferTheme.typography.bodyRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
+    description?.let {
+        Spacer(Modifier.height(Margin.Large))
+        Text(
+            text = description,
+            style = SwissTransferTheme.typography.bodyRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+        )
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -139,8 +140,23 @@ private fun PreviewAlertDialog() {
     SwissTransferTheme {
         Surface {
             SwissTransferAlertDialog(
-                titleRes = R.string.settingsOptionPassword,
-                descriptionRes = R.string.settingsPasswordDescription,
+                title = stringResource(R.string.settingsOptionPassword),
+                description = stringResource(R.string.settingsPasswordDescription),
+                positiveButton = { SwissTransferAlertDialogDefaults.ConfirmButton { } },
+                negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
+                onDismiss = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewTitleOnlyAlertDialog() {
+    SwissTransferTheme {
+        Surface {
+            SwissTransferAlertDialog(
+                title = stringResource(R.string.newTransferConfirmLeavingDialogTitle),
                 positiveButton = { SwissTransferAlertDialogDefaults.ConfirmButton { } },
                 negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
                 onDismiss = {},
@@ -155,8 +171,8 @@ private fun WideButtonsPreview() {
     SwissTransferTheme {
         Surface {
             SwissTransferAlertDialog(
-                titleRes = R.string.settingsOptionPassword,
-                descriptionRes = R.string.settingsPasswordDescription,
+                title = stringResource(R.string.settingsOptionPassword),
+                description = stringResource(R.string.settingsPasswordDescription),
                 positiveButton = { SmallButton("A very looong and wide button", onClick = {}, style = ButtonType.Tertiary) },
                 negativeButton = { SwissTransferAlertDialogDefaults.CancelButton { } },
                 onDismiss = {},
