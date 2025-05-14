@@ -116,7 +116,6 @@ private fun TitleAndDescription(title: String, description: String?) {
             color = SwissTransferTheme.colors.secondaryTextColor,
         )
     }
-
 }
 
 @OptIn(ExperimentalLayoutApi::class)
