@@ -33,6 +33,7 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.infomaniak.core.inappreview.BaseInAppReviewManager.Behavior
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -81,18 +82,18 @@ class MainActivity : ComponentActivity() {
             }
 
             with(inAppReviewManager) {
-                init()
+                init(countdownBehavior = Behavior.Manual, appReviewThreshold = 2, maxAppReviewThreshold = 3)
                 setContent {
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
 
                     SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                        if (shouldDisplayReviewDialog == true) {
+                        if (shouldDisplayReviewDialog) {
                             val feedbackUrl = stringResource(R.string.urlUserReport)
                             ReviewAlertDialog(
-                                onUserWantsToReview = { onUserWantsToReview() },
+                                onUserWantsToReview = ::onUserWantsToReview,
                                 onUserWantsToGiveFeedback = { onUserWantsToGiveFeedback(feedbackUrl) },
-                                onDismiss = { onUserWantsToDismiss() },
+                                onDismiss = ::onUserWantsToDismiss,
                             )
                         }
 

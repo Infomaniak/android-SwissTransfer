@@ -46,7 +46,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 @Composable
 fun UploadSuccessEmailScreen(
     transferUuid: String,
-    exitNewTransfer: () -> Unit,
+    exitNewTransfer: (Boolean) -> Unit,
     uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
 ) {
     val recipientsEmails by uploadSuccessViewModel.recipientsEmails.collectAsStateWithLifecycle()
@@ -57,14 +57,14 @@ fun UploadSuccessEmailScreen(
 }
 
 @Composable
-fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, exitNewTransfer: () -> Unit) {
+fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, exitNewTransfer: (Boolean) -> Unit) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.buttonFinished),
-                onClick = exitNewTransfer,
+                onClick = { exitNewTransfer(true) },
             )
         },
     ) {
