@@ -33,7 +33,6 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.infomaniak.core.inappreview.BaseInAppReviewManager.Behavior
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -51,7 +50,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), AppReviewManageable {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val deeplinkViewModel: DeeplinkViewModel by viewModels()
@@ -59,11 +58,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var transferManager: TransferManager
 
-    private val inAppReviewManager by lazy { InAppReviewManager(this) }
+    override val inAppReviewManager by lazy { InAppReviewManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
+
+        initAppReviewManager()
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(State.STARTED) { transferManager.tryUpdatingAllTransfers() }
@@ -82,7 +83,6 @@ class MainActivity : ComponentActivity() {
             }
 
             with(inAppReviewManager) {
-                init(countdownBehavior = Behavior.Manual, appReviewThreshold = 2, maxAppReviewThreshold = 3)
                 setContent {
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)

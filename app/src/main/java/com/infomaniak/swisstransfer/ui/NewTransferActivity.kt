@@ -28,7 +28,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.remember
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
-import com.infomaniak.core.inappreview.BaseInAppReviewManager.Behavior
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.*
@@ -42,21 +41,22 @@ import javax.inject.Inject
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager.Reason as OpenReason
 
 @AndroidEntryPoint
-class NewTransferActivity : ComponentActivity() {
+class NewTransferActivity : ComponentActivity(), AppReviewManageable {
 
     @Inject
     lateinit var newTransferOpenManager: NewTransferOpenManager
 
-    private val inAppReviewManager by lazy { InAppReviewManager(this) }
+    override val inAppReviewManager by lazy { InAppReviewManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        inAppReviewManager.init(countdownBehavior = Behavior.Manual, appReviewThreshold = 2, maxAppReviewThreshold = 10)
+
+        initAppReviewManager()
+
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         handleSharedFiles(intent)
-        addOnNewIntentListener { newIntent ->
-            handleSharedFiles(newIntent)
-        }
+        addOnNewIntentListener(::handleSharedFiles)
+
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(
