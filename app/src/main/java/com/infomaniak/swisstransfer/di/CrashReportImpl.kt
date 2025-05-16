@@ -21,7 +21,9 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportI
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportLevel
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
+import io.sentry.SentryEvent
 import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 
 val CrashReportLevel.sentryLevel: SentryLevel
     get() = when (this) {
@@ -33,7 +35,7 @@ val CrashReportLevel.sentryLevel: SentryLevel
     }
 
 val crashReport = object : CrashReportInterface {
-    override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, Any>?) {
+    override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, String>?) {
         val breadcrumb = Breadcrumb()
         breadcrumb.message = message
         breadcrumb.category = category
@@ -42,17 +44,17 @@ val crashReport = object : CrashReportInterface {
         Sentry.addBreadcrumb(breadcrumb)
     }
 
-    override fun capture(error: Throwable, data: Map<String, Any>?, category: String?) {
-        Sentry.captureException(error) { scope ->
-            data?.forEach { (key, value) -> scope.setExtra(key, value.toString()) }
-            scope.setTag("category", category)
+    override fun capture(message: String, error: Throwable, data: Map<String, String>?) {
+        val sentryEvent = SentryEvent(error).apply {
+            data?.forEach { (key, value) -> setExtra(key, value) }
+            this.message = Message().apply { this.message = message }
         }
+        Sentry.captureEvent(sentryEvent)
     }
 
-    override fun capture(message: String, data: Map<String, Any>?, category: String?, level: CrashReportLevel?) {
+    override fun capture(message: String, data: Map<String, String>?, level: CrashReportLevel?) {
         Sentry.captureMessage(message, level?.sentryLevel ?: SentryLevel.INFO) { scope ->
-            data?.forEach { (key, value) -> scope.setExtra(key, value.toString()) }
-            scope.setTag("category", category)
+            data?.forEach { (key, value) -> scope.setExtra(key, value) }
         }
     }
 }
