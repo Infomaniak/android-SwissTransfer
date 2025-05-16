@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessVi
 fun NewTransferNavHost(
     navController: NavHostController,
     startDestination: NewTransferNavigation,
-    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
+    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean, isTransferSuccessful: Boolean) -> Unit,
     cancelUploadNotification: () -> Unit,
 ) {
 
@@ -46,7 +46,7 @@ fun NewTransferNavHost(
             cancelUploadNotification()
             PickFilesScreen(
                 pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
-                exitNewTransfer = { closeActivity(true) },
+                exitNewTransfer = { closeActivity(true, false) },
                 navigateToUploadProgress = { navController.navigate(UploadDestination) },
                 navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
             )
@@ -54,7 +54,9 @@ fun NewTransferNavHost(
         composable<UploadDestination> {
             UploadScreen(
                 navigateBackToPickFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
-                exitNewTransfer = { closeActivity(true) },
+                exitNewTransfer = { isTransferSuccessful ->
+                    closeActivity(true, isTransferSuccessful)
+                },
             )
         }
         composable<UploadSuccessDestination> {
@@ -66,7 +68,7 @@ fun NewTransferNavHost(
                 transferUrl = args.transferUrl,
                 dismissCompleteUpload = {
                     uploadSuccessViewModel.dismissCompleteUpload()
-                    closeActivity(true)
+                    closeActivity(true, true)
                 }
             )
         }

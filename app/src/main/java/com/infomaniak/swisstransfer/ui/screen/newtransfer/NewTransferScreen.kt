@@ -25,7 +25,7 @@ import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 @Composable
 fun NewTransferScreen(
     startDestination: NewTransferNavigation,
-    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
+    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean, isTransferSuccessful: Boolean) -> Unit,
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
 ) {
     NewTransferNavHost(

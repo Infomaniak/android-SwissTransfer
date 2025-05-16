@@ -37,7 +37,7 @@ import com.infomaniak.swisstransfer.upload.UploadState
 @Composable
 fun UploadScreen(
     navigateBackToPickFiles: () -> Unit,
-    exitNewTransfer: () -> Unit,
+    exitNewTransfer: (isTransferSuccessful: Boolean) -> Unit,
     uploadViewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
 ) {
     val uploadState: UploadState? by uploadViewModel.stateFlow.collectAsStateWithLifecycle()
@@ -62,7 +62,9 @@ fun UploadScreen(
             val hasPickedFiles by uploadViewModel.hasPickedFiles.collectAsState()
             // Extracting the if/else below to a local composable function causes flickering, so leave it here.
             if (hasPickedFiles) LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
-            else LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
+            else LaunchedEffect(exitNewTransfer) {
+                exitNewTransfer(true)
+            }
             NoUploadOngoingEmptyState()
         }
         is UploadState.Ongoing -> UploadOngoingScreen(
