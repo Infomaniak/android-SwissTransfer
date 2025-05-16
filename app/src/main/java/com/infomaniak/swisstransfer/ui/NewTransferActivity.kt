@@ -28,6 +28,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.remember
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
@@ -40,24 +41,29 @@ import javax.inject.Inject
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager.Reason as OpenReason
 
 @AndroidEntryPoint
-class NewTransferActivity : ComponentActivity() {
+class NewTransferActivity : ComponentActivity(), AppReviewManageable {
 
     @Inject
     lateinit var newTransferOpenManager: NewTransferOpenManager
 
+    override val inAppReviewManager by lazy { InAppReviewManager(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initAppReviewManager()
+
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         handleSharedFiles(intent)
-        addOnNewIntentListener { newIntent ->
-            handleSharedFiles(newIntent)
-        }
+        addOnNewIntentListener(::handleSharedFiles)
+
         setContent {
             SwissTransferTheme {
                 NewTransferScreen(
                     startDestination = remember { getStartDestination() },
-                    closeActivity = { startMainActivityIfTaskIsEmpty ->
-                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
+                    closeActivity = { startMainActivityIfTaskIsEmpty, isTransferSuccessful ->
+                        if (isTransferSuccessful) inAppReviewManager.decrementAppReviewCountdown()
+                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty, isTransferSuccessful)
                     },
                 )
             }
@@ -87,10 +93,12 @@ class NewTransferActivity : ComponentActivity() {
         return uris ?: emptyList()
     }
 
-    private fun finishNewTransferActivity(startMainActivityIfTaskIsEmpty: Boolean) {
+    private fun finishNewTransferActivity(startMainActivityIfTaskIsEmpty: Boolean, isTransferSuccessful: Boolean) {
         when {
             isTaskRoot && startMainActivityIfTaskIsEmpty -> {
-                startActivity(Intent(this, MainActivity::class.java))
+                Intent(this, MainActivity::class.java).apply {
+                    putExtra(IS_TRANSFER_SUCCESSFUL_KEY, isTransferSuccessful)
+                }.also(::startActivity)
                 finish()
             }
             isTaskRoot -> finishAndRemoveTask()
@@ -118,5 +126,9 @@ class NewTransferActivity : ComponentActivity() {
             }
             null -> NewTransferNavigation.startDestination
         }
+    }
+
+    companion object {
+        const val IS_TRANSFER_SUCCESSFUL_KEY = "isTransferSuccessful"
     }
 }
