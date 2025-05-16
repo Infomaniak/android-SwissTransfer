@@ -33,7 +33,7 @@ val CrashReportLevel.sentryLevel: SentryLevel
     }
 
 val crashReport = object : CrashReportInterface {
-    override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, Any>?) {
+    override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, String>?) {
         val breadcrumb = Breadcrumb()
         breadcrumb.message = message
         breadcrumb.category = category
@@ -42,17 +42,16 @@ val crashReport = object : CrashReportInterface {
         Sentry.addBreadcrumb(breadcrumb)
     }
 
-    override fun capture(message: String, error: Throwable, data: Map<String, Any>?, dataKey: String?) {
-        Sentry.captureException(error) { scope ->
-            data?.forEach { (key, value) -> scope.setExtra(key, value.toString()) }
-            scope.setTag("category", dataKey)
+    override fun capture(message: String, error: Throwable, data: Map<String, String>?) {
+        Sentry.captureMessage(message, SentryLevel.ERROR) { scope ->
+            data?.forEach { (key, value) -> scope.setExtra(key, value) }
+            scope.setExtra("throwable", error.stackTraceToString())
         }
     }
 
-    override fun capture(message: String, data: Map<String, Any>?, dataKey: String?, level: CrashReportLevel?) {
+    override fun capture(message: String, data: Map<String, String>?, level: CrashReportLevel?) {
         Sentry.captureMessage(message, level?.sentryLevel ?: SentryLevel.INFO) { scope ->
-            data?.forEach { (key, value) -> scope.setExtra(key, value.toString()) }
-            scope.setTag("category", dataKey)
+            data?.forEach { (key, value) -> scope.setExtra(key, value) }
         }
     }
 }
