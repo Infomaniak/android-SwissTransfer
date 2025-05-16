@@ -21,7 +21,9 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportI
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportLevel
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
+import io.sentry.SentryEvent
 import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 
 val CrashReportLevel.sentryLevel: SentryLevel
     get() = when (this) {
@@ -43,10 +45,11 @@ val crashReport = object : CrashReportInterface {
     }
 
     override fun capture(message: String, error: Throwable, data: Map<String, String>?) {
-        Sentry.captureMessage(message, SentryLevel.ERROR) { scope ->
-            data?.forEach { (key, value) -> scope.setExtra(key, value) }
-            scope.setExtra("throwable", error.stackTraceToString())
+        val sentryEvent = SentryEvent(error).apply {
+            data?.forEach { (key, value) -> setExtra(key, value) }
+            this.message = Message().apply { this.message = message }
         }
+        Sentry.captureEvent(sentryEvent)
     }
 
     override fun capture(message: String, data: Map<String, String>?, level: CrashReportLevel?) {
