@@ -82,8 +82,8 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                 intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
             }
 
-            with(inAppReviewManager) {
-                setContent {
+            setContent {
+                with(inAppReviewManager) {
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
 

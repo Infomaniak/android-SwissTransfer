@@ -63,7 +63,7 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
                     startDestination = remember { getStartDestination() },
                     closeActivity = { startMainActivityIfTaskIsEmpty, isTransferSuccessful ->
                         if (isTransferSuccessful) inAppReviewManager.decrementAppReviewCountdown()
-                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty, isTransferSuccessful)
+                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
                     },
                 )
             }
@@ -93,12 +93,10 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
         return uris ?: emptyList()
     }
 
-    private fun finishNewTransferActivity(startMainActivityIfTaskIsEmpty: Boolean, isTransferSuccessful: Boolean) {
+    private fun finishNewTransferActivity(startMainActivityIfTaskIsEmpty: Boolean) {
         when {
             isTaskRoot && startMainActivityIfTaskIsEmpty -> {
-                Intent(this, MainActivity::class.java).apply {
-                    putExtra(IS_TRANSFER_SUCCESSFUL_KEY, isTransferSuccessful)
-                }.also(::startActivity)
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
             isTaskRoot -> finishAndRemoveTask()
@@ -126,9 +124,5 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
             }
             null -> NewTransferNavigation.startDestination
         }
-    }
-
-    companion object {
-        const val IS_TRANSFER_SUCCESSFUL_KEY = "isTransferSuccessful"
     }
 }
