@@ -64,7 +64,7 @@ fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, exitNewTransfe
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.buttonFinished),
-                onClick = { exitNewTransfer() },
+                onClick = exitNewTransfer,
             )
         },
     ) {

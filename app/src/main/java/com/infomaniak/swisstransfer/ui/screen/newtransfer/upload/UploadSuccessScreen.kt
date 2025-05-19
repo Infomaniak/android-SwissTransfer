@@ -47,7 +47,7 @@ fun UploadSuccessScreen(
         MatomoSwissTransfer.trackScreen(MatomoScreen.UploadSuccess)
     }
 
-    BackHandler(onBack = { dismissCompleteUpload() })
+    BackHandler(onBack = dismissCompleteUpload)
 
     if (transferType == TransferTypeUi.Mail) {
         UploadSuccessEmailScreen(transferUuid, dismissCompleteUpload)

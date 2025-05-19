@@ -53,7 +53,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
                 modifier = it,
                 style = ButtonType.Primary,
                 title = stringResource(R.string.buttonFinished),
-                onClick = { exitNewTransfer() },
+                onClick = exitNewTransfer,
             )
         },
     ) {
