@@ -222,7 +222,6 @@ private fun <T> Flow<T>.rateLimit(minInterval: Duration): Flow<T> = channelFlow 
     }
 }.buffer(Channel.RENDEZVOUS)
 
-
 /**
  * [SendChannel.send] can throw a [CancellationException] after the value was sent,
  * which might not be desirable if we want to factor-in whether the value was actually sent.
