@@ -54,9 +54,7 @@ fun NewTransferNavHost(
         composable<UploadDestination> {
             UploadScreen(
                 navigateBackToPickFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
-                exitNewTransfer = { isTransferSuccessful ->
-                    closeActivity(true, isTransferSuccessful)
-                },
+                exitNewTransfer = { isTransferSuccessful -> closeActivity(true, isTransferSuccessful) },
             )
         }
         composable<UploadSuccessDestination> {

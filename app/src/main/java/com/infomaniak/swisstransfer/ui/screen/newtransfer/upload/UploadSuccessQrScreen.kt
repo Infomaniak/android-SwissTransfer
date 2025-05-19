@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: (Boolean) -> Unit) {
+fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     BottomStickyButtonScaffold(
@@ -53,9 +53,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
                 modifier = it,
                 style = ButtonType.Primary,
                 title = stringResource(R.string.buttonFinished),
-                onClick = {
-                    exitNewTransfer(true)
-                },
+                onClick = { exitNewTransfer() },
             )
         },
     ) {
