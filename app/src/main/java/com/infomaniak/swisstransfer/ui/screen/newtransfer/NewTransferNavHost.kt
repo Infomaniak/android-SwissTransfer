@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.NewTransferFilesDetailsScreen
@@ -37,7 +38,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessVi
 fun NewTransferNavHost(
     navController: NavHostController,
     startDestination: NewTransferNavigation,
-    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean, isTransferSuccessful: Boolean) -> Unit,
+    inAppReviewManager: InAppReviewManager,
+    closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     cancelUploadNotification: () -> Unit,
 ) {
 
@@ -46,18 +48,22 @@ fun NewTransferNavHost(
             cancelUploadNotification()
             PickFilesScreen(
                 pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
-                exitNewTransfer = { closeActivity(true, false) },
+                exitNewTransfer = { closeActivity(true) },
                 navigateToUploadProgress = { navController.navigate(UploadDestination) },
                 navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
             )
         }
         composable<UploadDestination> {
             UploadScreen(
+                inAppReviewManager = inAppReviewManager,
                 navigateBackToPickFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
-                exitNewTransfer = { isTransferSuccessful -> closeActivity(true, isTransferSuccessful) },
+                exitNewTransfer = { closeActivity(true) },
             )
         }
         composable<UploadSuccessDestination> {
+            // The transfer has succeeded so we decrement the review countdown
+            inAppReviewManager.decrementAppReviewCountdown()
+
             val args = it.toRoute<UploadSuccessDestination>()
             val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
             UploadSuccessScreen(
@@ -66,7 +72,7 @@ fun NewTransferNavHost(
                 transferUrl = args.transferUrl,
                 dismissCompleteUpload = {
                     uploadSuccessViewModel.dismissCompleteUpload()
-                    closeActivity(true, true)
+                    closeActivity(true)
                 }
             )
         }

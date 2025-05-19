@@ -61,8 +61,8 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
             SwissTransferTheme {
                 NewTransferScreen(
                     startDestination = remember { getStartDestination() },
-                    closeActivity = { startMainActivityIfTaskIsEmpty, isTransferSuccessful ->
-                        if (isTransferSuccessful) inAppReviewManager.decrementAppReviewCountdown()
+                    inAppReviewManager = inAppReviewManager,
+                    closeActivity = { startMainActivityIfTaskIsEmpty ->
                         finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
                     },
                 )

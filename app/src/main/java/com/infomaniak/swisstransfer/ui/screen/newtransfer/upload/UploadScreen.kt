@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -36,8 +37,9 @@ import com.infomaniak.swisstransfer.upload.UploadState
 
 @Composable
 fun UploadScreen(
+    inAppReviewManager: InAppReviewManager,
     navigateBackToPickFiles: () -> Unit,
-    exitNewTransfer: (isTransferSuccessful: Boolean) -> Unit,
+    exitNewTransfer: () -> Unit,
     uploadViewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
 ) {
     val uploadState: UploadState? by uploadViewModel.stateFlow.collectAsStateWithLifecycle()
@@ -64,7 +66,7 @@ fun UploadScreen(
             if (hasPickedFiles) {
                 LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
             } else {
-                LaunchedEffect(exitNewTransfer) { exitNewTransfer(true) }
+                LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
             }
 
             NoUploadOngoingEmptyState()
@@ -86,6 +88,7 @@ fun UploadScreen(
         is UploadState.Complete -> {
             showCancelBottomSheet = false // Ensure we dismiss any pending cancel attempt.
             val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
+            inAppReviewManager.decrementAppReviewCountdown()
             UploadSuccessScreen(
                 transferType = state.transferType,
                 transferUuid = state.transferUuid,
