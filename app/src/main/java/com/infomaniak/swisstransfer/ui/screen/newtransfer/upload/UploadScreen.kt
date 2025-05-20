@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.*
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -36,6 +37,7 @@ import com.infomaniak.swisstransfer.upload.UploadState
 
 @Composable
 fun UploadScreen(
+    inAppReviewManager: InAppReviewManager,
     navigateBackToPickFiles: () -> Unit,
     exitNewTransfer: () -> Unit,
     uploadViewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
@@ -61,8 +63,12 @@ fun UploadScreen(
         null -> {
             val hasPickedFiles by uploadViewModel.hasPickedFiles.collectAsState()
             // Extracting the if/else below to a local composable function causes flickering, so leave it here.
-            if (hasPickedFiles) LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
-            else LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
+            if (hasPickedFiles) {
+                LaunchedEffect(navigateBackToPickFiles) { navigateBackToPickFiles() }
+            } else {
+                LaunchedEffect(exitNewTransfer) { exitNewTransfer() }
+            }
+
             NoUploadOngoingEmptyState()
         }
         is UploadState.Ongoing -> UploadOngoingScreen(
@@ -82,6 +88,7 @@ fun UploadScreen(
         is UploadState.Complete -> {
             showCancelBottomSheet = false // Ensure we dismiss any pending cancel attempt.
             val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
+            inAppReviewManager.decrementAppReviewCountdown()
             UploadSuccessScreen(
                 transferType = state.transferType,
                 transferUuid = state.transferUuid,

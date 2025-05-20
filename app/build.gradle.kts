@@ -45,6 +45,8 @@ android {
         resValue("string", "prod_host", prodHost)
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
+
+        missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
     }
 
     val debugSigningConfig = signingConfigs.getByName("debug") {
@@ -76,12 +78,10 @@ android {
     productFlavors {
         // Remember to update the command to build the app in android.yml to build the new flavor when you add a new flavor here
         create("preprod") {
-            dimension = "env"
             applicationIdSuffix = ".preprod"
             buildConfigField("String", "BASE_URL", "\"https://$preprodHost\"")
         }
         create("prod") {
-            dimension = "env"
             buildConfigField("String", "BASE_URL", "\"https://$prodHost\"")
             isDefault = true
         }
@@ -144,7 +144,7 @@ dependencies {
     implementation(project(":Core:AppIntegrity"))
     implementation(project(":Core:Compose:Basics"))
     implementation(project(":Core:FileTypes"))
-    implementation(project(":Core:InAppStore"))
+    implementation(project(":Core:InAppReview"))
     implementation(project(":Core:Matomo"))
     implementation(project(":Core:Network"))
     implementation(project(":Core:Notifications"))

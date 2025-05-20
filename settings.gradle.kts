@@ -33,11 +33,12 @@ include(
     ":Core:AppIntegrity",
     ":Core:Compose:Basics",
     ":Core:FileTypes",
-    ":Core:InAppStore",
+    ":Core:InAppReview",
     ":Core:Matomo",
     ":Core:Network",
     ":Core:Notifications",
     ":Core:Onboarding",
     ":Core:Sentry",
     ":Core:Thumbnails",
+    ":Core:WebView",
 )
