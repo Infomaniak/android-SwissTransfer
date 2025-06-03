@@ -18,8 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,11 +36,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -63,7 +61,6 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.openMailApp
 import com.infomaniak.swisstransfer.upload.UploadState
 import kotlinx.coroutines.launch
-import androidx.lifecycle.compose.currentStateAsState
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 
@@ -98,7 +95,7 @@ fun ValidateUserEmailScreen(
             }
         }
     }
-    
+
     BackHandler { editTransfer() }
 
     HandleUnknownValidationError({ uiState }, snackbarHostState)
