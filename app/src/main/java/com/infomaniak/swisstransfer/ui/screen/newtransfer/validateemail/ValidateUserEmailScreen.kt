@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
+import android.content.ClipboardManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -76,7 +80,21 @@ fun ValidateUserEmailScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
+    var otpCode by rememberSaveable { mutableStateOf("") }
+
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VerifyMail) }
+
+    val lifecycleState = LocalLifecycleOwner.current.lifecycle.currentStateAsState().value
+
+    LaunchedEffect(lifecycleState) {
+        if (lifecycleState != Lifecycle.State.RESUMED) return@LaunchedEffect
+        val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
+        val clipBoardContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
+        if (Regex("[0-9]{6}").matches(clipBoardContent)) {
+            otpCode = clipBoardContent
+            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, otpCode))
+        }
+    }
 
     BackHandler { editTransfer() }
 
@@ -99,6 +117,10 @@ fun ValidateUserEmailScreen(
                 )
             }
             validateUserEmailViewModel.resendEmailReq(emailToValidate)
+        },
+        otpCode = { otpCode },
+        updateOtpCode = { code ->
+            otpCode = code
         }
     )
 }
@@ -133,8 +155,9 @@ private fun ValidateUserEmailScreen(
     snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
     onResendEmailCode: () -> Unit,
+    otpCode: () -> String,
+    updateOtpCode: (String) -> Unit,
 ) {
-    var otpCode by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -182,9 +205,9 @@ private fun ValidateUserEmailScreen(
 
             CodeVerification(
                 modifier = Modifier.widthIn(max = MAX_LAYOUT_WIDTH),
-                otpCode = { otpCode },
+                otpCode = otpCode,
                 updateOtpCode = { code, isFilled ->
-                    otpCode = code
+                    updateOtpCode(code)
 
                     if (isFilled) {
                         validateEmailWithOtpCode(code)
@@ -249,6 +272,8 @@ private fun Preview() {
                 snackbarHostState = remember { SnackbarHostState() },
                 navigateBack = {},
                 onResendEmailCode = {},
+                otpCode = { "" },
+                updateOtpCode = {},
             )
         }
     }
