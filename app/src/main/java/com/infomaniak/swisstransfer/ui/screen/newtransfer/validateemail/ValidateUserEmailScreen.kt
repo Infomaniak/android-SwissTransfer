@@ -84,15 +84,15 @@ fun ValidateUserEmailScreen(
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VerifyMail) }
 
-    val lifeState = LocalLifecycleOwner.current.lifecycle.currentStateAsState().value
+    val lifecycleState = LocalLifecycleOwner.current.lifecycle.currentStateAsState().value
 
-    LaunchedEffect(lifeState) {
-        if (lifeState == Lifecycle.State.RESUMED) {
-            val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
-            val cbContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
-            if (Regex("[0-9]{6}").matches(cbContent)) {
-                otpCode = cbContent
-            }
+    LaunchedEffect(lifecycleState) {
+        if (lifecycleState != Lifecycle.State.RESUMED) return@LaunchedEffect
+        val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
+        val clipBoardContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
+        if (Regex("[0-9]{6}").matches(clipBoardContent)) {
+            otpCode = clipBoardContent
+            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, otpCode))
         }
     }
 
@@ -158,7 +158,6 @@ private fun ValidateUserEmailScreen(
     otpCode: () -> String,
     updateOtpCode: (String) -> Unit,
 ) {
-
 
     val context = LocalContext.current
 
@@ -278,5 +277,4 @@ private fun Preview() {
             )
         }
     }
-    //555
 }
