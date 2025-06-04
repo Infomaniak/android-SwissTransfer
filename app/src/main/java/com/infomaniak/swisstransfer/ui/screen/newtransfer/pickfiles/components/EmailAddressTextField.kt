@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components
 
+import android.content.ClipboardManager
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -142,7 +143,7 @@ private class EmailAddressTextFieldState(
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()
 
-        if (newValue.text == clipboardManager.primaryClip?.getItemAt(0)?.text) {
+        if (newValue.text == getFirstTextPlain(clipboardManager)) {
             textFieldValue = newValue
             hasNewValidRecipientEmail = addRecipientAddress()
         }
@@ -158,6 +159,19 @@ private class EmailAddressTextFieldState(
         }
     }
 
+    fun getFirstTextPlain(clipboardManager: ClipboardManager): String? {
+        val countItemInClipboard = clipboardManager.primaryClip?.itemCount ?: return null
+        val description = clipboardManager.primaryClipDescription ?: return null
+
+        (0 until countItemInClipboard).forEach { index ->
+            if (description.getMimeType(index).startsWith("text/")) {
+                val text = clipboardManager.primaryClip?.getItemAt(index)?.text?.toString()
+                if (text?.isNotBlank() == true) return text
+            }
+        }
+        return null
+    }
+    
     fun addRecipientAddress(): Boolean {
         val trimmedText = textFieldValue.text.trim()
         if (trimmedText.isValidEmail()) {
