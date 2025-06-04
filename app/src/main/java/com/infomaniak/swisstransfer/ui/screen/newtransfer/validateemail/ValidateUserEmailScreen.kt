@@ -81,6 +81,7 @@ fun ValidateUserEmailScreen(
     val scope = rememberCoroutineScope()
 
     var otpCode by rememberSaveable { mutableStateOf("") }
+    var isFirstResumed by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VerifyMail) }
 
@@ -88,6 +89,10 @@ fun ValidateUserEmailScreen(
 
     LaunchedEffect(lifecycleState) {
         if (lifecycleState != Lifecycle.State.RESUMED) return@LaunchedEffect
+        if (isFirstResumed) {
+            isFirstResumed = false
+            return@LaunchedEffect
+        }
         val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
         val clipBoardContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
         if (Regex("[0-9]{6}").matches(clipBoardContent)) {
