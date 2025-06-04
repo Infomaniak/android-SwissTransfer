@@ -44,6 +44,8 @@
     <string name="deeplinkPasswordDescription">Introduzca la contraseña que se le ha dado para descargar estos archivos.</string>
     <string name="deeplinkTransferExpired">Esta transferencia ha expirado</string>
     <string name="deeplinkTransferNotFound">Esta transferencia no existe</string>
+    <string name="deleteThisTransferDescription">Esta transferencia y los archivos que contiene serán eliminados.</string>
+    <string name="deleteThisTransferTitle">¿Suprimir esta transferencia?</string>
     <string name="downloadedTransferLabel">Transferencia descargada: %d/%d</string>
     <string name="errorAppIntegrity">Su dispositivo no es reconocido como seguro</string>
     <string name="errorIncorrectPassword">Contraseña incorrecta</string>
