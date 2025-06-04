@@ -102,7 +102,7 @@ fun ValidateUserEmailScreen(
         val isTextPlain = clipBoardManager?.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT) == true
         if (!isTextPlain) return@LaunchedEffect
 
-        val clipBoardContent = clipBoardManager.getFirstTextPlain() ?: return@LaunchedEffect
+        val clipBoardContent = clipBoardManager.getFirstText() ?: return@LaunchedEffect
         if (Regex("[0-9]{6}").matches(clipBoardContent)) {
             otpCode = clipBoardContent
             validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, otpCode))
@@ -271,7 +271,7 @@ private enum class LayoutStyle(
     }
 }
 
-private fun ClipboardManager.getFirstTextPlain(): String? {
+private fun ClipboardManager.getFirstText(): String? {
     val countItemInClipboard = primaryClip?.itemCount ?: return null
     val description = primaryClipDescription ?: return null
 
