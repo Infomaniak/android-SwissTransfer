@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2025 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,12 +56,12 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.received.TransferExpiredDownloadCreditScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Deleted
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
-import com.infomaniak.swisstransfer.ui.screen.main.transfers.NoSelectionEmptyState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.Margin
@@ -79,7 +79,6 @@ import kotlinx.coroutines.flow.emptyFlow
 fun TransferDetailsScreen(
     transferUuid: String,
     direction: TransferDirection,
-    hasTransfer: () -> Boolean,
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
     navigateToFolder: (folderUuid: String) -> Unit,
@@ -97,11 +96,13 @@ fun TransferDetailsScreen(
     val context = LocalContext.current
     when (val state = uiState) {
         is Deleted -> {
-            if (windowAdaptiveInfo.isWindowSmall()) {
-                navigateBack?.invoke()
-            } else {
-                NoSelectionEmptyState(hasTransfer())
-            }
+            TransferExpiredDownloadCreditScreen(
+                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
+                    { navigateBack?.invoke() }
+                } else {
+                    null
+                }
+            )
         }
         is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
