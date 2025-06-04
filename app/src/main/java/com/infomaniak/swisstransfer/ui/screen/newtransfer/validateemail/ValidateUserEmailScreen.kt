@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
-import android.content.ClipDescription
 import android.content.ClipboardManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +64,7 @@ import com.infomaniak.swisstransfer.upload.UploadState
 import kotlinx.coroutines.launch
 
 private val MAX_LAYOUT_WIDTH = 400.dp
+private val MIMETYPE_TEXT = "text/*"
 
 @Composable
 fun ValidateUserEmailScreen(
@@ -99,7 +99,7 @@ fun ValidateUserEmailScreen(
 
         val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
 
-        val isTextPlain = clipBoardManager?.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true
+        val isTextPlain = clipBoardManager?.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT) == true
         if (!isTextPlain) return@LaunchedEffect
 
         val clipBoardContent = clipBoardManager.getFirstTextPlain() ?: return@LaunchedEffect
@@ -273,10 +273,11 @@ private enum class LayoutStyle(
 
 private fun ClipboardManager.getFirstTextPlain(): String? {
     val countItemInClipboard = primaryClip?.itemCount ?: return null
+    val description = primaryClipDescription ?: return null
 
-    (0..countItemInClipboard).forEach { item ->
-        if (primaryClipDescription?.getMimeType(item) == ClipDescription.MIMETYPE_TEXT_PLAIN) {
-            val text = primaryClip?.getItemAt(item)?.text?.toString()
+    (0 until countItemInClipboard).forEach { index ->
+        if (description.getMimeType(index).startsWith("text/")) {
+            val text = primaryClip?.getItemAt(index)?.text?.toString()
             if (text?.isNotBlank() == true) return text
         }
     }
