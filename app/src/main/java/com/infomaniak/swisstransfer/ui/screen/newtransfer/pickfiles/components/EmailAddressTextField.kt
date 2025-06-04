@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
+import splitties.systemservices.clipboardManager
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -141,6 +142,11 @@ private class EmailAddressTextFieldState(
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()
 
+        if (newValue.text == clipboardManager.primaryClip?.getItemAt(0)?.text) {
+            textFieldValue = newValue
+            hasNewValidRecipientEmail = addRecipientAddress()
+        }
+
         if (lastAddedChar == ' ' || lastAddedChar == ',') {
             hasNewValidRecipientEmail = addRecipientAddress()
         }
@@ -159,7 +165,6 @@ private class EmailAddressTextFieldState(
             updateUiTextValue(TextFieldValue())
             return true
         }
-
         return false
     }
 
