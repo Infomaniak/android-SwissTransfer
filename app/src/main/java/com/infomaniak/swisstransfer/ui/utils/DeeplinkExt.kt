@@ -19,15 +19,20 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import androidx.activity.ComponentActivity
 
-private val TRANSFER_DEEPLINK_REGEX = "https://.+/d/(.+)".toRegex()
+private val TRANSFER_DEEPLINK_REGEX = "https://.+/d/([^?]+)(?:\\?delete=(.+))?".toRegex()
 
 fun ComponentActivity.hasValidTransferDeeplink(): Boolean {
     val deeplink = intent?.data?.toString()
     return deeplink?.matches(TRANSFER_DEEPLINK_REGEX) == true
 }
 
-fun ComponentActivity.getDeeplinkTransferUuid(): String? {
+fun ComponentActivity.getDeeplinkTransferData(): DeeplinkTransferData? {
     return intent?.data?.let { deeplinkUri ->
-        TRANSFER_DEEPLINK_REGEX.find(deeplinkUri.toString())?.groupValues?.get(1)
+        val deeplinkGroupValues = TRANSFER_DEEPLINK_REGEX.find(deeplinkUri.toString())?.groupValues
+        val transferUuid = deeplinkGroupValues?.get(1)
+        val deleteToken = deeplinkGroupValues?.get(2)
+        DeeplinkTransferData(uuid = transferUuid, deleteToken = deleteToken)
     }
 }
+
+data class DeeplinkTransferData(val uuid: String?, val deleteToken: String?)

@@ -23,6 +23,7 @@
     <string name="buttonCloseAndContinue">Fermer et continuer</string>
     <string name="buttonConfirm">Confirmer</string>
     <string name="buttonCopyLink">Copier le lien</string>
+    <string name="buttonDeleteYes">Oui, supprimer</string>
     <string name="buttonDownload">Télécharger</string>
     <string name="buttonDownloadSelected">Télécharger la sélection</string>
     <string name="buttonDownloaded">Téléchargé</string>
