@@ -276,8 +276,8 @@ private fun ClipboardManager.getFirstTextPlain(): String? {
 
     (0..countItemInClipboard).forEach { item ->
         if (primaryClipDescription?.getMimeType(item) == ClipDescription.MIMETYPE_TEXT_PLAIN) {
-            val text = primaryClip?.getItemAt(item)?.text.toString()
-            if (text.isNotBlank()) return text
+            val text = primaryClip?.getItemAt(item)?.text?.toString()
+            if (text?.isNotBlank() == true) return text
         }
     }
 
