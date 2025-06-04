@@ -143,7 +143,7 @@ private class EmailAddressTextFieldState(
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()
 
-        if (newValue.text == getFirstTextPlain(clipboardManager)) {
+        if (newValue.text == getFirstText(clipboardManager)) {
             textFieldValue = newValue
             hasNewValidRecipientEmail = addRecipientAddress()
         }
@@ -159,7 +159,7 @@ private class EmailAddressTextFieldState(
         }
     }
 
-    fun getFirstTextPlain(clipboardManager: ClipboardManager): String? {
+    fun getFirstText(clipboardManager: ClipboardManager): String? {
         val countItemInClipboard = clipboardManager.primaryClip?.itemCount ?: return null
         val description = clipboardManager.primaryClipDescription ?: return null
 
@@ -171,7 +171,7 @@ private class EmailAddressTextFieldState(
         }
         return null
     }
-    
+
     fun addRecipientAddress(): Boolean {
         val trimmedText = textFieldValue.text.trim()
         if (trimmedText.isValidEmail()) {
