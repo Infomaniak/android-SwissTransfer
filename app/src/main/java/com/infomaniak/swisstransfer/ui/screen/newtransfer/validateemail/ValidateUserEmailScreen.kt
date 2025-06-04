@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
+import android.content.ClipDescription
 import android.content.ClipboardManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -98,10 +99,11 @@ fun ValidateUserEmailScreen(
 
         val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
 
-        val clipBoardType = clipBoardManager?.primaryClipDescription?.getMimeType(0).toString()
-        val clipBoardContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
+        val isTextPlain = clipBoardManager?.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true
+        if (!isTextPlain) return@LaunchedEffect
 
-        if (clipBoardType == "text/plain" && Regex("[0-9]{6}").matches(clipBoardContent)) {
+        val clipBoardContent = clipBoardManager.getFirstTextPlain() ?: return@LaunchedEffect
+        if (Regex("[0-9]{6}").matches(clipBoardContent)) {
             otpCode = clipBoardContent
             validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, otpCode))
         }
@@ -267,6 +269,17 @@ private enum class LayoutStyle(
             TopLeft
         }
     }
+}
+
+private fun ClipboardManager.getFirstTextPlain(): String? {
+    val countItemInClipboard = primaryClip?.itemCount ?: return null
+    (0.. countItemInClipboard).forEach { item ->
+        if (primaryClipDescription?.getMimeType(item) == ClipDescription.MIMETYPE_TEXT_PLAIN){
+            val text = primaryClip?.getItemAt(item)?.text.toString()
+            if (text.isNotBlank()) return text
+        }
+    }
+    return null
 }
 
 @PreviewAllWindows
