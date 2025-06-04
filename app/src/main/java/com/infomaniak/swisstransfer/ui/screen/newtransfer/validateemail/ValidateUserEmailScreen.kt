@@ -50,6 +50,7 @@ import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidationRequest
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -88,16 +89,21 @@ fun ValidateUserEmailScreen(
     val lifecycleState = LocalLifecycleOwner.current.lifecycle.currentStateAsState().value
 
     LaunchedEffect(lifecycleState) {
+
         if (lifecycleState != Lifecycle.State.RESUMED) return@LaunchedEffect
         if (isFirstResumed) {
             isFirstResumed = false
             return@LaunchedEffect
         }
+
         val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
+
+        val clipBoardType = clipBoardManager?.primaryClipDescription?.getMimeType(0).toString()
         val clipBoardContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
-        if (Regex("[0-9]{6}").matches(clipBoardContent)) {
+
+        if (clipBoardType == "text/plain" && Regex("[0-9]{6}").matches(clipBoardContent)) {
             otpCode = clipBoardContent
-            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, otpCode))
+            validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, otpCode))
         }
     }
 
@@ -108,7 +114,7 @@ fun ValidateUserEmailScreen(
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
         validateEmailWithOtpCode = { code ->
-            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, code))
+            validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, code))
         },
         resetErrorState = validateUserEmailViewModel.resetErrorReq,
         isLoading = { isLoading },
