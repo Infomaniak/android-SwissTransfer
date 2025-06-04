@@ -273,12 +273,14 @@ private enum class LayoutStyle(
 
 private fun ClipboardManager.getFirstTextPlain(): String? {
     val countItemInClipboard = primaryClip?.itemCount ?: return null
-    (0.. countItemInClipboard).forEach { item ->
-        if (primaryClipDescription?.getMimeType(item) == ClipDescription.MIMETYPE_TEXT_PLAIN){
+
+    (0..countItemInClipboard).forEach { item ->
+        if (primaryClipDescription?.getMimeType(item) == ClipDescription.MIMETYPE_TEXT_PLAIN) {
             val text = primaryClip?.getItemAt(item)?.text.toString()
             if (text.isNotBlank()) return text
         }
     }
+
     return null
 }
 
