@@ -78,12 +78,15 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
             }
 
             val hasDeleteToken = !deeplinkTransferData?.deleteToken.isNullOrEmpty()
-            if (hasDeleteToken) {
-                // Modify the intent to avoid opening the transfer we want to delete a transfer via a deeplink
-                intent.setData(null)
-            } else if (transferDirection == TransferDirection.SENT) {
-                // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+            when {
+                hasDeleteToken -> {
+                    // Modify the intent to avoid opening the transfer when we want to delete it via deeplink
+                    intent.setData(null)
+                }
+                transferDirection == TransferDirection.SENT -> {
+                    // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
+                    intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+                }
             }
 
             setContent {
@@ -91,7 +94,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
                     var shouldDisplayDeleteDialog by remember {
-                        mutableStateOf(hasDeleteToken && deeplinkTransferData?.uuid != null)
+                        mutableStateOf(hasDeleteToken && deeplinkTransferData.uuid != null)
                     }
 
                     SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
@@ -120,7 +123,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                                         )
                                     }
                                     dismissDeleteDialog()
-                                }
+                                },
                             )
                         }
 

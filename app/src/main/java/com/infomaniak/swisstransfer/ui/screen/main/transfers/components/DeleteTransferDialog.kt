@@ -33,7 +33,6 @@ fun DeleteTransferDialog(
     closeAlertDialog: () -> Unit,
     onConfirmation: () -> Unit,
 ) {
-
     SwissTransferAlertDialog(
         title = stringResource(R.string.deleteThisTransferTitle),
         description = stringResource(R.string.deleteThisTransferDescription),
