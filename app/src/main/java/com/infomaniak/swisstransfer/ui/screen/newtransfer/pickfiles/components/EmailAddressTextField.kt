@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components
 
-import android.content.ClipboardManager
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -47,7 +46,6 @@ import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
-import splitties.systemservices.clipboardManager
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -142,10 +140,8 @@ private class EmailAddressTextFieldState(
     fun updateUiTextValue(newValue: TextFieldValue) {
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()
-
-        if (newValue.text == getFirstText(clipboardManager)) {
-            textFieldValue = newValue
-            hasNewValidRecipientEmail = addRecipientAddress()
+        if (textFieldValue.text.length + 1 < newValue.text.length) {
+            hasNewValidRecipientEmail = addRecipientAddress(newValue.text)
         }
 
         if (lastAddedChar == ' ' || lastAddedChar == ',') {
@@ -153,30 +149,25 @@ private class EmailAddressTextFieldState(
         }
 
         if (!hasNewValidRecipientEmail) {
-            unselectChip()
-            textFieldValue = newValue
-            onValueChange(newValue)
+            updateTextValue(newValue)
         }
     }
 
-    fun getFirstText(clipboardManager: ClipboardManager): String? {
-        val countItemInClipboard = clipboardManager.primaryClip?.itemCount ?: return null
-        val description = clipboardManager.primaryClipDescription ?: return null
-
-        (0 until countItemInClipboard).forEach { index ->
-            if (description.getMimeType(index).startsWith("text/")) {
-                val text = clipboardManager.primaryClip?.getItemAt(index)?.text?.toString()
-                if (text?.isNotBlank() == true) return text
-            }
-        }
-        return null
+    private fun updateTextValue(newValue: TextFieldValue) {
+        unselectChip()
+        textFieldValue = newValue
+        onValueChange(newValue)
     }
 
-    fun addRecipientAddress(): Boolean {
-        val trimmedText = textFieldValue.text.trim()
+    private fun clearTextValue() {
+        updateTextValue(EMPTY_TEXT_FIELD_VALUE)
+    }
+
+    fun addRecipientAddress(newValue: String = textFieldValue.text): Boolean {
+        val trimmedText = newValue.trim()
         if (trimmedText.isValidEmail()) {
             validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
-            updateUiTextValue(TextFieldValue())
+            clearTextValue()
             return true
         }
         return false
@@ -236,6 +227,7 @@ private class EmailAddressTextFieldState(
 
     companion object {
         private const val UNSELECTED_CHIP_INDEX = -1
+        private val EMPTY_TEXT_FIELD_VALUE = TextFieldValue("")
     }
 }
 
