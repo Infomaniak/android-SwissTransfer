@@ -28,6 +28,7 @@
     <string name="buttonCloseAndContinue">Close and continue</string>
     <string name="buttonConfirm">Confirm</string>
     <string name="buttonCopyLink">Copy link</string>
+    <string name="buttonDeleteYes">Yes, delete</string>
     <string name="buttonDownload">Download</string>
     <string name="buttonDownloadSelected">Download selection</string>
     <string name="buttonDownloaded">Downloaded</string>
@@ -49,6 +50,8 @@
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
     <string name="deeplinkTransferExpired">This transfer has expired</string>
     <string name="deeplinkTransferNotFound">This transfer does not exist</string>
+    <string name="deleteThisTransferDescription">This transfer and the files it contains will be deleted.</string>
+    <string name="deleteThisTransferTitle">Delete this transfer?</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d</string>
     <string name="errorAppIntegrity">Your device is not recognized as safe</string>
     <string name="errorIncorrectPassword">Incorrect password</string>

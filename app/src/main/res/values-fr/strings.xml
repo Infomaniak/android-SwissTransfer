@@ -23,6 +23,7 @@
     <string name="buttonCloseAndContinue">Fermer et continuer</string>
     <string name="buttonConfirm">Confirmer</string>
     <string name="buttonCopyLink">Copier le lien</string>
+    <string name="buttonDeleteYes">Oui, supprimer</string>
     <string name="buttonDownload">Télécharger</string>
     <string name="buttonDownloadSelected">Télécharger la sélection</string>
     <string name="buttonDownloaded">Téléchargé</string>
@@ -44,6 +45,8 @@
     <string name="deeplinkPasswordDescription">Saisis le mot de passe qui t’a été fourni pour télécharger ces fichiers.</string>
     <string name="deeplinkTransferExpired">Ce transfert a expiré</string>
     <string name="deeplinkTransferNotFound">Ce transfert n’existe pas</string>
+    <string name="deleteThisTransferDescription">Ce transfert et les fichiers qu’il contient seront supprimés.</string>
+    <string name="deleteThisTransferTitle">Supprimer ce transfert ?</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d</string>
     <string name="errorAppIntegrity">Votre appareil n’est pas reconnu comme sûr</string>
     <string name="errorIncorrectPassword">Mot de passe incorrect</string>

@@ -47,4 +47,3 @@ class DeeplinkViewModel @Inject constructor(
         private const val IS_DEEPLINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }
 }
-

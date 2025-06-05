@@ -25,8 +25,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle.State
@@ -43,8 +42,9 @@ import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferUuid
+import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -71,21 +71,31 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
         }
 
         lifecycleScope.launch {
-            val deeplinkUuid = getDeeplinkTransferUuid()
-            val transferDirection = deeplinkUuid?.let {
+            val deeplinkTransferData = getDeeplinkTransferData()
+            val transferDirection = deeplinkTransferData?.uuid?.let {
                 // If we don't find the transfer in Realm, it means it's a new received one
                 deeplinkViewModel.getDeeplinkTransferDirection(it) ?: TransferDirection.RECEIVED
             }
 
-            if (transferDirection == TransferDirection.SENT) {
-                // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+            val hasDeleteToken = !deeplinkTransferData?.deleteToken.isNullOrEmpty()
+            when {
+                hasDeleteToken -> {
+                    // Modify the intent to avoid opening the transfer when we want to delete it via deeplink
+                    intent.setData(null)
+                }
+                transferDirection == TransferDirection.SENT -> {
+                    // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
+                    intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+                }
             }
 
             setContent {
                 with(inAppReviewManager) {
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
+                    var shouldDisplayDeleteDialog by remember {
+                        mutableStateOf(hasDeleteToken && deeplinkTransferData.uuid != null)
+                    }
 
                     SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                         if (shouldDisplayReviewDialog) {
@@ -94,6 +104,26 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                                 onUserWantsToReview = ::onUserWantsToReview,
                                 onUserWantsToGiveFeedback = { onUserWantsToGiveFeedback(feedbackUrl) },
                                 onDismiss = ::onUserWantsToDismiss,
+                            )
+                        }
+
+                        if (shouldDisplayDeleteDialog) {
+
+                            fun dismissDeleteDialog() {
+                                shouldDisplayDeleteDialog = false
+                            }
+
+                            DeleteTransferDialog(
+                                closeAlertDialog = ::dismissDeleteDialog,
+                                onConfirmation = {
+                                    lifecycleScope.launch {
+                                        transferManager.deleteTransfer(
+                                            deeplinkTransferData?.uuid!!,
+                                            deeplinkTransferData.deleteToken!!,
+                                        )
+                                    }
+                                    dismissDeleteDialog()
+                                },
                             )
                         }
 
