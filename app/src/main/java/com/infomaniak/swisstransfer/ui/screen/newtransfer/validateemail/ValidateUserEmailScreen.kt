@@ -50,6 +50,7 @@ import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidationRequest
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -63,6 +64,7 @@ import com.infomaniak.swisstransfer.upload.UploadState
 import kotlinx.coroutines.launch
 
 private val MAX_LAYOUT_WIDTH = 400.dp
+private val MIMETYPE_TEXT = "text/*"
 
 @Composable
 fun ValidateUserEmailScreen(
@@ -81,18 +83,29 @@ fun ValidateUserEmailScreen(
     val scope = rememberCoroutineScope()
 
     var otpCode by rememberSaveable { mutableStateOf("") }
+    var isFirstResumed by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VerifyMail) }
 
     val lifecycleState = LocalLifecycleOwner.current.lifecycle.currentStateAsState().value
 
     LaunchedEffect(lifecycleState) {
+
         if (lifecycleState != Lifecycle.State.RESUMED) return@LaunchedEffect
+        if (isFirstResumed) {
+            isFirstResumed = false
+            return@LaunchedEffect
+        }
+
         val clipBoardManager = context.getSystemService(ClipboardManager::class.java)
-        val clipBoardContent = clipBoardManager?.primaryClip?.getItemAt(0)?.text.toString()
+
+        val isTextPlain = clipBoardManager?.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT) == true
+        if (!isTextPlain) return@LaunchedEffect
+
+        val clipBoardContent = clipBoardManager.getFirstText() ?: return@LaunchedEffect
         if (Regex("[0-9]{6}").matches(clipBoardContent)) {
             otpCode = clipBoardContent
-            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, otpCode))
+            validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, otpCode))
         }
     }
 
@@ -103,7 +116,7 @@ fun ValidateUserEmailScreen(
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
         validateEmailWithOtpCode = { code ->
-            validateUserEmailViewModel.validationRequests(ValidateUserEmailViewModel.ValidationRequest(emailToValidate, code))
+            validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, code))
         },
         resetErrorState = validateUserEmailViewModel.resetErrorReq,
         isLoading = { isLoading },
@@ -256,6 +269,20 @@ private enum class LayoutStyle(
             TopLeft
         }
     }
+}
+
+private fun ClipboardManager.getFirstText(): String? {
+    val countItemInClipboard = primaryClip?.itemCount ?: return null
+    val description = primaryClipDescription ?: return null
+
+    (0 until countItemInClipboard).forEach { index ->
+        if (description.getMimeType(index).startsWith("text/")) {
+            val text = primaryClip?.getItemAt(index)?.text?.toString()
+            if (text?.isNotBlank() == true) return text
+        }
+    }
+
+    return null
 }
 
 @PreviewAllWindows
