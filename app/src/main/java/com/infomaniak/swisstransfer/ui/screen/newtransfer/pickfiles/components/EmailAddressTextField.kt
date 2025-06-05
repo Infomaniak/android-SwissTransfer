@@ -140,26 +140,36 @@ private class EmailAddressTextFieldState(
     fun updateUiTextValue(newValue: TextFieldValue) {
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()
+        if (textFieldValue.text.length + 1 < newValue.text.length) {
+            hasNewValidRecipientEmail = addRecipientAddress(newValue.text)
+        }
 
         if (lastAddedChar == ' ' || lastAddedChar == ',') {
             hasNewValidRecipientEmail = addRecipientAddress()
         }
 
         if (!hasNewValidRecipientEmail) {
-            unselectChip()
-            textFieldValue = newValue
-            onValueChange(newValue)
+            updateTextValue(newValue)
         }
     }
 
-    fun addRecipientAddress(): Boolean {
-        val trimmedText = textFieldValue.text.trim()
+    private fun updateTextValue(newValue: TextFieldValue) {
+        unselectChip()
+        textFieldValue = newValue
+        onValueChange(newValue)
+    }
+
+    private fun clearTextValue() {
+        updateTextValue(EMPTY_TEXT_FIELD_VALUE)
+    }
+
+    fun addRecipientAddress(newValue: String = textFieldValue.text): Boolean {
+        val trimmedText = newValue.trim()
         if (trimmedText.isValidEmail()) {
             validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
-            updateUiTextValue(TextFieldValue())
+            clearTextValue()
             return true
         }
-
         return false
     }
 
@@ -217,6 +227,7 @@ private class EmailAddressTextFieldState(
 
     companion object {
         private const val UNSELECTED_CHIP_INDEX = -1
+        private val EMPTY_TEXT_FIELD_VALUE = TextFieldValue("")
     }
 }
 
