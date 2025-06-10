@@ -51,6 +51,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openUrl
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun SettingsDataManagementScreen(
@@ -64,7 +65,7 @@ fun SettingsDataManagementScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = com.infomaniak.core.R.string.trackingManagementTitle,
+                titleRes = RCore.string.trackingManagementTitle,
                 navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
@@ -79,7 +80,7 @@ fun SettingsDataManagementScreen(
                 modifier = Modifier.padding(Margin.Medium),
             )
             Text(
-                text = stringResource(com.infomaniak.core.R.string.trackingManagementDescription),
+                text = stringResource(RCore.string.trackingManagementDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -89,7 +90,7 @@ fun SettingsDataManagementScreen(
                 onClick = { context.openUrl(BuildConfig.GITHUB_REPO_URL) },
             ) {
                 Text(
-                    text = stringResource(com.infomaniak.core.R.string.applicationSourceCode),
+                    text = stringResource(RCore.string.applicationSourceCode),
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.materialColors.primary,
                     modifier = Modifier
@@ -98,7 +99,7 @@ fun SettingsDataManagementScreen(
                 )
             }
             SettingItem(
-                titleRes = com.infomaniak.core.R.string.trackingMatomoTitle,
+                titleRes = RCore.string.trackingMatomoTitle,
                 isSelected = { false },
                 icon = AppIcons.Matomo.image(),
                 endIcon = CHEVRON,
@@ -106,7 +107,7 @@ fun SettingsDataManagementScreen(
                 onClick = { onItemClick(DATA_MANAGEMENT_MATOMO) },
             )
             SettingItem(
-                titleRes = com.infomaniak.core.R.string.trackingSentryTitle,
+                titleRes = RCore.string.trackingSentryTitle,
                 isSelected = { false },
                 icon = AppIcons.Sentry.image(),
                 endIcon = CHEVRON,

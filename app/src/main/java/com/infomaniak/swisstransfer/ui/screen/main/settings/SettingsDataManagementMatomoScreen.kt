@@ -39,6 +39,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
@@ -64,7 +65,7 @@ fun SettingsDataManagementMatomoScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = com.infomaniak.core.R.string.trackingMatomoTitle,
+                titleRes = RCore.string.trackingMatomoTitle,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
@@ -79,7 +80,7 @@ fun SettingsDataManagementMatomoScreen(
                 modifier = Modifier.padding(Margin.Medium),
             )
             Text(
-                text = stringResource(com.infomaniak.core.R.string.trackingMatomoDescription),
+                text = stringResource(RCore.string.trackingMatomoDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -92,7 +93,7 @@ fun SettingsDataManagementMatomoScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(com.infomaniak.core.R.string.trackingAuthorizeTracking),
+                    text = stringResource(RCore.string.trackingAuthorizeTracking),
                     style = SwissTransferTheme.typography.bodyRegular,
                     color = SwissTransferTheme.colors.primaryTextColor,
                 )

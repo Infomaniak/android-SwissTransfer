@@ -56,6 +56,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun SettingsScreen(
@@ -141,7 +142,7 @@ fun SettingsScreen(
 
             SettingTitle(R.string.settingsCategoryDataManagement)
             SettingItem(
-                titleRes = com.infomaniak.core.R.string.trackingManagementTitle,
+                titleRes = RCore.string.trackingManagementTitle,
                 isSelected = { selectedSetting?.isDataManagementSetting() == true },
                 icon = AppIcons.Shield,
                 endIcon = CHEVRON,
