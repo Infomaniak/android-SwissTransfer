@@ -29,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -40,6 +39,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
@@ -65,7 +65,7 @@ fun SettingsDataManagementMatomoScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.matomo,
+                titleRes = RCore.string.trackingMatomoTitle,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
@@ -80,7 +80,7 @@ fun SettingsDataManagementMatomoScreen(
                 modifier = Modifier.padding(Margin.Medium),
             )
             Text(
-                text = stringResource(R.string.settingsMatomoDescription),
+                text = stringResource(RCore.string.trackingMatomoDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -93,7 +93,7 @@ fun SettingsDataManagementMatomoScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.settingsAuthorizeTracking),
+                    text = stringResource(RCore.string.trackingAuthorizeTracking),
                     style = SwissTransferTheme.typography.bodyRegular,
                     color = SwissTransferTheme.colors.primaryTextColor,
                 )

@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -52,6 +51,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openUrl
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun SettingsDataManagementScreen(
@@ -65,7 +65,7 @@ fun SettingsDataManagementScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.settingsOptionDataManagement,
+                titleRes = RCore.string.trackingManagementTitle,
                 navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
@@ -80,7 +80,7 @@ fun SettingsDataManagementScreen(
                 modifier = Modifier.padding(Margin.Medium),
             )
             Text(
-                text = stringResource(R.string.settingsDataManagementDescription),
+                text = stringResource(RCore.string.trackingManagementDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -90,7 +90,7 @@ fun SettingsDataManagementScreen(
                 onClick = { context.openUrl(BuildConfig.GITHUB_REPO_URL) },
             ) {
                 Text(
-                    text = stringResource(R.string.settingsDataManagementSourceCode),
+                    text = stringResource(RCore.string.applicationSourceCode),
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.materialColors.primary,
                     modifier = Modifier
@@ -99,7 +99,7 @@ fun SettingsDataManagementScreen(
                 )
             }
             SettingItem(
-                titleRes = R.string.matomo,
+                titleRes = RCore.string.trackingMatomoTitle,
                 isSelected = { false },
                 icon = AppIcons.Matomo.image(),
                 endIcon = CHEVRON,
@@ -107,7 +107,7 @@ fun SettingsDataManagementScreen(
                 onClick = { onItemClick(DATA_MANAGEMENT_MATOMO) },
             )
             SettingItem(
-                titleRes = R.string.sentry,
+                titleRes = RCore.string.trackingSentryTitle,
                 isSelected = { false },
                 icon = AppIcons.Sentry.image(),
                 endIcon = CHEVRON,
