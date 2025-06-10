@@ -39,6 +39,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun SettingsDataManagementSentryScreen(
@@ -63,7 +64,7 @@ fun SettingsDataManagementSentryScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = com.infomaniak.core.R.string.trackingSentryTitle,
+                titleRes = RCore.string.trackingSentryTitle,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
@@ -78,7 +79,7 @@ fun SettingsDataManagementSentryScreen(
                 modifier = Modifier.padding(Margin.Medium),
             )
             Text(
-                text = stringResource(com.infomaniak.core.R.string.trackingSentryDescription),
+                text = stringResource(RCore.string.trackingSentryDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -91,7 +92,7 @@ fun SettingsDataManagementSentryScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(com.infomaniak.core.R.string.trackingAuthorizeTracking),
+                    text = stringResource(RCore.string.trackingAuthorizeTracking),
                     style = SwissTransferTheme.typography.bodyRegular,
                     color = SwissTransferTheme.colors.primaryTextColor,
                 )
