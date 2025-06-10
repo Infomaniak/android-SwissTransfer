@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -64,7 +63,7 @@ fun SettingsDataManagementSentryScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.sentry,
+                titleRes = com.infomaniak.core.R.string.trackingSentryTitle,
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
             )
         },
@@ -79,7 +78,7 @@ fun SettingsDataManagementSentryScreen(
                 modifier = Modifier.padding(Margin.Medium),
             )
             Text(
-                text = stringResource(R.string.settingsSentryDescription),
+                text = stringResource(com.infomaniak.core.R.string.trackingSentryDescription),
                 style = SwissTransferTheme.typography.bodyRegular,
                 color = SwissTransferTheme.colors.primaryTextColor,
                 modifier = Modifier.padding(Margin.Medium),
@@ -92,7 +91,7 @@ fun SettingsDataManagementSentryScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.settingsAuthorizeTracking),
+                    text = stringResource(com.infomaniak.core.R.string.trackingAuthorizeTracking),
                     style = SwissTransferTheme.typography.bodyRegular,
                     color = SwissTransferTheme.colors.primaryTextColor,
                 )

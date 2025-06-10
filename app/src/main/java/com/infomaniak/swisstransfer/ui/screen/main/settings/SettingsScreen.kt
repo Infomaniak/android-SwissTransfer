@@ -141,7 +141,7 @@ fun SettingsScreen(
 
             SettingTitle(R.string.settingsCategoryDataManagement)
             SettingItem(
-                titleRes = R.string.settingsOptionDataManagement,
+                titleRes = com.infomaniak.core.R.string.trackingManagementTitle,
                 isSelected = { selectedSetting?.isDataManagementSetting() == true },
                 icon = AppIcons.Shield,
                 endIcon = CHEVRON,
