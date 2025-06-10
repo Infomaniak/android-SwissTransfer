@@ -140,11 +140,10 @@ private class EmailAddressTextFieldState(
     fun updateUiTextValue(newValue: TextFieldValue) {
         var hasNewValidRecipientEmail = false
         val lastAddedChar = newValue.text.lastOrNull()
+
         if (textFieldValue.text.length + 1 < newValue.text.length) {
             hasNewValidRecipientEmail = addRecipientAddress(newValue.text)
-        }
-
-        if (lastAddedChar == ' ' || lastAddedChar == ',') {
+        } else if (lastAddedChar == ' ' || lastAddedChar == ',') {
             hasNewValidRecipientEmail = addRecipientAddress()
         }
 
