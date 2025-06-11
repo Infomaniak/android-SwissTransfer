@@ -19,7 +19,7 @@ navigation = "2.9.0"
 qrose = "1.0.1"
 sentry = "5.5.0"
 swisstransfer = "5.1.0"
-workmanager = "2.10.1"
+workVersion = "2.10.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -51,7 +51,7 @@ qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 room-processing = { module = "androidx.room:room-compiler-processing", version = "2.7.1" }
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
-workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
+workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
