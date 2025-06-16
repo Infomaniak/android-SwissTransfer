@@ -110,13 +110,10 @@
     <string name="sentEmptyTitle">Nuestra historia comienza aquí</string>
     <string name="sentFilesTitle">Archivos compartidos</string>
     <string name="sentTitle">Enviado a</string>
-    <string name="settingsAuthorizeTracking">Autorizar el seguimiento</string>
     <string name="settingsCategoryAbout">Quiénes somos</string>
     <string name="settingsCategoryDataManagement">Datos y privacidad</string>
     <string name="settingsCategoryDefaultSettings">Ajustes por defecto</string>
     <string name="settingsCategoryGeneral">General</string>
-    <string name="settingsDataManagementDescription">Puede personalizar los datos de uso y funcionamiento que Infomaniak recupera para corregir errores y mejorar la aplicación. Ambas herramientas están alojadas y gestionadas exclusivamente por nosotros.\n\nInfomaniak respeta su privacidad: el código fuente de esta aplicación puede verificarse, la información recopilada es anónima y sus datos personales permanecen estrictamente confidenciales y nunca se comparten con terceros.</string>
-    <string name="settingsDataManagementSourceCode">Ver código fuente</string>
     <string name="settingsDownloadsLimitTitle">Establece un límite de descarga por defecto para tus transferencias</string>
     <string name="settingsEmailLanguageTitle">Establecer un idioma por defecto para las transferencias de correo electrónico</string>
     <string name="settingsEmailLanguageValueEnglish">Inglés</string>
@@ -127,7 +124,6 @@
     <string name="settingsMatomoDescription">Matomo es una herramienta de análisis alojada y gestionada exclusivamente por Infomaniak para comprender cómo se utiliza la aplicación.\n\nEl estudio de estos datos permite a nuestro equipo mejorar continuamente la interfaz de la aplicación.</string>
     <string name="settingsNotificationsTitle">Seleccione una preferencia</string>
     <string name="settingsOptionActivated">Activado</string>
-    <string name="settingsOptionDataManagement">Gestión de datos</string>
     <string name="settingsOptionDiscoverInfomaniak">Descubrir Infomaniak</string>
     <string name="settingsOptionDownloadLimit">Límite de descarga</string>
     <string name="settingsOptionEmailLanguage">Idioma del correo electrónico</string>
@@ -144,7 +140,6 @@
     <string name="settingsOptionValidityPeriod">Periodo de validez</string>
     <string name="settingsPasswordDescription">Los destinatarios tendrán que introducir la contraseña para descargar los archivos.</string>
     <string name="settingsPasswordToggleDescription">Activar la protección</string>
-    <string name="settingsSentryDescription">Sentry es una herramienta alojada y gestionada en exclusiva por Infomaniak para supervisar la estabilidad de la aplicación en tiempo real e informar automáticamente de cualquier error técnico a nuestros desarrolladores.\n\nEstos datos permiten a nuestro equipo corregir y optimizar rápidamente la aplicación, lo que se traduce en una mejor experiencia de usuario para usted.</string>
     <string name="settingsThemeTitle">Seleccione un tema</string>
     <string name="settingsTitle">Parámetros</string>
     <string name="settingsValidityPeriodTitle">Establezca un periodo de validez por defecto para sus transferencias</string>
