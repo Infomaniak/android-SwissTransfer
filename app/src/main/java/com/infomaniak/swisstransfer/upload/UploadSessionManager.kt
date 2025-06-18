@@ -69,8 +69,10 @@ class UploadSessionManager @Inject constructor(
         cancelTransferSignals: Channel<Unit>,
         shouldRetrySignals: Channel<Boolean>,
     ) {
+        @Suppress("VariableNeverRead") // Only here for the setter.
         var currentState by uploadState::value
 
+        @Suppress("AssignedValueIsNeverRead") // Updates are sent via uploadState.
         val startRequestWithExactSize: StartUploadRequest = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
             valueIfCancelled = null
@@ -103,12 +105,14 @@ class UploadSessionManager @Inject constructor(
         )
     }
 
+    @Suppress("AssignedValueIsNeverRead") // Updates are sent via uploadState.
     private suspend fun handleNewTransferWithExactSizes(
         startRequest: StartUploadRequest,
         uploadState: MutableStateFlow<UploadState?>,
         cancelTransferSignals: Channel<Unit>,
         shouldRetrySignals: Channel<Boolean>,
     ) {
+        @Suppress("VariableNeverRead") // Only here for the setter.
         var currentState by uploadState::value
 
         suspend fun shouldRetry(): Boolean = shouldRetrySignals.receive()
@@ -180,8 +184,10 @@ class UploadSessionManager @Inject constructor(
         shouldRetry: suspend () -> Boolean,
     ): String? {
         repeatWhileActive retryLoop@{
+            @Suppress("VariableNeverRead") // Only here for the setter.
             var currentState by uploadState::value
 
+            @Suppress("AssignedValueIsNeverRead") // Updates are sent via uploadState.
             runCatching {
                 return tryCompletingWithInternet(
                     withoutInternet = {
