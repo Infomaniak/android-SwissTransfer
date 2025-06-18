@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.toFloat
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
@@ -39,7 +40,6 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaul
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.WeightOneSpacer
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
