@@ -139,6 +139,7 @@ dependencies {
     implementation(project(":Core"))
     implementation(project(":Core:AppIntegrity"))
     implementation(project(":Core:Compose:Basics"))
+    implementation(project(":Core:Compose:Margin"))
     implementation(project(":Core:FileTypes"))
     implementation(project(":Core:InAppReview"))
     implementation(project(":Core:Matomo"))

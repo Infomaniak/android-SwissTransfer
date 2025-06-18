@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.onboarding.IndicatorStyle
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
@@ -46,7 +47,6 @@ import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCor
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopRight
 import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton
 import com.infomaniak.swisstransfer.ui.theme.Dimens
-import com.infomaniak.swisstransfer.ui.theme.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
