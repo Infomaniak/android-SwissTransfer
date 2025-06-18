@@ -32,6 +32,7 @@ include(
     ":Core",
     ":Core:AppIntegrity",
     ":Core:Compose:Basics",
+    ":Core:Compose:Margin",
     ":Core:FileTypes",
     ":Core:InAppReview",
     ":Core:Matomo",
