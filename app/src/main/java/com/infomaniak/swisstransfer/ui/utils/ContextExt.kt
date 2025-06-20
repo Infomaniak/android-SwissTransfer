@@ -46,17 +46,8 @@ fun Context.openUrl(url: String) {
 
 fun Context.openAppNotificationSettings() {
     Intent().apply {
-        when {
-            SDK_INT >= 26 -> {
-                action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-            }
-            else -> {
-                action = "Settings.ACTION_APP_NOTIFICATION_SETTINGS"
-                putExtra("app_package", packageName)
-                putExtra("app_uid", applicationInfo.uid)
-            }
-        }
+        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+        putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
     }.also(::startActivity)
 }
 
