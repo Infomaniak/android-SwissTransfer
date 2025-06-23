@@ -26,7 +26,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
-import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.*
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.NewTransferFilesDetailsDestination
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.PickFilesDestination
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.UploadDestination
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.UploadSuccessDestination
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.NewTransferFilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel

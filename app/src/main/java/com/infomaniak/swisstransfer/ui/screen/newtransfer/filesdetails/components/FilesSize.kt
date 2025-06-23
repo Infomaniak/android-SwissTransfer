@@ -18,7 +18,11 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +49,7 @@ fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolea
             firstText = { Text(filesInfo.filesCountText) },
             secondText = { Text(filesInfo.filesSizeText) },
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1.0f))
         if (withSpaceLeft) {
             Spacer(modifier = Modifier.width(Margin.Medium))
             Text(

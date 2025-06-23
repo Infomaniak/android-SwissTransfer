@@ -21,7 +21,16 @@ package com.infomaniak.swisstransfer.upload
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import androidx.work.await
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
 import com.infomaniak.core.cancellable
 import com.infomaniak.core.sentry.SentryLog

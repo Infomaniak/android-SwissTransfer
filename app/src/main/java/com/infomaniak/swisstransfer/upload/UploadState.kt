@@ -26,7 +26,7 @@ sealed interface UploadState {
         data class TransferInfo(
             val authorEmail: String,
             val totalSize: Long,
-            val type: TransferTypeUi
+            val type: TransferTypeUi,
         )
 
         val info: TransferInfo

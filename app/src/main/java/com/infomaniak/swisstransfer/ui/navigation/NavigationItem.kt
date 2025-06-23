@@ -26,7 +26,9 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownCircle
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowUpCircle
 import com.infomaniak.swisstransfer.ui.images.icons.Settings
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination
 
 /**
  * Enum class representing the different destinations in the app's [BottomAppBar] or [NavigationRail].

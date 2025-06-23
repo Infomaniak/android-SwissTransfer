@@ -18,10 +18,20 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components
 
 import android.os.Parcelable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -187,7 +197,7 @@ private data class TransferLazyRowKey(
     val fileUid: String? = null,
 ) : Parcelable {
     enum class Type {
-        ADD_BUTTON, FILE
+        ADD_BUTTON, FILE,
     }
 }
 
