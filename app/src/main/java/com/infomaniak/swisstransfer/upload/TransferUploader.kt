@@ -22,7 +22,11 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import com.infomaniak.core.autoCancelScope
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.*
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadFileSession
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadStatus
 import com.infomaniak.multiplatform_swisstransfer.data.NewUploadSession
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -34,8 +38,12 @@ import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.St
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import io.ktor.http.content.OutgoingContent
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.invoke
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import splitties.init.appCtx

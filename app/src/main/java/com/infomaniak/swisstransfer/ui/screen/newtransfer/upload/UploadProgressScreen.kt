@@ -20,10 +20,22 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,7 +54,10 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Prog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing
-import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.*
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.CheckingAppIntegrity
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.CheckingFiles
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.TransferInfo
+import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.core.R as RCore
 

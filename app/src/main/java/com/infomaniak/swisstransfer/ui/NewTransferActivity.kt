@@ -30,7 +30,12 @@ import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.utils.enumValueOfOrNull
-import com.infomaniak.swisstransfer.ui.navigation.*
+import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
+import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
+import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
+import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
