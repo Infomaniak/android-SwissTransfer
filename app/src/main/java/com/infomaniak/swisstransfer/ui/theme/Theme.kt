@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.theme
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalTextStyle
@@ -27,9 +28,12 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.core.view.WindowCompat
 
 val LocalIsDarkMode = staticCompositionLocalOf { false }
 val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }
@@ -41,6 +45,12 @@ fun SwissTransferTheme(
     content: @Composable () -> Unit,
 ) {
     val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
+    val activity = LocalActivity.current
+    LaunchedEffect(isDarkTheme) {
+        val window = activity?.window ?: return@LaunchedEffect
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightNavigationBars = isDarkTheme.not()
+    }
     CompositionLocalProvider(
         LocalTextStyle provides Typography.bodyRegular,
         LocalCustomColorScheme provides customColors,
