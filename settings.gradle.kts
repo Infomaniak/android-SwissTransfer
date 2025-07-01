@@ -35,6 +35,7 @@ include(
     ":Core:Compose:Margin",
     ":Core:FileTypes",
     ":Core:InAppReview",
+    ":Core:InAppUpdate",
     ":Core:Matomo",
     ":Core:Network",
     ":Core:Notifications",
