@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.infomaniak.core.appintegrity.exceptions.NetworkException
+import com.infomaniak.core.sentryconfig.SentryConfig
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -33,10 +33,6 @@ import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
 import com.infomaniak.swisstransfer.ui.utils.getPreference
 import dagger.hilt.android.HiltAndroidApp
-import io.sentry.SentryEvent
-import io.sentry.SentryOptions
-import io.sentry.android.core.SentryAndroid
-import io.sentry.android.core.SentryAndroidOptions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -103,24 +99,18 @@ class MainApplication : Application(), Configuration.Provider {
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
 
-        SentryAndroid.init(this) { options: SentryAndroidOptions ->
-            // Register the callback as an option
-            options.beforeSend = SentryOptions.BeforeSendCallback { event: SentryEvent, _: Any? ->
-                val exception = event.throwable
-                /**
-                 * Reasons to discard Sentry events :
-                 * - Application is in Debug mode
-                 * - User deactivated Sentry tracking in DataManagement settings
-                 * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
-                 */
-                when {
-                    BuildConfig.DEBUG -> null
-                    exception is CancellationException -> null
-                    exception is KmpNetworkException -> null
-                    exception is NetworkException -> null
-                    else -> if (dataManagementDataStore.getPreference(IsSentryAuthorized)) event else null
-                }
-            }
-        }
+        val sentry = SentryConfig()
+        /**
+         * Reasons to discard Sentry events :
+         * - Application is in Debug mode
+         * - User deactivated Sentry tracking in DataManagement settings
+         * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
+         */
+        sentry.configureSentry(
+            BuildConfig.DEBUG,
+            dataManagementDataStore.getPreference(IsSentryAuthorized),
+            this,
+            this,
+            { exception -> exception is CancellationException || exception is KmpNetworkException })
     }
 }
