@@ -25,11 +25,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle.State
@@ -37,10 +40,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
+import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
+import com.infomaniak.core.inappupdate.updaterequired.ui.UpdateRequiredScreen
+import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.ReviewAlertDialog
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
@@ -52,9 +61,10 @@ import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.infomaniak.core.inappupdate.R as RInAppUpdate
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), AppReviewManageable {
+class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageable {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val deeplinkViewModel: DeeplinkViewModel by viewModels()
@@ -63,12 +73,20 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
     lateinit var transferManager: TransferManager
 
     override val inAppReviewManager by lazy { InAppReviewManager(this) }
+    override val inAppUpdateManager by lazy { InAppUpdateManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
 
         initAppReviewManager()
+        initAppUpdateManager()
+
+        NetworkConfiguration.init(
+            appId = BuildConfig.APPLICATION_ID,
+            appVersionName = BuildConfig.VERSION_NAME,
+            appVersionCode = BuildConfig.VERSION_CODE,
+        )
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(State.STARTED) { transferManager.tryUpdatingAllTransfers() }
@@ -100,9 +118,12 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                     var shouldDisplayDeleteDialog by remember {
                         mutableStateOf(hasDeleteToken && deeplinkTransferData.uuid != null)
                     }
+                    val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.shouldDisplayUpdateRequiredScreen.collectAsStateWithLifecycle(
+                        initialValue = false
+                    )
 
                     SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                        if (shouldDisplayReviewDialog) {
+                        if (shouldDisplayReviewDialog && shouldDisplayUpdateRequiredScreen.not()) {
                             val feedbackUrl = stringResource(R.string.urlUserReport)
                             ReviewAlertDialog(
                                 onUserWantsToReview = ::onUserWantsToReview,
@@ -111,7 +132,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                             )
                         }
 
-                        if (shouldDisplayDeleteDialog) {
+                        if (shouldDisplayDeleteDialog && shouldDisplayUpdateRequiredScreen.not()) {
 
                             fun dismissDeleteDialog() {
                                 shouldDisplayDeleteDialog = false
@@ -131,7 +152,23 @@ class MainActivity : ComponentActivity(), AppReviewManageable {
                             )
                         }
 
-                        MainScreen(deeplinkTransferDirection = transferDirection)
+                        if (shouldDisplayUpdateRequiredScreen) {
+                            UpdateRequiredScreen(
+                                illustration = painterResource(R.drawable.illu_update_required),
+                                titleTextStyle = SwissTransferTheme.typography.h1,
+                                descriptionTextStyle = SwissTransferTheme.typography.bodyMedium,
+                                installUpdateButton = {
+                                    LargeButton(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        title = stringResource(RInAppUpdate.string.buttonUpdate),
+                                        style = ButtonType.Primary,
+                                        onClick = { inAppUpdateManager.requireUpdate() },
+                                    )
+                                }
+                            )
+                        } else {
+                            MainScreen(deeplinkTransferDirection = transferDirection)
+                        }
                     }
                 }
             }
