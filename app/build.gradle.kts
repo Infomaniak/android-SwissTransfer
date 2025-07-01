@@ -156,6 +156,7 @@ dependencies {
     implementation(project(":Core:Notifications"))
     implementation(project(":Core:Onboarding"))
     implementation(project(":Core:Sentry"))
+    implementation(project(":Core:SentryConfig"))
     implementation(project(":Core:Thumbnails"))
 
     implementation(kotlin("reflect"))

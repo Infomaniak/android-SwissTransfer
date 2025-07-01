@@ -34,10 +34,6 @@ import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
 import com.infomaniak.swisstransfer.ui.utils.getPreference
 import dagger.hilt.android.HiltAndroidApp
-import io.sentry.SentryEvent
-import io.sentry.SentryOptions
-import io.sentry.android.core.SentryAndroid
-import io.sentry.android.core.SentryAndroidOptions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
