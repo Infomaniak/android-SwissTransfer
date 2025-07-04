@@ -43,12 +43,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
 import com.infomaniak.core.inappupdate.updaterequired.ui.UpdateRequiredScreen
+import com.infomaniak.core.inappupdate.updaterequired.ui.composable.UpdateAvailableBottomSheet
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.ReviewAlertDialog
 import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
@@ -73,14 +75,16 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
     lateinit var transferManager: TransferManager
 
     override val inAppReviewManager by lazy { InAppReviewManager(this) }
-    override val inAppUpdateManager by lazy { InAppUpdateManager(this) }
+    override val inAppUpdateRequiredManager by lazy { InAppUpdateManager(this) }
+    // override val  UpdateNotRequiredManager by lazy { InAppUpdateManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
 
         initAppReviewManager()
-        initAppUpdateManager()
+        initAppUpdateRequiredManager()
+        // initAppUpdateNotRequiredManager()
 
         NetworkConfiguration.init(
             appId = BuildConfig.APPLICATION_ID,
@@ -103,11 +107,11 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             when {
                 hasDeleteToken -> {
                     // Modify the intent to avoid opening the transfer when we want to delete it via deeplink
-                    intent.setData(null)
+                    intent.data = null
                 }
                 transferDirection == TransferDirection.SENT -> {
                     // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                    intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+                    intent.data = (intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri()
                 }
             }
 
@@ -118,7 +122,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     var shouldDisplayDeleteDialog by remember {
                         mutableStateOf(hasDeleteToken && deeplinkTransferData.uuid != null)
                     }
-                    val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.shouldDisplayUpdateRequiredScreen.collectAsStateWithLifecycle(
+                    val shouldDisplayUpdateRequiredScreen by inAppUpdateRequiredManager.shouldDisplayUpdateRequiredScreen.collectAsStateWithLifecycle(
                         initialValue = false
                     )
 
@@ -152,6 +156,33 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                             )
                         }
 
+                        // TODO: Use inAppUpdateNotRequiredManager (or something similar) instead of inAppUpdateRequiredManager
+                        if (!inAppUpdateRequiredManager.isUpdateBottomSheetShown) {
+                            UpdateAvailableBottomSheet(
+                                illustration = painterResource(R.drawable.ic_update_logo),
+                                titleTextStyle = SwissTransferTheme.typography.h1,
+                                descriptionTextStyle = SwissTransferTheme.typography.bodyMedium,
+                                installUpdateButton = {
+                                    SwissTransferButton(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        onClick = { inAppUpdateRequiredManager.requireUpdate() },
+                                    ) {
+                                        Text(stringResource(RInAppUpdate.string.buttonUpdate))
+                                    }
+                                },
+                                dismissButton = {
+                                    SwissTransferButton(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        style = ButtonType.Tertiary,
+                                        onClick = { inAppUpdateRequiredManager.requireUpdate() },
+                                    ) {
+                                        Text("TODO.")
+                                        // Text(stringResource(RInAppUpdate.string.buttonUpdate))
+                                    }
+                                }
+                            )
+                        }
+
                         if (shouldDisplayUpdateRequiredScreen) {
                             UpdateRequiredScreen(
                                 illustration = painterResource(R.drawable.illu_update_required),
@@ -160,7 +191,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                                 installUpdateButton = {
                                     SwissTransferButton(
                                         modifier = Modifier.fillMaxWidth(),
-                                        onClick = { inAppUpdateManager.requireUpdate() },
+                                        onClick = { inAppUpdateRequiredManager.requireUpdate() },
                                     ) {
                                         Text(stringResource(RInAppUpdate.string.buttonUpdate))
                                     }

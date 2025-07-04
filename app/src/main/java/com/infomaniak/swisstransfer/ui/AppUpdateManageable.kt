@@ -17,13 +17,25 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.content.Context
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
+import com.infomaniak.swisstransfer.ui.utils.showToast
+import com.infomaniak.core.inappupdate.R as RInAppUpdate
 
 interface AppUpdateManageable {
 
-    val inAppUpdateManager: InAppUpdateManager
+    val inAppUpdateRequiredManager: InAppUpdateManager
+    // val inAppUpdateNotRequiredManager: InAppUpdateManager
 
-    fun initAppUpdateManager() = inAppUpdateManager.init(
+    fun Context.initAppUpdateRequiredManager() = inAppUpdateRequiredManager.init(
         mustRequireImmediateUpdate = true,
+        onInstallFailure = {
+            showToast(RInAppUpdate.string.errorUpdateInstall)
+        }
     )
+
+    // TODO: Do not use twice the same object.
+    // fun initAppUpdateNotRequiredManager() = inAppUpdateNotRequiredManager.init(
+    //     mustRequireImmediateUpdate = false,
+    // )
 }
