@@ -142,6 +142,7 @@ dependencies {
     implementation(project(":Core:Compose:Margin"))
     implementation(project(":Core:FileTypes"))
     implementation(project(":Core:InAppReview"))
+    implementation(project(":Core:InAppUpdate"))
     implementation(project(":Core:Matomo"))
     implementation(project(":Core:Network"))
     implementation(project(":Core:Notifications"))
