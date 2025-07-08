@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.infomaniak.core.appintegrity.exceptions.NetworkException
+import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
@@ -100,25 +100,16 @@ class MainApplication : Application(), Configuration.Provider {
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
 
-        SentryAndroid.init(this) { options: SentryAndroidOptions ->
-            // Register the callback as an option
-            options.beforeSend = SentryOptions.BeforeSendCallback { event: SentryEvent, _: Any? ->
-                val exception = event.throwable
-                /**
-                 * Reasons to discard Sentry events :
-                 * - Application is in Debug mode
-                 * - User deactivated Sentry tracking in DataManagement settings
-                 * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
-                 */
-                when {
-                    BuildConfig.DEBUG -> null
-                    exception is CancellationException -> null
-                    exception is KmpNetworkException -> null
-                    exception is NetworkException -> null
-                    else -> if (dataManagementDataStore.getPreference(IsSentryAuthorized)) event else null
-                }
-            }
-        }
+        /**
+         * Reasons to discard Sentry events :
+         * - Application is in Debug mode
+         * - User deactivated Sentry tracking in DataManagement settings
+         * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
+         */
+        this.configureSentry(
+            BuildConfig.DEBUG,
+            dataManagementDataStore.getPreference(IsSentryAuthorized),
+            { exception -> exception is CancellationException || exception is KmpNetworkException })
 
         NetworkConfiguration.init(
             appId = BuildConfig.APPLICATION_ID,
