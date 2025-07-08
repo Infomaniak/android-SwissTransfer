@@ -99,17 +99,20 @@ class MainApplication : Application(), Configuration.Provider {
         }
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
+        configSentry()
+    }
 
-        /**
-         * Reasons to discard Sentry events :
-         * - Application is in Debug mode
-         * - User deactivated Sentry tracking in DataManagement settings
-         * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
-         */
+    /**
+     * Reasons to discard Sentry events :
+     * - Application is in Debug mode
+     * - User deactivated Sentry tracking in DataManagement settings
+     * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
+     */
+    private fun configSentry() {
         this.configureSentry(
             BuildConfig.DEBUG,
             dataManagementDataStore.getPreference(IsSentryAuthorized),
-            { exception -> exception is CancellationException || exception is KmpNetworkException })
+            { exception -> exception is KmpNetworkException })
 
         NetworkConfiguration.init(
             appId = BuildConfig.APPLICATION_ID,
