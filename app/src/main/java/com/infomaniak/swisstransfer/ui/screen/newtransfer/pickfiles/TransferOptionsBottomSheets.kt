@@ -20,10 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
@@ -44,7 +40,6 @@ private fun TransferOptionBottomSheetScaffold(
     optionEntries: List<SettingOption>,
     title: String,
 ) {
-    var selectedItem by rememberSaveable { mutableStateOf(initialValue) }
 
     val selectedPosition = when (initialValue) {
         is ValidityPeriodOption -> initialValue.ordinal
@@ -63,7 +58,6 @@ private fun TransferOptionBottomSheetScaffold(
                 selectedItem = { selectedPosition },
                 setSelectedItem = { position ->
                     val selectedValue = optionEntries[position]
-                    selectedItem = selectedValue
                     onOptionClicked(selectedValue)
                     closeBottomSheet()
                 },
