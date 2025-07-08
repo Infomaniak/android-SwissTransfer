@@ -16,7 +16,7 @@ lottie = "6.6.7"
 navigation = "2.9.1"
 qrose = "1.0.1"
 room = "2.7.2"
-sentry = "5.5.0"
+sentry = "5.8.0"
 swisstransfer = "5.1.0"
 workVersion = "2.10.2"
 
