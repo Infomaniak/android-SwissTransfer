@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.infomaniak.core.sentryconfig.SentryConfig
+import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -99,18 +99,15 @@ class MainApplication : Application(), Configuration.Provider {
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
 
-        val sentry = SentryConfig()
         /**
          * Reasons to discard Sentry events :
          * - Application is in Debug mode
          * - User deactivated Sentry tracking in DataManagement settings
          * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
          */
-        sentry.configureSentry(
+        this.configureSentry(
             BuildConfig.DEBUG,
             dataManagementDataStore.getPreference(IsSentryAuthorized),
-            this,
-            this,
             { exception -> exception is CancellationException || exception is KmpNetworkException })
     }
 }

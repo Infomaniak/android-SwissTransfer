@@ -37,10 +37,10 @@ include(
     ":Core:InAppReview",
     ":Core:Matomo",
     ":Core:Network",
+    ":Core:Network:Models",
     ":Core:Notifications",
     ":Core:Onboarding",
     ":Core:Sentry",
-    ":Core:SentryConfig",
     ":Core:Thumbnails",
     ":Core:WebView",
 )
