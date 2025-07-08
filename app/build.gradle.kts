@@ -157,7 +157,7 @@ dependencies {
     // Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(core.compose.bom))
-    implementation(libs.compose.foundation) // TODO: To be removed when compose 1.8.0 is stable
+    implementation(core.compose.foundation) // TODO: To be removed when compose 1.8.0 is stable
     implementation(core.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(core.compose.material3)
