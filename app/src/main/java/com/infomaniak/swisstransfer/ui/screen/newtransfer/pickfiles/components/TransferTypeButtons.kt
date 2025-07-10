@@ -27,12 +27,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType.LINK
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType.MAIL
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Chain
 import com.infomaniak.swisstransfer.ui.images.icons.Envelope
-import com.infomaniak.swisstransfer.ui.images.icons.QrCode
-import com.infomaniak.swisstransfer.ui.images.icons.WifiWave
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -73,13 +73,6 @@ enum class TransferTypeUi(
     @StringRes @PluralsRes val descriptionRes: Int?,
     val dbValue: TransferType,
 ) {
-    QrCode(
-        buttonIcon = AppIcons.QrCode,
-        buttonTextRes = R.string.transferTypeQrCode,
-        titleRes = R.string.uploadSuccessQrTitle,
-        descriptionRes = null,
-        dbValue = TransferType.QR_CODE,
-    ),
     Mail(
         buttonIcon = AppIcons.Envelope,
         buttonTextRes = R.string.transferTypeEmail,
@@ -93,21 +86,12 @@ enum class TransferTypeUi(
         titleRes = R.string.uploadSuccessLinkTitle,
         descriptionRes = R.string.uploadSuccessLinkDescription,
         dbValue = TransferType.LINK,
-    ),
-    Proximity(
-        buttonIcon = AppIcons.WifiWave,
-        buttonTextRes = R.string.transferTypeProximity,
-        titleRes = R.string.uploadSuccessLinkTitle,
-        descriptionRes = R.string.uploadSuccessLinkDescription,
-        dbValue = TransferType.PROXIMITY,
     );
 
     companion object {
         fun TransferType.toTransferTypeUi() = when (this) {
-            TransferType.LINK -> Link
-            TransferType.QR_CODE -> QrCode
-            TransferType.PROXIMITY -> Proximity
-            TransferType.MAIL -> Mail
+            LINK -> Link
+            MAIL -> Mail
         }
     }
 }
@@ -119,7 +103,7 @@ private fun TransferTypeButtonsPreview() {
         Surface {
             TransferTypeButtons(
                 horizontalPadding = Margin.Medium,
-                transferType = GetSetCallbacks(get = { TransferTypeUi.QrCode }, set = {}),
+                transferType = GetSetCallbacks(get = { TransferTypeUi.Link }, set = {}),
             )
         }
     }
