@@ -94,7 +94,7 @@ class PickFilesViewModel @Inject constructor(
 
     val importedFilesDebounced: StateFlow<List<FileUi>>
 
-    val selectedTransferTypeFlow = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.QrCode)
+    val selectedTransferTypeFlow = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.Link)
 
     fun importUris(uris: List<Uri>) {
         UploadForegroundService.addFiles(uris)

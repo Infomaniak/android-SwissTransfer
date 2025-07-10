@@ -62,7 +62,7 @@ private fun UploadSuccessScreenPreview() {
     SwissTransferTheme {
         Surface {
             UploadSuccessScreen(
-                transferType = TransferTypeUi.QrCode,
+                transferType = TransferTypeUi.Link,
                 transferUuid = "",
                 transferUrl = "https://chk.me/83azQOl",
                 dismissCompleteUpload = {},
