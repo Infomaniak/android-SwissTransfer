@@ -21,9 +21,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -41,7 +43,11 @@ fun SettingsValidityPeriodScreen(
         enumEntries = ValidityPeriodOption.entries,
         selectedSettingOptionPosition = validityPeriod.ordinal,
         matomoValue = MatomoScreen.ValidityPeriodSetting,
-        setSelectedSettingOptionPosition = { position -> onValidityPeriodChange(ValidityPeriod.entries[position]) },
+        setSelectedSettingOptionPosition = { position ->
+            val validityPeriod = ValidityPeriod.entries[position]
+            MatomoSwissTransfer.trackSettingsGlobalValidityPeriodEvent(ValidityPeriodOption.entries[position].matomoValue)
+            onValidityPeriodChange(validityPeriod)
+        },
         navigateBack = navigateBack,
     )
 }
@@ -50,11 +56,12 @@ enum class ValidityPeriodOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
     val apiValue: ValidityPeriod,
+    val matomoValue: MatomoName,
 ) : SettingOption {
-    THIRTY(apiValue = ValidityPeriod.THIRTY),
-    FIFTEEN(apiValue = ValidityPeriod.FIFTEEN),
-    SEVEN(apiValue = ValidityPeriod.SEVEN),
-    ONE(apiValue = ValidityPeriod.ONE);
+    THIRTY(apiValue = ValidityPeriod.THIRTY, matomoValue = MatomoName.ThirtyDays),
+    FIFTEEN(apiValue = ValidityPeriod.FIFTEEN, matomoValue = MatomoName.FifteenDays),
+    SEVEN(apiValue = ValidityPeriod.SEVEN, matomoValue = MatomoName.SevenDays),
+    ONE(apiValue = ValidityPeriod.ONE, matomoValue = MatomoName.OneDay);
 
     override val title: @Composable () -> String = { getValidityPeriodTitle(apiValue) }
 

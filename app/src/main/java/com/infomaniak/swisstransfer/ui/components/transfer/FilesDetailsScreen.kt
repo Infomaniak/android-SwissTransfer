@@ -32,6 +32,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
@@ -60,6 +63,7 @@ fun FilesDetailsScreen(
     withSpaceLeft: Boolean,
     isDownloadButtonVisible: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
+    direction: TransferDirection?
 ) {
     Column(
         modifier = Modifier
@@ -75,11 +79,15 @@ fun FilesDetailsScreen(
             isCheckboxVisible = { false },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
-            onRemoveUid = { onFileRemoved?.invoke(it) },
+            onRemoveUid = {
+                MatomoSwissTransfer.trackNewTransferEvent(MatomoName.DeleteFile)
+                onFileRemoved?.invoke(it)
+            },
             navigateToFolder = { navigateToFolder?.invoke(it) },
             transferFlow = transferFlow,
             runDownloadUi = runDownloadUi,
             previewUriForFile = previewUriForFile,
+            direction = direction,
         )
     }
 }
@@ -101,6 +109,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},
+                direction = TransferDirection.SENT
             )
         }
     }
