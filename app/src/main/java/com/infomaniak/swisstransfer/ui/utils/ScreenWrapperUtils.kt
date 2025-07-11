@@ -25,9 +25,9 @@ import com.infomaniak.swisstransfer.ui.components.popBackStack
 object ScreenWrapperUtils {
 
     @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-    fun getBackNavigation(navigator: ThreePaneScaffoldNavigator<*>): (() -> Unit)? {
-        val navigateBackCallback: () -> Unit = { navigator.popBackStack() }
-        val navigateBack: (() -> Unit)? = if (navigator.canPopBackStack()) navigateBackCallback else null
+    fun getBackNavigation(navigator: ThreePaneScaffoldNavigator<*>): (suspend () -> Unit)? {
+        val navigateBackCallback: suspend () -> Unit = { navigator.popBackStack() }
+        val navigateBack: (suspend () -> Unit)? = if (navigator.canPopBackStack()) navigateBackCallback else null
         return navigateBack
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,6 +64,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
 import com.infomaniak.swisstransfer.ui.utils.openUrl
+import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
 
@@ -113,6 +115,8 @@ private fun ListPane(
     val userReportURL = stringResource(R.string.urlUserReport)
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
+    val scope = rememberCoroutineScope()
+
     SettingsScreen(
         theme = theme,
         validityPeriod = validityPeriod,
@@ -132,11 +136,11 @@ private fun ListPane(
                 }
                 else -> {
                     // Navigate to the detail pane with the passed item
-                    navigator.selectItem(context, windowAdaptiveInfo, item)
+                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
                 }
             }
         },
-        getSelectedSetting = { navigator.currentDestination?.content },
+        getSelectedSetting = { navigator.currentDestination?.contentKey },
     )
 }
 
@@ -151,7 +155,11 @@ private fun DetailPane(
 ) {
 
     val destination = navigator.safeCurrentContent()
-    val navigateBack = ScreenWrapperUtils.getBackNavigation(navigator)
+
+    val scope = rememberCoroutineScope()
+    val navigateBack: () -> Unit = {
+        scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
+    }
 
     when (destination) {
         THEME -> SettingsThemeScreen(
@@ -177,7 +185,7 @@ private fun DetailPane(
         DATA_MANAGEMENT -> SettingsDataManagementScreen(
             navigateBack = navigateBack,
             onItemClick = { item ->
-                navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+                scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
             },
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
