@@ -41,6 +41,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
@@ -72,6 +73,7 @@ fun FileItemList(
         awaitCancellation()
     },
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    direction: TransferDirection?,
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -94,7 +96,7 @@ fun FileItemList(
         items(files, key = { it.uid }) { file ->
 
             val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
-                TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState)
+                TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState, direction)
             }
 
             LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
@@ -147,6 +149,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
             onRemoveUid = {},
+            direction = TransferDirection.SENT,
         )
     }
 }

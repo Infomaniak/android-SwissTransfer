@@ -17,11 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
+import android.R.attr.direction
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
@@ -58,6 +60,7 @@ class FilesDetailsViewModel @Inject constructor(
         transfer: TransferUi,
         targetFile: FileUi?,
         openFile: suspend (Uri) -> Unit,
+        direction: TransferDirection?
     ): Nothing = handleTransferDownload(
         ui = ui,
         transferManager = transferManager,
@@ -66,5 +69,6 @@ class FilesDetailsViewModel @Inject constructor(
         transfer = transfer,
         targetFile = targetFile,
         openFile = openFile,
+        direction = direction,
     )
 }
