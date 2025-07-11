@@ -42,7 +42,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.toFloat
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaults
@@ -139,7 +141,10 @@ fun PasswordOptionAlertDialog(
         negativeButton = { SwissTransferAlertDialogDefaults.CancelButton(onClick = ::onDismiss) },
         onDismiss = ::onDismiss,
     ) {
-        ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = { isPasswordActivated = it })
+        ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = {
+            MatomoSwissTransfer.trackSettingsLocalPasswordEvent(MatomoName.TogglePassword)
+            isPasswordActivated = it
+        })
         Spacer(Modifier.height(Margin.Medium))
         AnimatedPasswordTextField(isPasswordActivated, password, isPasswordValid, ::onConfirmButtonClicked)
     }

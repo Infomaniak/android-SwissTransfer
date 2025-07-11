@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -83,7 +84,10 @@ fun ValidityPeriodBottomSheet(
         initialValue = initialValue,
         title = stringResource(R.string.settingsOptionValidityPeriod),
         optionEntries = ValidityPeriodOption.entries,
-        onOptionClicked = { onOptionClicked(it as ValidityPeriodOption) },
+        onOptionClicked = {
+            MatomoSwissTransfer.trackSettingsLocalValidityPeriodEvent(if (it is ValidityPeriodOption) it.matomoValue else null)
+            onOptionClicked(it as ValidityPeriodOption)
+        },
     )
 }
 
@@ -98,7 +102,10 @@ fun DownloadLimitBottomSheet(
         initialValue = initialValue,
         title = stringResource(R.string.settingsOptionDownloadLimit),
         optionEntries = DownloadLimitOption.entries,
-        onOptionClicked = { onOptionClicked(it as DownloadLimitOption) },
+        onOptionClicked = {
+            MatomoSwissTransfer.trackSettingsLocalDownloadLimitEvent(if (it is DownloadLimitOption) it.matomoValue else null)
+            onOptionClicked(it as DownloadLimitOption)
+        },
     )
 }
 
@@ -113,7 +120,10 @@ fun EmailLanguageBottomSheet(
         initialValue = initialValue,
         title = stringResource(R.string.settingsOptionEmailLanguage),
         optionEntries = EmailLanguageOption.entries,
-        onOptionClicked = { onOptionClicked(it as EmailLanguageOption) },
+        onOptionClicked = {
+            MatomoSwissTransfer.trackSettingsLocalEmailLanguageEvent(it.toString().lowercase())
+            onOptionClicked(it as EmailLanguageOption)
+        },
     )
 }
 

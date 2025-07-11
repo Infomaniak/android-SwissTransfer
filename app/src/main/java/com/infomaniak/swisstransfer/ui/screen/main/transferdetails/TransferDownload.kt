@@ -39,7 +39,10 @@ import com.infomaniak.core.utils.DownloadManagerUtils
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -73,6 +76,7 @@ suspend fun handleTransferDownload(
     transfer: TransferUi,
     targetFile: FileUi?,
     openFile: suspend (Uri) -> Unit,
+    direction: TransferDirection?
 ): Nothing = currentOrNewDownloadManagerId(
     transferManager = transferManager,
     ui = ui,
@@ -80,6 +84,7 @@ suspend fun handleTransferDownload(
     userAgent = userAgent,
     transfer = transfer,
     targetFile = targetFile,
+    direction = direction,
 ).collectLatest { id ->
     autoCancelScope {
         val downloadStatusFlow = downloadManager.downloadStatusFlow(id).stateIn(scope = this)
@@ -131,6 +136,7 @@ private fun currentOrNewDownloadManagerId(
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
+    direction: TransferDirection?,
 ): Flow<UniqueDownloadId> = downloadManagerId(
     transferManager = transferManager,
     transferUuid = transfer.uuid,
@@ -144,6 +150,7 @@ private fun currentOrNewDownloadManagerId(
             userAgent = userAgent,
             transfer = transfer,
             targetFile = targetFile,
+            direction = direction
         ) ?: return@repeatWhileActive
     }
 }.distinctUntilChanged()
@@ -190,9 +197,10 @@ private suspend fun getNewDownloadId(
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
+    direction: TransferDirection?
 ): UniqueDownloadId? {
     ui.awaitDownloadRequest()
-    val request = buildDownloadRequest(transfer, targetFile, apiUrlCreator, userAgent) ?: return null
+    val request = buildDownloadRequest(transfer, targetFile, apiUrlCreator, userAgent, direction) ?: return null
     val newId = downloadManager.startDownloadingFile(request)
     transferManager.writeDownloadManagerId(
         transferUUID = transfer.uuid,
@@ -220,9 +228,15 @@ private suspend fun buildDownloadRequest(
     targetFile: FileUi?,
     apiUrlCreator: SharedApiUrlCreator,
     userAgent: String,
+    direction: TransferDirection?
 ): DownloadManager.Request? {
     val url: String
     val name: String
+    if (direction?.matomoValue == "Sent") {
+        MatomoSwissTransfer.trackSentTransferEvent(MatomoName.DownloadTransfer)
+    } else if (direction?.matomoValue == "Received") {
+        MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.DownloadTransfer)
+    }
     when {
         targetFile != null -> {
             url = apiUrlCreator.downloadFileUrl(transfer.uuid, targetFile.uid) ?: return null
