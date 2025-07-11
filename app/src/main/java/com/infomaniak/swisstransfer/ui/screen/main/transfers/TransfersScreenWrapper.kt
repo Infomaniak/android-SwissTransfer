@@ -27,10 +27,12 @@ import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -60,6 +62,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -75,7 +78,7 @@ fun TransfersScreenWrapper(
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
-            hideBottomBar.value = currentDestination?.content != null
+            hideBottomBar.value = currentDestination?.contentKey != null
 
             val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
 
@@ -108,7 +111,11 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
 ) {
     if (transferUuid != null && !isDeepLinkConsumed()) {
         consumeDeepLink()
-        navigateToDetails(LocalContext.current, LocalWindowAdaptiveInfo.current, direction, transferUuid)
+        val context = LocalContext.current
+        val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+        LaunchedEffect(Unit) {
+            navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid)
+        }
     }
 }
 
@@ -123,30 +130,31 @@ private fun ListPane(
     val context = LocalContext.current
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val isWindowLarge = windowAdaptiveInfo.isWindowLarge()
+    val scope = rememberCoroutineScope()
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid ->
-                navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid)
+                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid) }
             },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
-            onDeleteTransfer = { if (isWindowLarge) navigator.popBackStack() }
+            onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid ->
-                navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid)
+                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid) }
             },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
-            onDeleteTransfer = { if (isWindowLarge) navigator.popBackStack() }
+            onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
+private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     context: Context,
     windowAdaptiveInfo: WindowAdaptiveInfo,
     direction: TransferDirection,
@@ -161,7 +169,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
+private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
     direction: TransferDirection,
     transferUuid: String,
     folderUuid: String,
@@ -172,7 +180,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUuid(): String? {
-    return currentDestination?.content?.transferUuid
+    return currentDestination?.contentKey?.transferUuid
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -182,7 +190,11 @@ private fun DetailPane(
     hasTransfer: () -> Boolean,
 ) {
     val isWindowLarge = LocalWindowAdaptiveInfo.current.isWindowLarge()
-    val destinationContent = if (isWindowLarge) navigator.currentDestination?.content else navigator.safeCurrentContent()
+    val destinationContent = if (isWindowLarge) navigator.currentDestination?.contentKey else navigator.safeCurrentContent()
+    val scope = rememberCoroutineScope()
+    val navigateBack: () -> Unit = {
+        scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
+    }
 
     when (destinationContent) {
         null -> {
@@ -192,13 +204,15 @@ private fun DetailPane(
             TransferDetailsScreen(
                 transferUuid = destinationContent.transferUuid,
                 direction = destinationContent.direction,
-                navigateBack = ScreenWrapperUtils.getBackNavigation(navigator),
+                navigateBack = navigateBack,
                 navigateToFolder = { selectedFolderUuid ->
-                    navigator.navigateToFolder(
-                        destinationContent.direction,
-                        destinationContent.transferUuid,
-                        selectedFolderUuid,
-                    )
+                    scope.launch {
+                        navigator.navigateToFolder(
+                            destinationContent.direction,
+                            destinationContent.transferUuid,
+                            selectedFolderUuid,
+                        )
+                    }
                 },
             )
         }
@@ -226,28 +240,24 @@ private fun ExistingTransferFilesDetails(
     windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     ExistingTransferFilesDetailsScreen(
         navigateToFolder = { selectedFolderUuid ->
-            navigator.navigateToFolder(
-                transferDirection,
-                transferUuid,
-                selectedFolderUuid,
-            )
+            scope.launch {
+                navigator.navigateToFolder(transferDirection, transferUuid, selectedFolderUuid)
+            }
         },
         transferUuid = transferUuid,
         folderUuid = folderUuid,
-        navigateBack = { navigator.popBackStack() },
+        navigateBack = { scope.launch { navigator.popBackStack() } },
         close = {
             // Because on phones, if we navigateToDetails, we arrive on the TransferDetailsScreen but
             // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all
             // the FilesDetailsScreen's
-            if (windowAdaptiveInfo.isWindowSmall(context)) navigator.navigateBack()
-            navigator.navigateToDetails(
-                context,
-                windowAdaptiveInfo,
-                transferDirection,
-                transferUuid
-            )
+            scope.launch {
+                if (windowAdaptiveInfo.isWindowSmall(context)) navigator.navigateBack()
+                navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferUuid)
+            }
         },
         withFilesSize = false,
         withSpaceLeft = false,

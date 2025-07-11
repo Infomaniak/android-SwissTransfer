@@ -32,12 +32,14 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private val backBehavior = BackNavigationBehavior.PopUntilContentChange
@@ -76,7 +78,8 @@ fun <T> TwoPaneScaffold(
         )
     )
 
-    BackHandler(navigator.canPopBackStack()) { navigator.popBackStack() }
+    val scope = rememberCoroutineScope()
+    BackHandler(navigator.canPopBackStack()) { scope.launch { navigator.popBackStack() } }
 
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
@@ -96,8 +99,8 @@ fun <T> TwoPaneScaffold(
 fun <T> ThreePaneScaffoldNavigator<T>.safeCurrentContent(): T? {
     var oldContent by rememberSaveable { mutableStateOf<T?>(null) }
 
-    val newContent = currentDestination?.content ?: oldContent
-    currentDestination?.content?.let { oldContent = it }
+    val newContent = currentDestination?.contentKey ?: oldContent
+    currentDestination?.contentKey?.let { oldContent = it }
 
     return newContent
 }
@@ -108,12 +111,12 @@ fun <T> ThreePaneScaffoldNavigator<T>.canPopBackStack(): Boolean {
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
+suspend fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
     return navigateBack(backBehavior)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
+suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
     if (windowAdaptiveInfo.isWindowLarge(context)) navigateBack()
     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
 }
