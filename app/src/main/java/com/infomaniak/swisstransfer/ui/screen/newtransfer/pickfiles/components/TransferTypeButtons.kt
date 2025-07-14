@@ -27,8 +27,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType.LINK
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType.MAIL
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Chain
@@ -90,8 +88,8 @@ enum class TransferTypeUi(
 
     companion object {
         fun TransferType.toTransferTypeUi() = when (this) {
-            LINK -> Link
-            MAIL -> Mail
+            TransferType.LINK -> Link
+            TransferType.MAIL -> Mail
         }
     }
 }

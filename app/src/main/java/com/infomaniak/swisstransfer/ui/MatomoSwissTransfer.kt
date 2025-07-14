@@ -22,6 +22,7 @@ import com.infomaniak.core.matomo.Matomo.TrackerAction
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoCategory
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import org.matomo.sdk.Tracker
 
 object MatomoSwissTransfer : Matomo {
@@ -87,6 +88,13 @@ object MatomoSwissTransfer : Matomo {
 
     fun trackSettingsGlobalThemeEvent(name: MatomoName) {
         trackEvent(MatomoCategory.SettingsLocalValidityPeriod, name)
+    }
+
+    fun trackTransferEvent(direction: TransferDirection, name: MatomoName) {
+        when (direction) {
+            TransferDirection.SENT -> trackSentTransferEvent(name)
+            TransferDirection.RECEIVED -> trackReceivedTransferEvent(name)
+        }
     }
 
     fun trackSentTransferEvent(name: MatomoName) {

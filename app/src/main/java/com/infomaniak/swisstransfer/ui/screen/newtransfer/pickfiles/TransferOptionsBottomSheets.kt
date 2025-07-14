@@ -123,8 +123,9 @@ fun EmailLanguageBottomSheet(
         title = stringResource(R.string.settingsOptionEmailLanguage),
         optionEntries = EmailLanguageOption.entries,
         onOptionClicked = {
-            MatomoSwissTransfer.trackSettingsLocalEmailLanguageEvent(it.toString().lowercase())
-            onOptionClicked(it as EmailLanguageOption)
+            val option = it as EmailLanguageOption
+            MatomoSwissTransfer.trackSettingsLocalEmailLanguageEvent(option.apiValue.value)
+            onOptionClicked(option)
         },
     )
 }

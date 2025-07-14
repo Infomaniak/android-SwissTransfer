@@ -76,7 +76,7 @@ suspend fun handleTransferDownload(
     transfer: TransferUi,
     targetFile: FileUi?,
     openFile: suspend (Uri) -> Unit,
-    direction: TransferDirection?
+    direction: TransferDirection? = null,
 ): Nothing = currentOrNewDownloadManagerId(
     transferManager = transferManager,
     ui = ui,
@@ -230,13 +230,12 @@ private suspend fun buildDownloadRequest(
     userAgent: String,
     direction: TransferDirection?
 ): DownloadManager.Request? {
+
     val url: String
     val name: String
-    if (direction?.matomoValue == "Sent") {
-        MatomoSwissTransfer.trackSentTransferEvent(MatomoName.DownloadTransfer)
-    } else if (direction?.matomoValue == "Received") {
-        MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.DownloadTransfer)
-    }
+
+    direction?.let { MatomoSwissTransfer.trackTransferEvent(it, MatomoName.DownloadTransfer) }
+
     when {
         targetFile != null -> {
             url = apiUrlCreator.downloadFileUrl(transfer.uuid, targetFile.uid) ?: return null
@@ -249,6 +248,7 @@ private suspend fun buildDownloadRequest(
             name = "SwissTransfer/$fileName.zip"
         }
     }
+
     return runCatching {
         DownloadManagerUtils.requestFor(
             url = url,

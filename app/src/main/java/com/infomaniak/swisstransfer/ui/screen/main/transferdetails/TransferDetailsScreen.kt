@@ -277,12 +277,7 @@ private fun TransferDetailsScreen(
                         icon = AppIcons.Share,
                         labelResId = R.string.buttonShare,
                         onClick = {
-                            if (direction.matomoValue == "Received") {
-                                MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.Share)
-                            } else if (direction.matomoValue == "Sent") {
-                                MatomoSwissTransfer.trackSentTransferEvent(MatomoName.Share)
-                            }
-                            MatomoSwissTransfer.trackSentTransferEvent(MatomoName.Share)
+                            MatomoSwissTransfer.trackTransferEvent(direction, MatomoName.Share)
                             context.shareText(transferUrl)
                         },
                         modifier = buttonsModifier,
@@ -391,7 +386,7 @@ private fun ColumnScope.FilesList(
         transferFlow = transferFlow,
         runDownloadUi = runDownloadUi,
         previewUriForFile = previewUriForFile,
-        direction = direction
+        direction = direction,
     )
 }
 

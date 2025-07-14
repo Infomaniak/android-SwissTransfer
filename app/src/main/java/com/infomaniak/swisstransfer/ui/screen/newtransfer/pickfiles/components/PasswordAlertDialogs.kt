@@ -141,10 +141,13 @@ fun PasswordOptionAlertDialog(
         negativeButton = { SwissTransferAlertDialogDefaults.CancelButton(onClick = ::onDismiss) },
         onDismiss = ::onDismiss,
     ) {
-        ActivatePasswordSwitch(isChecked = isPasswordActivated, onCheckedChange = {
-            MatomoSwissTransfer.trackSettingsLocalPasswordEvent(MatomoName.TogglePassword)
-            isPasswordActivated = it
-        })
+        ActivatePasswordSwitch(
+            isChecked = isPasswordActivated,
+            onCheckedChange = {
+                MatomoSwissTransfer.trackSettingsLocalPasswordEvent(MatomoName.TogglePassword)
+                isPasswordActivated = it
+            },
+        )
         Spacer(Modifier.height(Margin.Medium))
         AnimatedPasswordTextField(isPasswordActivated, password, isPasswordValid, ::onConfirmButtonClicked)
     }

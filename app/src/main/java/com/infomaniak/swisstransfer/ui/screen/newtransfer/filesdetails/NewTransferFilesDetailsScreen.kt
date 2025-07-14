@@ -98,7 +98,6 @@ private fun NewTransferFilesDetailsScreen(
             withSpaceLeft = withSpaceLeft,
             isDownloadButtonVisible = false,
             onFileRemoved = onFileRemoved,
-            direction = null
         )
     }
 }

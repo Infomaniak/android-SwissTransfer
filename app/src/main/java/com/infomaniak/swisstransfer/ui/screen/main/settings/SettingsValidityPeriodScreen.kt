@@ -44,9 +44,9 @@ fun SettingsValidityPeriodScreen(
         selectedSettingOptionPosition = validityPeriod.ordinal,
         matomoValue = MatomoScreen.ValidityPeriodSetting,
         setSelectedSettingOptionPosition = { position ->
-            val validityPeriod = ValidityPeriod.entries[position]
-            MatomoSwissTransfer.trackSettingsGlobalValidityPeriodEvent(ValidityPeriodOption.entries[position].matomoName)
-            onValidityPeriodChange(validityPeriod)
+            val option = ValidityPeriodOption.entries[position]
+            MatomoSwissTransfer.trackSettingsGlobalValidityPeriodEvent(option.matomoName)
+            onValidityPeriodChange(option.apiValue)
         },
         navigateBack = navigateBack,
     )
