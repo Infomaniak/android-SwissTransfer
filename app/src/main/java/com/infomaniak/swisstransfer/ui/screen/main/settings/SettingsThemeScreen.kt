@@ -48,7 +48,7 @@ fun SettingsThemeScreen(
         selectedSettingOptionPosition = theme.ordinal,
         matomoValue = MatomoScreen.ThemeSetting,
         setSelectedSettingOptionPosition = { position ->
-            MatomoSwissTransfer.trackSettingsGlobalThemeEvent(ThemeOption.entries[position].matomoValue)
+            MatomoSwissTransfer.trackSettingsGlobalThemeEvent(ThemeOption.entries[position].matomoName)
             onThemeUpdate(Theme.entries[position])
         },
         navigateBack = navigateBack,
@@ -59,11 +59,11 @@ enum class ThemeOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector,
     override val imageVectorResId: Int? = null,
-    val matomoValue: MatomoName,
+    val matomoName: MatomoName,
 ) : SettingOption {
-    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.CircleBlackAndWhite, matomoValue = MatomoName.System),
-    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.CircleWhite, matomoValue = MatomoName.Light),
-    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.CircleBlack, matomoValue = MatomoName.Dark),
+    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.CircleBlackAndWhite, matomoName = MatomoName.System),
+    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.CircleWhite, matomoName = MatomoName.Light),
+    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.CircleBlack, matomoName = MatomoName.Dark),
 }
 
 @PreviewAllWindows

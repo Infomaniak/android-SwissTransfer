@@ -45,7 +45,7 @@ fun SettingsValidityPeriodScreen(
         matomoValue = MatomoScreen.ValidityPeriodSetting,
         setSelectedSettingOptionPosition = { position ->
             val validityPeriod = ValidityPeriod.entries[position]
-            MatomoSwissTransfer.trackSettingsGlobalValidityPeriodEvent(ValidityPeriodOption.entries[position].matomoValue)
+            MatomoSwissTransfer.trackSettingsGlobalValidityPeriodEvent(ValidityPeriodOption.entries[position].matomoName)
             onValidityPeriodChange(validityPeriod)
         },
         navigateBack = navigateBack,
@@ -56,12 +56,12 @@ enum class ValidityPeriodOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
     val apiValue: ValidityPeriod,
-    val matomoValue: MatomoName,
+    val matomoName: MatomoName,
 ) : SettingOption {
-    THIRTY(apiValue = ValidityPeriod.THIRTY, matomoValue = MatomoName.ThirtyDays),
-    FIFTEEN(apiValue = ValidityPeriod.FIFTEEN, matomoValue = MatomoName.FifteenDays),
-    SEVEN(apiValue = ValidityPeriod.SEVEN, matomoValue = MatomoName.SevenDays),
-    ONE(apiValue = ValidityPeriod.ONE, matomoValue = MatomoName.OneDay);
+    THIRTY(apiValue = ValidityPeriod.THIRTY, matomoName = MatomoName.ThirtyDays),
+    FIFTEEN(apiValue = ValidityPeriod.FIFTEEN, matomoName = MatomoName.FifteenDays),
+    SEVEN(apiValue = ValidityPeriod.SEVEN, matomoName = MatomoName.SevenDays),
+    ONE(apiValue = ValidityPeriod.ONE, matomoName = MatomoName.OneDay);
 
     override val title: @Composable () -> String = { getValidityPeriodTitle(apiValue) }
 

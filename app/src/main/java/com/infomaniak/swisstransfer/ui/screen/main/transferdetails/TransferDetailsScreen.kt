@@ -157,7 +157,7 @@ fun TransferDetailsScreen(
                         transfer = transfer,
                         targetFile = file,
                         openFile = { uri -> context.openFile(uri) },
-                        direction = direction
+                        direction = direction,
                     )
                 },
                 previewUriForFile = { transfer, file -> transferDetailsViewModel.previewUriForFile(transfer, file) },
@@ -257,7 +257,7 @@ private fun TransferDetailsScreen(
                 transferFlow = transferFlow,
                 runDownloadUi = runDownloadUi,
                 previewUriForFile = previewUriForFile,
-                direction = direction
+                direction = direction,
             )
 
             BottomBar(getBottomBarPadding()) {

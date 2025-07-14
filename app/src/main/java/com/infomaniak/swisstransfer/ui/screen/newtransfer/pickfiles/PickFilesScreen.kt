@@ -182,7 +182,7 @@ fun PickFilesScreen(
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
             set = { type ->
-                MatomoSwissTransfer.trackTransferTypeEvent(type.dbValue.matomoValue)
+                MatomoSwissTransfer.trackTransferTypeEvent(type.dbValue.matomoName)
                 pickFilesViewModel.selectTransferType(type)
             },
         ),
@@ -190,7 +190,7 @@ fun PickFilesScreen(
         pickFiles = ::pickFiles,
         exitNewTransfer = { exit() },
         onSendButtonClick = {
-            MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoValue)
+            MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoName)
             notificationPermissionState?.launchPermissionRequest()
             // Notification permission is optional, so we don’t wait for the result
             pickFilesViewModel.send()

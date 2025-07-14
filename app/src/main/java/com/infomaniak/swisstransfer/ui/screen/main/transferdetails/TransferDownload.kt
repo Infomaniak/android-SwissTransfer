@@ -150,7 +150,7 @@ private fun currentOrNewDownloadManagerId(
             userAgent = userAgent,
             transfer = transfer,
             targetFile = targetFile,
-            direction = direction
+            direction = direction,
         ) ?: return@repeatWhileActive
     }
 }.distinctUntilChanged()

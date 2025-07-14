@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
-import android.R.attr.direction
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator

@@ -85,8 +85,9 @@ fun ValidityPeriodBottomSheet(
         title = stringResource(R.string.settingsOptionValidityPeriod),
         optionEntries = ValidityPeriodOption.entries,
         onOptionClicked = {
-            MatomoSwissTransfer.trackSettingsLocalValidityPeriodEvent(if (it is ValidityPeriodOption) it.matomoValue else null)
-            onOptionClicked(it as ValidityPeriodOption)
+            val option = it as ValidityPeriodOption
+            MatomoSwissTransfer.trackSettingsLocalValidityPeriodEvent(option.matomoName)
+            onOptionClicked(option)
         },
     )
 }
@@ -103,8 +104,9 @@ fun DownloadLimitBottomSheet(
         title = stringResource(R.string.settingsOptionDownloadLimit),
         optionEntries = DownloadLimitOption.entries,
         onOptionClicked = {
-            MatomoSwissTransfer.trackSettingsLocalDownloadLimitEvent(if (it is DownloadLimitOption) it.matomoValue else null)
-            onOptionClicked(it as DownloadLimitOption)
+            val option = it as DownloadLimitOption
+            MatomoSwissTransfer.trackSettingsLocalDownloadLimitEvent(option.matomoName)
+            onOptionClicked(option)
         },
     )
 }

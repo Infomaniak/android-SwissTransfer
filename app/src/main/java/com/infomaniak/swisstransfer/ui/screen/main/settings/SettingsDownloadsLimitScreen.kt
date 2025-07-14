@@ -43,7 +43,7 @@ fun SettingsDownloadsLimitScreen(
         selectedSettingOptionPosition = downloadLimit.ordinal,
         matomoValue = MatomoScreen.DownloadLimitSetting,
         setSelectedSettingOptionPosition = { position ->
-            MatomoSwissTransfer.trackSettingsGlobalDownloadLimitEvent(DownloadLimitOption.entries[position].matomoValue)
+            MatomoSwissTransfer.trackSettingsGlobalDownloadLimitEvent(DownloadLimitOption.entries[position].matomoName)
             onDownloadLimitChange(DownloadLimit.entries[position])
         },
         navigateBack = navigateBack,
@@ -54,12 +54,12 @@ enum class DownloadLimitOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
     val apiValue: DownloadLimit,
-    val matomoValue: MatomoName,
+    val matomoName: MatomoName,
 ) : SettingOption {
-    TWO_HUNDRED_FIFTY(apiValue = DownloadLimit.TWO_HUNDRED_FIFTY, matomoValue = MatomoName.TwoHundredAndFiftyDownloads),
-    ONE_HUNDRED(apiValue = DownloadLimit.ONE_HUNDRED, matomoValue = MatomoName.OneHundredDownloads),
-    TWENTY(apiValue = DownloadLimit.TWENTY, matomoValue = MatomoName.TwentyDownloads),
-    ONE(apiValue = DownloadLimit.ONE, matomoValue = MatomoName.OneDownload);
+    TWO_HUNDRED_FIFTY(apiValue = DownloadLimit.TWO_HUNDRED_FIFTY, matomoName = MatomoName.TwoHundredAndFiftyDownloads),
+    ONE_HUNDRED(apiValue = DownloadLimit.ONE_HUNDRED, matomoName = MatomoName.OneHundredDownloads),
+    TWENTY(apiValue = DownloadLimit.TWENTY, matomoName = MatomoName.TwentyDownloads),
+    ONE(apiValue = DownloadLimit.ONE, matomoName = MatomoName.OneDownload);
 
     override val title: @Composable () -> String = { apiValue.value.toString() }
 

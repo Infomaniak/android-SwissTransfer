@@ -63,7 +63,7 @@ fun FilesDetailsScreen(
     withSpaceLeft: Boolean,
     isDownloadButtonVisible: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
-    direction: TransferDirection?
+    direction: TransferDirection?,
 ) {
     Column(
         modifier = Modifier

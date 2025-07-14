@@ -143,26 +143,25 @@ class TransferDownloadComposeUi(
     val onFileClick: () -> Unit
         get() = when {
             downloadRequest.isAwaitingCall -> {
-                direction?.let{ sendMatomoTrack(it) }
+                direction?.let(::sendMatomoTrack)
                 downloadRequest
             }
             openRequest.isAwaitingCall -> {
-                direction?.let{ sendMatomoTrack(it) }
+                direction?.let(::sendMatomoTrack)
                 openRequest
             }
             removalRequest.isAwaitingCall && downloadStatus is DownloadStatus.Failed -> {
-                    direction?.let{ sendMatomoTrack(it) }
+                direction?.let(::sendMatomoTrack)
                 removalRequest
             }
             else -> fun() {}
             // TODO: If download is in progress, maybe request confirmation and remove?
         }
 
-    fun sendMatomoTrack(direction: TransferDirection){
-        if (direction.matomoValue == "Sent") {
-            MatomoSwissTransfer.trackSentTransferEvent(MatomoName.ConsultOneFile)
-        } else if (direction.matomoValue == "Received") {
-            MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.ConsultOneFile)
+    fun sendMatomoTrack(direction: TransferDirection) {
+        when (direction) {
+            TransferDirection.SENT -> MatomoSwissTransfer.trackSentTransferEvent(MatomoName.ConsultOneFile)
+            TransferDirection.RECEIVED -> MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.ConsultOneFile)
         }
     }
 
