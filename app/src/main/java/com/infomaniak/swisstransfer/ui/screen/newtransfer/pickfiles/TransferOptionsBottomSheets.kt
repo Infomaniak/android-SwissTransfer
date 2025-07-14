@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -83,7 +84,11 @@ fun ValidityPeriodBottomSheet(
         initialValue = initialValue,
         title = stringResource(R.string.settingsOptionValidityPeriod),
         optionEntries = ValidityPeriodOption.entries,
-        onOptionClicked = { onOptionClicked(it as ValidityPeriodOption) },
+        onOptionClicked = {
+            val option = it as ValidityPeriodOption
+            MatomoSwissTransfer.trackSettingsLocalValidityPeriodEvent(option.matomoName)
+            onOptionClicked(option)
+        },
     )
 }
 
@@ -98,7 +103,11 @@ fun DownloadLimitBottomSheet(
         initialValue = initialValue,
         title = stringResource(R.string.settingsOptionDownloadLimit),
         optionEntries = DownloadLimitOption.entries,
-        onOptionClicked = { onOptionClicked(it as DownloadLimitOption) },
+        onOptionClicked = {
+            val option = it as DownloadLimitOption
+            MatomoSwissTransfer.trackSettingsLocalDownloadLimitEvent(option.matomoName)
+            onOptionClicked(option)
+        },
     )
 }
 
@@ -113,7 +122,11 @@ fun EmailLanguageBottomSheet(
         initialValue = initialValue,
         title = stringResource(R.string.settingsOptionEmailLanguage),
         optionEntries = EmailLanguageOption.entries,
-        onOptionClicked = { onOptionClicked(it as EmailLanguageOption) },
+        onOptionClicked = {
+            val option = it as EmailLanguageOption
+            MatomoSwissTransfer.trackSettingsLocalEmailLanguageEvent(option.apiValue.value)
+            onOptionClicked(option)
+        },
     )
 }
 

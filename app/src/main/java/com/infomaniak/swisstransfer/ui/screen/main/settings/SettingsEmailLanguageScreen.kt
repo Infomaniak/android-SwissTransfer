@@ -21,9 +21,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -41,7 +42,10 @@ fun SettingsEmailLanguageScreen(
         enumEntries = EmailLanguageOption.entries,
         selectedSettingOptionPosition = emailLanguage.ordinal,
         matomoValue = MatomoScreen.EmailLanguageSetting,
-        setSelectedSettingOptionPosition = { position -> onEmailLanguageChange(EmailLanguage.entries[position]) },
+        setSelectedSettingOptionPosition = { position ->
+            MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguage.entries[position].value)
+            onEmailLanguageChange(EmailLanguage.entries[position])
+        },
         navigateBack = navigateBack,
     )
 }

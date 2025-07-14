@@ -27,8 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.SinglePaneScaffold
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -97,7 +97,7 @@ private fun NewTransferFilesDetailsScreen(
             withFileSize = withFilesSize,
             withSpaceLeft = withSpaceLeft,
             isDownloadButtonVisible = false,
-            onFileRemoved = onFileRemoved
+            onFileRemoved = onFileRemoved,
         )
     }
 }

@@ -20,9 +20,11 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -40,7 +42,10 @@ fun SettingsDownloadsLimitScreen(
         enumEntries = DownloadLimitOption.entries,
         selectedSettingOptionPosition = downloadLimit.ordinal,
         matomoValue = MatomoScreen.DownloadLimitSetting,
-        setSelectedSettingOptionPosition = { position -> onDownloadLimitChange(DownloadLimit.entries[position]) },
+        setSelectedSettingOptionPosition = { position ->
+            MatomoSwissTransfer.trackSettingsGlobalDownloadLimitEvent(DownloadLimitOption.entries[position].matomoName)
+            onDownloadLimitChange(DownloadLimit.entries[position])
+        },
         navigateBack = navigateBack,
     )
 }
@@ -49,11 +54,12 @@ enum class DownloadLimitOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
     val apiValue: DownloadLimit,
+    val matomoName: MatomoName,
 ) : SettingOption {
-    TWO_HUNDRED_FIFTY(apiValue = DownloadLimit.TWO_HUNDRED_FIFTY),
-    ONE_HUNDRED(apiValue = DownloadLimit.ONE_HUNDRED),
-    TWENTY(apiValue = DownloadLimit.TWENTY),
-    ONE(apiValue = DownloadLimit.ONE);
+    TWO_HUNDRED_FIFTY(apiValue = DownloadLimit.TWO_HUNDRED_FIFTY, matomoName = MatomoName.TwoHundredAndFiftyDownloads),
+    ONE_HUNDRED(apiValue = DownloadLimit.ONE_HUNDRED, matomoName = MatomoName.OneHundredDownloads),
+    TWENTY(apiValue = DownloadLimit.TWENTY, matomoName = MatomoName.TwentyDownloads),
+    ONE(apiValue = DownloadLimit.ONE, matomoName = MatomoName.OneDownload);
 
     override val title: @Composable () -> String = { apiValue.value.toString() }
 

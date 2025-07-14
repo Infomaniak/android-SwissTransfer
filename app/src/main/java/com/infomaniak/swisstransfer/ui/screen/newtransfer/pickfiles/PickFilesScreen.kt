@@ -58,9 +58,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -182,7 +182,7 @@ fun PickFilesScreen(
         selectedTransferType = GetSetCallbacks(
             get = { selectedTransferType },
             set = { type ->
-                MatomoSwissTransfer.trackTransferTypeEvent(type.dbValue.matomoValue)
+                MatomoSwissTransfer.trackTransferTypeEvent(type.dbValue.matomoName)
                 pickFilesViewModel.selectTransferType(type)
             },
         ),
@@ -190,7 +190,7 @@ fun PickFilesScreen(
         pickFiles = ::pickFiles,
         exitNewTransfer = { exit() },
         onSendButtonClick = {
-            MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoValue)
+            MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoName)
             notificationPermissionState?.launchPermissionRequest()
             // Notification permission is optional, so we don’t wait for the result
             pickFilesViewModel.send()

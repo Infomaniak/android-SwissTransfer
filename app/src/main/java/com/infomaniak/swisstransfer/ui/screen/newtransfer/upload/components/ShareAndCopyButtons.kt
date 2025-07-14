@@ -45,7 +45,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.DocumentOnDocument
@@ -73,7 +75,10 @@ fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink:
         ShareCopyButton(
             textRes = R.string.buttonShare,
             icon = AppImages.AppIcons.PersonBadgeShare,
-            onClick = { context.shareText(transferLink) },
+            onClick = {
+                MatomoSwissTransfer.trackNewTransferEvent(MatomoName.Share)
+                context.shareText(transferLink)
+            },
         )
 
         Spacer(Modifier.width(Margin.Medium))
@@ -82,6 +87,7 @@ fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink:
             textRes = R.string.buttonCopyLink,
             icon = AppImages.AppIcons.DocumentOnDocument,
             onClick = {
+                MatomoSwissTransfer.trackNewTransferEvent(MatomoName.CopyLink)
                 context.copyText(
                     text = transferLink,
                     showSnackbar = { scope.launch { snackbarHostState.showSnackbar(it) } },

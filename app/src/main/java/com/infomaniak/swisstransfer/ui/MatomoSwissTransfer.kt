@@ -19,51 +19,96 @@ package com.infomaniak.swisstransfer.ui
 
 import com.infomaniak.core.matomo.Matomo
 import com.infomaniak.core.matomo.Matomo.TrackerAction
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoCategory
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import org.matomo.sdk.Tracker
 
 object MatomoSwissTransfer : Matomo {
 
-    override val siteId: Int = 24
     override val tracker: Tracker by lazy(::buildTracker)
+    override val siteId: Int = 24
 
+    //region Track global events
+    fun trackEvent(
+        category: MatomoCategory,
+        name: MatomoName,
+        action: TrackerAction = TrackerAction.CLICK,
+        value: Float? = null,
+    ) {
+        trackEvent(category.value, name.value, action, value)
+    }
+    //endregion
+
+    //region Track specific events
+    fun trackTransferTypeEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.TransferType, name)
+    }
+
+    fun trackAppUpdateEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.AppUpdate, name)
+    }
+
+    fun trackNewTransferDataEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.NewTransferData, name)
+    }
+
+    fun trackNewTransferEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.NewTransfer, name)
+    }
+
+    fun trackSettingsGlobalEmailLanguageEvent(name: String) {
+        trackEvent(MatomoCategory.SettingsGlobalEmailLanguage.value, name)
+    }
+
+    fun trackSettingsLocalEmailLanguageEvent(name: String) {
+        trackEvent(MatomoCategory.SettingsLocalEmailLanguage.value, name)
+    }
+
+    fun trackSettingsGlobalValidityPeriodEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsGlobalValidityPeriod, name)
+    }
+
+    fun trackSettingsLocalValidityPeriodEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsLocalValidityPeriod, name)
+    }
+
+    fun trackSettingsGlobalDownloadLimitEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsGlobalDownloadLimit, name)
+    }
+
+    fun trackSettingsLocalDownloadLimitEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsLocalDownloadLimit, name)
+    }
+
+    fun trackSettingsLocalPasswordEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsLocalPassword, name)
+    }
+
+    fun trackSettingsGlobalThemeEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsLocalValidityPeriod, name)
+    }
+
+    fun trackTransferEvent(direction: TransferDirection, name: MatomoName) {
+        when (direction) {
+            TransferDirection.SENT -> trackSentTransferEvent(name)
+            TransferDirection.RECEIVED -> trackReceivedTransferEvent(name)
+        }
+    }
+
+    fun trackSentTransferEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsGlobalDownloadLimit, name)
+    }
+
+    fun trackReceivedTransferEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.SettingsLocalValidityPeriod, name)
+    }
+    //endregion
+
+    //region Track screens
     fun trackScreen(screen: MatomoScreen) {
-        trackScreen(path = "/$screen", title = screen.toString())
+        trackScreen(path = "/$screen", title = screen.value)
     }
-
-    fun trackTransferTypeEvent(name: String) {
-        trackEvent(MatomoCategory.TransferType.toString(), name)
-    }
-
-    fun trackNewTransferDataEvent(name: String) {
-        trackEvent(MatomoCategory.NewTransferData.toString(), name, action = TrackerAction.DATA)
-    }
-
-    enum class MatomoScreen {
-        Sent,
-        Received,
-        Settings,
-        NewTransfer,
-        NewTransferFileList,
-        VerifyMail,
-        UploadProgress,
-        UploadError,
-        UploadSuccess,
-        SentTransferDetails,
-        ReceivedTransferDetails,
-        TransferDetailsFileList,
-        ThemeSetting,
-        ValidityPeriodSetting,
-        DownloadLimitSetting,
-        EmailLanguageSetting;
-
-        override fun toString() = "${name}View"
-    }
-
-    enum class MatomoCategory {
-        TransferType,
-        AppUpdate,
-        NewTransferData;
-
-        override fun toString() = name.replaceFirstChar(Char::lowercase)
-    }
+    //endregion
 }

@@ -66,7 +66,10 @@ import com.infomaniak.core.autoCancelScope
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.core.compose.basics.withForwardTo
 import com.infomaniak.core.snackbarMsgResId
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButton
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages
@@ -95,6 +98,7 @@ class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
     private val snackbarHostState: SnackbarHostState,
     private val writeExternalStoragePermissionState: PermissionState?,
+    private val direction: TransferDirection?,
 ) : TransferDownloadUi {
 
     private val downloadRequest = CallableState<Unit>()
@@ -138,12 +142,25 @@ class TransferDownloadComposeUi(
 
     val onFileClick: () -> Unit
         get() = when {
-            downloadRequest.isAwaitingCall -> downloadRequest
-            openRequest.isAwaitingCall -> openRequest
-            removalRequest.isAwaitingCall && downloadStatus is DownloadStatus.Failed -> removalRequest
+            downloadRequest.isAwaitingCall -> {
+                direction?.let(::trackTransferEvent)
+                downloadRequest
+            }
+            openRequest.isAwaitingCall -> {
+                direction?.let(::trackTransferEvent)
+                openRequest
+            }
+            removalRequest.isAwaitingCall && downloadStatus is DownloadStatus.Failed -> {
+                direction?.let(::trackTransferEvent)
+                removalRequest
+            }
             else -> fun() {}
             // TODO: If download is in progress, maybe request confirmation and remove?
         }
+
+    private fun trackTransferEvent(direction: TransferDirection) {
+        MatomoSwissTransfer.trackTransferEvent(direction, MatomoName.ConsultOneFile)
+    }
 
     @Composable
     fun TopAppBarButton() {
@@ -344,7 +361,8 @@ private fun Preview() = SwissTransferTheme {
         TransferDownloadComposeUi(
             lifecycle = lifecycle,
             snackbarHostState = SnackbarHostState(),
-            writeExternalStoragePermissionState = null
+            writeExternalStoragePermissionState = null,
+            direction = TransferDirection.SENT
         )
     }
     LaunchedEffect(Unit) {

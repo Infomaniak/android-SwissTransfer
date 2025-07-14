@@ -77,8 +77,10 @@ import com.infomaniak.core.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.EmailsFlowRow
 import com.infomaniak.swisstransfer.ui.components.FileItemList
@@ -155,6 +157,7 @@ fun TransferDetailsScreen(
                         transfer = transfer,
                         targetFile = file,
                         openFile = { uri -> context.openFile(uri) },
+                        direction = direction,
                     )
                 },
                 previewUriForFile = { transfer, file -> transferDetailsViewModel.previewUriForFile(transfer, file) },
@@ -212,7 +215,7 @@ private fun TransferDetailsScreen(
         else -> rememberPermissionState(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
     val downloadUi = remember(lifecycle) {
-        TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState)
+        TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState, direction)
     }
     val transferFlow = remember { snapshotFlow { getTransfer() } }
     LaunchedEffect(Unit) {
@@ -230,7 +233,10 @@ private fun TransferDetailsScreen(
                 actions = {
                     when (direction) {
                         TransferDirection.SENT -> downloadUi.TopAppBarButton()
-                        TransferDirection.RECEIVED -> TopAppBarButtons.QrCode { showQrCodeBottomSheet = true }
+                        TransferDirection.RECEIVED -> TopAppBarButtons.QrCode {
+                            MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.ShowQRCode)
+                            showQrCodeBottomSheet = true
+                        }
                     }
                 }
             )
@@ -251,6 +257,7 @@ private fun TransferDetailsScreen(
                 transferFlow = transferFlow,
                 runDownloadUi = runDownloadUi,
                 previewUriForFile = previewUriForFile,
+                direction = direction,
             )
 
             BottomBar(getBottomBarPadding()) {
@@ -269,7 +276,10 @@ private fun TransferDetailsScreen(
                     BottomBarButton(
                         icon = AppIcons.Share,
                         labelResId = R.string.buttonShare,
-                        onClick = { context.shareText(transferUrl) },
+                        onClick = {
+                            MatomoSwissTransfer.trackTransferEvent(direction, MatomoName.Share)
+                            context.shareText(transferUrl)
+                        },
                         modifier = buttonsModifier,
                     )
 
@@ -278,7 +288,10 @@ private fun TransferDetailsScreen(
                             BottomBarButton(
                                 icon = AppIcons.QrCode,
                                 labelResId = R.string.transferTypeQrCode,
-                                onClick = { showQrCodeBottomSheet = true },
+                                onClick = {
+                                    MatomoSwissTransfer.trackSentTransferEvent(MatomoName.ShowQRCode)
+                                    showQrCodeBottomSheet = true
+                                },
                                 modifier = buttonsModifier,
                             )
 
@@ -287,7 +300,10 @@ private fun TransferDetailsScreen(
                                 BottomBarButton(
                                     icon = AppIcons.LockedTextField,
                                     labelResId = R.string.settingsOptionPassword,
-                                    onClick = { showPasswordBottomSheet = true },
+                                    onClick = {
+                                        MatomoSwissTransfer.trackSentTransferEvent(MatomoName.ShowPassword)
+                                        showPasswordBottomSheet = true
+                                    },
                                     modifier = buttonsModifier,
                                 )
                             }
@@ -334,6 +350,7 @@ private fun ColumnScope.FilesList(
     transferFlow: Flow<TransferUi>,
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    direction: TransferDirection,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -369,6 +386,7 @@ private fun ColumnScope.FilesList(
         transferFlow = transferFlow,
         runDownloadUi = runDownloadUi,
         previewUriForFile = previewUriForFile,
+        direction = direction,
     )
 }
 

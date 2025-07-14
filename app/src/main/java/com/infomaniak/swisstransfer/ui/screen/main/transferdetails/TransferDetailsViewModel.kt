@@ -128,6 +128,7 @@ class TransferDetailsViewModel @Inject constructor(
         transfer: TransferUi,
         targetFile: FileUi?,
         openFile: suspend (Uri) -> Unit,
+        direction: TransferDirection,
     ): Nothing = handleTransferDownload(
         ui = ui,
         transferManager = transferManager,
@@ -136,6 +137,7 @@ class TransferDetailsViewModel @Inject constructor(
         transfer = transfer,
         targetFile = targetFile,
         openFile = openFile,
+        direction = direction,
     )
 
     fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {

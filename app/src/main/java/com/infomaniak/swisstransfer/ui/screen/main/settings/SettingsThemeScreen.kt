@@ -21,9 +21,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.MatomoScreen
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.CircleBlack
 import com.infomaniak.swisstransfer.ui.images.icons.CircleBlackAndWhite
@@ -45,7 +47,10 @@ fun SettingsThemeScreen(
         enumEntries = ThemeOption.entries,
         selectedSettingOptionPosition = theme.ordinal,
         matomoValue = MatomoScreen.ThemeSetting,
-        setSelectedSettingOptionPosition = { position -> onThemeUpdate(Theme.entries[position]) },
+        setSelectedSettingOptionPosition = { position ->
+            MatomoSwissTransfer.trackSettingsGlobalThemeEvent(ThemeOption.entries[position].matomoName)
+            onThemeUpdate(Theme.entries[position])
+        },
         navigateBack = navigateBack,
     )
 }
@@ -54,10 +59,11 @@ enum class ThemeOption(
     override val title: @Composable () -> String,
     override val imageVector: ImageVector,
     override val imageVectorResId: Int? = null,
+    val matomoName: MatomoName,
 ) : SettingOption {
-    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.CircleBlackAndWhite),
-    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.CircleWhite),
-    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.CircleBlack),
+    SYSTEM({ stringResource(R.string.settingsOptionThemeSystem) }, AppIcons.CircleBlackAndWhite, matomoName = MatomoName.System),
+    LIGHT({ stringResource(R.string.settingsOptionThemeLight) }, AppIcons.CircleWhite, matomoName = MatomoName.Light),
+    DARK({ stringResource(R.string.settingsOptionThemeDark) }, AppIcons.CircleBlack, matomoName = MatomoName.Dark),
 }
 
 @PreviewAllWindows
