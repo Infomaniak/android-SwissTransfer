@@ -3,7 +3,6 @@ accompanistPermissions = "0.37.3"
 activityCompose = "1.10.1"
 adaptiveLayout = "1.0.0"
 agp = "8.8.2"
-coil = "3.2.0"
 constraintlayoutCompose = "1.1.1"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.4" # Upgrade to 1.1.6+ once https://issuetracker.google.com/issues/413078297 is fixed, or this temporary R8/proguard rule workaround is used: https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:datastore/datastore-preferences-core/src/jvmMain/resources/META-INF/proguard/androidx.datastore_datastore-preferences-core.pro
@@ -30,8 +29,6 @@ androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constr
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
-coil-video = { module = "io.coil-kt.coil3:coil-video", version.ref = "coil" }
 compose-material3-adaptative-navigation = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 desugar-jdk = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJDK" }
