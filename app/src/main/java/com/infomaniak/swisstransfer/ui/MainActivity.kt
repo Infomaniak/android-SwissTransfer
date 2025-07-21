@@ -42,11 +42,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
 import com.infomaniak.core.inappupdate.updaterequired.ui.UpdateRequiredScreen
-import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
-import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -81,12 +79,6 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
 
         initAppReviewManager()
         initAppUpdateManager()
-
-        NetworkConfiguration.init(
-            appId = BuildConfig.APPLICATION_ID,
-            appVersionName = BuildConfig.VERSION_NAME,
-            appVersionCode = BuildConfig.VERSION_CODE,
-        )
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(State.STARTED) { transferManager.tryUpdatingAllTransfers() }
