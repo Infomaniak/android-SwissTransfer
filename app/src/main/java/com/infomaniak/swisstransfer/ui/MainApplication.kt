@@ -21,6 +21,7 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
+import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -122,5 +123,11 @@ class MainApplication : Application(), Configuration.Provider {
                 }
             }
         }
+
+        NetworkConfiguration.init(
+            appId = BuildConfig.APPLICATION_ID,
+            appVersionName = BuildConfig.VERSION_NAME,
+            appVersionCode = BuildConfig.VERSION_CODE,
+        )
     }
 }
