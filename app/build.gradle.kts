@@ -123,6 +123,14 @@ val sentryAuthToken = envProperties?.getProperty("sentryAuthToken")
     .takeUnless { it.isNullOrBlank() }
     ?: if (isRelease) error("The `sentryAuthToken` property in `env.properties` must be specified (see `env.example.properties`).") else ""
 
+configurations.configureEach {
+    // The Matomo SDK logs network issues to Timber, and the Sentry plugin detects the Timber dependency,
+    // and adds its integration, which generates noise.
+    // Since we're not using Timber for anything else, it's safe to completely disabled it,
+    // as specified in Sentry's documentation: https://docs.sentry.io/platforms/android/integrations/timber/#disable
+    exclude(group = "io.sentry", module = "sentry-android-timber")
+}
+
 sentry {
     org = "sentry"
     projectName = "swisstransfer-android"
