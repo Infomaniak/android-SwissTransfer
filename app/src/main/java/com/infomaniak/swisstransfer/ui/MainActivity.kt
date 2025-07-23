@@ -24,9 +24,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +40,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
 import com.infomaniak.core.inappupdate.updaterequired.ui.UpdateRequiredScreen
-import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.R
@@ -56,6 +53,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferData
+import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -166,11 +164,4 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             }
         }
     }
-}
-
-@Composable
-private fun isDarkTheme(getTheme: () -> Theme?): Boolean {
-    return getTheme()?.let {
-        if (it == Theme.SYSTEM) isSystemInDarkTheme() else it == Theme.DARK
-    } ?: isSystemInDarkTheme()
 }

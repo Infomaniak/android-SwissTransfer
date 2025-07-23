@@ -25,8 +25,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.os.BundleCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.utils.enumValueOfOrNull
@@ -36,10 +39,12 @@ import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -53,6 +58,8 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
 
     override val inAppReviewManager by lazy { InAppReviewManager(this) }
 
+    private val settingsViewModel: SettingsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,7 +70,8 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
         addOnNewIntentListener(::handleSharedFiles)
 
         setContent {
-            SwissTransferTheme {
+            val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+            SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                 NewTransferScreen(
                     startDestination = remember { getStartDestination() },
                     inAppReviewManager = inAppReviewManager,
