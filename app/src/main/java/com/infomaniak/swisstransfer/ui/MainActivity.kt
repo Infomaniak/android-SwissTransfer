@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
                     intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
                 }
-                else -> {}
+                else -> Unit
             }
 
             setContent {
@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
                     var shouldDisplayDeleteDialog by remember {
-                        mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer && deeplinkTransferData.uuid != null)
+                        mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer && deeplinkTransferData?.uuid != null)
                     }
                     val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.shouldDisplayUpdateRequiredScreen.collectAsStateWithLifecycle(
                         initialValue = false
