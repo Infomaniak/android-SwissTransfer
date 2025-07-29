@@ -38,6 +38,7 @@ include(
     ":Core:InAppUpdate",
     ":Core:Matomo",
     ":Core:Network",
+    ":Core:Network:Models",
     ":Core:Notifications",
     ":Core:Onboarding",
     ":Core:Sentry",
