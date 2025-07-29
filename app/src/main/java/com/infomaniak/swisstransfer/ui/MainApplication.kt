@@ -20,8 +20,8 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.core.network.NetworkConfiguration
+import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -99,20 +99,22 @@ class MainApplication : Application(), Configuration.Provider {
         }
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
-        configSentry()
+        configureSentry()
     }
 
     /**
      * Reasons to discard Sentry events :
      * - Application is in Debug mode
      * - User deactivated Sentry tracking in DataManagement settings
-     * - The exception was a NetworkException or [CancellationException], and we don't want to send them to Sentry
+     * - The exception was a NetworkException or a [CancellationException] or a [KmpNetworkException],
+     *   and we don't want to send them to Sentry
      */
-    private fun configSentry() {
+    private fun configureSentry() {
         this.configureSentry(
-            BuildConfig.DEBUG,
-            dataManagementDataStore.getPreference(IsSentryAuthorized),
-            { exception -> exception is KmpNetworkException })
+            isDebug = BuildConfig.DEBUG,
+            isSentryTrackingEnabled = dataManagementDataStore.getPreference(IsSentryAuthorized),
+            isFilteredException = { exception -> exception is KmpNetworkException },
+        )
 
         NetworkConfiguration.init(
             appId = BuildConfig.APPLICATION_ID,
