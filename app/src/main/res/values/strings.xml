@@ -23,7 +23,6 @@
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
-    <string name="buttonAddFiles">Add files</string>
     <string name="buttonCancelTransfer">Cancel the transfer</string>
     <string name="buttonCloseAndContinue">Close and continue</string>
     <string name="buttonConfirm">Confirm</string>
@@ -70,7 +69,6 @@
         <item quantity="other">%d files</item>
     </plurals>
     <string name="firstTransferDescription">Make your first transfer!</string>
-    <string name="fromHeader">From:</string>
     <string name="importFilesScreenTitle">Files to transfer</string>
     <string name="invalidAddress">Invalid address</string>
     <string name="messageHeader">Message:</string>
@@ -80,8 +78,6 @@
     <string name="newTransferLeavingDialogDescription">Your transfer is almost ready. Are you sure you want to cancel it?</string>
     <string name="newTransferLeavingDialogNegativeButton">No, continue</string>
     <string name="newTransferLeavingDialogPositiveButton">Yes, cancel</string>
-    <string name="noFileDescription">Add up to 50 GB of files</string>
-    <string name="noFileTitle">No file, no transfer!</string>
     <string name="noSettingsSelectedDescription">Select a parameter to display it</string>
     <string name="noTransferReceivedDescription">All transfers you receive over the last 30 days will appear here.</string>
     <string name="noTransferReceivedTitle">No transfers received</string>
@@ -189,7 +185,6 @@
     </plurals>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
-    <string name="transferTypeProximity">Proximity</string>
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transfer</string>
     <string name="transferTypeTitle">Send by</string>
@@ -210,7 +205,6 @@
     <string name="uploadSuccessEmailTitle">It’s sent!</string>
     <string name="uploadSuccessLinkDescription">Scan this QR code around you to share your files, or copy the link below.</string>
     <string name="uploadSuccessLinkTitle">Your transfer is ready!</string>
-    <string name="uploadSuccessQrTitle">Your QR code is ready!</string>
     <string name="urlAbout">https://www.infomaniak.com/en/about</string>
     <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
     <string name="validateMailCodeIncorrectError">The code entered is incorrect</string>
