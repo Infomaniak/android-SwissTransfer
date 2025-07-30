@@ -36,17 +36,11 @@ enum class UploadProgressAdType(
         R.string.uploadProgressDescriptionTemplateIndependence,
         R.string.uploadProgressDescriptionArgumentIndependence,
         R.raw.swiss_with_flag,
-        1,
     ),
     ENERGY(
         R.string.uploadProgressDescriptionTemplateEnergy,
         R.string.uploadProgressDescriptionArgumentEnergy,
         R.raw.mountain_gondola,
-    ),
-    CONFIDENTIALITY(
-        R.string.uploadProgressDescriptionTemplateConfidentiality,
-        R.string.uploadProgressDescriptionArgumentConfidentiality,
-        R.raw.metallic_safe,
     );
 
     @Composable
