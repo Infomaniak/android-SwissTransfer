@@ -22,7 +22,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import com.airbnb.lottie.compose.LottieConstants
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 
@@ -30,7 +29,6 @@ enum class UploadProgressAdType(
     @StringRes private val descriptionTemplate: Int,
     @StringRes private val descriptionAccentuatedPart: Int,
     @RawRes val illustration: Int,
-    val iterations: Int = LottieConstants.IterateForever,
 ) {
     INDEPENDENCE(
         R.string.uploadProgressDescriptionTemplateIndependence,

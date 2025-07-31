@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
@@ -84,7 +85,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
         LottieAnimation(
             composition,
             isPlaying = true,
-            iterations = adScreenType.iterations,
+            iterations = LottieConstants.IterateForever,
         )
 
         WeightOneSpacer(minHeight = Margin.Medium)
