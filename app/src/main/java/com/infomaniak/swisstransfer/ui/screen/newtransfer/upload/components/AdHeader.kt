@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +36,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
@@ -54,6 +57,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(adScreenType.illustration))
         var isHighlighted by rememberSaveable { mutableStateOf(false) }
         LaunchedEffect(Unit) { isHighlighted = true }
 
@@ -77,7 +81,11 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
 
         WeightOneSpacer(minHeight = Margin.Medium)
 
-        Image(imageVector = adScreenType.illustration.image(), contentDescription = null)
+        LottieAnimation(
+            composition,
+            isPlaying = true,
+            iterations = LottieConstants.IterateForever,
+        )
 
         WeightOneSpacer(minHeight = Margin.Medium)
     }

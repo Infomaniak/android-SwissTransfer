@@ -17,37 +17,28 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.images.AppImages
-import com.infomaniak.swisstransfer.ui.images.ThemedImage
-import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MetallicSafe
-import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.MountainGondola
-import com.infomaniak.swisstransfer.ui.images.illus.uploadAd.SwissWithFlag
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 
 enum class UploadProgressAdType(
     @StringRes private val descriptionTemplate: Int,
     @StringRes private val descriptionAccentuatedPart: Int,
-    val illustration: ThemedImage,
+    @RawRes val illustration: Int,
 ) {
     INDEPENDENCE(
         R.string.uploadProgressDescriptionTemplateIndependence,
         R.string.uploadProgressDescriptionArgumentIndependence,
-        AppImages.AppIllus.SwissWithFlag,
+        R.raw.swiss_with_flag,
     ),
     ENERGY(
         R.string.uploadProgressDescriptionTemplateEnergy,
         R.string.uploadProgressDescriptionArgumentEnergy,
-        AppImages.AppIllus.MountainGondola,
-    ),
-    CONFIDENTIALITY(
-        R.string.uploadProgressDescriptionTemplateConfidentiality,
-        R.string.uploadProgressDescriptionArgumentConfidentiality,
-        AppImages.AppIllus.MetallicSafe,
+        R.raw.mountain_gondola,
     );
 
     @Composable
