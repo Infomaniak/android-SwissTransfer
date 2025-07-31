@@ -191,10 +191,8 @@
     <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Transfer rückgängig machen willst?</string>
     <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
     <string name="uploadErrorTitle">Was ist das denn?</string>
-    <string name="uploadProgressDescriptionArgumentConfidentiality">einem Internet bei, das den Datenschutz und die Privatsphäre respektiert.</string>
     <string name="uploadProgressDescriptionArgumentEnergy">unsere eigenen Rechenzentren ohne Klimaanlagen</string>
     <string name="uploadProgressDescriptionArgumentIndependence">die technologische Unabhängigkeit in Europa.</string>
-    <string name="uploadProgressDescriptionTemplateConfidentiality">Wir sind unabhängig und tragen zu %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Wir entwerfen %s, um die Energieeffizienzstandards der Branche zu übertreffen.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Wir entwickeln %s Ohne Kompromisse bei Ökologie, Privatsphäre und Menschen.</string>
     <string name="uploadProgressIndication">Transfer wird durchgeführt…</string>

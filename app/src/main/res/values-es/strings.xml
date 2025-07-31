@@ -191,10 +191,8 @@
     <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
     <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
     <string name="uploadErrorTitle">¿Pero qué, qué?</string>
-    <string name="uploadProgressDescriptionArgumentConfidentiality">una Internet que respeta la confidencialidad y la privacidad.</string>
     <string name="uploadProgressDescriptionArgumentEnergy">nuestros propios centros de datos, sin aire acondicionado</string>
     <string name="uploadProgressDescriptionArgumentIndependence">la independencia tecnológica en Europa.</string>
-    <string name="uploadProgressDescriptionTemplateConfidentiality">Somos independientes y contribuimos a %s</string>
     <string name="uploadProgressDescriptionTemplateEnergy">Diseñamos %s, para superar las normas de eficiencia energética del mercado.</string>
     <string name="uploadProgressDescriptionTemplateIndependence">Desarrollamos %s Sin comprometer la ecología, la privacidad ni a las personas.</string>
     <string name="uploadProgressIndication">Transferencia en curso…</string>
