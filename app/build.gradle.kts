@@ -31,8 +31,8 @@ android {
         applicationId = "com.infomaniak.swisstransfer"
         minSdk = appMinSdk
         targetSdk = appCompileSdk
-        versionCode = 1_03_003_01
-        versionName = "1.3.3"
+        versionCode = 1_03_004_01
+        versionName = "1.3.4"
 
         setProperty("archivesBaseName", "swisstransfer-$versionName ($versionCode)")
 
