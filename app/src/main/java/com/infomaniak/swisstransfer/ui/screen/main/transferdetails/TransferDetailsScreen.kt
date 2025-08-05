@@ -241,7 +241,10 @@ private fun TransferDetailsScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            // Modifier.navigationBarsPadding() wouldn't work here, but this does.
+            SnackbarHost(snackbarHostState, Modifier.padding(getBottomBarPadding()))
+        },
     ) {
         Column {
 
