@@ -18,12 +18,11 @@
 <resources>
     <string name="advancedSettingsTitle">Impostazioni avanzate</string>
     <string name="awaitingNetwork">In attesa della rete</string>
-    <string name="buttonAddFiles">Aggiunta di file</string>
     <string name="buttonCancelTransfer">Annullamento del trasferimento</string>
     <string name="buttonCloseAndContinue">Chiudi e continua</string>
     <string name="buttonConfirm">Conferma</string>
     <string name="buttonCopyLink">Copia link</string>
-    <string name="buttonDeleteYes">Sì, eliminare</string>
+    <string name="buttonDeleteYes">Sì, elimina</string>
     <string name="buttonDownload">Scarica</string>
     <string name="buttonDownloadSelected">Scarica la selezione</string>
     <string name="buttonDownloaded">Scaricato</string>
@@ -65,7 +64,6 @@
         <item quantity="other">%d file</item>
     </plurals>
     <string name="firstTransferDescription">Effettua il tuo primo trasferimento!</string>
-    <string name="fromHeader">Da:</string>
     <string name="importFilesScreenTitle">File da trasferire</string>
     <string name="invalidAddress">Indirizzo non valido</string>
     <string name="messageHeader">Messaggio:</string>
@@ -75,8 +73,6 @@
     <string name="newTransferLeavingDialogDescription">Il trasferimento è quasi pronto. Sei sicuro di volerlo annullare?</string>
     <string name="newTransferLeavingDialogNegativeButton">No, continua</string>
     <string name="newTransferLeavingDialogPositiveButton">Sì, annulla</string>
-    <string name="noFileDescription">Aggiungere fino a 50 GB di file</string>
-    <string name="noFileTitle">Nessun file, nessun trasferimento!</string>
     <string name="noSettingsSelectedDescription">Seleziona un parametro da visualizzare</string>
     <string name="noTransferReceivedDescription">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
@@ -184,7 +180,6 @@
     </plurals>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
-    <string name="transferTypeProximity">Vicino</string>
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Trasferimento</string>
     <string name="transferTypeTitle">Inviare da</string>
@@ -205,7 +200,6 @@
     <string name="uploadSuccessEmailTitle">E si parte!</string>
     <string name="uploadSuccessLinkDescription">Scansiona questo codice QR intorno a voi per condividere i vostri file o copiate il link qui sotto.</string>
     <string name="uploadSuccessLinkTitle">Il trasferimento è pronto!</string>
-    <string name="uploadSuccessQrTitle">Il codice QR è pronto!</string>
     <string name="urlAbout">https://www.infomaniak.com/it/about</string>
     <string name="urlUserReport">https://feedback.userreport.com/24435063-b900-48cd-b32f-ce177ea21798/</string>
     <string name="validateMailCodeIncorrectError">Il codice inserito non è corretto</string>
