@@ -1,0 +1,33 @@
+<!--
+  ~ Infomaniak kDrive - Android
+  ~ Copyright (C) 2024 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<svg width="50" height="50" viewBox="4 4 44 44" role="img" aria-label="swisstransfer icon">
+    <g fill="none" fill-rule="evenodd">
+        <path
+            d="M18.984 4.821l22.691 6.982a2.063 2.063 0 011.456 1.972v22.5a2.063 2.063 0 01-2.67 1.972l-22.69-6.982a2.063 2.063 0 01-1.457-1.971V6.793a2.063 2.063 0 012.67-1.972z"
+            fill="#5AC88B" opacity="0.5"></path>
+        <path
+            d="M13.827 8.74l22.691 6.983a2.063 2.063 0 011.456 1.971v22.501a2.063 2.063 0 01-2.67 1.972l-22.69-6.982a2.063 2.063 0 01-1.457-1.972v-22.5a2.063 2.063 0 012.67-1.972z"
+            fill="#4FC583" opacity="0.8"></path>
+        <path
+            d="M8.67 12.66l22.69 6.982a2.063 2.063 0 011.457 1.972v22.5a2.063 2.063 0 01-2.67 1.972l-22.69-6.982A2.063 2.063 0 016 37.132v-22.5a2.063 2.063 0 012.67-1.972z"
+            fill="#3CB572"></path>
+        <path
+            d="M22.337 22.36c.194.165.352.374.458.602l4.064 14.573c.304.656.1 1.3-.457 1.439a1.036 1.036 0 01-.55-.025l-3.69-1.118.175-5.109L19 36.94l-6.852-2.143c-.634-.192-1.148-.868-1.148-1.51 0-.179.04-.343.119-.48l2.31-5.732c.282-.49.97-.518 1.54-.061.225.181.408.422.52.684l1.26 2.145 4.03-7.492c.304-.471 1.002-.468 1.558.009z"
+            fill="#FFF"></path>
+    </g>
+</svg>
