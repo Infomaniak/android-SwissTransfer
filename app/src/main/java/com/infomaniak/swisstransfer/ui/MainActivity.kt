@@ -53,7 +53,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.getDeeplinkTransferData
 import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -84,21 +83,20 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
         }
 
         lifecycleScope.launch {
-            val deeplinkTransferData = getDeeplinkTransferData()
-            val transferDirection = deeplinkTransferData?.uuid?.let {
-                // If we don't find the transfer in Realm, it means it's a new received one
-                deeplinkViewModel.getDeeplinkTransferDirection(it) ?: TransferDirection.RECEIVED
-            }
-
+            var transferDirection = TransferDirection.RECEIVED
             val deepLinkTypeFromURL = DeepLinkType.fromURL(intent.data.toString())
-            when (deepLinkTypeFromURL){
+            when (deepLinkTypeFromURL) {
                 is DeepLinkType.DeleteTransfer -> {
                     // Modify the intent to avoid opening the transfer when we want to delete it via deeplink
                     intent.setData(null)
                 }
                 is DeepLinkType.OpenTransfer -> {
-                    // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                    intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+                    transferDirection =
+                        deeplinkViewModel.getDeeplinkTransferDirection(deepLinkTypeFromURL.uuid) ?: transferDirection
+                    if (transferDirection == TransferDirection.SENT) {
+                        // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
+                        intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+                    }
                 }
                 else -> Unit
             }
@@ -108,7 +106,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
                     val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
                     var shouldDisplayDeleteDialog by remember {
-                        mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer && deeplinkTransferData?.uuid != null)
+                        mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
                     }
                     val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.shouldDisplayUpdateRequiredScreen.collectAsStateWithLifecycle(
                         initialValue = false
@@ -134,10 +132,11 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                                 closeAlertDialog = ::dismissDeleteDialog,
                                 onConfirmation = {
                                     lifecycleScope.launch {
-                                        transferManager.deleteTransfer(
-                                            deeplinkTransferData?.uuid!!,
-                                            deeplinkTransferData.deleteToken!!,
-                                        )
+                                        if (deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
+                                            transferManager.deleteTransfer(
+                                                deepLinkTypeFromURL.uuid,
+                                                deepLinkTypeFromURL.token,
+                                            )
                                     }
                                     dismissDeleteDialog()
                                 },
