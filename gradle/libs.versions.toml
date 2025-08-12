@@ -11,7 +11,6 @@ hiltAndroid = "2.57"
 hiltAndroidx = "1.2.0"
 kotlin = "2.1.20"
 lifecycleRuntimeKtx = "2.9.2"
-lottie = "6.6.7"
 navigation = "2.9.3"
 qrose = "1.0.1"
 room = "2.7.2"
@@ -37,7 +36,6 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-androidx-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltAndroidx" }
 hilt-androidx-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltAndroidx" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltAndroidx" }
-lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 room-processing = { module = "androidx.room:room-compiler-processing", version.ref = "room" }

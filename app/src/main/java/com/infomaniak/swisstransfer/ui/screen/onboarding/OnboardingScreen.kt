@@ -46,12 +46,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
+import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLottieIllustration
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -112,12 +111,7 @@ private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>
     OnboardingPage(
         background = background.image(),
         illustration = {
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(illustrationRes))
-            val isPlayingLottie by remember { derivedStateOf { pagerState.currentPage == index } }
-
-            // We have to specify the isPlaying parameter in order to play the animation only when the page is selected.
-            // Otherwise, the ViewPager can load the page and start the animation before it's visible.
-            LottieAnimation(composition, restartOnPlay = true, isPlaying = isPlayingLottie)
+            DefaultLottieIllustration(LottieCompositionSpec.RawRes(illustrationRes), { pagerState.currentPage == index })
         },
         text = {
             TitleAndDescription(
