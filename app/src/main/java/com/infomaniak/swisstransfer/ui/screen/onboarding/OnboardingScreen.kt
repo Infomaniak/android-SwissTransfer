@@ -50,7 +50,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
-import com.infomaniak.core.onboarding.IndicatorStyle
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
 import com.infomaniak.swisstransfer.R
@@ -105,13 +104,6 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
                 goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
             )
         },
-        indicatorStyle = IndicatorStyle(
-            inactiveColor = SwissTransferTheme.materialColors.outlineVariant,
-            activeColor = SwissTransferTheme.materialColors.primary,
-            inactiveSize = 8.dp,
-            activeWidth = 16.dp,
-            indicatorSpacing = Margin.Mini,
-        )
     )
 }
 
