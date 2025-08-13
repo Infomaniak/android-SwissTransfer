@@ -76,7 +76,12 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
         super.onCreate(savedInstanceState)
 
         initAppReviewManager()
-        initAppUpdateManager()
+
+        lifecycleScope.launch {
+            inAppUpdateManager.isUpdateRequired.collect { isUpdateRequired ->
+                initAppUpdateManager(isUpdateRequired)
+            }
+        }
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(State.STARTED) { transferManager.tryUpdatingAllTransfers() }
@@ -108,7 +113,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     var shouldDisplayDeleteDialog by remember {
                         mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
                     }
-                    val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.shouldDisplayUpdateRequiredScreen.collectAsStateWithLifecycle(
+                    val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.isUpdateRequired.collectAsStateWithLifecycle(
                         initialValue = false
                     )
 

@@ -23,7 +23,7 @@ interface AppUpdateManageable {
 
     val inAppUpdateManager: InAppUpdateManager
 
-    fun initAppUpdateManager() = inAppUpdateManager.init(
-        mustRequireImmediateUpdate = true,
+    fun initAppUpdateManager(isUpdateRequired: Boolean) = inAppUpdateManager.init(
+        isUpdateRequired = isUpdateRequired,
     )
 }
