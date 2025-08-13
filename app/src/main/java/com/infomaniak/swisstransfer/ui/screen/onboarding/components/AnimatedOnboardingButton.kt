@@ -38,11 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core.compose.basicbutton.BasicButton
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
@@ -81,12 +82,13 @@ fun AnimatedOnboardingButton(isExpanded: () -> Boolean, onClick: () -> Unit) {
         label = "Onboarding text visibility",
     )
 
-    SwissTransferButton(
+    BasicButton(
         modifier = Modifier
             .height(buttonHeight)
             .padding(horizontal = Margin.Medium)
             .width(buttonWidth),
         onClick = onClick,
+        shape = CustomShapes.MEDIUM,
         contentPadding = PaddingValues(),
     ) {
         Box(contentAlignment = Alignment.Center) {

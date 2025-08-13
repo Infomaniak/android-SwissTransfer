@@ -31,6 +31,7 @@ include(
     ":app",
     ":Core",
     ":Core:AppIntegrity",
+    ":Core:Compose:BasicButton",
     ":Core:Compose:Basics",
     ":Core:Compose:Margin",
     ":Core:FileTypes",
