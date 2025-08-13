@@ -38,9 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core.compose.basicbutton.BasicButton
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BasicButton
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes

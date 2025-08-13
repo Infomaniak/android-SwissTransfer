@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core.compose.basicbutton.BasicButton
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
@@ -137,34 +139,34 @@ private enum class ButtonSize(val height: Dp, val contentPadding: PaddingValues)
     SMALL(40.dp, PaddingValues(horizontal = Margin.Medium)),
 }
 
-enum class ButtonType(val colors: @Composable () -> BasicButtonColors) {
+enum class ButtonType(val colors: @Composable () -> ButtonColors) {
     Primary({
-        BasicButtonDefaults.colors(
+        ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.primary,
             contentColor = SwissTransferTheme.materialColors.onPrimary,
         )
     }),
     Secondary({
-        BasicButtonDefaults.colors(
+        ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
             contentColor = SwissTransferTheme.materialColors.primary,
         )
     }),
     Tertiary({
-        BasicButtonDefaults.colors(
+        ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.primary,
             disabledContainerColor = Color.Transparent,
         )
     }),
     Destructive({
-        BasicButtonDefaults.colors(
+        ButtonDefaults.buttonColors(
             containerColor = SwissTransferTheme.materialColors.error,
             contentColor = SwissTransferTheme.materialColors.onError,
         )
     }),
     DestructiveText({
-        BasicButtonDefaults.colors(
+        ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = SwissTransferTheme.materialColors.error,
             disabledContainerColor = Color.Transparent,
@@ -174,10 +176,7 @@ enum class ButtonType(val colors: @Composable () -> BasicButtonColors) {
     });
 
     @Composable
-    fun buttonColors() = colors.invoke().buttonColors()
-
-    @Composable
-    fun loaderColors() = colors.invoke().loaderColors()
+    fun buttonColors() = colors.invoke()
 }
 
 @Preview(name = "Light", widthDp = 800)
