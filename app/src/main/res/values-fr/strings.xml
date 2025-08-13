@@ -18,7 +18,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ImpliedQuantity">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="awaitingNetwork">En attente de réseau</string>
-    <string name="buttonAddFiles">Ajouter des fichiers</string>
     <string name="buttonCancelTransfer">Annuler le transfert</string>
     <string name="buttonCloseAndContinue">Fermer et continuer</string>
     <string name="buttonConfirm">Confirmer</string>
@@ -66,7 +65,6 @@
         <item quantity="many">% de fichiers</item>
     </plurals>
     <string name="firstTransferDescription">Fais ton premier transfert !</string>
-    <string name="fromHeader">De :</string>
     <string name="importFilesScreenTitle">Fichiers à transférer</string>
     <string name="invalidAddress">Adresse invalide</string>
     <string name="messageHeader">Message :</string>
@@ -76,8 +74,6 @@
     <string name="newTransferLeavingDialogDescription">Ton transfert est presque prêt. Es-tu sûr de vouloir tout annuler ?</string>
     <string name="newTransferLeavingDialogNegativeButton">Non, continuer</string>
     <string name="newTransferLeavingDialogPositiveButton">Oui, annuler</string>
-    <string name="noFileDescription">Ajoute jusqu’à 50 Go de fichiers</string>
-    <string name="noFileTitle">Pas de fichier, pas de transfert !</string>
     <string name="noSettingsSelectedDescription">Sélectionne un paramètre pour l’afficher</string>
     <string name="noTransferReceivedDescription">Tous les transferts que tu recevras sur les 30 derniers jours apparaitront ici.</string>
     <string name="noTransferReceivedTitle">Aucun transfert reçu</string>
@@ -189,7 +185,6 @@
     </plurals>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Lien</string>
-    <string name="transferTypeProximity">A proximité</string>
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transfert</string>
     <string name="transferTypeTitle">Envoyer par</string>
@@ -211,7 +206,6 @@
     <string name="uploadSuccessEmailTitle">Hop c’est envoyé !</string>
     <string name="uploadSuccessLinkDescription">Fais scanner ce QR code autour de toi pour partager tes fichiers ou copie le lien ci-dessous.</string>
     <string name="uploadSuccessLinkTitle">Ton transfert est prêt !</string>
-    <string name="uploadSuccessQrTitle">Ton QR code est prêt !</string>
     <string name="urlAbout">https://www.infomaniak.com/fr/a-propos</string>
     <string name="urlUserReport">https://feedback.userreport.com/a439bf38-6a53-4038-b47d-3f935a2a410e/</string>
     <string name="validateMailCodeIncorrectError">Le code saisi est incorrect</string>
