@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -107,13 +109,14 @@ private fun CoreButton(
     onClick: () -> Unit,
     imageVector: ImageVector?,
 ) {
-    SwissTransferButton(
-        modifier.height(buttonSize.height),
-        style,
-        enabled,
-        showIndeterminateProgress,
-        progress,
-        onClick,
+    BasicButton(
+        onClick = onClick,
+        modifier = modifier.height(buttonSize.height),
+        shape = CustomShapes.MEDIUM,
+        colors = style.colors(),
+        enabled = enabled,
+        showIndeterminateProgress = showIndeterminateProgress,
+        progress = progress,
         contentPadding = buttonSize.contentPadding,
     ) {
         ButtonTextContent(imageVector, title)
@@ -132,6 +135,49 @@ private fun ButtonTextContent(imageVector: ImageVector?, title: String) {
 private enum class ButtonSize(val height: Dp, val contentPadding: PaddingValues) {
     LARGE(Dimens.LargeButtonHeight, ButtonDefaults.ContentPadding),
     SMALL(40.dp, PaddingValues(horizontal = Margin.Medium)),
+}
+
+enum class ButtonType(val colors: @Composable () -> BasicButtonColors) {
+    Primary({
+        BasicButtonDefaults.colors(
+            containerColor = SwissTransferTheme.materialColors.primary,
+            contentColor = SwissTransferTheme.materialColors.onPrimary,
+        )
+    }),
+    Secondary({
+        BasicButtonDefaults.colors(
+            containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
+            contentColor = SwissTransferTheme.materialColors.primary,
+        )
+    }),
+    Tertiary({
+        BasicButtonDefaults.colors(
+            containerColor = Color.Transparent,
+            contentColor = SwissTransferTheme.materialColors.primary,
+            disabledContainerColor = Color.Transparent,
+        )
+    }),
+    Destructive({
+        BasicButtonDefaults.colors(
+            containerColor = SwissTransferTheme.materialColors.error,
+            contentColor = SwissTransferTheme.materialColors.onError,
+        )
+    }),
+    DestructiveText({
+        BasicButtonDefaults.colors(
+            containerColor = Color.Transparent,
+            contentColor = SwissTransferTheme.materialColors.error,
+            disabledContainerColor = Color.Transparent,
+            // Alpha based on Material's `FilledButtonTokens.DisabledLabelTextOpacity`
+            disabledContentColor = SwissTransferTheme.materialColors.error.copy(alpha = 0.38f),
+        )
+    });
+
+    @Composable
+    fun buttonColors() = colors.invoke().buttonColors()
+
+    @Composable
+    fun loaderColors() = colors.invoke().loaderColors()
 }
 
 @Preview(name = "Light", widthDp = 800)

@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,44 +41,51 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
-import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 /**
- * Most basic and customizable button component.
+ * Most basic and customizable button component we can share across multiple apps.
  *
- * Only needed for exceptional edge cases where [LargeButton] or [SmallButton] are not enough and we need more control over the
- * button component.
+ * The button adds a "loader" logic to the default material button. Loading behaviors can be controlled through
+ * [showIndeterminateProgress] and [progress].
  *
  * Specifying a progress has the priority over specifying showIndeterminateProgress.
  */
 @Composable
-fun SwissTransferButton(
+fun BasicButton(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    style: ButtonType = ButtonType.Primary,
+    shape: Shape = ButtonDefaults.shape,
+    colors: BasicButtonColors = BasicButtonDefaults.colors(),
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    border: BorderStroke? = null,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
-    onClick: () -> Unit,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable () -> Unit,
 ) {
     val isProgressing by remember(progress) { derivedStateOf { showIndeterminateProgress() || progress != null } }
     val isEnabled = enabled() && isProgressing.not()
 
-    val buttonColors = style.buttonColors().let { colors -> if (isProgressing) colors.applyEnabledColorsToDisabled() else colors }
-    val progressColors = style.loaderColors()
+    val buttonColors = colors.buttonColors().let { colors ->
+        if (isProgressing) colors.applyEnabledColorsToDisabled() else colors
+    }
+    val progressColors = colors.loaderColors()
 
     Button(
-        modifier = modifier,
-        colors = buttonColors,
-        shape = CustomShapes.MEDIUM,
-        enabled = isEnabled,
-        contentPadding = contentPadding,
         onClick = onClick,
+        modifier = modifier,
+        enabled = isEnabled,
+        shape = shape,
+        colors = buttonColors,
+        elevation = elevation,
+        border = border,
+        contentPadding = contentPadding,
     ) {
         when {
             progress != null -> {
@@ -125,54 +134,26 @@ private fun getProgressModifier(): Modifier {
     return progressModifier
 }
 
-enum class ButtonType(private val colors: @Composable () -> SwissTransferButtonColors) {
-    Primary({
-        SwissTransferButtonColors(
-            containerColor = SwissTransferTheme.materialColors.primary,
-            contentColor = SwissTransferTheme.materialColors.onPrimary,
-        )
-    }),
-    Secondary({
-        SwissTransferButtonColors(
-            containerColor = SwissTransferTheme.colors.tertiaryButtonBackground,
-            contentColor = SwissTransferTheme.materialColors.primary,
-        )
-    }),
-    Tertiary({
-        SwissTransferButtonColors(
-            containerColor = Color.Transparent,
-            contentColor = SwissTransferTheme.materialColors.primary,
-            disabledContainerColor = Color.Transparent,
-        )
-    }),
-    Destructive({
-        SwissTransferButtonColors(
-            containerColor = SwissTransferTheme.materialColors.error,
-            contentColor = SwissTransferTheme.materialColors.onError,
-        )
-    }),
-    DestructiveText({
-        SwissTransferButtonColors(
-            containerColor = Color.Transparent,
-            contentColor = SwissTransferTheme.materialColors.error,
-            disabledContainerColor = Color.Transparent,
-            // Alpha based on Material's `FilledButtonTokens.DisabledLabelTextOpacity`
-            disabledContentColor = SwissTransferTheme.materialColors.error.copy(alpha = 0.38f),
-        )
-    });
-
+object BasicButtonDefaults {
     @Composable
-    fun buttonColors() = colors.invoke().buttonColors()
-
-    @Composable
-    fun loaderColors() = colors.invoke().loaderColors()
+    fun colors(
+        containerColor: Color = Color.Unspecified,
+        contentColor: Color = Color.Unspecified,
+        disabledContainerColor: Color = Color.Unspecified,
+        disabledContentColor: Color = Color.Unspecified,
+    ): BasicButtonColors = BasicButtonColors(
+        containerColor = containerColor,
+        contentColor = contentColor,
+        disabledContainerColor = disabledContainerColor,
+        disabledContentColor = disabledContentColor,
+    )
 }
 
-data class SwissTransferButtonColors(
-    val containerColor: Color = Color.Unspecified,
-    val contentColor: Color = Color.Unspecified,
-    val disabledContainerColor: Color = Color.Unspecified,
-    val disabledContentColor: Color = Color.Unspecified,
+data class BasicButtonColors(
+    private val containerColor: Color,
+    private val contentColor: Color,
+    private val disabledContainerColor: Color,
+    private val disabledContentColor: Color,
 ) {
     @Composable
     fun buttonColors(): ButtonColors = ButtonDefaults.buttonColors(
@@ -183,10 +164,13 @@ data class SwissTransferButtonColors(
     )
 
     @Composable
-    fun loaderColors(): LoaderColors = LoaderColors(
-        progressColor = contentColor,
-        trackColor = contentColor.copy(alpha = TRACK_COLOR_ALPHA),
-    )
+    fun loaderColors(): LoaderColors {
+        val contentColor = buttonColors().contentColor
+        return LoaderColors(
+            progressColor = contentColor,
+            trackColor = contentColor.copy(alpha = TRACK_COLOR_ALPHA),
+        )
+    }
 
     companion object {
         const val TRACK_COLOR_ALPHA = 0.3f
@@ -201,29 +185,24 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                ButtonType.entries.forEach { buttonType ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(Margin.Small)) {
-                        SwissTransferButton(
-                            modifier = Modifier.height(40.dp),
-                            style = buttonType,
-                            onClick = {},
-                            content = { Text("Click me!") },
-                        )
-                        SwissTransferButton(
-                            modifier = Modifier.height(40.dp),
-                            style = buttonType,
-                            onClick = {},
-                            content = { Text("Click me!") },
-                            enabled = { false },
-                        )
-                        SwissTransferButton(
-                            modifier = Modifier.height(40.dp),
-                            style = buttonType,
-                            onClick = {},
-                            progress = { 0.8f },
-                            content = { Text("Click me!") },
-                        )
-                    }
+                Row(horizontalArrangement = Arrangement.spacedBy(Margin.Small)) {
+                    BasicButton(
+                        modifier = Modifier.height(40.dp),
+                        onClick = {},
+                        content = { Text("Click me!") },
+                    )
+                    BasicButton(
+                        modifier = Modifier.height(40.dp),
+                        onClick = {},
+                        content = { Text("Click me!") },
+                        enabled = { false },
+                    )
+                    BasicButton(
+                        modifier = Modifier.height(40.dp),
+                        onClick = {},
+                        progress = { 0.8f },
+                        content = { Text("Click me!") },
+                    )
                 }
             }
         }
