@@ -17,19 +17,35 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.onboarding
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,24 +53,35 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.infomaniak.core.compose.basicbutton.BasicButton
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
-import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLottieIllustration
+import com.infomaniak.core.onboarding.components.DefaultLottieIllustration
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
+import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
+import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopLeft
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopRight
 import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton
@@ -63,6 +90,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
 import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 import kotlinx.coroutines.launch
+import com.infomaniak.core.R as RCore
 
 @Composable
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
@@ -90,20 +118,181 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
         }
     }
 
+    // TODO
+    val accounts = remember { mutableStateListOf(Unit, Unit, Unit) }
+    val skippedIds = remember { mutableStateListOf<Long>() }
+
     OnboardingScaffold(
         pagerState = pagerState,
         onboardingPages = onboardingPages,
         bottomContent = { paddingValues ->
-            BottomContent(
-                modifier = Modifier
+            CrossLoginBottomContent(
+                Modifier
                     .padding(paddingValues)
                     .consumeWindowInsets(paddingValues),
+                accounts = accounts,
+                skippedIds = skippedIds,
+                titleColor = SwissTransferTheme.colors.primaryTextColor,
+                descriptionColor = SwissTransferTheme.colors.secondaryTextColor,
                 isLastPage = { isLastPage },
-                goToMainActivity = goToMainActivity,
-                goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                onGoToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                onLogin = { Log.e("gibran", "OnboardingScreen: Login") },
+                onContinueWithSelectedAccounts = { Log.e("gibran", "OnboardingScreen: Continue with selected accounts") },
+                onOpenAccountBottomSheet = { Log.e("gibran", "OnboardingScreen: Open account bottom sheet") },
+                onCreateAccount = { Log.e("gibran", "OnboardingScreen: New account") }
             )
         },
     )
+}
+
+private const val ANIMATED_BUTTON = "ANIMATED_BUTTON"
+private val FAB_SIZE = 64.dp
+
+object CrossLoginBottomContentDefaults {
+    val buttonShape = RoundedCornerShape(16.dp)
+    val primaryButtonHeight = 56.dp
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun CrossLoginBottomContent(
+    modifier: Modifier = Modifier,
+    accounts: SnapshotStateList<Unit>, // TODO: Use cross app login accounts
+    skippedIds: SnapshotStateList<Long>, // TODO: Use cross app login skippedIds
+    titleColor: Color, // TODO: Extract once we have a design system and shared color tokens
+    descriptionColor: Color, // TODO: Extract once we have a design system and shared color tokens
+    isLastPage: () -> Boolean,
+    onGoToNextPage: () -> Unit,
+    onLogin: () -> Unit,
+    onContinueWithSelectedAccounts: () -> Unit,
+    onOpenAccountBottomSheet: () -> Unit,
+    onCreateAccount: () -> Unit,
+    nextButtonShape: Shape = CrossLoginBottomContentDefaults.buttonShape,
+    primaryButtonShape: Shape = CrossLoginBottomContentDefaults.buttonShape,
+    primaryButtonHeight: Dp = CrossLoginBottomContentDefaults.primaryButtonHeight,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(140.dp),
+    ) {
+        SharedTransitionLayout {
+            AnimatedContent(
+                isLastPage()
+            ) { isLastPage ->
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    if (isLastPage && accounts.isNotEmpty()) {
+                        Button(
+                            modifier = Modifier
+                                .height(64.dp)
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            onClick = onOpenAccountBottomSheet,
+                            colors = ButtonDefaults.textButtonColors(),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                        ) {
+                            Column {
+                                Text("CROSS LOGIN APP", color = titleColor)
+                                Text("${accounts.count()} / ${skippedIds.count()}", color = descriptionColor)
+                            }
+                        }
+                    }
+
+                    if (isLastPage) {
+                        ButtonExpanded(
+                            text = if (accounts.isEmpty()) "Login" else "Continue with this account",
+                            shape = primaryButtonShape,
+                            modifier = Modifier
+                                .sharedElement(
+                                    rememberSharedContentState(key = ANIMATED_BUTTON),
+                                    animatedVisibilityScope = this@AnimatedContent
+                                )
+                                .height(primaryButtonHeight),
+                            onClick = if (accounts.isEmpty()) onLogin else onContinueWithSelectedAccounts,
+                        )
+                    } else {
+                        ButtonNext(
+                            onClick = onGoToNextPage,
+                            shape = nextButtonShape,
+                            modifier = Modifier.sharedElement(
+                                rememberSharedContentState(key = ANIMATED_BUTTON),
+                                animatedVisibilityScope = this@AnimatedContent
+                            )
+                        )
+                    }
+
+                    if (isLastPage && accounts.isEmpty()) {
+                        Button(
+                            modifier = Modifier.height(56.dp),
+                            onClick = onCreateAccount,
+                            colors = ButtonDefaults.textButtonColors()
+                        ) { Text("Create an account") }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun ButtonNext(onClick: () -> Unit, shape: Shape, modifier: Modifier = Modifier) {
+    val buttonWidth = FAB_SIZE
+    val buttonHeight = FAB_SIZE
+
+    BasicButton(
+        modifier = modifier
+            .height(buttonHeight)
+            .padding(horizontal = Margin.Medium)
+            .width(buttonWidth),
+        onClick = onClick,
+        shape = shape,
+        contentPadding = PaddingValues(),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = AppImages.AppIcons.ArrowRight,
+                contentDescription = stringResource(RCore.string.buttonNext),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun ButtonExpanded(text: String, shape: Shape, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    var visibility by rememberSaveable { mutableFloatStateOf(0f) }
+
+    val textVisibility by animateFloatAsState(
+        targetValue = visibility,
+        animationSpec = tween(),
+        label = "Onboarding expanded button text visibility",
+    )
+
+    LaunchedEffect(Unit) { visibility = 1f }
+
+    BasicButton(
+        modifier = modifier
+            .padding(horizontal = Margin.Medium)
+            .width(400.dp),
+        onClick = onClick,
+        shape = shape,
+        contentPadding = PaddingValues(),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = text,
+                style = SwissTransferTheme.typography.bodyMedium,
+                modifier = Modifier.graphicsLayer { alpha = textVisibility }
+            )
+        }
+    }
 }
 
 @Composable
@@ -143,6 +332,7 @@ private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun BottomContent(
     modifier: Modifier = Modifier,
@@ -156,10 +346,24 @@ private fun BottomContent(
             .fillMaxWidth()
             .height(140.dp),
     ) {
-        AnimatedOnboardingButton(
-            isExpanded = { isLastPage() },
-            onClick = { if (isLastPage()) goToMainActivity() else goToNextPage() },
-        )
+        SharedTransitionLayout {
+            AnimatedContent(
+                isLastPage()
+            ) { isLastPage ->
+                Column {
+                    AnimatedOnboardingButton(
+                        isExpanded = isLastPage,
+                        onClick = { if (isLastPage()) goToMainActivity() else goToNextPage() },
+                        modifier = Modifier.sharedElement(
+                            rememberSharedContentState(key = ANIMATED_BUTTON),
+                            animatedVisibilityScope = this@AnimatedContent
+                        )
+                    )
+
+                    if (isLastPage) Button(onClick = {}) { Text("Hello") }
+                }
+            }
+        }
     }
 }
 

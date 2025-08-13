@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.onboarding.components
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -54,36 +52,20 @@ private const val BUTTON_ANIM_DELAY = BUTTON_ANIM_DURATION / 2
 private const val BUTTON_ANIM_NO_DELAY = 0
 private val FAB_SIZE = 64.dp
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun AnimatedOnboardingButton(isExpanded: () -> Boolean, onClick: () -> Unit) {
-    val buttonWidth by animateDpAsState(
-        targetValue = if (isExpanded()) Dimens.SingleButtonMaxWidth else FAB_SIZE,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY),
-        label = "Onboarding button width",
-    )
-
-    val buttonHeight by animateDpAsState(
-        targetValue = if (isExpanded()) Dimens.LargeButtonHeight else FAB_SIZE,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY),
-        label = "Onboarding button height",
-    )
-
-    val arrowDelay = if (isExpanded()) BUTTON_ANIM_NO_DELAY else BUTTON_ANIM_DELAY
-    val arrowVisibility by animateFloatAsState(
-        targetValue = if (isExpanded()) 0f else 1f,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY, delayMillis = arrowDelay),
-        label = "Onboarding arrow visibility",
-    )
-
-    val textDelay = if (isExpanded()) BUTTON_ANIM_DELAY else BUTTON_ANIM_NO_DELAY
-    val textVisibility by animateFloatAsState(
-        targetValue = if (isExpanded()) 1f else 0f,
-        animationSpec = tween(durationMillis = BUTTON_ANIM_DELAY, delayMillis = textDelay),
-        label = "Onboarding text visibility",
-    )
+fun AnimatedOnboardingButton(
+    isExpanded: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val buttonWidth = if (isExpanded) Dimens.SingleButtonMaxWidth else FAB_SIZE
+    val buttonHeight = if (isExpanded) Dimens.LargeButtonHeight else FAB_SIZE
+    val arrowVisibility = if (isExpanded) 0f else 1f
+    val textVisibility = if (isExpanded) 1f else 0f
 
     BasicButton(
-        modifier = Modifier
+        modifier = modifier
             .height(buttonHeight)
             .padding(horizontal = Margin.Medium)
             .width(buttonWidth),
@@ -114,7 +96,7 @@ private fun Preview() {
             var currentPage by remember { mutableStateOf(false) }
 
             AnimatedOnboardingButton(
-                isExpanded = { currentPage },
+                isExpanded = currentPage,
                 onClick = { currentPage = !currentPage },
             )
         }
