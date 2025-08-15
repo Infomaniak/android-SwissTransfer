@@ -17,6 +17,8 @@ room = "2.7.2"
 sentry = "5.8.1"
 swisstransfer = "5.3.1"
 workVersion = "2.10.3"
+ksp = "2.0.21-1.0.28" # Keep the same version as the one in Core
+
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -42,6 +44,7 @@ room-processing = { module = "androidx.room:room-compiler-processing", version.r
 swisstransfer-core = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.github.Infomaniak.multiplatform-SwissTransfer:STNetwork", version.ref = "swisstransfer" }
 workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workVersion" }
+navigation-safeargs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -49,3 +52,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 sentry = { id = "io.sentry.android.gradle", version.ref = "sentry" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

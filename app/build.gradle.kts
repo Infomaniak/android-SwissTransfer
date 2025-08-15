@@ -7,8 +7,9 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.sentry)
-    kotlin("plugin.parcelize")
-    kotlin("plugin.serialization") version libs.versions.kotlin
+
+    alias(core.plugins.ksp)
+    alias(libs.plugins.navigation.safeargs)
 }
 
 val appCompileSdk: Int by rootProject.extra
@@ -149,6 +150,7 @@ dependencies {
     implementation(project(":Core:Compose:BasicButton"))
     implementation(project(":Core:Compose:Basics"))
     implementation(project(":Core:Compose:Margin"))
+    implementation(project(":Core:CrossAppLogin:Front"))
     implementation(project(":Core:FileTypes"))
     implementation(project(":Core:InAppReview"))
     implementation(project(":Core:InAppUpdate"))

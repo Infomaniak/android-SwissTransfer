@@ -31,9 +31,17 @@ include(
     ":app",
     ":Core",
     ":Core:AppIntegrity",
+
+    ":Core:Avatar",
+    ":Core:Auth",
+    ":Core:Coil",
+    ":Core:Compose:MaterialThemeFromXml",
+    ":Core:CrossAppLogin:Back",
+
     ":Core:Compose:BasicButton",
     ":Core:Compose:Basics",
     ":Core:Compose:Margin",
+    ":Core:CrossAppLogin:Front",
     ":Core:FileTypes",
     ":Core:InAppReview",
     ":Core:InAppUpdate",

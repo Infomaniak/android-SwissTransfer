@@ -26,7 +26,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +45,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,11 +55,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,7 +73,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.infomaniak.core.compose.basicbutton.BasicButton
+import com.infomaniak.core.compose.basics.ButtonStyle
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.crossapplogin.front.data.CrossLoginDefaults
+import com.infomaniak.core.crossapplogin.front.views.components.CrossLoginListAccounts
+import com.infomaniak.core.crossapplogin.front.views.components.CrossLoginSelectAccounts
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
 import com.infomaniak.core.onboarding.components.DefaultLottieIllustration
@@ -122,8 +127,8 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
     }
 
     // TODO
-    val accounts = remember { mutableStateListOf(Unit, Unit, Unit) }
-    val skippedIds = remember { mutableStateListOf<Long>() }
+    val accounts = remember { mutableStateListOf<ExternalAccount>() }
+    val skippedIds = remember { mutableStateSetOf<Long>() }
 
     var showAccountsBottomSheet by rememberSaveable { mutableStateOf(false) }
     // TODO: Does it work?
@@ -160,24 +165,12 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
                     if (accountId in localSkipped) localSkipped -= accountId else localSkipped += accountId
                 },
                 onAnotherAccountClicked = { Log.e("gibran", "OnboardingScreen: Use another account") },
-                onSaveClicked = { skippedIds ->
+                onSaveClicked = {
                     Log.e("gibran", "OnboardingScreen: Save ${skippedIds.count()} accounts")
-
                 },
             )
         }
     }
-}
-
-@Composable
-fun CrossLoginListAccounts(
-    accounts: SnapshotStateList<Unit>,
-    skippedIds: SnapshotStateList<Long>,
-    onAccountClicked: (Long) -> Unit,
-    onAnotherAccountClicked: () -> Int,
-    onSaveClicked: (List<Long>) -> Unit
-) {
-    TODO("Not yet implemented")
 }
 
 private const val ANIMATED_BUTTON = "ANIMATED_BUTTON"
@@ -192,8 +185,8 @@ object CrossLoginBottomContentDefaults {
 @Composable
 fun CrossLoginBottomContent(
     modifier: Modifier = Modifier,
-    accounts: SnapshotStateList<Unit>, // TODO: Use cross app login accounts
-    skippedIds: SnapshotStateList<Long>,
+    accounts: SnapshotStateList<ExternalAccount>,
+    skippedIds: SnapshotStateSet<Long>,
     titleColor: Color, // TODO: Extract once we have a design system and shared color tokens
     descriptionColor: Color, // TODO: Extract once we have a design system and shared color tokens
     isLastPage: () -> Boolean,
@@ -224,7 +217,18 @@ fun CrossLoginBottomContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (isLastPage && accounts.isNotEmpty()) {
-                        CrossLoginSelectAccounts(onOpenAccountsBottomSheet, titleColor, accounts, skippedIds, descriptionColor)
+                        CrossLoginSelectAccounts(
+                            accounts = accounts,
+                            skippedIds = skippedIds,
+                            onClick = onOpenAccountsBottomSheet,
+                            customization = CrossLoginDefaults.customize(
+                                colors = CrossLoginDefaults.colors(titleColor = titleColor, descriptionColor = descriptionColor),
+                                buttonStyle = object : ButtonStyle {
+                                    override val height: Dp = primaryButtonHeight
+                                    override val shape: Shape = primaryButtonShape
+                                }
+                            )
+                        )
                     }
 
                     if (isLastPage) {
@@ -259,31 +263,6 @@ fun CrossLoginBottomContent(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun CrossLoginSelectAccounts(
-    onOpenAccountsBottomSheet: () -> Unit,
-    titleColor: Color,
-    accounts: SnapshotStateList<Unit>,
-    skippedIds: SnapshotStateList<Long>,
-    descriptionColor: Color
-) {
-    Button(
-        modifier = Modifier
-            .height(64.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
-        onClick = onOpenAccountsBottomSheet,
-        colors = ButtonDefaults.textButtonColors(),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-    ) {
-        Column {
-            Text("CROSS LOGIN APP", color = titleColor)
-            Text("${accounts.count()} / ${skippedIds.count()}", color = descriptionColor)
         }
     }
 }
