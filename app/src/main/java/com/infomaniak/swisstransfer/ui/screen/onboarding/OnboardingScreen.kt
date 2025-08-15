@@ -44,6 +44,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -78,6 +79,7 @@ import com.infomaniak.core.onboarding.OnboardingScaffold
 import com.infomaniak.core.onboarding.components.DefaultLottieIllustration
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
+import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
@@ -92,6 +94,7 @@ import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 import kotlinx.coroutines.launch
 import com.infomaniak.core.R as RCore
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnboardingScreen(goToMainActivity: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = { Page.entries.size })
@@ -122,6 +125,10 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
     val accounts = remember { mutableStateListOf(Unit, Unit, Unit) }
     val skippedIds = remember { mutableStateListOf<Long>() }
 
+    var showAccountsBottomSheet by rememberSaveable { mutableStateOf(false) }
+    // TODO: Does it work?
+    val localSkipped by rememberSaveable { derivedStateOf { skippedIds } }
+
     OnboardingScaffold(
         pagerState = pagerState,
         onboardingPages = onboardingPages,
@@ -138,11 +145,39 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
                 onGoToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
                 onLogin = { Log.e("gibran", "OnboardingScreen: Login") },
                 onContinueWithSelectedAccounts = { Log.e("gibran", "OnboardingScreen: Continue with selected accounts") },
-                onOpenAccountBottomSheet = { Log.e("gibran", "OnboardingScreen: Open account bottom sheet") },
+                onOpenAccountsBottomSheet = { showAccountsBottomSheet = true },
                 onCreateAccount = { Log.e("gibran", "OnboardingScreen: New account") }
             )
         },
     )
+
+    if (showAccountsBottomSheet) {
+        SwissTransferBottomSheet(onDismissRequest = { showAccountsBottomSheet = false }) {
+            CrossLoginListAccounts(
+                accounts = accounts,
+                skippedIds = skippedIds,
+                onAccountClicked = { accountId: Long ->
+                    if (accountId in localSkipped) localSkipped -= accountId else localSkipped += accountId
+                },
+                onAnotherAccountClicked = { Log.e("gibran", "OnboardingScreen: Use another account") },
+                onSaveClicked = { skippedIds ->
+                    Log.e("gibran", "OnboardingScreen: Save ${skippedIds.count()} accounts")
+
+                },
+            )
+        }
+    }
+}
+
+@Composable
+fun CrossLoginListAccounts(
+    accounts: SnapshotStateList<Unit>,
+    skippedIds: SnapshotStateList<Long>,
+    onAccountClicked: (Long) -> Unit,
+    onAnotherAccountClicked: () -> Int,
+    onSaveClicked: (List<Long>) -> Unit
+) {
+    TODO("Not yet implemented")
 }
 
 private const val ANIMATED_BUTTON = "ANIMATED_BUTTON"
@@ -158,14 +193,16 @@ object CrossLoginBottomContentDefaults {
 fun CrossLoginBottomContent(
     modifier: Modifier = Modifier,
     accounts: SnapshotStateList<Unit>, // TODO: Use cross app login accounts
-    skippedIds: SnapshotStateList<Long>, // TODO: Use cross app login skippedIds
+    skippedIds: SnapshotStateList<Long>,
     titleColor: Color, // TODO: Extract once we have a design system and shared color tokens
     descriptionColor: Color, // TODO: Extract once we have a design system and shared color tokens
     isLastPage: () -> Boolean,
     onGoToNextPage: () -> Unit,
     onLogin: () -> Unit,
     onContinueWithSelectedAccounts: () -> Unit,
-    onOpenAccountBottomSheet: () -> Unit,
+    // Bottom sheet is not shared through the CrossLoginBottomContent because each app has its own style of bottom sheet defined
+    // at the app's level
+    onOpenAccountsBottomSheet: () -> Unit,
     onCreateAccount: () -> Unit,
     nextButtonShape: Shape = CrossLoginBottomContentDefaults.buttonShape,
     primaryButtonShape: Shape = CrossLoginBottomContentDefaults.buttonShape,
@@ -187,21 +224,7 @@ fun CrossLoginBottomContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (isLastPage && accounts.isNotEmpty()) {
-                        Button(
-                            modifier = Modifier
-                                .height(64.dp)
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            onClick = onOpenAccountBottomSheet,
-                            colors = ButtonDefaults.textButtonColors(),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                        ) {
-                            Column {
-                                Text("CROSS LOGIN APP", color = titleColor)
-                                Text("${accounts.count()} / ${skippedIds.count()}", color = descriptionColor)
-                            }
-                        }
+                        CrossLoginSelectAccounts(onOpenAccountsBottomSheet, titleColor, accounts, skippedIds, descriptionColor)
                     }
 
                     if (isLastPage) {
@@ -236,6 +259,31 @@ fun CrossLoginBottomContent(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun CrossLoginSelectAccounts(
+    onOpenAccountsBottomSheet: () -> Unit,
+    titleColor: Color,
+    accounts: SnapshotStateList<Unit>,
+    skippedIds: SnapshotStateList<Long>,
+    descriptionColor: Color
+) {
+    Button(
+        modifier = Modifier
+            .height(64.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        onClick = onOpenAccountsBottomSheet,
+        colors = ButtonDefaults.textButtonColors(),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Column {
+            Text("CROSS LOGIN APP", color = titleColor)
+            Text("${accounts.count()} / ${skippedIds.count()}", color = descriptionColor)
         }
     }
 }
