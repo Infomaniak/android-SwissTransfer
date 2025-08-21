@@ -205,7 +205,7 @@ dependencies {
     // Others
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.lottie)
+    implementation(core.lottie)
     implementation(libs.workmanager)
     implementation(core.kotlinx.serialization.json)
     implementation(core.splitties.toast)
