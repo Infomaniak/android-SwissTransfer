@@ -113,9 +113,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.OnboardingActivity"
-            android:configChanges="colorMode|density|fontScale|fontWeightAdjustment|grammaticalGender|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode" />
+        <activity android:name=".ui.OnboardingActivity" />
 
         <activity
             android:name=".ui.MainActivity"
