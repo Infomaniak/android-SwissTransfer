@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.onboarding
 
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -79,21 +78,9 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
         isHighlighted[currentPage]?.value = true
     }
 
-    BackHandler(pagerState.currentPage > 0) {
-        coroutineScope.launch {
-            pagerState.animateScrollToPage(pagerState.currentPage - 1)
-        }
-    }
-
-    val onboardingPages = buildList {
-        Page.entries.forEachIndexed { index, page ->
-            add(page.toOnboardingPage(isHighlighted, pagerState, index))
-        }
-    }
-
     OnboardingScaffold(
         pagerState = pagerState,
-        onboardingPages = onboardingPages,
+        onboardingPages = Page.entries.mapIndexed { index, page -> page.toOnboardingPage(isHighlighted, pagerState, index) },
         bottomContent = { paddingValues ->
             BottomContent(
                 modifier = Modifier
