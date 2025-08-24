@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+	~ Infomaniak SwissTransfer - Android
+~ Авторские права (C) 2024 Infomaniak Network SA
+~
+~ Эта программа — свободное программное обеспечение: вы можете распространять и/или изменять
+~ ее на условиях Общей публичной лицензии GNU, как опубликовано
+~ Фондом свободного программного обеспечения, либо версии 3 лицензии, либо
+~ (по вашему выбору) любой более поздней версии.
+~
+~ Эта программа распространяется в надежде, что она будет полезной,
+~ но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; без подразумеваемых гарантий
+~ ТОВАРНОЙ ПРИГОДНОСТИ или ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ. См.
+~ Общую публичную лицензию GNU для более подробной информации.
+~
+~ Вы должны были получить копию Общей публичной лицензии GNU
+~ вместе с этой программой. Если нет, смотрите <http://www.gnu.org/licenses/>.
+	-->
+<resources>
+    <string name="appName" translatable="false">SwissTransfer</string>
+    <string name="matomo"" translatable="false">Matomo</string>
+    <string name="sentry" translatable="false">Sentry</string>
+    <string name="notifications_upload_channel_id" translatable="false">upload_channel_id</string>
+
+    <string name="advancedSettingsTitle">Расширенные настройки</string>
+    <string name="awaitingNetwork">Ожидание сети</string>
+    <string name="buttonCancelTransfer">Отменить передачу</string>
+    <string name="buttonCloseAndContinue">Закрыть и продолжить</string>
+    <string name="buttonConfirm">Подтвердить</string>
+    <string name="buttonCopyLink">Скопировать ссылку</string>
+    <string name="buttonDeleteYes">Да, удалить</string>
+    <string name="buttonDownload">Скачать</string>
+    <string name="buttonDownloadSelected">Скачать выбранное</string>
+    <string name="buttonDownloaded">Скачано</string>
+    <string name="buttonDownloading">Загрузка</string>
+    <string name="buttonEditTransfer">Редактировать передачу</string>
+    <string name="buttonFinished">Завершить</string>
+    <string name="buttonOpenMailApp">Открыть почтовое приложение</string>
+    <string name="buttonShare">Поделиться</string>
+    <string name="buttonStart">Начать</string>
+    <string name="cantImportFileX">Невозможно импортировать файл %s</string>
+    <string name="checkingFiles">Проверка файлов…</string>
+    <string name="contentDescriptionButtonBack">Назад</string>
+    <string name="contentDescriptionButtonClose">Закрыть</string>
+    <string name="contentDescriptionButtonHidePassword">Скрыть пароль</string>
+    <string name="contentDescriptionButtonRemove">Удалить файл</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Удалить %s</string>
+    <string name="contentDescriptionButtonShowPassword">Показать пароль</string>
+    <string name="contentDescriptionCreateNewTransferButton">Новая передача</string>
+    <string name="deeplinkPasswordDescription">Введите пароль, который вам дали для скачивания этих файлов.</string>
+    <string name="deeplinkTransferExpired">Срок действия передачи истек</string>
+    <string name="deeplinkTransferNotFound">Данная передача не существует</string>
+    <string name="deleteThisTransferDescription">Эта передача и содержащиеся в ней файлы будут удалены.</string>
+    <string name="deleteThisTransferTitle">Удалить эту передачу?</string>
+    <string name="downloadedTransferLabel">Скачано передач: %d/%d</string>
+    <string name="errorAppIntegrity">Ваше устройство не признано безопасным</string>
+    <string name="errorIncorrectPassword">Неверный пароль</string>
+    <string name="errorTransferPasswordLength">Пароль должен содержать от 6 до 25 символов</string>
+    <string name="expired">Истек</string>
+    <string name="expiresAt">Истекает в %s</string>
+    <string name="expiresIn">Истекает через %d дней</string>
+    <string name="expiresOn">Истекает %s в %s</string>
+    <string name="expiresTomorrow">Истекает завтра</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d файлов</string>
+    <string name="fileCountOverTtsFriendly">%1$d из %2$d файлов</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s из %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d файл</item>
+        <item quantity="other">%d файлов</item>
+    </plurals>
+    <string name="firstTransferDescription">Сделайте свою первую передачу!</string>
+    <string name="importFilesScreenTitle">Файлы для передачи</string>
+    <string name="invalidAddress">Неверный адрес</string>
+    <string name="messageHeader">Сообщение:</string>
+    <string name="myFilesTitle">Мои файлы</string>
+    <string name="networkUnavailable">Сеть недоступна</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Ой, вы действительно хотите отменить?</string>
+    <string name="newTransferLeavingDialogDescription">Ваша передача почти готова. Вы уверены, что хотите отменить?</string>
+    <string name="newTransferLeavingDialogNegativeButton">Нет, продолжить</string>
+    <string name="newTransferLeavingDialogPositiveButton">Да, отменить</string>
+    <string name="noSettingsSelectedDescription">Выберите параметр для отображения</string>
+    <string name="noTransferReceivedDescription">Все передачи, полученные за последние 30 дней, появятся здесь.</string>
+    <string name="noTransferReceivedTitle">Передачи не получены</string>
+    <string name="noTransferSelectedDescription">Выберите передачу или создайте новую.</string>
+    <string name="noTransferSelectedTitle">Нет передач для отображения</string>
+    <string name="notificationTransferDraftDescription">Продолжите с того места, где остановились</string>
+    <string name="notificationTransferDraftTitle">Ожидающая передача</string>
+    <string name="notificationUploadFailureDescription">Произошла ошибка, попробуйте снова</string>
+    <string name="notificationUploadFailureTitle">Передача не удалась</string>
+    <string name="notificationUploadProgressTitle">Идёт передача... (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Ссылка для скачивания отправлена получателям</string>
+    <string name="notificationUploadSuccessDescriptionOther">Нажмите, чтобы получить ссылку для скачивания</string>
+    <string name="notificationUploadSuccessTitle">Передача завершена</string>
+    <string name="notificationsUploadChannelName">Уведомления о загрузке</string>
+    <string name="onboardingExpirationSubtitleArgument">30 дней.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Делитесь файлами через эл. почту, ссылку или QR-коду. Ваши ссылки активны на %s дней</string>
+    <string name="onboardingExpirationTitle">Играйте вашими лучшими картами!</string>
+    <string name="onboardingPasswordSubtitleArgument">пароль.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Защитите свои передачи с помощью %s</string>
+    <string name="onboardingPasswordTitle">Оставайтесь в контроле!</string>
+    <string name="onboardingStorageSubtitleArgument">Делитесь до 50 ГБ</string>
+    <string name="onboardingStorageSubtitleTemplate">%s файлов бесплатно без регистрации.</string>
+    <string name="onboardingStorageTitle">Отправляйте большие файлы!</string>
+    <string name="receivedFilesTitle">Полученные файлы</string>
+    <string name="receivedTitle">Получено</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Получатель:</item>
+        <item quantity="other">Получатели:</item>
+    </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer недоступен в вашем регионе</string>
+    <string name="sentEmptyTitle">Наша история начинается здесь</string>
+    <string name="sentFilesTitle">Отправленные файлы</string>
+    <string name="sentTitle">Отправлено</string>
+    <string name="settingsCategoryAbout">О программе</string>
+    <string name="settingsCategoryDataManagement">Данные и конфиденциальность</string>
+    <string name="settingsCategoryDefaultSettings">Настройки по умолчанию</string>
+    <string name="settingsCategoryGeneral">Общие</string>
+    <string name="settingsDownloadsLimitTitle">Установить лимит загрузок для передач</string>
+    <string name="settingsEmailLanguageTitle">Установить язык по умолчанию для передач по эл. почте</string>
+    <string name="settingsEmailLanguageValueEnglish">Английский</string>
+    <string name="settingsEmailLanguageValueFrench">Французский</string>
+    <string name="settingsEmailLanguageValueGerman">Немецкий</string>
+    <string name="settingsEmailLanguageValueItalian">Итальянский</string>
+    <string name="settingsEmailLanguageValueSpanish">Испанский</string>
+    <string name="settingsEmailLanguageValueRussian">Русский</string>
+    <string name="settingsMatomoDescription">Matomo — это инструмент анализа, размещенный и управляемый исключительно Infomaniak для понимания использования приложения.\n\nИзучая эти данные, наша команда постоянно улучшает интерфейс приложения.</string>
+    <string name="settingsNotificationsTitle">Выберите предпочтение</string>
+    <string name="settingsOptionActivated">Включено</string>
+    <string name="settingsOptionDiscoverInfomaniak">Узнать о Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Лимит загрузок</string>
+    <string name="settingsOptionEmailLanguage">Язык писем в эл. почте</string>
+    <string name="settingsOptionGiveFeedback">Оставить отзыв</string>
+    <string name="settingsOptionNone">Нет</string>
+    <string name="settingsOptionNotifications">Уведомления</string>
+    <string name="settingsOptionPassword">Пароль</string>
+    <string name="settingsOptionShareIdeas">Поделиться идеями</string>
+    <string name="settingsOptionTermsAndConditions">Условия использования</string>
+    <string name="settingsOptionTheme">Тема</string>
+    <string name="settingsOptionThemeDark">Тёмная</string>
+    <string name="settingsOptionThemeLight">Светлая</string>
+    <string name="settingsOptionThemeSystem">Системная</string>
+    <string name="settingsOptionValidityPeriod">Срок действия</string>
+    <string name="settingsPasswordDescription">Вашим получателям потребуется ввести пароль для скачивания файлов.</string>
+    <string name="settingsPasswordToggleDescription">Активировать защиту</string>
+    <string name="settingsThemeTitle">Выберите тему</string>
+    <string name="settingsTitle">Настройки</string>
+    <string name="settingsValidityPeriodTitle">Установить срок действия для передач по умолчанию</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d день</item>
+        <item quantity="other">%d дней</item>
+    </plurals>
+    <string name="sharePasswordButton">Скопировать пароль</string>
+    <string name="sharePasswordDescription">Вот ключ для скачивания файлов!</string>
+    <string name="sharePasswordTitle">Передача защищена</string>
+    <string name="shareQrCodeDescription">Отсканируйте этот QR-код вокруг вас, чтобы поделиться передачей:</string>
+    <string name="shareQrCodeTitle">Быстрый обмен</string>
+    <string name="snackbarLinkCopiedToClipboard">Ссылка скопирована в буфер обмена</string>
+    <string name="sorry">Извините</string>
+    <string name="startActivityCantHandleAction">Не найдено приложение для выполнения этого действия</string>
+    <string name="textFieldOptional">(Необязательно)</string>
+    <string name="tooLargeFilesDescription">Превышен максимальный размер передачи.</string>
+    <string name="tooLargeFilesTitle">Слишком много…</string>
+    <string name="transferContentHeader">Содержимое передачи:</string>
+    <string name="transferExpiredButton">Удалить из истории</string>
+    <string name="transferExpiredDateReachedDescription">Сожалеем, срок действия передачи истек %s. Файлы больше недоступны для скачивания или просмотра.</string>
+    <string name="transferExpiredDescription">Сожалеем, срок действия передачи истек. Файлы больше недоступны для скачивания или просмотра.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Сожалеем, достигнут лимит из %d загрузки.</item>
+        <item quantity="other">Сожалеем, достигнут лимит из %d загрузок.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Эта передача больше недоступна</string>
+    <string name="transferInitializing">Загрузка…</string>
+    <string name="transferListSectionFuture">Будущие</string>
+    <string name="transferListSectionLastWeek">Прошлая неделя</string>
+    <string name="transferListSectionThisMonth">Этот месяц</string>
+    <string name="transferListSectionThisWeek">Эта неделя</string>
+    <string name="transferListSectionToday">Сегодня</string>
+    <string name="transferListSectionYesterday">Вчера</string>
+    <string name="transferMessagePlaceholder">Сообщение?</string>
+    <string name="transferRecipientAddressPlaceholder">Отправить файлы</string>
+    <string name="transferSendButton">Отправить</string>
+    <string name="transferSenderAddressPlaceholder">Ваш адрес эл. почты</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">Остался %s</item>
+        <item quantity="other">Осталось %s</item>
+    </plurals>
+    <string name="transferTypeEmail">Эл. почта</string>
+    <string name="transferTypeLink">Ссылка</string>
+    <string name="transferTypeQrCode">QR код</string>
+    <string name="transferTypeScreenTitle">Передача</string>
+    <string name="transferTypeTitle">Отправить через</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Вы уверены, что хотите отменить передачу?</string>
+    <string name="uploadErrorDescription">Передача не удалась, попробуйте еще раз. Если проблема сохранится, обратитесь в службу поддержки.</string>
+    <string name="uploadErrorTitle">Что-то пошло не так</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">собственные дата-центры без кондиционирования</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">технологическая независимость в Европе.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">Мы проектируем %s, превышая стандарты рынка по энергоэффективности.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">Мы развиваем %s, не идя на компромиссы с экологией, конфиденциальностью и людьми.</string>
+    <string name="uploadProgressIndication">Идёт передача…</string>
+    <string name="uploadProgressTitleArgument">в стороне</string>
+    <string name="uploadProgressTitleTemplate">Что отличает нас %s?</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">Ссылка для скачивания отправлена следующему получателю:</item>
+        <item quantity="other">Ссылка для скачивания отправлена следующим получателям:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Отправлено!</string>
+    <string name="uploadSuccessLinkDescription">Отсканируйте этот QR-код вокруг вас, чтобы поделиться файлами, или скопируйте ссылку ниже.</string>
+    <string name="uploadSuccessLinkTitle">Ваша передача готова!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">Введён неправильный код</string>
+    <string name="validateMailCodeResentFeedback">Код был отправлен на адрес эл. почты %s</string>
+    <string name="validateMailDescription">Мы выслали код на %s. Введите его ниже для подтверждения адреса эл. почты в приложении:</string>
+    <string name="validateMailInfo">Не забудьте проверить папку «Спам» в вашей эл. почте.</string>
+    <string name="validateMailResendCode">Выслать код повторно</string>
+    <string name="validateMailResendCodeTemplate">Выслать код повторно (%ds)</string>
+    <string name="validateMailTitle">Проверьте свою эл. почту</string>
+    <string name="validateMailUnknownError">Произошла ошибка. Пожалуйста, попробуйте позже.</string>
+    <string name="version">Версия</string>
+</resources>
