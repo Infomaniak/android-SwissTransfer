@@ -1,3 +1,5 @@
+[English](README.md) I [Русский](README_RU.md)
+
 # android-SwissTransfer
 
 Send up to 50 GB - Free and without registration - Keep your transfers for up to 30 days.
