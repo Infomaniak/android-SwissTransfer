@@ -122,6 +122,7 @@
     <string name="settingsEmailLanguageValueGerman">German</string>
     <string name="settingsEmailLanguageValueItalian">Italian</string>
     <string name="settingsEmailLanguageValueSpanish">Spanish</string>
+    <string name="settingsEmailLanguageValueRussian">Russian</string>
     <string name="settingsMatomoDescription">Matomo is an analysis tool hosted and managed exclusively by Infomaniak to understand how the application is used.\n\nBy studying this data, our team is able to continually improve the application’s interface.</string>
     <string name="settingsNotificationsTitle">Select a preference</string>
     <string name="settingsOptionActivated">Activated</string>
