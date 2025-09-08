@@ -162,24 +162,24 @@ dependencies {
     implementation(kotlin("reflect"))
 
     implementation(core.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(core.androidx.lifecycle.runtime.ktx)
 
     // Compose
-    implementation(libs.androidx.activity.compose)
+    implementation(core.activity.compose)
     implementation(platform(core.compose.bom))
     implementation(core.compose.foundation) // TODO: To be removed when compose 1.8.0 is stable
     implementation(core.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(core.compose.material3)
     implementation(libs.compose.material3.adaptative.navigation)
-    implementation(libs.navigation.compose)
+    implementation(core.navigation.compose)
     implementation(libs.androidx.constraintlayout.compose)
 
     implementation(libs.accompanist.permissions)
 
-    implementation(libs.androidx.adaptive)
-    implementation(libs.androidx.adaptive.layout)
-    implementation(libs.androidx.adaptive.navigation)
+    implementation(core.androidx.adaptive)
+    implementation(core.androidx.adaptive.layout)
+    implementation(core.androidx.adaptive.navigation)
 
     coreLibraryDesugaring(libs.desugar.jdk)
 
@@ -204,9 +204,9 @@ dependencies {
 
     // Others
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(core.lottie)
-    implementation(libs.workmanager)
+    implementation(core.androidx.datastore.preferences)
+    implementation(core.lottie.compose)
+    implementation(core.androidx.work.runtime.ktx)
     implementation(core.kotlinx.serialization.json)
     implementation(core.splitties.toast)
 
