@@ -41,8 +41,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 private val RESEND_EMAIL_CODE_COOLDOWN = 30.seconds
 
@@ -55,6 +56,7 @@ fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     fun startTimer() {
+        @OptIn(ExperimentalTime::class)
         plannedEnd = (Clock.System.now() + RESEND_EMAIL_CODE_COOLDOWN).epochSeconds
         isRunning = true
     }
@@ -99,8 +101,10 @@ fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: 
     }
 }
 
+@OptIn(ExperimentalTime::class)
 private fun timeUntil(target: Long): Long = target - Clock.System.now().epochSeconds
 
+@OptIn(ExperimentalTime::class)
 private fun Long.isInTheFuture(): Boolean = this >= Clock.System.now().epochSeconds
 
 @PreviewLightAndDark
