@@ -23,13 +23,15 @@ import com.infomaniak.multiplatform_swisstransfer.common.utils.DateUtils.SECONDS
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.groupBySection
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersGroupingManager.toLocalDate
-import kotlinx.datetime.Clock
 import java.util.UUID
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class GroupedTransfersPreviewParameterProvider : PreviewParameterProvider<GroupedTransfers> {
     override val values: Sequence<GroupedTransfers> = sequenceOf(transfersPreviewData.groupBySection(now.toLocalDate()))
 }
 
+@OptIn(ExperimentalTime::class)
 private val now get() = Clock.System.now().epochSeconds
 
 val transfersPreviewData = listOf(

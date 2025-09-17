@@ -31,7 +31,8 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.common.utils.DateUtils.SECONDS_IN_A_DAY
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 enum class ExpiryStatus(@StringRes val stringId: Int) {
     EXPIRED(R.string.expired), // Has expired
@@ -53,6 +54,7 @@ enum class ExpiryStatus(@StringRes val stringId: Int) {
 
 fun TransferUi.expiryStatus(): ExpiryStatus {
     val expiry = expirationDateTimestamp.toDateFromSeconds()
+    @OptIn(ExperimentalTime::class)
     val now = Clock.System.now().epochSeconds.toDateFromSeconds()
     val tomorrow = now.tomorrow()
     return when {
@@ -69,6 +71,7 @@ val TransferUi.daysBeforeExpiry: Int
         fun Long.epochSecondsToDays(): Int = (toDateFromSeconds().startOfTheDay().time / 1_000L / SECONDS_IN_A_DAY).toInt()
 
         val expiry = expirationDateTimestamp.epochSecondsToDays()
+        @OptIn(ExperimentalTime::class)
         val now = Clock.System.now().epochSeconds.epochSecondsToDays()
 
         return expiry - now
@@ -77,6 +80,7 @@ val TransferUi.daysBeforeExpiry: Int
 val TransferUi.isExpired: Boolean
     get() {
         val expiry = expirationDateTimestamp.toDateFromSeconds()
+        @OptIn(ExperimentalTime::class)
         val now = Clock.System.now().epochSeconds.toDateFromSeconds()
         return expiry.before(now) || downloadLeft <= 0
     }
