@@ -17,7 +17,7 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         google()
-        // mavenLocal() // Do not put this in production
+        mavenLocal() // Do not put this in production
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
     }
