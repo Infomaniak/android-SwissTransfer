@@ -9,7 +9,7 @@ hiltAndroidx = "1.2.0"
 kotlin = "2.2.0" # Keep the same version as the one in Core
 qrose = "1.0.1"
 room = "2.8.0"
-sentry = "5.8.1"
+sentry = "5.11.0"
 swisstransfer = "5.3.4"
 
 [libraries]
