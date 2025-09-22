@@ -41,7 +41,7 @@ val crashReport = object : CrashReportInterface {
         category: String,
         level: CrashReportLevel,
         type: BreadcrumbType,
-        data: Map<String, String>?
+        data: Map<String, String>?,
     ) {
         val breadcrumb = Breadcrumb()
         breadcrumb.message = message
