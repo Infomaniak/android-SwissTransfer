@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@file:Suppress("RemoveRedundantQualifierName") //TODO: Report the issue in YouTrack
+@file:Suppress("RemoveRedundantQualifierName") // TODO: Report the issue in YouTrack
 
 package com.infomaniak.swisstransfer.upload
 

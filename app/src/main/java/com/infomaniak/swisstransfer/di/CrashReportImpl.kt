@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.BreadcrumbType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportInterface
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.CrashReportLevel
 import io.sentry.Breadcrumb
@@ -35,11 +36,18 @@ val CrashReportLevel.sentryLevel: SentryLevel
     }
 
 val crashReport = object : CrashReportInterface {
-    override fun addBreadcrumb(message: String, category: String, level: CrashReportLevel, data: Map<String, String>?) {
+    override fun addBreadcrumb(
+        message: String,
+        category: String,
+        level: CrashReportLevel,
+        type: BreadcrumbType,
+        data: Map<String, String>?,
+    ) {
         val breadcrumb = Breadcrumb()
         breadcrumb.message = message
         breadcrumb.category = category
         breadcrumb.level = level.sentryLevel
+        breadcrumb.type = type.value
         data?.forEach { (key, value) -> breadcrumb.setData(key, value) }
         Sentry.addBreadcrumb(breadcrumb)
     }

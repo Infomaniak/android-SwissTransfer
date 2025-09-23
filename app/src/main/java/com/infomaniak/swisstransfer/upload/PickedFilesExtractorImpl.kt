@@ -190,8 +190,8 @@ private const val TAG = "PickedFilesExtractorImpl"
 
 private suspend fun Collection<PickedFile>.withDuplicatedNamesFixed(): List<PickedFile> {
     if (isEmpty()) return emptyList()
-    //TODO: Replace AlreadyUsedFileNamesSet with a non-suspend, Mutex-free version.
-    // We don't need that since we're processing all picked files sequentially.
+    // TODO: Replace AlreadyUsedFileNamesSet with a non-suspend, Mutex-free version.
+    //  We don't need that since we're processing all picked files sequentially.
     val alreadyUsedFileNames = AlreadyUsedFileNamesSet()
     return map { pickedFile ->
         val uniqueName = alreadyUsedFileNames.addUniqueFileName(computeUniqueFileName = { alreadyUsedStrategy ->
