@@ -65,6 +65,7 @@ import com.infomaniak.core.DownloadStatus.InProgress
 import com.infomaniak.core.autoCancelScope
 import com.infomaniak.core.compose.basics.CallableState
 import com.infomaniak.core.compose.basics.withForwardTo
+import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.snackbarMsgResId
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
@@ -243,7 +244,7 @@ class TransferDownloadComposeUi(
         CompositionLocalProvider(LocalRippleConfiguration provides RippleConfiguration(color = Color.White)) {
             IconButton(
                 onClick = onClick,
-                modifier = modifier.padding(4.dp),
+                modifier = modifier.padding(Margin.Micro),
                 colors = IconButtonDefaults.iconButtonColors(
                     contentColor = Color.White,
                     containerColor = SwissTransferTheme.colors.fileStatusButtonBackground,
