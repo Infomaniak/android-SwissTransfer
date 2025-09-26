@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -52,7 +53,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.AdHe
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.NetworkUnavailable
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.Progress
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.CheckingAppIntegrity
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.CheckingFiles

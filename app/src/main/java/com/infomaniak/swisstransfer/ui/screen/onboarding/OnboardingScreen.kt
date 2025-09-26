@@ -46,6 +46,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLargeWindow
+import com.infomaniak.core.compose.preview.PreviewSmallWindow
 import com.infomaniak.core.onboarding.IndicatorStyle
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
@@ -60,8 +62,6 @@ import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCor
 import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewSmallWindow
 import kotlinx.coroutines.launch
 
 @Composable

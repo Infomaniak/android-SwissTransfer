@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.basics.CallableState
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
@@ -40,7 +41,6 @@ import com.infomaniak.swisstransfer.ui.images.illus.uploadError.GhostMagnifyingG
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.upload.UploadState
 import com.infomaniak.core.R as RCore
 

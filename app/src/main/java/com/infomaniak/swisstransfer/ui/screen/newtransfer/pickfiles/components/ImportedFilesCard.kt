@@ -48,6 +48,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.R
@@ -66,7 +67,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getHumanReadableSize
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.parcelize.Parcelize
 
 @Composable

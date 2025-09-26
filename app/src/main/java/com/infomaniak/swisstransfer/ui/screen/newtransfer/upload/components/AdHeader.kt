@@ -41,12 +41,12 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressAdType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {

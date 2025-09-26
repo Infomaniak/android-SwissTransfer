@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -50,7 +51,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ShareAndCopyButtons
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {

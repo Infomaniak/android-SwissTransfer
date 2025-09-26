@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
@@ -45,7 +46,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel.TransferUiState
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 

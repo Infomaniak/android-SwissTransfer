@@ -70,6 +70,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.core.utils.isValidEmail
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
@@ -77,7 +78,6 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTextFieldDefaults
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

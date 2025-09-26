@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -51,7 +52,6 @@ import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun UploadSuccessEmailScreen(

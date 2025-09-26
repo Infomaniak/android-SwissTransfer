@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
@@ -35,7 +36,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun TransferOptionType(

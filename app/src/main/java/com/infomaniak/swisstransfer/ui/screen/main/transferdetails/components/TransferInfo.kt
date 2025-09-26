@@ -39,6 +39,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
@@ -51,7 +52,6 @@ import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewPar
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.utils.getWholeDate
 
 @Composable

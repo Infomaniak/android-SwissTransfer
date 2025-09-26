@@ -40,11 +40,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.CrossThick
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

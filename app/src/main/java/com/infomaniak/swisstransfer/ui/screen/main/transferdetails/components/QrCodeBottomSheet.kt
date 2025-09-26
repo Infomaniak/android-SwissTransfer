@@ -26,12 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.QrCode
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

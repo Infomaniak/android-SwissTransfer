@@ -22,11 +22,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 val AppIllus.Sentry: ThemedImage
     get() = _sentry ?: object : ThemedImage {

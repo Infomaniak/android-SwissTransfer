@@ -72,6 +72,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.core.utils.FORMAT_DATE_FULL
 import com.infomaniak.core.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
@@ -103,7 +104,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.Tr
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openFile
 import com.infomaniak.swisstransfer.ui.utils.shareText

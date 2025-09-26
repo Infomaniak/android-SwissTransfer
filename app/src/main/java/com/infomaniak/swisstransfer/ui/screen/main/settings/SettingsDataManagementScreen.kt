@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -48,7 +49,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingIt
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openUrl
 import com.infomaniak.core.R as RCore

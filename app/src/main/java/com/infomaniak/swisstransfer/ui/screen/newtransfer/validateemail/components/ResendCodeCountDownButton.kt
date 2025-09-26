@@ -32,11 +32,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged

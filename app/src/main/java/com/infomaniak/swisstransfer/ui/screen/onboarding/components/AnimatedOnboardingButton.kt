@@ -40,13 +40,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.basicbutton.BasicButton
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 import com.infomaniak.core.R as RCore
 
 private const val BUTTON_ANIM_DURATION = 300

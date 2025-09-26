@@ -26,6 +26,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BottomStickyButtonScaffold
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -34,7 +35,6 @@ import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 @Composable
 fun TransferExpiredDownloadCreditScreen(onCloseClicked: (() -> Unit)? = null) {

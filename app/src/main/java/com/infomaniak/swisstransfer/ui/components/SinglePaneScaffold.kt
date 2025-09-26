@@ -29,10 +29,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.infomaniak.core.compose.preview.PreviewLargeWindow
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLargeWindow
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun SinglePaneScaffold(

@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -40,7 +41,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.TransferOptionState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewLightAndDark
 
 @Composable
 fun TransferOptionsTypes(

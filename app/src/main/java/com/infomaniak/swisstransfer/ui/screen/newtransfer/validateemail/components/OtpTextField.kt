@@ -54,9 +54,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.HideSelectAllTextToolbar
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.PreviewAllWindows
 
 /**
  * @throws IllegalStateException if the first otpText is bigger than the maximum specified number of characters specified by
