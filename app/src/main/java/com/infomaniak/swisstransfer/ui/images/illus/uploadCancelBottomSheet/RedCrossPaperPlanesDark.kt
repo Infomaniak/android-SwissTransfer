@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 
 public val AppIllus.RedCrossPaperPlanesDark: ImageVector
@@ -415,7 +416,7 @@ private var _redCrossPaperPlanesDark: ImageVector? = null
 @Preview
 @Composable
 private fun Preview() {
-    Box(modifier = Modifier.padding(12.dp)) {
+    Box(modifier = Modifier.padding(Margin.Small)) {
         Image(imageVector = AppIllus.RedCrossPaperPlanesDark, contentDescription = null)
     }
 }
