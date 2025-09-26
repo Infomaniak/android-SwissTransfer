@@ -34,6 +34,7 @@ include(
     ":Core:Compose:BasicButton",
     ":Core:Compose:Basics",
     ":Core:Compose:Margin",
+    ":Core:Compose:Preview",
     ":Core:FileTypes",
     ":Core:InAppReview",
     ":Core:InAppUpdate",
