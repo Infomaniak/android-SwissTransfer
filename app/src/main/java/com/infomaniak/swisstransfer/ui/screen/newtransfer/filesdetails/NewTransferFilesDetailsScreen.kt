@@ -26,11 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.compose.bottomstickybuttonscaffold.SinglePaneScaffold
 import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
-import com.infomaniak.swisstransfer.ui.components.SinglePaneScaffold
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
@@ -38,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.FilesDetailsUiState
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -83,6 +84,7 @@ private fun NewTransferFilesDetailsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     SinglePaneScaffold(
+        maxScreenWidth = Dimens.MaxSinglePaneScreenWidth,
         topBar = {
             SwissTransferTopAppBar(
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
