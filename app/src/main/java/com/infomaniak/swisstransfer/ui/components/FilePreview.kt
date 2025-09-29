@@ -45,6 +45,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.video.VideoFrameDecoder
+import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -145,7 +146,7 @@ private fun FileNamePreview(@PreviewParameter(FileUiListPreviewParameter::class)
                 circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
                 circleSize = 40.dp,
                 showFileName = true,
-                fileIconContentPadding = PaddingValues(8.dp),
+                fileIconContentPadding = PaddingValues(Margin.Mini),
             )
         }
     }
@@ -161,7 +162,7 @@ private fun NoFileNamePreview(@PreviewParameter(FileUiListPreviewParameter::clas
                 circleColor = SwissTransferTheme.materialColors.surfaceContainerHighest,
                 circleSize = 40.dp,
                 showFileName = false,
-                fileIconContentPadding = PaddingValues(8.dp),
+                fileIconContentPadding = PaddingValues(Margin.Mini),
             )
         }
     }
