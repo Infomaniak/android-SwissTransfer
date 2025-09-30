@@ -165,7 +165,7 @@ dependencies {
     implementation(project(":Core:AppIntegrity"))
     implementation(project(":Core:Compose:BasicButton"))
     implementation(project(":Core:Compose:Basics"))
-    implementation(project(":Core:Compose:BottomStickyButtonScaffold"))
+    implementation(project(":Core:Compose:BottomStickyButtonScaffolds"))
     implementation(project(":Core:Compose:Margin"))
     implementation(project(":Core:Compose:Preview"))
     implementation(project(":Core:FileTypes"))
