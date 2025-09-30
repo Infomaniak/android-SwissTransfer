@@ -42,7 +42,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.infomaniak.core.compose.bottomstickybuttonscaffold.DoubleButtonCombo
+import com.infomaniak.core.compose.bottomstickybuttonscaffolds.DoubleStackedButtonScaffold
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
@@ -119,7 +119,7 @@ private fun BottomSheetContent(
             Spacer(Modifier.height(Margin.Large))
         }
 
-        DoubleButtonCombo(
+        DoubleStackedButtonScaffold(
             modifier = Modifier.padding(bottom = Dimens.ButtonComboVerticalPadding),
             topButton = topButton,
             bottomButton = bottomButton,
