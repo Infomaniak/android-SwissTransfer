@@ -46,6 +46,10 @@ fun SwissTransferTheme(
     content: @Composable () -> Unit,
 ) {
     val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
+    val scaffoldTheme = ScaffoldThemeDefault.copy(
+        singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
+        stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
+    )
     val activity = LocalActivity.current
     LaunchedEffect(isDarkTheme) {
         val window = activity?.window ?: return@LaunchedEffect
@@ -57,7 +61,7 @@ fun SwissTransferTheme(
         LocalCustomColorScheme provides customColors,
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
         LocalIsDarkMode provides isDarkTheme,
-        LocalScaffoldTheme provides ScaffoldThemeDefault
+        LocalScaffoldTheme provides scaffoldTheme
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
