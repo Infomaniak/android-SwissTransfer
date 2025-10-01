@@ -46,7 +46,7 @@ fun SwissTransferTheme(
     content: @Composable () -> Unit,
 ) {
     val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
-    val scaffoldTheme = ScaffoldThemeDefault.copy(
+    val scaffoldTheme = ScaffoldThemeDefault.theme(
         singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
         stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
     )
