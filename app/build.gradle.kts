@@ -1,12 +1,12 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(core.plugins.kotlin.android)
     alias(core.plugins.compose.compiler)
-    alias(libs.plugins.kapt)
-    alias(libs.plugins.hilt)
+    alias(core.plugins.kotlin.android)
     alias(core.plugins.sentry.plugin)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kapt)
     kotlin("plugin.parcelize")
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
