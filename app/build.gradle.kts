@@ -132,6 +132,7 @@ configurations.configureEach {
 }
 
 sentry {
+    autoInstallation.sentryVersion.set(core.versions.sentry)
     org = "sentry"
     projectName = "swisstransfer-android"
     authToken = sentryAuthToken
