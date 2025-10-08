@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import androidx.compose.runtime.LongState
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 
 sealed interface UploadState {
@@ -31,7 +32,10 @@ sealed interface UploadState {
 
         val info: TransferInfo
 
-        data class CheckingFiles(override val info: TransferInfo) : Ongoing
+        data class CheckingFiles(
+            override val info: TransferInfo,
+            val progressState: LongState,
+        ) : Ongoing
         data class CheckingAppIntegrity(override val info: TransferInfo) : Ongoing
 
         data class Uploading(
