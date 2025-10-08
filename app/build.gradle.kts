@@ -6,7 +6,7 @@ plugins {
     alias(core.plugins.compose.compiler)
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.sentry)
+    alias(core.plugins.sentry.plugin)
     kotlin("plugin.parcelize")
     kotlin("plugin.serialization") version libs.versions.kotlin
 }
@@ -14,10 +14,6 @@ plugins {
 val appCompileSdk: Int by rootProject.extra
 val appMinSdk: Int by rootProject.extra
 val javaVersion: JavaVersion by rootProject.extra
-
-val envProperties = rootProject.file("env.properties").takeIf { it.exists() }?.let { file ->
-    Properties().also { it.load(file.reader()) }
-}
 
 android {
     namespace = "com.infomaniak.swisstransfer"
@@ -119,6 +115,10 @@ kapt {
 
 val isRelease = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
 
+val envProperties = rootProject.file("env.properties")
+    .takeIf { it.exists() }
+    ?.let { file -> Properties().also { it.load(file.reader()) } }
+
 val sentryAuthToken = envProperties?.getProperty("sentryAuthToken")
     .takeUnless { it.isNullOrBlank() }
     ?: if (isRelease) error("The `sentryAuthToken` property in `env.properties` must be specified (see `env.example.properties`).") else ""
@@ -138,9 +138,22 @@ sentry {
     authToken = sentryAuthToken
     url = "https://sentry-mobile.infomaniak.com"
     includeDependenciesReport = false
-    includeNativeSources = isRelease
     includeSourceContext = isRelease
+
+    // Enables or disables the automatic upload of mapping files during a build.
+    // If you disable this, you'll need to manually upload the mapping files with sentry-cli when you do a release.
+    // Default is enabled.
+    autoUploadProguardMapping = true
+
+    // Disables or enables the automatic configuration of Native Symbols for Sentry.
+    // This executes sentry-cli automatically so you don't need to do it manually.
+    // Default is disabled.
     uploadNativeSymbols = isRelease
+
+    // Does or doesn't include the source code of native code for Sentry.
+    // This executes sentry-cli with the --include-sources param. automatically so you don't need to do it manually.
+    // Default is disabled.
+    includeNativeSources = isRelease
 }
 
 dependencies {
