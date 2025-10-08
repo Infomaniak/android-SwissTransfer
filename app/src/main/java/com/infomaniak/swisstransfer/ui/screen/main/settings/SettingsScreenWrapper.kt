@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.compose.preview.PreviewAllWindows
-import com.infomaniak.core.extensions.goToPlayStore
+import com.infomaniak.core.extensions.goToAppStore
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -130,9 +130,9 @@ private fun ListPane(
                 SHARE_IDEAS -> context.openUrl(userReportURL)
                 GIVE_FEEDBACK -> if (BuildConfig.DEBUG) {
                     // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
-                    context.goToPlayStore("com.infomaniak.swisstransfer")
+                    context.goToAppStore("com.infomaniak.swisstransfer")
                 } else {
-                    context.goToPlayStore()
+                    context.goToAppStore()
                 }
                 else -> {
                     // Navigate to the detail pane with the passed item
