@@ -71,7 +71,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLightAndDark
-import com.infomaniak.core.utils.isValidEmail
+import com.infomaniak.core.utils.isEmailRfc5321Compliant
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextFieldDefaults
@@ -196,7 +196,7 @@ private class EmailAddressTextFieldState(
 
     fun addRecipientAddress(newValue: String = textFieldValue.text): Boolean {
         val trimmedText = newValue.trim()
-        if (trimmedText.isValidEmail()) {
+        if (trimmedText.isEmailRfc5321Compliant()) {
             validatedRecipientsEmails.set(validatedRecipientsEmails.get() + trimmedText)
             clearTextValue()
             return true

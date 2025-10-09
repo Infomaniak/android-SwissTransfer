@@ -35,7 +35,7 @@ import com.infomaniak.core.compose.basics.collectAsStateIn
 import com.infomaniak.core.mapSync
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.tryCompletingWhileTrue
-import com.infomaniak.core.utils.isValidEmail
+import com.infomaniak.core.utils.isEmailRfc5321Compliant
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
@@ -138,12 +138,12 @@ class PickFilesViewModel @Inject constructor(
 
     //region Transfer Author Email
     private var transferAuthorEmail by mutableStateOf("")
-    private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isValidEmail() }
+    private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isEmailRfc5321Compliant() }
     //endregion
 
     //region Recipient Email
     private var recipientEmail by mutableStateOf("")
-    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.isValidEmail() }
+    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.isEmailRfc5321Compliant() }
     private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
