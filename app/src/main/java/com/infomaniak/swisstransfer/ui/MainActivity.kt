@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
         }
 
         lifecycleScope.launch {
-            var transferDirection = TransferDirection.RECEIVED
+            var deeplinkTransferDirection: TransferDirection? = null
             val deepLinkTypeFromURL = DeepLinkType.fromURL(intent.data.toString())
             when (deepLinkTypeFromURL) {
                 is DeepLinkType.DeleteTransfer -> {
@@ -96,9 +96,9 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     intent.setData(null)
                 }
                 is DeepLinkType.OpenTransfer -> {
-                    transferDirection =
-                        deeplinkViewModel.getDeeplinkTransferDirection(deepLinkTypeFromURL.uuid) ?: transferDirection
-                    if (transferDirection == TransferDirection.SENT) {
+                    deeplinkTransferDirection = deeplinkViewModel.getDeeplinkTransferDirection(deepLinkTypeFromURL.uuid)
+                        ?: TransferDirection.RECEIVED
+                    if (deeplinkTransferDirection == TransferDirection.SENT) {
                         // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
                         intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
                     }
@@ -163,7 +163,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                                 }
                             )
                         } else {
-                            MainScreen(deeplinkTransferDirection = transferDirection)
+                            MainScreen(deeplinkTransferDirection)
                         }
                     }
                 }
