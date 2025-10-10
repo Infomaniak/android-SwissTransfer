@@ -33,6 +33,7 @@ include(
     ":Core:AppIntegrity",
     ":Core:Compose:BasicButton",
     ":Core:Compose:Basics",
+    ":Core:Compose:BottomStickyButtonScaffolds",
     ":Core:Compose:Margin",
     ":Core:Compose:Preview",
     ":Core:FileTypes",
