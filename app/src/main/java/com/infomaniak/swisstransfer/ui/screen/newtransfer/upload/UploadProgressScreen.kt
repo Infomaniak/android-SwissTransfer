@@ -85,7 +85,10 @@ fun UploadOngoingScreen(
 
             Spacer(Modifier.height(Margin.Medium))
 
-            Text(text = stringResource(R.string.uploadProgressIndication), style = SwissTransferTheme.typography.h2)
+            Text(
+                text = if (progress is CheckingFiles) stringResource(R.string.checkingFiles) else stringResource(R.string.uploadProgressIndication),
+                style = SwissTransferTheme.typography.h2
+            )
 
             Spacer(Modifier.height(Margin.Mini))
 
@@ -117,12 +120,29 @@ private fun UploadStatus(progress: () -> Ongoing) {
                 NetworkUnavailable(modifier = Modifier.alpha(0f))
 
                 when (state) {
-                    is CheckingFiles -> Text(stringResource(R.string.checkingFiles))
+                    is CheckingFiles -> CheckingProgress(progress)
                     is CheckingAppIntegrity -> Text(stringResource(R.string.transferInitializing))
                     is Uploading -> UploadProgress(progress)
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CheckingProgress(state: () -> Ongoing) = Column(
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+    val totalSize by remember { derivedStateOf { state().info.totalSize } }
+    val progress by remember { derivedStateOf { (state() as? CheckingFiles)?.progressState?.longValue ?: 0 } }
+
+    if (progress == 0L) {
+        Text(stringResource(R.string.transferInitializing))
+    } else {
+        Progress(
+            uploadedSize = { progress },
+            totalSizeInBytes = totalSize
+        )
     }
 }
 

@@ -48,6 +48,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -95,8 +96,19 @@ class UploadSessionManager @Inject constructor(
         ) {
             repeatWhileActive retryLoop@{
                 return@tryCompletingUnlessCancelled runCatching {
-                    currentState = UploadState.Ongoing.CheckingFiles(startRequestWithTheoreticalSizes.info)
-                    startRequestWithTheoreticalSizes.withExactSizes()
+                    val checkingProgressState = mutableLongStateOf(0)
+                    currentState = UploadState.Ongoing.CheckingFiles(
+                        info = startRequestWithTheoreticalSizes.info,
+                        progressState = checkingProgressState,
+                    )
+                    startRequestWithTheoreticalSizes.withExactSizes(
+                        progressObserver = { _, _, getTotal ->
+                            repeatWhileActive {
+                                checkingProgressState.longValue = getTotal()
+                                delay(0.1.seconds)
+                            }
+                        }
+                    )
                 }.cancellable().getOrElse { t ->
                     SentryLog.e(TAG, "Failed to measure the exact size of a picked file", t)
                     val newState: UploadState = when (t) {
@@ -300,8 +312,10 @@ private val fileChunkSizeManager = FileChunkSizeManager(
     maxChunkCount = MAX_CHUNK_COUNT,
 )
 
-private suspend fun StartUploadRequest.withExactSizes(): StartUploadRequest {
-    val pickedFilesWithExactSizes = files.measureSizes()
+private suspend fun StartUploadRequest.withExactSizes(
+    progressObserver: FilesCheckProgressObserver
+): StartUploadRequest {
+    val pickedFilesWithExactSizes = files.measureSizes(progressObserver = progressObserver)
     return copy(
         files = pickedFilesWithExactSizes,
         info = info.copy(
