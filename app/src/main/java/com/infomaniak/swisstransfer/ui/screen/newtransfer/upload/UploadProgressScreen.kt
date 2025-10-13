@@ -86,11 +86,7 @@ fun UploadOngoingScreen(
             Spacer(Modifier.height(Margin.Medium))
 
             Text(
-                text = if (progress is CheckingFiles) {
-                    stringResource(R.string.checkingFiles)
-                } else {
-                    stringResource(R.string.uploadProgressIndication)
-                },
+                text = if (progress is CheckingFiles) stringResource(R.string.checkingFiles) else stringResource(R.string.uploadProgressIndication),
                 style = SwissTransferTheme.typography.h2
             )
 

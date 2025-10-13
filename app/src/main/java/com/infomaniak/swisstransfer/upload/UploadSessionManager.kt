@@ -102,7 +102,7 @@ class UploadSessionManager @Inject constructor(
                         progressState = checkingProgressState,
                     )
                     startRequestWithTheoreticalSizes.withExactSizes(
-                        progressObserver = { pickedFilesWithCountedByteTotals, theoreticalTotalBytes, getTotal ->
+                        progressObserver = { _, _, getTotal ->
                             repeatWhileActive {
                                 checkingProgressState.longValue = getTotal()
                                 delay(0.1.seconds)
@@ -313,7 +313,7 @@ private val fileChunkSizeManager = FileChunkSizeManager(
 )
 
 private suspend fun StartUploadRequest.withExactSizes(
-    progressObserver: FilesCheckProgressObserver = FilesCheckProgressObserver { _, _, _ -> awaitCancellation() }
+    progressObserver: FilesCheckProgressObserver
 ): StartUploadRequest {
     val pickedFilesWithExactSizes = files.measureSizes(progressObserver = progressObserver)
     return copy(
