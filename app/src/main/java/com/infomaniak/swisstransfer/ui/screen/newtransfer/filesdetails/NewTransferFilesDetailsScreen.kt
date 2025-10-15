@@ -84,7 +84,6 @@ private fun NewTransferFilesDetailsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     SinglePaneScaffold(
-        maxPaneWidth = Dimens.MaxSinglePaneScreenWidth,
         topBar = {
             SwissTransferTopAppBar(
                 navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
