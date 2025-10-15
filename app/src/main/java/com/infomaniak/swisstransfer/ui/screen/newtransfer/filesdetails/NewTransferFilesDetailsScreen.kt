@@ -38,7 +38,6 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.FilesDetailsUiState
-import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
