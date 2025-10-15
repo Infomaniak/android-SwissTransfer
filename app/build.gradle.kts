@@ -1,14 +1,17 @@
 import java.util.Properties
 
+/**
+ * Don't change the order in this `plugins` block, it will mess things up.
+ */
 plugins {
-    alias(core.plugins.compose.compiler)
-    alias(core.plugins.kotlin.android)
-    alias(core.plugins.sentry.plugin)
     alias(libs.plugins.android.application)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kapt)
+    alias(core.plugins.compose.compiler)
+    alias(core.plugins.kapt)
+    alias(core.plugins.kotlin.android)
+    alias(core.plugins.sentry.plugin)
     kotlin("plugin.parcelize")
-    kotlin("plugin.serialization") version libs.versions.kotlin
+    kotlin("plugin.serialization") version core.versions.kotlin
 }
 
 val appCompileSdk: Int by rootProject.extra
