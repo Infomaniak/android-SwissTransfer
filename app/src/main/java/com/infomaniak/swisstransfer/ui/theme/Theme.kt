@@ -33,6 +33,8 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import com.infomaniak.core.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
+import com.infomaniak.core.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
 
 val LocalIsDarkMode = staticCompositionLocalOf { false }
 val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }
@@ -44,6 +46,10 @@ fun SwissTransferTheme(
     content: @Composable () -> Unit,
 ) {
     val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
+    val scaffoldTheme = ScaffoldThemeDefault.theme(
+        singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
+        stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
+    )
     val activity = LocalActivity.current
     LaunchedEffect(isDarkTheme) {
         val window = activity?.window ?: return@LaunchedEffect
@@ -55,6 +61,7 @@ fun SwissTransferTheme(
         LocalCustomColorScheme provides customColors,
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
         LocalIsDarkMode provides isDarkTheme,
+        LocalScaffoldTheme provides scaffoldTheme
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
