@@ -35,14 +35,14 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 
 @Composable
 fun Progress(
-    uploadedSize: () -> Long,
+    processedSize: () -> Long,
     totalSizeInBytes: Long,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier) {
-        Percentage({ uploadedSize() }, totalSizeInBytes)
+        Percentage({ processedSize() }, totalSizeInBytes)
         Text(text = " - ")
-        UploadedSize { uploadedSize() }
+        UploadedSize { processedSize() }
         Text(text = " / ")
         TotalSize(totalSizeInBytes)
     }
@@ -89,7 +89,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             Progress(
-                uploadedSize = { 73_614L },
+                processedSize = { 73_614L },
                 totalSizeInBytes = 3_279_218L,
             )
         }
