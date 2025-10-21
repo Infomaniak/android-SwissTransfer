@@ -140,7 +140,7 @@ private fun CheckingProgress(state: () -> Ongoing) = Column(
         Text(stringResource(R.string.transferInitializing))
     } else {
         Progress(
-            uploadedSize = { progress },
+            processedSize = { progress },
             totalSizeInBytes = totalSize
         )
     }
@@ -157,7 +157,7 @@ private fun UploadProgress(state: () -> Ongoing) = Column(
         null -> Unit
         Status.WaitingForInternet -> NetworkUnavailable()
         Status.InProgress -> Progress(
-            uploadedSize = { uploadedBytes },
+            processedSize = { uploadedBytes },
             totalSizeInBytes = totalSize
         )
     }
