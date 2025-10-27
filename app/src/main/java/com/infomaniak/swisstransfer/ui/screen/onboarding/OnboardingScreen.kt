@@ -38,6 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLargeWindow
@@ -104,10 +105,10 @@ private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>
         },
         text = {
             HighlightedTitleAndDescription(
-                titleRes = titleRes,
+                title = stringResource(titleRes),
                 textStyle = SwissTransferTheme.typography.specificLight22,
-                subtitleTemplateRes = subtitleTemplateRes,
-                subtitleArgumentRes = subtitleArgumentRes,
+                subtitleTemplate = stringResource(subtitleTemplateRes),
+                subtitleArgument = stringResource(subtitleArgumentRes),
                 highlightedTextStyle = SwissTransferTheme.typography.h1,
                 highlightedAngleDegree = highlightAngleDegree,
                 descriptionWidth = Dimens.DescriptionWidth,
