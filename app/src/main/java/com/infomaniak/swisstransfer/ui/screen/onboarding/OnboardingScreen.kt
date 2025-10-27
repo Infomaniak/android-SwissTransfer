@@ -20,17 +20,13 @@ package com.infomaniak.swisstransfer.ui.screen.onboarding
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -43,7 +39,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLargeWindow
@@ -53,8 +48,8 @@ import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultBackground
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLottieIllustration
+import com.infomaniak.core.onboarding.components.OnboardingComponents.HighlightedTitleAndDescription
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopLeft
@@ -109,34 +104,19 @@ private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>
             DefaultLottieIllustration(lottieRawRes = illustrationRes, isCurrentPageVisible = { pagerState.currentPage == index })
         },
         text = {
-            TitleAndDescription(
-                page = this,
+            HighlightedTitleAndDescription(
+                title = stringResource(titleRes),
+                textStyle = SwissTransferTheme.typography.specificLight22,
+                subtitleTemplate = stringResource(subtitleTemplateRes),
+                subtitleArgument = stringResource(subtitleArgumentRes),
+                highlightedTextStyle = SwissTransferTheme.typography.h1,
+                highlightedAngleDegree = highlightAngleDegree,
+                descriptionWidth = Dimens.DescriptionWidth,
+                highlightedColor = SwissTransferTheme.colors.highlightedColor,
                 isHighlighted = { isHighlighted[this]?.value ?: false }
             )
         }
     )
-
-@Composable
-private fun TitleAndDescription(page: Page, isHighlighted: () -> Boolean) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            textAlign = TextAlign.Center,
-            text = stringResource(page.titleRes),
-            style = SwissTransferTheme.typography.specificLight22,
-        )
-
-        Spacer(modifier = Modifier.height(Margin.Mini))
-
-        HighlightedText(
-            modifier = Modifier.widthIn(max = Dimens.DescriptionWidth),
-            templateRes = page.subtitleTemplateRes,
-            argumentRes = page.subtitleArgumentRes,
-            style = SwissTransferTheme.typography.h1,
-            angleDegrees = page.highlightAngleDegree,
-            isHighlighted = isHighlighted,
-        )
-    }
-}
 
 @Composable
 private fun BottomContent(

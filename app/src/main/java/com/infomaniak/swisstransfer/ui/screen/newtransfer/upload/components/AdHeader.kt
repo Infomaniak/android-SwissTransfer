@@ -35,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -42,8 +43,8 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.onboarding.components.HighlightedText
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressAdType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -64,9 +65,10 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
         Spacer(Modifier.height(Margin.Giant))
 
         HighlightedText(
-            templateRes = R.string.uploadProgressTitleTemplate,
-            argumentRes = R.string.uploadProgressTitleArgument,
+            template = stringResource(R.string.uploadProgressTitleTemplate),
+            argument = stringResource(R.string.uploadProgressTitleArgument),
             style = SwissTransferTheme.typography.bodyMedium,
+            highlightedColor = SwissTransferTheme.colors.highlightedColor,
             isHighlighted = { isHighlighted },
         )
 
