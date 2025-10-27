@@ -42,8 +42,8 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.onboarding.components.HighlightedText
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.HighlightedText
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadProgressAdType
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -67,6 +67,7 @@ fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
             templateRes = R.string.uploadProgressTitleTemplate,
             argumentRes = R.string.uploadProgressTitleArgument,
             style = SwissTransferTheme.typography.bodyMedium,
+            highlightedColor = SwissTransferTheme.colors.highlightedColor,
             isHighlighted = { isHighlighted },
         )
 
