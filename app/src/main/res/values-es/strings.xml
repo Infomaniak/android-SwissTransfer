@@ -182,6 +182,10 @@
     <string name="transferTypeQrCode">QR Code</string>
     <string name="transferTypeScreenTitle">Transferencia</string>
     <string name="transferTypeTitle">Enviar por</string>
+    <string name="transferVirusCheckDescription">Los archivos aún no son accesibles por razones de seguridad.\nPor favor, vuelva dentro de unos momentos.</string>
+    <string name="transferVirusCheckTitle">Ficheros controlados</string>
+    <string name="transferVirusDetectedDescription">No puede acceder a esta transferencia porque no cumple nuestras condiciones de uso.</string>
+    <string name="transferVirusDetectedTitle">Archivos no compatibles</string>
     <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
     <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
     <string name="uploadErrorTitle">¿Pero qué, qué?</string>

@@ -95,12 +95,11 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.received.TransferExpiredDownloadCreditScreen
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Deleted
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate.EmptyStateScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -132,15 +131,6 @@ fun TransferDetailsScreen(
 
     val context = LocalContext.current
     when (val state = uiState) {
-        is Deleted -> {
-            TransferExpiredDownloadCreditScreen(
-                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
-                    { navigateBack?.invoke() }
-                } else {
-                    null
-                }
-            )
-        }
         is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
@@ -170,6 +160,16 @@ fun TransferDetailsScreen(
             )
         }
         TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
+        is TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType -> {
+            EmptyStateScreen(
+                errorTransferType = state,
+                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
+                    { navigateBack?.invoke() }
+                } else {
+                    null
+                }
+            )
+        }
     }
 
     if (isDeeplinkPasswordNeeded) {

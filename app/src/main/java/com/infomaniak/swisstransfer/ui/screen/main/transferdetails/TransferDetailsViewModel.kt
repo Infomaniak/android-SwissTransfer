@@ -42,6 +42,12 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.Deleted
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredDate
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredQuota
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.VirusDetected
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.WaitVirusCheck
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -70,28 +76,23 @@ class TransferDetailsViewModel @Inject constructor(
 
     private val _transferUuidFlow = MutableSharedFlow<String>(1)
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val transferUuidFlow = _transferUuidFlow
+    private val transferUuidFlow : Flow<TransferDetailsUiState> = _transferUuidFlow
         .flatMapLatest { transferManager.getTransferFlow(it) }
         .map { transfer ->
-            when (transfer) {
-                null -> TransferDetailsUiState.Deleted
-                else -> _statusState.emit(
-                    when (transfer.transferStatus) {
-                        TransferStatus.READY, TransferStatus.UNKNOWN -> TransferDetailsUiState.Success(transfer)
-                        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> TransferDetailsUiState.ExpiredQuota(transfer.downloadLimit)
-                        TransferStatus.EXPIRED_DATE -> TransferDetailsUiState.ExpiredDate
-                        TransferStatus.WAIT_VIRUS_CHECK -> TransferDetailsUiState.WaitVirusCheck
-                        TransferStatus.VIRUS_DETECTED -> TransferDetailsUiState.VirusDetected
-                        else -> TransferDetailsUiState.Deleted
-                    }
-                )
+            when (transfer?.transferStatus) {
+                TransferStatus.READY, TransferStatus.UNKNOWN -> Success(transfer)
+                TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ExpiredQuota(transfer.downloadLimit)
+                TransferStatus.EXPIRED_DATE -> ExpiredDate
+                TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
+                TransferStatus.VIRUS_DETECTED -> VirusDetected
+                null -> Deleted
             }
         }
 
     private val _statusState = MutableSharedFlow<TransferDetailsUiState>(1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState = merge(transferUuidFlow, _statusState)
+    val uiState: StateFlow<TransferDetailsUiState> = merge<TransferDetailsUiState>(transferUuidFlow, _statusState)
         .stateIn(viewModelScope, SharingStarted.Eagerly, TransferDetailsUiState.Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
@@ -129,10 +130,10 @@ class TransferDetailsViewModel @Inject constructor(
                 }
             }.cancellable().onFailure { exception ->
                 when (exception) {
-                    is DownloadQuotaExceededException -> _statusState.emit(TransferDetailsUiState.ExpiredQuota())
-                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> _statusState.emit(TransferDetailsUiState.ExpiredDate)
-                    is VirusCheckFetchTransferException -> _statusState.emit(TransferDetailsUiState.WaitVirusCheck)
-                    is VirusDetectedFetchTransferException -> _statusState.emit(TransferDetailsUiState.VirusDetected)
+                    is DownloadQuotaExceededException -> _statusState.emit(ExpiredQuota())
+                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> _statusState.emit(ExpiredDate)
+                    is VirusCheckFetchTransferException -> _statusState.emit(WaitVirusCheck)
+                    is VirusDetectedFetchTransferException -> _statusState.emit(VirusDetected)
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
                     else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
@@ -188,28 +189,30 @@ class TransferDetailsViewModel @Inject constructor(
         }
     }
 
-    sealed class TransferDetailsUiState {
+    sealed interface TransferDetailsUiState {
+        @Immutable
+        data class Success(val transfer: TransferUi) : TransferDetailsUiState
 
         @Immutable
-        data class Success(val transfer: TransferUi) : TransferDetailsUiState()
+        data object Loading : TransferDetailsUiState
 
-        @Immutable
-        data object Loading : TransferDetailsUiState()
+        sealed interface ErrorTransferType : TransferDetailsUiState {
+            @Immutable
+            data object WaitVirusCheck : ErrorTransferType
+            @Immutable
+            data object VirusDetected : ErrorTransferType
 
-        @Immutable
-        data object Deleted : TransferDetailsUiState()
+            sealed interface ExpirationTransferType : ErrorTransferType {
+                @Immutable
+                data object Deleted : ExpirationTransferType
 
-        @Immutable
-        data object ExpiredDate : TransferDetailsUiState()
+                @Immutable
+                data object ExpiredDate : ExpirationTransferType
 
-        @Immutable
-        data class ExpiredQuota(val downloadLimit: Int? = null) : TransferDetailsUiState()
-
-        @Immutable
-        data object WaitVirusCheck : TransferDetailsUiState()
-
-        @Immutable
-        data object VirusDetected : TransferDetailsUiState()
+                @Immutable
+                data class ExpiredQuota(val downloadLimit: Int? = null) : ExpirationTransferType
+            }
+        }
     }
 
     companion object {
