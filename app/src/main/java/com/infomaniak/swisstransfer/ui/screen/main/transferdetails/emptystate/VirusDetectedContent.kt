@@ -20,9 +20,12 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.ghostPointingReport.GhostPointingReport
@@ -30,6 +33,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun VirusDetectedContent() {
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VirusDetected) }
+
     EmptyState(
         content = { Image(imageVector = AppIllus.GhostPointingReport.image(), contentDescription = null) },
         title = stringResource(R.string.transferVirusDetectedTitle),

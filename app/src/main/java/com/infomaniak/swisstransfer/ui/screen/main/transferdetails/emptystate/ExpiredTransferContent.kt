@@ -20,10 +20,13 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
@@ -33,6 +36,15 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun ExpiredTransferContent(state: ExpirationTransferType) {
+    LaunchedEffect(Unit) {
+        MatomoSwissTransfer.trackScreen(
+            when (state) {
+                is ExpirationTransferType.ExpiredDate, ExpirationTransferType.Deleted -> MatomoScreen.DateExpiredTransfer
+                is ExpirationTransferType.ExpiredQuota -> MatomoScreen.DownloadQuotasExpiredTransfer
+            }
+        )
+    }
+
     EmptyState(
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
