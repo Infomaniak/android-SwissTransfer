@@ -35,10 +35,10 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ExpiredTransferContent(state: ExpirationTransferType) {
+fun ExpiredTransferContent(transferType: ExpirationTransferType) {
     LaunchedEffect(Unit) {
         MatomoSwissTransfer.trackScreen(
-            when (state) {
+            when (transferType) {
                 is ExpirationTransferType.ExpiredDate, ExpirationTransferType.Deleted -> MatomoScreen.DateExpiredTransfer
                 is ExpirationTransferType.ExpiredQuota -> MatomoScreen.DownloadQuotasExpiredTransfer
             }
@@ -49,7 +49,7 @@ fun ExpiredTransferContent(state: ExpirationTransferType) {
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
         description = stringResource(
-            when (state) {
+            when (transferType) {
                 is ExpirationTransferType.ExpiredDate, ExpirationTransferType.Deleted -> R.string.transferExpiredDescription
                 is ExpirationTransferType.ExpiredQuota -> R.string.deeplinkTransferExpired
             }
