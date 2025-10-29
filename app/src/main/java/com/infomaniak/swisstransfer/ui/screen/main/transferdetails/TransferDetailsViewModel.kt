@@ -177,8 +177,6 @@ class TransferDetailsViewModel @Inject constructor(
             _isDeeplinkNeedingPassword.emit(false)
         }.cancellable().onFailure { exception ->
             when (exception) {
-                // TODO: remove
-                //is NotFoundFetchTransferException -> longToast(R.string.deeplinkTransferNotFound)
                 is NotFoundFetchTransferException,
                 is ExpiredDateFetchTransferException,
                 is PasswordNeededFetchTransferException,

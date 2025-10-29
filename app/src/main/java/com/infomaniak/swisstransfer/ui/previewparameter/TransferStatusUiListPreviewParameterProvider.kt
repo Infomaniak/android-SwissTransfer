@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.Deleted
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredDate
@@ -26,8 +26,8 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.VirusDetected
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.WaitVirusCheck
 
-class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType> {
-    override val values: Sequence<TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType>
+class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<ErrorTransferType> {
+    override val values: Sequence<ErrorTransferType>
         get() = transferStatusUiPreviewData
 }
 
