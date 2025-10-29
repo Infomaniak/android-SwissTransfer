@@ -131,7 +131,7 @@ fun TransferDetailsScreen(
 
     val context = LocalContext.current
     when (val state = uiState) {
-        is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
+        TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
         is Success -> {
@@ -159,7 +159,6 @@ fun TransferDetailsScreen(
                 navigateToFolder = navigateToFolder,
             )
         }
-        TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
         is TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType -> {
             EmptyStateScreen(
                 errorTransferType = state,
