@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.transfer.TransfersList
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
@@ -128,7 +128,7 @@ private fun ReceivedContent(
             descriptionRes = R.string.noTransferReceivedDescription,
         )
     } else {
-        TransfersList(
+        TransferItemList(
             modifier = Modifier.fillMaxHeight(),
             direction = TransferDirection.RECEIVED,
             navigateToDetails = navigateToDetails,
