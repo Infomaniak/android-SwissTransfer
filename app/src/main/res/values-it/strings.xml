@@ -47,7 +47,6 @@
     <string name="deleteThisTransferDescription">Questo trasferimento e i file in esso contenuti verranno eliminati.</string>
     <string name="deleteThisTransferTitle">Cancellare questo trasferimento?</string>
     <string name="downloadedTransferLabel">Trasferimento scaricato: %d/%d</string>
-    <string name="errorAppIntegrity">Il dispositivo non è riconosciuto come sicuro</string>
     <string name="errorIncorrectPassword">Password errata</string>
     <string name="errorTransferPasswordLength">La password deve essere compresa tra 6 e 24 caratteri</string>
     <string name="expired">Scaduto</string>
