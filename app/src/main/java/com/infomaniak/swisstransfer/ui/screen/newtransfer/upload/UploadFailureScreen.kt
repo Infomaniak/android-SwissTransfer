@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCros
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.upload.UploadState
+import com.infomaniak.core.appintegrity.R as RAppIntegrity
 
 @Composable
 fun UploadFailureScreen(
@@ -54,7 +55,7 @@ fun UploadFailureScreen(
     when (failure) {
         UploadState.Failure.AppIntegrityIssue -> UploadFailureScreen(
             exitNewTransfer = cancel,
-            desc = stringResource(R.string.errorAppIntegrity)
+            desc = stringResource(RAppIntegrity.string.errorAppIntegrity)
         )
         UploadState.Failure.SizeExceeded -> UploadFailureScreen(
             exitNewTransfer = cancel,
@@ -102,7 +103,7 @@ private fun UploadFailureScreen(
 private fun AppIntegrityIssuePreview() {
     SwissTransferTheme {
         Surface {
-            UploadFailureScreen(exitNewTransfer = {}, desc = stringResource(R.string.errorAppIntegrity))
+            UploadFailureScreen(exitNewTransfer = {}, desc = stringResource(RAppIntegrity.string.errorAppIntegrity))
         }
     }
 }
