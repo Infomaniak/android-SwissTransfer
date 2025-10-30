@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.main.received
+package com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
@@ -26,18 +25,21 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
+import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferExpiredDownloadCreditScreen(onCloseClicked: (() -> Unit)? = null) {
+fun EmptyStateScreen(
+    errorTransferType: ErrorTransferType,
+    onCloseClicked: (() -> Unit)? = null
+) {
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
         bottomButton = {
@@ -49,20 +51,23 @@ fun TransferExpiredDownloadCreditScreen(onCloseClicked: (() -> Unit)? = null) {
         },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
     ) {
-        EmptyState(
-            content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
-            title = stringResource(R.string.transferExpiredTitle),
-            description = stringResource(R.string.transferExpiredDescription),
-        )
+        when(errorTransferType) {
+            is ErrorTransferType.ExpirationTransferType -> ExpiredTransferContent(errorTransferType)
+            is ErrorTransferType.WaitVirusCheck -> VirusCheckContent()
+            is ErrorTransferType.VirusDetected -> VirusDetectedContent()
+        }
     }
 }
 
 @PreviewAllWindows
 @Composable
-private fun Preview() {
+private fun Preview(@PreviewParameter(TransferStatusUiListPreviewParameterProvider::class) errorTransferType: ErrorTransferType) {
     SwissTransferTheme {
         Surface {
-            TransferExpiredDownloadCreditScreen(onCloseClicked = {})
+            EmptyStateScreen(
+                errorTransferType = errorTransferType,
+                onCloseClicked = {}
+            )
         }
     }
 }

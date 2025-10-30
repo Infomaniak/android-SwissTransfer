@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.transfer.TransfersListWithExpiredBottomSheet
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
@@ -124,7 +124,7 @@ private fun SentContent(
     if (transfers.isEmpty()) {
         SentEmptyScreen()
     } else {
-        TransfersListWithExpiredBottomSheet(
+        TransferItemList(
             modifier = Modifier.fillMaxHeight(),
             direction = TransferDirection.SENT,
             navigateToDetails = navigateToDetails,
