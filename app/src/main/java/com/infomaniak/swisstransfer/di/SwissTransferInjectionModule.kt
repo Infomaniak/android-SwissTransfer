@@ -34,7 +34,7 @@ object SwissTransferInjectionModule {
     @Singleton
     fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
         return SwissTransferInjection(
-            environment = ApiEnvironment.Custom(BuildConfig.BASE_URL),
+            environment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.Preprod else ApiEnvironment.Prod,
             userAgent = userAgent,
             crashReport = crashReport
         )
