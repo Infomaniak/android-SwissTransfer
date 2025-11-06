@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.compose.preview.PreviewSmallWindow
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -43,7 +44,7 @@ fun VirusDetectedContent() {
 }
 
 
-@PreviewAllWindows
+@PreviewSmallWindow
 @Composable
 private fun Preview() {
     SwissTransferTheme {

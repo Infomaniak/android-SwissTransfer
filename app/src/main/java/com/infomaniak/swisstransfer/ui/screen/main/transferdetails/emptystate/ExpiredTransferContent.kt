@@ -21,9 +21,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.compose.preview.PreviewSmallWindow
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -48,17 +51,21 @@ fun ExpiredTransferContent(transferType: ExpirationTransferType) {
     EmptyState(
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
-        description = stringResource(
-            when (transferType) {
-                is ExpirationTransferType.ExpiredDate, ExpirationTransferType.Deleted -> R.string.transferExpiredDescription
-                is ExpirationTransferType.ExpiredQuota -> R.string.deeplinkTransferExpired
+        description = when (transferType) {
+            is ExpirationTransferType.ExpiredDate, ExpirationTransferType.Deleted -> stringResource(R.string.transferExpiredDescription)
+            is ExpirationTransferType.ExpiredQuota -> {
+                if (transferType.downloadLimit != null) {
+                    pluralStringResource(R.plurals.transferExpiredLimitReachedDescription, transferType.downloadLimit, transferType.downloadLimit)
+                } else {
+                    stringResource(R.string.deeplinkTransferExpired)
+                }
             }
-        ),
+        },
     )
 }
 
 
-@PreviewAllWindows
+@PreviewSmallWindow
 @Composable
 private fun Preview(@PreviewParameter(ExpiredTransferStatusUiListPreviewParameterProvider::class) expiredStatus: ExpirationTransferType) {
     SwissTransferTheme {
