@@ -24,17 +24,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.compose.preview.PreviewAllWindows
-import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredQuota
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -58,9 +56,23 @@ fun EmptyStateScreen(
     }
 }
 
+@Preview
+@Composable
+private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParameterProvider::class) errorTransferType: ErrorTransferType) {
+    SwissTransferTheme {
+        Surface {
+            EmptyStateScreen(
+                errorTransferType = errorTransferType,
+                onCloseClicked = {}
+            )
+        }
+    }
+}
+
 @PreviewAllWindows
 @Composable
-private fun Preview(@PreviewParameter(TransferStatusUiListPreviewParameterProvider::class) errorTransferType: ErrorTransferType) {
+private fun PreviewAllWindows() {
+    val errorTransferType: ErrorTransferType = ExpiredQuota(downloadLimit = 25)
     SwissTransferTheme {
         Surface {
             EmptyStateScreen(
