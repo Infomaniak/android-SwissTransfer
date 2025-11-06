@@ -76,7 +76,7 @@ class TransferDetailsViewModel @Inject constructor(
 
     private val _transferUuidFlow = MutableSharedFlow<String>(1)
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val transferUuidFlow : Flow<TransferDetailsUiState> = _transferUuidFlow
+    private val transferUuidFlow: Flow<TransferDetailsUiState> = _transferUuidFlow
         .flatMapLatest { transferManager.getTransferFlow(it) }
         .map { transfer ->
             when (transfer?.transferStatus) {
@@ -89,7 +89,7 @@ class TransferDetailsViewModel @Inject constructor(
             }
         }
 
-    private val _statusState = MutableSharedFlow<TransferDetailsUiState>(1)
+    private val _statusState = MutableSharedFlow<TransferDetailsUiState>(replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<TransferDetailsUiState> = merge<TransferDetailsUiState>(transferUuidFlow, _statusState)

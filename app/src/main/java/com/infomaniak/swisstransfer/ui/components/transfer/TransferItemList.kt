@@ -34,8 +34,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
-import com.infomaniak.swisstransfer.R.string.receivedFilesTitle
-import com.infomaniak.swisstransfer.R.string.sentFilesTitle
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
@@ -55,8 +54,8 @@ fun TransferItemList(
     val selectedTransferUuid = getSelectedTransferUuid()
     val itemShape = CustomShapes.SMALL
     val titleRes = when (direction) {
-        TransferDirection.SENT -> sentFilesTitle
-        TransferDirection.RECEIVED -> receivedFilesTitle
+        TransferDirection.SENT -> R.string.sentFilesTitle
+        TransferDirection.RECEIVED -> R.string.receivedFilesTitle
     }
     // stickyHeader seems to over-remember, causing theme to not be applied.
     // Hoisting it outside of the LazyColumn fixes it.
@@ -106,9 +105,7 @@ fun TransferItemList(
                             transfer = transfer,
                             shape = itemShape,
                             isSelected = { selectedTransferUuid == transfer.uuid },
-                            onClick = {
-                                navigateToDetails(transfer.uuid)
-                            },
+                            onClick = { navigateToDetails(transfer.uuid) },
                         )
                     }
                 },

@@ -27,8 +27,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.WaitVirusCheck
 
 class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<ErrorTransferType> {
-    override val values: Sequence<ErrorTransferType>
-        get() = transferStatusUiPreviewData
+    override val values: Sequence<ErrorTransferType> = transferStatusUiPreviewData
 }
 
 private val transferStatusUiPreviewData = sequenceOf(
@@ -40,8 +39,7 @@ private val transferStatusUiPreviewData = sequenceOf(
 )
 
 class ExpiredTransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<ExpirationTransferType> {
-    override val values: Sequence<ExpirationTransferType>
-        get() = expiredTransferStatusUiPreviewData
+    override val values: Sequence<ExpirationTransferType> = expiredTransferStatusUiPreviewData
 }
 
 private val expiredTransferStatusUiPreviewData = sequenceOf(

@@ -31,6 +31,8 @@ import com.infomaniak.core.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -41,12 +43,9 @@ fun EmptyStateScreen(
     onCloseClicked: (() -> Unit)? = null
 ) {
     BottomStickyButtonScaffold(
-        topBar = { BrandTopAppBar() },
-        bottomButton = {
-            LargeButton(
-                modifier = it,
-                title = stringResource(R.string.contentDescriptionButtonClose),
-                onClick = { onCloseClicked?.invoke() },
+        topBar = {
+            SwissTransferTopAppBar(
+                navigationIcon = { onCloseClicked?.let { TopAppBarButtons.Close(onClick = it) } },
             )
         },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),

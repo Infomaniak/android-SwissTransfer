@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.images.illus.ghostPointingReport
 
-
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
