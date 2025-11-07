@@ -173,14 +173,7 @@ fun TransferDetailsScreen(
                 },
                 onDeleteTransferClicked = {
                     transferDetailsViewModel.deleteTransfer(transferUuid)
-                    MatomoSwissTransfer.trackDeleteTransferHistory(
-                        when(state as DeletableFromHistory) {
-                            ErrorTransferType.ExpirationTransferType.Deleted -> MatomoName.ExpiredDate
-                            ErrorTransferType.ExpirationTransferType.ExpiredDate -> MatomoName.ExpiredDate
-                            is ErrorTransferType.ExpirationTransferType.ExpiredQuota -> MatomoName.ExpiredDownloads
-                            ErrorTransferType.VirusDetected -> MatomoName.VirusDetected
-                        }
-                    )
+                    matomoTrackDeleteTransfer(state)
                     onDeleteTransfer()
                 }
             )
@@ -198,6 +191,17 @@ fun TransferDetailsScreen(
             isError = { isWrongDeeplinkPassword },
         )
     }
+}
+
+private fun matomoTrackDeleteTransfer(state: ErrorTransferType) {
+    MatomoSwissTransfer.trackDeleteTransferHistory(
+        when (state as DeletableFromHistory) {
+            ErrorTransferType.ExpirationTransferType.Deleted -> MatomoName.ExpiredDate
+            ErrorTransferType.ExpirationTransferType.ExpiredDate -> MatomoName.ExpiredDate
+            is ErrorTransferType.ExpirationTransferType.ExpiredQuota -> MatomoName.ExpiredDownloads
+            ErrorTransferType.VirusDetected -> MatomoName.VirusDetected
+        }
+    )
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

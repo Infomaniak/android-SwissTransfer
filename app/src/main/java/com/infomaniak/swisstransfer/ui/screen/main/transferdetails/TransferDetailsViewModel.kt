@@ -122,7 +122,8 @@ class TransferDetailsViewModel @Inject constructor(
             }.cancellable().onFailure { exception ->
                 when (exception) {
                     is DownloadQuotaExceededException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredQuota()))
-                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredDate))
+                    is ExpiredDateFetchTransferException,
+                    is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredDate))
                     is VirusCheckFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(WaitVirusCheck))
                     is VirusDetectedFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(VirusDetected))
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)

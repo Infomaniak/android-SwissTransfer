@@ -37,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredQuota
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -68,11 +67,11 @@ fun EmptyStateScreen(
         bottomButton = deleteButton.takeIf {
             errorTransferType is ErrorTransferType.ExpirationTransferType.Deleted ||
                     errorTransferType is ErrorTransferType.ExpirationTransferType.ExpiredDate ||
-                    errorTransferType is ExpiredQuota ||
+                    errorTransferType is ErrorTransferType.ExpirationTransferType.ExpiredQuota ||
                     errorTransferType is ErrorTransferType.VirusDetected
         },
     ) {
-        when(errorTransferType) {
+        when (errorTransferType) {
             is ErrorTransferType.ExpirationTransferType -> ExpiredTransferContent(errorTransferType)
             is ErrorTransferType.WaitVirusCheck -> VirusCheckContent()
             is ErrorTransferType.VirusDetected -> VirusDetectedContent()
@@ -97,7 +96,7 @@ private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParamet
 @PreviewAllWindows
 @Composable
 private fun PreviewAllWindows() {
-    val errorTransferType: ErrorTransferType = ExpiredQuota(downloadLimit = 25)
+    val errorTransferType: ErrorTransferType = ErrorTransferType.ExpirationTransferType.ExpiredQuota(downloadLimit = 25)
     SwissTransferTheme {
         Surface {
             EmptyStateScreen(
