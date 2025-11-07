@@ -59,8 +59,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import splitties.toast.UnreliableToastApi
@@ -73,26 +73,15 @@ class TransferDetailsViewModel @Inject constructor(
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
-
-    private val _transferUuidFlow = MutableSharedFlow<String>(1)
+    private val _transferSourceFlow = MutableSharedFlow<TransferSource>(replay = 1)
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val transferUuidFlow: Flow<TransferDetailsUiState> = _transferUuidFlow
-        .flatMapLatest { transferManager.getTransferFlow(it) }
-        .map { transfer ->
-            when (transfer?.transferStatus) {
-                TransferStatus.READY, TransferStatus.UNKNOWN -> Success(transfer)
-                TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ExpiredQuota(transfer.downloadLimit)
-                TransferStatus.EXPIRED_DATE -> ExpiredDate
-                TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
-                TransferStatus.VIRUS_DETECTED -> VirusDetected
-                null -> Deleted
+    val uiState: StateFlow<TransferDetailsUiState> = _transferSourceFlow
+        .flatMapLatest { source ->
+            when (source) {
+                is TransferSource.Local -> transferManager.getTransferFlow(source.uuid).map { transfer -> transfer.toUiState() }
+                is TransferSource.Missing -> flowOf(source.state)
             }
         }
-
-    private val _statusState = MutableSharedFlow<TransferDetailsUiState>(replay = 1)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState: StateFlow<TransferDetailsUiState> = merge<TransferDetailsUiState>(transferUuidFlow, _statusState)
         .stateIn(viewModelScope, SharingStarted.Eagerly, TransferDetailsUiState.Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
@@ -122,18 +111,18 @@ class TransferDetailsViewModel @Inject constructor(
                 val transfer = transferManager.getTransferFlow(transferUuid).first()
                 if (transfer == null) {
                     handleTransferDeeplink(transferUuid, _deeplinkPassword)
-                    _transferUuidFlow.emit(transferUuid)
+                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
 
                 } else {
-                    _transferUuidFlow.emit(transferUuid)
+                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
                     transferManager.fetchTransfer(transferUuid)
                 }
             }.cancellable().onFailure { exception ->
                 when (exception) {
-                    is DownloadQuotaExceededException -> _statusState.emit(ExpiredQuota())
-                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> _statusState.emit(ExpiredDate)
-                    is VirusCheckFetchTransferException -> _statusState.emit(WaitVirusCheck)
-                    is VirusDetectedFetchTransferException -> _statusState.emit(VirusDetected)
+                    is DownloadQuotaExceededException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredQuota()))
+                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredDate))
+                    is VirusCheckFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(WaitVirusCheck))
+                    is VirusDetectedFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(VirusDetected))
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
                     else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
@@ -187,6 +176,15 @@ class TransferDetailsViewModel @Inject constructor(
         }
     }
 
+    private fun TransferUi?.toUiState(): TransferDetailsUiState = when (this?.transferStatus) {
+        TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
+        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ExpiredQuota(downloadLimit)
+        TransferStatus.EXPIRED_DATE -> ExpiredDate
+        TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
+        TransferStatus.VIRUS_DETECTED -> VirusDetected
+        null -> Deleted
+    }
+
     sealed interface TransferDetailsUiState {
         @Immutable
         data class Success(val transfer: TransferUi) : TransferDetailsUiState
@@ -211,6 +209,11 @@ class TransferDetailsViewModel @Inject constructor(
                 data class ExpiredQuota(val downloadLimit: Int? = null) : ExpirationTransferType
             }
         }
+    }
+
+    private sealed interface TransferSource {
+        data class Local(val uuid: String) : TransferSource
+        data class Missing(val state: TransferDetailsUiState) : TransferSource
     }
 
     companion object {
