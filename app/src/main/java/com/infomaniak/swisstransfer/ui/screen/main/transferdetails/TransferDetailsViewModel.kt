@@ -48,6 +48,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.VirusDetected
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.WaitVirusCheck
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCase
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,6 +70,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
+    private val deleteTransfer: DeleteTransferUseCase,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
@@ -176,6 +178,10 @@ class TransferDetailsViewModel @Inject constructor(
         }
     }
 
+    fun deleteTransfer(transferUuid: String) {
+        deleteTransfer(transferUuid, viewModelScope)
+    }
+
     private fun TransferUi?.toUiState(): TransferDetailsUiState = when (this?.transferStatus) {
         TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ExpiredQuota(downloadLimit)
@@ -196,9 +202,9 @@ class TransferDetailsViewModel @Inject constructor(
             @Immutable
             data object WaitVirusCheck : ErrorTransferType
             @Immutable
-            data object VirusDetected : ErrorTransferType
+            data object VirusDetected : ErrorTransferType, DeletableFromHistory
 
-            sealed interface ExpirationTransferType : ErrorTransferType {
+            sealed interface ExpirationTransferType : ErrorTransferType, DeletableFromHistory {
                 @Immutable
                 data object Deleted : ExpirationTransferType
 
@@ -210,6 +216,8 @@ class TransferDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    sealed interface DeletableFromHistory
 
     private sealed interface TransferSource {
         data class Local(val uuid: String) : TransferSource

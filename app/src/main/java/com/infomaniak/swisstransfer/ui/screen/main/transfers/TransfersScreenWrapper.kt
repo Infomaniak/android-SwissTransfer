@@ -96,7 +96,10 @@ fun TransfersScreenWrapper(
             )
         },
         detailPane = {
-            DetailPane(navigator = this, hasTransfer = { hasTransfer })
+            DetailPane(
+                navigator = this,
+                hasTransfer = { hasTransfer },
+            )
         },
     )
 }
@@ -214,6 +217,7 @@ private fun DetailPane(
                         )
                     }
                 },
+                onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
             )
         }
         is DestinationContent.FolderLevel -> {

@@ -24,12 +24,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.images.AppImages
+import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredQuota
@@ -38,8 +43,21 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun EmptyStateScreen(
     errorTransferType: ErrorTransferType,
-    onCloseClicked: (() -> Unit)? = null
+    onCloseClicked: (() -> Unit)? = null,
+    onDeleteTransferClicked: () -> Unit,
 ) {
+    val deleteButton: (@Composable (Modifier) -> Unit) = { modifier ->
+        LargeButton(
+            modifier = modifier,
+            title = stringResource(R.string.transferExpiredButton),
+            imageVector = AppImages.AppIcons.Bin,
+            onClick = {
+                onDeleteTransferClicked()
+                onCloseClicked?.invoke()
+            },
+        )
+    }
+
     BottomStickyButtonScaffold(
         topBar = {
             SwissTransferTopAppBar(
@@ -47,6 +65,12 @@ fun EmptyStateScreen(
             )
         },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
+        bottomButton = deleteButton.takeIf {
+            errorTransferType is ErrorTransferType.ExpirationTransferType.Deleted ||
+                    errorTransferType is ErrorTransferType.ExpirationTransferType.ExpiredDate ||
+                    errorTransferType is ExpiredQuota ||
+                    errorTransferType is ErrorTransferType.VirusDetected
+        },
     ) {
         when(errorTransferType) {
             is ErrorTransferType.ExpirationTransferType -> ExpiredTransferContent(errorTransferType)
@@ -63,7 +87,8 @@ private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParamet
         Surface {
             EmptyStateScreen(
                 errorTransferType = errorTransferType,
-                onCloseClicked = {}
+                onCloseClicked = {},
+                onDeleteTransferClicked = {}
             )
         }
     }
@@ -77,7 +102,8 @@ private fun PreviewAllWindows() {
         Surface {
             EmptyStateScreen(
                 errorTransferType = errorTransferType,
-                onCloseClicked = {}
+                onCloseClicked = {},
+                onDeleteTransferClicked = {}
             )
         }
     }

@@ -42,6 +42,7 @@ typealias GroupedTransfers = Map<TransfersGroupingManager.TransferSection, List<
 @HiltViewModel
 class TransfersViewModel @Inject constructor(
     private val transferManager: TransferManager,
+    private val deleteTransfer: DeleteTransferUseCase,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -70,13 +71,7 @@ class TransfersViewModel @Inject constructor(
     }
 
     fun deleteTransfer(transferUuid: String) {
-        viewModelScope.launch(ioDispatcher) {
-            runCatching {
-                transferManager.deleteTransfer(transferUuid)
-            }.cancellable().onFailure {
-                SentryLog.e(TAG, "Failure for deleteTransfer", it)
-            }
-        }
+        deleteTransfer(transferUuid, viewModelScope)
     }
 
     sealed interface TransferUiState {

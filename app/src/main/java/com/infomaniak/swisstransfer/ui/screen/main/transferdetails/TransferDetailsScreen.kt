@@ -95,6 +95,9 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.DeletableFromHistory
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
@@ -118,6 +121,7 @@ fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
     navigateToFolder: (folderUuid: String) -> Unit,
+    onDeleteTransfer: () -> Unit,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
@@ -131,7 +135,7 @@ fun TransferDetailsScreen(
 
     val context = LocalContext.current
     when (val state = uiState) {
-        TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
+        Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
         is Success -> {
@@ -159,13 +163,25 @@ fun TransferDetailsScreen(
                 navigateToFolder = navigateToFolder,
             )
         }
-        is TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType -> {
+        is ErrorTransferType -> {
             EmptyStateScreen(
                 errorTransferType = state,
                 onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
                     { navigateBack?.invoke() }
                 } else {
                     null
+                },
+                onDeleteTransferClicked = {
+                    transferDetailsViewModel.deleteTransfer(transferUuid)
+                    MatomoSwissTransfer.trackDeleteTransferHistory(
+                        when(state as DeletableFromHistory) {
+                            ErrorTransferType.ExpirationTransferType.Deleted -> MatomoName.ExpiredDate
+                            ErrorTransferType.ExpirationTransferType.ExpiredDate -> MatomoName.ExpiredDate
+                            is ErrorTransferType.ExpirationTransferType.ExpiredQuota -> MatomoName.ExpiredDownloads
+                            ErrorTransferType.VirusDetected -> MatomoName.VirusDetected
+                        }
+                    )
+                    onDeleteTransfer()
                 }
             )
         }
