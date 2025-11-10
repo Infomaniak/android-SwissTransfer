@@ -189,7 +189,7 @@
     <string name="transferTypeTitle">Send by</string>
     <string name="transferVirusCheckDescription">The files are not yet accessible for security reasons.\nPlease come back in a few moments.</string>
     <string name="transferVirusCheckTitle">Files being checked</string>
-    <string name="transferVirusDetectedDescription">You can not access this transfer because it does not comply with our terms of use.</string>
+    <string name="transferVirusDetectedDescription">You cannot access this transfer because it does not comply with our terms of use.</string>
     <string name="transferVirusDetectedTitle">Non-compliant files</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Are you sure you want to cancel the transfer?</string>
     <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
