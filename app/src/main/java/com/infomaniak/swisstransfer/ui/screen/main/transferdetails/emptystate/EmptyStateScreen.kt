@@ -50,7 +50,7 @@ fun EmptyStateScreen(
         topBar = { SwissTransferTopAppBar(navigationIcon = { onCloseClicked?.let { TopAppBarButtons.Close(onClick = it) } }) },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
         bottomButton = { modifier ->
-            if (transferError is DeletableFromHistory) {
+            if (transferError is DeletableFromHistory && transferError.isInLocal) {
                 DeleteButton(
                     modifier,
                     onClick = {
@@ -99,7 +99,7 @@ private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParamet
 @PreviewAllWindows
 @Composable
 private fun PreviewAllWindows() {
-    val transferError: TransferError = TransferError.Expired.ByQuota(downloadLimit = 25)
+    val transferError: TransferError = TransferError.Expired.ByQuota(downloadLimit = 25, isInLocal = true)
     SwissTransferTheme {
         Surface {
             EmptyStateScreen(

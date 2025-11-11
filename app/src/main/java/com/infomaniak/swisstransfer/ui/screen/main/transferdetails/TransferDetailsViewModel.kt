@@ -80,7 +80,9 @@ class TransferDetailsViewModel @Inject constructor(
     val uiState: StateFlow<TransferDetailsUiState> = _transferSourceFlow
         .flatMapLatest { source ->
             when (source) {
-                is TransferSource.Local -> transferManager.getTransferFlow(source.uuid).map { transfer -> transfer.toUiState() }
+                is TransferSource.Local -> transferManager.getTransferFlow(source.uuid).map { transfer ->
+                    transfer.toUiState(isInLocal = true)
+                }
                 is TransferSource.Missing -> flowOf(source.state)
             }
         }
@@ -121,11 +123,16 @@ class TransferDetailsViewModel @Inject constructor(
                 }
             }.cancellable().onFailure { exception ->
                 when (exception) {
-                    is DownloadQuotaExceededException -> _transferSourceFlow.emit(TransferSource.Missing(ByQuota()))
-                    is ExpiredDateFetchTransferException,
-                    is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ByDate()))
+                    is DownloadQuotaExceededException -> {
+                        _transferSourceFlow.emit(TransferSource.Missing(ByQuota(isInLocal = false)))
+                    }
+                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> {
+                        _transferSourceFlow.emit(TransferSource.Missing(ByDate(isInLocal = false)))
+                    }
                     is VirusCheckFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(WaitVirusCheck))
-                    is VirusDetectedFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(VirusDetected))
+                    is VirusDetectedFetchTransferException -> {
+                        _transferSourceFlow.emit(TransferSource.Missing(VirusDetected(isInLocal = false)))
+                    }
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
                     else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
@@ -173,6 +180,8 @@ class TransferDetailsViewModel @Inject constructor(
                 is ExpiredDateFetchTransferException,
                 is PasswordNeededFetchTransferException,
                 is WrongPasswordFetchTransferException,
+                is VirusCheckFetchTransferException,
+                is VirusDetectedFetchTransferException,
                 is DownloadQuotaExceededException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             }
@@ -183,13 +192,13 @@ class TransferDetailsViewModel @Inject constructor(
         deleteTransfer(transferUuid, viewModelScope)
     }
 
-    private fun TransferUi?.toUiState(): TransferDetailsUiState = when (this?.transferStatus) {
+    private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
         TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
-        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit)
-        TransferStatus.EXPIRED_DATE -> ByDate(expirationDateTimestamp)
+        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)
+        TransferStatus.EXPIRED_DATE -> ByDate(expirationDateTimestamp, isInLocal)
         TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
-        TransferStatus.VIRUS_DETECTED -> VirusDetected
-        null -> Deleted
+        TransferStatus.VIRUS_DETECTED -> VirusDetected(isInLocal)
+        null -> Deleted(isInLocal)
     }
 
     sealed interface TransferDetailsUiState {
@@ -203,22 +212,24 @@ class TransferDetailsViewModel @Inject constructor(
             @Immutable
             data object WaitVirusCheck : TransferError
             @Immutable
-            data object VirusDetected : TransferError, DeletableFromHistory
+            data class VirusDetected(override val isInLocal: Boolean) : TransferError, DeletableFromHistory
 
             sealed interface Expired : TransferError, DeletableFromHistory {
                 @Immutable
-                data object Deleted : Expired
+                data class Deleted(override val isInLocal: Boolean) : Expired
 
                 @Immutable
-                data class ByDate(val date: Long? = null) : Expired
+                data class ByDate(val date: Long? = null, override val isInLocal: Boolean) : Expired
 
                 @Immutable
-                data class ByQuota(val downloadLimit: Int? = null) : Expired
+                data class ByQuota(val downloadLimit: Int? = null, override val isInLocal: Boolean) : Expired
             }
         }
     }
 
-    sealed interface DeletableFromHistory
+    sealed interface DeletableFromHistory {
+        val isInLocal: Boolean
+    }
 
     private sealed interface TransferSource {
         data class Local(val uuid: String) : TransferSource

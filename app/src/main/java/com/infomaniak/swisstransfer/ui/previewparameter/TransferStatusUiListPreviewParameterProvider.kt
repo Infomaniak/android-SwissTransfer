@@ -31,11 +31,11 @@ class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<Tr
 }
 
 private val transferStatusUiPreviewData = sequenceOf(
-    ByDate(),
-    ByQuota(),
-    ByQuota(downloadLimit = 25),
+    ByDate(isInLocal = true),
+    ByQuota(isInLocal = true),
+    ByQuota(downloadLimit = 25, isInLocal = true),
     WaitVirusCheck,
-    VirusDetected
+    VirusDetected(isInLocal = true)
 )
 
 class ExpiredTransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<TransferError.Expired> {
@@ -43,9 +43,9 @@ class ExpiredTransferStatusUiListPreviewParameterProvider : PreviewParameterProv
 }
 
 private val expiredTransferStatusUiPreviewData = sequenceOf(
-    ByDate(),
-    ByDate(date = Date().time),
-    ByQuota(),
-    ByQuota(downloadLimit = 25),
-    Deleted
+    ByDate(isInLocal = true),
+    ByDate(date = Date().time, isInLocal = true),
+    ByQuota(isInLocal = true),
+    ByQuota(downloadLimit = 25, isInLocal = true),
+    Deleted(isInLocal = true)
 )

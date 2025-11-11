@@ -43,7 +43,7 @@ fun ExpiredTransferContent(transferErrorType: Expired) {
     LaunchedEffect(Unit) {
         MatomoSwissTransfer.trackScreen(
             when (transferErrorType) {
-                is Expired.ByDate, Expired.Deleted -> MatomoScreen.DateExpiredTransfer
+                is Expired.ByDate, is Expired.Deleted -> MatomoScreen.DateExpiredTransfer
                 is Expired.ByQuota -> MatomoScreen.DownloadQuotasExpiredTransfer
             }
         )
@@ -53,7 +53,7 @@ fun ExpiredTransferContent(transferErrorType: Expired) {
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
         description = when (transferErrorType) {
-            Expired.Deleted -> stringResource(R.string.transferExpiredDescription)
+            is Expired.Deleted -> stringResource(R.string.transferExpiredDescription)
             is Expired.ByDate -> {
                 if (transferErrorType.date == null) {
                     stringResource(R.string.transferExpiredDescription)

@@ -196,10 +196,10 @@ fun TransferDetailsScreen(
 private fun matomoTrackDeleteTransfer(state: DeletableFromHistory) {
     MatomoSwissTransfer.trackDeleteTransferHistory(
         when (state as DeletableFromHistory) {
-            TransferError.Expired.Deleted -> MatomoName.ExpiredDate
+            is TransferError.Expired.Deleted -> MatomoName.ExpiredDate
             is TransferError.Expired.ByDate -> MatomoName.ExpiredDate
             is TransferError.Expired.ByQuota -> MatomoName.ExpiredDownloads
-            TransferError.VirusDetected -> MatomoName.VirusDetected
+            is TransferError.VirusDetected -> MatomoName.VirusDetected
         }
     )
 }
