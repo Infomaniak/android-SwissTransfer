@@ -96,9 +96,9 @@ import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.DeletableFromHistory
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
@@ -163,9 +163,9 @@ fun TransferDetailsScreen(
                 navigateToFolder = navigateToFolder,
             )
         }
-        is ErrorTransferType -> {
+        is TransferError -> {
             EmptyStateScreen(
-                errorTransferType = state,
+                transferError = state,
                 onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
                     { navigateBack?.invoke() }
                 } else {
@@ -193,13 +193,13 @@ fun TransferDetailsScreen(
     }
 }
 
-private fun matomoTrackDeleteTransfer(state: ErrorTransferType) {
+private fun matomoTrackDeleteTransfer(state: TransferError) {
     MatomoSwissTransfer.trackDeleteTransferHistory(
         when (state as DeletableFromHistory) {
-            ErrorTransferType.ExpirationTransferType.Deleted -> MatomoName.ExpiredDate
-            ErrorTransferType.ExpirationTransferType.ExpiredDate -> MatomoName.ExpiredDate
-            is ErrorTransferType.ExpirationTransferType.ExpiredQuota -> MatomoName.ExpiredDownloads
-            ErrorTransferType.VirusDetected -> MatomoName.VirusDetected
+            TransferError.Expired.Deleted -> MatomoName.ExpiredDate
+            TransferError.Expired.ByDate -> MatomoName.ExpiredDate
+            is TransferError.Expired.ByQuota -> MatomoName.ExpiredDownloads
+            TransferError.VirusDetected -> MatomoName.VirusDetected
         }
     )
 }

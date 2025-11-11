@@ -18,33 +18,32 @@
 package com.infomaniak.swisstransfer.ui.previewparameter
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.Deleted
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredDate
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredQuota
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.VirusDetected
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.WaitVirusCheck
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByQuota
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.Deleted
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.VirusDetected
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.WaitVirusCheck
 
-class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<ErrorTransferType> {
-    override val values: Sequence<ErrorTransferType> = transferStatusUiPreviewData
+class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<TransferError> {
+    override val values: Sequence<TransferError> = transferStatusUiPreviewData
 }
 
 private val transferStatusUiPreviewData = sequenceOf(
-    ExpiredDate,
-    ExpiredQuota(),
-    ExpiredQuota(downloadLimit = 25),
+    ByDate,
+    ByQuota(),
+    ByQuota(downloadLimit = 25),
     WaitVirusCheck,
     VirusDetected
 )
 
-class ExpiredTransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<ExpirationTransferType> {
-    override val values: Sequence<ExpirationTransferType> = expiredTransferStatusUiPreviewData
+class ExpiredTransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<TransferError.Expired> {
+    override val values: Sequence<TransferError.Expired> = expiredTransferStatusUiPreviewData
 }
 
 private val expiredTransferStatusUiPreviewData = sequenceOf(
-    ExpiredDate,
-    ExpiredQuota(),
-    ExpiredQuota(downloadLimit = 25),
+    ByDate,
+    ByQuota(),
+    ByQuota(downloadLimit = 25),
     Deleted
 )

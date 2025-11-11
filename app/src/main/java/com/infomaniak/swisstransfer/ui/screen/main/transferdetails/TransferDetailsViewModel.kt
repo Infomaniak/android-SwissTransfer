@@ -42,12 +42,12 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.Deleted
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredDate
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.ExpirationTransferType.ExpiredQuota
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.VirusDetected
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType.WaitVirusCheck
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByQuota
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.Deleted
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.VirusDetected
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.WaitVirusCheck
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCase
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
@@ -121,9 +121,9 @@ class TransferDetailsViewModel @Inject constructor(
                 }
             }.cancellable().onFailure { exception ->
                 when (exception) {
-                    is DownloadQuotaExceededException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredQuota()))
+                    is DownloadQuotaExceededException -> _transferSourceFlow.emit(TransferSource.Missing(ByQuota()))
                     is ExpiredDateFetchTransferException,
-                    is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ExpiredDate))
+                    is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ByDate))
                     is VirusCheckFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(WaitVirusCheck))
                     is VirusDetectedFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(VirusDetected))
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
@@ -185,8 +185,8 @@ class TransferDetailsViewModel @Inject constructor(
 
     private fun TransferUi?.toUiState(): TransferDetailsUiState = when (this?.transferStatus) {
         TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
-        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ExpiredQuota(downloadLimit)
-        TransferStatus.EXPIRED_DATE -> ExpiredDate
+        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit)
+        TransferStatus.EXPIRED_DATE -> ByDate
         TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
         TransferStatus.VIRUS_DETECTED -> VirusDetected
         null -> Deleted
@@ -199,21 +199,21 @@ class TransferDetailsViewModel @Inject constructor(
         @Immutable
         data object Loading : TransferDetailsUiState
 
-        sealed interface ErrorTransferType : TransferDetailsUiState {
+        sealed interface TransferError : TransferDetailsUiState {
             @Immutable
-            data object WaitVirusCheck : ErrorTransferType
+            data object WaitVirusCheck : TransferError
             @Immutable
-            data object VirusDetected : ErrorTransferType, DeletableFromHistory
+            data object VirusDetected : TransferError, DeletableFromHistory
 
-            sealed interface ExpirationTransferType : ErrorTransferType, DeletableFromHistory {
+            sealed interface Expired : TransferError, DeletableFromHistory {
                 @Immutable
-                data object Deleted : ExpirationTransferType
-
-                @Immutable
-                data object ExpiredDate : ExpirationTransferType
+                data object Deleted : Expired
 
                 @Immutable
-                data class ExpiredQuota(val downloadLimit: Int? = null) : ExpirationTransferType
+                data object ByDate : Expired
+
+                @Immutable
+                data class ByQuota(val downloadLimit: Int? = null) : Expired
             }
         }
     }

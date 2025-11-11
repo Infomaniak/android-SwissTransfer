@@ -36,12 +36,12 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.ErrorTransferType
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun EmptyStateScreen(
-    errorTransferType: ErrorTransferType,
+    transferError: TransferError,
     onCloseClicked: (() -> Unit)? = null,
     onDeleteTransferClicked: () -> Unit,
 ) {
@@ -65,27 +65,27 @@ fun EmptyStateScreen(
         },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
         bottomButton = deleteButton.takeIf {
-            errorTransferType is ErrorTransferType.ExpirationTransferType.Deleted ||
-                    errorTransferType is ErrorTransferType.ExpirationTransferType.ExpiredDate ||
-                    errorTransferType is ErrorTransferType.ExpirationTransferType.ExpiredQuota ||
-                    errorTransferType is ErrorTransferType.VirusDetected
+            transferError is TransferError.Expired.Deleted ||
+                    transferError is TransferError.Expired.ByDate ||
+                    transferError is TransferError.Expired.ByQuota ||
+                    transferError is TransferError.VirusDetected
         },
     ) {
-        when (errorTransferType) {
-            is ErrorTransferType.ExpirationTransferType -> ExpiredTransferContent(errorTransferType)
-            is ErrorTransferType.WaitVirusCheck -> VirusCheckContent()
-            is ErrorTransferType.VirusDetected -> VirusDetectedContent()
+        when (transferError) {
+            is TransferError.Expired -> ExpiredTransferContent(transferError)
+            is TransferError.WaitVirusCheck -> VirusCheckContent()
+            is TransferError.VirusDetected -> VirusDetectedContent()
         }
     }
 }
 
 @Preview
 @Composable
-private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParameterProvider::class) errorTransferType: ErrorTransferType) {
+private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParameterProvider::class) transferError: TransferError) {
     SwissTransferTheme {
         Surface {
             EmptyStateScreen(
-                errorTransferType = errorTransferType,
+                transferError = transferError,
                 onCloseClicked = {},
                 onDeleteTransferClicked = {}
             )
@@ -96,11 +96,11 @@ private fun PreviewAllState(@PreviewParameter(TransferStatusUiListPreviewParamet
 @PreviewAllWindows
 @Composable
 private fun PreviewAllWindows() {
-    val errorTransferType: ErrorTransferType = ErrorTransferType.ExpirationTransferType.ExpiredQuota(downloadLimit = 25)
+    val transferError: TransferError = TransferError.Expired.ByQuota(downloadLimit = 25)
     SwissTransferTheme {
         Surface {
             EmptyStateScreen(
-                errorTransferType = errorTransferType,
+                transferError = transferError,
                 onCloseClicked = {},
                 onDeleteTransferClicked = {}
             )
