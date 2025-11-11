@@ -195,7 +195,7 @@ fun TransferDetailsScreen(
 
 private fun matomoTrackDeleteTransfer(state: DeletableFromHistory) {
     MatomoSwissTransfer.trackDeleteTransferHistory(
-        when (state as DeletableFromHistory) {
+        when (state) {
             is TransferError.Expired.Deleted -> MatomoName.ExpiredDate
             is TransferError.Expired.ByDate -> MatomoName.ExpiredDate
             is TransferError.Expired.ByQuota -> MatomoName.ExpiredDownloads
