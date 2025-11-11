@@ -53,24 +53,21 @@ fun ExpiredTransferContent(transferErrorType: Expired) {
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
         description = when (transferErrorType) {
+            Expired.Deleted -> stringResource(R.string.transferExpiredDescription)
             is Expired.ByDate -> {
-                if (transferErrorType.date != null) {
+                if (transferErrorType.date == null) {
+                    stringResource(R.string.transferExpiredDescription)
+                } else {
                     val formatedDate = Date(transferErrorType.date).format(FORMAT_DATE_FULL)
                     stringResource(R.string.transferExpiredDateReachedDescription, formatedDate)
-                } else {
-                    stringResource(R.string.transferExpiredDescription)
                 }
             }
-            Expired.Deleted -> stringResource(R.string.transferExpiredDescription)
             is Expired.ByQuota -> {
-                if (transferErrorType.downloadLimit != null) {
-                    pluralStringResource(
-                        R.plurals.transferExpiredLimitReachedDescription,
-                        transferErrorType.downloadLimit,
-                        transferErrorType.downloadLimit
-                    )
-                } else {
+                if (transferErrorType.downloadLimit == null) {
                     stringResource(R.string.deeplinkTransferExpired)
+                } else {
+                    val downloadLimit = transferErrorType.downloadLimit
+                    pluralStringResource(R.plurals.transferExpiredLimitReachedDescription, downloadLimit, downloadLimit)
                 }
             }
         },

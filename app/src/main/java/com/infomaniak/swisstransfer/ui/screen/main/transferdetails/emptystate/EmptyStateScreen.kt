@@ -36,36 +36,30 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.DeletableFromHistory
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun EmptyStateScreen(
     transferError: TransferError,
+    onDeleteTransferClicked: (DeletableFromHistory) -> Unit,
     onCloseClicked: (() -> Unit)? = null,
-    onDeleteTransferClicked: () -> Unit,
 ) {
-    val deleteButton: (@Composable (Modifier) -> Unit) = { modifier ->
-        LargeButton(
-            modifier = modifier,
-            title = stringResource(R.string.transferExpiredButton),
-            imageVector = AppImages.AppIcons.Bin,
-            onClick = {
-                onDeleteTransferClicked()
-                onCloseClicked?.invoke()
-            },
-        )
-    }
-
     BottomStickyButtonScaffold(
-        topBar = {
-            SwissTransferTopAppBar(
-                navigationIcon = { onCloseClicked?.let { TopAppBarButtons.Close(onClick = it) } },
-            )
-        },
+        topBar = { SwissTransferTopAppBar(navigationIcon = { onCloseClicked?.let { TopAppBarButtons.Close(onClick = it) } }) },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
-        bottomButton = deleteButton.takeIf { transferError is TransferDetailsViewModel.DeletableFromHistory },
+        bottomButton = { modifier ->
+            if (transferError is DeletableFromHistory) {
+                DeleteButton(
+                    modifier,
+                    onClick = {
+                        onDeleteTransferClicked(transferError)
+                        onCloseClicked?.invoke()
+                    },
+                )
+            }
+        },
     ) {
         when (transferError) {
             is TransferError.Expired -> ExpiredTransferContent(transferError)
@@ -73,6 +67,19 @@ fun EmptyStateScreen(
             is TransferError.VirusDetected -> VirusDetectedContent()
         }
     }
+}
+
+@Composable
+fun DeleteButton(
+    modifier: Modifier,
+    onClick: () -> Unit,
+) {
+    LargeButton(
+        modifier = modifier,
+        title = stringResource(R.string.transferExpiredButton),
+        imageVector = AppImages.AppIcons.Bin,
+        onClick = onClick,
+    )
 }
 
 @Preview

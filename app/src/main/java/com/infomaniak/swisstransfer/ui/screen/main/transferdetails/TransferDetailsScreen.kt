@@ -171,9 +171,9 @@ fun TransferDetailsScreen(
                 } else {
                     null
                 },
-                onDeleteTransferClicked = {
+                onDeleteTransferClicked = { transferError ->
                     transferDetailsViewModel.deleteTransfer(transferUuid)
-                    matomoTrackDeleteTransfer(state)
+                    matomoTrackDeleteTransfer(transferError)
                     onDeleteTransfer()
                 }
             )
@@ -193,7 +193,7 @@ fun TransferDetailsScreen(
     }
 }
 
-private fun matomoTrackDeleteTransfer(state: TransferError) {
+private fun matomoTrackDeleteTransfer(state: DeletableFromHistory) {
     MatomoSwissTransfer.trackDeleteTransferHistory(
         when (state as DeletableFromHistory) {
             TransferError.Expired.Deleted -> MatomoName.ExpiredDate
