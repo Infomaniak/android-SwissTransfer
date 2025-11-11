@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.margin.Margin
 import com.infomaniak.core.compose.preview.PreviewLightAndDark
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
@@ -47,20 +46,17 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun TransferItemList(
     modifier: Modifier = Modifier,
     direction: TransferDirection,
+    navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> GroupedTransfers,
-    onSwiped: (String) -> Unit,
-    onClick: (TransferUi) -> Unit,
-    contentPadding: PaddingValues = PaddingValues(),
+    onDeleteTransfer: (String) -> Unit,
 ) {
-
     val selectedTransferUuid = getSelectedTransferUuid()
     val itemShape = CustomShapes.SMALL
     val titleRes = when (direction) {
         TransferDirection.SENT -> R.string.sentFilesTitle
         TransferDirection.RECEIVED -> R.string.receivedFilesTitle
     }
-
     // stickyHeader seems to over-remember, causing theme to not be applied.
     // Hoisting it outside of the LazyColumn fixes it.
     val stickyHeaderBackground = SwissTransferTheme.materialColors.background
@@ -68,7 +64,7 @@ fun TransferItemList(
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Margin.Mini),
-        contentPadding = contentPadding,
+        contentPadding = PaddingValues(top = Margin.Large, bottom = Margin.Medium, start = Margin.Medium, end = Margin.Medium),
     ) {
 
         item { SmallWindowScreenTitle(title = stringResource(titleRes)) }
@@ -103,13 +99,13 @@ fun TransferItemList(
                     SwipeToDismissComponent(
                         modifier = Modifier.animateItem(),
                         contentShape = itemShape,
-                        onSwiped = { onSwiped(transfer.uuid) },
+                        onSwiped = { onDeleteTransfer(transfer.uuid) },
                     ) {
                         TransferItem(
                             transfer = transfer,
                             shape = itemShape,
                             isSelected = { selectedTransferUuid == transfer.uuid },
-                            onClick = { onClick(transfer) },
+                            onClick = { navigateToDetails(transfer.uuid) },
                         )
                     }
                 },
@@ -124,11 +120,11 @@ private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::
     SwissTransferTheme {
         Surface {
             TransferItemList(
-                direction = TransferDirection.SENT,
+                direction = TransferDirection.RECEIVED,
+                navigateToDetails = {},
                 getSelectedTransferUuid = { null },
                 getTransfers = { transfers },
-                onSwiped = {},
-                onClick = {},
+                onDeleteTransfer = {},
             )
         }
     }

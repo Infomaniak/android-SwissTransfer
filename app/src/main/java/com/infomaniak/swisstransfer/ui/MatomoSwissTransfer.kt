@@ -104,6 +104,10 @@ object MatomoSwissTransfer : Matomo {
     fun trackReceivedTransferEvent(name: MatomoName) {
         trackEvent(MatomoCategory.SettingsLocalValidityPeriod, name)
     }
+
+    fun trackDeleteTransferHistory(name: MatomoName) {
+        trackEvent(MatomoCategory.DeleteTransferHistory, name)
+    }
     //endregion
 
     //region Track screens

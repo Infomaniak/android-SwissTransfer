@@ -32,14 +32,23 @@ import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferStatus
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.DownloadQuotaExceededException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.ExpiredDateFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.NotFoundFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.PasswordNeededFetchTransferException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusCheckFetchTransferException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByQuota
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.Deleted
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.VirusDetected
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.WaitVirusCheck
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCase
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,30 +60,30 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import splitties.toast.UnreliableToastApi
-import splitties.toast.longToast
 import javax.inject.Inject
 
 @HiltViewModel
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
+    private val deleteTransfer: DeleteTransferUseCase,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
-
-    private val _transferUuidFlow = MutableSharedFlow<String>(1)
-
+    private val _transferSourceFlow = MutableSharedFlow<TransferSource>(replay = 1)
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState = _transferUuidFlow
-        .flatMapLatest { transferManager.getTransferFlow(it) }
-        .map { transfer ->
-            when (transfer) {
-                null -> TransferDetailsUiState.Deleted
-                else -> TransferDetailsUiState.Success(transfer)
+    val uiState: StateFlow<TransferDetailsUiState> = _transferSourceFlow
+        .flatMapLatest { source ->
+            when (source) {
+                is TransferSource.Local -> transferManager.getTransferFlow(source.uuid).map { transfer ->
+                    transfer.toUiState(isInLocal = true)
+                }
+                is TransferSource.Missing -> flowOf(source.state)
             }
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, TransferDetailsUiState.Loading)
@@ -106,13 +115,24 @@ class TransferDetailsViewModel @Inject constructor(
                 val transfer = transferManager.getTransferFlow(transferUuid).first()
                 if (transfer == null) {
                     handleTransferDeeplink(transferUuid, _deeplinkPassword)
-                    _transferUuidFlow.emit(transferUuid)
+                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
+
                 } else {
-                    _transferUuidFlow.emit(transferUuid)
+                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
                     transferManager.fetchTransfer(transferUuid)
                 }
             }.cancellable().onFailure { exception ->
                 when (exception) {
+                    is DownloadQuotaExceededException -> {
+                        _transferSourceFlow.emit(TransferSource.Missing(ByQuota(isInLocal = false)))
+                    }
+                    is ExpiredDateFetchTransferException, is NotFoundFetchTransferException -> {
+                        _transferSourceFlow.emit(TransferSource.Missing(ByDate(isInLocal = false)))
+                    }
+                    is VirusCheckFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(WaitVirusCheck))
+                    is VirusDetectedFetchTransferException -> {
+                        _transferSourceFlow.emit(TransferSource.Missing(VirusDetected(isInLocal = false)))
+                    }
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
                     else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
@@ -156,25 +176,64 @@ class TransferDetailsViewModel @Inject constructor(
             _isDeeplinkNeedingPassword.emit(false)
         }.cancellable().onFailure { exception ->
             when (exception) {
-                is ExpiredDateFetchTransferException -> Unit
-                is DownloadQuotaExceededException -> Unit
-                is NotFoundFetchTransferException -> longToast(R.string.deeplinkTransferNotFound)
-                is PasswordNeededFetchTransferException, is WrongPasswordFetchTransferException -> throw exception
+                is NotFoundFetchTransferException,
+                is ExpiredDateFetchTransferException,
+                is PasswordNeededFetchTransferException,
+                is WrongPasswordFetchTransferException,
+                is VirusCheckFetchTransferException,
+                is VirusDetectedFetchTransferException,
+                is DownloadQuotaExceededException -> throw exception
                 else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
             }
         }
     }
 
-    sealed class TransferDetailsUiState {
+    fun deleteTransfer(transferUuid: String) {
+        deleteTransfer(transferUuid, viewModelScope)
+    }
+
+    private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
+        TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
+        TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)
+        TransferStatus.EXPIRED_DATE -> ByDate(expirationDateTimestamp, isInLocal)
+        TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
+        TransferStatus.VIRUS_DETECTED -> VirusDetected(isInLocal)
+        null -> Deleted(isInLocal)
+    }
+
+    sealed interface TransferDetailsUiState {
+        @Immutable
+        data class Success(val transfer: TransferUi) : TransferDetailsUiState
 
         @Immutable
-        data class Success(val transfer: TransferUi) : TransferDetailsUiState()
+        data object Loading : TransferDetailsUiState
 
-        @Immutable
-        data object Loading : TransferDetailsUiState()
+        sealed interface TransferError : TransferDetailsUiState {
+            @Immutable
+            data object WaitVirusCheck : TransferError
+            @Immutable
+            data class VirusDetected(override val isInLocal: Boolean) : TransferError, DeletableFromHistory
 
-        @Immutable
-        data object Deleted : TransferDetailsUiState()
+            sealed interface Expired : TransferError, DeletableFromHistory {
+                @Immutable
+                data class Deleted(override val isInLocal: Boolean) : Expired
+
+                @Immutable
+                data class ByDate(val date: Long? = null, override val isInLocal: Boolean) : Expired
+
+                @Immutable
+                data class ByQuota(val downloadLimit: Int? = null, override val isInLocal: Boolean) : Expired
+            }
+        }
+    }
+
+    sealed interface DeletableFromHistory {
+        val isInLocal: Boolean
+    }
+
+    private sealed interface TransferSource {
+        data class Local(val uuid: String) : TransferSource
+        data class Missing(val state: TransferDetailsUiState) : TransferSource
     }
 
     companion object {

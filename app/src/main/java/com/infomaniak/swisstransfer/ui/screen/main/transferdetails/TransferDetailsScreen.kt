@@ -95,12 +95,14 @@ import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.received.TransferExpiredDownloadCreditScreen
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Deleted
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.DeletableFromHistory
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.PasswordBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.QrCodeBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate.EmptyStateScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -119,6 +121,7 @@ fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
     navigateToFolder: (folderUuid: String) -> Unit,
+    onDeleteTransfer: () -> Unit,
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
@@ -132,16 +135,7 @@ fun TransferDetailsScreen(
 
     val context = LocalContext.current
     when (val state = uiState) {
-        is Deleted -> {
-            TransferExpiredDownloadCreditScreen(
-                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
-                    { navigateBack?.invoke() }
-                } else {
-                    null
-                }
-            )
-        }
-        is TransferDetailsViewModel.TransferDetailsUiState.Loading -> {
+        Loading -> {
             SwissTransferScaffold(topBar = { SwissTransferTopAppBar(title = "") }) {}
         }
         is Success -> {
@@ -169,7 +163,21 @@ fun TransferDetailsScreen(
                 navigateToFolder = navigateToFolder,
             )
         }
-        TransferDetailsViewModel.TransferDetailsUiState.Loading -> Unit
+        is TransferError -> {
+            EmptyStateScreen(
+                transferError = state,
+                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
+                    { navigateBack?.invoke() }
+                } else {
+                    null
+                },
+                onDeleteTransferClicked = { transferError ->
+                    transferDetailsViewModel.deleteTransfer(transferUuid)
+                    matomoTrackDeleteTransfer(transferError)
+                    onDeleteTransfer()
+                }
+            )
+        }
     }
 
     if (isDeeplinkPasswordNeeded) {
@@ -183,6 +191,17 @@ fun TransferDetailsScreen(
             isError = { isWrongDeeplinkPassword },
         )
     }
+}
+
+private fun matomoTrackDeleteTransfer(state: DeletableFromHistory) {
+    MatomoSwissTransfer.trackDeleteTransferHistory(
+        when (state) {
+            is TransferError.Expired.Deleted -> MatomoName.ExpiredDate
+            is TransferError.Expired.ByDate -> MatomoName.ExpiredDate
+            is TransferError.Expired.ByQuota -> MatomoName.ExpiredDownloads
+            is TransferError.VirusDetected -> MatomoName.VirusDetected
+        }
+    )
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
