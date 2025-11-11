@@ -25,6 +25,8 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.compose.preview.PreviewSmallWindow
+import com.infomaniak.core.utils.FORMAT_DATE_FULL
+import com.infomaniak.core.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -32,16 +34,17 @@ import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotDead.MascotDead
 import com.infomaniak.swisstransfer.ui.previewparameter.ExpiredTransferStatusUiListPreviewParameterProvider
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import java.util.Date
 
 @Composable
-fun ExpiredTransferContent(transferType: TransferError.Expired) {
+fun ExpiredTransferContent(transferErrorType: Expired) {
     LaunchedEffect(Unit) {
         MatomoSwissTransfer.trackScreen(
-            when (transferType) {
-                is TransferError.Expired.ByDate, TransferError.Expired.Deleted -> MatomoScreen.DateExpiredTransfer
-                is TransferError.Expired.ByQuota -> MatomoScreen.DownloadQuotasExpiredTransfer
+            when (transferErrorType) {
+                is Expired.ByDate, Expired.Deleted -> MatomoScreen.DateExpiredTransfer
+                is Expired.ByQuota -> MatomoScreen.DownloadQuotasExpiredTransfer
             }
         )
     }
@@ -49,16 +52,22 @@ fun ExpiredTransferContent(transferType: TransferError.Expired) {
     EmptyState(
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
-        description = when (transferType) {
-            is TransferError.Expired.ByDate, TransferError.Expired.Deleted -> stringResource(
-                R.string.transferExpiredDescription
-            )
-            is TransferError.Expired.ByQuota -> {
-                if (transferType.downloadLimit != null) {
+        description = when (transferErrorType) {
+            is Expired.ByDate -> {
+                if (transferErrorType.date != null) {
+                    val formatedDate = Date(transferErrorType.date).format(FORMAT_DATE_FULL)
+                    stringResource(R.string.transferExpiredDateReachedDescription, formatedDate)
+                } else {
+                    stringResource(R.string.transferExpiredDescription)
+                }
+            }
+            Expired.Deleted -> stringResource(R.string.transferExpiredDescription)
+            is Expired.ByQuota -> {
+                if (transferErrorType.downloadLimit != null) {
                     pluralStringResource(
                         R.plurals.transferExpiredLimitReachedDescription,
-                        transferType.downloadLimit,
-                        transferType.downloadLimit
+                        transferErrorType.downloadLimit,
+                        transferErrorType.downloadLimit
                     )
                 } else {
                     stringResource(R.string.deeplinkTransferExpired)
@@ -71,7 +80,7 @@ fun ExpiredTransferContent(transferType: TransferError.Expired) {
 
 @PreviewSmallWindow
 @Composable
-private fun Preview(@PreviewParameter(ExpiredTransferStatusUiListPreviewParameterProvider::class) expiredStatus: TransferError.Expired) {
+private fun Preview(@PreviewParameter(ExpiredTransferStatusUiListPreviewParameterProvider::class) expiredStatus: Expired) {
     SwissTransferTheme {
         Surface {
             ExpiredTransferContent(expiredStatus)

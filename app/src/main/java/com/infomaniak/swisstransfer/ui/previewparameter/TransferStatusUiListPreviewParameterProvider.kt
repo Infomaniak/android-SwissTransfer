@@ -24,13 +24,14 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.Deleted
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.VirusDetected
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.WaitVirusCheck
+import java.util.Date
 
 class TransferStatusUiListPreviewParameterProvider : PreviewParameterProvider<TransferError> {
     override val values: Sequence<TransferError> = transferStatusUiPreviewData
 }
 
 private val transferStatusUiPreviewData = sequenceOf(
-    ByDate,
+    ByDate(),
     ByQuota(),
     ByQuota(downloadLimit = 25),
     WaitVirusCheck,
@@ -42,7 +43,8 @@ class ExpiredTransferStatusUiListPreviewParameterProvider : PreviewParameterProv
 }
 
 private val expiredTransferStatusUiPreviewData = sequenceOf(
-    ByDate,
+    ByDate(),
+    ByDate(date = Date().time),
     ByQuota(),
     ByQuota(downloadLimit = 25),
     Deleted

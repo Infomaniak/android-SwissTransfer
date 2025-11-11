@@ -123,7 +123,7 @@ class TransferDetailsViewModel @Inject constructor(
                 when (exception) {
                     is DownloadQuotaExceededException -> _transferSourceFlow.emit(TransferSource.Missing(ByQuota()))
                     is ExpiredDateFetchTransferException,
-                    is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ByDate))
+                    is NotFoundFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(ByDate()))
                     is VirusCheckFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(WaitVirusCheck))
                     is VirusDetectedFetchTransferException -> _transferSourceFlow.emit(TransferSource.Missing(VirusDetected))
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
@@ -186,7 +186,7 @@ class TransferDetailsViewModel @Inject constructor(
     private fun TransferUi?.toUiState(): TransferDetailsUiState = when (this?.transferStatus) {
         TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit)
-        TransferStatus.EXPIRED_DATE -> ByDate
+        TransferStatus.EXPIRED_DATE -> ByDate(expirationDateTimestamp)
         TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
         TransferStatus.VIRUS_DETECTED -> VirusDetected
         null -> Deleted
@@ -210,7 +210,7 @@ class TransferDetailsViewModel @Inject constructor(
                 data object Deleted : Expired
 
                 @Immutable
-                data object ByDate : Expired
+                data class ByDate(val date: Long? = null) : Expired
 
                 @Immutable
                 data class ByQuota(val downloadLimit: Int? = null) : Expired

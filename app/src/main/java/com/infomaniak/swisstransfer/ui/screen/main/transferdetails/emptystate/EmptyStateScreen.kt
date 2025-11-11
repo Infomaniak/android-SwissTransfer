@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.icons.Bin
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferStatusUiListPreviewParameterProvider
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -64,12 +65,7 @@ fun EmptyStateScreen(
             )
         },
         modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
-        bottomButton = deleteButton.takeIf {
-            transferError is TransferError.Expired.Deleted ||
-                    transferError is TransferError.Expired.ByDate ||
-                    transferError is TransferError.Expired.ByQuota ||
-                    transferError is TransferError.VirusDetected
-        },
+        bottomButton = deleteButton.takeIf { transferError is TransferDetailsViewModel.DeletableFromHistory },
     ) {
         when (transferError) {
             is TransferError.Expired -> ExpiredTransferContent(transferError)
