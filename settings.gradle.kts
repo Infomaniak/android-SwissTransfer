@@ -31,6 +31,7 @@ include(
     ":app",
     ":Core",
     ":Core:AppIntegrity",
+    ":Core:AppVersionChecker",
     ":Core:Compose:BasicButton",
     ":Core:Compose:Basics",
     ":Core:Compose:BottomStickyButtonScaffolds",
