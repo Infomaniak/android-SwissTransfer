@@ -30,8 +30,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.compose.basics.CallableState
-import com.infomaniak.core.compose.basics.collectAsStateIn
+import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.core.mapSync
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.tryCompletingWhileTrue

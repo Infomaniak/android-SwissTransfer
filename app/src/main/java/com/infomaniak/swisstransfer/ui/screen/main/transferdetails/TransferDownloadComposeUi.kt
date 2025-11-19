@@ -63,9 +63,9 @@ import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.core.DownloadStatus
 import com.infomaniak.core.DownloadStatus.InProgress
 import com.infomaniak.core.autoCancelScope
-import com.infomaniak.core.compose.basics.CallableState
-import com.infomaniak.core.compose.basics.withForwardTo
-import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.basics.withForwardTo
+import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.snackbarMsgResId
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection

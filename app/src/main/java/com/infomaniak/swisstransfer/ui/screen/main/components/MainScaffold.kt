@@ -31,8 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.infomaniak.core.compose.preview.PreviewLargeWindow
-import com.infomaniak.core.compose.preview.PreviewSmallWindow
+import com.infomaniak.core.ui.compose.preview.PreviewLargeWindow
+import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
