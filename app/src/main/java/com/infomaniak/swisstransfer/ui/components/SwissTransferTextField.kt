@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -70,6 +71,7 @@ fun SwissTransferTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.Unspecified,
     isReadOnly: Boolean = false,
     isError: Boolean = false,
     supportingText: @Composable (() -> Unit)? = null,
@@ -108,6 +110,7 @@ fun SwissTransferTextField(
             keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
             autoCorrectEnabled = true,
             imeAction = imeAction,
+            capitalization = capitalization,
         ),
         keyboardActions = keyboardActions,
         isError = isError,
