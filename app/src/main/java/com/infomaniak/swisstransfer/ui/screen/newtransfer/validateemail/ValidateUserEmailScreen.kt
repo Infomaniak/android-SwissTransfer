@@ -48,9 +48,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.currentStateAsState
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
-import com.infomaniak.core.compose.margin.Margin
-import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
+import com.infomaniak.core.ui.compose.margin.Margin
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R

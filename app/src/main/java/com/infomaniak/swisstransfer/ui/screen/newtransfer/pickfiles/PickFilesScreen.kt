@@ -55,9 +55,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
-import com.infomaniak.core.compose.margin.Margin
-import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
+import com.infomaniak.core.ui.compose.margin.Margin
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen

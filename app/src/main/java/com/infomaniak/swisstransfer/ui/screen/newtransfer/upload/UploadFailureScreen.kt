@@ -25,9 +25,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.compose.basics.CallableState
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
-import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R

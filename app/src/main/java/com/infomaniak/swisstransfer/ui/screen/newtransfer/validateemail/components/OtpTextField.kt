@@ -53,8 +53,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.infomaniak.core.compose.margin.Margin
-import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.margin.Margin
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.HideSelectAllTextToolbar
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 

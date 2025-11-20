@@ -69,8 +69,8 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.infomaniak.core.compose.margin.Margin
-import com.infomaniak.core.compose.preview.PreviewLightAndDark
+import com.infomaniak.core.ui.compose.margin.Margin
+import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.core.utils.isEmailRfc5321Compliant
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip

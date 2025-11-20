@@ -26,8 +26,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.SinglePaneScaffold
-import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.SinglePaneScaffold
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer

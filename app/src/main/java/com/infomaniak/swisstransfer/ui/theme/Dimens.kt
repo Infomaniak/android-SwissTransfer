@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer.ui.theme
 
 import androidx.compose.ui.unit.dp
-import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.ui.compose.margin.Margin
 
 object Dimens {
     val MaxSinglePaneScreenWidth = 800.dp

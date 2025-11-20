@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
-import com.infomaniak.core.compose.preview.PreviewLightAndDark
+import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.qrInfomaniak.QrInfomaniak
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme

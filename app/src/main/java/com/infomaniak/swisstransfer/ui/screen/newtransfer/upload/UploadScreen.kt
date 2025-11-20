@@ -33,8 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
-import com.infomaniak.core.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar

@@ -33,8 +33,8 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
-import com.infomaniak.core.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
+import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
 
 val LocalIsDarkMode = staticCompositionLocalOf { false }
 val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }

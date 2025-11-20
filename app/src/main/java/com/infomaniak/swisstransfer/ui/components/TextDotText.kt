@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
-import com.infomaniak.core.compose.margin.Margin
+import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import kotlin.experimental.ExperimentalTypeInference
 
