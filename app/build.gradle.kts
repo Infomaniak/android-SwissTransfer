@@ -22,7 +22,7 @@ import java.util.Properties
  */
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.hilt)
+    alias(core.plugins.dagger.hilt)
     alias(core.plugins.compose.compiler)
     alias(core.plugins.kapt)
     alias(core.plugins.kotlin.android)
@@ -231,12 +231,12 @@ dependencies {
     debugImplementation(core.compose.ui.tooling)
 
     // Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.androidx.work)
-    kapt(libs.hilt.android.compiler)
-    kapt(libs.hilt.androidx.compiler)
+    implementation(core.hilt.android)
+    implementation(core.hilt.work)
+    kapt(core.hilt.compiler)
+    kapt(core.hilt.androidx.compiler)
     kapt(libs.room.processing) // TODO[workaround]: Remove when https://github.com/google/dagger/issues/4693 is fixed.
-    implementation(libs.hilt.navigation.compose)
+    implementation(core.hilt.navigation.compose)
 
     // Others
     implementation(libs.androidx.core.splashscreen)
