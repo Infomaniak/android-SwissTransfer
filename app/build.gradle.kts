@@ -233,7 +233,7 @@ dependencies {
     // Hilt
     implementation(core.hilt.android)
     implementation(core.hilt.work)
-    kapt(core.hilt.android.compiler)
+    kapt(core.hilt.compiler)
     kapt(core.hilt.androidx.compiler)
     kapt(libs.room.processing) // TODO[workaround]: Remove when https://github.com/google/dagger/issues/4693 is fixed.
     implementation(core.hilt.navigation.compose)
