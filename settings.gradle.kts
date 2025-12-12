@@ -59,6 +59,7 @@ include(
     ":Core:Onboarding",
     ":Core:Sentry",
     ":Core:Thumbnails",
+    ":Core:Ui:View",
     ":Core:Ui:Compose:BasicButton",
     ":Core:Ui:Compose:Basics",
     ":Core:Ui:Compose:BottomStickyButtonScaffolds",
