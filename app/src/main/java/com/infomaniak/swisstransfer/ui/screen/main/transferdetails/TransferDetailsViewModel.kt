@@ -46,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByQuota
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.Deleted
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Unknown
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.VirusDetected
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.WaitVirusCheck
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCase
@@ -134,7 +135,10 @@ class TransferDetailsViewModel @Inject constructor(
                     }
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
-                    else -> SentryLog.e(TAG, "Failure loading a transfer", exception) // TODO: Handle unknown result
+                    else -> {
+                        SentryLog.e(TAG, "Failure loading a transfer", exception)
+                        _transferSourceFlow.emit(TransferSource.Missing(Unknown))
+                    }
                 }
             }
         }
@@ -182,7 +186,10 @@ class TransferDetailsViewModel @Inject constructor(
                 is VirusCheckFetchTransferException,
                 is VirusDetectedFetchTransferException,
                 is DownloadQuotaExceededException -> throw exception
-                else -> SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
+                else -> {
+                    SentryLog.e(TAG, "An error has occurred when deeplink a transfer", exception)
+                    throw UnknownDeeplinkHandlingException(exception)
+                }
             }
         }
     }
@@ -192,7 +199,7 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
-        TransferStatus.UNKNOWN -> TransferDetailsUiState.TransferError.Unknown
+        TransferStatus.UNKNOWN -> Unknown
         TransferStatus.READY -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)
         TransferStatus.EXPIRED_DATE -> ByDate(expirationDateTimestamp, isInLocal)
@@ -237,6 +244,10 @@ class TransferDetailsViewModel @Inject constructor(
         data class Local(val uuid: String) : TransferSource
         data class Missing(val state: TransferDetailsUiState) : TransferSource
     }
+
+    private data class UnknownDeeplinkHandlingException(
+        val throwable: Throwable,
+    ) : Exception("Unknown deeplink handling exception")
 
     companion object {
         private val TAG = TransferDetailsViewModel::class.java.simpleName
