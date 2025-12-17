@@ -116,7 +116,6 @@ class TransferDetailsViewModel @Inject constructor(
                 if (transfer == null) {
                     handleTransferDeeplink(transferUuid, _deeplinkPassword)
                     _transferSourceFlow.emit(TransferSource.Local(transferUuid))
-
                 } else {
                     _transferSourceFlow.emit(TransferSource.Local(transferUuid))
                     transferManager.fetchTransfer(transferUuid)
@@ -135,7 +134,7 @@ class TransferDetailsViewModel @Inject constructor(
                     }
                     is PasswordNeededFetchTransferException -> _isDeeplinkNeedingPassword.emit(true)
                     is WrongPasswordFetchTransferException -> _isWrongDeeplinkPassword.emit(true)
-                    else -> SentryLog.e(TAG, "Failure loading a transfer", exception)
+                    else -> SentryLog.e(TAG, "Failure loading a transfer", exception) // TODO: Handle unknown result
                 }
             }
         }
@@ -193,7 +192,8 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
-        TransferStatus.READY, TransferStatus.UNKNOWN -> Success(this)
+        TransferStatus.UNKNOWN -> TransferDetailsUiState.TransferError.Unknown
+        TransferStatus.READY -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)
         TransferStatus.EXPIRED_DATE -> ByDate(expirationDateTimestamp, isInLocal)
         TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
@@ -213,6 +213,8 @@ class TransferDetailsViewModel @Inject constructor(
             data object WaitVirusCheck : TransferError
             @Immutable
             data class VirusDetected(override val isInLocal: Boolean) : TransferError, DeletableFromHistory
+            @Immutable
+            data object Unknown : TransferError
 
             sealed interface Expired : TransferError, DeletableFromHistory {
                 @Immutable
