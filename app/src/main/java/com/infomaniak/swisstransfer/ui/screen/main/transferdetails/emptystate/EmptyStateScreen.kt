@@ -65,6 +65,7 @@ fun EmptyStateScreen(
             is TransferError.Expired -> ExpiredTransferContent(transferError)
             is TransferError.WaitVirusCheck -> VirusCheckContent()
             is TransferError.VirusDetected -> VirusDetectedContent()
+            TransferError.Unknown -> UnknownTransferErrorContent()
         }
     }
 }
