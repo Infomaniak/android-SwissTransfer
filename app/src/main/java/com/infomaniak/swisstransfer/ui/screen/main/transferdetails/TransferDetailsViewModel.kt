@@ -42,6 +42,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByQuota
@@ -87,7 +88,7 @@ class TransferDetailsViewModel @Inject constructor(
                 is TransferSource.Missing -> flowOf(source.state)
             }
         }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, TransferDetailsUiState.Loading)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
@@ -199,6 +200,7 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
+        TransferStatus.NOT_YET_FETCHED -> Loading
         TransferStatus.UNKNOWN -> Unknown
         TransferStatus.READY -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)
