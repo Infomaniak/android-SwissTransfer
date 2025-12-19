@@ -38,8 +38,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
+import com.infomaniak.core.inappupdate.ui.composable.UpdateRequiredScreen
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
-import com.infomaniak.core.inappupdate.updaterequired.ui.UpdateRequiredScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.data.DeepLinkType
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
