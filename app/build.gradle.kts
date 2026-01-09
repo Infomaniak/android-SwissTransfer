@@ -61,6 +61,7 @@ android {
         resValue("string", "prod_host", prodHost)
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
+        buildConfigField("String", "CLIENT_ID", "\"TODO\"") // TODO
 
         missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
     }
@@ -180,6 +181,8 @@ dependencies {
 
     implementation(project(":Core"))
     implementation(project(":Core:AppIntegrity"))
+    implementation(project(":Core:Auth"))
+    implementation(project(":Core:CrossAppLogin:Front"))
     implementation(project(":Core:FileTypes"))
     implementation(project(":Core:InAppReview"))
     implementation(project(":Core:InAppUpdate"))
