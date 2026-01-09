@@ -40,12 +40,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel.AccountsCheckingState
+import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.crossapplogin.front.components.CrossLoginBottomContent
+import com.infomaniak.core.crossapplogin.front.components.NoCrossAppLoginAccountsContent
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLargeWindow
 import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
 import com.infomaniak.core.onboarding.IndicatorStyle
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
+import com.infomaniak.core.onboarding.components.OnboardingComponents
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultBackground
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLottieIllustration
 import com.infomaniak.core.onboarding.components.OnboardingComponents.HighlightedTitleAndDescription
@@ -60,7 +65,14 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun OnboardingScreen(goToMainActivity: () -> Unit) {
+fun OnboardingScreen(
+    goToMainActivity: () -> Unit,
+    accountsCheckingState: () -> AccountsCheckingState,
+    skippedIds: () -> Set<Long>,
+    isLoginButtonLoading: () -> Boolean,
+    onLoginRequest: (accounts: List<ExternalAccount>) -> Unit,
+    onSaveSkippedAccounts: (Set<Long>) -> Unit,
+) {
     val pagerState = rememberPagerState(pageCount = { Page.entries.size })
     val isLastPage by remember { derivedStateOf { pagerState.currentPage >= pagerState.pageCount - 1 } }
     val coroutineScope = rememberCoroutineScope()
@@ -77,6 +89,16 @@ fun OnboardingScreen(goToMainActivity: () -> Unit) {
         pagerState = pagerState,
         onboardingPages = Page.entries.mapIndexed { index, page -> page.toOnboardingPage(isHighlighted, pagerState, index) },
         bottomContent = { paddingValues ->
+            OnboardingComponents.CrossLoginBottomContent(
+                pagerState = pagerState,
+                isLoginButtonLoading = isLoginButtonLoading,
+                accountsCheckingState = accountsCheckingState,
+                skippedIds = skippedIds,
+                onContinueWithSelectedAccounts = { selectedAccounts -> onLoginRequest(selectedAccounts) },
+                onUseAnotherAccountClicked = { onLoginRequest(emptyList()) },
+                onSaveSkippedAccounts = onSaveSkippedAccounts,
+                noCrossAppLoginAccountsContent = NoCrossAppLoginAccountsContent.accountOptional { goToMainActivity() }
+            )
             BottomContent(
                 modifier = Modifier
                     .padding(paddingValues)

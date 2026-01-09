@@ -25,9 +25,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.auth.models.UserLoginResult
+import com.infomaniak.core.auth.utils.LoginFlowController
+import com.infomaniak.core.auth.utils.LoginUtils
+import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
+import com.infomaniak.core.crossapplogin.back.ExternalAccount
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -37,8 +49,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+class CrossAppLoginViewModel() : BaseCrossAppLoginViewModel(BuildConfig.APPLICATION_ID, BuildConfig.CLIENT_ID)
+
 @AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
+
+    private val crossAppLoginViewModel: CrossAppLoginViewModel by viewModels()
+
+    private var areButtonsLoading by mutableStateOf(false)
 
     @Inject
     lateinit var accountUtils: AccountUtils
@@ -55,6 +73,22 @@ class OnboardingActivity : ComponentActivity() {
             SwissTransferTheme {
                 LockScreenOrientation(isLocked = LocalWindowAdaptiveInfo.current.isWindowSmall())
 
+                val accountsCheckingState by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
+                val skippedIds by crossAppLoginViewModel.skippedAccountIds.collectAsStateWithLifecycle()
+
+                val loginFlowController = LoginUtils.rememberLoginFlowController(
+                    infomaniakLogin = infomaniakLogin,
+                    userExistenceChecker = userExistenceChecker,
+                ) { userLoginResult ->
+                    when (userLoginResult) {
+                        is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
+                        is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
+                        null -> Unit
+                    }
+
+                    if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
+                }
+
                 Surface {
                     OnboardingScreen(
                         goToMainActivity = {
@@ -63,10 +97,63 @@ class OnboardingActivity : ComponentActivity() {
                                 Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
                                 finish()
                             }
-                        }
+                        },
+                        accountsCheckingState = { accountsCheckingState },
+                        skippedIds = { skippedIds },
+                        isLoginButtonLoading = { areButtonsLoading },
+                        onLoginRequest = { accounts ->
+                            if (accounts.isEmpty()) {
+                                openLoginWebView(loginFlowController)
+                            } else {
+                                scope.launch { connectSelectedAccounts(accounts, crossAppLoginViewModel, snackbarHostState) }
+                            }
+                        },
+                        onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
                     )
                 }
             }
         }
+    }
+
+    private fun openLoginWebView(loginFlowController: LoginFlowController) {
+        startLoadingLoginButtons()
+        loginFlowController.login()
+    }
+
+    private suspend fun connectSelectedAccounts(
+        accounts: List<ExternalAccount>,
+        viewModel: BaseCrossAppLoginViewModel,
+        snackbarHostState: SnackbarHostState,
+    ) {
+        startLoadingLoginButtons()
+        val loginResult = viewModel.attemptLogin(selectedAccounts = accounts)
+        loginUsers(loginResult, snackbarHostState)
+        loginResult.errorMessageIds.forEach { messageResId -> snackbarHostState.showSnackbar(getString(messageResId)) }
+    }
+
+    private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
+        val results = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, this, userExistenceChecker)
+        val accessTokens = buildList {
+            results.forEach { result ->
+                when (result) {
+                    is UserLoginResult.Success -> add(result.user.apiToken.accessToken)
+                    is UserLoginResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
+                }
+            }
+        }
+
+        if (accessTokens.isEmpty()) {
+            stopLoadingLoginButtons()
+        } else {
+            reportAccessTokens(accessTokens)
+        }
+    }
+
+    private fun startLoadingLoginButtons() {
+        areButtonsLoading = true
+    }
+
+    private fun stopLoadingLoginButtons() {
+        areButtonsLoading = false
     }
 }
