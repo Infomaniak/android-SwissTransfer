@@ -194,6 +194,7 @@ dependencies {
     implementation(project(":Core:Ui:Compose:BottomStickyButtonScaffolds"))
     implementation(project(":Core:Ui:Compose:Margin"))
     implementation(project(":Core:Ui:Compose:Preview"))
+    implementation(project(":Core:Ui:Compose:Theme"))
 
     implementation(kotlin("reflect"))
 

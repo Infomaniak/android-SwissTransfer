@@ -36,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.ThemedImage
+import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme

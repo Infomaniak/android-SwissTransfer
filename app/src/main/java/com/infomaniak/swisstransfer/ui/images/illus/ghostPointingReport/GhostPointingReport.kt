@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.ThemedImage
+import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 val AppIllus.GhostPointingReport: ThemedImage

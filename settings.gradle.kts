@@ -65,5 +65,6 @@ include(
     ":Core:Ui:Compose:BottomStickyButtonScaffolds",
     ":Core:Ui:Compose:Margin",
     ":Core:Ui:Compose:Preview",
+    ":Core:Ui:Compose:Theme",
     ":Core:WebView",
 )

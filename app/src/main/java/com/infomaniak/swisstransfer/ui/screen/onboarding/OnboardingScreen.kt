@@ -51,7 +51,7 @@ import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLot
 import com.infomaniak.core.onboarding.components.OnboardingComponents.HighlightedTitleAndDescription
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.swisstransfer.ui.images.ThemedImage
+import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopLeft
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopRight
 import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton

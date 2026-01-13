@@ -48,9 +48,9 @@ import coil3.video.VideoFrameDecoder
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.ui.compose.theme.LocalIsThemeDarkMode
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
-import com.infomaniak.swisstransfer.ui.theme.LocalIsDarkMode
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.fileType
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
@@ -120,7 +120,7 @@ private fun FileIcon(
                 .padding(circleSize / 4),
             imageVector = fileType.icon,
             contentDescription = null,
-            tint = fileType.color(LocalIsDarkMode.current),
+            tint = fileType.color(LocalIsThemeDarkMode.current),
         )
 
         if (showFileName) {
