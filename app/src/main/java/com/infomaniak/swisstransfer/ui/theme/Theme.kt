@@ -35,8 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
+import com.infomaniak.core.ui.compose.theme.LocalIsThemeDarkMode
 
-val LocalIsDarkMode = staticCompositionLocalOf { false }
 val LocalCustomColorScheme: ProvidableCompositionLocal<CustomColorScheme> = staticCompositionLocalOf { CustomColorScheme() }
 val LocalWindowAdaptiveInfo = staticCompositionLocalOf<WindowAdaptiveInfo> { error("No WindowAdaptiveInfo provided") }
 
@@ -60,7 +60,7 @@ fun SwissTransferTheme(
         LocalTextStyle provides Typography.bodyRegular,
         LocalCustomColorScheme provides customColors,
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
-        LocalIsDarkMode provides isDarkTheme,
+        LocalIsThemeDarkMode provides isDarkTheme,
         LocalScaffoldTheme provides scaffoldTheme
     ) {
         MaterialTheme(
