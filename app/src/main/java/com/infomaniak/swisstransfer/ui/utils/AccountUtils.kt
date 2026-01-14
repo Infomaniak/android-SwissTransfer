@@ -17,36 +17,58 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import android.content.Context
+import com.infomaniak.core.auth.PersistedUserIdAccountUtils
+import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.swisstransfer.ui.MainApplication
+import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
 import javax.inject.Inject
 import javax.inject.Singleton
+import io.sentry.protocol.User as SentryUser
 
 @Singleton
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     private val accountPreferences: AccountPreferences,
-) {
+    @ApplicationContext context: Context,
+) : PersistedUserIdAccountUtils(context, MainApplication.userDataCleanableList) {
 
     suspend fun init() {
         accountPreferences.currentUserId?.let {
             accountManager.loadUser(it)
         }
+
+        Sentry.setUser(SentryUser().apply { id = "-1" })
+        currentUserFlow.collect { user ->
+            Sentry.setUser(SentryUser().apply {
+                id = user?.id?.toString() ?: "-1"
+                email = user?.email
+            })
+        }
     }
 
-    suspend fun login(userId: Int = DEFAULT_USER_ID) {
-        accountPreferences.currentUserId = userId
-        accountManager.loadUser(userId)
+    // TODO: Handle guest user login
+    suspend fun loginGuestUser() {
+        accountPreferences.currentUserId = GUEST_USER_ID
+        accountManager.loadUser(GUEST_USER_ID)
     }
 
-    suspend fun logout(userId: Int) {
-        accountManager.removeUser(userId)
-        // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
-        accountPreferences.currentUserId = DEFAULT_USER_ID
+    override suspend fun addUser(user: User) {
+        super.addUser(user)
+        accountManager.loadUser(user.id)
     }
 
-    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null
+    // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
+    override suspend fun removeUser(user: User) {
+        super.removeUser(user)
+        accountManager.removeUser(user.id)
+    }
+
+    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null // TODO: Handle guest user login
 
     companion object {
-        const val DEFAULT_USER_ID = 0
+        private const val GUEST_USER_ID = 0
     }
 }
