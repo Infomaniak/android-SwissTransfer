@@ -18,17 +18,15 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
-import android.content.SharedPreferences
+import com.infomaniak.core.sharedvalues.SharedValues
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 @Singleton
-class AccountPreferences @Inject constructor(@ApplicationContext private val appContext: Context) {
+class AccountPreferences @Inject constructor(@ApplicationContext private val appContext: Context) : SharedValues {
 
-    private val sharedPreferences = appContext.applicationContext.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)!!
+    override val sharedPreferences = appContext.applicationContext.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)!!
 
     private var _currentUserId by sharedValue("currentUserId", NO_USER)
     var currentUserId
@@ -36,23 +34,6 @@ class AccountPreferences @Inject constructor(@ApplicationContext private val app
         set(value) {
             _currentUserId = value ?: NO_USER
         }
-
-    //region SharedValues methods to remove
-    // TODO: Extend SharedValues when the util class is migrated to Core instead of using these two methods
-    private fun sharedValue(key: String, defaultValue: Int): ReadWriteProperty<Any, Int> = with(sharedPreferences) {
-        return object : ReadWriteProperty<Any, Int> {
-            override fun getValue(thisRef: Any, property: KProperty<*>): Int = getInt(key, defaultValue)
-            override fun setValue(thisRef: Any, property: KProperty<*>, value: Int) = transaction { putInt(key, value) }
-        }
-    }
-
-    private fun SharedPreferences.transaction(block: SharedPreferences.Editor.() -> Unit) {
-        with(edit()) {
-            block(this)
-            apply()
-        }
-    }
-    //endregion
 
     companion object {
         private const val SHARED_PREFS_NAME = "AccountPreferences"

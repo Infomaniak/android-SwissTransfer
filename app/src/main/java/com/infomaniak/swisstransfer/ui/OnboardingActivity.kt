@@ -59,7 +59,7 @@ class OnboardingActivity : ComponentActivity() {
                     OnboardingScreen(
                         goToMainActivity = {
                             scope.launch {
-                                accountUtils.login()
+                                accountUtils.loginGuestUser()
                                 Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
                                 finish()
                             }

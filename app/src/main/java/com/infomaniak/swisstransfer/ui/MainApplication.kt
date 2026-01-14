@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.infomaniak.core.common.AssociatedUserDataCleanable
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
@@ -83,6 +84,9 @@ class MainApplication : Application(), Configuration.Provider {
         configureInfomaniakCore()
         configureSentry()
 
+        // TODO: Add DeviceInfoUpdateManager once we have setup this part of the logic
+        // userDataCleanableList = listOf<AssociatedUserDataCleanable>(DeviceInfoUpdateManager)
+
         notificationUtils.initNotificationsChannel()
 
         globalCoroutineScope.launch {
@@ -125,5 +129,11 @@ class MainApplication : Application(), Configuration.Provider {
             isSentryTrackingEnabled = dataManagementDataStore.getPreference(IsSentryAuthorized),
             isFilteredException = { exception -> exception is KmpNetworkException },
         )
+    }
+
+    companion object {
+        @JvmStatic
+        var userDataCleanableList: List<AssociatedUserDataCleanable> = emptyList()
+            private set
     }
 }

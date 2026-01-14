@@ -97,7 +97,7 @@ class LaunchActivity : ComponentActivity() {
      * intent, we want to handle it correctly but we first need to connect the user seamlessly.
      */
     private suspend fun connectLoggedOutUser() {
-        if (!accountUtils.isUserConnected()) accountUtils.login()
+        if (!accountUtils.isUserConnected()) accountUtils.loginGuestUser()
     }
 
     private fun createDeeplinkIntent(): Intent {
