@@ -180,6 +180,7 @@ dependencies {
 
     implementation(libs.infomaniak.core)
     implementation(libs.infomaniak.core.appintegrity)
+    implementation(libs.infomaniak.core.auth)
     implementation(libs.infomaniak.core.filetypes)
     implementation(libs.infomaniak.core.inappreview)
     implementation(libs.infomaniak.core.inappupdate)

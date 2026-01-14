@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.infomaniak.core.AssociatedUserDataCleanable
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
@@ -80,6 +81,9 @@ class MainApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
+        // TODO: Add DeviceInfoUpdateManager once we have setup this part of the logic
+        // userDataCleanableList = listOf<AssociatedUserDataCleanable>(DeviceInfoUpdateManager)
+
         notificationUtils.initNotificationsChannel()
 
         globalCoroutineScope.launch {
@@ -121,5 +125,11 @@ class MainApplication : Application(), Configuration.Provider {
             appVersionName = BuildConfig.VERSION_NAME,
             appVersionCode = BuildConfig.VERSION_CODE,
         )
+    }
+
+    companion object {
+        @JvmStatic
+        var userDataCleanableList: List<AssociatedUserDataCleanable> = emptyList()
+            private set
     }
 }

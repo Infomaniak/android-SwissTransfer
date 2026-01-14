@@ -60,7 +60,7 @@ import javax.inject.Inject
 import com.infomaniak.core.inappupdate.R as RInAppUpdate
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageable {
+class MainActivity : BaseActivity(), AppReviewManageable, AppUpdateManageable {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
     private val deeplinkViewModel: DeeplinkViewModel by viewModels()
