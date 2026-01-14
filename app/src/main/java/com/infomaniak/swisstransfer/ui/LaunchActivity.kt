@@ -37,10 +37,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @SuppressLint("CustomSplashScreen")
-class LaunchActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var accountUtils: AccountUtils
+class LaunchActivity : BaseActivity() {
 
     @Inject
     lateinit var appSettingsManager: AppSettingsManager
@@ -97,7 +94,7 @@ class LaunchActivity : ComponentActivity() {
      * intent, we want to handle it correctly but we first need to connect the user seamlessly.
      */
     private suspend fun connectLoggedOutUser() {
-        if (!accountUtils.isUserConnected()) accountUtils.login()
+        if (!accountUtils.isUserConnected()) accountUtils.loginGuestUser()
     }
 
     private fun createDeeplinkIntent(): Intent {

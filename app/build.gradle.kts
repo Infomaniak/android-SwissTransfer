@@ -177,8 +177,8 @@ sentry {
 }
 
 dependencies {
-
     implementation(core.infomaniak.core.appintegrity)
+    implementation(core.infomaniak.core.auth)
     implementation(core.infomaniak.core.common)
     implementation(core.infomaniak.core.filetypes)
     implementation(core.infomaniak.core.inappreview)

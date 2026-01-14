@@ -51,7 +51,7 @@ import javax.inject.Inject
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager.Reason as OpenReason
 
 @AndroidEntryPoint
-class NewTransferActivity : ComponentActivity(), AppReviewManageable {
+class NewTransferActivity : BaseActivity(), AppReviewManageable {
 
     @Inject
     lateinit var newTransferOpenManager: NewTransferOpenManager

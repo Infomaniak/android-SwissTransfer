@@ -21,7 +21,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -31,17 +30,12 @@ import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class OnboardingActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var accountUtils: AccountUtils
+class OnboardingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +53,7 @@ class OnboardingActivity : ComponentActivity() {
                     OnboardingScreen(
                         goToMainActivity = {
                             scope.launch {
-                                accountUtils.login()
+                                accountUtils.loginGuestUser()
                                 Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
                                 finish()
                             }
