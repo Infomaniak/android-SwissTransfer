@@ -48,7 +48,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {

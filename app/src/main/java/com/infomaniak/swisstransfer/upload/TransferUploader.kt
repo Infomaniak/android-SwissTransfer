@@ -20,7 +20,7 @@ package com.infomaniak.swisstransfer.upload
 import android.content.ContentResolver
 import android.net.Uri
 import android.webkit.MimeTypeMap
-import com.infomaniak.core.autoCancelScope
+import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination

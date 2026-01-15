@@ -73,8 +73,8 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
-import com.infomaniak.core.utils.FORMAT_DATE_FULL
-import com.infomaniak.core.utils.format
+import com.infomaniak.core.common.utils.FORMAT_DATE_FULL
+import com.infomaniak.core.common.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi

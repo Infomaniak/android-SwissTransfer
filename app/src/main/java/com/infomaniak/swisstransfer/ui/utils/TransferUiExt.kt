@@ -21,11 +21,11 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.utils.FORMAT_HOUR_MINUTES
-import com.infomaniak.core.utils.endOfTheDay
-import com.infomaniak.core.utils.format
-import com.infomaniak.core.utils.startOfTheDay
-import com.infomaniak.core.utils.tomorrow
+import com.infomaniak.core.common.utils.FORMAT_HOUR_MINUTES
+import com.infomaniak.core.common.utils.endOfTheDay
+import com.infomaniak.core.common.utils.format
+import com.infomaniak.core.common.utils.startOfTheDay
+import com.infomaniak.core.common.utils.tomorrow
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.utils.DateUtils.SECONDS_IN_A_DAY

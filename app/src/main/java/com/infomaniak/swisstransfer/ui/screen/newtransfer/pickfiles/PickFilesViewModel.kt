@@ -32,10 +32,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.basics.collectAsStateIn
-import com.infomaniak.core.mapSync
+import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.core.tryCompletingWhileTrue
-import com.infomaniak.core.utils.isEmailRfc5321Compliant
+import com.infomaniak.core.common.tryCompletingWhileTrue
+import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils

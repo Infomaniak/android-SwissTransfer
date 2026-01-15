@@ -22,7 +22,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
-import com.infomaniak.core.cancellable
+import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.AlreadyUsedFileNamesSet

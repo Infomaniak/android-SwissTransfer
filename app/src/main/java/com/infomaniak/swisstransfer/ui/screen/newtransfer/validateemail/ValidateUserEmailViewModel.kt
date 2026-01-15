@@ -21,7 +21,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.cancellable
+import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException

@@ -41,7 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 object SwissTransferAlertDialogDefaults {
     @Composable

@@ -21,8 +21,8 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.core.mapSync
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import com.infomaniak.swisstransfer.upload.UploadState
 import dagger.hilt.android.lifecycle.HiltViewModel

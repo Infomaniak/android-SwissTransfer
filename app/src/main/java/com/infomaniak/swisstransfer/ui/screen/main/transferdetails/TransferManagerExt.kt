@@ -19,9 +19,9 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import android.net.Uri
 import androidx.core.net.toUri
-import com.infomaniak.core.DownloadStatus
-import com.infomaniak.core.downloadStatusFlow
-import com.infomaniak.core.uriFor
+import com.infomaniak.core.common.DownloadStatus
+import com.infomaniak.core.common.downloadStatusFlow
+import com.infomaniak.core.common.uriFor
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager

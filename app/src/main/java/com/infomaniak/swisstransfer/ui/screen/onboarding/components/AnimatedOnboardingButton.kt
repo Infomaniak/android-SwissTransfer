@@ -47,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowRight
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 private const val BUTTON_ANIM_DURATION = 300
 private const val BUTTON_ANIM_DELAY = BUTTON_ANIM_DURATION / 2

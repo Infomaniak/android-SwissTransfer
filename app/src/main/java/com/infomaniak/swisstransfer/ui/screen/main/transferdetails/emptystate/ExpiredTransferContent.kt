@@ -25,8 +25,8 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
-import com.infomaniak.core.utils.FORMAT_DATE_FULL
-import com.infomaniak.core.utils.format
+import com.infomaniak.core.common.utils.FORMAT_DATE_FULL
+import com.infomaniak.core.common.utils.format
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
