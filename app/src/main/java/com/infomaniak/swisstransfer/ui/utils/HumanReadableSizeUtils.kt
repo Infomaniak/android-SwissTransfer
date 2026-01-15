@@ -26,8 +26,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.FormatterFileSize.formatFileSize
-import com.infomaniak.core.FormatterFileSize.formatShortFileSize
+import com.infomaniak.core.common.FormatterFileSize.formatFileSize
+import com.infomaniak.core.common.FormatterFileSize.formatShortFileSize
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.R

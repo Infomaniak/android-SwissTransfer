@@ -23,10 +23,10 @@ import androidx.compose.runtime.LongState
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.work.WorkManager
-import com.infomaniak.core.cancellable
+import com.infomaniak.core.common.cancellable
+import com.infomaniak.core.common.withPartialWakeLock
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.core.withPartialWakeLock
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager

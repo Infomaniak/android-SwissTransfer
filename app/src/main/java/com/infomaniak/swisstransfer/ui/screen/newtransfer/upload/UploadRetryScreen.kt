@@ -42,7 +42,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailScreen
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.upload.UploadState
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun UploadRetryScreen(

@@ -51,7 +51,7 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openUrl
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun SettingsDataManagementScreen(

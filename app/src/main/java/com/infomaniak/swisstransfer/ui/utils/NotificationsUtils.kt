@@ -29,7 +29,7 @@ import com.infomaniak.core.notifications.buildNotificationChannel
 import com.infomaniak.core.notifications.cancelNotification
 import com.infomaniak.core.notifications.createNotificationChannels
 import com.infomaniak.core.notifications.notifyCompat
-import com.infomaniak.core.utils.percent
+import com.infomaniak.core.common.utils.percent
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY

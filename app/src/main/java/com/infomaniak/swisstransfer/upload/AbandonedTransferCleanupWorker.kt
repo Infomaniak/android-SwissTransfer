@@ -32,7 +32,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.await
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
-import com.infomaniak.core.cancellable
+import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import dagger.assisted.Assisted

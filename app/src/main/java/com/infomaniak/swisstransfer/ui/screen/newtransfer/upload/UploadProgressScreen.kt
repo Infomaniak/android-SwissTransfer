@@ -59,7 +59,7 @@ import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.CheckingFiles
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.TransferInfo
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun UploadOngoingScreen(

@@ -23,7 +23,7 @@ import android.app.Notification
 import android.content.Intent
 import android.net.Uri
 import android.os.SystemClock
-import com.infomaniak.core.ForegroundService
+import com.infomaniak.core.common.ForegroundService
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import dagger.hilt.android.AndroidEntryPoint

@@ -32,7 +32,7 @@ import androidx.core.os.BundleCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
-import com.infomaniak.core.utils.enumValueOfOrNull
+import com.infomaniak.core.common.utils.enumValueOfOrNull
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation

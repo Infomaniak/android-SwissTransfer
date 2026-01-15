@@ -29,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
-import com.infomaniak.core.utils.percent
+import com.infomaniak.core.common.utils.percent
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 

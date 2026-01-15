@@ -60,13 +60,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
-import com.infomaniak.core.DownloadStatus
-import com.infomaniak.core.DownloadStatus.InProgress
-import com.infomaniak.core.autoCancelScope
+import com.infomaniak.core.common.DownloadStatus
+import com.infomaniak.core.common.DownloadStatus.InProgress
+import com.infomaniak.core.common.autoCancelScope
+import com.infomaniak.core.common.snackbarMsgResId
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.basics.withForwardTo
 import com.infomaniak.core.ui.compose.margin.Margin
-import com.infomaniak.core.snackbarMsgResId
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
@@ -92,7 +92,7 @@ import splitties.coroutines.raceOf
 import splitties.experimental.ExperimentalSplittiesApi
 import splitties.init.appCtx
 import kotlin.time.Duration.Companion.seconds
-import com.infomaniak.core.R as RCore
+import com.infomaniak.core.common.R as RCore
 
 @OptIn(ExperimentalPermissionsApi::class)
 class TransferDownloadComposeUi(

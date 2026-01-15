@@ -17,9 +17,9 @@
  */
 package com.infomaniak.swisstransfer.dataset
 
-import com.infomaniak.core.utils.endOfTheDay
-import com.infomaniak.core.utils.startOfTheDay
-import com.infomaniak.core.utils.tomorrow
+import com.infomaniak.core.common.utils.endOfTheDay
+import com.infomaniak.core.common.utils.startOfTheDay
+import com.infomaniak.core.common.utils.tomorrow
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.Container
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.File
