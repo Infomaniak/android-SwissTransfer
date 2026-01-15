@@ -12,8 +12,8 @@ plugins {
     alias(core.plugins.compose.compiler) apply false
     alias(core.plugins.kapt) apply false
     alias(core.plugins.kotlin.android) apply false
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.android.library) apply false
+    alias(core.plugins.android.application) apply false
+    alias(core.plugins.android.library) apply false
     alias(core.plugins.dagger.hilt) apply false
     alias(core.plugins.navigation.safeargs) apply false
     kotlin("plugin.serialization") version core.versions.kotlin apply false

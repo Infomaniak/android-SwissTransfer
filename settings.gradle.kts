@@ -27,6 +27,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    includeBuild("Core/build-logic")
 }
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
@@ -43,28 +44,9 @@ dependencyResolutionManagement {
     }
 }
 
+plugins {
+    id("com.infomaniak.core.composite")
+}
+
 rootProject.name = "android-SwissTransfer"
-include(
-    ":app",
-    ":Core",
-    ":Core:AppIntegrity",
-    ":Core:AppVersionChecker",
-    ":Core:FileTypes",
-    ":Core:InAppReview",
-    ":Core:InAppUpdate",
-    ":Core:Matomo",
-    ":Core:Network",
-    ":Core:Network:Models",
-    ":Core:Notifications",
-    ":Core:Onboarding",
-    ":Core:Sentry",
-    ":Core:Thumbnails",
-    ":Core:Ui:View",
-    ":Core:Ui:Compose:BasicButton",
-    ":Core:Ui:Compose:Basics",
-    ":Core:Ui:Compose:BottomStickyButtonScaffolds",
-    ":Core:Ui:Compose:Margin",
-    ":Core:Ui:Compose:Preview",
-    ":Core:Ui:Compose:Theme",
-    ":Core:WebView",
-)
+include(":app")

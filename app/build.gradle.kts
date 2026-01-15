@@ -21,7 +21,7 @@ import java.util.Properties
  * Don't change the order in this `plugins` block, it will mess things up.
  */
 plugins {
-    alias(libs.plugins.android.application)
+    alias(core.plugins.android.application)
     alias(core.plugins.dagger.hilt)
     alias(core.plugins.compose.compiler)
     alias(core.plugins.kapt)
@@ -178,23 +178,23 @@ sentry {
 
 dependencies {
 
-    implementation(project(":Core"))
-    implementation(project(":Core:AppIntegrity"))
-    implementation(project(":Core:FileTypes"))
-    implementation(project(":Core:InAppReview"))
-    implementation(project(":Core:InAppUpdate"))
-    implementation(project(":Core:Matomo"))
-    implementation(project(":Core:Network"))
-    implementation(project(":Core:Notifications"))
-    implementation(project(":Core:Onboarding"))
-    implementation(project(":Core:Sentry"))
-    implementation(project(":Core:Thumbnails"))
-    implementation(project(":Core:Ui:Compose:BasicButton"))
-    implementation(project(":Core:Ui:Compose:Basics"))
-    implementation(project(":Core:Ui:Compose:BottomStickyButtonScaffolds"))
-    implementation(project(":Core:Ui:Compose:Margin"))
-    implementation(project(":Core:Ui:Compose:Preview"))
-    implementation(project(":Core:Ui:Compose:Theme"))
+    implementation(libs.infomaniak.core)
+    implementation(libs.infomaniak.core.appintegrity)
+    implementation(libs.infomaniak.core.filetypes)
+    implementation(libs.infomaniak.core.inappreview)
+    implementation(libs.infomaniak.core.inappupdate)
+    implementation(libs.infomaniak.core.matomo)
+    implementation(libs.infomaniak.core.network)
+    implementation(libs.infomaniak.core.notifications)
+    implementation(libs.infomaniak.core.onboarding)
+    implementation(libs.infomaniak.core.sentry)
+    implementation(libs.infomaniak.core.thumbnails)
+    implementation(libs.infomaniak.core.ui.compose.basicbutton)
+    implementation(libs.infomaniak.core.ui.compose.basics)
+    implementation(libs.infomaniak.core.ui.compose.bottomstickybuttonscaffolds)
+    implementation(libs.infomaniak.core.ui.compose.margin)
+    implementation(libs.infomaniak.core.ui.compose.preview)
+    implementation(libs.infomaniak.core.ui.compose.theme)
 
     implementation(kotlin("reflect"))
 

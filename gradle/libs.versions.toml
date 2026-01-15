@@ -12,6 +12,23 @@ swisstransfer = "6.0.0"
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+infomaniak-core = { module = "com.infomaniak.core:Common" }
+infomaniak-core-appintegrity = { module = "com.infomaniak.core:AppIntegrity" }
+infomaniak-core-filetypes = { module = "com.infomaniak.core:FileTypes" }
+infomaniak-core-inappreview = { module = "com.infomaniak.core:InAppReview" }
+infomaniak-core-inappupdate = { module = "com.infomaniak.core:InAppUpdate" }
+infomaniak-core-matomo = { module = "com.infomaniak.core:Matomo" }
+infomaniak-core-network = { module = "com.infomaniak.core:Network" }
+infomaniak-core-notifications = { module = "com.infomaniak.core:Notifications" }
+infomaniak-core-onboarding = { module = "com.infomaniak.core:Onboarding" }
+infomaniak-core-sentry = { module = "com.infomaniak.core:Sentry" }
+infomaniak-core-thumbnails = { module = "com.infomaniak.core:Thumbnails" }
+infomaniak-core-ui-compose-basicbutton = { module = "com.infomaniak.core:Ui.Compose.BasicButton" }
+infomaniak-core-ui-compose-basics = { module = "com.infomaniak.core:Ui.Compose.Basics" }
+infomaniak-core-ui-compose-bottomstickybuttonscaffolds = { module = "com.infomaniak.core:Ui.Compose.BottomStickyButtonScaffolds" }
+infomaniak-core-ui-compose-margin = { module = "com.infomaniak.core:Ui.Compose.Margin" }
+infomaniak-core-ui-compose-preview = { module = "com.infomaniak.core:Ui.Compose.Preview" }
+infomaniak-core-ui-compose-theme = { module = "com.infomaniak.core:Ui.Compose.Theme" }
 compose-material3-adaptative-navigation = { module = "androidx.compose.material3:material3-adaptive-navigation-suite" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 desugar-jdk = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJDK" }
