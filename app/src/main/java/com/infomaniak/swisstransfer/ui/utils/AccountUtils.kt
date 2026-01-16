@@ -17,12 +17,11 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import com.infomaniak.core.auth.CredentialManager
+import android.content.Context
+import com.infomaniak.core.auth.PersistedUserIdAccountUtils
 import com.infomaniak.core.auth.models.user.User
-import com.infomaniak.core.auth.room.UserDatabase
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
-import com.infomaniak.swisstransfer.ui.MainApplication
-import com.infomaniak.swisstransfer.ui.utils.AccountPreferences.Companion.NO_USER
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,57 +31,41 @@ import io.sentry.protocol.User as SentryUser
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     private val accountPreferences: AccountPreferences,
-) : CredentialManager() {
-
-    override lateinit var userDatabase: UserDatabase
-
-    override var currentUser: User? = null
-        set(user) {
-            field = user
-            Sentry.setUser(SentryUser().apply {
-                id = currentUserId.toString()
-                email = user?.email
-            })
-        }
-
-    override var currentUserId: Int = currentUser?.id ?: NO_USER
+    @ApplicationContext context: Context,
+) : PersistedUserIdAccountUtils(context) {
 
     suspend fun init() {
-        userDatabase = UserDatabase.getDatabase()
-        Sentry.setUser(SentryUser().apply { id = currentUserId.toString() })
-
         accountPreferences.currentUserId?.let {
             accountManager.loadUser(it)
         }
+
+        Sentry.setUser(SentryUser().apply { id = "-1" })
+        currentUserFlow.collect { user ->
+            Sentry.setUser(SentryUser().apply {
+                id = user?.id?.toString() ?: "-1"
+                email = user?.email
+            })
+        }
     }
 
-    suspend fun requestCurrentUser(): User? {
-        val user = currentUserId.takeIf { it != NO_USER }?.let { getUserById(it) }
-        return (user ?: userDatabase.userDao().getFirst()).also { currentUser = it }
-    }
-
+    // TODO: Handle guest user login
     suspend fun loginGuestUser() {
         accountPreferences.currentUserId = GUEST_USER_ID
         accountManager.loadUser(GUEST_USER_ID)
     }
 
-    suspend fun insertUser(user: User) {
-        currentUser = user
-        val userId = user.id.toLong()
-        MainApplication.userDataCleanableList.forEach { it.resetForUser(userId) }
-        userDatabase.userDao().insert(user)
+    override suspend fun addUser(user: User) {
+        super.addUser(user)
         accountManager.loadUser(user.id)
     }
 
     // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
-    suspend fun removeUser(user: User) {
-        val userId = user.id.toLong()
-        MainApplication.userDataCleanableList.forEach { it.resetForUser(userId) }
-        userDatabase.userDao().delete(user)
+    override suspend fun removeUser(user: User) {
+        super.removeUser(user)
         accountManager.removeUser(user.id)
     }
 
-    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null
+    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null // TODO: Handle guest user login
 
     companion object {
         private const val GUEST_USER_ID = 0

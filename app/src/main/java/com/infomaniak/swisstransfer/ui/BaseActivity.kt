@@ -34,8 +34,5 @@ abstract class BaseActivity : ComponentActivity() {
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (accountUtils.currentUser == null) runBlocking {
-            accountUtils.requestCurrentUser()
-        }
     }
 }
