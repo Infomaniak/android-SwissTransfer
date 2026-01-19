@@ -73,7 +73,7 @@
     <string name="newTransferLeavingDialogNegativeButton">No, continua</string>
     <string name="newTransferLeavingDialogPositiveButton">Sì, annulla</string>
     <string name="noSettingsSelectedDescription">Seleziona un parametro da visualizzare</string>
-    <string name="noTransferReceivedDescription">Qui appariranno tutti i bonifici ricevuti negli ultimi 30 giorni.</string>
+    <string name="noTransferReceivedDescription">Qui appariranno tutti i trasferimenti ricevuti negli ultimi 30 giorni.</string>
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
     <string name="noTransferSelectedDescription">Selezionare un trasferimento o crearne uno nuovo.</string>
     <string name="noTransferSelectedTitle">Nessun trasferimento da visualizzare</string>
