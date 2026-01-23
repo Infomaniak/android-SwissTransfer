@@ -21,7 +21,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -37,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.auth.UserExistenceChecker
 import com.infomaniak.core.auth.models.UserLoginResult
+import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.auth.utils.LoginFlowController
 import com.infomaniak.core.auth.utils.LoginUtils
 import com.infomaniak.core.common.observe
@@ -93,9 +93,7 @@ class OnboardingActivity : BaseActivity() {
                     userExistenceChecker = userExistenceChecker,
                 ) { userLoginResult ->
                     when (userLoginResult) {
-                        is UserLoginResult.Success -> {
-                            Log.e("gibran", "onCreate - accessToken: ${userLoginResult.user.apiToken.accessToken}")
-                        }
+                        is UserLoginResult.Success -> loginUsersIntoTheApp(listOf(userLoginResult.user))
                         is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
                         null -> Unit
                     }
@@ -144,6 +142,11 @@ class OnboardingActivity : BaseActivity() {
         }
     }
 
+    private fun loginUsersIntoTheApp(users: List<User>) {
+        // TODO: trackAccountEvent(MatomoName.LoggedIn)
+        users.forEach(accountUtils::addUser)
+    }
+
     private fun openLoginWebView(loginFlowController: LoginFlowController) {
         startLoadingLoginButtons()
         loginFlowController.login()
@@ -167,19 +170,19 @@ class OnboardingActivity : BaseActivity() {
 
     private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
         val results = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, this, userExistenceChecker)
-        val accessTokens = buildList {
+        val users = buildList {
             results.forEach { result ->
                 when (result) {
-                    is UserLoginResult.Success -> add(result.user.apiToken.accessToken)
+                    is UserLoginResult.Success -> add(result.user)
                     is UserLoginResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
                 }
             }
         }
 
-        if (accessTokens.isEmpty()) {
+        if (users.isEmpty()) {
             stopLoadingLoginButtons()
         } else {
-            Log.e("gibran", "loginUsers - accessTokens: ${accessTokens}")
+            loginUsersIntoTheApp(users)
         }
     }
 
