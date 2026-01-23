@@ -25,4 +25,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="splashscreen_background_color">#3CB572</color>
+
+    <color name="loginToolbarBackground">#F4F6FD</color>
+    <color name="loginToolbarOnBackground">@color/orca</color>
 </resources>
