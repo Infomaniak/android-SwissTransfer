@@ -17,4 +17,7 @@
   -->
 <resources>
     <color name="splashscreen_background_color">#156E61</color>
+
+    <color name="loginToolbarBackground">@color/black</color>
+    <color name="loginToolbarOnBackground">@color/white</color>
 </resources>

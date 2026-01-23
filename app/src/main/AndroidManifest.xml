@@ -126,6 +126,16 @@
             android:name=".ui.NewTransferActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.infomaniak.lib.login.WebViewCreateAccountActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/LoginWebViewTheme" />
+
+        <activity
+            android:name="com.infomaniak.lib.login.WebViewLoginActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/LoginWebViewTheme" />
     </application>
 
 </manifest>
