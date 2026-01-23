@@ -99,14 +99,6 @@ fun OnboardingScreen(
                 onSaveSkippedAccounts = onSaveSkippedAccounts,
                 noCrossAppLoginAccountsContent = NoCrossAppLoginAccountsContent.accountOptional { goToMainActivity() }
             )
-            BottomContent(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .consumeWindowInsets(paddingValues),
-                isLastPage = { isLastPage },
-                goToMainActivity = goToMainActivity,
-                goToNextPage = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
-            )
         },
         indicatorStyle = IndicatorStyle(
             inactiveColor = SwissTransferTheme.materialColors.outlineVariant,
@@ -139,26 +131,6 @@ private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>
             )
         }
     )
-
-@Composable
-private fun BottomContent(
-    modifier: Modifier = Modifier,
-    isLastPage: () -> Boolean,
-    goToMainActivity: () -> Unit,
-    goToNextPage: () -> Unit,
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(140.dp),
-    ) {
-        AnimatedOnboardingButton(
-            isExpanded = { isLastPage() },
-            onClick = { if (isLastPage()) goToMainActivity() else goToNextPage() },
-        )
-    }
-}
 
 private const val HIGHLIGHT_ANGLE = 3.0
 
