@@ -21,6 +21,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,15 +30,21 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import com.infomaniak.core.auth.UserExistenceChecker
 import com.infomaniak.core.auth.models.UserLoginResult
 import com.infomaniak.core.auth.utils.LoginFlowController
 import com.infomaniak.core.auth.utils.LoginUtils
+import com.infomaniak.core.common.observe
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
+import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -45,15 +52,22 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class CrossAppLoginViewModel() : BaseCrossAppLoginViewModel(BuildConfig.APPLICATION_ID, BuildConfig.CLIENT_ID)
 
 @AndroidEntryPoint
 class OnboardingActivity : BaseActivity() {
 
+    @Inject
+    lateinit var infomaniakLogin: InfomaniakLogin
+
     private val crossAppLoginViewModel: CrossAppLoginViewModel by viewModels()
 
     private var areButtonsLoading by mutableStateOf(false)
+
+    // TODO
+    private val userExistenceChecker = UserExistenceChecker { false }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,8 +75,11 @@ class OnboardingActivity : BaseActivity() {
 
         if (SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
 
+        setupCrossAppLogin()
+
         setContent {
             val scope = rememberCoroutineScope()
+            val snackbarHostState = remember { SnackbarHostState() }
 
             SwissTransferTheme {
                 LockScreenOrientation(isLocked = LocalWindowAdaptiveInfo.current.isWindowSmall())
@@ -75,7 +92,9 @@ class OnboardingActivity : BaseActivity() {
                     userExistenceChecker = userExistenceChecker,
                 ) { userLoginResult ->
                     when (userLoginResult) {
-                        is UserLoginResult.Success -> reportAccessToken(userLoginResult.user.apiToken.accessToken)
+                        is UserLoginResult.Success -> {
+                            Log.e("gibran", "onCreate - accessToken: ${userLoginResult.user.apiToken.accessToken}")
+                        }
                         is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
                         null -> Unit
                     }
@@ -103,8 +122,21 @@ class OnboardingActivity : BaseActivity() {
                             }
                         },
                         onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
+                        snackbarHostState = snackbarHostState,
                     )
                 }
+            }
+        }
+    }
+
+    private fun setupCrossAppLogin() {
+        lifecycleScope.launch {
+            crossAppLoginViewModel.activateUpdates(this@OnboardingActivity)
+        }
+
+        lifecycleScope.launch {
+            crossAppLoginViewModel.availableAccounts.observe(this@OnboardingActivity) { accounts ->
+                SentryLog.i(TAG, "Got ${accounts.count()} accounts from other apps")
             }
         }
     }
@@ -139,7 +171,7 @@ class OnboardingActivity : BaseActivity() {
         if (accessTokens.isEmpty()) {
             stopLoadingLoginButtons()
         } else {
-            reportAccessTokens(accessTokens)
+            Log.e("gibran", "loginUsers - accessTokens: ${accessTokens}")
         }
     }
 
@@ -149,5 +181,9 @@ class OnboardingActivity : BaseActivity() {
 
     private fun stopLoadingLoginButtons() {
         areButtonsLoading = false
+    }
+
+    companion object {
+        private val TAG = OnboardingActivity::class.java.simpleName
     }
 }

@@ -23,6 +23,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.common.utils.buildUserAgent
+import com.infomaniak.core.network.LOGIN_ENDPOINT_URL
+import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.Module
@@ -64,5 +66,17 @@ object ApplicationModule {
     @Singleton
     fun providesNotificationManagerCompat(@ApplicationContext appContext: Context): NotificationManagerCompat {
         return NotificationManagerCompat.from(appContext)
+    }
+
+    @Provides
+    @Singleton
+    fun providesInfomaniakLogin(@ApplicationContext appContext: Context): InfomaniakLogin {
+        return InfomaniakLogin(
+            context = appContext,
+            loginUrl = "${LOGIN_ENDPOINT_URL}/",
+            appUID = BuildConfig.APPLICATION_ID,
+            clientID = BuildConfig.CLIENT_ID,
+            accessType = null,
+        )
     }
 }
