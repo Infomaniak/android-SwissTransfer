@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,14 +31,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.common.extensions.goToAppStore
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.OnboardingActivity
+import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
@@ -46,6 +49,7 @@ import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.CONNECTION
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
@@ -64,6 +68,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
 import com.infomaniak.swisstransfer.ui.utils.openUrl
+import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
@@ -134,6 +139,12 @@ private fun ListPane(
                 } else {
                     context.goToAppStore()
                 }
+                CONNECTION -> {
+                    val intent = Intent(context, OnboardingActivity::class.java).apply {
+                        putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
+                    }
+                    context.safeStartActivity(intent)
+                }
                 else -> {
                     // Navigate to the detail pane with the passed item
                     scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
@@ -190,6 +201,7 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
+        CONNECTION,
         NOTIFICATIONS,
         EULA,
         DISCOVER_INFOMANIAK,
