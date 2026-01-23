@@ -21,6 +21,7 @@ import android.content.Context
 import com.infomaniak.core.auth.PersistedUserIdAccountUtils
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     private val accountPreferences: AccountPreferences,
     @ApplicationContext context: Context,
-) : PersistedUserIdAccountUtils(context) {
+) : PersistedUserIdAccountUtils(context, MainApplication.userDataCleanableList) {
 
     suspend fun init() {
         accountPreferences.currentUserId?.let {
