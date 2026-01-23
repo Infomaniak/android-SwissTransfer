@@ -80,6 +80,9 @@ class MainApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
+        configureInfomaniakCore()
+        configureSentry()
+
         notificationUtils.initNotificationsChannel()
 
         globalCoroutineScope.launch {
@@ -99,7 +102,14 @@ class MainApplication : Application(), Configuration.Provider {
         }
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
-        configureSentry()
+    }
+
+    fun configureInfomaniakCore() {
+        NetworkConfiguration.init(
+            appId = BuildConfig.APPLICATION_ID,
+            appVersionName = BuildConfig.VERSION_NAME,
+            appVersionCode = BuildConfig.VERSION_CODE,
+        )
     }
 
     /**
@@ -114,12 +124,6 @@ class MainApplication : Application(), Configuration.Provider {
             isDebug = BuildConfig.DEBUG,
             isSentryTrackingEnabled = dataManagementDataStore.getPreference(IsSentryAuthorized),
             isFilteredException = { exception -> exception is KmpNetworkException },
-        )
-
-        NetworkConfiguration.init(
-            appId = BuildConfig.APPLICATION_ID,
-            appVersionName = BuildConfig.VERSION_NAME,
-            appVersionCode = BuildConfig.VERSION_CODE,
         )
     }
 }
