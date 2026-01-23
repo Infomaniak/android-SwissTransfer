@@ -19,34 +19,28 @@ package com.infomaniak.swisstransfer.ui.screen.onboarding
 
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel.AccountsCheckingState
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
 import com.infomaniak.core.crossapplogin.front.components.CrossLoginBottomContent
 import com.infomaniak.core.crossapplogin.front.components.NoCrossAppLoginAccountsContent
-import com.infomaniak.core.ui.compose.margin.Margin
-import com.infomaniak.core.ui.compose.preview.PreviewLargeWindow
-import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
+import com.infomaniak.core.crossapplogin.front.previews.AccountsCheckingStatePreviewParameter
 import com.infomaniak.core.onboarding.IndicatorStyle
 import com.infomaniak.core.onboarding.OnboardingPage
 import com.infomaniak.core.onboarding.OnboardingScaffold
@@ -54,15 +48,16 @@ import com.infomaniak.core.onboarding.components.OnboardingComponents
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultBackground
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLottieIllustration
 import com.infomaniak.core.onboarding.components.OnboardingComponents.HighlightedTitleAndDescription
+import com.infomaniak.core.ui.compose.margin.Margin
+import com.infomaniak.core.ui.compose.preview.PreviewLargeWindow
+import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
+import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopLeft
 import com.infomaniak.swisstransfer.ui.images.illus.onboarding.RadialGradientCornerTopRight
-import com.infomaniak.swisstransfer.ui.screen.onboarding.components.AnimatedOnboardingButton
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
@@ -72,10 +67,9 @@ fun OnboardingScreen(
     isLoginButtonLoading: () -> Boolean,
     onLoginRequest: (accounts: List<ExternalAccount>) -> Unit,
     onSaveSkippedAccounts: (Set<Long>) -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     val pagerState = rememberPagerState(pageCount = { Page.entries.size })
-    val isLastPage by remember { derivedStateOf { pagerState.currentPage >= pagerState.pageCount - 1 } }
-    val coroutineScope = rememberCoroutineScope()
 
     val isHighlighted = Page.entries.associateWith { rememberSaveable { mutableStateOf(false) } }
 
@@ -90,6 +84,9 @@ fun OnboardingScreen(
         onboardingPages = Page.entries.mapIndexed { index, page -> page.toOnboardingPage(isHighlighted, pagerState, index) },
         bottomContent = { paddingValues ->
             OnboardingComponents.CrossLoginBottomContent(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
                 pagerState = pagerState,
                 isLoginButtonLoading = isLoginButtonLoading,
                 accountsCheckingState = accountsCheckingState,
@@ -106,7 +103,8 @@ fun OnboardingScreen(
             inactiveSize = 8.dp,
             activeWidth = 16.dp,
             indicatorSpacing = Margin.Mini,
-        )
+        ),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     )
 }
 
@@ -171,10 +169,18 @@ private enum class Page(
 @PreviewSmallWindow
 @PreviewLargeWindow
 @Composable
-private fun OnboardingScreenPreview() {
+private fun OnboardingScreenPreview(@PreviewParameter(AccountsCheckingStatePreviewParameter::class) accounts: AccountsCheckingState) {
     SwissTransferTheme {
         Surface {
-            OnboardingScreen {}
+            OnboardingScreen(
+                goToMainActivity = {},
+                accountsCheckingState = { accounts },
+                skippedIds = { emptySet() },
+                isLoginButtonLoading = { false },
+                onLoginRequest = {},
+                onSaveSkippedAccounts = {},
+                snackbarHostState = remember { SnackbarHostState() },
+            )
         }
     }
 }
