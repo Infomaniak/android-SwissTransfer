@@ -77,6 +77,8 @@ class OnboardingActivity : BaseActivity() {
 
         setupCrossAppLogin()
 
+        val shouldDisplayRequiredLogin = intent.getBooleanExtra(EXTRA_REQUIRED_LOGIN_KEY, false)
+
         setContent {
             val scope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
@@ -104,6 +106,7 @@ class OnboardingActivity : BaseActivity() {
 
                 Surface {
                     OnboardingScreen(
+                        shouldDisplayRequiredLogin = shouldDisplayRequiredLogin,
                         goToMainActivity = {
                             scope.launch {
                                 accountUtils.loginGuestUser()
@@ -113,7 +116,7 @@ class OnboardingActivity : BaseActivity() {
                         },
                         accountsCheckingState = { accountsCheckingState },
                         skippedIds = { skippedIds },
-                        isLoginButtonLoading = { areButtonsLoading },
+                        areLoginButtonsLoading = { areButtonsLoading },
                         onLoginRequest = { accounts ->
                             if (accounts.isEmpty()) {
                                 openLoginWebView(loginFlowController)
@@ -121,6 +124,7 @@ class OnboardingActivity : BaseActivity() {
                                 scope.launch { connectSelectedAccounts(accounts, crossAppLoginViewModel, snackbarHostState) }
                             }
                         },
+                        onCreateAccount = { /*TODO*/ },
                         onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
                         snackbarHostState = snackbarHostState,
                     )
@@ -185,5 +189,7 @@ class OnboardingActivity : BaseActivity() {
 
     companion object {
         private val TAG = OnboardingActivity::class.java.simpleName
+
+        const val EXTRA_REQUIRED_LOGIN_KEY = "EXTRA_REQUIRED_LOGIN_KEY"
     }
 }

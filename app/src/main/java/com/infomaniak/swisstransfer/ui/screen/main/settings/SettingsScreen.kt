@@ -48,9 +48,11 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Bell
 import com.infomaniak.swisstransfer.ui.images.icons.Clock
 import com.infomaniak.swisstransfer.ui.images.icons.PaintbrushPalette
+import com.infomaniak.swisstransfer.ui.images.icons.PersonBadgeShare
 import com.infomaniak.swisstransfer.ui.images.icons.Shield
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.CONNECTION
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCOVER_INFOMANIAK
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
@@ -104,6 +106,17 @@ fun SettingsScreen(
                 title = stringResource(R.string.settingsTitle),
                 modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)
             )
+
+            SettingTitle(R.string.appName)
+
+            SettingItem(
+                titleRes = com.infomaniak.core.network.R.string.connectionError,
+                isSelected = { false },
+                icon = AppIcons.PersonBadgeShare,
+                endIcon = CHEVRON,
+                onClick = { onItemClick(CONNECTION) }, // TODO: Extract to other file and probably enum
+            )
+
 
             SettingTitle(R.string.settingsCategoryGeneral)
 
@@ -232,6 +245,7 @@ private fun EmailLanguage?.getString(): String {
 }
 
 enum class SettingsOptionScreens {
+    CONNECTION,
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     EULA, DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,

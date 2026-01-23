@@ -26,6 +26,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -61,40 +62,53 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun OnboardingScreen(
+    shouldDisplayRequiredLogin: Boolean,
     goToMainActivity: () -> Unit,
     accountsCheckingState: () -> AccountsCheckingState,
     skippedIds: () -> Set<Long>,
-    isLoginButtonLoading: () -> Boolean,
+    areLoginButtonsLoading: () -> Boolean,
     onLoginRequest: (accounts: List<ExternalAccount>) -> Unit,
+    onCreateAccount: () -> Unit,
     onSaveSkippedAccounts: (Set<Long>) -> Unit,
     snackbarHostState: SnackbarHostState,
 ) {
-    val pagerState = rememberPagerState(pageCount = { Page.entries.size })
+    val pages: List<Page> = if (shouldDisplayRequiredLogin) RequiredLoginPage.entries else OptionalLoginPage.entries
 
-    val isHighlighted = Page.entries.associateWith { rememberSaveable { mutableStateOf(false) } }
+    val pagerState = rememberPagerState(pageCount = { pages.size })
+
+    val isHighlighted = pages.associateWith { rememberSaveable { mutableStateOf(false) } }
 
     // Start the highlighting of the text when the associated page is reached in the HorizontalPager
     LaunchedEffect(pagerState.currentPage) {
-        val currentPage = Page.entries[pagerState.currentPage]
+        val currentPage = pages[pagerState.currentPage]
         isHighlighted[currentPage]?.value = true
     }
 
     OnboardingScaffold(
         pagerState = pagerState,
-        onboardingPages = Page.entries.mapIndexed { index, page -> page.toOnboardingPage(isHighlighted, pagerState, index) },
+        onboardingPages = pages.mapIndexed { index, page -> page.toOnboardingPage(isHighlighted, pagerState, index) },
         bottomContent = { paddingValues ->
             OnboardingComponents.CrossLoginBottomContent(
                 modifier = Modifier
                     .padding(paddingValues)
                     .consumeWindowInsets(paddingValues),
                 pagerState = pagerState,
-                isLoginButtonLoading = isLoginButtonLoading,
+                isLoginButtonLoading = areLoginButtonsLoading,
                 accountsCheckingState = accountsCheckingState,
                 skippedIds = skippedIds,
                 onContinueWithSelectedAccounts = { selectedAccounts -> onLoginRequest(selectedAccounts) },
                 onUseAnotherAccountClicked = { onLoginRequest(emptyList()) },
                 onSaveSkippedAccounts = onSaveSkippedAccounts,
-                noCrossAppLoginAccountsContent = NoCrossAppLoginAccountsContent.accountOptional { goToMainActivity() }
+                noCrossAppLoginAccountsContent = if (shouldDisplayRequiredLogin) {
+                    NoCrossAppLoginAccountsContent.accountRequired(
+                        onLogin = { onLoginRequest(emptyList()) },
+                        onCreateAccount = onCreateAccount,
+                        isLoginButtonLoading = areLoginButtonsLoading,
+                        isSignUpButtonLoading = areLoginButtonsLoading
+                    )
+                } else {
+                    NoCrossAppLoginAccountsContent.accountOptional { goToMainActivity() }
+                }
             )
         },
         indicatorStyle = IndicatorStyle(
@@ -108,38 +122,21 @@ fun OnboardingScreen(
     )
 }
 
-@Composable
-private fun Page.toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>, pagerState: PagerState, index: Int) =
-    OnboardingPage(
-        background = { DefaultBackground(background.image()) },
-        illustration = {
-            DefaultLottieIllustration(lottieRawRes = illustrationRes, isCurrentPageVisible = { pagerState.currentPage == index })
-        },
-        text = {
-            HighlightedTitleAndDescription(
-                title = stringResource(titleRes),
-                textStyle = SwissTransferTheme.typography.specificLight22,
-                subtitleTemplate = stringResource(subtitleTemplateRes),
-                subtitleArgument = stringResource(subtitleArgumentRes),
-                highlightedTextStyle = SwissTransferTheme.typography.h1,
-                highlightedAngleDegree = highlightAngleDegree,
-                descriptionWidth = Dimens.DescriptionWidth,
-                highlightedColor = SwissTransferTheme.colors.highlightedColor,
-                isHighlighted = { isHighlighted[this]?.value ?: false }
-            )
-        }
-    )
+private interface Page {
+    @Composable
+    fun toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>, pagerState: PagerState, index: Int): OnboardingPage
+}
 
 private const val HIGHLIGHT_ANGLE = 3.0
 
-private enum class Page(
+private enum class OptionalLoginPage(
     val background: ThemedImage,
     @RawRes val illustrationRes: Int,
     @StringRes val titleRes: Int,
     @StringRes val subtitleTemplateRes: Int,
     @StringRes val subtitleArgumentRes: Int,
     val highlightAngleDegree: Double,
-) {
+) : Page {
     STORAGE(
         background = AppIllus.RadialGradientCornerTopRight,
         illustrationRes = R.raw.storage_cardboard_box_pile,
@@ -163,7 +160,57 @@ private enum class Page(
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
         highlightAngleDegree = HIGHLIGHT_ANGLE,
-    ),
+    );
+
+    @Composable
+    override fun toOnboardingPage(
+        isHighlighted: Map<Page, MutableState<Boolean>>,
+        pagerState: PagerState,
+        index: Int,
+    ) = OnboardingPage(
+        background = { DefaultBackground(background.image()) },
+        illustration = {
+            DefaultLottieIllustration(lottieRawRes = illustrationRes, isCurrentPageVisible = { pagerState.currentPage == index })
+        },
+        text = {
+            HighlightedTitleAndDescription(
+                title = stringResource(titleRes),
+                textStyle = SwissTransferTheme.typography.specificLight22,
+                subtitleTemplate = stringResource(subtitleTemplateRes),
+                subtitleArgument = stringResource(subtitleArgumentRes),
+                highlightedTextStyle = SwissTransferTheme.typography.h1,
+                highlightedAngleDegree = highlightAngleDegree,
+                descriptionWidth = Dimens.DescriptionWidth,
+                highlightedColor = SwissTransferTheme.colors.highlightedColor,
+                isHighlighted = { isHighlighted[this]?.value ?: false }
+            )
+        }
+    )
+}
+
+private enum class RequiredLoginPage(
+    val background: ThemedImage,
+    @RawRes val illustrationRes: Int,
+    @StringRes val titleRes: Int,
+) : Page {
+    Login(
+        background = AppIllus.RadialGradientCornerTopLeft,
+        illustrationRes = R.raw.two_locks_intertwined_stars,
+        titleRes = R.string.appName, // TODO
+    );
+
+    @Composable
+    override fun toOnboardingPage(
+        isHighlighted: Map<Page, MutableState<Boolean>>,
+        pagerState: PagerState,
+        index: Int,
+    ) = OnboardingPage(
+        background = { DefaultBackground(background.image()) },
+        illustration = {
+            DefaultLottieIllustration(lottieRawRes = illustrationRes, isCurrentPageVisible = { pagerState.currentPage == index })
+        },
+        text = { Text(stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
+    )
 }
 
 @PreviewSmallWindow
@@ -173,11 +220,13 @@ private fun OnboardingScreenPreview(@PreviewParameter(AccountsCheckingStatePrevi
     SwissTransferTheme {
         Surface {
             OnboardingScreen(
+                shouldDisplayRequiredLogin = false,
                 goToMainActivity = {},
                 accountsCheckingState = { accounts },
                 skippedIds = { emptySet() },
-                isLoginButtonLoading = { false },
+                areLoginButtonsLoading = { false },
                 onLoginRequest = {},
+                onCreateAccount = {},
                 onSaveSkippedAccounts = {},
                 snackbarHostState = remember { SnackbarHostState() },
             )
