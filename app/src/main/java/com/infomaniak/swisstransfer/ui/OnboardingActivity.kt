@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
@@ -65,6 +66,8 @@ class OnboardingActivity : BaseActivity() {
 
     private var areButtonsLoading by mutableStateOf(false)
 
+    private val shouldDisplayRequiredLogin by lazy { intent.getBooleanExtra(EXTRA_REQUIRED_LOGIN_KEY, false) }
+
     // TODO
     private val userExistenceChecker = UserExistenceChecker { false }
 
@@ -75,8 +78,6 @@ class OnboardingActivity : BaseActivity() {
         if (SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
 
         setupCrossAppLogin()
-
-        val shouldDisplayRequiredLogin = intent.getBooleanExtra(EXTRA_REQUIRED_LOGIN_KEY, false)
 
         setContent {
             val scope = rememberCoroutineScope()
@@ -107,8 +108,7 @@ class OnboardingActivity : BaseActivity() {
                         connectAsGuest = {
                             scope.launch {
                                 accountUtils.loginGuestUser()
-                                Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
-                                finish()
+                                startMainActivity()
                             }
                         },
                         accountsCheckingState = { accountsCheckingState },
@@ -144,7 +144,10 @@ class OnboardingActivity : BaseActivity() {
 
     private fun loginUsersIntoTheApp(users: List<User>) {
         // TODO: trackAccountEvent(MatomoName.LoggedIn)
-        users.forEach(accountUtils::addUser)
+        lifecycleScope.launch {
+            users.forEach { user -> accountUtils.addUser(user) }
+            if (shouldDisplayRequiredLogin) finish() else startMainActivity()
+        }
     }
 
     private fun openLoginWebView(loginFlowController: LoginFlowController) {
@@ -205,4 +208,9 @@ class OnboardingActivity : BaseActivity() {
         private val CREATE_ACCOUNT_SUCCESS_HOST = "ksuite.$host"
         private val CREATE_ACCOUNT_CANCEL_HOST = "welcome.$host"
     }
+}
+
+private fun Activity.startMainActivity() {
+    Intent(this, MainActivity::class.java).also(::startActivity)
+    finish()
 }

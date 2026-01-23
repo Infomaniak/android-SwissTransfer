@@ -19,17 +19,21 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -47,6 +51,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Bell
 import com.infomaniak.swisstransfer.ui.images.icons.Clock
+import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.images.icons.PaintbrushPalette
 import com.infomaniak.swisstransfer.ui.images.icons.PersonBadgeShare
 import com.infomaniak.swisstransfer.ui.images.icons.Shield
@@ -77,6 +82,7 @@ import com.infomaniak.core.common.R as RCore
 @Composable
 fun SettingsScreen(
     theme: GetSetCallbacks<Theme>,
+    currentUser: () -> User?,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
@@ -107,6 +113,13 @@ fun SettingsScreen(
                 modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)
             )
 
+            Text(
+                currentUser()?.displayName.toString(),
+                style = SwissTransferTheme.typography.h1,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+            )
+
             SettingTitle(R.string.appName)
 
             SettingItem(
@@ -115,6 +128,14 @@ fun SettingsScreen(
                 icon = AppIcons.PersonBadgeShare,
                 endIcon = CHEVRON,
                 onClick = { onItemClick(CONNECTION) }, // TODO: Extract to other file and probably enum
+            )
+
+            SettingItem(
+                titleRes = com.infomaniak.core.common.R.string.buttonClose,
+                isSelected = { false },
+                icon = AppIcons.Cross,
+                endIcon = CHEVRON,
+                onClick = { onItemClick(SettingsOptionScreens.DISCONNECTION) }, // TODO: Extract to other file and probably enum
             )
 
 
@@ -245,7 +266,7 @@ private fun EmailLanguage?.getString(): String {
 }
 
 enum class SettingsOptionScreens {
-    CONNECTION,
+    CONNECTION, DISCONNECTION,
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     EULA, DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
@@ -265,8 +286,8 @@ private fun SettingsScreenPreview() {
                 downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                 onItemClick = {},
-                getSelectedSetting = { null },
-            )
+                currentUser = { null },
+            ) { null }
         }
     }
 }
