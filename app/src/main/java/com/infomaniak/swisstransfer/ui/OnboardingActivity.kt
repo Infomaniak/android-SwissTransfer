@@ -43,6 +43,7 @@ import com.infomaniak.core.auth.utils.LoginUtils
 import com.infomaniak.core.common.observe
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
 import com.infomaniak.lib.login.InfomaniakLogin
@@ -126,7 +127,7 @@ class OnboardingActivity : ComponentActivity() {
                                 scope.launch { connectSelectedAccounts(accounts, crossAppLoginViewModel, snackbarHostState) }
                             }
                         },
-                        onCreateAccount = { /*TODO*/ },
+                        onCreateAccount = { openAccountCreation(loginFlowController) },
                         onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
                         snackbarHostState = snackbarHostState,
                     )
@@ -150,6 +151,11 @@ class OnboardingActivity : ComponentActivity() {
     private fun openLoginWebView(loginFlowController: LoginFlowController) {
         startLoadingLoginButtons()
         loginFlowController.login()
+    }
+
+    private fun openAccountCreation(loginFlowController: LoginFlowController) {
+        startLoadingLoginButtons()
+        loginFlowController.createAccount(CREATE_ACCOUNT_URL, CREATE_ACCOUNT_SUCCESS_HOST, CREATE_ACCOUNT_CANCEL_HOST)
     }
 
     private suspend fun connectSelectedAccounts(
@@ -193,5 +199,11 @@ class OnboardingActivity : ComponentActivity() {
         private val TAG = OnboardingActivity::class.java.simpleName
 
         const val EXTRA_REQUIRED_LOGIN_KEY = "EXTRA_REQUIRED_LOGIN_KEY"
+
+        // TODO
+        private val host = ApiEnvironment.current.host
+        private val CREATE_ACCOUNT_URL = "https://welcome.$host/signup/ikmail?app=true"
+        private val CREATE_ACCOUNT_SUCCESS_HOST = "ksuite.$host"
+        private val CREATE_ACCOUNT_CANCEL_HOST = "welcome.$host"
     }
 }
