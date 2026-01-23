@@ -46,7 +46,7 @@ import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
 import com.infomaniak.lib.login.InfomaniakLogin
-import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -54,8 +54,6 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-class CrossAppLoginViewModel() : BaseCrossAppLoginViewModel(BuildConfig.APPLICATION_ID, BuildConfig.CLIENT_ID)
 
 @AndroidEntryPoint
 class OnboardingActivity : BaseActivity() {
