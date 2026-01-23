@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.extensions.goToAppStore
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
@@ -53,6 +54,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCONNECTION
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCOVER_INFOMANIAK
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
@@ -78,6 +80,7 @@ fun SettingsScreenWrapper(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+    val currentUser by settingsViewModel.currentUser.collectAsStateWithLifecycle(null)
 
     appSettings?.let { safeAppSettings ->
         val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
@@ -88,7 +91,13 @@ fun SettingsScreenWrapper(
         val emailLanguage =
             GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
 
-        SettingsScreenWrapper(theme, validityPeriod, downloadLimit, emailLanguage)
+        SettingsScreenWrapper(
+            theme = theme,
+            currentUser = { currentUser },
+            validityPeriod = validityPeriod,
+            downloadLimit = downloadLimit,
+            emailLanguage = emailLanguage,
+            onDisconnectCurrentUser = { settingsViewModel.disconnectCurrentUser() })
     }
 }
 
@@ -96,12 +105,24 @@ fun SettingsScreenWrapper(
 @Composable
 fun SettingsScreenWrapper(
     theme: GetSetCallbacks<Theme>,
+    currentUser: () -> User?,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
+    onDisconnectCurrentUser: () -> Unit,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = { ListPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        listPane = {
+            ListPane(
+                navigator = this,
+                theme,
+                validityPeriod,
+                downloadLimit,
+                emailLanguage,
+                currentUser,
+                onDisconnectCurrentUser,
+            )
+        },
         detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
@@ -114,6 +135,8 @@ private fun ListPane(
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
+    currentUser: () -> User?,
+    onDisconnectCurrentUser: () -> Unit,
 ) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
@@ -124,6 +147,7 @@ private fun ListPane(
 
     SettingsScreen(
         theme = theme,
+        currentUser = currentUser,
         validityPeriod = validityPeriod,
         downloadLimit = downloadLimit,
         emailLanguage = emailLanguage,
@@ -145,6 +169,7 @@ private fun ListPane(
                     }
                     context.safeStartActivity(intent)
                 }
+                DISCONNECTION -> onDisconnectCurrentUser()
                 else -> {
                     // Navigate to the detail pane with the passed item
                     scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
@@ -202,6 +227,7 @@ private fun DetailPane(
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
         CONNECTION,
+        DISCONNECTION,
         NOTIFICATIONS,
         EULA,
         DISCOVER_INFOMANIAK,
@@ -230,9 +256,11 @@ private fun SettingsScreenWrapperPreview() {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingsScreenWrapper(
                 theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                currentUser = { null },
                 validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
                 downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
+                onDisconnectCurrentUser = {}
             )
         }
     }
