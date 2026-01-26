@@ -18,12 +18,14 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.ui.MainApplication
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 import io.sentry.protocol.User as SentryUser
@@ -55,15 +57,19 @@ class AccountUtils @Inject constructor(
         accountManager.loadUser(GUEST_USER_ID)
     }
 
+    /**
+     * @throws SQLiteConstraintException when adding a user with a primary key that already exists
+     */
     override suspend fun addUser(user: User) {
         super.addUser(user)
         accountManager.loadUser(user.id)
     }
 
-    // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
     override suspend fun removeUser(userId: Int) {
         super.removeUser(userId)
         accountManager.removeUser(userId)
+
+        if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
     fun isUserConnected(): Boolean = accountPreferences.currentUserId != null // TODO: Handle guest user login
