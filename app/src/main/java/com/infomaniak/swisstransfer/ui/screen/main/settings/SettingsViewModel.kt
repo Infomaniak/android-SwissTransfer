@@ -60,7 +60,7 @@ class SettingsViewModel @Inject constructor(
 
     fun disconnectCurrentUser() {
         viewModelScope.launch {
-            accountUtils.currentUserFlow.first()?.let { accountUtils.removeUser(it) }
+            accountUtils.currentUserIdFlow.first()?.let { accountUtils.removeUser(it) }
         }
     }
 }
