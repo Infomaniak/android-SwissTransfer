@@ -26,6 +26,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownCircle
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowUpCircle
 import com.infomaniak.swisstransfer.ui.images.icons.Settings
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination
@@ -44,4 +45,5 @@ enum class NavigationItem(
     SENT(R.string.sentTitle, AppIcons.ArrowUpCircle, SentDestination()),
     RECEIVED(R.string.receivedTitle, AppIcons.ArrowDownCircle, ReceivedDestination()),
     SETTINGS(R.string.settingsTitle, AppIcons.Settings, SettingsDestination),
+    // SETTINGS(R.string.settingsTitle, AppIcons.Settings, MyAccountDestination),
 }

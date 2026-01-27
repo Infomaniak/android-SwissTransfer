@@ -100,6 +100,7 @@
     <string name="onboardingSendFilesSubtitleArgument">Send your files</string>
     <string name="onboardingSendFilesSubtitleTemplate">\u0020%s now!</string>
     <string name="onboardingSendFilesTitle">Ready to get started?</string>
+    <string name="onboardingSignInOrCreateAccount">Sign in or create an account for free</string>
     <string name="onboardingStorageSubtitleArgument">Share up to 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s of files for free without any registration.</string>
     <string name="onboardingStorageTitle">Send Big!</string>
@@ -117,6 +118,7 @@
     <string name="settingsCategoryDataManagement">Data &amp; Privacy</string>
     <string name="settingsCategoryDefaultSettings">Default settings</string>
     <string name="settingsCategoryGeneral">General</string>
+    <string name="settingsDeleteMyAccount">Delete my account</string>
     <string name="settingsDownloadsLimitTitle">Set a default download limit for your transfers</string>
     <string name="settingsEmailLanguageTitle">Set a default language for your email transfers</string>
     <string name="settingsEmailLanguageValueEnglish">English</string>
@@ -124,6 +126,8 @@
     <string name="settingsEmailLanguageValueGerman">German</string>
     <string name="settingsEmailLanguageValueItalian">Italian</string>
     <string name="settingsEmailLanguageValueSpanish">Spanish</string>
+    <string name="settingsHelpAndSupport">Help &amp; Support</string>
+    <string name="settingsLogOut">Log out</string>
     <string name="settingsMatomoDescription">Matomo is an analysis tool hosted and managed exclusively by Infomaniak to understand how the application is used.\n\nBy studying this data, our team is able to continually improve the application’s interface.</string>
     <string name="settingsNotificationsTitle">Select a preference</string>
     <string name="settingsOptionActivated">Activated</string>
@@ -143,6 +147,8 @@
     <string name="settingsOptionValidityPeriod">Validity period</string>
     <string name="settingsPasswordDescription">Your recipients will need to enter the password to download the files.</string>
     <string name="settingsPasswordToggleDescription">Activate protection</string>
+    <string name="settingsSignIn">Sign in</string>
+    <string name="settingsSwitchAccount">Switch account</string>
     <string name="settingsThemeTitle">Select a theme</string>
     <string name="settingsTitle">Settings</string>
     <string name="settingsValidityPeriodTitle">Set a default validity period for your transfers</string>
