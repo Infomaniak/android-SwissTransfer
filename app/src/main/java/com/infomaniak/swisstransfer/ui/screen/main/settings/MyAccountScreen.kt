@@ -1,0 +1,301 @@
+/*
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2024 Infomaniak Network SA
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.infomaniak.swisstransfer.ui.screen.main.settings
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.core.avatar.components.Avatar
+import com.infomaniak.core.avatar.models.AvatarColors
+import com.infomaniak.core.avatar.models.AvatarType
+import com.infomaniak.core.ui.compose.margin.Margin
+import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
+import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
+import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
+import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.Cog
+import com.infomaniak.swisstransfer.ui.images.icons.DoorRectangleArrowRight
+import com.infomaniak.swisstransfer.ui.images.icons.HeadphoneMicrophone
+import com.infomaniak.swisstransfer.ui.images.icons.Person
+import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.DiscoverInfomaniak
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Eula
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.GiveFeedback
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Login
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Logout
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Settings
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.ShareIdeas
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Support
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.SwitchAccount
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.core.common.R as RCore
+
+@Composable
+fun MyAccountScreen(
+    theme: GetSetCallbacks<Theme>,
+    currentUser: () -> User?,
+    validityPeriod: GetSetCallbacks<ValidityPeriod>,
+    downloadLimit: GetSetCallbacks<DownloadLimit>,
+    emailLanguage: GetSetCallbacks<EmailLanguage>,
+    onItemClick: (MyAccountSetting) -> Unit,
+    getSelectedSetting: () -> SettingsOptionScreens?,
+) {
+    val selectedSetting = getSelectedSetting()
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Settings) }
+
+    SwissTransferScaffold(
+        topBar = {
+            if (windowAdaptiveInfo.isWindowLarge()) {
+                SwissTransferTopAppBar(stringResource(R.string.settingsTitle))
+            } else {
+                BrandTopAppBar()
+            }
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .selectableGroup(),
+        ) {
+            Profile(currentUser, modifier = Modifier.padding(vertical = Margin.Large))
+
+            if (currentUser() == null) {
+                SettingItem(
+                    titleRes = R.string.settingsSignIn,
+                    isSelected = { false },
+                    icon = AppIcons.Person,
+                    endIcon = EndIconType.CHEVRON,
+                    onClick = { onItemClick(Login) },
+                )
+            } else {
+                SettingItem(
+                    titleRes = R.string.settingsSwitchAccount,
+                    isSelected = { false },
+                    icon = AppIcons.Person,
+                    endIcon = EndIconType.CHEVRON,
+                    onClick = { onItemClick(SwitchAccount) },
+                )
+            }
+
+            SettingItem(
+                titleRes = R.string.settingsTitle,
+                isSelected = { false },
+                icon = AppIcons.Cog,
+                endIcon = EndIconType.CHEVRON,
+                onClick = { onItemClick(Settings) },
+            )
+
+            SettingItem(
+                titleRes = R.string.settingsHelpAndSupport,
+                isSelected = { false },
+                icon = AppIcons.HeadphoneMicrophone,
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(Support) },
+            )
+
+            if (currentUser() != null) {
+                SettingItem(
+                    titleRes = R.string.settingsLogOut,
+                    isSelected = { false },
+                    icon = AppIcons.DoorRectangleArrowRight,
+                    onClick = { onItemClick(Logout) },
+                )
+            }
+            SettingDivider()
+
+            SettingTitle(R.string.settingsCategoryAbout)
+            SettingItem(
+                titleRes = R.string.settingsOptionTermsAndConditions,
+                isSelected = { false },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(Eula) },
+            )
+            SettingItem(
+                titleRes = R.string.settingsOptionDiscoverInfomaniak,
+                isSelected = { false },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(DiscoverInfomaniak) },
+            )
+            SettingItem(
+                titleRes = R.string.settingsOptionShareIdeas,
+                isSelected = { false },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(ShareIdeas) },
+            )
+            SettingItem(
+                titleRes = R.string.settingsOptionGiveFeedback,
+                isSelected = { false },
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(GiveFeedback) },
+            )
+            SettingItem(
+                titleRes = R.string.version,
+                isSelected = { false },
+                description = BuildConfig.VERSION_NAME,
+                onClick = null,
+            )
+        }
+    }
+}
+
+@Composable
+private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Margin.Mini),
+    ) {
+        val user = currentUser()
+
+        if (user == null) {
+            NoAccountAvatar()
+            Text(pluralStringResource(RCore.plurals.myAccount, 1), style = SwissTransferTheme.typography.h1)
+        } else {
+            Avatar( // TODO
+                AvatarType.WithInitials.Initials(
+                    initials = user.getInitials(),
+                    colors = AvatarColors(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary),
+                )
+            )
+            UsernameAndEmail(user, modifier = Modifier.fillMaxWidth())
+        }
+    }
+}
+
+@Composable
+private fun NoAccountAvatar() {
+    Box(
+        modifier = Modifier
+            .size(80.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.secondaryContainer),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = AppIcons.Person,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.size(40.dp),
+        )
+    }
+}
+
+@Composable
+private fun UsernameAndEmail(user: User, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(user.displayName.toString(), style = SwissTransferTheme.typography.h1)
+        Text(
+            text = user.email,
+            style = SwissTransferTheme.typography.bodySmallRegular,
+            color = SwissTransferTheme.colors.tertiaryTextColor,
+        )
+    }
+}
+
+@Composable
+private fun Theme?.getString(): String {
+    return when (this) {
+        Theme.SYSTEM -> stringResource(R.string.settingsOptionThemeSystem)
+        Theme.DARK -> stringResource(R.string.settingsOptionThemeDark)
+        Theme.LIGHT -> stringResource(R.string.settingsOptionThemeLight)
+        else -> ""
+    }
+}
+
+@Composable
+private fun ValidityPeriod?.getString(): String {
+    return this?.value?.toInt()?.let {
+        pluralStringResource(R.plurals.settingsValidityPeriodValue, it, it)
+    } ?: ""
+}
+
+@Composable
+private fun DownloadLimit?.getString() = this?.value?.toString() ?: ""
+
+@Composable
+private fun EmailLanguage?.getString(): String {
+    return when (this) {
+        EmailLanguage.ENGLISH -> stringResource(R.string.settingsEmailLanguageValueEnglish)
+        EmailLanguage.FRENCH -> stringResource(R.string.settingsEmailLanguageValueFrench)
+        EmailLanguage.GERMAN -> stringResource(R.string.settingsEmailLanguageValueGerman)
+        EmailLanguage.ITALIAN -> stringResource(R.string.settingsEmailLanguageValueItalian)
+        EmailLanguage.SPANISH -> stringResource(R.string.settingsEmailLanguageValueSpanish)
+        else -> ""
+    }
+}
+
+enum class MyAccountSetting {
+    Login, SwitchAccount, Settings, Support, Logout,
+    Eula, DiscoverInfomaniak, ShareIdeas, GiveFeedback,
+}
+
+@PreviewAllWindows
+@Composable
+private fun SettingsScreenPreview() {
+    SwissTransferTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            MyAccountScreen(
+                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
+                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
+                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
+                onItemClick = {},
+                currentUser = { null },
+            ) { null }
+        }
+    }
+}

@@ -95,6 +95,7 @@
     <string name="onboardingSendFilesSubtitleArgument">Sende deine Dateien</string>
     <string name="onboardingSendFilesSubtitleTemplate">\u0020%s jetzt!</string>
     <string name="onboardingSendFilesTitle">Bereit loszulegen?</string>
+    <string name="onboardingSignInOrCreateAccount">Melde dich an oder erstelle kostenlos ein Konto</string>
     <string name="onboardingStorageSubtitleArgument">Teile bis zu 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s Dateien – kostenlos und ohne Anmeldung.</string>
     <string name="onboardingStorageTitle">Hau richtig rein!</string>
@@ -112,6 +113,7 @@
     <string name="settingsCategoryDataManagement">Daten &amp; Datenschutz</string>
     <string name="settingsCategoryDefaultSettings">Standardeinstellungen</string>
     <string name="settingsCategoryGeneral">Allgemein</string>
+    <string name="settingsDeleteMyAccount">Mein Konto löschen</string>
     <string name="settingsDownloadsLimitTitle">Lege ein Standardlimit für deine Uploads fest</string>
     <string name="settingsEmailLanguageTitle">Legt eine Standardsprache für Ihre Weiterleitungen per E-Mail fest</string>
     <string name="settingsEmailLanguageValueEnglish">Englisch</string>
@@ -119,6 +121,8 @@
     <string name="settingsEmailLanguageValueGerman">Deutsch</string>
     <string name="settingsEmailLanguageValueItalian">Italienisch</string>
     <string name="settingsEmailLanguageValueSpanish">Spanisch</string>
+    <string name="settingsHelpAndSupport">Hilfe und Support</string>
+    <string name="settingsLogOut">Abmelden</string>
     <string name="settingsMatomoDescription">Matomo ist ein Analysetool, das ausschliesslich von Infomaniak gehostet und verwaltet wird, um zu verstehen, wie die Anwendung genutzt wird.\n\nDurch die Untersuchung dieser Daten kann unser Team die Schnittstelle der Anwendung kontinuierlich verbessern.</string>
     <string name="settingsNotificationsTitle">Wählt eine Präferenz aus</string>
     <string name="settingsOptionActivated">Aktiviert</string>
@@ -138,6 +142,8 @@
     <string name="settingsOptionValidityPeriod">Dauer der Gültigkeit</string>
     <string name="settingsPasswordDescription">Deine Empfänger müssen das Passwort eingeben, um die Dateien herunterzuladen.</string>
     <string name="settingsPasswordToggleDescription">Schutz aktivieren</string>
+    <string name="settingsSignIn">Anmelden</string>
+    <string name="settingsSwitchAccount">Konto wechseln</string>
     <string name="settingsThemeTitle">Wähle ein Thema aus</string>
     <string name="settingsTitle">Einstellungen</string>
     <string name="settingsValidityPeriodTitle">Legt eine Standardgültigkeitsdauer für deine Transfers fest</string>

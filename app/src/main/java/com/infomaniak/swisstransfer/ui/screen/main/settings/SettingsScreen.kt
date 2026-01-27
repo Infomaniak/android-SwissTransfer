@@ -19,53 +19,41 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.core.auth.models.user.User
-import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
-import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Bell
+import com.infomaniak.swisstransfer.ui.images.icons.CircleCross
 import com.infomaniak.swisstransfer.ui.images.icons.Clock
-import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.images.icons.PaintbrushPalette
-import com.infomaniak.swisstransfer.ui.images.icons.PersonBadgeShare
 import com.infomaniak.swisstransfer.ui.images.icons.Shield
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.CONNECTION
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCOVER_INFOMANIAK
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DELETE_MY_ACCOUNT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EULA
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.GIVE_FEEDBACK
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SHARE_IDEAS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
@@ -108,37 +96,6 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .selectableGroup(),
         ) {
-            SmallWindowScreenTitle(
-                title = stringResource(R.string.settingsTitle),
-                modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)
-            )
-
-            Text(
-                currentUser()?.displayName.toString(),
-                style = SwissTransferTheme.typography.h1,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-            )
-
-            SettingTitle(R.string.appName)
-
-            SettingItem(
-                titleRes = com.infomaniak.core.network.R.string.connectionError,
-                isSelected = { false },
-                icon = AppIcons.PersonBadgeShare,
-                endIcon = CHEVRON,
-                onClick = { onItemClick(CONNECTION) }, // TODO: Extract to other file and probably enum
-            )
-
-            SettingItem(
-                titleRes = com.infomaniak.core.common.R.string.buttonClose,
-                isSelected = { false },
-                icon = AppIcons.Cross,
-                endIcon = CHEVRON,
-                onClick = { onItemClick(SettingsOptionScreens.DISCONNECTION) }, // TODO: Extract to other file and probably enum
-            )
-
-
             SettingTitle(R.string.settingsCategoryGeneral)
 
             if (SDK_INT >= 29) {
@@ -165,7 +122,7 @@ fun SettingsScreen(
             SettingItem(
                 titleRes = R.string.settingsOptionValidityPeriod,
                 isSelected = { selectedSetting == VALIDITY_PERIOD },
-                icon = AppIcons.ArrowDownFile,
+                icon = AppIcons.Clock,
                 description = validityPeriod.get().getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(VALIDITY_PERIOD) },
@@ -173,7 +130,7 @@ fun SettingsScreen(
             SettingItem(
                 titleRes = R.string.settingsOptionDownloadLimit,
                 isSelected = { selectedSetting == DOWNLOAD_LIMIT },
-                icon = AppIcons.Clock,
+                icon = AppIcons.ArrowDownFile,
                 description = downloadLimit.get().getString(),
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DOWNLOAD_LIMIT) },
@@ -196,38 +153,12 @@ fun SettingsScreen(
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DATA_MANAGEMENT) },
             )
-            SettingDivider()
-
-            SettingTitle(R.string.settingsCategoryAbout)
             SettingItem(
-                titleRes = R.string.settingsOptionTermsAndConditions,
-                isSelected = { selectedSetting == EULA },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(EULA) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionDiscoverInfomaniak,
-                isSelected = { selectedSetting == DISCOVER_INFOMANIAK },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(DISCOVER_INFOMANIAK) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionShareIdeas,
-                isSelected = { selectedSetting == SHARE_IDEAS },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(SHARE_IDEAS) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionGiveFeedback,
-                isSelected = { selectedSetting == GIVE_FEEDBACK },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(GIVE_FEEDBACK) },
-            )
-            SettingItem(
-                titleRes = R.string.version,
+                titleRes = R.string.settingsDeleteMyAccount,
                 isSelected = { false },
-                description = BuildConfig.VERSION_NAME,
-                onClick = null,
+                icon = AppIcons.CircleCross,
+                endIcon = OPEN_OUTSIDE,
+                onClick = { onItemClick(DELETE_MY_ACCOUNT) },
             )
         }
     }
@@ -266,11 +197,10 @@ private fun EmailLanguage?.getString(): String {
 }
 
 enum class SettingsOptionScreens {
-    CONNECTION, DISCONNECTION,
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
-    EULA, DISCOVER_INFOMANIAK, SHARE_IDEAS, GIVE_FEEDBACK,
-    DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY;
+    DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY,
+    DELETE_MY_ACCOUNT;
 
     fun isDataManagementSetting() = this == DATA_MANAGEMENT || this == DATA_MANAGEMENT_MATOMO || this == DATA_MANAGEMENT_SENTRY
 }

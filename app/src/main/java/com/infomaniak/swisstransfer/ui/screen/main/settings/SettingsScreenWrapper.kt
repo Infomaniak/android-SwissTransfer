@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,16 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
-import com.infomaniak.core.common.extensions.goToAppStore
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
-import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.OnboardingActivity
-import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
@@ -50,18 +45,12 @@ import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.CONNECTION
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCONNECTION
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCOVER_INFOMANIAK
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EULA
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.GIVE_FEEDBACK
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SHARE_IDEAS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -69,8 +58,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
-import com.infomaniak.swisstransfer.ui.utils.openUrl
-import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
@@ -154,22 +141,22 @@ private fun ListPane(
         onItemClick = { item ->
             when (item) {
                 NOTIFICATIONS -> context.openAppNotificationSettings()
-                EULA -> context.openUrl(EULA_URL)
-                DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
-                SHARE_IDEAS -> context.openUrl(userReportURL)
-                GIVE_FEEDBACK -> if (BuildConfig.DEBUG) {
-                    // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
-                    context.goToAppStore("com.infomaniak.swisstransfer")
-                } else {
-                    context.goToAppStore()
-                }
-                CONNECTION -> {
-                    val intent = Intent(context, OnboardingActivity::class.java).apply {
-                        putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
-                    }
-                    context.safeStartActivity(intent)
-                }
-                DISCONNECTION -> onDisconnectCurrentUser()
+                // EULA -> context.openUrl(EULA_URL)
+                // DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
+                // SHARE_IDEAS -> context.openUrl(userReportURL)
+                // GIVE_FEEDBACK -> if (BuildConfig.DEBUG) {
+                //     // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
+                //     context.goToAppStore("com.infomaniak.swisstransfer")
+                // } else {
+                //     context.goToAppStore()
+                // }
+                // CONNECTION -> {
+                //     val intent = Intent(context, OnboardingActivity::class.java).apply {
+                //         putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
+                //     }
+                //     context.safeStartActivity(intent)
+                // }
+                // DISCONNECTION -> onDisconnectCurrentUser()
                 else -> {
                     // Navigate to the detail pane with the passed item
                     scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
@@ -226,14 +213,15 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        CONNECTION,
-        DISCONNECTION,
+        // CONNECTION,
+        // DISCONNECTION,
         NOTIFICATIONS,
-        EULA,
-        DISCOVER_INFOMANIAK,
-        SHARE_IDEAS,
-        GIVE_FEEDBACK,
+            // EULA,
+            // DISCOVER_INFOMANIAK,
+            // SHARE_IDEAS,
+            // GIVE_FEEDBACK,
         null -> NoSelectionEmptyState()
+        SettingsOptionScreens.DELETE_MY_ACCOUNT -> TODO()
     }
 }
 

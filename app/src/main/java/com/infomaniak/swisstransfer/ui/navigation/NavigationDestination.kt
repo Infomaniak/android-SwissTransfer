@@ -73,6 +73,10 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data object SettingsDestination : MainNavigation()
 
+    // TODO
+    @Serializable
+    data object MyAccountDestination : MainNavigation()
+
     companion object {
         private val TAG = MainNavigation::class.java.simpleName
         val startDestination = SentDestination()
