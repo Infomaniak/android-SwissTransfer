@@ -48,7 +48,7 @@ fun OptionScaffold(
     selectedSettingOptionPosition: Int,
     matomoValue: MatomoScreen,
     setSelectedSettingOptionPosition: (Int) -> Unit,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
@@ -58,7 +58,7 @@ fun OptionScaffold(
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = topAppBarTitleRes,
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack) },
             )
         },
     ) {

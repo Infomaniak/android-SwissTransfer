@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SettingsEmailLanguageScreen(
     emailLanguage: EmailLanguage,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
     onEmailLanguageChange: (EmailLanguage) -> Unit,
 ) {
     OptionScaffold(
