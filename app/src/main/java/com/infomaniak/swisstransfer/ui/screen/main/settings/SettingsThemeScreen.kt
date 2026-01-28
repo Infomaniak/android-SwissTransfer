@@ -38,7 +38,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SettingsThemeScreen(
     theme: Theme,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
     onThemeUpdate: (Theme) -> Unit,
 ) {
     OptionScaffold(

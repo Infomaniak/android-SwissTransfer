@@ -29,7 +29,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
@@ -38,8 +37,8 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
-import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Bell
@@ -64,31 +63,30 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTi
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun SettingsScreen(
     theme: GetSetCallbacks<Theme>,
-    currentUser: () -> User?,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
     onItemClick: (SettingsOptionScreens) -> Unit,
+    navigateBack: (() -> Unit),
     getSelectedSetting: () -> SettingsOptionScreens?,
 ) {
-    val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    val selectedSetting = getSelectedSetting()
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Settings) }
 
     SwissTransferScaffold(
         topBar = {
-            if (windowAdaptiveInfo.isWindowLarge()) {
-                SwissTransferTopAppBar(stringResource(R.string.settingsTitle))
-            } else {
-                BrandTopAppBar()
-            }
+            SwissTransferTopAppBar(
+                stringResource(R.string.settingsTitle),
+                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack) }
+            )
         }
     ) {
         Column(
@@ -197,6 +195,7 @@ private fun EmailLanguage?.getString(): String {
 }
 
 enum class SettingsOptionScreens {
+    SETTINGS,
     THEME, NOTIFICATIONS,
     VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY,
@@ -216,7 +215,7 @@ private fun SettingsScreenPreview() {
                 downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                 onItemClick = {},
-                currentUser = { null },
+                navigateBack = {},
             ) { null }
         }
     }

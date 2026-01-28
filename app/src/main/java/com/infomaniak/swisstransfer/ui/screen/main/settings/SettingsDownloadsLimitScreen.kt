@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SettingsDownloadsLimitScreen(
     downloadLimit: DownloadLimit,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
     onDownloadLimitChange: (DownloadLimit) -> Unit,
 ) {
     OptionScaffold(

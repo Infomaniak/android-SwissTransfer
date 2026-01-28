@@ -47,10 +47,6 @@ import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
-import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
-import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
-import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -67,7 +63,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Eul
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.GiveFeedback
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Login
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Logout
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Settings
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Navigation
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.ShareIdeas
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Support
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.SwitchAccount
@@ -78,19 +74,14 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingIt
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun MyAccountScreen(
-    theme: GetSetCallbacks<Theme>,
     currentUser: () -> User?,
-    validityPeriod: GetSetCallbacks<ValidityPeriod>,
-    downloadLimit: GetSetCallbacks<DownloadLimit>,
-    emailLanguage: GetSetCallbacks<EmailLanguage>,
     onItemClick: (MyAccountSetting) -> Unit,
-    getSelectedSetting: () -> SettingsOptionScreens?,
+    getSelectedSetting: () -> MyAccountSetting?,
 ) {
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
@@ -116,7 +107,7 @@ fun MyAccountScreen(
             if (currentUser() == null) {
                 SettingItem(
                     titleRes = R.string.settingsSignIn,
-                    isSelected = { false },
+                    isSelected = { selectedSetting == Login },
                     icon = AppIcons.Person,
                     endIcon = EndIconType.CHEVRON,
                     onClick = { onItemClick(Login) },
@@ -124,7 +115,7 @@ fun MyAccountScreen(
             } else {
                 SettingItem(
                     titleRes = R.string.settingsSwitchAccount,
-                    isSelected = { false },
+                    isSelected = { selectedSetting == SwitchAccount },
                     icon = AppIcons.Person,
                     endIcon = EndIconType.CHEVRON,
                     onClick = { onItemClick(SwitchAccount) },
@@ -133,15 +124,15 @@ fun MyAccountScreen(
 
             SettingItem(
                 titleRes = R.string.settingsTitle,
-                isSelected = { false },
+                isSelected = { selectedSetting == Navigation.Settings },
                 icon = AppIcons.Cog,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { onItemClick(Settings) },
+                onClick = { onItemClick(Navigation.Settings) },
             )
 
             SettingItem(
                 titleRes = R.string.settingsHelpAndSupport,
-                isSelected = { false },
+                isSelected = { selectedSetting == Support },
                 icon = AppIcons.HeadphoneMicrophone,
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(Support) },
@@ -150,7 +141,7 @@ fun MyAccountScreen(
             if (currentUser() != null) {
                 SettingItem(
                     titleRes = R.string.settingsLogOut,
-                    isSelected = { false },
+                    isSelected = { selectedSetting == Logout },
                     icon = AppIcons.DoorRectangleArrowRight,
                     onClick = { onItemClick(Logout) },
                 )
@@ -160,25 +151,25 @@ fun MyAccountScreen(
             SettingTitle(R.string.settingsCategoryAbout)
             SettingItem(
                 titleRes = R.string.settingsOptionTermsAndConditions,
-                isSelected = { false },
+                isSelected = { selectedSetting == Eula },
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(Eula) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionDiscoverInfomaniak,
-                isSelected = { false },
+                isSelected = { selectedSetting == DiscoverInfomaniak },
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(DiscoverInfomaniak) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionShareIdeas,
-                isSelected = { false },
+                isSelected = { selectedSetting == ShareIdeas },
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(ShareIdeas) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionGiveFeedback,
-                isSelected = { false },
+                isSelected = { selectedSetting == GiveFeedback },
                 endIcon = OPEN_OUTSIDE,
                 onClick = { onItemClick(GiveFeedback) },
             )
@@ -246,41 +237,20 @@ private fun UsernameAndEmail(user: User, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun Theme?.getString(): String {
-    return when (this) {
-        Theme.SYSTEM -> stringResource(R.string.settingsOptionThemeSystem)
-        Theme.DARK -> stringResource(R.string.settingsOptionThemeDark)
-        Theme.LIGHT -> stringResource(R.string.settingsOptionThemeLight)
-        else -> ""
+sealed interface MyAccountSetting {
+    data object Login : MyAccountSetting
+    data object SwitchAccount : MyAccountSetting
+    data object Support : MyAccountSetting
+    data object Logout : MyAccountSetting
+
+    data object Eula : MyAccountSetting
+    data object DiscoverInfomaniak : MyAccountSetting
+    data object ShareIdeas : MyAccountSetting
+    data object GiveFeedback : MyAccountSetting
+
+    enum class Navigation(val destination: SettingsOptionScreens) : MyAccountSetting {
+        Settings(SettingsOptionScreens.SETTINGS)
     }
-}
-
-@Composable
-private fun ValidityPeriod?.getString(): String {
-    return this?.value?.toInt()?.let {
-        pluralStringResource(R.plurals.settingsValidityPeriodValue, it, it)
-    } ?: ""
-}
-
-@Composable
-private fun DownloadLimit?.getString() = this?.value?.toString() ?: ""
-
-@Composable
-private fun EmailLanguage?.getString(): String {
-    return when (this) {
-        EmailLanguage.ENGLISH -> stringResource(R.string.settingsEmailLanguageValueEnglish)
-        EmailLanguage.FRENCH -> stringResource(R.string.settingsEmailLanguageValueFrench)
-        EmailLanguage.GERMAN -> stringResource(R.string.settingsEmailLanguageValueGerman)
-        EmailLanguage.ITALIAN -> stringResource(R.string.settingsEmailLanguageValueItalian)
-        EmailLanguage.SPANISH -> stringResource(R.string.settingsEmailLanguageValueSpanish)
-        else -> ""
-    }
-}
-
-enum class MyAccountSetting {
-    Login, SwitchAccount, Settings, Support, Logout,
-    Eula, DiscoverInfomaniak, ShareIdeas, GiveFeedback,
 }
 
 @PreviewAllWindows
@@ -289,10 +259,6 @@ private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             MyAccountScreen(
-                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
-                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
-                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                 onItemClick = {},
                 currentUser = { null },
             ) { null }

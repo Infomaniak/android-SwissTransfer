@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,12 +32,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.core.common.extensions.goToAppStore
+import com.infomaniak.core.common.extensions.openUrl
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.OnboardingActivity
+import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
@@ -48,9 +54,11 @@ import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaff
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DELETE_MY_ACCOUNT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -58,6 +66,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
+import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
@@ -102,10 +111,6 @@ fun SettingsScreenWrapper(
         listPane = {
             ListPane(
                 navigator = this,
-                theme,
-                validityPeriod,
-                downloadLimit,
-                emailLanguage,
                 currentUser,
                 onDisconnectCurrentUser,
             )
@@ -118,10 +123,6 @@ fun SettingsScreenWrapper(
 @Composable
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-    theme: GetSetCallbacks<Theme>,
-    validityPeriod: GetSetCallbacks<ValidityPeriod>,
-    downloadLimit: GetSetCallbacks<DownloadLimit>,
-    emailLanguage: GetSetCallbacks<EmailLanguage>,
     currentUser: () -> User?,
     onDisconnectCurrentUser: () -> Unit,
 ) {
@@ -132,38 +133,35 @@ private fun ListPane(
 
     val scope = rememberCoroutineScope()
 
-    SettingsScreen(
-        theme = theme,
+    MyAccountScreen(
         currentUser = currentUser,
-        validityPeriod = validityPeriod,
-        downloadLimit = downloadLimit,
-        emailLanguage = emailLanguage,
         onItemClick = { item ->
             when (item) {
-                NOTIFICATIONS -> context.openAppNotificationSettings()
-                // EULA -> context.openUrl(EULA_URL)
-                // DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
-                // SHARE_IDEAS -> context.openUrl(userReportURL)
-                // GIVE_FEEDBACK -> if (BuildConfig.DEBUG) {
-                //     // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
-                //     context.goToAppStore("com.infomaniak.swisstransfer")
-                // } else {
-                //     context.goToAppStore()
-                // }
-                // CONNECTION -> {
-                //     val intent = Intent(context, OnboardingActivity::class.java).apply {
-                //         putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
-                //     }
-                //     context.safeStartActivity(intent)
-                // }
-                // DISCONNECTION -> onDisconnectCurrentUser()
-                else -> {
+                MyAccountSetting.Login -> {
+                    val intent = Intent(context, OnboardingActivity::class.java).apply {
+                        putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
+                    }
+                    context.safeStartActivity(intent)
+                }
+                MyAccountSetting.SwitchAccount -> TODO()
+                MyAccountSetting.Support -> TODO()
+                MyAccountSetting.Logout -> onDisconnectCurrentUser()
+                MyAccountSetting.Eula -> context.openUrl(EULA_URL)
+                MyAccountSetting.DiscoverInfomaniak -> context.openUrl(aboutURL)
+                MyAccountSetting.ShareIdeas -> context.openUrl(userReportURL)
+                MyAccountSetting.GiveFeedback -> if (BuildConfig.DEBUG) {
+                    // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
+                    context.goToAppStore("com.infomaniak.swisstransfer")
+                } else {
+                    context.goToAppStore()
+                }
+                is MyAccountSetting.Navigation -> {
                     // Navigate to the detail pane with the passed item
-                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
+                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item.destination) }
                 }
             }
         },
-        getSelectedSetting = { navigator.currentDestination?.contentKey },
+        getSelectedSetting = { MyAccountSetting.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
     )
 }
 
@@ -179,12 +177,32 @@ private fun DetailPane(
 
     val destination = navigator.safeCurrentContent()
 
+    val context = LocalContext.current
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
     val scope = rememberCoroutineScope()
     val navigateBack: () -> Unit = {
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
     }
 
     when (destination) {
+        SETTINGS -> SettingsScreen(
+            theme = theme,
+            validityPeriod = validityPeriod,
+            downloadLimit = downloadLimit,
+            emailLanguage = emailLanguage,
+            onItemClick = { item ->
+                when (item) {
+                    NOTIFICATIONS -> context.openAppNotificationSettings()
+                    else -> {
+                        // Navigate to the detail pane with the passed item
+                        scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
+                    }
+                }
+            },
+            navigateBack = navigateBack,
+            getSelectedSetting = { navigator.currentDestination?.contentKey },
+        )
         THEME -> SettingsThemeScreen(
             theme = theme.get(),
             navigateBack = navigateBack,
@@ -213,15 +231,9 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        // CONNECTION,
-        // DISCONNECTION,
+        DELETE_MY_ACCOUNT -> TODO()
         NOTIFICATIONS,
-            // EULA,
-            // DISCOVER_INFOMANIAK,
-            // SHARE_IDEAS,
-            // GIVE_FEEDBACK,
         null -> NoSelectionEmptyState()
-        SettingsOptionScreens.DELETE_MY_ACCOUNT -> TODO()
     }
 }
 
