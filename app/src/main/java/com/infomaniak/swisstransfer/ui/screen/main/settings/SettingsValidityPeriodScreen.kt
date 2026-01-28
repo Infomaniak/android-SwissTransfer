@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SettingsValidityPeriodScreen(
     validityPeriod: ValidityPeriod,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
     onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
     OptionScaffold(
