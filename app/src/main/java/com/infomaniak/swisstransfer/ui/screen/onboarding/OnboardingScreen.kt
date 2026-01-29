@@ -64,7 +64,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun OnboardingScreen(
     shouldDisplayRequiredLogin: Boolean,
-    goToMainActivity: () -> Unit,
+    connectAsGuest: () -> Unit,
     accountsCheckingState: () -> AccountsCheckingState,
     skippedIds: () -> Set<Long>,
     areLoginButtonsLoading: () -> Boolean,
@@ -108,7 +108,7 @@ fun OnboardingScreen(
                         isSignUpButtonLoading = areLoginButtonsLoading
                     )
                 } else {
-                    NoCrossAppLoginAccountsContent.accountOptional { goToMainActivity() }
+                    NoCrossAppLoginAccountsContent.accountOptional { connectAsGuest() }
                 }
             )
         },
@@ -218,7 +218,7 @@ private fun OnboardingScreenPreview(@PreviewParameter(AccountsCheckingStatePrevi
         Surface {
             OnboardingScreen(
                 shouldDisplayRequiredLogin = false,
-                goToMainActivity = {},
+                connectAsGuest = {},
                 accountsCheckingState = { accounts },
                 skippedIds = { emptySet() },
                 areLoginButtonsLoading = { false },
