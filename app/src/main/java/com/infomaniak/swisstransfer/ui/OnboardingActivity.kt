@@ -104,7 +104,7 @@ class OnboardingActivity : BaseActivity() {
                 Surface {
                     OnboardingScreen(
                         shouldDisplayRequiredLogin = shouldDisplayRequiredLogin,
-                        goToMainActivity = {
+                        connectAsGuest = {
                             scope.launch {
                                 accountUtils.loginGuestUser()
                                 Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
