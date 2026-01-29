@@ -26,7 +26,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -49,6 +48,8 @@ import com.infomaniak.core.onboarding.components.OnboardingComponents
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultBackground
 import com.infomaniak.core.onboarding.components.OnboardingComponents.DefaultLottieIllustration
 import com.infomaniak.core.onboarding.components.OnboardingComponents.HighlightedTitleAndDescription
+import com.infomaniak.core.onboarding.components.OnboardingComponents.ThemedDotLottie
+import com.infomaniak.core.onboarding.models.OnboardingLottieSource
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLargeWindow
 import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
@@ -72,7 +73,7 @@ fun OnboardingScreen(
     onSaveSkippedAccounts: (Set<Long>) -> Unit,
     snackbarHostState: SnackbarHostState,
 ) {
-    val pages: List<Page> = if (shouldDisplayRequiredLogin) RequiredLoginPage.entries else OptionalLoginPage.entries
+    val pages: List<Page> = if (shouldDisplayRequiredLogin) listOf(Page.SendFiles) else Page.entries
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
@@ -122,55 +123,76 @@ fun OnboardingScreen(
     )
 }
 
-private interface Page {
-    @Composable
-    fun toOnboardingPage(isHighlighted: Map<Page, MutableState<Boolean>>, pagerState: PagerState, index: Int): OnboardingPage
-}
-
 private const val HIGHLIGHT_ANGLE = 3.0
 
-private enum class OptionalLoginPage(
+sealed interface ThemedLottieMethod {
+    data class Qualifier(@RawRes val res: Int) : ThemedLottieMethod
+    data class Theme(@RawRes val res: Int, @StringRes val themeIdRes: Int?) : ThemedLottieMethod
+}
+
+private enum class Page(
     val background: ThemedImage,
-    @RawRes val illustrationRes: Int,
+    val illustration: ThemedLottieMethod,
     @StringRes val titleRes: Int,
     @StringRes val subtitleTemplateRes: Int,
     @StringRes val subtitleArgumentRes: Int,
     val highlightAngleDegree: Double,
-) : Page {
-    STORAGE(
+) {
+    Storage(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustrationRes = R.raw.storage_cardboard_box_pile,
+        illustration = ThemedLottieMethod.Qualifier(R.raw.storage_cardboard_box_pile),
         titleRes = R.string.onboardingStorageTitle,
         subtitleTemplateRes = R.string.onboardingStorageSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingStorageSubtitleArgument,
         highlightAngleDegree = -HIGHLIGHT_ANGLE,
     ),
-    EXPIRATION(
+    Expiration(
         background = AppIllus.RadialGradientCornerTopLeft,
-        illustrationRes = R.raw.three_cards_transfer_type,
+        illustration = ThemedLottieMethod.Qualifier(R.raw.three_cards_transfer_type),
         titleRes = R.string.onboardingExpirationTitle,
         subtitleTemplateRes = R.string.onboardingExpirationSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingExpirationSubtitleArgument,
         highlightAngleDegree = -HIGHLIGHT_ANGLE,
     ),
-    PASSWORD(
+    Password(
         background = AppIllus.RadialGradientCornerTopRight,
-        illustrationRes = R.raw.two_locks_intertwined_stars,
+        illustration = ThemedLottieMethod.Qualifier(R.raw.two_locks_intertwined_stars),
         titleRes = R.string.onboardingPasswordTitle,
         subtitleTemplateRes = R.string.onboardingPasswordSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingPasswordSubtitleArgument,
         highlightAngleDegree = HIGHLIGHT_ANGLE,
+    ),
+    SendFiles(
+        background = AppIllus.RadialGradientCornerTopLeft,
+        // TODO: Wait for real asset
+        illustration = ThemedLottieMethod.Theme(R.raw.two_locks_intertwined_stars, R.string.dotLottieThemeId),
+        titleRes = R.string.onboardingSendFilesTitle,
+        subtitleTemplateRes = R.string.onboardingSendFilesSubtitleTemplate,
+        subtitleArgumentRes = R.string.onboardingSendFilesSubtitleArgument,
+        highlightAngleDegree = HIGHLIGHT_ANGLE,
     );
 
     @Composable
-    override fun toOnboardingPage(
+    fun toOnboardingPage(
         isHighlighted: Map<Page, MutableState<Boolean>>,
         pagerState: PagerState,
         index: Int,
     ) = OnboardingPage(
         background = { DefaultBackground(background.image()) },
         illustration = {
-            DefaultLottieIllustration(lottieRawRes = illustrationRes, isCurrentPageVisible = { pagerState.currentPage == index })
+            val isCurrentPageVisible = { pagerState.currentPage == index }
+            when (illustration) {
+                is ThemedLottieMethod.Qualifier -> {
+                    DefaultLottieIllustration(illustration.res, isCurrentPageVisible)
+                }
+                is ThemedLottieMethod.Theme -> {
+                    ThemedDotLottie(
+                        source = OnboardingLottieSource.Res(illustration.res),
+                        isCurrentPageVisible = isCurrentPageVisible,
+                        themeId = { illustration.themeIdRes?.let { stringResource(it) } },
+                    )
+                }
+            }
         },
         text = {
             HighlightedTitleAndDescription(
@@ -185,31 +207,6 @@ private enum class OptionalLoginPage(
                 isHighlighted = { isHighlighted[this]?.value ?: false }
             )
         }
-    )
-}
-
-private enum class RequiredLoginPage(
-    val background: ThemedImage,
-    @RawRes val illustrationRes: Int,
-    @StringRes val titleRes: Int,
-) : Page {
-    Login(
-        background = AppIllus.RadialGradientCornerTopLeft,
-        illustrationRes = R.raw.two_locks_intertwined_stars,
-        titleRes = R.string.appName, // TODO
-    );
-
-    @Composable
-    override fun toOnboardingPage(
-        isHighlighted: Map<Page, MutableState<Boolean>>,
-        pagerState: PagerState,
-        index: Int,
-    ) = OnboardingPage(
-        background = { DefaultBackground(background.image()) },
-        illustration = {
-            DefaultLottieIllustration(lottieRawRes = illustrationRes, isCurrentPageVisible = { pagerState.currentPage == index })
-        },
-        text = { Text(stringResource(titleRes), style = SwissTransferTheme.typography.h1) }
     )
 }
 
