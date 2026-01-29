@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">una password.</string>
     <string name="onboardingPasswordSubtitleTemplate">Proteggi i tuoi contenuti con %s</string>
     <string name="onboardingPasswordTitle">Mantieni il controllo!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Invia i tuoi file</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s subito!</string>
+    <string name="onboardingSendFilesTitle">Pronto per iniziare?</string>
     <string name="onboardingStorageSubtitleArgument">Condividi fino a 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s di file gratis e senza registrazione.</string>
     <string name="onboardingStorageTitle">Invia alla grande!</string>
