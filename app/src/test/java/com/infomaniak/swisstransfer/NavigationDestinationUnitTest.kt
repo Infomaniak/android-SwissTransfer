@@ -31,6 +31,6 @@ class NavigationDestinationUnitTest {
         val destinationsNames = MainNavigation.Companion.destinationsNames
         assertNotNull(destinationsNames.find { it == MainNavigation.SentDestination::class.simpleName })
         assertNotNull(destinationsNames.find { it == MainNavigation.ReceivedDestination::class.simpleName })
-        assertNotNull(destinationsNames.find { it == MainNavigation.SettingsDestination::class.simpleName })
+        assertNotNull(destinationsNames.find { it == MainNavigation.MyAccountDestination::class.simpleName })
     }
 }
