@@ -26,7 +26,7 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination.getDeeplinkDirection
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import kotlinx.serialization.Serializable
@@ -71,10 +71,6 @@ sealed class MainNavigation : NavigationDestination() {
     }
 
     @Serializable
-    data object SettingsDestination : MainNavigation()
-
-    // TODO
-    @Serializable
     data object MyAccountDestination : MainNavigation()
 
     companion object {
@@ -86,11 +82,11 @@ sealed class MainNavigation : NavigationDestination() {
         // Don't worry if you forget, there's a unit test about that.
         private const val sentDestinationName = "SentDestination"
         private const val receivedDestinationName = "ReceivedDestination"
-        private const val settingsDestinationName = "SettingsDestination"
+        private const val myAccountDestinationName = "MyAccountDestination"
         val destinationsNames = listOf(
             sentDestinationName,
             receivedDestinationName,
-            settingsDestinationName,
+            myAccountDestinationName,
         )
 
         fun NavBackStackEntry.toMainDestination(): MainNavigation? {
@@ -99,7 +95,7 @@ sealed class MainNavigation : NavigationDestination() {
                 when (destinationsNames.firstOrNull { destinationRoute.contains(it) }) {
                     sentDestinationName -> this.toRoute<SentDestination>()
                     receivedDestinationName -> this.toRoute<ReceivedDestination>()
-                    settingsDestinationName -> this.toRoute<SettingsDestination>()
+                    myAccountDestinationName -> this.toRoute<MyAccountDestination>()
                     else -> error("Destination $destinationRoute is not handled")
                 }
             }.getOrElse { exception ->
