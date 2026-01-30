@@ -28,4 +28,38 @@
 
     <color name="loginToolbarBackground">#F4F6FD</color>
     <color name="loginToolbarOnBackground">@color/orca</color>
+
+    <!--Avatar-->
+    <color name="yellow_light">#FFC10A</color>
+    <color name="yellow_dark">#FFDF9E</color>
+    <color name="coral_light">#FF540B</color>
+    <color name="coral_dark">#FD9459</color>
+    <color name="grass_light">#3EBF4D</color>
+    <color name="grass_dark">#78D383</color>
+    <color name="fougere_light">#009688</color>
+    <color name="fougere_dark">#00C7B3</color>
+    <color name="cobalt_light">#006AB2</color>
+    <color name="cobalt_dark">#0AB2F5</color>
+    <color name="jean_light">#2196F3</color>
+    <color name="jean_dark">#81C4F8</color>
+    <color name="tropical_light">#00BCD4</color>
+    <color name="tropical_dark">#86DEEA</color>
+    <color name="mauve_light">#BA68C8</color>
+    <color name="mauve_dark">#CC8FD6</color>
+    <color name="prince_light">#673AB7</color>
+    <color name="prince_dark">#956DDD</color>
+
+    <color name="avatarInitialsColor">@color/white</color>
+
+    <array name="AvatarColors">
+        <item>@color/yellow_light</item>
+        <item>@color/coral_light</item>
+        <item>@color/grass_light</item>
+        <item>@color/fougere_light</item>
+        <item>@color/cobalt_light</item>
+        <item>@color/jean_light</item>
+        <item>@color/tropical_light</item>
+        <item>@color/mauve_light</item>
+        <item>@color/prince_light</item>
+    </array>
 </resources>

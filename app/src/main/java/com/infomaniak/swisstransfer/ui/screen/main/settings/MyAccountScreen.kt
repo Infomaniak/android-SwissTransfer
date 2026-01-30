@@ -37,12 +37,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.avatar.components.Avatar
-import com.infomaniak.core.avatar.models.AvatarColors
 import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
@@ -74,8 +74,12 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingIt
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.AvatarUtils.fromUser
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.core.common.R as RCore
+
+private val AVATAR_SIZE = 80.dp
+private val AVATAR_SHAPE = CircleShape
 
 @Composable
 fun MyAccountScreen(
@@ -196,12 +200,7 @@ private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
             NoAccountAvatar()
             Text(pluralStringResource(RCore.plurals.myAccount, 1), style = SwissTransferTheme.typography.h1)
         } else {
-            Avatar( // TODO
-                AvatarType.WithInitials.Initials(
-                    initials = user.getInitials(),
-                    colors = AvatarColors(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary),
-                )
-            )
+            Avatar(AvatarType.fromUser(user, LocalContext.current), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
             UsernameAndEmail(user, modifier = Modifier.fillMaxWidth())
         }
     }
@@ -211,8 +210,8 @@ private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
 private fun NoAccountAvatar() {
     Box(
         modifier = Modifier
-            .size(80.dp)
-            .clip(CircleShape)
+            .size(AVATAR_SIZE)
+            .clip(AVATAR_SHAPE)
             .background(MaterialTheme.colorScheme.secondaryContainer),
         contentAlignment = Alignment.Center,
     ) {

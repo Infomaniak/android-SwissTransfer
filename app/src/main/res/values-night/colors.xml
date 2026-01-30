@@ -20,4 +20,19 @@
 
     <color name="loginToolbarBackground">@color/black</color>
     <color name="loginToolbarOnBackground">@color/white</color>
+
+    <!--Avatar-->
+    <color name="avatarInitialsColor">@color/bat</color>
+
+    <array name="AvatarColors">
+        <item>@color/yellow_dark</item>
+        <item>@color/coral_dark</item>
+        <item>@color/grass_dark</item>
+        <item>@color/fougere_dark</item>
+        <item>@color/cobalt_dark</item>
+        <item>@color/jean_dark</item>
+        <item>@color/tropical_dark</item>
+        <item>@color/mauve_dark</item>
+        <item>@color/prince_dark</item>
+    </array>
 </resources>
