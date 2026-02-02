@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.di
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager
@@ -27,6 +28,7 @@ import com.infomaniak.core.network.LOGIN_ENDPOINT_URL
 import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,11 +73,13 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun providesInfomaniakLogin(@ApplicationContext appContext: Context): InfomaniakLogin {
+        Log.e("gibran", "providesInfomaniakLogin - ConfigUtils.safePackage: ${ConfigUtils.safePackage}")
+        Log.e("gibran", "providesInfomaniakLogin - BuildConfig.CLIENT_ID: ${BuildConfig.CLIENT_ID}")
         return InfomaniakLogin(
             context = appContext,
             loginUrl = "${LOGIN_ENDPOINT_URL}/",
-            appUID = "com.infomaniak.mail",
-            clientID = "E90BC22D-67A8-452C-BE93-28DA33588CA4",
+            appUID = ConfigUtils.safePackage,
+            clientID = BuildConfig.CLIENT_ID,
             accessType = null,
         )
     }

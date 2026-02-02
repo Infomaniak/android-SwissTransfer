@@ -30,6 +30,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences.IsSentryAuthorized
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
@@ -110,7 +111,7 @@ class MainApplication : Application(), Configuration.Provider {
 
     fun configureInfomaniakCore() {
         NetworkConfiguration.init(
-            appId = BuildConfig.APPLICATION_ID,
+            appId = ConfigUtils.safePackage,
             appVersionName = BuildConfig.VERSION_NAME,
             appVersionCode = BuildConfig.VERSION_CODE,
         )
