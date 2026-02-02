@@ -18,7 +18,7 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
-import com.infomaniak.core.auth.PersistedUserIdAccountUtils
+import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.ui.MainApplication
@@ -33,7 +33,7 @@ class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     private val accountPreferences: AccountPreferences,
     @ApplicationContext context: Context,
-) : PersistedUserIdAccountUtils(context, MainApplication.userDataCleanableList) {
+) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
 
     suspend fun init() {
         accountPreferences.currentUserId?.let {
@@ -61,9 +61,9 @@ class AccountUtils @Inject constructor(
     }
 
     // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
-    override suspend fun removeUser(user: User) {
-        super.removeUser(user)
-        accountManager.removeUser(user.id)
+    override suspend fun removeUser(userId: Int) {
+        super.removeUser(userId)
+        accountManager.removeUser(userId)
     }
 
     fun isUserConnected(): Boolean = accountPreferences.currentUserId != null // TODO: Handle guest user login
