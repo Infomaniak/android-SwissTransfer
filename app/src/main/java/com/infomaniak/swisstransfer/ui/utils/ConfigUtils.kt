@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.screen.onboarding
+package com.infomaniak.swisstransfer.ui.utils
 
-import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
 import com.infomaniak.swisstransfer.BuildConfig
-import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 
-class CrossAppLoginViewModel() : BaseCrossAppLoginViewModel(ConfigUtils.safePackage, BuildConfig.CLIENT_ID)
+object ConfigUtils {
+    val safePackage by lazy { BuildConfig.APPLICATION_ID.replace(".debug", "") }
+}

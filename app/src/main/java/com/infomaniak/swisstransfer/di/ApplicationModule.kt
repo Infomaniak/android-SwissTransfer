@@ -27,6 +27,7 @@ import com.infomaniak.core.network.LOGIN_ENDPOINT_URL
 import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -74,7 +75,7 @@ object ApplicationModule {
         return InfomaniakLogin(
             context = appContext,
             loginUrl = "${LOGIN_ENDPOINT_URL}/",
-            appUID = "com.infomaniak.mail", // TODO: BuildConfig.APPLICATION_ID
+            appUID = ConfigUtils.safePackage,
             clientID = BuildConfig.CLIENT_ID,
             accessType = null,
         )

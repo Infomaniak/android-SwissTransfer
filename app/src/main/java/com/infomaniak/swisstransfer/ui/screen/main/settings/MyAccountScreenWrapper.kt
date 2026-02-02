@@ -77,6 +77,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
@@ -173,8 +174,7 @@ private fun ListPane(
                 MyAccountSettingAction.DiscoverInfomaniak -> context.openUrl(aboutURL)
                 MyAccountSettingAction.ShareIdeas -> context.openUrl(userReportURL)
                 MyAccountSettingAction.GiveFeedback -> if (BuildConfig.DEBUG) {
-                    // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
-                    context.goToAppStore("com.infomaniak.swisstransfer")
+                    context.goToAppStore(ConfigUtils.safePackage)
                 } else {
                     context.goToAppStore()
                 }
