@@ -17,32 +17,63 @@
  */
 package com.infomaniak.swisstransfer.ui.navigation
 
-import androidx.annotation.StringRes
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationRail
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.core.avatar.components.Avatar
+import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownCircle
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowUpCircle
-import com.infomaniak.swisstransfer.ui.images.icons.Settings
+import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
+import com.infomaniak.swisstransfer.ui.utils.AvatarUtils.fromUser
+import com.infomaniak.core.common.R as RCore
 
 /**
  * Enum class representing the different destinations in the app's [BottomAppBar] or [NavigationRail].
  *
- * @property label The resource ID of the string label for the destination.
+ * @property label The string label for the destination.
  * @property icon The icon to be displayed for the destination.
  */
 enum class NavigationItem(
-    @StringRes val label: Int,
-    val icon: ImageVector,
+    val label: @Composable () -> String,
+    val icon: @Composable (User?, contentDescription: String?) -> Unit,
     val destination: MainNavigation,
 ) {
-    SENT(R.string.sentTitle, AppIcons.ArrowUpCircle, SentDestination()),
-    RECEIVED(R.string.receivedTitle, AppIcons.ArrowDownCircle, ReceivedDestination()),
-    SETTINGS(R.string.settingsTitle, AppIcons.Settings, MyAccountDestination),
-    // SETTINGS(R.string.settingsTitle, AppIcons.Settings, MyAccountDestination),
+    Sent(
+        label = { stringResource(R.string.sentTitle) },
+        icon = { _, contentDescription -> Icon(AppIcons.ArrowUpCircle, contentDescription) },
+        destination = SentDestination()
+    ),
+    Received(
+        label = { stringResource(R.string.receivedTitle) },
+        icon = { _, contentDescription -> Icon(AppIcons.ArrowDownCircle, contentDescription) },
+        destination = ReceivedDestination()
+    ),
+    MyAccount(
+        label = { pluralStringResource(RCore.plurals.myAccount, 1) },
+        icon = { user, contentDescription ->
+            Crossfade(user) { user ->
+                if (user == null) {
+                    Icon(AppIcons.Person, contentDescription)
+                } else {
+                    Avatar(AvatarType.fromUser(user, LocalContext.current), modifier = Modifier.size(24.dp))
+                }
+            }
+        },
+        destination = MyAccountDestination
+    ),
 }

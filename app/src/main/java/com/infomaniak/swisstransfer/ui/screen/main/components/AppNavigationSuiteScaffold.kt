@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -57,6 +58,7 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.launchActivity
+import io.sentry.Breadcrumb.user
 
 /**
  * Layout for a [NavigationSuiteScaffold]'s content. This function wraps the [content] and places
@@ -172,11 +174,11 @@ private fun AppNavigationDrawer(
 
 @Composable
 private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationItem) {
-    val contentDescription = if (isNavigationBar) null else stringResource(navigationItem.label)
-    Icon(navigationItem.icon, contentDescription)
+    val contentDescription = if (isNavigationBar) null else navigationItem.label()
+    navigationItem.icon(LocalUser.current, contentDescription)
 }
 
 @Composable
 private fun NavigationLabel(navigationItem: NavigationItem) {
-    Text(text = stringResource(navigationItem.label))
+    Text(text = navigationItem.label())
 }
