@@ -38,6 +38,7 @@ class AccountUtils @Inject constructor(
 ) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
 
     suspend fun init() {
+        // TODO: Handle guest user storage
         accountPreferences.currentUserId?.let {
             accountManager.loadUser(it)
         }
@@ -51,7 +52,6 @@ class AccountUtils @Inject constructor(
         }
     }
 
-    // TODO: Handle guest user login
     suspend fun loginGuestUser() {
         accountPreferences.currentUserId = GUEST_USER_ID
         accountManager.loadUser(GUEST_USER_ID)
