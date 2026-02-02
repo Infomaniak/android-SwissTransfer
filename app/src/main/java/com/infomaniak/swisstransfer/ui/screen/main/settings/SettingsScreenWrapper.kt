@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.extensions.goToAppStore
 import com.infomaniak.core.common.extensions.openUrl
+import com.infomaniak.core.network.SUPPORT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
@@ -144,7 +145,7 @@ private fun ListPane(
                     context.safeStartActivity(intent)
                 }
                 MyAccountSetting.SwitchAccount -> TODO()
-                MyAccountSetting.Support -> TODO()
+                MyAccountSetting.Support -> context.openUrl(SUPPORT_URL)
                 MyAccountSetting.Logout -> onDisconnectCurrentUser()
                 MyAccountSetting.Eula -> context.openUrl(EULA_URL)
                 MyAccountSetting.DiscoverInfomaniak -> context.openUrl(aboutURL)
