@@ -17,6 +17,12 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -142,7 +148,7 @@ fun MyAccountScreen(
                 onClick = { onItemClick(Support) },
             )
 
-            if (currentUser() != null) {
+            AnimatedVisibility(currentUser() != null) {
                 SettingItem(
                     titleRes = R.string.settingsLogOut,
                     isSelected = { selectedSetting == Logout },
@@ -189,19 +195,22 @@ fun MyAccountScreen(
 
 @Composable
 private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Margin.Mini),
-    ) {
-        val user = currentUser()
-
-        if (user == null) {
-            NoAccountAvatar()
-            Text(pluralStringResource(RCore.plurals.myAccount, 1), style = SwissTransferTheme.typography.h1)
-        } else {
-            Avatar(AvatarType.fromUser(user, LocalContext.current), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
-            UsernameAndEmail(user, modifier = Modifier.fillMaxWidth())
+    AnimatedContent(
+        targetState = currentUser(),
+        transitionSpec = { fadeIn() togetherWith fadeOut() using SizeTransform(clip = false) }
+    ) { user ->
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Margin.Mini),
+        ) {
+            if (user == null) {
+                NoAccountAvatar()
+                Text(pluralStringResource(RCore.plurals.myAccount, 1), style = SwissTransferTheme.typography.h1)
+            } else {
+                Avatar(AvatarType.fromUser(user, LocalContext.current), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
+                UsernameAndEmail(user, modifier = Modifier.fillMaxWidth())
+            }
         }
     }
 }
