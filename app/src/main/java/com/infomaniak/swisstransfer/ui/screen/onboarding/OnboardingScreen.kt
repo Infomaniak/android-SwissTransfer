@@ -21,6 +21,7 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.SnackbarHost
@@ -35,6 +36,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel.AccountsCheckingState
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
@@ -127,7 +129,7 @@ private const val HIGHLIGHT_ANGLE = 3.0
 
 sealed interface ThemedLottieMethod {
     data class Qualifier(@RawRes val res: Int) : ThemedLottieMethod
-    data class Theme(@RawRes val res: Int, @StringRes val themeIdRes: Int?) : ThemedLottieMethod
+    data class Theme(@RawRes val res: Int, @StringRes val themeIdRes: Int?, val width: Dp, val height: Dp) : ThemedLottieMethod
 }
 
 private enum class Page(
@@ -164,8 +166,7 @@ private enum class Page(
     ),
     SendFiles(
         background = AppIllus.RadialGradientCornerTopLeft,
-        // TODO: Wait for real asset
-        illustration = ThemedLottieMethod.Theme(R.raw.two_locks_intertwined_stars, R.string.dotLottieThemeId),
+        illustration = ThemedLottieMethod.Theme(R.raw.key_lock, R.string.dotLottieThemeId, 343.dp, 199.dp),
         titleRes = R.string.onboardingSendFilesTitle,
         subtitleTemplateRes = R.string.onboardingSendFilesSubtitleTemplate,
         subtitleArgumentRes = R.string.onboardingSendFilesSubtitleArgument,
@@ -187,6 +188,7 @@ private enum class Page(
                 }
                 is ThemedLottieMethod.Theme -> {
                     ThemedDotLottie(
+                        modifier = Modifier.size(illustration.width, illustration.height),
                         source = OnboardingLottieSource.Res(illustration.res),
                         isCurrentPageVisible = isCurrentPageVisible,
                         themeId = { illustration.themeIdRes?.let { stringResource(it) } },
