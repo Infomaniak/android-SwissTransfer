@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,6 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.avatar.models.AvatarType
+import com.infomaniak.core.ui.compose.accountbottomsheet.AccountBottomSheet
+import com.infomaniak.core.ui.compose.accountbottomsheet.AccountBottomSheetDefaults
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
@@ -76,7 +83,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Log
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Navigation
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.ShareIdeas
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Support
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.SwitchAccount
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
@@ -90,13 +96,17 @@ import com.infomaniak.core.common.R as RCore
 private val AVATAR_SIZE = 80.dp
 private val AVATAR_SHAPE = CircleShape
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAccountScreen(
+    users: () -> List<User>,
     onItemClick: (MyAccountSetting) -> Unit,
     getSelectedSetting: () -> MyAccountSetting?,
 ) {
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
+    var showAccountSwitchBottomSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.MyAccount) }
 
@@ -111,9 +121,27 @@ fun MyAccountScreen(
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Profile(modifier = Modifier.padding(vertical = Margin.Large))
-            SettingsItems(selectedSetting, onItemClick)
+            SettingsItems(selectedSetting, onItemClick, showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true })
+        }
+
+        val selectedUserId = LocalUser.current?.id
+        if (showAccountSwitchBottomSheet && selectedUserId != null) {
+            AccountBottomSheet(
+                onDismissRequest = { showAccountSwitchBottomSheet = false },
+                accounts = users(),
+                selectedUserId = selectedUserId,
+                onAccountClicked = {},
+                onAddAccount = {},
+                onLogOut = {},
+                style = AccountBottomSheetDefaults.style(
+                    nameColor = SwissTransferTheme.colors.primaryTextColor,
+                    emailColor = SwissTransferTheme.colors.secondaryTextColor,
+                    actionButtonTextColor = SwissTransferTheme.colors.primaryTextColor,
+                )
+            )
         }
     }
+
 }
 
 @Composable
@@ -174,6 +202,7 @@ private fun TitleAndDescription(title: String, description: String, modifier: Mo
 private fun SettingsItems(
     selectedSetting: MyAccountSetting?,
     onItemClick: (MyAccountSetting) -> Unit,
+    showAccountSwitchBottomSheet: () -> Unit,
 ) {
     fun onItemClickAndMatomo(item: MyAccountSetting) {
         item.matomoValue?.let(::trackMyAccount)
@@ -192,10 +221,10 @@ private fun SettingsItems(
         } else {
             SettingItem(
                 titleRes = R.string.settingsSwitchAccount,
-                isSelected = { selectedSetting == SwitchAccount },
+                isSelected = { false },
                 icon = AppIcons.PersonCircularArrowsCounterClockwise,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { onItemClickAndMatomo(SwitchAccount) },
+                onClick = { showAccountSwitchBottomSheet() },
             )
         }
 
@@ -261,7 +290,7 @@ private fun SettingsItems(
 
 sealed class MyAccountSetting(val matomoValue: MatomoName?) {
     data object Login : MyAccountSetting(MatomoName.Login)
-    data object SwitchAccount : MyAccountSetting(MatomoName.SwitchUser)
+    // data object SwitchAccount : MyAccountSetting(MatomoName.SwitchUser)
     data object Support : MyAccountSetting(MatomoName.HelpAndSupport)
     data object Logout : MyAccountSetting(MatomoName.Logout)
 
@@ -286,6 +315,7 @@ private fun SettingsScreenPreview(@PreviewParameter(UserListPreviewParameterProv
         CompositionLocalProvider(LocalUser provides users.first()) {
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreen(
+                    users = { users },
                     onItemClick = {},
                     getSelectedSetting = { null },
                 )

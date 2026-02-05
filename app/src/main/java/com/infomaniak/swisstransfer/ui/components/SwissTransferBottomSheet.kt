@@ -48,6 +48,7 @@ import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.ArrowDownRightCurved
+import com.infomaniak.swisstransfer.ui.theme.BottomSheetStyle
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
@@ -96,8 +97,8 @@ private fun BottomSheetContent(
             Text(
                 text = it,
                 textAlign = TextAlign.Center,
-                style = SwissTransferTheme.typography.bodyMedium,
-                color = SwissTransferTheme.colors.primaryTextColor,
+                style = BottomSheetStyle.TITLE_TEXT_STYLE,
+                color = BottomSheetStyle.TITLE_COLOR,
                 modifier = paddedModifier,
             )
             Spacer(Modifier.height(Margin.Large))

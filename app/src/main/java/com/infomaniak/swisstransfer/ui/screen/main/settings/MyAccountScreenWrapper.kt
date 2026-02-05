@@ -81,6 +81,7 @@ fun MyAccountScreenWrapper(
     myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>(),
 ) {
     val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+    val users by myAccountViewModel.users.collectAsStateWithLifecycle(emptyList())
 
     appSettings?.let { safeAppSettings ->
         val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { myAccountViewModel.setTheme(it) })
@@ -93,6 +94,7 @@ fun MyAccountScreenWrapper(
 
         MyAccountScreenWrapper(
             theme = theme,
+            users = { users },
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
@@ -104,13 +106,14 @@ fun MyAccountScreenWrapper(
 @Composable
 fun MyAccountScreenWrapper(
     theme: GetSetCallbacks<Theme>,
+    users: () -> List<User>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
     onDisconnectCurrentUser: () -> Unit,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = { ListPane(navigator = this, onDisconnectCurrentUser) },
+        listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser) },
         detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
@@ -119,6 +122,7 @@ fun MyAccountScreenWrapper(
 @Composable
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    users: () -> List<User>,
     onDisconnectCurrentUser: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -129,6 +133,7 @@ private fun ListPane(
     val scope = rememberCoroutineScope()
 
     MyAccountScreen(
+        users = users,
         onItemClick = { item ->
             when (item) {
                 MyAccountSetting.Login -> {
@@ -137,7 +142,7 @@ private fun ListPane(
                     }
                     context.safeStartActivity(intent)
                 }
-                MyAccountSetting.SwitchAccount -> TODO()
+                // MyAccountSetting.SwitchAccount -> showAccountSwitchBottomSheet = true
                 MyAccountSetting.Support -> context.openUrl(SUPPORT_URL)
                 MyAccountSetting.Logout -> onDisconnectCurrentUser()
                 MyAccountSetting.Eula -> context.openUrl(EULA_URL)
@@ -251,6 +256,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreenWrapper(
                     theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                    users = { users },
                     validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
                     downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                     emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
