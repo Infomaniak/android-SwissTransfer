@@ -17,5 +17,5 @@
   -->
 <resources>
     <!--TODO-->
-    <string name="dotLottieThemeId" translatable="false">@null</string>
+    <string name="dotLottieThemeId" translatable="false">Dark</string>
 </resources>
