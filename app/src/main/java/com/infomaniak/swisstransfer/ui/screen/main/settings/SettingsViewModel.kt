@@ -41,6 +41,7 @@ class SettingsViewModel @Inject constructor(
 
     val appSettingsFlow = appSettingsManager.appSettings
     val currentUser = accountUtils.currentUserFlow
+    val users = accountUtils.users
 
     fun setTheme(theme: Theme) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setTheme(theme)

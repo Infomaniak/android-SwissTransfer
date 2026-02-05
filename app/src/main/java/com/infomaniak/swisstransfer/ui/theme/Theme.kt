@@ -33,6 +33,8 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import com.infomaniak.core.ui.compose.basics.bottomsheet.BottomSheetThemeDefaults
+import com.infomaniak.core.ui.compose.basics.bottomsheet.LocalBottomSheetTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
 import com.infomaniak.core.ui.compose.theme.LocalIsThemeDarkMode
@@ -50,6 +52,7 @@ fun SwissTransferTheme(
         singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
         stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
     )
+
     val activity = LocalActivity.current
     LaunchedEffect(isDarkTheme) {
         val window = activity?.window ?: return@LaunchedEffect
@@ -61,13 +64,25 @@ fun SwissTransferTheme(
         LocalCustomColorScheme provides customColors,
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
         LocalIsThemeDarkMode provides isDarkTheme,
-        LocalScaffoldTheme provides scaffoldTheme
+        LocalScaffoldTheme provides scaffoldTheme,
+        // LocalAvatarColors provides avatarColors, // TODO
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
-            content = content,
-        )
+        ) {
+            // Needs both LocalCustomColorScheme and MaterialTheme's colorScheme to be defined by this point
+            val bottomSheetTheme = BottomSheetThemeDefaults.theme(
+                contentColor = SwissTransferTheme.colors.primaryTextColor,
+                titleTextStyle = BottomSheetStyle.TITLE_TEXT_STYLE,
+                titleColor = BottomSheetStyle.TITLE_COLOR,
+            )
+
+            CompositionLocalProvider(
+                LocalBottomSheetTheme provides bottomSheetTheme,
+                content = content,
+            )
+        }
     }
 }
 

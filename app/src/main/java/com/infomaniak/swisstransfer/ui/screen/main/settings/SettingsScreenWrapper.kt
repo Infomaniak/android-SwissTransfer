@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
@@ -36,6 +37,7 @@ import com.infomaniak.core.common.extensions.goToAppStore
 import com.infomaniak.core.common.extensions.openUrl
 import com.infomaniak.core.network.SUPPORT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -78,6 +80,7 @@ fun SettingsScreenWrapper(
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val currentUser by settingsViewModel.currentUser.collectAsStateWithLifecycle(null)
+    val users by settingsViewModel.users.collectAsStateWithLifecycle(emptyList())
 
     appSettings?.let { safeAppSettings ->
         val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
@@ -91,6 +94,7 @@ fun SettingsScreenWrapper(
         SettingsScreenWrapper(
             theme = theme,
             currentUser = { currentUser },
+            users = { users },
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
@@ -103,6 +107,7 @@ fun SettingsScreenWrapper(
 fun SettingsScreenWrapper(
     theme: GetSetCallbacks<Theme>,
     currentUser: () -> User?,
+    users: () -> List<User>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
@@ -113,6 +118,7 @@ fun SettingsScreenWrapper(
             ListPane(
                 navigator = this,
                 currentUser,
+                users,
                 onDisconnectCurrentUser,
             )
         },
@@ -125,6 +131,7 @@ fun SettingsScreenWrapper(
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
     currentUser: () -> User?,
+    users: () -> List<User>,
     onDisconnectCurrentUser: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -136,6 +143,7 @@ private fun ListPane(
 
     MyAccountScreen(
         currentUser = currentUser,
+        users = users,
         onItemClick = { item ->
             when (item) {
                 MyAccountSetting.Login -> {
@@ -144,7 +152,7 @@ private fun ListPane(
                     }
                     context.safeStartActivity(intent)
                 }
-                MyAccountSetting.SwitchAccount -> TODO()
+                // MyAccountSetting.SwitchAccount -> showAccountSwitchBottomSheet = true
                 MyAccountSetting.Support -> context.openUrl(SUPPORT_URL)
                 MyAccountSetting.Logout -> onDisconnectCurrentUser()
                 MyAccountSetting.Eula -> context.openUrl(EULA_URL)
@@ -252,16 +260,17 @@ private fun NoSelectionEmptyState() {
 
 @PreviewAllWindows
 @Composable
-private fun SettingsScreenWrapperPreview() {
+private fun SettingsScreenWrapperPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingsScreenWrapper(
                 theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
                 currentUser = { null },
+                users = { users },
                 validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
                 downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
-                onDisconnectCurrentUser = {}
+                onDisconnectCurrentUser = {},
             )
         }
     }
