@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationRail
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -39,7 +38,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
-import com.infomaniak.swisstransfer.ui.utils.AvatarUtils.fromUser
 import com.infomaniak.core.common.R as RCore
 
 /**
@@ -70,7 +68,7 @@ enum class NavigationItem(
                 if (user == null) {
                     Icon(AppIcons.Person, contentDescription)
                 } else {
-                    Avatar(AvatarType.fromUser(user, LocalContext.current), modifier = Modifier.size(24.dp))
+                    Avatar(AvatarType.fromUser(user), modifier = Modifier.size(24.dp))
                 }
             }
         },

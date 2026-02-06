@@ -47,6 +47,17 @@ private const val black_translucent = 0x80000000
 private const val warning = 0xFFFF8500
 private const val error = 0xFFF44336
 
+// Avatars
+val yellow_light = Color(0xFFFFC10A)
+val coral_light = Color(0xFFFF540B)
+val grass_light = Color(0xFF3EBF4D)
+val fougere_light = Color(0xFF009688)
+val cobalt_light = Color(0xFF006AB2)
+val jean_light = Color(0xFF2196F3)
+val tropical_light = Color(0xFF00BCD4)
+val mauve_light = Color(0xFFBA68C8)
+val prince_light = Color(0xFF673AB7)
+
 /**
  * Try to not do that.
  * This is an exceptional use case because this color is used outside of Compose
@@ -109,4 +120,17 @@ val CustomLightColorScheme = CustomColorScheme(
     swipeDefault = Color(shark),
     swipeDelete = Color(error),
     swipeIcon = Color(white),
+    avatarInitialsColor = Color(white),
+)
+
+val AvatarColorsLight = AvatarColors(
+    yellow = yellow_light,
+    coral = coral_light,
+    grass = grass_light,
+    fougere = fougere_light,
+    cobalt = cobalt_light,
+    jean = jean_light,
+    tropical = tropical_light,
+    mauve = mauve_light,
+    prince = prince_light,
 )
