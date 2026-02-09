@@ -98,7 +98,9 @@ fun MyAccountScreenWrapper(
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
-            onDisconnectCurrentUser = { myAccountViewModel.disconnectCurrentUser() })
+            onDisconnectCurrentUser = myAccountViewModel::disconnectCurrentUser,
+            onSwitchUser = myAccountViewModel::switchUser,
+        )
     }
 }
 
@@ -111,9 +113,10 @@ fun MyAccountScreenWrapper(
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
     onDisconnectCurrentUser: () -> Unit,
+    onSwitchUser: (userId: Int) -> Unit,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser) },
+        listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
         detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
@@ -124,6 +127,7 @@ private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
     users: () -> List<User>,
     onDisconnectCurrentUser: () -> Unit,
+    onSwitchUser: (userId: Int) -> Unit,
 ) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
@@ -134,33 +138,33 @@ private fun ListPane(
 
     MyAccountScreen(
         users = users,
-        onItemClick = { item ->
-            when (item) {
-                MyAccountSetting.Login -> {
+        onAction = { action ->
+            when (action) {
+                MyAccountSettingAction.Login -> {
                     val intent = Intent(context, OnboardingActivity::class.java).apply {
                         putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
                     }
                     context.safeStartActivity(intent)
                 }
-                // MyAccountSetting.SwitchAccount -> showAccountSwitchBottomSheet = true
-                MyAccountSetting.Support -> context.openUrl(SUPPORT_URL)
-                MyAccountSetting.Logout -> onDisconnectCurrentUser()
-                MyAccountSetting.Eula -> context.openUrl(EULA_URL)
-                MyAccountSetting.DiscoverInfomaniak -> context.openUrl(aboutURL)
-                MyAccountSetting.ShareIdeas -> context.openUrl(userReportURL)
-                MyAccountSetting.GiveFeedback -> if (BuildConfig.DEBUG) {
+                MyAccountSettingAction.Support -> context.openUrl(SUPPORT_URL)
+                MyAccountSettingAction.Logout -> onDisconnectCurrentUser()
+                MyAccountSettingAction.Eula -> context.openUrl(EULA_URL)
+                MyAccountSettingAction.DiscoverInfomaniak -> context.openUrl(aboutURL)
+                MyAccountSettingAction.ShareIdeas -> context.openUrl(userReportURL)
+                MyAccountSettingAction.GiveFeedback -> if (BuildConfig.DEBUG) {
                     // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
                     context.goToAppStore("com.infomaniak.swisstransfer")
                 } else {
                     context.goToAppStore()
                 }
-                is MyAccountSetting.Navigation -> {
-                    // Navigate to the detail pane with the passed item
-                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item.destination) }
+                is MyAccountSettingAction.SwitchAccount -> onSwitchUser(action.userId)
+                is MyAccountSettingAction.Navigation -> {
+                    // Navigate to the detail pane with the passed action
+                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, action.destination) }
                 }
             }
         },
-        getSelectedSetting = { MyAccountSetting.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
+        getSelectedSetting = { MyAccountSettingAction.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
     )
 }
 
@@ -260,7 +264,8 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
                     validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
                     downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                     emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
-                    onDisconnectCurrentUser = {}
+                    onDisconnectCurrentUser = {},
+                    onSwitchUser = {},
                 )
             }
         }

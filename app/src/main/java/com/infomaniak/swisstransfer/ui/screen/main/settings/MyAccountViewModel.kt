@@ -63,4 +63,10 @@ class MyAccountViewModel @Inject constructor(
             accountUtils.currentUserIdFlow.first()?.let { accountUtils.removeUser(it) }
         }
     }
+
+    fun switchUser(userId: Int) {
+        viewModelScope.launch {
+            accountUtils.switchUser(userId)
+        }
+    }
 }

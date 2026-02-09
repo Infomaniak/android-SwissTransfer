@@ -37,12 +37,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +58,7 @@ import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.ui.compose.accountbottomsheet.AccountBottomSheet
 import com.infomaniak.core.ui.compose.accountbottomsheet.AccountBottomSheetDefaults
+import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
@@ -66,6 +69,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackSwitchUserBottomSheet
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -75,14 +79,15 @@ import com.infomaniak.swisstransfer.ui.images.icons.HeadphoneMicrophone
 import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.images.icons.PersonCircularArrowsCounterClockwise
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.DiscoverInfomaniak
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Eula
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.GiveFeedback
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Login
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Logout
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Navigation
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.ShareIdeas
-import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Support
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.DiscoverInfomaniak
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.Eula
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.GiveFeedback
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.Login
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.Logout
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.Navigation
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.ShareIdeas
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.Support
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSettingAction.SwitchAccount
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
@@ -100,11 +105,12 @@ private val AVATAR_SHAPE = CircleShape
 @Composable
 fun MyAccountScreen(
     users: () -> List<User>,
-    onItemClick: (MyAccountSetting) -> Unit,
-    getSelectedSetting: () -> MyAccountSetting?,
+    onAction: (MyAccountSettingAction) -> Unit,
+    getSelectedSetting: () -> MyAccountSettingAction?,
 ) {
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    val scope = rememberCoroutineScope()
 
     var showAccountSwitchBottomSheet by remember { mutableStateOf(false) }
 
@@ -121,27 +127,41 @@ fun MyAccountScreen(
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Profile(modifier = Modifier.padding(vertical = Margin.Large))
-            SettingsItems(selectedSetting, onItemClick, showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true })
+            SettingsItems(selectedSetting, onAction, showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true })
         }
 
         val selectedUserId = LocalUser.current?.id
         if (showAccountSwitchBottomSheet && selectedUserId != null) {
+            val sheetState = rememberModalBottomSheetState()
+
             AccountBottomSheet(
                 onDismissRequest = { showAccountSwitchBottomSheet = false },
                 accounts = users(),
                 selectedUserId = selectedUserId,
-                onAccountClicked = {},
-                onAddAccount = {},
-                onLogOut = {},
+                onAccountClicked = {
+                    trackSwitchUserBottomSheet(MatomoName.Switch)
+                    onAction(SwitchAccount(it.id))
+                    sheetState.dismissGracefully(scope, onDismissRequest = { showAccountSwitchBottomSheet = false })
+                },
+                onAddAccount = {
+                    trackSwitchUserBottomSheet(MatomoName.AddAccount)
+                    onAction(Login)
+                    sheetState.dismissGracefully(scope, onDismissRequest = { showAccountSwitchBottomSheet = false })
+                },
+                onLogOut = {
+                    trackSwitchUserBottomSheet(MatomoName.Logout)
+                    onAction(Logout)
+                    sheetState.dismissGracefully(scope, onDismissRequest = { showAccountSwitchBottomSheet = false })
+                },
                 style = AccountBottomSheetDefaults.style(
                     nameColor = SwissTransferTheme.colors.primaryTextColor,
                     emailColor = SwissTransferTheme.colors.secondaryTextColor,
                     actionButtonTextColor = SwissTransferTheme.colors.primaryTextColor,
-                )
+                ),
+                sheetState = sheetState,
             )
         }
     }
-
 }
 
 @Composable
@@ -200,13 +220,13 @@ private fun TitleAndDescription(title: String, description: String, modifier: Mo
 
 @Composable
 private fun SettingsItems(
-    selectedSetting: MyAccountSetting?,
-    onItemClick: (MyAccountSetting) -> Unit,
+    selectedSetting: MyAccountSettingAction?,
+    onAction: (MyAccountSettingAction) -> Unit,
     showAccountSwitchBottomSheet: () -> Unit,
 ) {
-    fun onItemClickAndMatomo(item: MyAccountSetting) {
-        item.matomoValue?.let(::trackMyAccount)
-        onItemClick(item)
+    fun onActionAndMatomo(action: MyAccountSettingAction) {
+        action.matomoValue?.let(::trackMyAccount)
+        onAction(action)
     }
 
     Column {
@@ -216,7 +236,7 @@ private fun SettingsItems(
                 isSelected = { selectedSetting == Login },
                 icon = AppIcons.Person,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { onItemClickAndMatomo(Login) },
+                onClick = { onActionAndMatomo(Login) },
             )
         } else {
             SettingItem(
@@ -224,7 +244,10 @@ private fun SettingsItems(
                 isSelected = { false },
                 icon = AppIcons.PersonCircularArrowsCounterClockwise,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { showAccountSwitchBottomSheet() },
+                onClick = {
+                    trackMyAccount(SwitchAccount.matomoValue)
+                    showAccountSwitchBottomSheet()
+                },
             )
         }
 
@@ -233,7 +256,7 @@ private fun SettingsItems(
             isSelected = { selectedSetting == Navigation.Settings },
             icon = AppIcons.Cog,
             endIcon = EndIconType.CHEVRON,
-            onClick = { onItemClickAndMatomo(Navigation.Settings) },
+            onClick = { onActionAndMatomo(Navigation.Settings) },
         )
 
         SettingItem(
@@ -241,7 +264,7 @@ private fun SettingsItems(
             isSelected = { selectedSetting == Support },
             icon = AppIcons.HeadphoneMicrophone,
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClickAndMatomo(Support) },
+            onClick = { onActionAndMatomo(Support) },
         )
 
         AnimatedVisibility(LocalUser.current != null) {
@@ -249,7 +272,7 @@ private fun SettingsItems(
                 titleRes = R.string.settingsLogOut,
                 isSelected = { selectedSetting == Logout },
                 icon = AppIcons.DoorRectangleArrowRight,
-                onClick = { onItemClickAndMatomo(Logout) },
+                onClick = { onActionAndMatomo(Logout) },
             )
         }
         SettingDivider()
@@ -259,25 +282,25 @@ private fun SettingsItems(
             titleRes = R.string.settingsOptionTermsAndConditions,
             isSelected = { selectedSetting == Eula },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClickAndMatomo(Eula) },
+            onClick = { onActionAndMatomo(Eula) },
         )
         SettingItem(
             titleRes = R.string.settingsOptionDiscoverInfomaniak,
             isSelected = { selectedSetting == DiscoverInfomaniak },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClickAndMatomo(DiscoverInfomaniak) },
+            onClick = { onActionAndMatomo(DiscoverInfomaniak) },
         )
         SettingItem(
             titleRes = R.string.settingsOptionShareIdeas,
             isSelected = { selectedSetting == ShareIdeas },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClickAndMatomo(ShareIdeas) },
+            onClick = { onActionAndMatomo(ShareIdeas) },
         )
         SettingItem(
             titleRes = R.string.settingsOptionGiveFeedback,
             isSelected = { selectedSetting == GiveFeedback },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClickAndMatomo(GiveFeedback) },
+            onClick = { onActionAndMatomo(GiveFeedback) },
         )
         SettingItem(
             titleRes = R.string.version,
@@ -288,18 +311,19 @@ private fun SettingsItems(
     }
 }
 
-sealed class MyAccountSetting(val matomoValue: MatomoName?) {
-    data object Login : MyAccountSetting(MatomoName.Login)
-    // data object SwitchAccount : MyAccountSetting(MatomoName.SwitchUser)
-    data object Support : MyAccountSetting(MatomoName.HelpAndSupport)
-    data object Logout : MyAccountSetting(MatomoName.Logout)
+sealed class MyAccountSettingAction(val matomoValue: MatomoName?) {
+    data object Login : MyAccountSettingAction(MatomoName.Login)
+    data object Support : MyAccountSettingAction(MatomoName.HelpAndSupport)
+    data object Logout : MyAccountSettingAction(MatomoName.Logout)
 
-    data object Eula : MyAccountSetting(MatomoName.TermsAndConditions)
-    data object DiscoverInfomaniak : MyAccountSetting(MatomoName.DiscoverInfomaniak)
-    data object ShareIdeas : MyAccountSetting(MatomoName.ShareYourIdeas)
-    data object GiveFeedback : MyAccountSetting(MatomoName.GiveYourOpinion)
+    data object Eula : MyAccountSettingAction(MatomoName.TermsAndConditions)
+    data object DiscoverInfomaniak : MyAccountSettingAction(MatomoName.DiscoverInfomaniak)
+    data object ShareIdeas : MyAccountSettingAction(MatomoName.ShareYourIdeas)
+    data object GiveFeedback : MyAccountSettingAction(MatomoName.GiveYourOpinion)
 
-    sealed class Navigation(val destination: SettingsOptionScreens) : MyAccountSetting(null) {
+    data class SwitchAccount(val userId: Int) : MyAccountSettingAction(MatomoName.SwitchUser)
+
+    sealed class Navigation(val destination: SettingsOptionScreens) : MyAccountSettingAction(null) {
         data object Settings : Navigation(SettingsOptionScreens.SETTINGS)
 
         companion object {
@@ -316,7 +340,7 @@ private fun SettingsScreenPreview(@PreviewParameter(UserListPreviewParameterProv
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreen(
                     users = { users },
-                    onItemClick = {},
+                    onAction = {},
                     getSelectedSetting = { null },
                 )
             }
