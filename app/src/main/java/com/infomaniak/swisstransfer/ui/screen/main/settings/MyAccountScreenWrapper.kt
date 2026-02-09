@@ -17,7 +17,10 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.app.Activity
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,9 +39,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.extensions.goToAppStore
 import com.infomaniak.core.common.extensions.openUrl
+import com.infomaniak.core.network.AUTOLOG_URL
 import com.infomaniak.core.network.SUPPORT_URL
+import com.infomaniak.core.network.TERMINATE_ACCOUNT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
+import com.infomaniak.core.webview.ui.WebViewActivity
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -75,6 +81,8 @@ import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
+private val TERMINATE_ACCOUNT_FULL_URL = "$AUTOLOG_URL/?url=$TERMINATE_ACCOUNT_URL"
+private const val URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION = "login.infomaniak.com"
 
 @Composable
 fun MyAccountScreenWrapper(
@@ -117,7 +125,16 @@ fun MyAccountScreenWrapper(
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
         listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
-        detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        detailPane = {
+            DetailPane(
+                navigator = this,
+                theme = theme,
+                validityPeriod = validityPeriod,
+                downloadLimit = downloadLimit,
+                emailLanguage = emailLanguage,
+                onDisconnectCurrentUser = onDisconnectCurrentUser
+            )
+        },
     )
 }
 
@@ -176,6 +193,7 @@ private fun DetailPane(
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
+    onDisconnectCurrentUser: () -> Unit,
 ) {
 
     val destination = navigator.safeCurrentContent()
@@ -183,6 +201,10 @@ private fun DetailPane(
     val scope = rememberCoroutineScope()
     val navigateBack: () -> Unit = {
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
+    }
+
+    val accountDeletionActivityResultLauncher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) onDisconnectCurrentUser()
     }
 
     when (destination) {
@@ -198,6 +220,15 @@ private fun DetailPane(
                 emailLanguage = emailLanguage,
                 onItemClick = { item ->
                     when (item) {
+                        DELETE_MY_ACCOUNT -> {
+                            WebViewActivity.startActivity(
+                                context = context,
+                                url = TERMINATE_ACCOUNT_FULL_URL,
+                                headers = mapOf("Authorization" to "Bearer ${user?.apiToken?.accessToken}"),
+                                urlToQuit = URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION,
+                                activityResultLauncher = accountDeletionActivityResultLauncher,
+                            )
+                        }
                         NOTIFICATIONS -> context.openAppNotificationSettings()
                         else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
                     }
