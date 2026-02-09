@@ -196,7 +196,7 @@ private fun DetailPane(
                     NOTIFICATIONS -> context.openAppNotificationSettings()
                     else -> {
                         // Navigate to the detail pane with the passed item
-                        scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
+                        scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
                     }
                 }
             },

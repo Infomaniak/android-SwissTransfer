@@ -47,26 +47,23 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.theme.Dimens
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openUrl
 import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun SettingsDataManagementScreen(
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
     onItemClick: (SettingsOptionScreens) -> Unit,
 ) {
 
     val context = LocalContext.current
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = RCore.string.trackingManagementTitle,
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
             )
         },
     ) {
