@@ -28,15 +28,22 @@ class AccountPreferences @Inject constructor(@ApplicationContext private val app
 
     override val sharedPreferences = appContext.applicationContext.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)!!
 
-    private var _currentUserId by sharedValue("currentUserId", NO_USER)
-    var currentUserId
-        get() = _currentUserId.takeIf { it != NO_USER }
+    /**
+     * This used to be currentUserId but in the end, the data of the current user is stored inside of
+     * [com.infomaniak.core.auth.PersistedCurrentUserAccountUtils]. The [_currentGuestUserId] will always contain the guest user
+     * id if the onboarding is done, even if another real [User] account is connected and currently selected. No other user id has
+     * ever been stored here.
+     */
+    private var _currentGuestUserId by sharedValue("currentUserId", NO_USER)
+    var isOnboardingDone
+        get() = _currentGuestUserId != NO_USER
         set(value) {
-            _currentUserId = value ?: NO_USER
+            _currentGuestUserId = if (value) GUEST_USER_ID else NO_USER
         }
 
     companion object {
         private const val SHARED_PREFS_NAME = "AccountPreferences"
         private const val NO_USER = -1
+        const val GUEST_USER_ID = 0
     }
 }

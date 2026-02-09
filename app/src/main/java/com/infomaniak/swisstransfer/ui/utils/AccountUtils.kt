@@ -22,8 +22,10 @@ import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.AccountPreferences.Companion.GUEST_USER_ID
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 import io.sentry.protocol.User as SentryUser
@@ -36,9 +38,9 @@ class AccountUtils @Inject constructor(
 ) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
 
     suspend fun init() {
-        accountPreferences.currentUserId?.let {
-            accountManager.loadUser(it)
-        }
+        val realUserId = currentUserIdFlow.first()
+        val userId = realUserId ?: GUEST_USER_ID.takeIf { accountPreferences.isOnboardingDone }
+        if (userId != null) accountManager.loadUser(userId)
 
         Sentry.setUser(SentryUser().apply { id = "-1" })
         currentUserFlow.collect { user ->
@@ -51,7 +53,7 @@ class AccountUtils @Inject constructor(
 
     // TODO: Handle guest user login
     suspend fun loginGuestUser() {
-        accountPreferences.currentUserId = GUEST_USER_ID
+        accountPreferences.isOnboardingDone = true
         accountManager.loadUser(GUEST_USER_ID)
     }
 
@@ -66,9 +68,5 @@ class AccountUtils @Inject constructor(
         accountManager.removeUser(userId)
     }
 
-    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null // TODO: Handle guest user login
-
-    companion object {
-        private const val GUEST_USER_ID = 0
-    }
+    fun isUserConnected(): Boolean = accountPreferences.isOnboardingDone
 }
