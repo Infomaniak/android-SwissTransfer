@@ -61,7 +61,8 @@ android {
         resValue("string", "prod_host", prodHost)
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
-        buildConfigField("String", "CLIENT_ID", "\"TODO\"") // TODO
+        // TODO: Use ST one which is 17EE3471-9843-4FB9-AD95-CB8C41BAD624
+        buildConfigField("String", "CLIENT_ID", "\"E90BC22D-67A8-452C-BE93-28DA33588CA4\"")
 
         missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
     }

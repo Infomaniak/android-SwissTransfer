@@ -74,8 +74,8 @@ object ApplicationModule {
         return InfomaniakLogin(
             context = appContext,
             loginUrl = "${LOGIN_ENDPOINT_URL}/",
-            appUID = "com.infomaniak.mail",
-            clientID = "E90BC22D-67A8-452C-BE93-28DA33588CA4",
+            appUID = "com.infomaniak.mail", // TODO: BuildConfig.APPLICATION_ID
+            clientID = BuildConfig.CLIENT_ID,
             accessType = null,
         )
     }
