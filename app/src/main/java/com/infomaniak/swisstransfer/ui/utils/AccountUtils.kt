@@ -51,21 +51,24 @@ class AccountUtils @Inject constructor(
         }
     }
 
-    // TODO: Handle guest user login
     suspend fun loginGuestUser() {
         accountPreferences.isOnboardingDone = true
         accountManager.loadUser(GUEST_USER_ID)
     }
 
+    /**
+     * @throws SQLiteConstraintException when adding a user with a primary key that already exists
+     */
     override suspend fun addUser(user: User) {
         super.addUser(user)
         accountManager.loadUser(user.id)
     }
 
-    // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
     override suspend fun removeUser(userId: Int) {
         super.removeUser(userId)
         accountManager.removeUser(userId)
+
+        if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
     fun isUserConnected(): Boolean = accountPreferences.isOnboardingDone
