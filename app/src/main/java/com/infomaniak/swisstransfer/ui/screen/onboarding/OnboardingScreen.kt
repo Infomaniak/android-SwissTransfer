@@ -42,6 +42,7 @@ import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel.Account
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
 import com.infomaniak.core.crossapplogin.front.components.CrossLoginBottomContent
 import com.infomaniak.core.crossapplogin.front.components.NoCrossAppLoginAccountsContent
+import com.infomaniak.core.crossapplogin.front.data.CrossLoginDefaults
 import com.infomaniak.core.crossapplogin.front.previews.AccountsCheckingStatePreviewParameter
 import com.infomaniak.core.onboarding.IndicatorStyle
 import com.infomaniak.core.onboarding.OnboardingPage
@@ -111,7 +112,13 @@ fun OnboardingScreen(
                     )
                 } else {
                     NoCrossAppLoginAccountsContent.accountOptional { connectAsGuest() }
-                }
+                },
+                customization = CrossLoginDefaults.customize(
+                    colors = CrossLoginDefaults.colors(
+                        titleColor = SwissTransferTheme.colors.primaryTextColor,
+                        descriptionColor = SwissTransferTheme.colors.secondaryTextColor,
+                    )
+                ),
             )
         },
         indicatorStyle = IndicatorStyle(
