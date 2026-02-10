@@ -21,6 +21,7 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.core.common.AssociatedUserDataCleanable
+import com.infomaniak.core.crossapplogin.back.internal.deviceinfo.DeviceInfoUpdateManager
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
@@ -28,6 +29,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.services.DeviceInfoUpdateWorker
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences.IsSentryAuthorized
@@ -37,6 +39,7 @@ import com.infomaniak.swisstransfer.ui.utils.getPreference
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -78,14 +81,15 @@ class MainApplication : Application(), Configuration.Provider {
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
+    private val applicationScope = CoroutineScope(Dispatchers.Default + CoroutineName("MainApplication"))
+
     override fun onCreate() {
         super.onCreate()
 
         configureInfomaniakCore()
         configureSentry()
 
-        // TODO: Add DeviceInfoUpdateManager once we have setup this part of the logic
-        // userDataCleanableList = listOf<AssociatedUserDataCleanable>(DeviceInfoUpdateManager)
+        userDataCleanableList = listOf<AssociatedUserDataCleanable>(DeviceInfoUpdateManager)
 
         notificationUtils.initNotificationsChannel()
 
@@ -103,6 +107,10 @@ class MainApplication : Application(), Configuration.Provider {
             // so we clean it up if there are remaining files.
             val oldImportDir = filesDir.resolve("imported_files")
             if (oldImportDir.exists()) runCatching { oldImportDir.deleteRecursively() }
+        }
+
+        applicationScope.launch {
+            DeviceInfoUpdateManager.scheduleWorkerOnDeviceInfoUpdate<DeviceInfoUpdateWorker>()
         }
 
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()

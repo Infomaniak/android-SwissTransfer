@@ -136,6 +136,16 @@
             android:name="com.infomaniak.lib.login.WebViewLoginActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/LoginWebViewTheme" />
+
+        <service
+            android:name=".services.CrossAppLoginService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <!-- WARNING: Once this is into a release (even a beta), it shall never be changed. -->
+                <action android:name="com.infomaniak.crossapp.login" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
