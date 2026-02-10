@@ -22,7 +22,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,8 +60,6 @@ import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownCircle
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowUpCircle
 import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
@@ -84,7 +81,11 @@ enum class NavigationItem(
 ) {
     Sent(
         label = { stringResource(R.string.sentTitle) },
-        icon = { _, contentDescription -> Icon(AppIcons.ArrowDownCircle, contentDescription) },
+        icon = { _, contentDescription ->
+            val scope = rememberCoroutineScope()
+            val state = rememberArrowAnimationState()
+            AnimatedArrowUpCircle(state = state, modifier = Modifier.clickable(onClick = { scope.launch { state.play() } }))
+        },
         destination = SentDestination()
     ),
     Received(
@@ -112,34 +113,50 @@ enum class NavigationItem(
 }
 
 /**
- * Draws a downward pointing arrow at the specified center position.
+ * Arrow direction enum defining whether the arrow points up or down.
+ */
+enum class ArrowDirection {
+    DOWN,
+    UP
+}
+
+/**
+ * Draws a downward or upward pointing arrow at the specified center position.
  * Based on ImageVector path (24x24 canvas):
  * - strokeLineWidth = 1.5f, strokeLineCap = Round
  * - moveTo(12.0f, 16.5f); verticalLineToRelative(-9.0f)
  * - moveTo(12.0f + 3.75f, 16.5f - 3.75f); lineTo(12.0f, 16.5f); lineTo(12.0f - 3.75f, 16.5f - 3.75f)
- * Arrow spans from Y=7.5 to Y=16.5 (height = 9.0), head at 4.5 below center, wings at 0.75 above center
+ * Arrow spans from Y=7.5 to Y=16.5 (height = 9.0), head at 4.5 below/above center, wings at 0.75 above/below center
+ *
+ * @param direction The direction the arrow should point (DOWN or UP)
  */
 private fun DrawScope.drawArrow(
     color: Color,
     center: Offset,
-    halfSize: Float
+    halfSize: Float,
+    direction: ArrowDirection = ArrowDirection.DOWN
 ) {
     val strokeWidth = 1.5.dp.toPx()
+
+    // Determine y-multiplier based on direction
+    // For DOWN: positive Y goes down (normal)
+    // For UP: invert Y movement so arrow points up
+    val yMultiplier = if (direction == ArrowDirection.DOWN) 1f else -1f
 
     // Proportions relative to halfSize (since arrow height = 2 * halfSize = 9.0 in original units)
     // In ImageVector: stem top at Y=7.5 (4.5 above center), head at Y=16.5 (4.5 below center)
     // Wings at Y=12.75 (0.75 above center), wing X offset = 3.75
-    val stemTopYOffset = -halfSize * 0.9f  // 4.5/5.0 = 0.9 of halfSize
-    val headYOffset = halfSize * 0.9f  // Head is below center
-    val wingsYOffset = halfSize * 0.15f  // Move wings closer to arrow tip
-    val wingXOffset = halfSize * 0.8f  // 3.75/5.0 = 0.75
+    val stemTopYOffset = -halfSize * 0.9f * yMultiplier  // 4.5/5.0 = 0.9 of halfSize
+    val headYOffset = halfSize * 0.9f * yMultiplier  // Head is below/above center depending on direction
+    val wingsYOffset = halfSize * 0.15f * yMultiplier  // Move wings closer to arrow tip
+    val wingXOffset = halfSize * 0.8f  // 3.75/5.0 = 0.75 (X is same for both directions)
 
     val headX = center.x
     val headY = center.y + headYOffset
     val stemTopY = center.y + stemTopYOffset
     val wingsY = center.y + wingsYOffset
 
-    // Draw arrow stem (vertical line) - from stem top down to head
+    // Draw arrow stem (vertical line) - from stem top to head
     drawLine(
         color = color,
         start = Offset(headX, stemTopY),
@@ -225,34 +242,31 @@ fun rememberArrowAnimationState(): ArrowAnimationState {
 }
 
 /**
- * Animated arrow down circle icon.
+ * Base animated arrow circle icon that supports both up and down directions.
  *
  * Animation behavior:
  * - Circle remains static
- * - One arrow slides downward and exits the circle
- * - A second arrow slides in from above and settles at center
+ * - One arrow slides in the direction of the arrow and exits the circle
+ * - A second arrow slides in from the opposite direction and settles at center
  * - Arrows are masked by the circular boundary
  *
- * Trigger the animation using [ArrowAnimationState.play]:
- * ```kotlin
- * val animationState = rememberArrowAnimationState()
- * Button(onClick = { scope.launch { animationState.play() } }) {
- *     AnimatedArrowDownCircle(state = animationState)
- * }
- * ```
- *
  * @param state The animation state controlling the animation
+ * @param direction The direction the arrow should point
  * @param modifier Modifier for the component
  * @param contentColor Color of the circle and arrows
  */
 @Composable
-fun AnimatedArrowDownCircle(
+private fun AnimatedArrowCircle(
     state: ArrowAnimationState,
+    direction: ArrowDirection,
     modifier: Modifier = Modifier,
     contentColor: Color = LocalContentColor.current
 ) {
     val animationProgress = state.animatable.value
     val activeArrow = state.activeArrow
+
+    // Direction multiplier: 1 for DOWN (positive Y is down), -1 for UP (positive Y is up)
+    val directionMultiplier = if (direction == ArrowDirection.DOWN) 1f else -1f
 
     Box(
         modifier = modifier
@@ -278,22 +292,24 @@ fun AnimatedArrowDownCircle(
         // Travel distance: 150% of icon size for clean exit (24dp * 1.5 = 36dp)
         val travelDistancePx = with(LocalDensity.current) { 36.dp.toPx() }
 
-        // Arrow A offset calculation
+        // Arrow offset calculation - adapts based on direction
+        // For DOWN: Arrow A starts center, goes down; Arrow B starts above, goes to center
+        // For UP: Arrow A starts center, goes up; Arrow B starts below, goes to center
         val arrowAOffsetPx = when (activeArrow) {
-            0 -> animationProgress * travelDistancePx  // Starts center, goes down
-            else -> -travelDistancePx + (animationProgress * travelDistancePx)  // Starts above, goes to center
+            0 -> animationProgress * travelDistancePx * directionMultiplier  // Starts center, goes in direction
+            else -> -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)  // Starts opposite, goes to center
         }
 
-        // Arrow B offset calculation
         val arrowBOffsetPx = when (activeArrow) {
-            0 -> -travelDistancePx + (animationProgress * travelDistancePx)  // Starts above, goes to center
-            else -> animationProgress * travelDistancePx  // Starts center, goes down
+            0 -> -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)  // Starts opposite, goes to center
+            else -> animationProgress * travelDistancePx * directionMultiplier  // Starts center, goes in direction
         }
 
         // Arrow A
         ArrowCanvas(
             offsetY = with(LocalDensity.current) { arrowAOffsetPx.toDp() },
             contentColor = contentColor,
+            direction = direction,
             modifier = Modifier.graphicsLayer { alpha = if (activeArrow == 0 || animationProgress > 0f) 1f else 0f }
         )
 
@@ -301,15 +317,59 @@ fun AnimatedArrowDownCircle(
         ArrowCanvas(
             offsetY = with(LocalDensity.current) { arrowBOffsetPx.toDp() },
             contentColor = contentColor,
+            direction = direction,
             modifier = Modifier.graphicsLayer { alpha = if (activeArrow == 1 || animationProgress > 0f) 1f else 0f }
         )
     }
+}
+
+/**
+ * Animated downward pointing arrow circle icon.
+ *
+ * @param state The animation state controlling the animation
+ * @param modifier Modifier for the component
+ * @param contentColor Color of the circle and arrows
+ */
+@Composable
+fun AnimatedArrowDownCircle(
+    state: ArrowAnimationState,
+    modifier: Modifier = Modifier,
+    contentColor: Color = LocalContentColor.current
+) {
+    AnimatedArrowCircle(
+        state = state,
+        direction = ArrowDirection.DOWN,
+        modifier = modifier,
+        contentColor = contentColor
+    )
+}
+
+/**
+ * Animated upward pointing arrow circle icon.
+ *
+ * @param state The animation state controlling the animation
+ * @param modifier Modifier for the component
+ * @param contentColor Color of the circle and arrows
+ */
+@Composable
+fun AnimatedArrowUpCircle(
+    state: ArrowAnimationState,
+    modifier: Modifier = Modifier,
+    contentColor: Color = LocalContentColor.current
+) {
+    AnimatedArrowCircle(
+        state = state,
+        direction = ArrowDirection.UP,
+        modifier = modifier,
+        contentColor = contentColor
+    )
 }
 
 @Composable
 private fun ArrowCanvas(
     offsetY: Dp,
     contentColor: Color,
+    direction: ArrowDirection,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -319,7 +379,7 @@ private fun ArrowCanvas(
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.size(16.dp)) {
-            drawArrow(contentColor, Offset(size.width / 2, size.height / 2), 5.dp.toPx())
+            drawArrow(contentColor, Offset(size.width / 2, size.height / 2), 5.dp.toPx(), direction)
         }
     }
 }
