@@ -52,7 +52,6 @@ class AccountUtils @Inject constructor(
     }
 
     suspend fun loginGuestUser() {
-        accountPreferences.isOnboardingDone = true
         accountManager.loadUser(GUEST_USER_ID)
     }
 

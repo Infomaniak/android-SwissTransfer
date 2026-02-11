@@ -113,7 +113,7 @@ class OnboardingActivity : ComponentActivity() {
                         connectAsGuest = {
                             scope.launch {
                                 accountUtils.loginGuestUser()
-                                startMainActivity()
+                                completeOnboarding()
                             }
                         },
                         accountsCheckingState = { accountsCheckingState },
@@ -150,11 +150,8 @@ class OnboardingActivity : ComponentActivity() {
     private fun loginUsersIntoTheApp(users: List<User>) {
         // TODO: trackAccountEvent(MatomoName.LoggedIn)
         lifecycleScope.launch {
-            // Make sure the onboarding is considered done even when connecting real users
-            accountPreferences.isOnboardingDone = true
-
             users.forEach { user -> accountUtils.addUser(user) }
-            if (shouldDisplayRequiredLogin) finish() else startMainActivity()
+            if (shouldDisplayRequiredLogin) finish() else completeOnboarding()
         }
     }
 
@@ -205,6 +202,13 @@ class OnboardingActivity : ComponentActivity() {
         areButtonsLoading = false
     }
 
+    private fun Activity.completeOnboarding() {
+        accountPreferences.isOnboardingDone = true
+
+        Intent(this, MainActivity::class.java).also(::startActivity)
+        finish()
+    }
+
     companion object {
         private val TAG = OnboardingActivity::class.java.simpleName
 
@@ -216,9 +220,4 @@ class OnboardingActivity : ComponentActivity() {
         private val CREATE_ACCOUNT_SUCCESS_HOST = "ksuite.$host"
         private val CREATE_ACCOUNT_CANCEL_HOST = "welcome.$host"
     }
-}
-
-private fun Activity.startMainActivity() {
-    Intent(this, MainActivity::class.java).also(::startActivity)
-    finish()
 }
