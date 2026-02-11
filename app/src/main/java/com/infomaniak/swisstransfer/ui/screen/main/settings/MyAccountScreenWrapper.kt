@@ -25,6 +25,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +45,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.OnboardingActivity
 import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
@@ -70,7 +72,6 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
 import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
@@ -80,9 +81,6 @@ fun MyAccountScreenWrapper(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-    val accountState by settingsViewModel.currentUser
-        .map { MyAccountState.Initialized(it) }
-        .collectAsStateWithLifecycle(MyAccountState.Uninitialized)
 
     appSettings?.let { safeAppSettings ->
         val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
@@ -95,7 +93,6 @@ fun MyAccountScreenWrapper(
 
         MyAccountScreenWrapper(
             theme = theme,
-            accountState = { accountState },
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
@@ -107,7 +104,6 @@ fun MyAccountScreenWrapper(
 @Composable
 fun MyAccountScreenWrapper(
     theme: GetSetCallbacks<Theme>,
-    accountState: () -> MyAccountState,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
@@ -115,16 +111,11 @@ fun MyAccountScreenWrapper(
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
         listPane = {
-            ListPane(
-                navigator = this,
-                accountState = accountState,
-                onDisconnectCurrentUser = onDisconnectCurrentUser,
-            )
+            ListPane(navigator = this, onDisconnectCurrentUser)
         },
         detailPane = {
             DetailPane(
                 navigator = this,
-                currentUser = { (accountState() as? MyAccountState.Initialized)?.user },
                 theme = theme,
                 validityPeriod = validityPeriod,
                 downloadLimit = downloadLimit,
@@ -138,7 +129,6 @@ fun MyAccountScreenWrapper(
 @Composable
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-    accountState: () -> MyAccountState,
     onDisconnectCurrentUser: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -149,7 +139,6 @@ private fun ListPane(
     val scope = rememberCoroutineScope()
 
     MyAccountScreen(
-        accountState = accountState,
         onItemClick = { item ->
             when (item) {
                 MyAccountSetting.Login -> {
@@ -184,7 +173,6 @@ private fun ListPane(
 @Composable
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-    currentUser: () -> User?,
     theme: GetSetCallbacks<Theme>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
@@ -201,24 +189,28 @@ private fun DetailPane(
     }
 
     when (destination) {
-        SETTINGS -> SettingsScreen(
-            theme = theme,
-            isAccountDeletable = { currentUser() != null },
-            validityPeriod = validityPeriod,
-            downloadLimit = downloadLimit,
-            emailLanguage = emailLanguage,
-            onItemClick = { item ->
-                when (item) {
-                    NOTIFICATIONS -> context.openAppNotificationSettings()
-                    else -> {
-                        // Navigate to the detail pane with the passed item
-                        scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+        SETTINGS -> {
+            val user = LocalUser.current
+
+            SettingsScreen(
+                theme = theme,
+                isAccountDeletable = { user != null },
+                validityPeriod = validityPeriod,
+                downloadLimit = downloadLimit,
+                emailLanguage = emailLanguage,
+                onItemClick = { item ->
+                    when (item) {
+                        NOTIFICATIONS -> context.openAppNotificationSettings()
+                        else -> {
+                            // Navigate to the detail pane with the passed item
+                            scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                        }
                     }
-                }
-            },
-            navigateBack = navigateBack,
-            getSelectedSetting = { navigator.currentDestination?.contentKey },
-        )
+                },
+                navigateBack = navigateBack,
+                getSelectedSetting = { navigator.currentDestination?.contentKey },
+            )
+        }
         THEME -> SettingsThemeScreen(
             theme = theme.get(),
             navigateBack = navigateBack,
@@ -269,15 +261,16 @@ private fun NoSelectionEmptyState() {
 @Composable
 private fun SettingsScreenWrapperPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            MyAccountScreenWrapper(
-                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
-                accountState = { MyAccountState.Initialized(users.first()) },
-                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
-                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
-                onDisconnectCurrentUser = {}
-            )
+        CompositionLocalProvider(LocalUser provides users.first()) {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                MyAccountScreenWrapper(
+                    theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                    validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
+                    downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
+                    emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
+                    onDisconnectCurrentUser = {}
+                )
+            }
         }
     }
 }

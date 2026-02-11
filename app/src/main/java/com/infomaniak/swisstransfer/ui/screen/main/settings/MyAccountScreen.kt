@@ -38,12 +38,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,6 +58,7 @@ import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewPa
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
@@ -84,7 +85,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingIt
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.AvatarUtils.fromUser
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.core.common.R as RCore
 
@@ -93,7 +93,6 @@ private val AVATAR_SHAPE = CircleShape
 
 @Composable
 fun MyAccountScreen(
-    accountState: () -> MyAccountState,
     onItemClick: (MyAccountSetting) -> Unit,
     getSelectedSetting: () -> MyAccountSetting?,
 ) {
@@ -112,24 +111,19 @@ fun MyAccountScreen(
         }
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            val accountState = accountState()
-
-            if (accountState is MyAccountState.Initialized) {
-                Profile({ accountState.user }, modifier = Modifier.padding(vertical = Margin.Large))
-                SettingsItems({ accountState.user }, selectedSetting, onItemClick)
-            }
+            Profile(modifier = Modifier.padding(vertical = Margin.Large))
+            SettingsItems(selectedSetting, onItemClick)
         }
     }
 }
 
 @Composable
 private fun SettingsItems(
-    currentUser: () -> User?,
     selectedSetting: MyAccountSetting?,
     onItemClick: (MyAccountSetting) -> Unit,
 ) {
     Column(modifier = Modifier) {
-        if (currentUser() == null) {
+        if (LocalUser.current == null) {
             SettingItem(
                 titleRes = R.string.settingsSignIn,
                 isSelected = { selectedSetting == Login },
@@ -163,7 +157,7 @@ private fun SettingsItems(
             onClick = { onItemClick(Support) },
         )
 
-        AnimatedVisibility(currentUser() != null) {
+        AnimatedVisibility(LocalUser.current != null) {
             SettingItem(
                 titleRes = R.string.settingsLogOut,
                 isSelected = { selectedSetting == Logout },
@@ -208,9 +202,9 @@ private fun SettingsItems(
 }
 
 @Composable
-private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
+private fun Profile(modifier: Modifier = Modifier) {
     AnimatedContent(
-        targetState = currentUser(),
+        targetState = LocalUser.current,
         transitionSpec = { fadeIn() togetherWith fadeOut() using SizeTransform(clip = false) }
     ) { user ->
         Column(
@@ -222,7 +216,7 @@ private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
                 NoAccountAvatar()
                 TitleAndDescription(pluralStringResource(RCore.plurals.myAccount, 1), "")
             } else {
-                Avatar(AvatarType.fromUser(user, LocalContext.current), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
+                Avatar(AvatarType.fromUser(user), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
                 TitleAndDescription(user.displayName.toString(), user.email, modifier = Modifier.fillMaxWidth())
             }
         }
@@ -282,12 +276,13 @@ sealed interface MyAccountSetting {
 @Composable
 private fun SettingsScreenPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            MyAccountScreen(
-                onItemClick = {},
-                accountState = { MyAccountState.Initialized(users.first()) },
-                getSelectedSetting = { null },
-            )
+        CompositionLocalProvider(LocalUser provides users.first()) {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                MyAccountScreen(
+                    onItemClick = {},
+                    getSelectedSetting = { null },
+                )
+            }
         }
     }
 }
