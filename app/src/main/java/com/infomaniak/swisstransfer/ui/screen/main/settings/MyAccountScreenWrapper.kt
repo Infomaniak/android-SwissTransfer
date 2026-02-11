@@ -76,7 +76,7 @@ import kotlinx.coroutines.launch
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
 
 @Composable
-fun SettingsScreenWrapper(
+fun MyAccountScreenWrapper(
     settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
@@ -93,7 +93,7 @@ fun SettingsScreenWrapper(
         val emailLanguage =
             GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
 
-        SettingsScreenWrapper(
+        MyAccountScreenWrapper(
             theme = theme,
             accountState = { accountState },
             validityPeriod = validityPeriod,
@@ -105,7 +105,7 @@ fun SettingsScreenWrapper(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SettingsScreenWrapper(
+fun MyAccountScreenWrapper(
     theme: GetSetCallbacks<Theme>,
     accountState: () -> MyAccountState,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
@@ -270,7 +270,7 @@ private fun NoSelectionEmptyState() {
 private fun SettingsScreenWrapperPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreenWrapper(
+            MyAccountScreenWrapper(
                 theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
                 accountState = { MyAccountState.Initialized(users.first()) },
                 validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),

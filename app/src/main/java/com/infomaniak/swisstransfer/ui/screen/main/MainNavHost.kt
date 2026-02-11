@@ -30,7 +30,7 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination.Companion.sentDestination
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
 @Composable
@@ -60,7 +60,6 @@ fun MainNavHost(
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid, hideBottomBar = hideBottomBar)
         }
-        composable<MyAccountDestination> { SettingsScreenWrapper() }
-        // composable<MyAccountDestination> { MyAccountScreenWrapper() }
+        composable<MyAccountDestination> { MyAccountScreenWrapper() }
     }
 }
