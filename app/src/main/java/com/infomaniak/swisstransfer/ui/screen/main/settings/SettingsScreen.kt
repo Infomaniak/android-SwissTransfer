@@ -69,11 +69,12 @@ import com.infomaniak.core.common.R as RCore
 @Composable
 fun SettingsScreen(
     theme: GetSetCallbacks<Theme>,
+    isAccountDeletable: () -> Boolean,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
     onItemClick: (SettingsOptionScreens) -> Unit,
-    navigateBack: (() -> Unit),
+    navigateBack: () -> Unit,
     getSelectedSetting: () -> SettingsOptionScreens?,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
@@ -151,13 +152,15 @@ fun SettingsScreen(
                 endIcon = CHEVRON,
                 onClick = { onItemClick(DATA_MANAGEMENT) },
             )
-            SettingItem(
-                titleRes = R.string.settingsDeleteMyAccount,
-                isSelected = { false },
-                icon = AppIcons.CircleCross,
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(DELETE_MY_ACCOUNT) },
-            )
+            if (isAccountDeletable()) {
+                SettingItem(
+                    titleRes = R.string.settingsDeleteMyAccount,
+                    isSelected = { false },
+                    icon = AppIcons.CircleCross,
+                    endIcon = OPEN_OUTSIDE,
+                    onClick = { onItemClick(DELETE_MY_ACCOUNT) },
+                )
+            }
         }
     }
 }
@@ -211,12 +214,14 @@ private fun SettingsScreenPreview() {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingsScreen(
                 theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                isAccountDeletable = { true },
                 validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
                 downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                 emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                 onItemClick = {},
                 navigateBack = {},
-            ) { null }
+                getSelectedSetting = { null },
+            )
         }
     }
 }

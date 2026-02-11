@@ -112,11 +112,20 @@ fun SettingsScreenWrapper(
         listPane = {
             ListPane(
                 navigator = this,
-                currentUser,
-                onDisconnectCurrentUser,
+                currentUser = currentUser,
+                onDisconnectCurrentUser = onDisconnectCurrentUser,
             )
         },
-        detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        detailPane = {
+            DetailPane(
+                navigator = this,
+                currentUser = currentUser,
+                theme = theme,
+                validityPeriod = validityPeriod,
+                downloadLimit = downloadLimit,
+                emailLanguage = emailLanguage,
+            )
+        },
     )
 }
 
@@ -170,6 +179,7 @@ private fun ListPane(
 @Composable
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    currentUser: () -> User?,
     theme: GetSetCallbacks<Theme>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
@@ -179,7 +189,6 @@ private fun DetailPane(
     val destination = navigator.safeCurrentContent()
 
     val context = LocalContext.current
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     val scope = rememberCoroutineScope()
     val navigateBack: () -> Unit = {
@@ -189,6 +198,7 @@ private fun DetailPane(
     when (destination) {
         SETTINGS -> SettingsScreen(
             theme = theme,
+            isAccountDeletable = { currentUser() != null },
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
