@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -39,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,12 +47,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
@@ -91,7 +93,7 @@ private val AVATAR_SHAPE = CircleShape
 
 @Composable
 fun MyAccountScreen(
-    currentUser: () -> User?,
+    accountState: () -> MyAccountState,
     onItemClick: (MyAccountSetting) -> Unit,
     getSelectedSetting: () -> MyAccountSetting?,
 ) {
@@ -109,89 +111,99 @@ fun MyAccountScreen(
             }
         }
     ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .selectableGroup(),
-        ) {
-            Profile(currentUser, modifier = Modifier.padding(vertical = Margin.Large))
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            val accountState = accountState()
 
-            if (currentUser() == null) {
-                SettingItem(
-                    titleRes = R.string.settingsSignIn,
-                    isSelected = { selectedSetting == Login },
-                    icon = AppIcons.Person,
-                    endIcon = EndIconType.CHEVRON,
-                    onClick = { onItemClick(Login) },
-                )
-            } else {
-                SettingItem(
-                    titleRes = R.string.settingsSwitchAccount,
-                    isSelected = { selectedSetting == SwitchAccount },
-                    icon = AppIcons.PersonCircularArrowsCounterClockwise,
-                    endIcon = EndIconType.CHEVRON,
-                    onClick = { onItemClick(SwitchAccount) },
-                )
+            if (accountState is MyAccountState.Initialized) {
+                Profile({ accountState.user }, modifier = Modifier.padding(vertical = Margin.Large))
+                SettingsItems({ accountState.user }, selectedSetting, onItemClick)
             }
+        }
+    }
+}
 
+@Composable
+private fun SettingsItems(
+    currentUser: () -> User?,
+    selectedSetting: MyAccountSetting?,
+    onItemClick: (MyAccountSetting) -> Unit,
+) {
+    Column(modifier = Modifier) {
+        if (currentUser() == null) {
             SettingItem(
-                titleRes = R.string.settingsTitle,
-                isSelected = { selectedSetting == Navigation.Settings },
-                icon = AppIcons.Cog,
+                titleRes = R.string.settingsSignIn,
+                isSelected = { selectedSetting == Login },
+                icon = AppIcons.Person,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { onItemClick(Navigation.Settings) },
+                onClick = { onItemClick(Login) },
             )
-
+        } else {
             SettingItem(
-                titleRes = R.string.settingsHelpAndSupport,
-                isSelected = { selectedSetting == Support },
-                icon = AppIcons.HeadphoneMicrophone,
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(Support) },
-            )
-
-            AnimatedVisibility(currentUser() != null) {
-                SettingItem(
-                    titleRes = R.string.settingsLogOut,
-                    isSelected = { selectedSetting == Logout },
-                    icon = AppIcons.DoorRectangleArrowRight,
-                    onClick = { onItemClick(Logout) },
-                )
-            }
-            SettingDivider()
-
-            SettingTitle(R.string.settingsCategoryAbout)
-            SettingItem(
-                titleRes = R.string.settingsOptionTermsAndConditions,
-                isSelected = { selectedSetting == Eula },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(Eula) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionDiscoverInfomaniak,
-                isSelected = { selectedSetting == DiscoverInfomaniak },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(DiscoverInfomaniak) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionShareIdeas,
-                isSelected = { selectedSetting == ShareIdeas },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(ShareIdeas) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionGiveFeedback,
-                isSelected = { selectedSetting == GiveFeedback },
-                endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(GiveFeedback) },
-            )
-            SettingItem(
-                titleRes = R.string.version,
-                isSelected = { false },
-                description = BuildConfig.VERSION_NAME,
-                onClick = null,
+                titleRes = R.string.settingsSwitchAccount,
+                isSelected = { selectedSetting == SwitchAccount },
+                icon = AppIcons.PersonCircularArrowsCounterClockwise,
+                endIcon = EndIconType.CHEVRON,
+                onClick = { onItemClick(SwitchAccount) },
             )
         }
+
+        SettingItem(
+            titleRes = R.string.settingsTitle,
+            isSelected = { selectedSetting == Navigation.Settings },
+            icon = AppIcons.Cog,
+            endIcon = EndIconType.CHEVRON,
+            onClick = { onItemClick(Navigation.Settings) },
+        )
+
+        SettingItem(
+            titleRes = R.string.settingsHelpAndSupport,
+            isSelected = { selectedSetting == Support },
+            icon = AppIcons.HeadphoneMicrophone,
+            endIcon = OPEN_OUTSIDE,
+            onClick = { onItemClick(Support) },
+        )
+
+        AnimatedVisibility(currentUser() != null) {
+            SettingItem(
+                titleRes = R.string.settingsLogOut,
+                isSelected = { selectedSetting == Logout },
+                icon = AppIcons.DoorRectangleArrowRight,
+                onClick = { onItemClick(Logout) },
+            )
+        }
+        SettingDivider()
+
+        SettingTitle(R.string.settingsCategoryAbout)
+        SettingItem(
+            titleRes = R.string.settingsOptionTermsAndConditions,
+            isSelected = { selectedSetting == Eula },
+            endIcon = OPEN_OUTSIDE,
+            onClick = { onItemClick(Eula) },
+        )
+        SettingItem(
+            titleRes = R.string.settingsOptionDiscoverInfomaniak,
+            isSelected = { selectedSetting == DiscoverInfomaniak },
+            endIcon = OPEN_OUTSIDE,
+            onClick = { onItemClick(DiscoverInfomaniak) },
+        )
+        SettingItem(
+            titleRes = R.string.settingsOptionShareIdeas,
+            isSelected = { selectedSetting == ShareIdeas },
+            endIcon = OPEN_OUTSIDE,
+            onClick = { onItemClick(ShareIdeas) },
+        )
+        SettingItem(
+            titleRes = R.string.settingsOptionGiveFeedback,
+            isSelected = { selectedSetting == GiveFeedback },
+            endIcon = OPEN_OUTSIDE,
+            onClick = { onItemClick(GiveFeedback) },
+        )
+        SettingItem(
+            titleRes = R.string.version,
+            isSelected = { false },
+            description = BuildConfig.VERSION_NAME,
+            onClick = null,
+        )
     }
 }
 
@@ -249,6 +261,7 @@ private fun TitleAndDescription(title: String, description: String, modifier: Mo
     }
 }
 
+@Immutable
 sealed interface MyAccountSetting {
     data object Login : MyAccountSetting
     data object SwitchAccount : MyAccountSetting
@@ -267,13 +280,14 @@ sealed interface MyAccountSetting {
 
 @PreviewAllWindows
 @Composable
-private fun SettingsScreenPreview() {
+private fun SettingsScreenPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             MyAccountScreen(
                 onItemClick = {},
-                currentUser = { null },
-            ) { null }
+                accountState = { MyAccountState.Initialized(users.first()) },
+                getSelectedSetting = { null },
+            )
         }
     }
 }
