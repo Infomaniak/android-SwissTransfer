@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.avatar.components.Avatar
@@ -206,10 +207,10 @@ private fun Profile(currentUser: () -> User?, modifier: Modifier = Modifier) {
         ) {
             if (user == null) {
                 NoAccountAvatar()
-                Text(pluralStringResource(RCore.plurals.myAccount, 1), style = SwissTransferTheme.typography.h1)
+                TitleAndDescription(pluralStringResource(RCore.plurals.myAccount, 1), "")
             } else {
                 Avatar(AvatarType.fromUser(user, LocalContext.current), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
-                UsernameAndEmail(user, modifier = Modifier.fillMaxWidth())
+                TitleAndDescription(user.displayName.toString(), user.email, modifier = Modifier.fillMaxWidth())
             }
         }
     }
@@ -234,13 +235,15 @@ private fun NoAccountAvatar() {
 }
 
 @Composable
-private fun UsernameAndEmail(user: User, modifier: Modifier = Modifier) {
+private fun TitleAndDescription(title: String, description: String, modifier: Modifier = Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(user.displayName.toString(), style = SwissTransferTheme.typography.h1)
+        Text(title, style = SwissTransferTheme.typography.h1)
         Text(
-            text = user.email,
+            text = description,
             style = SwissTransferTheme.typography.bodySmallRegular,
             color = SwissTransferTheme.colors.tertiaryTextColor,
+            maxLines = 1,
+            overflow = TextOverflow.MiddleEllipsis,
         )
     }
 }
