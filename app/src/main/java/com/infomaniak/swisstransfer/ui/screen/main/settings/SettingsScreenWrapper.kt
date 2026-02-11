@@ -247,8 +247,8 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        DELETE_MY_ACCOUNT -> TODO()
         NOTIFICATIONS,
+        DELETE_MY_ACCOUNT,
         null -> NoSelectionEmptyState()
     }
 }
