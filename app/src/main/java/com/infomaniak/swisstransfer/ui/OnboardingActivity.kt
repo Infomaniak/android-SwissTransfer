@@ -61,12 +61,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var accountPreferences: AccountPreferences
-
-    @Inject
-    lateinit var infomaniakLogin: InfomaniakLogin
-
     private val crossAppLoginViewModel: CrossAppLoginViewModel by viewModels()
 
     private var areButtonsLoading by mutableStateOf(false)
@@ -74,7 +68,13 @@ class OnboardingActivity : ComponentActivity() {
     private val shouldDisplayRequiredLogin by lazy { intent.getBooleanExtra(EXTRA_REQUIRED_LOGIN_KEY, false) }
 
     @Inject
+    lateinit var accountPreferences: AccountPreferences
+
+    @Inject
     lateinit var accountUtils: AccountUtils
+
+    @Inject
+    lateinit var infomaniakLogin: InfomaniakLogin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
