@@ -64,6 +64,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Cog
 import com.infomaniak.swisstransfer.ui.images.icons.DoorRectangleArrowRight
 import com.infomaniak.swisstransfer.ui.images.icons.HeadphoneMicrophone
 import com.infomaniak.swisstransfer.ui.images.icons.Person
+import com.infomaniak.swisstransfer.ui.images.icons.PersonCircularArrowsCounterClockwise
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.DiscoverInfomaniak
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountSetting.Eula
@@ -127,7 +128,7 @@ fun MyAccountScreen(
                 SettingItem(
                     titleRes = R.string.settingsSwitchAccount,
                     isSelected = { selectedSetting == SwitchAccount },
-                    icon = AppIcons.Person,
+                    icon = AppIcons.PersonCircularArrowsCounterClockwise,
                     endIcon = EndIconType.CHEVRON,
                     onClick = { onItemClick(SwitchAccount) },
                 )
