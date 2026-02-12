@@ -110,18 +110,8 @@ fun MyAccountScreenWrapper(
     onDisconnectCurrentUser: () -> Unit,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = {
-            ListPane(navigator = this, onDisconnectCurrentUser)
-        },
-        detailPane = {
-            DetailPane(
-                navigator = this,
-                theme = theme,
-                validityPeriod = validityPeriod,
-                downloadLimit = downloadLimit,
-                emailLanguage = emailLanguage,
-            )
-        },
+        listPane = { ListPane(navigator = this, onDisconnectCurrentUser) },
+        detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
 
