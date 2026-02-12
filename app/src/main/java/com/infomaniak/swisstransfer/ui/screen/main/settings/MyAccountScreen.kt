@@ -98,7 +98,7 @@ fun MyAccountScreen(
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Settings) }
+    LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.MyAccount) }
 
     SwissTransferScaffold(
         topBar = {
