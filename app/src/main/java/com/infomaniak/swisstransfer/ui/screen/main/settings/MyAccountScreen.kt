@@ -54,6 +54,7 @@ import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
@@ -255,19 +256,23 @@ private fun SettingsItems(
 }
 
 @Immutable
-sealed interface MyAccountSetting {
-    data object Login : MyAccountSetting
-    data object SwitchAccount : MyAccountSetting
-    data object Support : MyAccountSetting
-    data object Logout : MyAccountSetting
+sealed class MyAccountSetting(val matomoValue: MatomoName?) {
+    data object Login : MyAccountSetting(MatomoName.Login)
+    data object SwitchAccount : MyAccountSetting(MatomoName.SwitchUser)
+    data object Support : MyAccountSetting(MatomoName.HelpAndSupport)
+    data object Logout : MyAccountSetting(MatomoName.Logout)
 
-    data object Eula : MyAccountSetting
-    data object DiscoverInfomaniak : MyAccountSetting
-    data object ShareIdeas : MyAccountSetting
-    data object GiveFeedback : MyAccountSetting
+    data object Eula : MyAccountSetting(MatomoName.TermsAndConditions)
+    data object DiscoverInfomaniak : MyAccountSetting(MatomoName.DiscoverInfomaniak)
+    data object ShareIdeas : MyAccountSetting(MatomoName.ShareYourIdeas)
+    data object GiveFeedback : MyAccountSetting(MatomoName.GiveYourOpinion)
 
-    enum class Navigation(val destination: SettingsOptionScreens) : MyAccountSetting {
-        Settings(SettingsOptionScreens.SETTINGS)
+    sealed class Navigation(val destination: SettingsOptionScreens) : MyAccountSetting(null) {
+        data object Settings : Navigation(SettingsOptionScreens.SETTINGS)
+
+        companion object {
+            val entries = arrayOf(Settings)
+        }
     }
 }
 
