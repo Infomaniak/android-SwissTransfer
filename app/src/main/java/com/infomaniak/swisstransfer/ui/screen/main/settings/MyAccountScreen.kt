@@ -19,7 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -121,7 +120,7 @@ fun MyAccountScreen(
 private fun Profile(modifier: Modifier = Modifier) {
     AnimatedContent(
         targetState = LocalUser.current,
-        transitionSpec = { fadeIn() togetherWith fadeOut() using SizeTransform(clip = false) }
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
     ) { user ->
         Column(
             modifier = modifier.fillMaxWidth(),
