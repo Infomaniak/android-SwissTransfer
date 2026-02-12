@@ -191,10 +191,7 @@ private fun DetailPane(
                 onItemClick = { item ->
                     when (item) {
                         NOTIFICATIONS -> context.openAppNotificationSettings()
-                        else -> {
-                            // Navigate to the detail pane with the passed item
-                            scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
-                        }
+                        else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
                     }
                 },
                 navigateBack = navigateBack,
