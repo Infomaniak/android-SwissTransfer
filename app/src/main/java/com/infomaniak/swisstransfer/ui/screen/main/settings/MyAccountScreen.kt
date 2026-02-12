@@ -118,6 +118,60 @@ fun MyAccountScreen(
 }
 
 @Composable
+private fun Profile(modifier: Modifier = Modifier) {
+    AnimatedContent(
+        targetState = LocalUser.current,
+        transitionSpec = { fadeIn() togetherWith fadeOut() using SizeTransform(clip = false) }
+    ) { user ->
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Margin.Mini),
+        ) {
+            if (user == null) {
+                NoAccountAvatar()
+                TitleAndDescription(pluralStringResource(RCore.plurals.myAccount, 1), "")
+            } else {
+                Avatar(AvatarType.fromUser(user), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
+                TitleAndDescription(user.displayName.toString(), user.email, modifier = Modifier.fillMaxWidth())
+            }
+        }
+    }
+}
+
+@Composable
+private fun NoAccountAvatar() {
+    Box(
+        modifier = Modifier
+            .size(AVATAR_SIZE)
+            .clip(AVATAR_SHAPE)
+            .background(MaterialTheme.colorScheme.secondaryContainer),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = AppIcons.Person,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.size(40.dp),
+        )
+    }
+}
+
+@Composable
+private fun TitleAndDescription(title: String, description: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(title, style = SwissTransferTheme.typography.h1)
+        Text(
+            text = description,
+            style = SwissTransferTheme.typography.bodySmallRegular,
+            color = SwissTransferTheme.colors.tertiaryTextColor,
+            maxLines = 1,
+            overflow = TextOverflow.MiddleEllipsis,
+        )
+    }
+}
+
+@Composable
 private fun SettingsItems(
     selectedSetting: MyAccountSetting?,
     onItemClick: (MyAccountSetting) -> Unit,
@@ -197,60 +251,6 @@ private fun SettingsItems(
             isSelected = { false },
             description = BuildConfig.VERSION_NAME,
             onClick = null,
-        )
-    }
-}
-
-@Composable
-private fun Profile(modifier: Modifier = Modifier) {
-    AnimatedContent(
-        targetState = LocalUser.current,
-        transitionSpec = { fadeIn() togetherWith fadeOut() using SizeTransform(clip = false) }
-    ) { user ->
-        Column(
-            modifier = modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Margin.Mini),
-        ) {
-            if (user == null) {
-                NoAccountAvatar()
-                TitleAndDescription(pluralStringResource(RCore.plurals.myAccount, 1), "")
-            } else {
-                Avatar(AvatarType.fromUser(user), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
-                TitleAndDescription(user.displayName.toString(), user.email, modifier = Modifier.fillMaxWidth())
-            }
-        }
-    }
-}
-
-@Composable
-private fun NoAccountAvatar() {
-    Box(
-        modifier = Modifier
-            .size(AVATAR_SIZE)
-            .clip(AVATAR_SHAPE)
-            .background(MaterialTheme.colorScheme.secondaryContainer),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            imageVector = AppIcons.Person,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-            modifier = Modifier.size(40.dp),
-        )
-    }
-}
-
-@Composable
-private fun TitleAndDescription(title: String, description: String, modifier: Modifier = Modifier) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(title, style = SwissTransferTheme.typography.h1)
-        Text(
-            text = description,
-            style = SwissTransferTheme.typography.bodySmallRegular,
-            color = SwissTransferTheme.colors.tertiaryTextColor,
-            maxLines = 1,
-            overflow = TextOverflow.MiddleEllipsis,
         )
     }
 }
