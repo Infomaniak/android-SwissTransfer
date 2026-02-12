@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
@@ -113,7 +114,10 @@ fun SettingsScreen(
                 isSelected = { false },
                 icon = AppIcons.Bell,
                 endIcon = OPEN_OUTSIDE,
-                onClick = { onItemClick(NOTIFICATIONS) },
+                onClick = {
+                    MatomoSwissTransfer.trackSettings(MatomoName.Notifications)
+                    onItemClick(NOTIFICATIONS)
+                },
             )
             SettingDivider()
 
@@ -158,7 +162,10 @@ fun SettingsScreen(
                     isSelected = { false },
                     icon = AppIcons.CircleCross,
                     endIcon = OPEN_OUTSIDE,
-                    onClick = { onItemClick(DELETE_MY_ACCOUNT) },
+                    onClick = {
+                        MatomoSwissTransfer.trackSettings(MatomoName.DeleteMyAccount)
+                        onItemClick(DELETE_MY_ACCOUNT)
+                    },
                 )
             }
         }
