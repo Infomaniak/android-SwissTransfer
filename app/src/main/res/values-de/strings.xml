@@ -95,7 +95,6 @@
     <string name="onboardingSendFilesSubtitleArgument">Sende deine Dateien</string>
     <string name="onboardingSendFilesSubtitleTemplate">\u0020%s jetzt!</string>
     <string name="onboardingSendFilesTitle">Bereit loszulegen?</string>
-    <string name="onboardingSignInOrCreateAccount">Melde dich an oder erstelle kostenlos ein Konto</string>
     <string name="onboardingStorageSubtitleArgument">Teile bis zu 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s Dateien – kostenlos und ohne Anmeldung.</string>
     <string name="onboardingStorageTitle">Hau richtig rein!</string>
