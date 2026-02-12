@@ -60,6 +60,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
@@ -176,6 +177,11 @@ private fun SettingsItems(
     selectedSetting: MyAccountSetting?,
     onItemClick: (MyAccountSetting) -> Unit,
 ) {
+    fun onItemClickAndMatomo(item: MyAccountSetting) {
+        item.matomoValue?.let(::trackMyAccount)
+        onItemClick(item)
+    }
+
     Column {
         if (LocalUser.current == null) {
             SettingItem(
@@ -183,7 +189,7 @@ private fun SettingsItems(
                 isSelected = { selectedSetting == Login },
                 icon = AppIcons.Person,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { onItemClick(Login) },
+                onClick = { onItemClickAndMatomo(Login) },
             )
         } else {
             SettingItem(
@@ -191,7 +197,7 @@ private fun SettingsItems(
                 isSelected = { selectedSetting == SwitchAccount },
                 icon = AppIcons.PersonCircularArrowsCounterClockwise,
                 endIcon = EndIconType.CHEVRON,
-                onClick = { onItemClick(SwitchAccount) },
+                onClick = { onItemClickAndMatomo(SwitchAccount) },
             )
         }
 
@@ -200,7 +206,7 @@ private fun SettingsItems(
             isSelected = { selectedSetting == Navigation.Settings },
             icon = AppIcons.Cog,
             endIcon = EndIconType.CHEVRON,
-            onClick = { onItemClick(Navigation.Settings) },
+            onClick = { onItemClickAndMatomo(Navigation.Settings) },
         )
 
         SettingItem(
@@ -208,7 +214,7 @@ private fun SettingsItems(
             isSelected = { selectedSetting == Support },
             icon = AppIcons.HeadphoneMicrophone,
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClick(Support) },
+            onClick = { onItemClickAndMatomo(Support) },
         )
 
         AnimatedVisibility(LocalUser.current != null) {
@@ -216,7 +222,7 @@ private fun SettingsItems(
                 titleRes = R.string.settingsLogOut,
                 isSelected = { selectedSetting == Logout },
                 icon = AppIcons.DoorRectangleArrowRight,
-                onClick = { onItemClick(Logout) },
+                onClick = { onItemClickAndMatomo(Logout) },
             )
         }
         SettingDivider()
@@ -226,25 +232,25 @@ private fun SettingsItems(
             titleRes = R.string.settingsOptionTermsAndConditions,
             isSelected = { selectedSetting == Eula },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClick(Eula) },
+            onClick = { onItemClickAndMatomo(Eula) },
         )
         SettingItem(
             titleRes = R.string.settingsOptionDiscoverInfomaniak,
             isSelected = { selectedSetting == DiscoverInfomaniak },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClick(DiscoverInfomaniak) },
+            onClick = { onItemClickAndMatomo(DiscoverInfomaniak) },
         )
         SettingItem(
             titleRes = R.string.settingsOptionShareIdeas,
             isSelected = { selectedSetting == ShareIdeas },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClick(ShareIdeas) },
+            onClick = { onItemClickAndMatomo(ShareIdeas) },
         )
         SettingItem(
             titleRes = R.string.settingsOptionGiveFeedback,
             isSelected = { selectedSetting == GiveFeedback },
             endIcon = OPEN_OUTSIDE,
-            onClick = { onItemClick(GiveFeedback) },
+            onClick = { onItemClickAndMatomo(GiveFeedback) },
         )
         SettingItem(
             titleRes = R.string.version,

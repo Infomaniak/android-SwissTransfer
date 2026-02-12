@@ -131,8 +131,6 @@ private fun ListPane(
 
     MyAccountScreen(
         onItemClick = { item ->
-            item.matomoValue?.let(::trackMyAccount)
-
             when (item) {
                 MyAccountSetting.Login -> {
                     val intent = Intent(context, OnboardingActivity::class.java).apply {
