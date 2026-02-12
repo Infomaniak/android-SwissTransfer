@@ -175,7 +175,7 @@ private fun SettingsItems(
     selectedSetting: MyAccountSetting?,
     onItemClick: (MyAccountSetting) -> Unit,
 ) {
-    Column(modifier = Modifier) {
+    Column {
         if (LocalUser.current == null) {
             SettingItem(
                 titleRes = R.string.settingsSignIn,
