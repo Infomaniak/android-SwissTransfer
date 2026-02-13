@@ -51,6 +51,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.auth.models.user.User
@@ -81,7 +83,11 @@ enum class NavigationItem(
         icon = { _, contentDescription ->
             val scope = rememberCoroutineScope()
             val state = rememberArrowAnimationState()
-            AnimatedArrowUpCircle(state = state, modifier = Modifier.clickable(onClick = { scope.launch { state.play() } }))
+            AnimatedArrowUpCircle(
+                state,
+                contentDescription,
+                modifier = Modifier.clickable(onClick = { scope.launch { state.play() } })
+            )
         },
         destination = SentDestination()
     ),
@@ -90,7 +96,11 @@ enum class NavigationItem(
         icon = { _, contentDescription ->
             val scope = rememberCoroutineScope()
             val state = rememberArrowAnimationState()
-            AnimatedArrowDownCircle(state = state, modifier = Modifier.clickable(onClick = { scope.launch { state.play() } }))
+            AnimatedArrowDownCircle(
+                state,
+                contentDescription,
+                modifier = Modifier.clickable(onClick = { scope.launch { state.play() } })
+            )
         },
         destination = ReceivedDestination()
     ),
@@ -241,6 +251,7 @@ fun rememberArrowAnimationState(): ArrowAnimationState {
 private fun AnimatedArrowCircle(
     state: ArrowAnimationState,
     direction: ArrowDirection,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     contentColor: Color = LocalContentColor.current,
 ) {
@@ -255,7 +266,14 @@ private fun AnimatedArrowCircle(
         modifier = modifier
             .size(24.dp)
             .clip(CircleShape)
-            .background(Color.Transparent),
+            .background(Color.Transparent)
+            .then(
+                if (contentDescription != null) {
+                    Modifier.semantics { this.contentDescription = contentDescription }
+                } else {
+                    Modifier
+                }
+            ),
         contentAlignment = Alignment.Center,
     ) {
         // Circle outline (static)
@@ -316,12 +334,14 @@ private fun AnimatedArrowCircle(
 @Composable
 fun AnimatedArrowDownCircle(
     state: ArrowAnimationState,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     contentColor: Color = LocalContentColor.current,
 ) {
     AnimatedArrowCircle(
         state = state,
         direction = ArrowDirection.Down,
+        contentDescription = contentDescription,
         modifier = modifier,
         contentColor = contentColor,
     )
@@ -337,12 +357,14 @@ fun AnimatedArrowDownCircle(
 @Composable
 fun AnimatedArrowUpCircle(
     state: ArrowAnimationState,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     contentColor: Color = LocalContentColor.current,
 ) {
     AnimatedArrowCircle(
         state = state,
         direction = ArrowDirection.Up,
+        contentDescription = contentDescription,
         modifier = modifier,
         contentColor = contentColor,
     )
