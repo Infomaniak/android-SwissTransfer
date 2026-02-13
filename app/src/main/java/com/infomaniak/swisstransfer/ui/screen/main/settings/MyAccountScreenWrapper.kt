@@ -46,7 +46,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
-import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
 import com.infomaniak.swisstransfer.ui.OnboardingActivity
 import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
