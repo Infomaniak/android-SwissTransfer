@@ -41,11 +41,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 
 /**
  * Creates and remembers an [ArrowAnimationState] that survives configuration changes.
@@ -169,6 +169,7 @@ private fun AnimatedArrowCircle(
     contentColor: Color = LocalContentColor.current,
 ) {
     val strokeWidth = 1.5.dp
+    val iconSize = 24.dp
     val animationProgress = state.animatable.value
 
     // Direction multiplier: 1 for Down (positive Y is down), -1 for Up (positive Y is up)
@@ -176,7 +177,7 @@ private fun AnimatedArrowCircle(
 
     Box(
         modifier = modifier
-            .size(24.dp)
+            .size(iconSize)
             .clip(CircleShape)
             .background(Color.Transparent)
             .then(
@@ -191,7 +192,7 @@ private fun AnimatedArrowCircle(
         // Circle outline (static)
         Canvas(
             modifier = Modifier
-                .size(24.dp)
+                .size(iconSize)
                 .clip(CircleShape),
         ) {
             drawCircle(
@@ -201,21 +202,18 @@ private fun AnimatedArrowCircle(
             )
         }
 
-        // Calculate offsets based on animation progress
-        // Travel distance: 150% of icon size for clean exit (24dp * 1.5 = 36dp)
-        val travelDistancePx = with(LocalDensity.current) { 36.dp.toPx() }
+        // Travel distance: 150% of icon size for clean exit
+        val travelDistance = iconSize * 1.5f
 
-        // Arrow offset calculation - adapts based on direction (in px)
+        // Calculate offsets based on animation progress.
         // For Down: Arrow A starts center, goes down; Arrow B starts above, goes to center
         // For Up: Arrow A starts center, goes up; Arrow B starts below, goes to center
-        // Starts center, goes in direction
-        val arrowAOffset = animationProgress * travelDistancePx * directionMultiplier
-        // Starts opposite, goes to center
-        val arrowBOffset = -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)
+        val arrowAOffset = animationProgress * travelDistance * directionMultiplier
+        val arrowBOffset = -travelDistance * directionMultiplier + (animationProgress * travelDistance * directionMultiplier)
 
         // Arrow A
         ArrowCanvas(
-            offsetY = with(LocalDensity.current) { arrowAOffset.toDp() },
+            offsetY = arrowAOffset,
             contentColor = contentColor,
             direction = direction,
             strokeWidth = strokeWidth,
@@ -223,7 +221,7 @@ private fun AnimatedArrowCircle(
 
         // Arrow B
         ArrowCanvas(
-            offsetY = with(LocalDensity.current) { arrowBOffset.toDp() },
+            offsetY = arrowBOffset,
             contentColor = contentColor,
             direction = direction,
             strokeWidth = strokeWidth,
