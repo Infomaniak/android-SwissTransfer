@@ -44,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -105,7 +104,7 @@ fun MyAccountScreen(
     SwissTransferScaffold(
         topBar = {
             if (windowAdaptiveInfo.isWindowLarge()) {
-                SwissTransferTopAppBar(stringResource(R.string.settingsTitle))
+                SwissTransferTopAppBar(pluralStringResource(RCore.plurals.myAccount, 1))
             } else {
                 BrandTopAppBar()
             }
