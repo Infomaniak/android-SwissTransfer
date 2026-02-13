@@ -23,7 +23,6 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -38,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +62,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
-import kotlinx.coroutines.launch
 import com.infomaniak.core.common.R as RCore
 
 /**
@@ -75,38 +72,26 @@ import com.infomaniak.core.common.R as RCore
  */
 enum class NavigationItem(
     val label: @Composable () -> String,
-    val icon: @Composable (User?, contentDescription: String?) -> Unit,
+    val icon: @Composable (User?, ArrowAnimationState, contentDescription: String?) -> Unit,
     val destination: MainNavigation,
 ) {
     Sent(
         label = { stringResource(R.string.sentTitle) },
-        icon = { _, contentDescription ->
-            val scope = rememberCoroutineScope()
-            val state = rememberArrowAnimationState()
-            AnimatedArrowUpCircle(
-                state,
-                contentDescription,
-                modifier = Modifier.clickable(onClick = { scope.launch { state.play() } })
-            )
+        icon = { _, arrowAnimationState, contentDescription ->
+            AnimatedArrowUpCircle(arrowAnimationState, contentDescription)
         },
         destination = SentDestination()
     ),
     Received(
         label = { stringResource(R.string.receivedTitle) },
-        icon = { _, contentDescription ->
-            val scope = rememberCoroutineScope()
-            val state = rememberArrowAnimationState()
-            AnimatedArrowDownCircle(
-                state,
-                contentDescription,
-                modifier = Modifier.clickable(onClick = { scope.launch { state.play() } })
-            )
+        icon = { _, arrowAnimationState, contentDescription ->
+            AnimatedArrowDownCircle(arrowAnimationState, contentDescription)
         },
         destination = ReceivedDestination()
     ),
     MyAccount(
         label = { pluralStringResource(RCore.plurals.myAccount, 1) },
-        icon = { user, contentDescription ->
+        icon = { user, _, contentDescription ->
             Crossfade(user) { user ->
                 if (user == null) {
                     Icon(AppIcons.Person, contentDescription)
@@ -199,20 +184,15 @@ class ArrowAnimationState internal constructor() {
      * Triggers a single animation cycle.
      * The animation accelerates at start and decelerates at end.
      * If called while animation is playing, it's ignored (debounced).
-     *
-     * @param durationMillis Duration of the animation in milliseconds (default: 400ms)
      */
-    suspend fun play(durationMillis: Int = 400) {
+    suspend fun play() {
         if (isPlaying) return
 
         isPlaying = true
         try {
             animatable.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(
-                    durationMillis = durationMillis,
-                    easing = FastOutSlowInEasing
-                )
+                animationSpec = tween(durationMillis = DURATION_MILLIS, easing = FastOutSlowInEasing),
             )
 
             // Swap arrows for next time
@@ -222,6 +202,10 @@ class ArrowAnimationState internal constructor() {
         } finally {
             isPlaying = false
         }
+    }
+
+    companion object {
+        private const val DURATION_MILLIS: Int = 600
     }
 }
 

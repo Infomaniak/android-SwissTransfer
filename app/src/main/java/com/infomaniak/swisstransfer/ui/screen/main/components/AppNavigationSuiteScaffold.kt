@@ -42,6 +42,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -53,10 +54,13 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
+import com.infomaniak.swisstransfer.ui.navigation.ArrowAnimationState
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
+import com.infomaniak.swisstransfer.ui.navigation.rememberArrowAnimationState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.launchActivity
+import kotlinx.coroutines.launch
 
 /**
  * Layout for a [NavigationSuiteScaffold]'s content. This function wraps the [content] and places
@@ -122,13 +126,20 @@ private fun AppNavigationBar(
     currentDestination: MainNavigation,
     onClick: (MainNavigation) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     NavigationBar(containerColor = SwissTransferTheme.colors.navigationItemBackground) {
         navigationItems.forEach { navigationItem ->
+            val arrowAnimationState = rememberArrowAnimationState()
+            val selected = currentDestination::class == navigationItem.destination::class
+
             NavigationBarItem(
-                icon = { NavigationIcon(true, navigationItem) },
+                icon = { NavigationIcon(true, navigationItem, arrowAnimationState) },
                 label = { NavigationLabel(navigationItem) },
-                selected = currentDestination::class == navigationItem.destination::class,
-                onClick = { onClick(navigationItem.destination) },
+                selected = selected,
+                onClick = {
+                    if (selected.not()) scope.launch { arrowAnimationState.play() }
+                    onClick(navigationItem.destination)
+                },
             )
         }
     }
@@ -141,6 +152,8 @@ private fun AppNavigationDrawer(
     onClick: (MainNavigation) -> Unit,
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
     PermanentDrawerSheet(
         drawerContainerColor = SwissTransferTheme.colors.navigationItemBackground,
         windowInsets = DrawerDefaults.windowInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
@@ -148,11 +161,17 @@ private fun AppNavigationDrawer(
         BrandTopAppBar()
         Column(modifier = Modifier.padding(horizontal = Margin.Mini, vertical = Margin.Medium)) {
             navigationItems.forEachIndexed { index, navigationItem ->
+                val arrowAnimationState = rememberArrowAnimationState()
+                val selected = currentDestination::class == navigationItem.destination::class
+
                 NavigationDrawerItem(
-                    icon = { NavigationIcon(false, navigationItem) },
+                    icon = { NavigationIcon(false, navigationItem, arrowAnimationState) },
                     label = { NavigationLabel(navigationItem) },
-                    selected = currentDestination::class == navigationItem.destination::class,
-                    onClick = { onClick(navigationItem.destination) },
+                    selected = selected,
+                    onClick = {
+                        if (selected.not()) scope.launch { arrowAnimationState.play() }
+                        onClick(navigationItem.destination)
+                    },
                 )
                 if (index != navigationItems.lastIndex) {
                     Spacer(modifier = Modifier.height(Margin.Micro))
@@ -171,9 +190,9 @@ private fun AppNavigationDrawer(
 }
 
 @Composable
-private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationItem) {
+private fun NavigationIcon(isNavigationBar: Boolean, navigationItem: NavigationItem, arrowAnimationState: ArrowAnimationState) {
     val contentDescription = if (isNavigationBar) null else navigationItem.label()
-    navigationItem.icon(LocalUser.current, contentDescription)
+    navigationItem.icon(LocalUser.current, arrowAnimationState, contentDescription)
 }
 
 @Composable
