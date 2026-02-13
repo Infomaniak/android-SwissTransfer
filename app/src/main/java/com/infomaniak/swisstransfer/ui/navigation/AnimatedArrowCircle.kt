@@ -135,7 +135,7 @@ class ArrowAnimationState internal constructor() {
     }
 
     companion object {
-        private const val DURATION_MILLIS: Int = 600
+        private const val DURATION_MILLIS: Int = 450
     }
 }
 
