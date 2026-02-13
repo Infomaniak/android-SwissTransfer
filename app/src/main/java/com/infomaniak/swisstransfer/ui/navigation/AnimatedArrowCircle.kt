@@ -30,7 +30,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -111,8 +110,6 @@ class ArrowAnimationState internal constructor() {
     private var isPlaying by mutableStateOf(false)
 
     internal val animatable = Animatable(0f)
-    internal var activeArrow by mutableIntStateOf(0)
-        private set
 
     /**
      * Triggers a single animation cycle.
@@ -130,7 +127,6 @@ class ArrowAnimationState internal constructor() {
             )
 
             // Swap arrows for next time
-            activeArrow = 1 - activeArrow
             // Reset to start position instantly (prepare for next animation)
             animatable.snapTo(0f)
         } finally {
@@ -174,7 +170,6 @@ private fun AnimatedArrowCircle(
 ) {
     val strokeWidth = 1.5.dp
     val animationProgress = state.animatable.value
-    val activeArrow = state.activeArrow
 
     // Direction multiplier: 1 for Down (positive Y is down), -1 for Up (positive Y is up)
     val directionMultiplier = if (direction == ArrowDirection.Down) 1f else -1f
@@ -210,22 +205,17 @@ private fun AnimatedArrowCircle(
         // Travel distance: 150% of icon size for clean exit (24dp * 1.5 = 36dp)
         val travelDistancePx = with(LocalDensity.current) { 36.dp.toPx() }
 
-        // Arrow offset calculation - adapts based on direction
+        // Arrow offset calculation - adapts based on direction (in px)
         // For Down: Arrow A starts center, goes down; Arrow B starts above, goes to center
         // For Up: Arrow A starts center, goes up; Arrow B starts below, goes to center
-        val arrowAOffsetPx = when (activeArrow) {
-            0 -> animationProgress * travelDistancePx * directionMultiplier  // Starts center, goes in direction
-            else -> -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)  // Starts opposite, goes to center
-        }
-
-        val arrowBOffsetPx = when (activeArrow) {
-            0 -> -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)  // Starts opposite, goes to center
-            else -> animationProgress * travelDistancePx * directionMultiplier  // Starts center, goes in direction
-        }
+        // Starts center, goes in direction
+        val arrowAOffset = animationProgress * travelDistancePx * directionMultiplier
+        // Starts opposite, goes to center
+        val arrowBOffset = -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)
 
         // Arrow A
         ArrowCanvas(
-            offsetY = with(LocalDensity.current) { arrowAOffsetPx.toDp() },
+            offsetY = with(LocalDensity.current) { arrowAOffset.toDp() },
             contentColor = contentColor,
             direction = direction,
             strokeWidth = strokeWidth,
@@ -233,7 +223,7 @@ private fun AnimatedArrowCircle(
 
         // Arrow B
         ArrowCanvas(
-            offsetY = with(LocalDensity.current) { arrowBOffsetPx.toDp() },
+            offsetY = with(LocalDensity.current) { arrowBOffset.toDp() },
             contentColor = contentColor,
             direction = direction,
             strokeWidth = strokeWidth,
