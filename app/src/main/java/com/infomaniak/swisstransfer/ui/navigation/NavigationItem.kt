@@ -32,7 +32,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -49,7 +48,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -64,7 +62,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.infomaniak.core.common.R as RCore
 
@@ -116,40 +113,32 @@ enum class NavigationItem(
  * Arrow direction enum defining whether the arrow points up or down.
  */
 enum class ArrowDirection {
-    DOWN,
-    UP
+    Down, Up
 }
 
 /**
  * Draws a downward or upward pointing arrow at the specified center position.
- * Based on ImageVector path (24x24 canvas):
+ * Based on the original ImageVector path (24x24 canvas):
  * - strokeLineWidth = 1.5f, strokeLineCap = Round
  * - moveTo(12.0f, 16.5f); verticalLineToRelative(-9.0f)
  * - moveTo(12.0f + 3.75f, 16.5f - 3.75f); lineTo(12.0f, 16.5f); lineTo(12.0f - 3.75f, 16.5f - 3.75f)
  * Arrow spans from Y=7.5 to Y=16.5 (height = 9.0), head at 4.5 below/above center, wings at 0.75 above/below center
  *
- * @param direction The direction the arrow should point (DOWN or UP)
+ * @param direction The direction the arrow should point (Down or Up)
  */
-private fun DrawScope.drawArrow(
-    color: Color,
-    center: Offset,
-    halfSize: Float,
-    direction: ArrowDirection = ArrowDirection.DOWN
-) {
-    val strokeWidth = 1.5.dp.toPx()
+private fun DrawScope.drawArrow(color: Color, strokeWidth: Dp, center: Offset, halfSize: Float, direction: ArrowDirection) {
+    val strokeWidthPx = strokeWidth.toPx()
 
     // Determine y-multiplier based on direction
-    // For DOWN: positive Y goes down (normal)
-    // For UP: invert Y movement so arrow points up
-    val yMultiplier = if (direction == ArrowDirection.DOWN) 1f else -1f
+    // For Down: positive Y goes down (normal)
+    // For Up: invert Y movement so arrow points up
+    val directionMultiplier = if (direction == ArrowDirection.Down) 1f else -1f
 
     // Proportions relative to halfSize (since arrow height = 2 * halfSize = 9.0 in original units)
-    // In ImageVector: stem top at Y=7.5 (4.5 above center), head at Y=16.5 (4.5 below center)
-    // Wings at Y=12.75 (0.75 above center), wing X offset = 3.75
-    val stemTopYOffset = -halfSize * 0.9f * yMultiplier  // 4.5/5.0 = 0.9 of halfSize
-    val headYOffset = halfSize * 0.9f * yMultiplier  // Head is below/above center depending on direction
-    val wingsYOffset = halfSize * 0.15f * yMultiplier  // Move wings closer to arrow tip
-    val wingXOffset = halfSize * 0.8f  // 3.75/5.0 = 0.75 (X is same for both directions)
+    val stemTopYOffset = -halfSize * 0.9f * directionMultiplier
+    val headYOffset = halfSize * 0.9f * directionMultiplier
+    val wingsYOffset = halfSize * 0.15f * directionMultiplier
+    val wingXOffset = halfSize * 0.8f
 
     val headX = center.x
     val headY = center.y + headYOffset
@@ -161,25 +150,25 @@ private fun DrawScope.drawArrow(
         color = color,
         start = Offset(headX, stemTopY),
         end = Offset(headX, headY),
-        strokeWidth = strokeWidth,
+        strokeWidth = strokeWidthPx,
         cap = StrokeCap.Round
     )
 
-    // Draw left wing (from left wing to head)
+    // Draw left wing (from left wing outer tip to head)
     drawLine(
         color = color,
         start = Offset(headX - wingXOffset, wingsY),
         end = Offset(headX, headY),
-        strokeWidth = strokeWidth,
+        strokeWidth = strokeWidthPx,
         cap = StrokeCap.Round
     )
 
-    // Draw right wing (from right wing to head)
+    // Draw right wing (from right wing outer tip to head)
     drawLine(
         color = color,
         start = Offset(headX + wingXOffset, wingsY),
         end = Offset(headX, headY),
-        strokeWidth = strokeWidth,
+        strokeWidth = strokeWidthPx,
         cap = StrokeCap.Round
     )
 }
@@ -189,18 +178,12 @@ private fun DrawScope.drawArrow(
  * Similar to ModalBottomSheetState, provides a [play] method to trigger animation.
  */
 @Stable
-class ArrowAnimationState internal constructor(
-    private val scope: CoroutineScope
-) {
-    private var _isPlaying by mutableStateOf(false)
-
-    /**
-     * Whether an animation is currently in progress.
-     */
-    val isPlaying: Boolean get() = _isPlaying
+class ArrowAnimationState internal constructor() {
+    private var isPlaying by mutableStateOf(false)
 
     internal val animatable = Animatable(0f)
     internal var activeArrow by mutableIntStateOf(0)
+        private set
 
     /**
      * Triggers a single animation cycle.
@@ -210,9 +193,9 @@ class ArrowAnimationState internal constructor(
      * @param durationMillis Duration of the animation in milliseconds (default: 400ms)
      */
     suspend fun play(durationMillis: Int = 400) {
-        if (_isPlaying) return
+        if (isPlaying) return
 
-        _isPlaying = true
+        isPlaying = true
         try {
             animatable.animateTo(
                 targetValue = 1f,
@@ -227,7 +210,7 @@ class ArrowAnimationState internal constructor(
             // Reset to start position instantly (prepare for next animation)
             animatable.snapTo(0f)
         } finally {
-            _isPlaying = false
+            isPlaying = false
         }
     }
 }
@@ -237,8 +220,7 @@ class ArrowAnimationState internal constructor(
  */
 @Composable
 fun rememberArrowAnimationState(): ArrowAnimationState {
-    val scope = rememberCoroutineScope()
-    return remember { ArrowAnimationState(scope = scope) }
+    return remember { ArrowAnimationState() }
 }
 
 /**
@@ -260,31 +242,32 @@ private fun AnimatedArrowCircle(
     state: ArrowAnimationState,
     direction: ArrowDirection,
     modifier: Modifier = Modifier,
-    contentColor: Color = LocalContentColor.current
+    contentColor: Color = LocalContentColor.current,
 ) {
+    val strokeWidth = 1.5.dp
     val animationProgress = state.animatable.value
     val activeArrow = state.activeArrow
 
-    // Direction multiplier: 1 for DOWN (positive Y is down), -1 for UP (positive Y is up)
-    val directionMultiplier = if (direction == ArrowDirection.DOWN) 1f else -1f
+    // Direction multiplier: 1 for Down (positive Y is down), -1 for Up (positive Y is up)
+    val directionMultiplier = if (direction == ArrowDirection.Down) 1f else -1f
 
     Box(
         modifier = modifier
             .size(24.dp)
             .clip(CircleShape)
             .background(Color.Transparent),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         // Circle outline (static)
         Canvas(
             modifier = Modifier
                 .size(24.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
         ) {
             drawCircle(
                 color = contentColor,
                 radius = size.minDimension / 2 - 1.dp.toPx(),
-                style = Stroke(width = 1.5.dp.toPx())
+                style = Stroke(width = strokeWidth.toPx()),
             )
         }
 
@@ -293,8 +276,8 @@ private fun AnimatedArrowCircle(
         val travelDistancePx = with(LocalDensity.current) { 36.dp.toPx() }
 
         // Arrow offset calculation - adapts based on direction
-        // For DOWN: Arrow A starts center, goes down; Arrow B starts above, goes to center
-        // For UP: Arrow A starts center, goes up; Arrow B starts below, goes to center
+        // For Down: Arrow A starts center, goes down; Arrow B starts above, goes to center
+        // For Up: Arrow A starts center, goes up; Arrow B starts below, goes to center
         val arrowAOffsetPx = when (activeArrow) {
             0 -> animationProgress * travelDistancePx * directionMultiplier  // Starts center, goes in direction
             else -> -travelDistancePx * directionMultiplier + (animationProgress * travelDistancePx * directionMultiplier)  // Starts opposite, goes to center
@@ -310,7 +293,7 @@ private fun AnimatedArrowCircle(
             offsetY = with(LocalDensity.current) { arrowAOffsetPx.toDp() },
             contentColor = contentColor,
             direction = direction,
-            modifier = Modifier.graphicsLayer { alpha = if (activeArrow == 0 || animationProgress > 0f) 1f else 0f }
+            strokeWidth = strokeWidth,
         )
 
         // Arrow B
@@ -318,7 +301,7 @@ private fun AnimatedArrowCircle(
             offsetY = with(LocalDensity.current) { arrowBOffsetPx.toDp() },
             contentColor = contentColor,
             direction = direction,
-            modifier = Modifier.graphicsLayer { alpha = if (activeArrow == 1 || animationProgress > 0f) 1f else 0f }
+            strokeWidth = strokeWidth,
         )
     }
 }
@@ -334,13 +317,13 @@ private fun AnimatedArrowCircle(
 fun AnimatedArrowDownCircle(
     state: ArrowAnimationState,
     modifier: Modifier = Modifier,
-    contentColor: Color = LocalContentColor.current
+    contentColor: Color = LocalContentColor.current,
 ) {
     AnimatedArrowCircle(
         state = state,
-        direction = ArrowDirection.DOWN,
+        direction = ArrowDirection.Down,
         modifier = modifier,
-        contentColor = contentColor
+        contentColor = contentColor,
     )
 }
 
@@ -355,13 +338,13 @@ fun AnimatedArrowDownCircle(
 fun AnimatedArrowUpCircle(
     state: ArrowAnimationState,
     modifier: Modifier = Modifier,
-    contentColor: Color = LocalContentColor.current
+    contentColor: Color = LocalContentColor.current,
 ) {
     AnimatedArrowCircle(
         state = state,
-        direction = ArrowDirection.UP,
+        direction = ArrowDirection.Up,
         modifier = modifier,
-        contentColor = contentColor
+        contentColor = contentColor,
     )
 }
 
@@ -370,16 +353,17 @@ private fun ArrowCanvas(
     offsetY: Dp,
     contentColor: Color,
     direction: ArrowDirection,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    strokeWidth: Dp,
 ) {
     Box(
         modifier = modifier
             .offset(y = offsetY)
             .size(16.dp),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.size(16.dp)) {
-            drawArrow(contentColor, Offset(size.width / 2, size.height / 2), 5.dp.toPx(), direction)
+            drawArrow(contentColor, strokeWidth, Offset(size.width / 2, size.height / 2), 5.dp.toPx(), direction)
         }
     }
 }
