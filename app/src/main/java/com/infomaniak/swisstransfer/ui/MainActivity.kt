@@ -113,7 +113,14 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             }
 
             setContent {
-                MainContent(deepLinkTypeFromURL, deeplinkTransferDirection)
+                val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
+                CompositionLocalProvider(LocalUser provides user) {
+                    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+
+                    SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
+                        MainContent(deepLinkTypeFromURL, deeplinkTransferDirection)
+                    }
+                }
             }
         }
     }
@@ -123,69 +130,69 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
         deepLinkTypeFromURL: DeepLinkType?,
         deeplinkTransferDirection: TransferDirection?,
     ) {
-        val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
+        val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.isUpdateRequired.collectAsStateWithLifecycle(
+            initialValue = false
+        )
 
-        CompositionLocalProvider(LocalUser provides user) {
-            with(inAppReviewManager) {
-                val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
-                val shouldDisplayReviewDialog by shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
-                var shouldDisplayDeleteDialog by remember {
-                    mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
+        Dialogs(deepLinkTypeFromURL, shouldDisplayUpdateRequiredScreen)
+
+        if (shouldDisplayUpdateRequiredScreen) {
+            UpdateRequiredScreen(
+                illustration = painterResource(R.drawable.illu_update_required),
+                titleTextStyle = SwissTransferTheme.typography.h1,
+                descriptionTextStyle = SwissTransferTheme.typography.bodyMedium,
+                installUpdateButton = {
+                    LargeButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        title = stringResource(RInAppUpdate.string.buttonUpdate),
+                        style = ButtonType.Primary,
+                        onClick = { inAppUpdateManager.requireUpdate() },
+                    )
                 }
-                val shouldDisplayUpdateRequiredScreen by inAppUpdateManager.isUpdateRequired.collectAsStateWithLifecycle(
-                    initialValue = false
-                )
+            )
+        } else {
+            MainScreen(deeplinkTransferDirection)
+        }
+    }
 
-                SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                    if (shouldDisplayReviewDialog && shouldDisplayUpdateRequiredScreen.not()) {
-                        val feedbackUrl = stringResource(R.string.urlUserReport)
-                        ReviewAlertDialog(
-                            onUserWantsToReview = ::onUserWantsToReview,
-                            onUserWantsToGiveFeedback = { onUserWantsToGiveFeedback(feedbackUrl) },
-                            onDismiss = ::onUserWantsToDismiss,
-                        )
-                    }
+    @Composable
+    private fun Dialogs(
+        deepLinkTypeFromURL: DeepLinkType?,
+        shouldDisplayUpdateRequiredScreen: Boolean,
+    ) {
+        val shouldDisplayReviewDialog by inAppReviewManager.shouldDisplayReviewDialog.collectAsStateWithLifecycle(initialValue = false)
+        var shouldDisplayDeleteDialog by remember {
+            mutableStateOf(deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
+        }
 
-                    if (shouldDisplayDeleteDialog && shouldDisplayUpdateRequiredScreen.not()) {
+        if (shouldDisplayReviewDialog && shouldDisplayUpdateRequiredScreen.not()) {
+            val feedbackUrl = stringResource(R.string.urlUserReport)
+            ReviewAlertDialog(
+                onUserWantsToReview = inAppReviewManager::onUserWantsToReview,
+                onUserWantsToGiveFeedback = { inAppReviewManager.onUserWantsToGiveFeedback(feedbackUrl) },
+                onDismiss = inAppReviewManager::onUserWantsToDismiss,
+            )
+        }
 
-                        fun dismissDeleteDialog() {
-                            shouldDisplayDeleteDialog = false
-                        }
+        if (shouldDisplayDeleteDialog && shouldDisplayUpdateRequiredScreen.not()) {
 
-                        DeleteTransferDialog(
-                            closeAlertDialog = ::dismissDeleteDialog,
-                            onConfirmation = {
-                                lifecycleScope.launch {
-                                    if (deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
-                                        transferManager.deleteTransfer(
-                                            deepLinkTypeFromURL.uuid,
-                                            deepLinkTypeFromURL.token,
-                                        )
-                                }
-                                dismissDeleteDialog()
-                            },
-                        )
-                    }
-
-                    if (shouldDisplayUpdateRequiredScreen) {
-                        UpdateRequiredScreen(
-                            illustration = painterResource(R.drawable.illu_update_required),
-                            titleTextStyle = SwissTransferTheme.typography.h1,
-                            descriptionTextStyle = SwissTransferTheme.typography.bodyMedium,
-                            installUpdateButton = {
-                                LargeButton(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    title = stringResource(RInAppUpdate.string.buttonUpdate),
-                                    style = ButtonType.Primary,
-                                    onClick = { inAppUpdateManager.requireUpdate() },
-                                )
-                            }
-                        )
-                    } else {
-                        MainScreen(deeplinkTransferDirection)
-                    }
-                }
+            fun dismissDeleteDialog() {
+                shouldDisplayDeleteDialog = false
             }
+
+            DeleteTransferDialog(
+                closeAlertDialog = ::dismissDeleteDialog,
+                onConfirmation = {
+                    lifecycleScope.launch {
+                        if (deepLinkTypeFromURL is DeepLinkType.DeleteTransfer)
+                            transferManager.deleteTransfer(
+                                deepLinkTypeFromURL.uuid,
+                                deepLinkTypeFromURL.token,
+                            )
+                    }
+                    dismissDeleteDialog()
+                },
+            )
         }
     }
 }
