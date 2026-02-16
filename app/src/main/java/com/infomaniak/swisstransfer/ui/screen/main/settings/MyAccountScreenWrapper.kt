@@ -18,8 +18,11 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
@@ -78,6 +81,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
 import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
@@ -219,19 +223,7 @@ private fun DetailPane(
                 downloadLimit = downloadLimit,
                 emailLanguage = emailLanguage,
                 onItemClick = { item ->
-                    when (item) {
-                        DELETE_MY_ACCOUNT -> {
-                            WebViewActivity.startActivity(
-                                context = context,
-                                url = TERMINATE_ACCOUNT_FULL_URL,
-                                headers = mapOf("Authorization" to "Bearer ${user?.apiToken?.accessToken}"),
-                                urlToQuit = URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION,
-                                activityResultLauncher = accountDeletionActivityResultLauncher,
-                            )
-                        }
-                        NOTIFICATIONS -> context.openAppNotificationSettings()
-                        else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
-                    }
+                    handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
                 },
                 navigateBack = navigateBack,
                 getSelectedSetting = { navigator.currentDestination?.contentKey },
@@ -268,6 +260,30 @@ private fun DetailPane(
         NOTIFICATIONS,
         DELETE_MY_ACCOUNT,
         null -> NoSelectionEmptyState()
+    }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun handleSettingsItemClick(
+    item: SettingsOptionScreens,
+    context: Context,
+    user: User?,
+    accountDeletionActivityResultLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    scope: CoroutineScope,
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+) {
+    when (item) {
+        DELETE_MY_ACCOUNT -> {
+            WebViewActivity.startActivity(
+                context = context,
+                url = TERMINATE_ACCOUNT_FULL_URL,
+                headers = mapOf("Authorization" to "Bearer ${user?.apiToken?.accessToken}"),
+                urlToQuit = URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION,
+                activityResultLauncher = accountDeletionActivityResultLauncher,
+            )
+        }
+        NOTIFICATIONS -> context.openAppNotificationSettings()
+        else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
     }
 }
 

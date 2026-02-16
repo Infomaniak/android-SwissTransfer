@@ -245,7 +245,7 @@ private fun SettingsItems(
                 icon = AppIcons.PersonCircularArrowsCounterClockwise,
                 endIcon = EndIconType.CHEVRON,
                 onClick = {
-                    trackMyAccount(SwitchAccount.matomoValue)
+                    trackMyAccount(MatomoName.SwitchUser)
                     showAccountSwitchBottomSheet()
                 },
             )
@@ -321,7 +321,7 @@ sealed class MyAccountSettingAction(val matomoValue: MatomoName?) {
     data object ShareIdeas : MyAccountSettingAction(MatomoName.ShareYourIdeas)
     data object GiveFeedback : MyAccountSettingAction(MatomoName.GiveYourOpinion)
 
-    data class SwitchAccount(val userId: Int) : MyAccountSettingAction(MatomoName.SwitchUser)
+    data class SwitchAccount(val userId: Int) : MyAccountSettingAction(null) // Matomo sent by hand in the code
 
     sealed class Navigation(val destination: SettingsOptionScreens) : MyAccountSettingAction(null) {
         data object Settings : Navigation(SettingsOptionScreens.SETTINGS)
