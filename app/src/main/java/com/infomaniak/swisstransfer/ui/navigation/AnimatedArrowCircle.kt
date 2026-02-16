@@ -21,9 +21,10 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LocalContentColor
@@ -178,8 +179,6 @@ private fun AnimatedArrowCircle(
     Box(
         modifier = modifier
             .size(iconSize)
-            .clip(CircleShape)
-            .background(Color.Transparent)
             .then(
                 if (contentDescription != null) {
                     Modifier.semantics { this.contentDescription = contentDescription }
@@ -192,8 +191,7 @@ private fun AnimatedArrowCircle(
         // Circle outline (static)
         Canvas(
             modifier = Modifier
-                .size(iconSize)
-                .clip(CircleShape),
+                .size(iconSize),
         ) {
             drawCircle(
                 color = contentColor,
@@ -201,7 +199,6 @@ private fun AnimatedArrowCircle(
                 style = Stroke(width = strokeWidth.toPx()),
             )
         }
-
         // Travel distance: 150% of icon size for clean exit
         val travelDistance = iconSize * 1.5f
 
@@ -211,21 +208,29 @@ private fun AnimatedArrowCircle(
         val arrowAOffset = animationProgress * travelDistance * directionMultiplier
         val arrowBOffset = -travelDistance * directionMultiplier + (animationProgress * travelDistance * directionMultiplier)
 
-        // Arrow A
-        ArrowCanvas(
-            offsetY = arrowAOffset,
-            contentColor = contentColor,
-            direction = direction,
-            strokeWidth = strokeWidth,
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(strokeWidth / 2)
+                .clip(CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            // Arrow A
+            ArrowCanvas(
+                offsetY = arrowAOffset,
+                contentColor = contentColor,
+                direction = direction,
+                strokeWidth = strokeWidth,
+            )
 
-        // Arrow B
-        ArrowCanvas(
-            offsetY = arrowBOffset,
-            contentColor = contentColor,
-            direction = direction,
-            strokeWidth = strokeWidth,
-        )
+            // Arrow B
+            ArrowCanvas(
+                offsetY = arrowBOffset,
+                contentColor = contentColor,
+                direction = direction,
+                strokeWidth = strokeWidth,
+            )
+        }
     }
 }
 
