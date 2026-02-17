@@ -26,10 +26,10 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CrossAppLoginService() : BaseCrossAppLoginService() {
+class CrossAppLoginService : BaseCrossAppLoginService() {
 
     @Inject
     lateinit var accountUtils: AccountUtils
 
-    override val selectedUserIdFlow: Flow<Int?> = accountUtils.currentUserIdFlow.flowOn(Dispatchers.IO)
+    override val selectedUserIdFlow: Flow<Int?> get() = accountUtils.currentUserIdFlow.flowOn(Dispatchers.IO)
 }
