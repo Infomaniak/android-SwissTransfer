@@ -31,8 +31,8 @@ class AccountPreferences @Inject constructor(@ApplicationContext private val app
     /**
      * This used to be currentUserId but in the end, the data of the current user is stored inside of
      * [com.infomaniak.core.auth.PersistedCurrentUserAccountUtils]. The [_currentGuestUserId] will always contain the guest user
-     * id if the onboarding is done, even if another real [User] account is connected and currently selected. No other user id
-     * value has ever been stored here.
+     * id if the onboarding is done, even if another real [com.infomaniak.core.auth.models.user.User] account is connected and
+     * currently selected. No other user id value has ever been stored here.
      */
     private var _currentGuestUserId by sharedValue("currentUserId", NO_USER)
     var isOnboardingDone
