@@ -40,9 +40,12 @@ class AccountUtils @Inject constructor(
     suspend fun init() {
         val realUserId = currentUserIdFlow.first()
         val userId = realUserId ?: GUEST_USER_ID.takeIf { accountPreferences.isOnboardingDone }
-        if (userId != null) accountManager.loadUser(userId)
+        if (userId == null) {
+            Sentry.setUser(SentryUser().apply { id = "-1" })
+        } else {
+            accountManager.loadUser(userId)
+        }
 
-        Sentry.setUser(SentryUser().apply { id = "-1" })
         currentUserFlow.collect { user ->
             Sentry.setUser(SentryUser().apply {
                 id = user?.id?.toString() ?: "-1"
