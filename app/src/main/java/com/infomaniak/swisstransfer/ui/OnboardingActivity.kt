@@ -47,6 +47,8 @@ import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
 import com.infomaniak.lib.login.InfomaniakLogin
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackAccountEvent
 import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -148,7 +150,7 @@ class OnboardingActivity : ComponentActivity() {
     }
 
     private fun loginUsersIntoTheApp(users: List<User>) {
-        // TODO: trackAccountEvent(MatomoName.LoggedIn)
+        trackAccountEvent(MatomoName.LoggedIn)
         lifecycleScope.launch {
             users.forEach { user -> accountUtils.addUser(user) }
             if (shouldDisplayRequiredLogin) finish() else completeOnboarding()
@@ -156,11 +158,13 @@ class OnboardingActivity : ComponentActivity() {
     }
 
     private fun openLoginWebView(loginFlowController: LoginFlowController) {
+        trackAccountEvent(MatomoName.OpenLoginWebview)
         startLoadingLoginButtons()
         loginFlowController.login()
     }
 
     private fun openAccountCreation(loginFlowController: LoginFlowController) {
+        trackAccountEvent(MatomoName.OpenCreationWebview)
         startLoadingLoginButtons()
         loginFlowController.createAccount(CREATE_ACCOUNT_URL, CREATE_ACCOUNT_SUCCESS_HOST, CREATE_ACCOUNT_CANCEL_HOST)
     }
