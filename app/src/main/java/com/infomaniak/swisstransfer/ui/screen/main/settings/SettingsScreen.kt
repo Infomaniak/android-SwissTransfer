@@ -117,7 +117,6 @@ fun SettingsScreen(
                 onClick = { onItemClick(CONNECTION) }, // TODO: Extract to other file and probably enum
             )
 
-
             SettingTitle(R.string.settingsCategoryGeneral)
 
             if (SDK_INT >= 29) {
