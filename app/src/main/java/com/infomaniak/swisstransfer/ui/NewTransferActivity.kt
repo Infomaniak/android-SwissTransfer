@@ -40,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
@@ -63,7 +63,7 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
 
     override val inAppReviewManager by lazy { InAppReviewManager(this) }
 
-    private val settingsViewModel: SettingsViewModel by viewModels()
+    private val myAccountViewModel: MyAccountViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +75,7 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
         addOnNewIntentListener(::handleSharedFiles)
 
         setContent {
-            val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+            val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
             val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
 
             CompositionLocalProvider(LocalUser provides user) {

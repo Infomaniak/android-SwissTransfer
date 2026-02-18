@@ -78,25 +78,25 @@ private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
 
 @Composable
 fun MyAccountScreenWrapper(
-    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>(),
 ) {
-    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+    val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     appSettings?.let { safeAppSettings ->
-        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
+        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { myAccountViewModel.setTheme(it) })
         val validityPeriod =
-            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { settingsViewModel.setValidityPeriod(it) })
+            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { myAccountViewModel.setValidityPeriod(it) })
         val downloadLimit =
-            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { settingsViewModel.setDownloadLimit(it) })
+            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { myAccountViewModel.setDownloadLimit(it) })
         val emailLanguage =
-            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
+            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { myAccountViewModel.setEmailLanguage(it) })
 
         MyAccountScreenWrapper(
             theme = theme,
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
-            onDisconnectCurrentUser = { settingsViewModel.disconnectCurrentUser() })
+            onDisconnectCurrentUser = { myAccountViewModel.disconnectCurrentUser() })
     }
 }
 

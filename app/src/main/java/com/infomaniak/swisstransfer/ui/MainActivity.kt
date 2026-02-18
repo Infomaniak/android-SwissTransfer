@@ -52,7 +52,7 @@ import com.infomaniak.swisstransfer.ui.components.ReviewAlertDialog
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
@@ -65,7 +65,7 @@ import com.infomaniak.core.inappupdate.R as RInAppUpdate
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageable {
 
-    private val settingsViewModel: SettingsViewModel by viewModels()
+    private val myAccountViewModel: MyAccountViewModel by viewModels()
     private val deeplinkViewModel: DeeplinkViewModel by viewModels()
 
     @Inject
@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             setContent {
                 val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
                 CompositionLocalProvider(LocalUser provides user) {
-                    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+                    val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
 
                     SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                         MainContent(deepLinkTypeFromURL, deeplinkTransferDirection)

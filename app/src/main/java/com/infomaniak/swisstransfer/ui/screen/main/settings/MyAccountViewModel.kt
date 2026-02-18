@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+class MyAccountViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val accountUtils: AccountUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
