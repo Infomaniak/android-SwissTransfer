@@ -171,8 +171,6 @@ private fun DetailPane(
 
     val destination = navigator.safeCurrentContent()
 
-    val context = LocalContext.current
-
     val scope = rememberCoroutineScope()
     val navigateBack: () -> Unit = {
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
@@ -181,6 +179,7 @@ private fun DetailPane(
     when (destination) {
         SETTINGS -> {
             val user = LocalUser.current
+            val context = LocalContext.current
 
             SettingsScreen(
                 theme = theme,
