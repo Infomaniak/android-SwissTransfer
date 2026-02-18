@@ -47,6 +47,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 
 /**
  * Creates and remembers an [ArrowAnimationState] that survives configuration changes.
@@ -170,7 +171,7 @@ private fun AnimatedArrowCircle(
     contentColor: Color = LocalContentColor.current,
 ) {
     val strokeWidth = 1.5.dp
-    val iconSize = 24.dp
+    val iconSize = Dimens.IconSize
     val animationProgress = state.animatable.value
 
     // Direction multiplier: 1 for Down (positive Y is down), -1 for Up (positive Y is up)
