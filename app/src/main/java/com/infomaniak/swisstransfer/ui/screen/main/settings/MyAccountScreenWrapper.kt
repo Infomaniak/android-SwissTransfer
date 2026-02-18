@@ -246,7 +246,7 @@ private fun NoSelectionEmptyState() {
 
 @PreviewAllWindows
 @Composable
-private fun SettingsScreenWrapperPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
+private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
         CompositionLocalProvider(LocalUser provides users.first()) {
             Surface(color = MaterialTheme.colorScheme.background) {
