@@ -97,8 +97,8 @@ private fun BottomSheetContent(
             Text(
                 text = it,
                 textAlign = TextAlign.Center,
-                style = BottomSheetStyle.TITLE_TEXT_STYLE,
-                color = BottomSheetStyle.TITLE_COLOR,
+                style = BottomSheetStyle.TitleTextStyle,
+                color = BottomSheetStyle.TitleColor,
                 modifier = paddedModifier,
             )
             Spacer(Modifier.height(Margin.Large))

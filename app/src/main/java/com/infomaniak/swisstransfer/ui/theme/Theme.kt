@@ -77,8 +77,8 @@ fun SwissTransferTheme(
             // Needs both LocalCustomColorScheme and MaterialTheme's colorScheme to be defined by this point
             val bottomSheetTheme = BottomSheetThemeDefaults.theme(
                 contentColor = SwissTransferTheme.colors.primaryTextColor,
-                titleTextStyle = BottomSheetStyle.TITLE_TEXT_STYLE,
-                titleColor = BottomSheetStyle.TITLE_COLOR,
+                titleTextStyle = BottomSheetStyle.TitleTextStyle,
+                titleColor = BottomSheetStyle.TitleColor,
             )
 
             CompositionLocalProvider(

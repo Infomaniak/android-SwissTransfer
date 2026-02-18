@@ -20,6 +20,6 @@ package com.infomaniak.swisstransfer.ui.theme
 import androidx.compose.runtime.Composable
 
 object BottomSheetStyle {
-    val TITLE_TEXT_STYLE = SwissTransferTheme.typography.bodyMedium
-    val TITLE_COLOR @Composable get() = SwissTransferTheme.colors.primaryTextColor
+    val TitleTextStyle = SwissTransferTheme.typography.bodyMedium
+    val TitleColor @Composable get() = SwissTransferTheme.colors.primaryTextColor
 }
