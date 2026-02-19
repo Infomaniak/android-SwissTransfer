@@ -137,7 +137,7 @@ private fun AppNavigationBar(
                 label = { NavigationLabel(navigationItem) },
                 selected = selected,
                 onClick = {
-                    if (selected.not()) scope.launch { arrowAnimationState.play() }
+                    if (!selected) scope.launch { arrowAnimationState.play() }
                     onClick(navigationItem.destination)
                 },
             )
@@ -169,7 +169,7 @@ private fun AppNavigationDrawer(
                     label = { NavigationLabel(navigationItem) },
                     selected = selected,
                     onClick = {
-                        if (selected.not()) scope.launch { arrowAnimationState.play() }
+                        if (!selected) scope.launch { arrowAnimationState.play() }
                         onClick(navigationItem.destination)
                     },
                 )
