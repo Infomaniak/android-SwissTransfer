@@ -42,6 +42,7 @@ import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel.Account
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
 import com.infomaniak.core.crossapplogin.front.components.CrossLoginBottomContent
 import com.infomaniak.core.crossapplogin.front.components.NoCrossAppLoginAccountsContent
+import com.infomaniak.core.crossapplogin.front.data.CrossLoginCustomization
 import com.infomaniak.core.crossapplogin.front.data.CrossLoginDefaults
 import com.infomaniak.core.crossapplogin.front.previews.AccountsCheckingStatePreviewParameter
 import com.infomaniak.core.onboarding.IndicatorStyle
@@ -103,16 +104,13 @@ fun OnboardingScreen(
                 onContinueWithSelectedAccounts = { selectedAccounts -> onLoginRequest(selectedAccounts) },
                 onUseAnotherAccountClicked = { onLoginRequest(emptyList()) },
                 onSaveSkippedAccounts = onSaveSkippedAccounts,
-                noCrossAppLoginAccountsContent = if (shouldDisplayRequiredLogin) {
-                    NoCrossAppLoginAccountsContent.accountRequired(
-                        onLogin = { onLoginRequest(emptyList()) },
-                        onCreateAccount = onCreateAccount,
-                        isLoginButtonLoading = areLoginButtonsLoading,
-                        isSignUpButtonLoading = areLoginButtonsLoading
-                    )
-                } else {
-                    NoCrossAppLoginAccountsContent.accountOptional { connectAsGuest() }
-                },
+                noCrossAppLoginAccountsContent = getNoCrossAppLoginAccountContent(
+                    shouldDisplayRequiredLogin,
+                    onLoginRequest,
+                    onCreateAccount,
+                    areLoginButtonsLoading,
+                    connectAsGuest
+                ),
                 customization = CrossLoginDefaults.customize(
                     colors = CrossLoginDefaults.colors(
                         titleColor = SwissTransferTheme.colors.primaryTextColor,
@@ -130,6 +128,24 @@ fun OnboardingScreen(
         ),
         snackbarHost = { SnackbarHost(snackbarHostState) },
     )
+}
+
+@Composable
+private fun getNoCrossAppLoginAccountContent(
+    shouldDisplayRequiredLogin: Boolean,
+    onLoginRequest: (List<ExternalAccount>) -> Unit,
+    onCreateAccount: () -> Unit,
+    areLoginButtonsLoading: () -> Boolean,
+    connectAsGuest: () -> Unit
+): @Composable ((Modifier, CrossLoginCustomization) -> Unit) = if (shouldDisplayRequiredLogin) {
+    NoCrossAppLoginAccountsContent.accountRequired(
+        onLogin = { onLoginRequest(emptyList()) },
+        onCreateAccount = onCreateAccount,
+        isLoginButtonLoading = areLoginButtonsLoading,
+        isSignUpButtonLoading = areLoginButtonsLoading
+    )
+} else {
+    NoCrossAppLoginAccountsContent.accountOptional { connectAsGuest() }
 }
 
 private const val HIGHLIGHT_ANGLE = 3.0
