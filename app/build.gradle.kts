@@ -61,6 +61,8 @@ android {
         resValue("string", "prod_host", prodHost)
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
+        // TODO: Use ST one which is 17EE3471-9843-4FB9-AD95-CB8C41BAD624
+        buildConfigField("String", "CLIENT_ID", "\"E90BC22D-67A8-452C-BE93-28DA33588CA4\"")
 
         missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
     }
@@ -177,9 +179,10 @@ sentry {
 }
 
 dependencies {
-
     implementation(core.infomaniak.core.appintegrity)
+    implementation(core.infomaniak.core.auth)
     implementation(core.infomaniak.core.common)
+    implementation(core.infomaniak.core.crossapplogin.front)
     implementation(core.infomaniak.core.filetypes)
     implementation(core.infomaniak.core.inappreview)
     implementation(core.infomaniak.core.inappupdate)
@@ -188,6 +191,7 @@ dependencies {
     implementation(core.infomaniak.core.notifications)
     implementation(core.infomaniak.core.onboarding)
     implementation(core.infomaniak.core.sentry)
+    implementation(core.infomaniak.core.sharedvalues)
     implementation(core.infomaniak.core.thumbnails)
     implementation(core.infomaniak.core.ui.compose.basicbutton)
     implementation(core.infomaniak.core.ui.compose.basics)
@@ -246,6 +250,7 @@ dependencies {
     implementation(core.androidx.work.runtime.ktx)
     implementation(core.kotlinx.serialization.json)
     implementation(core.splitties.toast)
+    implementation(core.okhttp)
 
     // Test
     testImplementation(core.junit)

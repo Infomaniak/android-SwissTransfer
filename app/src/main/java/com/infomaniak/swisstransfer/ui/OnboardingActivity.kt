@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
@@ -25,12 +26,34 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import com.infomaniak.core.auth.models.UserLoginResult
+import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.core.auth.utils.LoginFlowController
+import com.infomaniak.core.auth.utils.LoginUtils
+import com.infomaniak.core.common.observe
+import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
+import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.network.ApiEnvironment
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
+import com.infomaniak.lib.login.InfomaniakLogin
+import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
+import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackAccountEvent
+import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.AccountPreferences
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,8 +63,20 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class OnboardingActivity : ComponentActivity() {
 
+    private val crossAppLoginViewModel: CrossAppLoginViewModel by viewModels()
+
+    private var areButtonsLoading by mutableStateOf(false)
+
+    private val shouldDisplayRequiredLogin by lazy { intent.getBooleanExtra(EXTRA_REQUIRED_LOGIN_KEY, false) }
+
+    @Inject
+    lateinit var accountPreferences: AccountPreferences
+
     @Inject
     lateinit var accountUtils: AccountUtils
+
+    @Inject
+    lateinit var infomaniakLogin: InfomaniakLogin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,24 +84,144 @@ class OnboardingActivity : ComponentActivity() {
 
         if (SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
 
+        setupCrossAppLogin()
+
         setContent {
             val scope = rememberCoroutineScope()
+            val snackbarHostState = remember { SnackbarHostState() }
 
             SwissTransferTheme {
                 LockScreenOrientation(isLocked = LocalWindowAdaptiveInfo.current.isWindowSmall())
 
+                val accountsCheckingState by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
+                val skippedIds by crossAppLoginViewModel.skippedAccountIds.collectAsStateWithLifecycle()
+
+                val loginFlowController = LoginUtils.rememberLoginFlowController(
+                    infomaniakLogin = infomaniakLogin,
+                    userExistenceChecker = accountUtils,
+                ) { userLoginResult ->
+                    when (userLoginResult) {
+                        is UserLoginResult.Success -> loginUsersIntoTheApp(listOf(userLoginResult.user))
+                        is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
+                        null -> Unit
+                    }
+
+                    if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
+                }
+
                 Surface {
                     OnboardingScreen(
-                        goToMainActivity = {
+                        shouldDisplayRequiredLogin = shouldDisplayRequiredLogin,
+                        connectAsGuest = {
                             scope.launch {
-                                accountUtils.login()
-                                Intent(this@OnboardingActivity, MainActivity::class.java).also(::startActivity)
-                                finish()
+                                accountUtils.loginGuestUser()
+                                completeOnboarding()
                             }
-                        }
+                        },
+                        accountsCheckingState = { accountsCheckingState },
+                        skippedIds = { skippedIds },
+                        areLoginButtonsLoading = { areButtonsLoading },
+                        onLoginRequest = { accounts ->
+                            if (accounts.isEmpty()) {
+                                openLoginWebView(loginFlowController)
+                            } else {
+                                scope.launch { connectSelectedAccounts(accounts, crossAppLoginViewModel, snackbarHostState) }
+                            }
+                        },
+                        onCreateAccount = { openAccountCreation(loginFlowController) },
+                        onSaveSkippedAccounts = { crossAppLoginViewModel.skippedAccountIds.value = it },
+                        snackbarHostState = snackbarHostState,
                     )
                 }
             }
         }
+    }
+
+    private fun setupCrossAppLogin() {
+        lifecycleScope.launch {
+            crossAppLoginViewModel.activateUpdates(this@OnboardingActivity)
+        }
+
+        lifecycleScope.launch {
+            crossAppLoginViewModel.availableAccounts.observe(this@OnboardingActivity) { accounts ->
+                SentryLog.i(TAG, "Got ${accounts.count()} accounts from other apps")
+            }
+        }
+    }
+
+    private fun loginUsersIntoTheApp(users: List<User>) {
+        trackAccountEvent(MatomoName.LoggedIn)
+        lifecycleScope.launch {
+            users.forEach { user -> accountUtils.addUser(user) }
+            if (shouldDisplayRequiredLogin) finish() else completeOnboarding()
+        }
+    }
+
+    private fun openLoginWebView(loginFlowController: LoginFlowController) {
+        trackAccountEvent(MatomoName.OpenLoginWebview)
+        startLoadingLoginButtons()
+        loginFlowController.login()
+    }
+
+    private fun openAccountCreation(loginFlowController: LoginFlowController) {
+        trackAccountEvent(MatomoName.OpenCreationWebview)
+        startLoadingLoginButtons()
+        loginFlowController.createAccount(CREATE_ACCOUNT_URL, CREATE_ACCOUNT_SUCCESS_HOST, CREATE_ACCOUNT_CANCEL_HOST)
+    }
+
+    private suspend fun connectSelectedAccounts(
+        accounts: List<ExternalAccount>,
+        viewModel: BaseCrossAppLoginViewModel,
+        snackbarHostState: SnackbarHostState,
+    ) {
+        startLoadingLoginButtons()
+        val loginResult = viewModel.attemptLogin(selectedAccounts = accounts)
+        loginUsers(loginResult, snackbarHostState)
+        loginResult.errorMessageIds.forEach { messageResId -> snackbarHostState.showSnackbar(getString(messageResId)) }
+    }
+
+    private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
+        val results = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, this, accountUtils)
+        val users = buildList {
+            results.forEach { result ->
+                when (result) {
+                    is UserLoginResult.Success -> add(result.user)
+                    is UserLoginResult.Failure -> snackbarHostState.showSnackbar(result.errorMessage)
+                }
+            }
+        }
+
+        if (users.isEmpty()) {
+            stopLoadingLoginButtons()
+        } else {
+            loginUsersIntoTheApp(users)
+        }
+    }
+
+    private fun startLoadingLoginButtons() {
+        areButtonsLoading = true
+    }
+
+    private fun stopLoadingLoginButtons() {
+        areButtonsLoading = false
+    }
+
+    private fun Activity.completeOnboarding() {
+        accountPreferences.isOnboardingDone = true
+
+        Intent(this, MainActivity::class.java).also(::startActivity)
+        finish()
+    }
+
+    companion object {
+        private val TAG = OnboardingActivity::class.java.simpleName
+
+        const val EXTRA_REQUIRED_LOGIN_KEY = "EXTRA_REQUIRED_LOGIN_KEY"
+
+        // TODO: Adapt the account creation config with the correct url for swisstransfer and success/cancel detection
+        private val host = ApiEnvironment.current.host
+        private val CREATE_ACCOUNT_URL = "https://welcome.$host/signup/ikmail?app=true"
+        private val CREATE_ACCOUNT_SUCCESS_HOST = "ksuite.$host"
+        private val CREATE_ACCOUNT_CANCEL_HOST = "welcome.$host"
     }
 }
