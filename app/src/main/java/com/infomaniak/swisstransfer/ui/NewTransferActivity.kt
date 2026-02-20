@@ -26,24 +26,26 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.common.utils.enumValueOfOrNull
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_TYPE_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_URL_KEY
 import com.infomaniak.swisstransfer.ui.navigation.TRANSFER_UUID_KEY
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -56,9 +58,12 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
     @Inject
     lateinit var newTransferOpenManager: NewTransferOpenManager
 
+    @Inject
+    lateinit var accountUtils: AccountUtils
+
     override val inAppReviewManager by lazy { InAppReviewManager(this) }
 
-    private val settingsViewModel: SettingsViewModel by viewModels()
+    private val myAccountViewModel: MyAccountViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,15 +75,19 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
         addOnNewIntentListener(::handleSharedFiles)
 
         setContent {
-            val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
-            SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                NewTransferScreen(
-                    startDestination = remember { getStartDestination() },
-                    inAppReviewManager = inAppReviewManager,
-                    closeActivity = { startMainActivityIfTaskIsEmpty ->
-                        finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
-                    },
-                )
+            val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+            val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
+
+            CompositionLocalProvider(LocalUser provides user) {
+                SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
+                    NewTransferScreen(
+                        startDestination = remember { getStartDestination() },
+                        inAppReviewManager = inAppReviewManager,
+                        closeActivity = { startMainActivityIfTaskIsEmpty ->
+                            finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
+                        },
+                    )
+                }
             }
         }
     }

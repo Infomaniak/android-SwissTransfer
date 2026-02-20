@@ -36,9 +36,7 @@ import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ThemeOption
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun OptionScaffold(
@@ -48,17 +46,15 @@ fun OptionScaffold(
     selectedSettingOptionPosition: Int,
     matomoValue: MatomoScreen,
     setSelectedSettingOptionPosition: (Int) -> Unit,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
 ) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(matomoValue) }
 
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = topAppBarTitleRes,
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
             )
         },
     ) {

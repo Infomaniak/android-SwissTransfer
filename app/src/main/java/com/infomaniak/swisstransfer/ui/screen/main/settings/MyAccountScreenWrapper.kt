@@ -25,20 +25,27 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.extensions.goToAppStore
+import com.infomaniak.core.common.extensions.openUrl
+import com.infomaniak.core.network.SUPPORT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.OnboardingActivity
 import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
@@ -49,17 +56,14 @@ import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.CONNECTION
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DISCOVER_INFOMANIAK
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DELETE_MY_ACCOUNT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EULA
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.GIVE_FEEDBACK
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SHARE_IDEAS
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -67,41 +71,46 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
-import com.infomaniak.swisstransfer.ui.utils.openUrl
 import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
 
 @Composable
-fun SettingsScreenWrapper(
-    settingsViewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
+fun MyAccountScreenWrapper(
+    myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>(),
 ) {
-    val appSettings by settingsViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+    val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     appSettings?.let { safeAppSettings ->
-        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { settingsViewModel.setTheme(it) })
+        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { myAccountViewModel.setTheme(it) })
         val validityPeriod =
-            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { settingsViewModel.setValidityPeriod(it) })
+            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { myAccountViewModel.setValidityPeriod(it) })
         val downloadLimit =
-            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { settingsViewModel.setDownloadLimit(it) })
+            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { myAccountViewModel.setDownloadLimit(it) })
         val emailLanguage =
-            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { settingsViewModel.setEmailLanguage(it) })
+            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { myAccountViewModel.setEmailLanguage(it) })
 
-        SettingsScreenWrapper(theme, validityPeriod, downloadLimit, emailLanguage)
+        MyAccountScreenWrapper(
+            theme = theme,
+            validityPeriod = validityPeriod,
+            downloadLimit = downloadLimit,
+            emailLanguage = emailLanguage,
+            onDisconnectCurrentUser = { myAccountViewModel.disconnectCurrentUser() })
     }
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun SettingsScreenWrapper(
+fun MyAccountScreenWrapper(
     theme: GetSetCallbacks<Theme>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
+    onDisconnectCurrentUser: () -> Unit,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = { ListPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        listPane = { ListPane(navigator = this, onDisconnectCurrentUser) },
         detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
     )
 }
@@ -110,10 +119,7 @@ fun SettingsScreenWrapper(
 @Composable
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-    theme: GetSetCallbacks<Theme>,
-    validityPeriod: GetSetCallbacks<ValidityPeriod>,
-    downloadLimit: GetSetCallbacks<DownloadLimit>,
-    emailLanguage: GetSetCallbacks<EmailLanguage>,
+    onDisconnectCurrentUser: () -> Unit,
 ) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
@@ -122,36 +128,34 @@ private fun ListPane(
 
     val scope = rememberCoroutineScope()
 
-    SettingsScreen(
-        theme = theme,
-        validityPeriod = validityPeriod,
-        downloadLimit = downloadLimit,
-        emailLanguage = emailLanguage,
+    MyAccountScreen(
         onItemClick = { item ->
             when (item) {
-                NOTIFICATIONS -> context.openAppNotificationSettings()
-                EULA -> context.openUrl(EULA_URL)
-                DISCOVER_INFOMANIAK -> context.openUrl(aboutURL)
-                SHARE_IDEAS -> context.openUrl(userReportURL)
-                GIVE_FEEDBACK -> if (BuildConfig.DEBUG) {
-                    // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
-                    context.goToAppStore("com.infomaniak.swisstransfer")
-                } else {
-                    context.goToAppStore()
-                }
-                CONNECTION -> {
+                MyAccountSetting.Login -> {
                     val intent = Intent(context, OnboardingActivity::class.java).apply {
                         putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
                     }
                     context.safeStartActivity(intent)
                 }
-                else -> {
+                MyAccountSetting.SwitchAccount -> TODO()
+                MyAccountSetting.Support -> context.openUrl(SUPPORT_URL)
+                MyAccountSetting.Logout -> onDisconnectCurrentUser()
+                MyAccountSetting.Eula -> context.openUrl(EULA_URL)
+                MyAccountSetting.DiscoverInfomaniak -> context.openUrl(aboutURL)
+                MyAccountSetting.ShareIdeas -> context.openUrl(userReportURL)
+                MyAccountSetting.GiveFeedback -> if (BuildConfig.DEBUG) {
+                    // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
+                    context.goToAppStore("com.infomaniak.swisstransfer")
+                } else {
+                    context.goToAppStore()
+                }
+                is MyAccountSetting.Navigation -> {
                     // Navigate to the detail pane with the passed item
-                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item) }
+                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item.destination) }
                 }
             }
         },
-        getSelectedSetting = { navigator.currentDestination?.contentKey },
+        getSelectedSetting = { MyAccountSetting.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
     )
 }
 
@@ -173,6 +177,26 @@ private fun DetailPane(
     }
 
     when (destination) {
+        SETTINGS -> {
+            val user = LocalUser.current
+            val context = LocalContext.current
+
+            SettingsScreen(
+                theme = theme,
+                isAccountDeletable = { user != null },
+                validityPeriod = validityPeriod,
+                downloadLimit = downloadLimit,
+                emailLanguage = emailLanguage,
+                onItemClick = { item ->
+                    when (item) {
+                        NOTIFICATIONS -> context.openAppNotificationSettings()
+                        else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                    }
+                },
+                navigateBack = navigateBack,
+                getSelectedSetting = { navigator.currentDestination?.contentKey },
+            )
+        }
         THEME -> SettingsThemeScreen(
             theme = theme.get(),
             navigateBack = navigateBack,
@@ -201,12 +225,8 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        CONNECTION,
         NOTIFICATIONS,
-        EULA,
-        DISCOVER_INFOMANIAK,
-        SHARE_IDEAS,
-        GIVE_FEEDBACK,
+        DELETE_MY_ACCOUNT,
         null -> NoSelectionEmptyState()
     }
 }
@@ -225,15 +245,18 @@ private fun NoSelectionEmptyState() {
 
 @PreviewAllWindows
 @Composable
-private fun SettingsScreenWrapperPreview() {
+private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
     SwissTransferTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            SettingsScreenWrapper(
-                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
-                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
-                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
-            )
+        CompositionLocalProvider(LocalUser provides users.first()) {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                MyAccountScreenWrapper(
+                    theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                    validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
+                    downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
+                    emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
+                    onDisconnectCurrentUser = {}
+                )
+            }
         }
     }
 }

@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager

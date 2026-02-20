@@ -40,12 +40,24 @@ private const val specific5 = 0xFF49DEFD
 // Extra palette
 private const val grey = 0xFFCFCFCF
 private const val elephant = 0xFF666666
+private const val bat = 0xFF1A1A1A
 private const val white = 0xFFFFFFFF
 private const val black = 0xFF000000
 private const val black_translucent = 0x80000000
 
 private const val warning = 0xFFFFAA4C
 private const val error = 0xFFFC8878
+
+// Avatars
+val yellow_dark = Color(0xFFFFDF9E)
+val coral_dark = Color(0xFFFD9459)
+val grass_dark = Color(0xFF78D383)
+val fougere_dark = Color(0xFF00C7B3)
+val cobalt_dark = Color(0xFF0AB2F5)
+val jean_dark = Color(0xFF81C4F8)
+val tropical_dark = Color(0xFF86DEEA)
+val mauve_dark = Color(0xFFCC8FD6)
+val prince_dark = Color(0xFF956DDD)
 
 val DarkColorScheme = darkColorScheme(
     primary = Color(green_main),
@@ -101,4 +113,17 @@ val CustomDarkColorScheme = CustomColorScheme(
     swipeDefault = Color(grey),
     swipeDelete = Color(error),
     swipeIcon = Color(black),
+    avatarInitialsColor = Color(bat),
+)
+
+val AvatarColorsDark = AvatarColors(
+    yellow = yellow_dark,
+    coral = coral_dark,
+    grass = grass_dark,
+    fougere = fougere_dark,
+    cobalt = cobalt_dark,
+    jean = jean_dark,
+    tropical = tropical_dark,
+    mauve = mauve_dark,
+    prince = prince_dark,
 )

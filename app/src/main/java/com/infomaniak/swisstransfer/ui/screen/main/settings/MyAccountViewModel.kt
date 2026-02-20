@@ -25,14 +25,17 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+class MyAccountViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
+    private val accountUtils: AccountUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -52,5 +55,11 @@ class SettingsViewModel @Inject constructor(
 
     fun setEmailLanguage(emailLanguage: EmailLanguage) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setEmailLanguage(emailLanguage)
+    }
+
+    fun disconnectCurrentUser() {
+        viewModelScope.launch {
+            accountUtils.currentUserIdFlow.first()?.let { accountUtils.removeUser(it) }
+        }
     }
 }

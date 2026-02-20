@@ -56,7 +56,7 @@ private val backBehavior = BackNavigationBehavior.PopUntilContentChange
  * @param detailPane A composable function that describes the content of the detail pane.
  * @param modifier [Modifier] of the scaffold layout.
  *
- * @sample com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
+ * @sample com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
