@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2026 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="advancedSettingsTitle">Geavanceerde instellingen</string>
+    <string name="awaitingNetwork">Wachten op netwerk</string>
+    <string name="buttonCancelTransfer">Overdracht annuleren</string>
+    <string name="buttonCloseAndContinue">Sluiten en doorgaan</string>
+    <string name="buttonConfirm">Bevestigen</string>
+    <string name="buttonCopyLink">Link kopiëren</string>
+    <string name="buttonDeleteYes">Ja, verwijderen</string>
+    <string name="buttonDownload">Downloaden</string>
+    <string name="buttonDownloadSelected">Selectie downloaden</string>
+    <string name="buttonDownloaded">Gedownload</string>
+    <string name="buttonDownloading">Downloaden</string>
+    <string name="buttonEditTransfer">Mijn overdracht bewerken</string>
+    <string name="buttonFinished">Voltooien</string>
+    <string name="buttonOpenMailApp">E-mailapp openen</string>
+    <string name="buttonShare">Delen</string>
+    <string name="buttonStart">Starten</string>
+    <string name="cantImportFileX">Kan het bestand %s niet importeren</string>
+    <string name="checkingFiles">Bestanden controleren…</string>
+    <string name="contentDescriptionButtonBack">Terug</string>
+    <string name="contentDescriptionButtonClose">Sluiten</string>
+    <string name="contentDescriptionButtonHidePassword">Wachtwoord verbergen</string>
+    <string name="contentDescriptionButtonRemove">Bestand verwijderen</string>
+    <string name="contentDescriptionButtonRemoveRecipient">%s verwijderen</string>
+    <string name="contentDescriptionButtonShowPassword">Wachtwoord weergeven</string>
+    <string name="contentDescriptionCreateNewTransferButton">Nieuwe overdracht</string>
+    <string name="deeplinkPasswordDescription">Voer het wachtwoord in dat je hebt ontvangen om deze bestanden te downloaden.</string>
+    <string name="deeplinkTransferExpired">Deze overdracht is verlopen</string>
+    <string name="deeplinkTransferNotFound">Deze overdracht bestaat niet</string>
+    <string name="deleteThisTransferDescription">Deze overdracht en de bestanden die het bevat, worden verwijderd.</string>
+    <string name="deleteThisTransferTitle">Deze overdracht verwijderen?</string>
+    <string name="downloadedTransferLabel">Gedownloade overdracht: %d/%d</string>
+    <string name="errorIncorrectPassword">Onjuist wachtwoord</string>
+    <string name="errorTransferPasswordLength">Het wachtwoord moet tussen de 6 en 25 tekens bevatten</string>
+    <string name="expired">Verlopen</string>
+    <string name="expiresAt">Verloopt om %s</string>
+    <string name="expiresIn">Verloopt over %d dagen</string>
+    <string name="expiresOn">Verloopt op %s om %s</string>
+    <string name="expiresTomorrow">Verloopt morgen</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d bestanden</string>
+    <string name="fileCountOverTtsFriendly">%1$d van %2$d bestanden</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s van %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d bestand</item>
+        <item quantity="other">%d bestanden</item>
+    </plurals>
+    <string name="firstTransferDescription">Maak je eerste overdracht!</string>
+    <string name="importFilesScreenTitle">Te overdragen bestanden</string>
+    <string name="invalidAddress">Ongeldig adres</string>
+    <string name="messageHeader">Bericht:</string>
+    <string name="myFilesTitle">Mijn bestanden</string>
+    <string name="networkUnavailable">Netwerk niet beschikbaar</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Oeps, wil je echt annuleren?</string>
+    <string name="newTransferLeavingDialogDescription">Je overdracht is bijna klaar. Weet je zeker dat je het wilt annuleren?</string>
+    <string name="newTransferLeavingDialogNegativeButton">Nee, doorgaan</string>
+    <string name="newTransferLeavingDialogPositiveButton">Ja, annuleren</string>
+    <string name="noSettingsSelectedDescription">Selecteer een parameter om het weer te geven</string>
+    <string name="noTransferReceivedDescription">Alle overdrachten die je de afgelopen 30 dagen ontvangt, verschijnen hier.</string>
+    <string name="noTransferReceivedTitle">Geen ontvangen overdrachten</string>
+    <string name="noTransferSelectedDescription">Selecteer een overdracht of maak een nieuwe aan.</string>
+    <string name="noTransferSelectedTitle">Geen overdrachten om weer te geven</string>
+    <string name="notificationTransferDraftDescription">Ga verder waar je gebleven was</string>
+    <string name="notificationTransferDraftTitle">Overdracht in behandeling</string>
+    <string name="notificationUploadFailureDescription">Er is een probleem opgetreden, probeer het opnieuw</string>
+    <string name="notificationUploadFailureTitle">De overdracht is mislukt</string>
+    <string name="notificationUploadProgressTitle">Overdracht bezig… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">De downloadlink is verzonden naar de ontvangers</string>
+    <string name="notificationUploadSuccessDescriptionOther">Klik om je downloadlink te ontvangen</string>
+    <string name="notificationUploadSuccessTitle">Overdracht voltooid</string>
+    <string name="notificationsUploadChannelName">Uploadmeldingen</string>
+    <string name="onboardingExpirationSubtitleArgument">30 dagen.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Deel je bestanden via e-mail, link of QR-code. Je links blijven actief voor %s</string>
+    <string name="onboardingExpirationTitle">Speel je beste kaarten!</string>
+    <string name="onboardingPasswordSubtitleArgument">een wachtwoord.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Bescherm je shares met %s</string>
+    <string name="onboardingPasswordTitle">Behoudt de controle!</string>
+    <string name="onboardingStorageSubtitleArgument">Deel tot 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s bestanden gratis en zonder registratie.</string>
+    <string name="onboardingStorageTitle">Verstuur grote bestanden!</string>
+    <string name="receivedFilesTitle">Ontvangen bestanden</string>
+    <string name="receivedTitle">Ontvangen</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Ontvanger:</item>
+        <item quantity="other">Ontvangers:</item>
+    </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer is niet beschikbaar op jouw locatie</string>
+    <string name="sentEmptyTitle">Ons verhaal begint hier</string>
+    <string name="sentFilesTitle">Gedeelde bestanden</string>
+    <string name="sentTitle">Verzonden</string>
+    <string name="settingsCategoryAbout">Over</string>
+    <string name="settingsCategoryDataManagement">Gegevens &amp; Privacy</string>
+    <string name="settingsCategoryDefaultSettings">Standaardinstellingen</string>
+    <string name="settingsCategoryGeneral">Algemeen</string>
+    <string name="settingsDownloadsLimitTitle">Stel een standaard downloadlimiet in voor je overdrachten</string>
+    <string name="settingsEmailLanguageTitle">Stel een standaardtaal in voor je e-mailoverdrachten</string>
+    <string name="settingsEmailLanguageValueEnglish">Engels</string>
+    <string name="settingsEmailLanguageValueFrench">Frans</string>
+    <string name="settingsEmailLanguageValueGerman">Duits</string>
+    <string name="settingsEmailLanguageValueItalian">Italiaans</string>
+    <string name="settingsEmailLanguageValueSpanish">Spaans</string>
+    <string name="settingsMatomoDescription">Matomo is een analysetool die uitsluitend door Infomaniak wordt gehost en beheerd om te begrijpen hoe de applicatie wordt gebruikt.\n\nDoor deze gegevens te bestuderen, kan ons team de interface van de applicatie voortdurend verbeteren.</string>
+    <string name="settingsNotificationsTitle">Selecteer een voorkeur</string>
+    <string name="settingsOptionActivated">Geactiveerd</string>
+    <string name="settingsOptionDiscoverInfomaniak">Ontdek Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Downloadlimiet</string>
+    <string name="settingsOptionEmailLanguage">E-mailtaal</string>
+    <string name="settingsOptionGiveFeedback">Geef je mening</string>
+    <string name="settingsOptionNone">Geen</string>
+    <string name="settingsOptionNotifications">Meldingen</string>
+    <string name="settingsOptionPassword">Wachtwoord</string>
+    <string name="settingsOptionShareIdeas">Deel je ideeën</string>
+    <string name="settingsOptionTermsAndConditions">Algemene voorwaarden</string>
+    <string name="settingsOptionTheme">Thema</string>
+    <string name="settingsOptionThemeDark">Donker</string>
+    <string name="settingsOptionThemeLight">Licht</string>
+    <string name="settingsOptionThemeSystem">Systeem</string>
+    <string name="settingsOptionValidityPeriod">Geldigheidsperiode</string>
+    <string name="settingsPasswordDescription">Je ontvangers moeten het wachtwoord invoeren om de bestanden te downloaden.</string>
+    <string name="settingsPasswordToggleDescription">Bescherming activeren</string>
+    <string name="settingsThemeTitle">Selecteer een thema</string>
+    <string name="settingsTitle">Instellingen</string>
+    <string name="settingsValidityPeriodTitle">Stel een standaard geldigheidsperiode in voor je overdrachten</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dagen</item>
+    </plurals>
+    <string name="sharePasswordButton">Wachtwoord kopiëren</string>
+    <string name="sharePasswordDescription">Dit is het wachtwoord om de bestanden te downloaden!</string>
+    <string name="sharePasswordTitle">Deze overdracht is beveiligd</string>
+    <string name="shareQrCodeDescription">Laat dit QR-code scannen om je overdracht te delen:</string>
+    <string name="shareQrCodeTitle">Snel delen</string>
+    <string name="snackbarLinkCopiedToClipboard">Link gekopieerd naar klembord</string>
+    <string name="sorry">Het spijt ons</string>
+    <string name="startActivityCantHandleAction">Er is geen applicatie gevonden om deze actie af te handelen</string>
+    <string name="textFieldOptional">(Optioneel)</string>
+    <string name="tooLargeFilesDescription">De maximale overdrachtsgrootte is overschreden.</string>
+    <string name="tooLargeFilesTitle">Dat is een beetje veel…</string>
+    <string name="transferContentHeader">Inhoud van de overdracht:</string>
+    <string name="transferExpiredButton">Uit geschiedenis verwijderen</string>
+    <string name="transferExpiredDateReachedDescription">Sorry, deze overdracht is verlopen op %s. Je kunt de bestanden niet meer downloaden of bekijken.</string>
+    <string name="transferExpiredDescription">Sorry, deze overdracht is verlopen. Je kunt de bestanden niet meer downloaden of bekijken.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Sorry, deze overdracht heeft de limiet van %d mogelijke download bereikt.</item>
+        <item quantity="other">Sorry, deze overdracht heeft de limiet van %d mogelijke downloads bereikt.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Deze overdracht is niet meer beschikbaar</string>
+    <string name="transferInitializing">Laden…</string>
+    <string name="transferListSectionFuture">Toekomst</string>
+    <string name="transferListSectionLastWeek">Vorige week</string>
+    <string name="transferListSectionThisMonth">Deze maand</string>
+    <string name="transferListSectionThisWeek">Deze week</string>
+    <string name="transferListSectionToday">Vandaag</string>
+    <string name="transferListSectionYesterday">Gisteren</string>
+    <string name="transferMessagePlaceholder">Een bericht om door te geven?</string>
+    <string name="transferRecipientAddressPlaceholder">Bestanden verzenden naar</string>
+    <string name="transferSendButton">Verzenden</string>
+    <string name="transferSenderAddressPlaceholder">Jouw e-mailadres</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s over</item>
+        <item quantity="other">%s over</item>
+    </plurals>
+    <string name="transferTypeEmail">E-mail</string>
+    <string name="transferTypeLink">Link</string>
+    <string name="transferTypeQrCode">QR-code</string>
+    <string name="transferTypeScreenTitle">Overdracht</string>
+    <string name="transferTypeTitle">Verzenden via</string>
+    <string name="transferVirusCheckDescription">De bestanden zijn om veiligheidsredenen nog niet toegankelijk.\nKom over een paar ogenblikken terug.</string>
+    <string name="transferVirusCheckTitle">Bestanden worden gecontroleerd</string>
+    <string name="transferVirusDetectedDescription">Je kunt geen toegang krijgen tot deze overdracht omdat deze niet voldoet aan onze gebruiksvoorwaarden.</string>
+    <string name="transferVirusDetectedTitle">Niet-conforme bestanden</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Weet je zeker dat je de overdracht wilt annuleren?</string>
+    <string name="uploadErrorDescription">De overdracht is mislukt, geef het een nieuwe kans. Als het probleem aanhoudt, neem dan contact op met ons ondersteuningsteam.</string>
+    <string name="uploadErrorTitle">Wacht, wat is er zojuist gebeurd?</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">onze eigen datacenters, zonder airconditioning</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">technologische onafhankelijkheid in Europa.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">We ontwerpen %s, om de marktstandaarden voor energie-efficiëntie te overtreffen.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">We ontwikkelen %s Zonder compromissen op het gebied van ecologie, privacy en mensen.</string>
+    <string name="uploadProgressIndication">Overdracht bezig…</string>
+    <string name="uploadProgressTitleArgument">uniek</string>
+    <string name="uploadProgressTitleTemplate">Wat maakt ons %s?</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">De downloadlink is verzonden naar de volgende ontvanger:</item>
+        <item quantity="other">De downloadlink is verzonden naar de volgende ontvangers:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Verzonden!</string>
+    <string name="uploadSuccessLinkDescription">Laat dit QR-code scannen om je bestanden te delen, of kopieer de onderstaande link.</string>
+    <string name="uploadSuccessLinkTitle">Je overdracht is klaar!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">De ingevoerde code is onjuist</string>
+    <string name="validateMailCodeResentFeedback">De code is verzonden naar het e-mailadres %s</string>
+    <string name="validateMailDescription">We hebben een code gestuurd naar %s. Voer deze hieronder in om je e-mailadres in de app te verifiëren:</string>
+    <string name="validateMailInfo">Vergeet niet de spammap van je e-mailadres te controleren.</string>
+    <string name="validateMailResendCode">Een code opnieuw verzenden</string>
+    <string name="validateMailResendCodeTemplate">Een code opnieuw verzenden (%ds)</string>
+    <string name="validateMailTitle">Controleer je e-mail</string>
+    <string name="validateMailUnknownError">Er is een fout opgetreden. Probeer het over een paar ogenblikken opnieuw.</string>
+    <string name="version">Versie</string>
+</resources>

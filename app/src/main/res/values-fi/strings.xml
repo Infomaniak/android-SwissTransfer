@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2026 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="advancedSettingsTitle">Lisäasetukset</string>
+    <string name="awaitingNetwork">Odotetaan verkkoa</string>
+    <string name="buttonCancelTransfer">Peruuta siirto</string>
+    <string name="buttonCloseAndContinue">Sulje ja jatka</string>
+    <string name="buttonConfirm">Vahvista</string>
+    <string name="buttonCopyLink">Kopioi linkki</string>
+    <string name="buttonDeleteYes">Kyllä, poista</string>
+    <string name="buttonDownload">Lataa</string>
+    <string name="buttonDownloadSelected">Lataa valinta</string>
+    <string name="buttonDownloaded">Ladattu</string>
+    <string name="buttonDownloading">Ladataan</string>
+    <string name="buttonEditTransfer">Muokkaa siirtoani</string>
+    <string name="buttonFinished">Valmis</string>
+    <string name="buttonOpenMailApp">Avaa sähköpostisovellus</string>
+    <string name="buttonShare">Jaa</string>
+    <string name="buttonStart">Aloita</string>
+    <string name="cantImportFileX">Tiedostoa %s ei voi tuoda</string>
+    <string name="checkingFiles">Tarkistetaan tiedostoja…</string>
+    <string name="contentDescriptionButtonBack">Takaisin</string>
+    <string name="contentDescriptionButtonClose">Sulje</string>
+    <string name="contentDescriptionButtonHidePassword">Piilota salasana</string>
+    <string name="contentDescriptionButtonRemove">Poista tiedosto</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Poista %s</string>
+    <string name="contentDescriptionButtonShowPassword">Näytä salasana</string>
+    <string name="contentDescriptionCreateNewTransferButton">Uusi siirto</string>
+    <string name="deeplinkPasswordDescription">Syötä saamasi salasana ladataksesi nämä tiedostot.</string>
+    <string name="deeplinkTransferExpired">Tämä siirto on vanhentunut</string>
+    <string name="deeplinkTransferNotFound">Tätä siirtoa ei ole olemassa</string>
+    <string name="deleteThisTransferDescription">Tämä siirto ja sen sisältämät tiedostot poistetaan.</string>
+    <string name="deleteThisTransferTitle">Poistetaanko tämä siirto?</string>
+    <string name="downloadedTransferLabel">Ladattu siirto: %d/%d</string>
+    <string name="errorIncorrectPassword">Virheellinen salasana</string>
+    <string name="errorTransferPasswordLength">Salasanan täytyy olla 6–25 merkkiä pitkä</string>
+    <string name="expired">Vanhentunut</string>
+    <string name="expiresAt">Vanhenee klo %s</string>
+    <string name="expiresIn">Vanhenee %d päivässä</string>
+    <string name="expiresOn">Vanhenee %s klo %s</string>
+    <string name="expiresTomorrow">Vanhenee huomenna</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d tiedostoa</string>
+    <string name="fileCountOverTtsFriendly">%1$d / %2$d tiedostoa</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s / %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d tiedosto</item>
+        <item quantity="other">%d tiedostoa</item>
+    </plurals>
+    <string name="firstTransferDescription">Tee ensimmäinen siirtosi!</string>
+    <string name="importFilesScreenTitle">Siirrettävät tiedostot</string>
+    <string name="invalidAddress">Virheellinen osoite</string>
+    <string name="messageHeader">Viesti:</string>
+    <string name="myFilesTitle">Omat tiedostot</string>
+    <string name="networkUnavailable">Verkko ei saatavilla</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Hups, haluatko todella peruuttaa?</string>
+    <string name="newTransferLeavingDialogDescription">Siirtosi on melkein valmis. Haluatko varmasti peruuttaa sen?</string>
+    <string name="newTransferLeavingDialogNegativeButton">Ei, jatka</string>
+    <string name="newTransferLeavingDialogPositiveButton">Kyllä, peruuta</string>
+    <string name="noSettingsSelectedDescription">Valitse parametri näyttääksesi sen</string>
+    <string name="noTransferReceivedDescription">Kaikki viimeisen 30 päivän aikana vastaanottamasi siirrot näkyvät täällä.</string>
+    <string name="noTransferReceivedTitle">Ei vastaanotettuja siirtoja</string>
+    <string name="noTransferSelectedDescription">Valitse siirto tai luo uusi.</string>
+    <string name="noTransferSelectedTitle">Ei näytettäviä siirtoja</string>
+    <string name="notificationTransferDraftDescription">Jatka siitä mihin jäit</string>
+    <string name="notificationTransferDraftTitle">Odottava siirto</string>
+    <string name="notificationUploadFailureDescription">Tapahtui ongelma, yritä uudelleen</string>
+    <string name="notificationUploadFailureTitle">Siirto epäonnistui</string>
+    <string name="notificationUploadProgressTitle">Siirto käynnissä… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Latauslinkki on lähetetty vastaanottajille</string>
+    <string name="notificationUploadSuccessDescriptionOther">Napauta saadaksesi lataustilasi</string>
+    <string name="notificationUploadSuccessTitle">Siirto valmis</string>
+    <string name="notificationsUploadChannelName">Lähetyksen ilmoitukset</string>
+    <string name="onboardingExpirationSubtitleArgument">30 päivää.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Jaa tiedostosi sähköpostitse, linkillä tai QR-koodilla. Linkkisi pysyvät aktiivisina %s</string>
+    <string name="onboardingExpirationTitle">Pelaa parhailla korteillasi!</string>
+    <string name="onboardingPasswordSubtitleArgument">salasanalla.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Suojaa jakosi %s</string>
+    <string name="onboardingPasswordTitle">Pysy hallinnassa!</string>
+    <string name="onboardingStorageSubtitleArgument">Jaa jopa 50 Gt</string>
+    <string name="onboardingStorageSubtitleTemplate">%s tiedostoja ilmaiseksi ilman rekisteröitymistä.</string>
+    <string name="onboardingStorageTitle">Lähetä isoja tiedostoja!</string>
+    <string name="receivedFilesTitle">Vastaanotetut tiedostot</string>
+    <string name="receivedTitle">Vastaanotettu</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Vastaanottaja:</item>
+        <item quantity="other">Vastaanottajat:</item>
+    </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer ei ole saatavilla alueellasi</string>
+    <string name="sentEmptyTitle">Tarinamme alkaa täältä</string>
+    <string name="sentFilesTitle">Jaetut tiedostot</string>
+    <string name="sentTitle">Lähetetty</string>
+    <string name="settingsCategoryAbout">Tietoja</string>
+    <string name="settingsCategoryDataManagement">Tiedot &amp; Yksityisyys</string>
+    <string name="settingsCategoryDefaultSettings">Oletusasetukset</string>
+    <string name="settingsCategoryGeneral">Yleiset</string>
+    <string name="settingsDownloadsLimitTitle">Aseta oletusarvoinen latausraja siirroillesi</string>
+    <string name="settingsEmailLanguageTitle">Aseta oletuskieli sähköpostilähetyksillesi</string>
+    <string name="settingsEmailLanguageValueEnglish">Englanti</string>
+    <string name="settingsEmailLanguageValueFrench">Ranska</string>
+    <string name="settingsEmailLanguageValueGerman">Saksa</string>
+    <string name="settingsEmailLanguageValueItalian">Italia</string>
+    <string name="settingsEmailLanguageValueSpanish">Espanja</string>
+    <string name="settingsMatomoDescription">Matomo on analyysityökalu, jota Infomaniak isännöi ja hallinnoi yksinomaan ymmärtääkseen kuinka sovellusta käytetään.\n\nTutkimalla näitä tietoja tiimimme pystyy jatkuvasti parantamaan sovelluksen käyttöliittymää.</string>
+    <string name="settingsNotificationsTitle">Valitse asetus</string>
+    <string name="settingsOptionActivated">Aktivoitu</string>
+    <string name="settingsOptionDiscoverInfomaniak">Tutustu Infomaniakiin</string>
+    <string name="settingsOptionDownloadLimit">Latausraja</string>
+    <string name="settingsOptionEmailLanguage">Sähköpostin kieli</string>
+    <string name="settingsOptionGiveFeedback">Anna palautetta</string>
+    <string name="settingsOptionNone">Ei mitään</string>
+    <string name="settingsOptionNotifications">Ilmoitukset</string>
+    <string name="settingsOptionPassword">Salasana</string>
+    <string name="settingsOptionShareIdeas">Jaa ideasi</string>
+    <string name="settingsOptionTermsAndConditions">Käyttöehdot</string>
+    <string name="settingsOptionTheme">Teema</string>
+    <string name="settingsOptionThemeDark">Tumma</string>
+    <string name="settingsOptionThemeLight">Vaalea</string>
+    <string name="settingsOptionThemeSystem">Järjestelmä</string>
+    <string name="settingsOptionValidityPeriod">Voimassaoloaika</string>
+    <string name="settingsPasswordDescription">Vastaanottajien täytyy syöttää salasana ladatakseen tiedostot.</string>
+    <string name="settingsPasswordToggleDescription">Aktivoi suojaus</string>
+    <string name="settingsThemeTitle">Valitse teema</string>
+    <string name="settingsTitle">Asetukset</string>
+    <string name="settingsValidityPeriodTitle">Aseta oletusarvoinen voimassaoloaika siirroillesi</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d päivä</item>
+        <item quantity="other">%d päivää</item>
+    </plurals>
+    <string name="sharePasswordButton">Kopioi salasana</string>
+    <string name="sharePasswordDescription">Tässä on salasana tiedostojen lataamiseen!</string>
+    <string name="sharePasswordTitle">Tämä siirto on suojattu</string>
+    <string name="shareQrCodeDescription">Näytä tätä QR-koodia jakaaksesi siirtosi:</string>
+    <string name="shareQrCodeTitle">Pikajako</string>
+    <string name="snackbarLinkCopiedToClipboard">Linkki kopioitu leikepöydälle</string>
+    <string name="sorry">Olemme pahoillamme</string>
+    <string name="startActivityCantHandleAction">Tätä toimintoa varten ei löytynyt sovellusta</string>
+    <string name="textFieldOptional">(Valinnainen)</string>
+    <string name="tooLargeFilesDescription">Siirron enimmäiskoko on ylitetty.</string>
+    <string name="tooLargeFilesTitle">Se on hieman paljon…</string>
+    <string name="transferContentHeader">Siirron sisältö:</string>
+    <string name="transferExpiredButton">Poista historiastа</string>
+    <string name="transferExpiredDateReachedDescription">Pahoittelut, tämä siirto vanheni %s. Et voi enää ladata tai tarkastella tiedostoja.</string>
+    <string name="transferExpiredDescription">Pahoittelut, tämä siirto on vanhentunut. Et voi enää ladata tai tarkastella tiedostoja.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Pahoittelut, tämä siirto on saavuttanut %d mahdollisen latauksen rajan.</item>
+        <item quantity="other">Pahoittelut, tämä siirto on saavuttanut %d mahdollisten latausten rajan.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Tämä siirto ei ole enää saatavilla</string>
+    <string name="transferInitializing">Ladataan…</string>
+    <string name="transferListSectionFuture">Tuleva</string>
+    <string name="transferListSectionLastWeek">Viime viikolla</string>
+    <string name="transferListSectionThisMonth">Tässä kuussa</string>
+    <string name="transferListSectionThisWeek">Tällä viikolla</string>
+    <string name="transferListSectionToday">Tänään</string>
+    <string name="transferListSectionYesterday">Eilen</string>
+    <string name="transferMessagePlaceholder">Viesti välitettäväksi?</string>
+    <string name="transferRecipientAddressPlaceholder">Lähetä tiedostoja osoitteeseen</string>
+    <string name="transferSendButton">Lähetä</string>
+    <string name="transferSenderAddressPlaceholder">Sähköpostiosoitteesi</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s jäljellä</item>
+        <item quantity="other">%s jäljellä</item>
+    </plurals>
+    <string name="transferTypeEmail">Sähköposti</string>
+    <string name="transferTypeLink">Linkki</string>
+    <string name="transferTypeQrCode">QR-koodi</string>
+    <string name="transferTypeScreenTitle">Siirto</string>
+    <string name="transferTypeTitle">Lähetä</string>
+    <string name="transferVirusCheckDescription">Tiedostot eivät ole vielä saatavilla turvallisuussyistä.\nPalaa hetken kuluttua.</string>
+    <string name="transferVirusCheckTitle">Tiedostoja tarkistetaan</string>
+    <string name="transferVirusDetectedDescription">Et voi käyttää tätä siirtoa, koska se ei noudata käyttöehtojamme.</string>
+    <string name="transferVirusDetectedTitle">Vaatimustenvastaisia tiedostoja</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Haluatko varmasti peruuttaa siirron?</string>
+    <string name="uploadErrorDescription">Siirto ei onnistunut, anna sille toinen mahdollisuus. Jos ongelma jatkuu, ota yhteyttä tukitiimiimme.</string>
+    <string name="uploadErrorTitle">Odota, mitä juuri tapahtui?</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">omat palvelinkeskuksemme, ilman ilmastointia</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">teknologista riippumattomuutta Euroopassa.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">Suunnittelemme %s, ylittääksemme markkinoiden energiatehokkuusstandardit.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">Kehitämme %s Ilman kompromisseja ekologian, yksityisyyden ja ihmisten suhteen.</string>
+    <string name="uploadProgressIndication">Siirto käynnissä…</string>
+    <string name="uploadProgressTitleArgument">erottavaa</string>
+    <string name="uploadProgressTitleTemplate">Mikä tekee meistä %s?</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">Latauslinkki on lähetetty seuraavalle vastaanottajalle:</item>
+        <item quantity="other">Latauslinkki on lähetetty seuraaville vastaanottajille:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Lähetetty!</string>
+    <string name="uploadSuccessLinkDescription">Näytä tätä QR-koodia jakaaksesi tiedostosi, tai kopioi alla oleva linkki.</string>
+    <string name="uploadSuccessLinkTitle">Siirtosi on valmis!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">Syötetty koodi on virheellinen</string>
+    <string name="validateMailCodeResentFeedback">Koodi lähetettiin sähköpostiosoitteeseen %s</string>
+    <string name="validateMailDescription">Lähetimme koodin osoitteeseen %s. Syötä se alla vahvistaaksesi sähköpostiosoitteesi sovelluksessa:</string>
+    <string name="validateMailInfo">Muista tarkistaa sähköpostisi roskapostikansio.</string>
+    <string name="validateMailResendCode">Lähetä koodi uudelleen</string>
+    <string name="validateMailResendCodeTemplate">Lähetä koodi uudelleen (%ds)</string>
+    <string name="validateMailTitle">Tarkista sähköpostisi</string>
+    <string name="validateMailUnknownError">Tapahtui virhe. Yritä uudelleen hetken kuluttua.</string>
+    <string name="version">Versio</string>
+</resources>
