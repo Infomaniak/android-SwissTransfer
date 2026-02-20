@@ -32,8 +32,6 @@ import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownCircle
-import com.infomaniak.swisstransfer.ui.images.icons.ArrowUpCircle
 import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
@@ -48,22 +46,26 @@ import com.infomaniak.core.common.R as RCore
  */
 enum class NavigationItem(
     val label: @Composable () -> String,
-    val icon: @Composable (User?, contentDescription: String?) -> Unit,
+    val icon: @Composable (User?, ArrowAnimationState, contentDescription: String?) -> Unit,
     val destination: MainNavigation,
 ) {
     Sent(
         label = { stringResource(R.string.sentTitle) },
-        icon = { _, contentDescription -> Icon(AppIcons.ArrowUpCircle, contentDescription) },
+        icon = { _, arrowAnimationState, contentDescription ->
+            AnimatedArrowUpCircle(arrowAnimationState, contentDescription)
+        },
         destination = SentDestination()
     ),
     Received(
         label = { stringResource(R.string.receivedTitle) },
-        icon = { _, contentDescription -> Icon(AppIcons.ArrowDownCircle, contentDescription) },
+        icon = { _, arrowAnimationState, contentDescription ->
+            AnimatedArrowDownCircle(arrowAnimationState, contentDescription)
+        },
         destination = ReceivedDestination()
     ),
     MyAccount(
         label = { pluralStringResource(RCore.plurals.myAccount, 1) },
-        icon = { user, contentDescription ->
+        icon = { user, _, contentDescription ->
             Crossfade(user) { user ->
                 if (user == null) {
                     Icon(AppIcons.Person, contentDescription)
