@@ -40,6 +40,7 @@ class MyAccountViewModel @Inject constructor(
 ) : ViewModel() {
 
     val appSettingsFlow = appSettingsManager.appSettings
+    val users = accountUtils.users
 
     fun setTheme(theme: Theme) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setTheme(theme)
@@ -60,6 +61,12 @@ class MyAccountViewModel @Inject constructor(
     fun disconnectCurrentUser() {
         viewModelScope.launch {
             accountUtils.currentUserIdFlow.first()?.let { accountUtils.removeUser(it) }
+        }
+    }
+
+    fun switchUser(userId: Int) {
+        viewModelScope.launch {
+            accountUtils.switchUser(userId)
         }
     }
 }

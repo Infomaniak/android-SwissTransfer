@@ -194,12 +194,14 @@ dependencies {
     implementation(core.infomaniak.core.sentry)
     implementation(core.infomaniak.core.sharedvalues)
     implementation(core.infomaniak.core.thumbnails)
+    implementation(core.infomaniak.core.ui.compose.accountbottomsheet)
     implementation(core.infomaniak.core.ui.compose.basicbutton)
     implementation(core.infomaniak.core.ui.compose.basics)
     implementation(core.infomaniak.core.ui.compose.bottomstickybuttonscaffolds)
     implementation(core.infomaniak.core.ui.compose.margin)
     implementation(core.infomaniak.core.ui.compose.preview)
     implementation(core.infomaniak.core.ui.compose.theme)
+    implementation(core.infomaniak.core.webview)
 
     implementation(kotlin("reflect"))
 

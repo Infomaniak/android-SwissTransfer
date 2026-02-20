@@ -17,7 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,9 +42,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.extensions.goToAppStore
 import com.infomaniak.core.common.extensions.openUrl
+import com.infomaniak.core.network.AUTOLOG_URL
 import com.infomaniak.core.network.SUPPORT_URL
+import com.infomaniak.core.network.TERMINATE_ACCOUNT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
+import com.infomaniak.core.webview.ui.WebViewActivity
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
@@ -72,15 +81,19 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
 import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 private const val EULA_URL = "https://www.swisstransfer.com/?cgu"
+private val TERMINATE_ACCOUNT_FULL_URL = "$AUTOLOG_URL/?url=$TERMINATE_ACCOUNT_URL"
+private const val URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION = "login.infomaniak.com"
 
 @Composable
 fun MyAccountScreenWrapper(
     myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>(),
 ) {
     val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+    val users by myAccountViewModel.users.collectAsStateWithLifecycle(emptyList())
 
     appSettings?.let { safeAppSettings ->
         val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { myAccountViewModel.setTheme(it) })
@@ -93,10 +106,13 @@ fun MyAccountScreenWrapper(
 
         MyAccountScreenWrapper(
             theme = theme,
+            users = { users },
             validityPeriod = validityPeriod,
             downloadLimit = downloadLimit,
             emailLanguage = emailLanguage,
-            onDisconnectCurrentUser = { myAccountViewModel.disconnectCurrentUser() })
+            onDisconnectCurrentUser = myAccountViewModel::disconnectCurrentUser,
+            onSwitchUser = myAccountViewModel::switchUser,
+        )
     }
 }
 
@@ -104,14 +120,25 @@ fun MyAccountScreenWrapper(
 @Composable
 fun MyAccountScreenWrapper(
     theme: GetSetCallbacks<Theme>,
+    users: () -> List<User>,
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
     onDisconnectCurrentUser: () -> Unit,
+    onSwitchUser: (userId: Int) -> Unit,
 ) {
     TwoPaneScaffold<SettingsOptionScreens>(
-        listPane = { ListPane(navigator = this, onDisconnectCurrentUser) },
-        detailPane = { DetailPane(navigator = this, theme, validityPeriod, downloadLimit, emailLanguage) },
+        listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
+        detailPane = {
+            DetailPane(
+                navigator = this,
+                theme = theme,
+                validityPeriod = validityPeriod,
+                downloadLimit = downloadLimit,
+                emailLanguage = emailLanguage,
+                onDisconnectCurrentUser = onDisconnectCurrentUser
+            )
+        },
     )
 }
 
@@ -119,7 +146,9 @@ fun MyAccountScreenWrapper(
 @Composable
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+    users: () -> List<User>,
     onDisconnectCurrentUser: () -> Unit,
+    onSwitchUser: (userId: Int) -> Unit,
 ) {
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
@@ -129,33 +158,34 @@ private fun ListPane(
     val scope = rememberCoroutineScope()
 
     MyAccountScreen(
-        onItemClick = { item ->
-            when (item) {
-                MyAccountSetting.Login -> {
+        users = users,
+        onAction = { action ->
+            when (action) {
+                MyAccountSettingAction.Login -> {
                     val intent = Intent(context, OnboardingActivity::class.java).apply {
                         putExtra(EXTRA_REQUIRED_LOGIN_KEY, true)
                     }
                     context.safeStartActivity(intent)
                 }
-                MyAccountSetting.SwitchAccount -> TODO()
-                MyAccountSetting.Support -> context.openUrl(SUPPORT_URL)
-                MyAccountSetting.Logout -> onDisconnectCurrentUser()
-                MyAccountSetting.Eula -> context.openUrl(EULA_URL)
-                MyAccountSetting.DiscoverInfomaniak -> context.openUrl(aboutURL)
-                MyAccountSetting.ShareIdeas -> context.openUrl(userReportURL)
-                MyAccountSetting.GiveFeedback -> if (BuildConfig.DEBUG) {
+                MyAccountSettingAction.Support -> context.openUrl(SUPPORT_URL)
+                MyAccountSettingAction.Logout -> onDisconnectCurrentUser()
+                MyAccountSettingAction.Eula -> context.openUrl(EULA_URL)
+                MyAccountSettingAction.DiscoverInfomaniak -> context.openUrl(aboutURL)
+                MyAccountSettingAction.ShareIdeas -> context.openUrl(userReportURL)
+                MyAccountSettingAction.GiveFeedback -> if (BuildConfig.DEBUG) {
                     // The appended `.debug` to the packageName in debug mode should be removed if we want to test this
                     context.goToAppStore("com.infomaniak.swisstransfer")
                 } else {
                     context.goToAppStore()
                 }
-                is MyAccountSetting.Navigation -> {
-                    // Navigate to the detail pane with the passed item
-                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, item.destination) }
+                is MyAccountSettingAction.SwitchAccount -> onSwitchUser(action.userId)
+                is MyAccountSettingAction.Navigation -> {
+                    // Navigate to the detail pane with the passed action
+                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, action.destination) }
                 }
             }
         },
-        getSelectedSetting = { MyAccountSetting.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
+        getSelectedSetting = { MyAccountSettingAction.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
     )
 }
 
@@ -167,6 +197,7 @@ private fun DetailPane(
     validityPeriod: GetSetCallbacks<ValidityPeriod>,
     downloadLimit: GetSetCallbacks<DownloadLimit>,
     emailLanguage: GetSetCallbacks<EmailLanguage>,
+    onDisconnectCurrentUser: () -> Unit,
 ) {
 
     val destination = navigator.safeCurrentContent()
@@ -174,6 +205,10 @@ private fun DetailPane(
     val scope = rememberCoroutineScope()
     val navigateBack: () -> Unit = {
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
+    }
+
+    val accountDeletionActivityResultLauncher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) onDisconnectCurrentUser()
     }
 
     when (destination) {
@@ -188,10 +223,7 @@ private fun DetailPane(
                 downloadLimit = downloadLimit,
                 emailLanguage = emailLanguage,
                 onItemClick = { item ->
-                    when (item) {
-                        NOTIFICATIONS -> context.openAppNotificationSettings()
-                        else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
-                    }
+                    handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
                 },
                 navigateBack = navigateBack,
                 getSelectedSetting = { navigator.currentDestination?.contentKey },
@@ -231,6 +263,30 @@ private fun DetailPane(
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun handleSettingsItemClick(
+    item: SettingsOptionScreens,
+    context: Context,
+    user: User?,
+    accountDeletionActivityResultLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    scope: CoroutineScope,
+    navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
+) {
+    when (item) {
+        DELETE_MY_ACCOUNT -> {
+            WebViewActivity.startActivity(
+                context = context,
+                url = TERMINATE_ACCOUNT_FULL_URL,
+                headers = mapOf("Authorization" to "Bearer ${user?.apiToken?.accessToken}"),
+                urlToQuit = URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION,
+                activityResultLauncher = accountDeletionActivityResultLauncher,
+            )
+        }
+        NOTIFICATIONS -> context.openAppNotificationSettings()
+        else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+    }
+}
+
 @Composable
 private fun NoSelectionEmptyState() {
     SwissTransferScaffold(
@@ -251,10 +307,12 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreenWrapper(
                     theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
+                    users = { users },
                     validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
                     downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
                     emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
-                    onDisconnectCurrentUser = {}
+                    onDisconnectCurrentUser = {},
+                    onSwitchUser = {},
                 )
             }
         }

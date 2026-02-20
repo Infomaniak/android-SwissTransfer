@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.infomaniak.core.avatar.AvatarColors
 import com.infomaniak.core.avatar.LocalAvatarColors
+import com.infomaniak.core.ui.compose.basics.bottomsheet.BottomSheetThemeDefaults
+import com.infomaniak.core.ui.compose.basics.bottomsheet.LocalBottomSheetTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
 import com.infomaniak.core.ui.compose.theme.LocalIsThemeDarkMode
@@ -53,6 +55,7 @@ fun SwissTransferTheme(
         singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
         stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
     )
+
     val activity = LocalActivity.current
     LaunchedEffect(isDarkTheme) {
         val window = activity?.window ?: return@LaunchedEffect
@@ -70,8 +73,19 @@ fun SwissTransferTheme(
         MaterialTheme(
             colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
-            content = content,
-        )
+        ) {
+            // Needs both LocalCustomColorScheme and MaterialTheme's colorScheme to be defined by this point
+            val bottomSheetTheme = BottomSheetThemeDefaults.theme(
+                contentColor = SwissTransferTheme.colors.primaryTextColor,
+                titleTextStyle = BottomSheetStyle.TitleTextStyle,
+                titleColor = BottomSheetStyle.TitleColor,
+            )
+
+            CompositionLocalProvider(
+                LocalBottomSheetTheme provides bottomSheetTheme,
+                content = content,
+            )
+        }
     }
 }
 
