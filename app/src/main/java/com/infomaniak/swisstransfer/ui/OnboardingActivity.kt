@@ -218,10 +218,9 @@ class OnboardingActivity : ComponentActivity() {
 
         const val EXTRA_REQUIRED_LOGIN_KEY = "EXTRA_REQUIRED_LOGIN_KEY"
 
-        // TODO: Adapt the account creation config with the correct url for swisstransfer and success/cancel detection
         private val host = ApiEnvironment.current.host
-        private val CREATE_ACCOUNT_URL = "https://welcome.$host/signup/ikmail?app=true"
-        private val CREATE_ACCOUNT_SUCCESS_HOST = "ksuite.$host"
-        private val CREATE_ACCOUNT_CANCEL_HOST = "welcome.$host"
+        private val CREATE_ACCOUNT_URL = "https://welcome.$host/signup/swisstransfer"
+        private val CREATE_ACCOUNT_SUCCESS_HOST = "shop.$host"
+        private const val CREATE_ACCOUNT_CANCEL_HOST = "" // No cancel host to detect
     }
 }
