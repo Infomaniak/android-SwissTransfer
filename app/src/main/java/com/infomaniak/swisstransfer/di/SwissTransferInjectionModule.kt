@@ -17,8 +17,14 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
+import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import dagger.Module
 import dagger.Provides
@@ -42,25 +48,25 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesTransferManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.transferManager
+    fun providesTransferManager(sti: SwissTransferInjection): TransferManager = sti.transferManager
 
     @Provides
     @Singleton
-    fun providesFileManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.fileManager
+    fun providesFileManager(sti: SwissTransferInjection): FileManager = sti.fileManager
 
     @Provides
     @Singleton
-    fun providesAppSettingsManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.appSettingsManager
+    fun providesAppSettingsManager(sti: SwissTransferInjection): AppSettingsManager = sti.appSettingsManager
 
     @Provides
     @Singleton
-    fun providesAccountManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.accountManager
+    fun providesAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
 
     @Provides
     @Singleton
-    fun providesUploadManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.inMemoryUploadManager
+    fun providesUploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
 
     @Provides
     @Singleton
-    fun providesSharedApiUrlCreator(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.sharedApiUrlCreator
+    fun providesSharedApiUrlCreator(sti: SwissTransferInjection): SharedApiUrlCreator = sti.sharedApiUrlCreator
 }
