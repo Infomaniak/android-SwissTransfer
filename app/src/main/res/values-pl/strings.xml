@@ -61,6 +61,8 @@
     <plurals name="filesCount">
         <item quantity="one">%d plik</item>
         <item quantity="few">%d pliki</item>
+        <item quantity="many">%d plików</item>
+        <item quantity="other">%d pliku</item>
     </plurals>
     <string name="firstTransferDescription">Wykonaj swój pierwszy transfer!</string>
     <string name="importFilesScreenTitle">Pliki do transferu</string>
@@ -100,6 +102,8 @@
     <plurals name="recipientHeader">
         <item quantity="one">Odbiorca:</item>
         <item quantity="few">Odbiorcy:</item>
+        <item quantity="many">Odbiorców:</item>
+        <item quantity="other">Odbiorcy:</item>
     </plurals>
     <string name="restrictedLocation">Infomaniak SwissTransfer nie jest dostępny w Twojej lokalizacji</string>
     <string name="sentEmptyTitle">Nasza historia zaczyna się tutaj</string>
@@ -141,6 +145,8 @@
     <plurals name="settingsValidityPeriodValue">
         <item quantity="one">%d dzień</item>
         <item quantity="few">%d dni</item>
+        <item quantity="many">%d dni</item>
+        <item quantity="other">%d dnia</item>
     </plurals>
     <string name="sharePasswordButton">Kopiuj hasło</string>
     <string name="sharePasswordDescription">Oto hasło do pobrania plików!</string>
@@ -160,6 +166,8 @@
     <plurals name="transferExpiredLimitReachedDescription">
         <item quantity="one">Przepraszamy, ten transfer osiągnął limit %d możliwego pobrania.</item>
         <item quantity="few">Przepraszamy, ten transfer osiągnął limit %d możliwych pobrań.</item>
+        <item quantity="many">Przepraszamy, ten transfer osiągnął limit %d możliwych pobrań.</item>
+        <item quantity="other">Przepraszamy, ten transfer osiągnął limit %d możliwych pobrań.</item>
     </plurals>
     <string name="transferExpiredTitle">Ten transfer nie jest już dostępny</string>
     <string name="transferInitializing">Ładowanie…</string>
@@ -176,6 +184,8 @@
     <plurals name="transferSpaceLeft">
         <item quantity="one">%s pozostało</item>
         <item quantity="few">%s pozostało</item>
+        <item quantity="many">%s pozostało</item>
+        <item quantity="other">%s pozostało</item>
     </plurals>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Link</string>
@@ -199,6 +209,8 @@
     <plurals name="uploadSuccessEmailDescription">
         <item quantity="one">Link do pobrania został wysłany do następującego odbiorcy:</item>
         <item quantity="few">Link do pobrania został wysłany do następujących odbiorców:</item>
+        <item quantity="many">Link do pobrania został wysłany do następujących odbiorców:</item>
+        <item quantity="other">Link do pobrania został wysłany do następujących odbiorców:</item>
     </plurals>
     <string name="uploadSuccessEmailTitle">Wysłane!</string>
     <string name="uploadSuccessLinkDescription">Zeskanuj ten kod QR, aby udostępnić pliki, lub skopiuj poniższy link.</string>
