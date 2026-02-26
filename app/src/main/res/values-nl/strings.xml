@@ -91,7 +91,7 @@
     <string name="onboardingExpirationTitle">Speel je beste kaarten!</string>
     <string name="onboardingPasswordSubtitleArgument">een wachtwoord.</string>
     <string name="onboardingPasswordSubtitleTemplate">Bescherm je shares met %s</string>
-    <string name="onboardingPasswordTitle">Behoudt de controle!</string>
+    <string name="onboardingPasswordTitle">Behoud de controle!</string>
     <string name="onboardingStorageSubtitleArgument">Deel tot 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s bestanden gratis en zonder registratie.</string>
     <string name="onboardingStorageTitle">Verstuur grote bestanden!</string>
