@@ -49,7 +49,7 @@ dependencyResolutionManagement {
                 includeModule("com.github.AppDevNext.Logcat", "LogcatCoreLib")
             }
         }
-        // mavenLocal() // Do not put this in production
+        mavenLocal() // Do not put this in production
     }
     versionCatalogs {
         create("core") { from(files("Core/gradle/core.versions.toml")) }

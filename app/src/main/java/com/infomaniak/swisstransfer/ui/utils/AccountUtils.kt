@@ -21,11 +21,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
 import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.multiplatform_swisstransfer.data.STUser
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.ui.MainApplication
-import com.infomaniak.swisstransfer.ui.utils.AccountPreferences.Companion.GUEST_USER_ID
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,14 +39,18 @@ class AccountUtils @Inject constructor(
     @ApplicationContext context: Context,
 ) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
 
-    suspend fun init() {
-        val realUserId = currentUserIdFlow.first()
-        val userId = realUserId ?: GUEST_USER_ID.takeIf { accountPreferences.isOnboardingDone }
-        if (userId == null) {
+    suspend fun activate(): Nothing {
+        // val realUserId = currentUserIdFlow.first()
+        val user = currentUserFlow.first()
+
+        val stUser: STUser? = user?.let {
+            STUser.AuthUser(id = it.id.toLong(), token = it.apiToken.accessToken)
+        } ?: STUser.GuestUser.takeIf { accountPreferences.isOnboardingDone }
+
+        if (user == null) {
             Sentry.setUser(SentryUser().apply { id = "-1" })
-        } else {
-            accountManager.loadUser(userId)
         }
+        accountManager.loadUser(userId)
 
         currentUserFlow.collect { user ->
             Sentry.setUser(SentryUser().apply {
@@ -53,10 +58,11 @@ class AccountUtils @Inject constructor(
                 email = user?.email
             })
         }
+        awaitCancellation() // Unreachable because currentUserFlow is infinite.
     }
 
     suspend fun loginGuestUser() {
-        accountManager.loadUser(GUEST_USER_ID)
+        accountManager.loadUser(STUser.GuestUser)
     }
 
     /**

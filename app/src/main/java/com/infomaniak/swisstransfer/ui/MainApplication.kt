@@ -95,7 +95,7 @@ class MainApplication : Application(), Configuration.Provider {
         notificationUtils.initNotificationsChannel()
 
         globalCoroutineScope.launch {
-            accountUtils.init()
+            launch { accountUtils.activate() }
 
             launch(ioDispatcher) {
                 transferManager.getAllTransfers().collectLatest(thumbnailsLocalStorage::cleanExpiredThumbnails)

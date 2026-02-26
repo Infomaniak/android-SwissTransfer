@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment
@@ -25,7 +26,11 @@ import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.swisstransfer.upload.UploadSessionStarter
+import com.infomaniak.swisstransfer.upload.UploadSessionStarterV1
+import com.infomaniak.swisstransfer.upload.UploadSessionStarterV2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,35 +43,52 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
+    fun provideSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
         return SwissTransferInjection(
             environment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.Preprod else ApiEnvironment.Prod,
             userAgent = userAgent,
-            crashReport = crashReport
+            crashReport = crashReport,
+            databaseNameOrPath = "swisstransfer",
         )
     }
 
     @Provides
-    @Singleton
-    fun providesTransferManager(sti: SwissTransferInjection): TransferManager = sti.transferManager
+    fun provideUploadSessionStarter(
+        sti: SwissTransferInjection,
+        appIntegrityManager: AppIntegrityManager,
+        sharedApiUrlCreator: SharedApiUrlCreator,
+        legacyUploadManager: InMemoryUploadManager,
+        uploadManager: UploadV2Manager,
+    ): UploadSessionStarter = when {
+        sti.accountManager.shouldUseV1Api -> UploadSessionStarterV1(
+            appIntegrityManager = appIntegrityManager,
+            sharedApiUrlCreator = sharedApiUrlCreator,
+            uploadManager = legacyUploadManager,
+        )
+        else -> UploadSessionStarterV2(uploadManager)
+    }
 
     @Provides
     @Singleton
-    fun providesFileManager(sti: SwissTransferInjection): FileManager = sti.fileManager
+    fun provideTransferManager(sti: SwissTransferInjection): TransferManager = sti.transferManager
 
     @Provides
     @Singleton
-    fun providesAppSettingsManager(sti: SwissTransferInjection): AppSettingsManager = sti.appSettingsManager
+    fun provideFileManager(sti: SwissTransferInjection): FileManager = sti.fileManager
 
     @Provides
     @Singleton
-    fun providesAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
+    fun provideAppSettingsManager(sti: SwissTransferInjection): AppSettingsManager = sti.appSettingsManager
 
     @Provides
     @Singleton
-    fun providesUploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
+    fun provideAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
 
     @Provides
     @Singleton
-    fun providesSharedApiUrlCreator(sti: SwissTransferInjection): SharedApiUrlCreator = sti.sharedApiUrlCreator
+    fun provideUploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
+
+    @Provides
+    @Singleton
+    fun provideSharedApiUrlCreator(sti: SwissTransferInjection): SharedApiUrlCreator = sti.sharedApiUrlCreator
 }
