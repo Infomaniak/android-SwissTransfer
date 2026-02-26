@@ -154,7 +154,7 @@
     <string name="tooLargeFilesDescription">Siirron enimmäiskoko on ylitetty.</string>
     <string name="tooLargeFilesTitle">Se on hieman paljon…</string>
     <string name="transferContentHeader">Siirron sisältö:</string>
-    <string name="transferExpiredButton">Poista historiastа</string>
+    <string name="transferExpiredButton">Poista historiasta</string>
     <string name="transferExpiredDateReachedDescription">Pahoittelut, tämä siirto vanheni %s. Et voi enää ladata tai tarkastella tiedostoja.</string>
     <string name="transferExpiredDescription">Pahoittelut, tämä siirto on vanhentunut. Et voi enää ladata tai tarkastella tiedostoja.</string>
     <plurals name="transferExpiredLimitReachedDescription">
