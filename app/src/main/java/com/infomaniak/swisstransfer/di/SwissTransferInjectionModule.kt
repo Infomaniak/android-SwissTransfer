@@ -38,7 +38,7 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
+    fun provideSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
         return SwissTransferInjection(
             environment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.Preprod else ApiEnvironment.Prod,
             userAgent = userAgent,
@@ -48,25 +48,25 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesTransferManager(sti: SwissTransferInjection): TransferManager = sti.transferManager
+    fun provideTransferManager(sti: SwissTransferInjection): TransferManager = sti.transferManager
 
     @Provides
     @Singleton
-    fun providesFileManager(sti: SwissTransferInjection): FileManager = sti.fileManager
+    fun provideFileManager(sti: SwissTransferInjection): FileManager = sti.fileManager
 
     @Provides
     @Singleton
-    fun providesAppSettingsManager(sti: SwissTransferInjection): AppSettingsManager = sti.appSettingsManager
+    fun provideAppSettingsManager(sti: SwissTransferInjection): AppSettingsManager = sti.appSettingsManager
 
     @Provides
     @Singleton
-    fun providesAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
+    fun provideAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
 
     @Provides
     @Singleton
-    fun providesUploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
+    fun provideUploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
 
     @Provides
     @Singleton
-    fun providesSharedApiUrlCreator(sti: SwissTransferInjection): SharedApiUrlCreator = sti.sharedApiUrlCreator
+    fun provideSharedApiUrlCreator(sti: SwissTransferInjection): SharedApiUrlCreator = sti.sharedApiUrlCreator
 }
