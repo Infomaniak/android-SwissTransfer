@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2026 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="advancedSettingsTitle">Avancerade inställningar</string>
+    <string name="awaitingNetwork">Väntar på nätverk</string>
+    <string name="buttonCancelTransfer">Avbryt överföringen</string>
+    <string name="buttonCloseAndContinue">Stäng och fortsätt</string>
+    <string name="buttonConfirm">Bekräfta</string>
+    <string name="buttonCopyLink">Kopiera länk</string>
+    <string name="buttonDeleteYes">Ja, ta bort</string>
+    <string name="buttonDownload">Ladda ner</string>
+    <string name="buttonDownloadSelected">Ladda ner urval</string>
+    <string name="buttonDownloaded">Nedladdad</string>
+    <string name="buttonDownloading">Laddar ner</string>
+    <string name="buttonEditTransfer">Redigera min överföring</string>
+    <string name="buttonFinished">Klar</string>
+    <string name="buttonOpenMailApp">Öppna e-postappen</string>
+    <string name="buttonShare">Dela</string>
+    <string name="buttonStart">Starta</string>
+    <string name="cantImportFileX">Det går inte att importera filen %s</string>
+    <string name="checkingFiles">Kontrollerar filer…</string>
+    <string name="contentDescriptionButtonBack">Tillbaka</string>
+    <string name="contentDescriptionButtonClose">Stäng</string>
+    <string name="contentDescriptionButtonHidePassword">Dölj lösenord</string>
+    <string name="contentDescriptionButtonRemove">Ta bort fil</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Ta bort %s</string>
+    <string name="contentDescriptionButtonShowPassword">Visa lösenord</string>
+    <string name="contentDescriptionCreateNewTransferButton">Ny överföring</string>
+    <string name="deeplinkPasswordDescription">Ange lösenordet du har fått för att ladda ner dessa filer.</string>
+    <string name="deeplinkTransferExpired">Denna överföring har gått ut</string>
+    <string name="deeplinkTransferNotFound">Denna överföring existerar inte</string>
+    <string name="deleteThisTransferDescription">Denna överföring och filerna den innehåller kommer att tas bort.</string>
+    <string name="deleteThisTransferTitle">Ta bort denna överföring?</string>
+    <string name="downloadedTransferLabel">Nedladdad överföring: %d/%d</string>
+    <string name="errorIncorrectPassword">Felaktigt lösenord</string>
+    <string name="errorTransferPasswordLength">Lösenordet måste vara mellan 6 och 25 tecken</string>
+    <string name="expired">Utgången</string>
+    <string name="expiresAt">Går ut kl. %s</string>
+    <string name="expiresIn">Går ut om %d dagar</string>
+    <string name="expiresOn">Går ut den %s kl. %s</string>
+    <string name="expiresTomorrow">Går ut imorgon</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d filer</string>
+    <string name="fileCountOverTtsFriendly">%1$d av %2$d filer</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s av %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d fil</item>
+        <item quantity="other">%d filer</item>
+    </plurals>
+    <string name="firstTransferDescription">Gör din första överföring!</string>
+    <string name="importFilesScreenTitle">Filer att överföra</string>
+    <string name="invalidAddress">Ogiltig adress</string>
+    <string name="messageHeader">Meddelande:</string>
+    <string name="myFilesTitle">Mina filer</string>
+    <string name="networkUnavailable">Nätverk ej tillgängligt</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Hoppsan, vill du verkligen avbryta?</string>
+    <string name="newTransferLeavingDialogDescription">Din överföring är nästan klar. Är du säker på att du vill avbryta den?</string>
+    <string name="newTransferLeavingDialogNegativeButton">Nej, fortsätt</string>
+    <string name="newTransferLeavingDialogPositiveButton">Ja, avbryt</string>
+    <string name="noSettingsSelectedDescription">Välj en parameter för att visa den</string>
+    <string name="noTransferReceivedDescription">Alla överföringar du tar emot under de senaste 30 dagarna visas här.</string>
+    <string name="noTransferReceivedTitle">Inga mottagna överföringar</string>
+    <string name="noTransferSelectedDescription">Välj en överföring eller skapa en ny.</string>
+    <string name="noTransferSelectedTitle">Inga överföringar att visa</string>
+    <string name="notificationTransferDraftDescription">Fortsätt där du slutade</string>
+    <string name="notificationTransferDraftTitle">Väntande överföring</string>
+    <string name="notificationUploadFailureDescription">Ett problem uppstod, försök igen</string>
+    <string name="notificationUploadFailureTitle">Överföringen misslyckades</string>
+    <string name="notificationUploadProgressTitle">Överföring pågår… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Nedladdningslänken har skickats till mottagarna</string>
+    <string name="notificationUploadSuccessDescriptionOther">Tryck för att få din nedladdningslänk</string>
+    <string name="notificationUploadSuccessTitle">Överföring slutförd</string>
+    <string name="notificationsUploadChannelName">Uppladdningsaviseringar</string>
+    <string name="onboardingExpirationSubtitleArgument">30 dagar.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Dela dina filer via e-post, länk eller QR-kod. Dina länkar förblir aktiva i %s</string>
+    <string name="onboardingExpirationTitle">Spela dina bästa kort!</string>
+    <string name="onboardingPasswordSubtitleArgument">ett lösenord.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Skydda dina delningar med %s</string>
+    <string name="onboardingPasswordTitle">Behåll kontrollen!</string>
+    <string name="onboardingStorageSubtitleArgument">Dela upp till 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s filer gratis utan registrering.</string>
+    <string name="onboardingStorageTitle">Skicka tunga filer!</string>
+    <string name="receivedFilesTitle">Mottagna filer</string>
+    <string name="receivedTitle">Mottaget</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Mottagare:</item>
+        <item quantity="other">Mottagare:</item>
+    </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer är inte tillgänglig på din plats</string>
+    <string name="sentEmptyTitle">Vår historia börjar här</string>
+    <string name="sentFilesTitle">Delade filer</string>
+    <string name="sentTitle">Skickat</string>
+    <string name="settingsCategoryAbout">Om</string>
+    <string name="settingsCategoryDataManagement">Data &amp; Integritet</string>
+    <string name="settingsCategoryDefaultSettings">Standardinställningar</string>
+    <string name="settingsCategoryGeneral">Allmänt</string>
+    <string name="settingsDownloadsLimitTitle">Ange en standardnedladdningsgräns för dina överföringar</string>
+    <string name="settingsEmailLanguageTitle">Ange ett standardspråk för dina e-postöverföringar</string>
+    <string name="settingsEmailLanguageValueEnglish">Engelska</string>
+    <string name="settingsEmailLanguageValueFrench">Franska</string>
+    <string name="settingsEmailLanguageValueGerman">Tyska</string>
+    <string name="settingsEmailLanguageValueItalian">Italienska</string>
+    <string name="settingsEmailLanguageValueSpanish">Spanska</string>
+    <string name="settingsMatomoDescription">Matomo är ett analysverktyg som uteslutande driftas och hanteras av Infomaniak för att förstå hur applikationen används.\n\nGenom att studera dessa data kan vårt team kontinuerligt förbättra applikationens gränssnitt.</string>
+    <string name="settingsNotificationsTitle">Välj en inställning</string>
+    <string name="settingsOptionActivated">Aktiverat</string>
+    <string name="settingsOptionDiscoverInfomaniak">Upptäck Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Nedladdningsgräns</string>
+    <string name="settingsOptionEmailLanguage">E-postspråk</string>
+    <string name="settingsOptionGiveFeedback">Ge din åsikt</string>
+    <string name="settingsOptionNone">Ingen</string>
+    <string name="settingsOptionNotifications">Aviseringar</string>
+    <string name="settingsOptionPassword">Lösenord</string>
+    <string name="settingsOptionShareIdeas">Dela dina idéer</string>
+    <string name="settingsOptionTermsAndConditions">Villkor</string>
+    <string name="settingsOptionTheme">Tema</string>
+    <string name="settingsOptionThemeDark">Mörkt</string>
+    <string name="settingsOptionThemeLight">Ljust</string>
+    <string name="settingsOptionThemeSystem">System</string>
+    <string name="settingsOptionValidityPeriod">Giltighetstid</string>
+    <string name="settingsPasswordDescription">Dina mottagare behöver ange lösenordet för att ladda ner filerna.</string>
+    <string name="settingsPasswordToggleDescription">Aktivera skydd</string>
+    <string name="settingsThemeTitle">Välj ett tema</string>
+    <string name="settingsTitle">Inställningar</string>
+    <string name="settingsValidityPeriodTitle">Ange en standardgiltighetstid för dina överföringar</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dagar</item>
+    </plurals>
+    <string name="sharePasswordButton">Kopiera lösenord</string>
+    <string name="sharePasswordDescription">Här är lösenordet för att ladda ner filerna!</string>
+    <string name="sharePasswordTitle">Denna överföring är säker</string>
+    <string name="shareQrCodeDescription">Scanna denna QR-kod för att dela din överföring:</string>
+    <string name="shareQrCodeTitle">Snabba delning</string>
+    <string name="snackbarLinkCopiedToClipboard">Länk kopierad till urklipp</string>
+    <string name="sorry">Vi beklagar</string>
+    <string name="startActivityCantHandleAction">Ingen applikation hittades för att hantera denna åtgärd</string>
+    <string name="textFieldOptional">(Valfritt)</string>
+    <string name="tooLargeFilesDescription">Den maximala överföringsstorleken har överskridits.</string>
+    <string name="tooLargeFilesTitle">Det är lite för mycket…</string>
+    <string name="transferContentHeader">Överföringsinnehåll:</string>
+    <string name="transferExpiredButton">Ta bort från historik</string>
+    <string name="transferExpiredDateReachedDescription">Tyvärr gick denna överföring ut den %s. Du kan inte längre ladda ner eller visa filerna.</string>
+    <string name="transferExpiredDescription">Tyvärr har denna överföring gått ut. Du kan inte längre ladda ner eller visa filerna.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Tyvärr har denna överföring nått gränsen på %d möjlig nedladdning.</item>
+        <item quantity="other">Tyvärr har denna överföring nått gränsen på %d möjliga nedladdningar.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Denna överföring är inte längre tillgänglig</string>
+    <string name="transferInitializing">Laddar…</string>
+    <string name="transferListSectionFuture">Framtida</string>
+    <string name="transferListSectionLastWeek">Förra veckan</string>
+    <string name="transferListSectionThisMonth">Denna månad</string>
+    <string name="transferListSectionThisWeek">Denna vecka</string>
+    <string name="transferListSectionToday">Idag</string>
+    <string name="transferListSectionYesterday">Igår</string>
+    <string name="transferMessagePlaceholder">Ett meddelande att skicka med?</string>
+    <string name="transferRecipientAddressPlaceholder">Skicka filer till</string>
+    <string name="transferSendButton">Skicka</string>
+    <string name="transferSenderAddressPlaceholder">Din e-postadress</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s kvar</item>
+        <item quantity="other">%s kvar</item>
+    </plurals>
+    <string name="transferTypeEmail">E-post</string>
+    <string name="transferTypeLink">Länk</string>
+    <string name="transferTypeQrCode">QR-kod</string>
+    <string name="transferTypeScreenTitle">Överföring</string>
+    <string name="transferTypeTitle">Skicka via</string>
+    <string name="transferVirusCheckDescription">Filerna är inte tillgängliga ännu av säkerhetsskäl.\nKom tillbaka om en stund.</string>
+    <string name="transferVirusCheckTitle">Filer kontrolleras</string>
+    <string name="transferVirusDetectedDescription">Du kan inte komma åt denna överföring eftersom den inte uppfyller våra användarvillkor.</string>
+    <string name="transferVirusDetectedTitle">Ej kompatibla filer</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Är du säker på att du vill avbryta överföringen?</string>
+    <string name="uploadErrorDescription">Överföringen fungerade inte, ge det en ny chans. Om problemet kvarstår, kontakta vårt supportteam.</string>
+    <string name="uploadErrorTitle">Vänta, vad hände just?</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">våra egna datacenter, utan luftkonditionering</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">teknologiskt oberoende i Europa.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">Vi utformar %s, för att överträffa marknadens energieffektivitetsstandarder.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">Vi utvecklar %s Utan kompromisser gällande ekologi, integritet och människor.</string>
+    <string name="uploadProgressIndication">Överföring pågår…</string>
+    <string name="uploadProgressTitleArgument">unika</string>
+    <string name="uploadProgressTitleTemplate">Vad gör oss %s?</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">Nedladdningslänken har skickats till följande mottagare:</item>
+        <item quantity="other">Nedladdningslänken har skickats till följande mottagare:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Skickat!</string>
+    <string name="uploadSuccessLinkDescription">Scanna denna QR-kod för att dela dina filer, eller kopiera länken nedan.</string>
+    <string name="uploadSuccessLinkTitle">Din överföring är klar!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">Den angivna koden är felaktig</string>
+    <string name="validateMailCodeResentFeedback">Koden skickades till e-postadressen %s</string>
+    <string name="validateMailDescription">Vi har skickat en kod till %s. Ange den nedan för att verifiera din e-postadress i appen:</string>
+    <string name="validateMailInfo">Kom ihåg att kontrollera skräppostmappen för din e-postadress.</string>
+    <string name="validateMailResendCode">Skicka en kod igen</string>
+    <string name="validateMailResendCodeTemplate">Skicka en kod igen (%ds)</string>
+    <string name="validateMailTitle">Kontrollera din e-post</string>
+    <string name="validateMailUnknownError">Ett fel har inträffat. Försök igen om en stund.</string>
+    <string name="version">Version</string>
+</resources>

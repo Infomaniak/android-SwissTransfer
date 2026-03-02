@@ -63,6 +63,8 @@ android {
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
 
         missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
+
+        androidResources.localeFilters += listOf("en", "de", "es", "fr", "it", "da", "el", "fi", "nb", "nl", "pl", "pt", "sv")
     }
 
     val debugSigningConfig = signingConfigs.getByName("debug") {
