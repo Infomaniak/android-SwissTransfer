@@ -64,7 +64,10 @@ android {
 
         missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
 
-        androidResources.localeFilters += listOf("en", "de", "es", "fr", "it", "da", "el", "fi", "nb", "nl", "pl", "pt", "sv")
+        androidResources {
+            localeFilters += listOf("en", "de", "es", "fr", "it", "da", "el", "fi", "nb", "nl", "pl", "pt", "sv")
+            generateLocaleConfig = true
+        }
     }
 
     val debugSigningConfig = signingConfigs.getByName("debug") {
