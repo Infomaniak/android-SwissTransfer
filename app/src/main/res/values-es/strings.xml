@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Infomaniak SwissTransfer - Android
   ~ Copyright (C) 2024 Infomaniak Network SA
   ~
@@ -15,7 +15,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="awaitingNetwork">Esperando la red</string>
     <string name="buttonCancelTransfer">Cancelar transferencia</string>

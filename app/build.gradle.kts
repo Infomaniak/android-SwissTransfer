@@ -64,6 +64,11 @@ android {
         buildConfigField("String", "CLIENT_ID", "\"17EE3471-9843-4FB9-AD95-CB8C41BAD624\"")
 
         missingDimensionStrategy(dimension = "distribution", requestedValue = "standard")
+
+        androidResources {
+            localeFilters += listOf("en", "de", "es", "fr", "it", "da", "el", "fi", "nb", "nl", "pl", "pt", "sv")
+            generateLocaleConfig = true
+        }
     }
 
     val debugSigningConfig = signingConfigs.getByName("debug") {

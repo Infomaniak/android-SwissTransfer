@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2026 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="advancedSettingsTitle">Σύνθετες ρυθμίσεις</string>
+    <string name="awaitingNetwork">Αναμονή δικτύου</string>
+    <string name="buttonCancelTransfer">Ακύρωση μεταφοράς</string>
+    <string name="buttonCloseAndContinue">Κλείσιμο και συνέχεια</string>
+    <string name="buttonConfirm">Επιβεβαίωση</string>
+    <string name="buttonCopyLink">Αντιγραφή συνδέσμου</string>
+    <string name="buttonDeleteYes">Ναι, διαγραφή</string>
+    <string name="buttonDownload">Λήψη</string>
+    <string name="buttonDownloadSelected">Λήψη επιλογής</string>
+    <string name="buttonDownloaded">Ελήφθη</string>
+    <string name="buttonDownloading">Λήψη</string>
+    <string name="buttonEditTransfer">Επεξεργασία της μεταφοράς μου</string>
+    <string name="buttonFinished">Τέλος</string>
+    <string name="buttonOpenMailApp">Άνοιγμα εφαρμογής email</string>
+    <string name="buttonShare">Κοινοποίηση</string>
+    <string name="buttonStart">Έναρξη</string>
+    <string name="cantImportFileX">Δεν είναι δυνατή η εισαγωγή του αρχείου %s</string>
+    <string name="checkingFiles">Έλεγχος αρχείων…</string>
+    <string name="contentDescriptionButtonBack">Πίσω</string>
+    <string name="contentDescriptionButtonClose">Κλείσιμο</string>
+    <string name="contentDescriptionButtonHidePassword">Απόκρυψη κωδικού πρόσβασης</string>
+    <string name="contentDescriptionButtonRemove">Αφαίρεση αρχείου</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Αφαίρεση %s</string>
+    <string name="contentDescriptionButtonShowPassword">Εμφάνιση κωδικού πρόσβασης</string>
+    <string name="contentDescriptionCreateNewTransferButton">Νέα μεταφορά</string>
+    <string name="deeplinkPasswordDescription">Εισάγαλε τον κωδικό πρόσβασης που σου δόθηκε για να κατεβάσεις αυτά τα αρχεία.</string>
+    <string name="deeplinkTransferExpired">Αυτή η μεταφορά έχει λήξει</string>
+    <string name="deeplinkTransferNotFound">Αυτή η μεταφορά δεν υπάρχει</string>
+    <string name="deleteThisTransferDescription">Αυτή η μεταφορά και τα αρχεία που περιέχει θα διαγραφούν.</string>
+    <string name="deleteThisTransferTitle">Διαγραφή αυτής της μεταφοράς;</string>
+    <string name="downloadedTransferLabel">Ληφθείσα μεταφορά: %d/%d</string>
+    <string name="errorIncorrectPassword">Λανθασμένος κωδικός πρόσβασης</string>
+    <string name="errorTransferPasswordLength">Ο κωδικός πρόσβασης πρέπει να είναι μεταξύ 6 και 25 χαρακτήρων</string>
+    <string name="expired">Ληγμένο</string>
+    <string name="expiresAt">Λήγει στις %s</string>
+    <string name="expiresIn">Λήγει σε %d ημέρες</string>
+    <string name="expiresOn">Λήγει στις %s στις %s</string>
+    <string name="expiresTomorrow">Λήγει αύριο</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d αρχεία</string>
+    <string name="fileCountOverTtsFriendly">%1$d από %2$d αρχεία</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s από %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d αρχείο</item>
+        <item quantity="other">%d αρχεία</item>
+    </plurals>
+    <string name="firstTransferDescription">Κάνε την πρώτη σου μεταφορά!</string>
+    <string name="importFilesScreenTitle">Αρχεία για μεταφορά</string>
+    <string name="invalidAddress">Μη έγκυρη διεύθυνση</string>
+    <string name="messageHeader">Μήνυμα:</string>
+    <string name="myFilesTitle">Τα αρχεία μου</string>
+    <string name="networkUnavailable">Το δίκτυο δεν είναι διαθέσιμο</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Ωχ, θέλεις πραγματικά να ακυρώσεις;</string>
+    <string name="newTransferLeavingDialogDescription">Η μεταφορά σου είναι σχεδόν έτοιμη. Είσαι σίγουρος ότι θέλεις να την ακυρώσεις;</string>
+    <string name="newTransferLeavingDialogNegativeButton">Όχι, συνέχεια</string>
+    <string name="newTransferLeavingDialogPositiveButton">Ναι, ακύρωση</string>
+    <string name="noSettingsSelectedDescription">Επίλεξε μια παράμετρο για να την εμφανίσεις</string>
+    <string name="noTransferReceivedDescription">Όλες οι μεταφορές που λαμβάνεις τις τελευταίες 30 ημέρες θα εμφανίζονται εδώ.</string>
+    <string name="noTransferReceivedTitle">Δεν ελήφθησαν μεταφορές</string>
+    <string name="noTransferSelectedDescription">Επίλεξε μια μεταφορά ή δημιούργησε μια νέα.</string>
+    <string name="noTransferSelectedTitle">Δεν υπάρχουν μεταφορές για εμφάνιση</string>
+    <string name="notificationTransferDraftDescription">Συνέχισε από εκεί που σταμάτησες</string>
+    <string name="notificationTransferDraftTitle">Εκκρεμής μεταφορά</string>
+    <string name="notificationUploadFailureDescription">Παρουσιάστηκε πρόβλημα, δοκίμασε ξανά</string>
+    <string name="notificationUploadFailureTitle">Η μεταφορά απέτυχε</string>
+    <string name="notificationUploadProgressTitle">Η μεταφορά βρίσκεται σε εξέλιξη… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Ο σύνδεσμος λήψης εστάλη στους παραλήπτες</string>
+    <string name="notificationUploadSuccessDescriptionOther">Πάτησε για να αποκτήσεις τον σύνδεσμο λήψης σου</string>
+    <string name="notificationUploadSuccessTitle">Η μεταφορά ολοκληρώθηκε</string>
+    <string name="notificationsUploadChannelName">Ειδοποιήσεις μεταφόρτωσης</string>
+    <string name="onboardingExpirationSubtitleArgument">30 ημέρες.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Μοιράσου τα αρχεία σου μέσω email, συνδέσμου ή κωδικού QR. Οι σύνδεσμοί σου παραμένουν ενεργοί για %s</string>
+    <string name="onboardingExpirationTitle">Παίξε τα καλύτερα χαρτιά σου!</string>
+    <string name="onboardingPasswordSubtitleArgument">κωδικό πρόσβασης.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Προστάτευσε τις κοινοποιήσεις σου με %s</string>
+    <string name="onboardingPasswordTitle">Διατήρησε τον έλεγχο!</string>
+    <string name="onboardingStorageSubtitleArgument">Μοιράσου έως 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s αρχείων δωρεάν χωρίς εγγραφή.</string>
+    <string name="onboardingStorageTitle">Στείλε μεγάλα αρχεία!</string>
+    <string name="receivedFilesTitle">Ληφθέντα αρχεία</string>
+    <string name="receivedTitle">Ελήφθη</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Παραλήπτης:</item>
+        <item quantity="other">Παραλήπτες:</item>
+    </plurals>
+    <string name="restrictedLocation">Το Infomaniak SwissTransfer δεν είναι διαθέσιμο στην τοποθεσία σου</string>
+    <string name="sentEmptyTitle">Η ιστορία μας ξεκινά εδώ</string>
+    <string name="sentFilesTitle">Κοινόχρηστα αρχεία</string>
+    <string name="sentTitle">Απεστάλη</string>
+    <string name="settingsCategoryAbout">Σχετικά</string>
+    <string name="settingsCategoryDataManagement">Δεδομένα &amp; Απόρρητο</string>
+    <string name="settingsCategoryDefaultSettings">Προεπιλεγμένες ρυθμίσεις</string>
+    <string name="settingsCategoryGeneral">Γενικά</string>
+    <string name="settingsDownloadsLimitTitle">Όρισε ένα προεπιλεγμένο όριο λήψεων για τις μεταφορές σου</string>
+    <string name="settingsEmailLanguageTitle">Όρισε μια προεπιλεγμένη γλώσσα για τις μεταφορές σου μέσω email</string>
+    <string name="settingsEmailLanguageValueEnglish">Αγγλικά</string>
+    <string name="settingsEmailLanguageValueFrench">Γαλλικά</string>
+    <string name="settingsEmailLanguageValueGerman">Γερμανικά</string>
+    <string name="settingsEmailLanguageValueItalian">Ιταλικά</string>
+    <string name="settingsEmailLanguageValueSpanish">Ισπανικά</string>
+    <string name="settingsMatomoDescription">Το Matomo είναι ένα εργαλείο ανάλυσης που φιλοξενείται και διαχειρίζεται αποκλειστικά από την Infomaniak για να κατανοήσει πώς χρησιμοποιείται η εφαρμογή.\n\nΜελετώντας αυτά τα δεδομένα, η ομάδα μας μπορεί να βελτιώνει συνεχώς τη διεπαφή της εφαρμογής.</string>
+    <string name="settingsNotificationsTitle">Επίλεξε μια προτίμηση</string>
+    <string name="settingsOptionActivated">Ενεργοποιημένο</string>
+    <string name="settingsOptionDiscoverInfomaniak">Ανακάλυψε την Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Όριο λήψεων</string>
+    <string name="settingsOptionEmailLanguage">Γλώσσα email</string>
+    <string name="settingsOptionGiveFeedback">Δώσε τη γνώμη σου</string>
+    <string name="settingsOptionNone">Κανένα</string>
+    <string name="settingsOptionNotifications">Ειδοποιήσεις</string>
+    <string name="settingsOptionPassword">Κωδικός πρόσβασης</string>
+    <string name="settingsOptionShareIdeas">Μοιράσου τις ιδέες σου</string>
+    <string name="settingsOptionTermsAndConditions">Όροι και προϋποθέσεις</string>
+    <string name="settingsOptionTheme">Θέμα</string>
+    <string name="settingsOptionThemeDark">Σκοτεινό</string>
+    <string name="settingsOptionThemeLight">Ανοιχτό</string>
+    <string name="settingsOptionThemeSystem">Σύστημα</string>
+    <string name="settingsOptionValidityPeriod">Περίοδος ισχύος</string>
+    <string name="settingsPasswordDescription">Οι παραλήπτες σου θα πρέπει να εισάγουν τον κωδικό πρόσβασης για να κατεβάσουν τα αρχεία.</string>
+    <string name="settingsPasswordToggleDescription">Ενεργοποίηση προστασίας</string>
+    <string name="settingsThemeTitle">Επίλεξε θέμα</string>
+    <string name="settingsTitle">Ρυθμίσεις</string>
+    <string name="settingsValidityPeriodTitle">Όρισε μια προεπιλεγμένη περίοδο ισχύος για τις μεταφορές σου</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d ημέρα</item>
+        <item quantity="other">%d ημέρες</item>
+    </plurals>
+    <string name="sharePasswordButton">Αντιγραφή κωδικού πρόσβασης</string>
+    <string name="sharePasswordDescription">Εδώ είναι ο κωδικός για να κατεβάσεις τα αρχεία!</string>
+    <string name="sharePasswordTitle">Αυτή η μεταφορά είναι ασφαλής</string>
+    <string name="shareQrCodeDescription">Σκανάρισε αυτόν τον κωδικό QR για να μοιραστείς τη μεταφορά σου:</string>
+    <string name="shareQrCodeTitle">Γρήγορη κοινοποίηση</string>
+    <string name="snackbarLinkCopiedToClipboard">Ο σύνδεσμος αντιγράφηκε στο πρόχειρο</string>
+    <string name="sorry">Λυπούμαστε</string>
+    <string name="startActivityCantHandleAction">Δεν βρέθηκε εφαρμογή για τη διαχείριση αυτής της ενέργειας</string>
+    <string name="textFieldOptional">(Προαιρετικό)</string>
+    <string name="tooLargeFilesDescription">Το μέγιστο μέγεθος μεταφοράς έχει υπερβληθεί.</string>
+    <string name="tooLargeFilesTitle">Αυτό είναι λίγο πολύ…</string>
+    <string name="transferContentHeader">Περιεχόμενο μεταφοράς:</string>
+    <string name="transferExpiredButton">Διαγραφή από το ιστορικό</string>
+    <string name="transferExpiredDateReachedDescription">Λυπούμαστε, αυτή η μεταφορά έληξε στις %s. Δεν μπορείς πλέον να κατεβάσεις ή να δεις τα αρχεία.</string>
+    <string name="transferExpiredDescription">Λυπούμαστε, αυτή η μεταφορά έχει λήξει. Δεν μπορείς πλέον να κατεβάσεις ή να δεις τα αρχεία.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Λυπούμαστε, αυτή η μεταφορά έχει φτάσει το όριο των %d δυνατών λήψεων.</item>
+        <item quantity="other">Λυπούμαστε, αυτή η μεταφορά έχει φτάσει το όριο των %d δυνατών λήψεων.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Αυτή η μεταφορά δεν είναι πλέον διαθέσιμη</string>
+    <string name="transferInitializing">Φόρτωση…</string>
+    <string name="transferListSectionFuture">Μέλλον</string>
+    <string name="transferListSectionLastWeek">Την περασμένη εβδομάδα</string>
+    <string name="transferListSectionThisMonth">Αυτόν τον μήνα</string>
+    <string name="transferListSectionThisWeek">Αυτή την εβδομάδα</string>
+    <string name="transferListSectionToday">Σήμερα</string>
+    <string name="transferListSectionYesterday">Χθες</string>
+    <string name="transferMessagePlaceholder">Ένα μήνυμα να μεταβιβαστεί;</string>
+    <string name="transferRecipientAddressPlaceholder">Αποστολή αρχείων σε</string>
+    <string name="transferSendButton">Αποστολή</string>
+    <string name="transferSenderAddressPlaceholder">Η διεύθυνση email σου</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s απομένει</item>
+        <item quantity="other">%s απομένουν</item>
+    </plurals>
+    <string name="transferTypeEmail">Email</string>
+    <string name="transferTypeLink">Σύνδεσμος</string>
+    <string name="transferTypeQrCode">Κωδικός QR</string>
+    <string name="transferTypeScreenTitle">Μεταφορά</string>
+    <string name="transferTypeTitle">Αποστολή μέσω</string>
+    <string name="transferVirusCheckDescription">Τα αρχεία δεν είναι ακόμα προσβάσιμα για λόγους ασφαλείας.\nΕπέστρεψε σε λίγα λεπτά.</string>
+    <string name="transferVirusCheckTitle">Τα αρχεία ελέγχονται</string>
+    <string name="transferVirusDetectedDescription">Δεν μπορείς να αποκτήσεις πρόσβαση σε αυτή τη μεταφορά επειδή δεν συμμορφώνεται με τους όρους χρήσης μας.</string>
+    <string name="transferVirusDetectedTitle">Μη συμβατά αρχεία</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Είσαι σίγουρος ότι θέλεις να ακυρώσεις τη μεταφορά;</string>
+    <string name="uploadErrorDescription">Η μεταφορά δεν λειτούργησε, δώσε της μια ακόμα ευκαιρία. Αν το πρόβλημα παραμένει, επικοινώνησε με την ομάδα υποστήριξής μας.</string>
+    <string name="uploadErrorTitle">Περίμενε, τι συνέβη μόλις;</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">τα δικά μας κέντρα δεδομένων, χωρίς κλιματισμό</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">τεχνολογική ανεξαρτησία στην Ευρώπη.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">Σχεδιάζουμε %s, για να ξεπεράσουμε τα πρότυπα της αγοράς για ενεργειακή απόδοση.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">Αναπτύσσουμε %s Χωρίς συμβιβασμούς στην οικολογία, την ιδιωτικότητα και τους ανθρώπους.</string>
+    <string name="uploadProgressIndication">Η μεταφορά βρίσκεται σε εξέλιξη…</string>
+    <string name="uploadProgressTitleArgument">μοναδικούς</string>
+    <string name="uploadProgressTitleTemplate">Τι μας κάνει %s;</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">Ο σύνδεσμος λήψης εστάλη στον παρακάτω παραλήπτη:</item>
+        <item quantity="other">Ο σύνδεσμος λήψης εστάλη στους παρακάτω παραλήπτες:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Εστάλη!</string>
+    <string name="uploadSuccessLinkDescription">Σκανάρισε αυτόν τον κωδικό QR για να μοιραστείς τα αρχεία σου, ή αντέγραψε τον σύνδεσμο παρακάτω.</string>
+    <string name="uploadSuccessLinkTitle">Η μεταφορά σου είναι έτοιμη!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">Ο κωδικός που εισήχθη είναι εσφαλμένος</string>
+    <string name="validateMailCodeResentFeedback">Ο κωδικός στάλθηκε στη διεύθυνση email %s</string>
+    <string name="validateMailDescription">Στείλαμε έναν κωδικό στο %s. Εισάγαλε τον παρακάτω για να επαληθευτεί η διεύθυνση email σου στην εφαρμογή:</string>
+    <string name="validateMailInfo">Θυμήσου να ελέγξεις τον φάκελο ανεπιθύμητης αλληλογραφίας.</string>
+    <string name="validateMailResendCode">Επαναποστολή κωδικού</string>
+    <string name="validateMailResendCodeTemplate">Επαναποστολή κωδικού (%ds)</string>
+    <string name="validateMailTitle">Έλεγξε το email σου</string>
+    <string name="validateMailUnknownError">Παρουσιάστηκε σφάλμα. Δοκίμασε ξανά σε λίγα λεπτά.</string>
+    <string name="version">Έκδοση</string>
+</resources>
