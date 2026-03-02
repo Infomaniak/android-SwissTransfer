@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">et passord.</string>
     <string name="onboardingPasswordSubtitleTemplate">Beskytt delingene dine med %s</string>
     <string name="onboardingPasswordTitle">Behold kontrollen!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Send filene dine</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s nå!</string>
+    <string name="onboardingSendFilesTitle">Klar til å begynne?</string>
     <string name="onboardingStorageSubtitleArgument">Del opptil 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s filer gratis uten registrering.</string>
     <string name="onboardingStorageTitle">Send store filer!</string>
@@ -109,6 +112,7 @@
     <string name="settingsCategoryDataManagement">Data &amp; Personvern</string>
     <string name="settingsCategoryDefaultSettings">Standardinnstillinger</string>
     <string name="settingsCategoryGeneral">Generelt</string>
+    <string name="settingsDeleteMyAccount">Slett kontoen min</string>
     <string name="settingsDownloadsLimitTitle">Angi en standard nedlastingsgrense for overføringene dine</string>
     <string name="settingsEmailLanguageTitle">Angi et standardspråk for e-postoverføringene dine</string>
     <string name="settingsEmailLanguageValueEnglish">Engelsk</string>
@@ -116,6 +120,8 @@
     <string name="settingsEmailLanguageValueGerman">Tysk</string>
     <string name="settingsEmailLanguageValueItalian">Italiensk</string>
     <string name="settingsEmailLanguageValueSpanish">Spansk</string>
+    <string name="settingsHelpAndSupport">Hjelp &amp; Støtte</string>
+    <string name="settingsLogOut">Logg ut</string>
     <string name="settingsMatomoDescription">Matomo er et analyseverktøy som utelukkende driftes og administreres av Infomaniak for å forstå hvordan applikasjonen brukes.\n\nVed å studere disse dataene er teamet vårt i stand til å kontinuerlig forbedre applikasjonens grensesnitt.</string>
     <string name="settingsNotificationsTitle">Velg en innstilling</string>
     <string name="settingsOptionActivated">Aktivert</string>
@@ -135,6 +141,8 @@
     <string name="settingsOptionValidityPeriod">Gyldighetsperiode</string>
     <string name="settingsPasswordDescription">Mottakerne dine må angi passordet for å laste ned filene.</string>
     <string name="settingsPasswordToggleDescription">Aktiver beskyttelse</string>
+    <string name="settingsSignIn">Logg inn</string>
+    <string name="settingsSwitchAccount">Bytt konto</string>
     <string name="settingsThemeTitle">Velg et tema</string>
     <string name="settingsTitle">Innstillinger</string>
     <string name="settingsValidityPeriodTitle">Angi en standard gyldighetsperiode for overføringene dine</string>

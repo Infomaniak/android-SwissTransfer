@@ -94,6 +94,9 @@
     <string name="onboardingPasswordSubtitleArgument">hasła.</string>
     <string name="onboardingPasswordSubtitleTemplate">Chroń swoje udostępnienia za pomocą %s</string>
     <string name="onboardingPasswordTitle">Zachowaj kontrolę!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Wyślij swoje pliki</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s teraz!</string>
+    <string name="onboardingSendFilesTitle">Gotowy do rozpoczęcia?</string>
     <string name="onboardingStorageSubtitleArgument">Udostępniaj do 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s plików za darmo bez rejestracji.</string>
     <string name="onboardingStorageTitle">Wysyłaj duże pliki!</string>
@@ -113,6 +116,7 @@
     <string name="settingsCategoryDataManagement">Dane &amp; Prywatność</string>
     <string name="settingsCategoryDefaultSettings">Ustawienia domyślne</string>
     <string name="settingsCategoryGeneral">Ogólne</string>
+    <string name="settingsDeleteMyAccount">Usuń moje konto</string>
     <string name="settingsDownloadsLimitTitle">Ustaw domyślny limit pobierań dla swoich transferów</string>
     <string name="settingsEmailLanguageTitle">Ustaw domyślny język dla swoich transferów e-mailowych</string>
     <string name="settingsEmailLanguageValueEnglish">Angielski</string>
@@ -120,6 +124,8 @@
     <string name="settingsEmailLanguageValueGerman">Niemiecki</string>
     <string name="settingsEmailLanguageValueItalian">Włoski</string>
     <string name="settingsEmailLanguageValueSpanish">Hiszpański</string>
+    <string name="settingsHelpAndSupport">Pomoc &amp; Wsparcie</string>
+    <string name="settingsLogOut">Wyloguj się</string>
     <string name="settingsMatomoDescription">Matomo to narzędzie analityczne hostowane i zarządzane wyłącznie przez Infomaniak, służące do zrozumienia sposobu korzystania z aplikacji.\n\nAnalizując te dane, nasz zespół jest w stanie stale poprawiać interfejs aplikacji.</string>
     <string name="settingsNotificationsTitle">Wybierz preferencję</string>
     <string name="settingsOptionActivated">Włączone</string>
@@ -139,6 +145,8 @@
     <string name="settingsOptionValidityPeriod">Okres ważności</string>
     <string name="settingsPasswordDescription">Twoi odbiorcy będą musieli wprowadzić hasło, aby pobrać pliki.</string>
     <string name="settingsPasswordToggleDescription">Włącz ochronę</string>
+    <string name="settingsSignIn">Zaloguj się</string>
+    <string name="settingsSwitchAccount">Przełącz konto</string>
     <string name="settingsThemeTitle">Wybierz motyw</string>
     <string name="settingsTitle">Ustawienia</string>
     <string name="settingsValidityPeriodTitle">Ustaw domyślny okres ważności dla swoich transferów</string>
