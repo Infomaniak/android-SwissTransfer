@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2026 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="advancedSettingsTitle">Avanserte innstillinger</string>
+    <string name="awaitingNetwork">Venter på nettverk</string>
+    <string name="buttonCancelTransfer">Avbryt overføringen</string>
+    <string name="buttonCloseAndContinue">Lukk og fortsett</string>
+    <string name="buttonConfirm">Bekreft</string>
+    <string name="buttonCopyLink">Kopier lenke</string>
+    <string name="buttonDeleteYes">Ja, slett</string>
+    <string name="buttonDownload">Last ned</string>
+    <string name="buttonDownloadSelected">Last ned utvalg</string>
+    <string name="buttonDownloaded">Lastet ned</string>
+    <string name="buttonDownloading">Laster ned</string>
+    <string name="buttonEditTransfer">Rediger overføringen min</string>
+    <string name="buttonFinished">Ferdig</string>
+    <string name="buttonOpenMailApp">Åpne e-postappen</string>
+    <string name="buttonShare">Del</string>
+    <string name="buttonStart">Start</string>
+    <string name="cantImportFileX">Kan ikke importere filen %s</string>
+    <string name="checkingFiles">Kontrollerer filer…</string>
+    <string name="contentDescriptionButtonBack">Tilbake</string>
+    <string name="contentDescriptionButtonClose">Lukk</string>
+    <string name="contentDescriptionButtonHidePassword">Skjul passord</string>
+    <string name="contentDescriptionButtonRemove">Fjern fil</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Fjern %s</string>
+    <string name="contentDescriptionButtonShowPassword">Vis passord</string>
+    <string name="contentDescriptionCreateNewTransferButton">Ny overføring</string>
+    <string name="deeplinkPasswordDescription">Skriv inn passordet du har fått for å laste ned disse filene.</string>
+    <string name="deeplinkTransferExpired">Denne overføringen har utløpt</string>
+    <string name="deeplinkTransferNotFound">Denne overføringen eksisterer ikke</string>
+    <string name="deleteThisTransferDescription">Denne overføringen og filene den inneholder vil bli slettet.</string>
+    <string name="deleteThisTransferTitle">Slette denne overføringen?</string>
+    <string name="downloadedTransferLabel">Lastet ned overføring: %d/%d</string>
+    <string name="errorIncorrectPassword">Feil passord</string>
+    <string name="errorTransferPasswordLength">Passordet må være mellom 6 og 25 tegn</string>
+    <string name="expired">Utløpt</string>
+    <string name="expiresAt">Utløper kl. %s</string>
+    <string name="expiresIn">Utløper om %d dager</string>
+    <string name="expiresOn">Utløper den %s kl. %s</string>
+    <string name="expiresTomorrow">Utløper i morgen</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d filer</string>
+    <string name="fileCountOverTtsFriendly">%1$d av %2$d filer</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s av %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d fil</item>
+        <item quantity="other">%d filer</item>
+    </plurals>
+    <string name="firstTransferDescription">Gjør din første overføring!</string>
+    <string name="importFilesScreenTitle">Filer å overføre</string>
+    <string name="invalidAddress">Ugyldig adresse</string>
+    <string name="messageHeader">Melding:</string>
+    <string name="myFilesTitle">Mine filer</string>
+    <string name="networkUnavailable">Nettverk utilgjengelig</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Oops, vil du virkelig avbryte?</string>
+    <string name="newTransferLeavingDialogDescription">Overføringen din er nesten klar. Er du sikker på at du vil avbryte den?</string>
+    <string name="newTransferLeavingDialogNegativeButton">Nei, fortsett</string>
+    <string name="newTransferLeavingDialogPositiveButton">Ja, avbryt</string>
+    <string name="noSettingsSelectedDescription">Velg en parameter for å vise den</string>
+    <string name="noTransferReceivedDescription">Alle overføringer du mottar de siste 30 dagene vil vises her.</string>
+    <string name="noTransferReceivedTitle">Ingen mottatte overføringer</string>
+    <string name="noTransferSelectedDescription">Velg en overføring eller opprett en ny.</string>
+    <string name="noTransferSelectedTitle">Ingen overføringer å vise</string>
+    <string name="notificationTransferDraftDescription">Fortsett der du slapp</string>
+    <string name="notificationTransferDraftTitle">Ventende overføring</string>
+    <string name="notificationUploadFailureDescription">Det oppstod et problem, prøv igjen</string>
+    <string name="notificationUploadFailureTitle">Overføringen mislyktes</string>
+    <string name="notificationUploadProgressTitle">Overføring pågår… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Nedlastingslenken er sendt til mottakerne</string>
+    <string name="notificationUploadSuccessDescriptionOther">Trykk for å få nedlastingslenken din</string>
+    <string name="notificationUploadSuccessTitle">Overføring fullført</string>
+    <string name="notificationsUploadChannelName">Opplastingsvarsler</string>
+    <string name="onboardingExpirationSubtitleArgument">30 dager.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Del filene dine via e-post, lenke eller QR-kode. Lenkene dine forblir aktive i %s</string>
+    <string name="onboardingExpirationTitle">Spill de beste kortene dine!</string>
+    <string name="onboardingPasswordSubtitleArgument">et passord.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Beskytt delingene dine med %s</string>
+    <string name="onboardingPasswordTitle">Behold kontrollen!</string>
+    <string name="onboardingStorageSubtitleArgument">Del opptil 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s filer gratis uten registrering.</string>
+    <string name="onboardingStorageTitle">Send store filer!</string>
+    <string name="receivedFilesTitle">Mottatte filer</string>
+    <string name="receivedTitle">Mottatt</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Mottaker:</item>
+        <item quantity="other">Mottakere:</item>
+    </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer er ikke tilgjengelig på din plassering</string>
+    <string name="sentEmptyTitle">Historien vår begynner her</string>
+    <string name="sentFilesTitle">Delte filer</string>
+    <string name="sentTitle">Sendt</string>
+    <string name="settingsCategoryAbout">Om</string>
+    <string name="settingsCategoryDataManagement">Data &amp; Personvern</string>
+    <string name="settingsCategoryDefaultSettings">Standardinnstillinger</string>
+    <string name="settingsCategoryGeneral">Generelt</string>
+    <string name="settingsDownloadsLimitTitle">Angi en standard nedlastingsgrense for overføringene dine</string>
+    <string name="settingsEmailLanguageTitle">Angi et standardspråk for e-postoverføringene dine</string>
+    <string name="settingsEmailLanguageValueEnglish">Engelsk</string>
+    <string name="settingsEmailLanguageValueFrench">Fransk</string>
+    <string name="settingsEmailLanguageValueGerman">Tysk</string>
+    <string name="settingsEmailLanguageValueItalian">Italiensk</string>
+    <string name="settingsEmailLanguageValueSpanish">Spansk</string>
+    <string name="settingsMatomoDescription">Matomo er et analyseverktøy som utelukkende driftes og administreres av Infomaniak for å forstå hvordan applikasjonen brukes.\n\nVed å studere disse dataene er teamet vårt i stand til å kontinuerlig forbedre applikasjonens grensesnitt.</string>
+    <string name="settingsNotificationsTitle">Velg en innstilling</string>
+    <string name="settingsOptionActivated">Aktivert</string>
+    <string name="settingsOptionDiscoverInfomaniak">Oppdag Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Nedlastingsgrense</string>
+    <string name="settingsOptionEmailLanguage">E-postspråk</string>
+    <string name="settingsOptionGiveFeedback">Gi din mening</string>
+    <string name="settingsOptionNone">Ingen</string>
+    <string name="settingsOptionNotifications">Varsler</string>
+    <string name="settingsOptionPassword">Passord</string>
+    <string name="settingsOptionShareIdeas">Del ideene dine</string>
+    <string name="settingsOptionTermsAndConditions">Vilkår og betingelser</string>
+    <string name="settingsOptionTheme">Tema</string>
+    <string name="settingsOptionThemeDark">Mørkt</string>
+    <string name="settingsOptionThemeLight">Lyst</string>
+    <string name="settingsOptionThemeSystem">System</string>
+    <string name="settingsOptionValidityPeriod">Gyldighetsperiode</string>
+    <string name="settingsPasswordDescription">Mottakerne dine må angi passordet for å laste ned filene.</string>
+    <string name="settingsPasswordToggleDescription">Aktiver beskyttelse</string>
+    <string name="settingsThemeTitle">Velg et tema</string>
+    <string name="settingsTitle">Innstillinger</string>
+    <string name="settingsValidityPeriodTitle">Angi en standard gyldighetsperiode for overføringene dine</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dager</item>
+    </plurals>
+    <string name="sharePasswordButton">Kopier passord</string>
+    <string name="sharePasswordDescription">Her er passordet for å laste ned filene!</string>
+    <string name="sharePasswordTitle">Denne overføringen er sikker</string>
+    <string name="shareQrCodeDescription">Skann denne QR-koden for å dele overføringen din:</string>
+    <string name="shareQrCodeTitle">Rask deling</string>
+    <string name="snackbarLinkCopiedToClipboard">Lenke kopiert til utklippstavlen</string>
+    <string name="sorry">Vi beklager</string>
+    <string name="startActivityCantHandleAction">Ingen applikasjon ble funnet for å håndtere denne handlingen</string>
+    <string name="textFieldOptional">(Valgfritt)</string>
+    <string name="tooLargeFilesDescription">Maksimal overføringsstørrelse er overskredet.</string>
+    <string name="tooLargeFilesTitle">Det er litt for mye…</string>
+    <string name="transferContentHeader">Overføringsinnhold:</string>
+    <string name="transferExpiredButton">Slett fra historikk</string>
+    <string name="transferExpiredDateReachedDescription">Beklager, denne overføringen utløp den %s. Du kan ikke lenger laste ned eller se filene.</string>
+    <string name="transferExpiredDescription">Beklager, denne overføringen har utløpt. Du kan ikke lenger laste ned eller se filene.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Beklager, denne overføringen har nådd grensen på %d mulig nedlasting.</item>
+        <item quantity="other">Beklager, denne overføringen har nådd grensen på %d mulige nedlastinger.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Denne overføringen er ikke lenger tilgjengelig</string>
+    <string name="transferInitializing">Laster…</string>
+    <string name="transferListSectionFuture">Fremtidig</string>
+    <string name="transferListSectionLastWeek">Forrige uke</string>
+    <string name="transferListSectionThisMonth">Denne måneden</string>
+    <string name="transferListSectionThisWeek">Denne uken</string>
+    <string name="transferListSectionToday">I dag</string>
+    <string name="transferListSectionYesterday">I går</string>
+    <string name="transferMessagePlaceholder">En melding å sende med?</string>
+    <string name="transferRecipientAddressPlaceholder">Send filer til</string>
+    <string name="transferSendButton">Send</string>
+    <string name="transferSenderAddressPlaceholder">Din e-postadresse</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s igjen</item>
+        <item quantity="other">%s igjen</item>
+    </plurals>
+    <string name="transferTypeEmail">E-post</string>
+    <string name="transferTypeLink">Lenke</string>
+    <string name="transferTypeQrCode">QR-kode</string>
+    <string name="transferTypeScreenTitle">Overføring</string>
+    <string name="transferTypeTitle">Send via</string>
+    <string name="transferVirusCheckDescription">Filene er ikke tilgjengelige ennå av sikkerhetsmessige årsaker.\nKom tilbake om et øyeblikk.</string>
+    <string name="transferVirusCheckTitle">Filer kontrolleres</string>
+    <string name="transferVirusDetectedDescription">Du kan ikke få tilgang til denne overføringen fordi den ikke overholder våre bruksvilkår.</string>
+    <string name="transferVirusDetectedTitle">Ikke-kompatible filer</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Er du sikker på at du vil avbryte overføringen?</string>
+    <string name="uploadErrorDescription">Overføringen fungerte ikke, gi det en ny sjanse. Hvis problemet vedvarer, kontakt supportteamet vårt.</string>
+    <string name="uploadErrorTitle">Vent, hva skjedde akkurat?</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">våre egne datasentre, uten klimaanlegg</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">teknologisk uavhengighet i Europa.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">Vi designer %s, for å overskride markedets standarder for energieffektivitet.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">Vi utvikler %s Uten kompromisser på økonomi, personvern og mennesker.</string>
+    <string name="uploadProgressIndication">Overføring pågår…</string>
+    <string name="uploadProgressTitleArgument">unike</string>
+    <string name="uploadProgressTitleTemplate">Hva gjør oss %s?</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">Nedlastingslenken er sendt til følgende mottaker:</item>
+        <item quantity="other">Nedlastingslenken er sendt til følgende mottakere:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Sendt!</string>
+    <string name="uploadSuccessLinkDescription">Skann denne QR-koden for å dele filene dine, eller kopier lenken nedenfor.</string>
+    <string name="uploadSuccessLinkTitle">Overføringen din er klar!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">Den angitte koden er feil</string>
+    <string name="validateMailCodeResentFeedback">Koden ble sendt til e-postadressen %s</string>
+    <string name="validateMailDescription">Vi sendte en kode til %s. Skriv den inn nedenfor for å verifisere e-postadressen din i appen:</string>
+    <string name="validateMailInfo">Husk å sjekke søppelpostmappen for e-postadressen din.</string>
+    <string name="validateMailResendCode">Send en kode på nytt</string>
+    <string name="validateMailResendCodeTemplate">Send en kode på nytt (%ds)</string>
+    <string name="validateMailTitle">Sjekk e-posten din</string>
+    <string name="validateMailUnknownError">Det oppstod en feil. Prøv igjen om et øyeblikk.</string>
+    <string name="version">Versjon</string>
+</resources>

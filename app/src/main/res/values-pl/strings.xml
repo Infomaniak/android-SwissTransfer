@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Infomaniak SwissTransfer - Android
+  ~ Copyright (C) 2026 Infomaniak Network SA
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="advancedSettingsTitle">Ustawienia zaawansowane</string>
+    <string name="awaitingNetwork">Oczekiwanie na sieć</string>
+    <string name="buttonCancelTransfer">Anuluj transfer</string>
+    <string name="buttonCloseAndContinue">Zamknij i kontynuuj</string>
+    <string name="buttonConfirm">Potwierdź</string>
+    <string name="buttonCopyLink">Kopiuj link</string>
+    <string name="buttonDeleteYes">Tak, usuń</string>
+    <string name="buttonDownload">Pobierz</string>
+    <string name="buttonDownloadSelected">Pobierz zaznaczone</string>
+    <string name="buttonDownloaded">Pobrano</string>
+    <string name="buttonDownloading">Pobieranie</string>
+    <string name="buttonEditTransfer">Edytuj mój transfer</string>
+    <string name="buttonFinished">Zakończ</string>
+    <string name="buttonOpenMailApp">Otwórz aplikację pocztową</string>
+    <string name="buttonShare">Udostępnij</string>
+    <string name="buttonStart">Rozpocznij</string>
+    <string name="cantImportFileX">Nie można zaimportować pliku %s</string>
+    <string name="checkingFiles">Sprawdzanie plików…</string>
+    <string name="contentDescriptionButtonBack">Wstecz</string>
+    <string name="contentDescriptionButtonClose">Zamknij</string>
+    <string name="contentDescriptionButtonHidePassword">Ukryj hasło</string>
+    <string name="contentDescriptionButtonRemove">Usuń plik</string>
+    <string name="contentDescriptionButtonRemoveRecipient">Usuń %s</string>
+    <string name="contentDescriptionButtonShowPassword">Pokaż hasło</string>
+    <string name="contentDescriptionCreateNewTransferButton">Nowy transfer</string>
+    <string name="deeplinkPasswordDescription">Wprowadź hasło, które otrzymałeś, aby pobrać te pliki.</string>
+    <string name="deeplinkTransferExpired">Ten transfer wygasł</string>
+    <string name="deeplinkTransferNotFound">Ten transfer nie istnieje</string>
+    <string name="deleteThisTransferDescription">Ten transfer i zawarte w nim pliki zostaną usunięte.</string>
+    <string name="deleteThisTransferTitle">Usunąć ten transfer?</string>
+    <string name="downloadedTransferLabel">Pobrany transfer: %d/%d</string>
+    <string name="errorIncorrectPassword">Nieprawidłowe hasło</string>
+    <string name="errorTransferPasswordLength">Hasło musi mieć od 6 do 25 znaków</string>
+    <string name="expired">Wygasłe</string>
+    <string name="expiresAt">Wygasa o %s</string>
+    <string name="expiresIn">Wygasa za %d dni</string>
+    <string name="expiresOn">Wygasa %s o %s</string>
+    <string name="expiresTomorrow">Wygasa jutro</string>
+    <string name="fileCountOverDisplayOnly">%1$d/%2$d plików</string>
+    <string name="fileCountOverTtsFriendly">%1$d z %2$d plików</string>
+    <string name="fileSizeOverDisplayOnly">%1$s/%2$s</string>
+    <string name="fileSizeOverTtsFriendly">%1$s z %2$s</string>
+    <plurals name="filesCount">
+        <item quantity="one">%d plik</item>
+        <item quantity="few">%d pliki</item>
+        <item quantity="many">%d plików</item>
+        <item quantity="other">%d pliku</item>
+    </plurals>
+    <string name="firstTransferDescription">Wykonaj swój pierwszy transfer!</string>
+    <string name="importFilesScreenTitle">Pliki do transferu</string>
+    <string name="invalidAddress">Nieprawidłowy adres</string>
+    <string name="messageHeader">Wiadomość:</string>
+    <string name="myFilesTitle">Moje pliki</string>
+    <string name="networkUnavailable">Sieć niedostępna</string>
+    <string name="newTransferConfirmLeavingDialogTitle">Ups, czy naprawdę chcesz anulować?</string>
+    <string name="newTransferLeavingDialogDescription">Twój transfer jest prawie gotowy. Czy na pewno chcesz go anulować?</string>
+    <string name="newTransferLeavingDialogNegativeButton">Nie, kontynuuj</string>
+    <string name="newTransferLeavingDialogPositiveButton">Tak, anuluj</string>
+    <string name="noSettingsSelectedDescription">Wybierz parametr, aby go wyświetlić</string>
+    <string name="noTransferReceivedDescription">Wszystkie transfery, które otrzymasz w ciągu ostatnich 30 dni, pojawią się tutaj.</string>
+    <string name="noTransferReceivedTitle">Brak otrzymanych transferów</string>
+    <string name="noTransferSelectedDescription">Wybierz transfer lub utwórz nowy.</string>
+    <string name="noTransferSelectedTitle">Brak transferów do wyświetlenia</string>
+    <string name="notificationTransferDraftDescription">Kontynuuj od miejsca, w którym skończyłeś</string>
+    <string name="notificationTransferDraftTitle">Oczekujący transfer</string>
+    <string name="notificationUploadFailureDescription">Wystąpił problem, spróbuj ponownie</string>
+    <string name="notificationUploadFailureTitle">Transfer nie powiódł się</string>
+    <string name="notificationUploadProgressTitle">Transfer w toku… (%s%%)</string>
+    <string name="notificationUploadSuccessDescriptionMail">Link do pobrania został wysłany do odbiorców</string>
+    <string name="notificationUploadSuccessDescriptionOther">Kliknij, aby uzyskać link do pobrania</string>
+    <string name="notificationUploadSuccessTitle">Transfer zakończony</string>
+    <string name="notificationsUploadChannelName">Powiadomienia o przesyłaniu</string>
+    <string name="onboardingExpirationSubtitleArgument">30 dni.</string>
+    <string name="onboardingExpirationSubtitleTemplate">Udostępniaj pliki przez e-mail, link lub kod QR. Twoje linki pozostają aktywne przez %s</string>
+    <string name="onboardingExpirationTitle">Zagraj najlepszymi kartami!</string>
+    <string name="onboardingPasswordSubtitleArgument">hasła.</string>
+    <string name="onboardingPasswordSubtitleTemplate">Chroń swoje udostępnienia za pomocą %s</string>
+    <string name="onboardingPasswordTitle">Zachowaj kontrolę!</string>
+    <string name="onboardingStorageSubtitleArgument">Udostępniaj do 50 GB</string>
+    <string name="onboardingStorageSubtitleTemplate">%s plików za darmo bez rejestracji.</string>
+    <string name="onboardingStorageTitle">Wysyłaj duże pliki!</string>
+    <string name="receivedFilesTitle">Otrzymane pliki</string>
+    <string name="receivedTitle">Otrzymane</string>
+    <plurals name="recipientHeader">
+        <item quantity="one">Odbiorca:</item>
+        <item quantity="few">Odbiorcy:</item>
+        <item quantity="many">Odbiorców:</item>
+        <item quantity="other">Odbiorcy:</item>
+    </plurals>
+    <string name="restrictedLocation">Infomaniak SwissTransfer nie jest dostępny w Twojej lokalizacji</string>
+    <string name="sentEmptyTitle">Nasza historia zaczyna się tutaj</string>
+    <string name="sentFilesTitle">Udostępnione pliki</string>
+    <string name="sentTitle">Wysłane</string>
+    <string name="settingsCategoryAbout">O aplikacji</string>
+    <string name="settingsCategoryDataManagement">Dane &amp; Prywatność</string>
+    <string name="settingsCategoryDefaultSettings">Ustawienia domyślne</string>
+    <string name="settingsCategoryGeneral">Ogólne</string>
+    <string name="settingsDownloadsLimitTitle">Ustaw domyślny limit pobierań dla swoich transferów</string>
+    <string name="settingsEmailLanguageTitle">Ustaw domyślny język dla swoich transferów e-mailowych</string>
+    <string name="settingsEmailLanguageValueEnglish">Angielski</string>
+    <string name="settingsEmailLanguageValueFrench">Francuski</string>
+    <string name="settingsEmailLanguageValueGerman">Niemiecki</string>
+    <string name="settingsEmailLanguageValueItalian">Włoski</string>
+    <string name="settingsEmailLanguageValueSpanish">Hiszpański</string>
+    <string name="settingsMatomoDescription">Matomo to narzędzie analityczne hostowane i zarządzane wyłącznie przez Infomaniak, służące do zrozumienia sposobu korzystania z aplikacji.\n\nAnalizując te dane, nasz zespół jest w stanie stale poprawiać interfejs aplikacji.</string>
+    <string name="settingsNotificationsTitle">Wybierz preferencję</string>
+    <string name="settingsOptionActivated">Włączone</string>
+    <string name="settingsOptionDiscoverInfomaniak">Odkryj Infomaniak</string>
+    <string name="settingsOptionDownloadLimit">Limit pobierań</string>
+    <string name="settingsOptionEmailLanguage">Język e-maila</string>
+    <string name="settingsOptionGiveFeedback">Podziel się opinią</string>
+    <string name="settingsOptionNone">Brak</string>
+    <string name="settingsOptionNotifications">Powiadomienia</string>
+    <string name="settingsOptionPassword">Hasło</string>
+    <string name="settingsOptionShareIdeas">Podziel się swoimi pomysłami</string>
+    <string name="settingsOptionTermsAndConditions">Regulamin</string>
+    <string name="settingsOptionTheme">Motyw</string>
+    <string name="settingsOptionThemeDark">Ciemny</string>
+    <string name="settingsOptionThemeLight">Jasny</string>
+    <string name="settingsOptionThemeSystem">Systemowy</string>
+    <string name="settingsOptionValidityPeriod">Okres ważności</string>
+    <string name="settingsPasswordDescription">Twoi odbiorcy będą musieli wprowadzić hasło, aby pobrać pliki.</string>
+    <string name="settingsPasswordToggleDescription">Włącz ochronę</string>
+    <string name="settingsThemeTitle">Wybierz motyw</string>
+    <string name="settingsTitle">Ustawienia</string>
+    <string name="settingsValidityPeriodTitle">Ustaw domyślny okres ważności dla swoich transferów</string>
+    <plurals name="settingsValidityPeriodValue">
+        <item quantity="one">%d dzień</item>
+        <item quantity="few">%d dni</item>
+        <item quantity="many">%d dni</item>
+        <item quantity="other">%d dnia</item>
+    </plurals>
+    <string name="sharePasswordButton">Kopiuj hasło</string>
+    <string name="sharePasswordDescription">Oto hasło do pobrania plików!</string>
+    <string name="sharePasswordTitle">Ten transfer jest zabezpieczony</string>
+    <string name="shareQrCodeDescription">Zeskanuj ten kod QR, aby udostępnić swój transfer:</string>
+    <string name="shareQrCodeTitle">Szybkie udostępnianie</string>
+    <string name="snackbarLinkCopiedToClipboard">Link skopiowany do schowka</string>
+    <string name="sorry">Przepraszamy</string>
+    <string name="startActivityCantHandleAction">Nie znaleziono aplikacji do obsługi tej czynności</string>
+    <string name="textFieldOptional">(Opcjonalne)</string>
+    <string name="tooLargeFilesDescription">Maksymalny rozmiar transferu został przekroczony.</string>
+    <string name="tooLargeFilesTitle">To trochę za dużo…</string>
+    <string name="transferContentHeader">Zawartość transferu:</string>
+    <string name="transferExpiredButton">Usuń z historii</string>
+    <string name="transferExpiredDateReachedDescription">Przepraszamy, ten transfer wygasł dnia %s. Nie możesz już pobierać ani przeglądać plików.</string>
+    <string name="transferExpiredDescription">Przepraszamy, ten transfer wygasł. Nie możesz już pobierać ani przeglądać plików.</string>
+    <plurals name="transferExpiredLimitReachedDescription">
+        <item quantity="one">Przepraszamy, ten transfer osiągnął limit %d możliwego pobrania.</item>
+        <item quantity="few">Przepraszamy, ten transfer osiągnął limit %d możliwych pobrań.</item>
+        <item quantity="many">Przepraszamy, ten transfer osiągnął limit %d możliwych pobrań.</item>
+        <item quantity="other">Przepraszamy, ten transfer osiągnął limit %d możliwych pobrań.</item>
+    </plurals>
+    <string name="transferExpiredTitle">Ten transfer nie jest już dostępny</string>
+    <string name="transferInitializing">Ładowanie…</string>
+    <string name="transferListSectionFuture">Przyszłe</string>
+    <string name="transferListSectionLastWeek">W zeszłym tygodniu</string>
+    <string name="transferListSectionThisMonth">W tym miesiącu</string>
+    <string name="transferListSectionThisWeek">W tym tygodniu</string>
+    <string name="transferListSectionToday">Dzisiaj</string>
+    <string name="transferListSectionYesterday">Wczoraj</string>
+    <string name="transferMessagePlaceholder">Wiadomość do przekazania?</string>
+    <string name="transferRecipientAddressPlaceholder">Wyślij pliki do</string>
+    <string name="transferSendButton">Wyślij</string>
+    <string name="transferSenderAddressPlaceholder">Twój adres e-mail</string>
+    <plurals name="transferSpaceLeft">
+        <item quantity="one">%s pozostało</item>
+        <item quantity="few">%s pozostało</item>
+        <item quantity="many">%s pozostało</item>
+        <item quantity="other">%s pozostało</item>
+    </plurals>
+    <string name="transferTypeEmail">E-mail</string>
+    <string name="transferTypeLink">Link</string>
+    <string name="transferTypeQrCode">Kod QR</string>
+    <string name="transferTypeScreenTitle">Transfer</string>
+    <string name="transferTypeTitle">Wyślij przez</string>
+    <string name="transferVirusCheckDescription">Pliki nie są jeszcze dostępne ze względów bezpieczeństwa.\nWróć za chwilę.</string>
+    <string name="transferVirusCheckTitle">Pliki są sprawdzane</string>
+    <string name="transferVirusDetectedDescription">Nie możesz uzyskać dostępu do tego transferu, ponieważ nie jest zgodny z naszymi warunkami użytkowania.</string>
+    <string name="transferVirusDetectedTitle">Niezgodne pliki</string>
+    <string name="uploadCancelConfirmBottomSheetTitle">Czy na pewno chcesz anulować transfer?</string>
+    <string name="uploadErrorDescription">Transfer nie zadziałał, daj mu jeszcze jedną szansę. Jeśli problem będzie się utrzymywał, skontaktuj się z naszym zespołem wsparcia.</string>
+    <string name="uploadErrorTitle">Poczekaj, co tu się właśnie stało?</string>
+    <string name="uploadProgressDescriptionArgumentEnergy">własne centra danych bez klimatyzacji</string>
+    <string name="uploadProgressDescriptionArgumentIndependence">niezależność technologiczną w Europie.</string>
+    <string name="uploadProgressDescriptionTemplateEnergy">Projektujemy %s, aby przekraczać rynkowe standardy efektywności energetycznej.</string>
+    <string name="uploadProgressDescriptionTemplateIndependence">Rozwijamy %s Bez kompromisów w kwestii ekologii, prywatności i ludzi.</string>
+    <string name="uploadProgressIndication">Transfer w toku…</string>
+    <string name="uploadProgressTitleArgument">wyjątkowymi</string>
+    <string name="uploadProgressTitleTemplate">Co nas wyróżnia %s?</string>
+    <plurals name="uploadSuccessEmailDescription">
+        <item quantity="one">Link do pobrania został wysłany do następującego odbiorcy:</item>
+        <item quantity="few">Link do pobrania został wysłany do następujących odbiorców:</item>
+        <item quantity="many">Link do pobrania został wysłany do następujących odbiorców:</item>
+        <item quantity="other">Link do pobrania został wysłany do następujących odbiorców:</item>
+    </plurals>
+    <string name="uploadSuccessEmailTitle">Wysłane!</string>
+    <string name="uploadSuccessLinkDescription">Zeskanuj ten kod QR, aby udostępnić pliki, lub skopiuj poniższy link.</string>
+    <string name="uploadSuccessLinkTitle">Twój transfer jest gotowy!</string>
+    <string name="urlAbout">https://www.infomaniak.com/en/about</string>
+    <string name="urlUserReport">https://feedback.userreport.com/a61a740b-4800-4b53-8c9e-d2b010155416/</string>
+    <string name="validateMailCodeIncorrectError">Wprowadzony kod jest nieprawidłowy</string>
+    <string name="validateMailCodeResentFeedback">Kod został wysłany na adres e-mail %s</string>
+    <string name="validateMailDescription">Wysłaliśmy kod na adres %s. Wprowadź go poniżej, aby zweryfikować adres e-mail w aplikacji:</string>
+    <string name="validateMailInfo">Pamiętaj o sprawdzeniu folderu spam na swoim koncie e-mail.</string>
+    <string name="validateMailResendCode">Wyślij kod ponownie</string>
+    <string name="validateMailResendCodeTemplate">Wyślij kod ponownie (%ds)</string>
+    <string name="validateMailTitle">Sprawdź swoją pocztę</string>
+    <string name="validateMailUnknownError">Wystąpił błąd. Spróbuj ponownie za chwilę.</string>
+    <string name="version">Wersja</string>
+</resources>
