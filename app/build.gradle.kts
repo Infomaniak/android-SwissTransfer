@@ -257,6 +257,7 @@ dependencies {
     implementation(core.androidx.work.runtime.ktx)
     implementation(core.kotlinx.serialization.json)
     implementation(core.splitties.toast)
+    implementation(core.splitties.preferences)
     implementation(core.okhttp)
 
     // Test

@@ -70,9 +70,6 @@ class OnboardingActivity : ComponentActivity() {
     private val shouldDisplayRequiredLogin by lazy { intent.getBooleanExtra(EXTRA_REQUIRED_LOGIN_KEY, false) }
 
     @Inject
-    lateinit var accountPreferences: AccountPreferences
-
-    @Inject
     lateinit var accountUtils: AccountUtils
 
     @Inject
@@ -206,8 +203,8 @@ class OnboardingActivity : ComponentActivity() {
         areButtonsLoading = false
     }
 
-    private fun Activity.completeOnboarding() {
-        accountPreferences.isOnboardingDone = true
+    private suspend fun Activity.completeOnboarding() {
+        AccountPreferences().isOnboardingDone = true
 
         Intent(this, MainActivity::class.java).also(::startActivity)
         finish()

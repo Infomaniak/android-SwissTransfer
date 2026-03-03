@@ -15,35 +15,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalSplittiesApi::class)
+
 package com.infomaniak.swisstransfer.ui.utils
 
-import android.content.Context
-import com.infomaniak.core.sharedvalues.SharedValues
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
+import androidx.core.content.edit
+import kotlinx.coroutines.flow.Flow
+import splitties.experimental.ExperimentalSplittiesApi
+import splitties.preferences.Preferences
+import splitties.preferences.SuspendPrefsAccessor
 
-@Singleton
-class AccountPreferences @Inject constructor(@ApplicationContext private val appContext: Context) : SharedValues {
-
-    override val sharedPreferences = appContext.applicationContext.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)!!
-
-    /**
-     * This used to be currentUserId but in the end, the data of the current user is stored inside of
-     * [com.infomaniak.core.auth.PersistedCurrentUserAccountUtils]. The [_currentGuestUserId] will always contain the guest user
-     * id if the onboarding is done, even if another real [com.infomaniak.core.auth.models.user.User] account is connected and
-     * currently selected. No other user id value has ever been stored here.
-     */
-    private var _currentGuestUserId by sharedValue("currentUserId", NO_USER)
-    var isOnboardingDone
-        get() = _currentGuestUserId != NO_USER
-        set(value) {
-            _currentGuestUserId = if (value) GUEST_USER_ID else NO_USER
-        }
-
-    companion object {
-        private const val SHARED_PREFS_NAME = "AccountPreferences"
+class AccountPreferences private constructor(): Preferences(name = "AccountPreferences") {
+    companion object : SuspendPrefsAccessor<AccountPreferences>(::AccountPreferences) {
+        private const val GUEST_USER_ID = 0
         private const val NO_USER = -1
-        const val GUEST_USER_ID = 0
+    }
+
+    val isOnboardingDoneFlow: Flow<Boolean>
+    var isOnboardingDone by boolPref(key = "isOnboardingDone", defaultValue = false).also {
+        isOnboardingDoneFlow = it.valueFlow()
+    }
+
+    init {
+        migrateOldDataIfNeeded()
+    }
+
+    private fun migrateOldDataIfNeeded() {
+        /**
+         * This used to be currentUserId but in the end, the data of the current user is stored inside of
+         * [com.infomaniak.core.auth.PersistedCurrentUserAccountUtils].
+         * The value behind [legacyCurrentGuestUserIdKey] will always contain the guest user
+         * id if the onboarding is done. No other user id value has ever been stored here.
+         */
+        val legacyCurrentGuestUserIdKey = "currentUserId"
+        if (legacyCurrentGuestUserIdKey in prefs) {
+            isOnboardingDone = prefs.getInt(legacyCurrentGuestUserIdKey, NO_USER) == GUEST_USER_ID
+            prefs.edit(commit = true) { remove(legacyCurrentGuestUserIdKey) }
+        }
     }
 }
