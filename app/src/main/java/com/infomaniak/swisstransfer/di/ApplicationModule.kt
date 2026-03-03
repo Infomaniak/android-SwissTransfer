@@ -75,7 +75,7 @@ object ApplicationModule {
         return InfomaniakLogin(
             context = appContext,
             loginUrl = "${LOGIN_ENDPOINT_URL}/",
-            appUID = ConfigUtils.safePackage,
+            appUID = ConfigUtils.safePackage.substringBefore(".preprod"),
             clientID = BuildConfig.CLIENT_ID,
             accessType = null,
         )
