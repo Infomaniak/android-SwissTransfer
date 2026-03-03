@@ -30,12 +30,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.core.common.mapSync
-import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.common.tryCompletingWhileTrue
 import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
+import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
@@ -145,6 +145,11 @@ class PickFilesViewModel @Inject constructor(
     private var recipientEmail by mutableStateOf("")
     private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.isEmailRfc5321Compliant() }
     private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
+    //endregion
+
+    //region Transfer title TODO[ST-v2]: Add title text input for users connected via v2 API.
+    val transferTitleState = mutableStateOf("")
+    private var transferTitle by transferTitleState
     //endregion
 
     //region Transfer Message
@@ -288,6 +293,7 @@ class PickFilesViewModel @Inject constructor(
         validityPeriod = selectedValidityPeriodOption.value.apiValue,
         authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
+        title = transferTitle,
         message = transferMessage,
         downloadCountLimit = selectedDownloadLimitOption.value.apiValue,
         languageCode = selectedLanguageOption.value.apiValue,

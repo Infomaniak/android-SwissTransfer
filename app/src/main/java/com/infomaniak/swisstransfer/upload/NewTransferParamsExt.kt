@@ -26,6 +26,7 @@ fun NewTransferParams.toUploadSessionRequest(
     validityPeriod = validityPeriod,
     authorEmail = authorEmail,
     password = password,
+    title = title,
     message = message,
     sizeOfUpload = filesMetadata.sumOf { it.size },
     downloadCountLimit = downloadCountLimit,
