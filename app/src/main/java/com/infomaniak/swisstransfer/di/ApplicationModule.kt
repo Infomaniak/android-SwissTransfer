@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.di
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager
@@ -78,6 +79,12 @@ object ApplicationModule {
             appUID = ConfigUtils.safePackage.substringBefore(".preprod"),
             clientID = BuildConfig.CLIENT_ID,
             accessType = null,
+            sentryCallback = { message, extras ->
+                //TODO[Sentry]: Should we forward this to Sentry, or leave it only in logcat for debug?
+                val tag = "LoginIssue"
+                Log.e(tag, message)
+                Log.e(tag, extras.toString())
+            }
         )
     }
 }
