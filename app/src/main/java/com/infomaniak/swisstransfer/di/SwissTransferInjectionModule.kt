@@ -42,7 +42,8 @@ object SwissTransferInjectionModule {
         return SwissTransferInjection(
             environment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.Preprod else ApiEnvironment.Prod,
             userAgent = userAgent,
-            crashReport = crashReport
+            crashReport = crashReport,
+            databaseNameOrPath = "swisstransfer",
         )
     }
 
