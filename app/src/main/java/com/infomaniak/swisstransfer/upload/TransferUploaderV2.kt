@@ -174,24 +174,6 @@ class TransferUploaderV2(
 
         SentryLog.d(TAG, "$chunkConfig")
 
-        // val etags = coroutineScope {
-        //     List(totalChunks - 1) { chunkIndex ->
-        //         async {
-        //             requestSemaphore.withPermit {
-        //                 uploadChunkIfNeeded(
-        //                     metadata = metadata,
-        //                     chunkIndex = chunkIndex,
-        //                     isLastChunk = chunkIndex == lastChunkIndex
-        //                 )
-        //             }
-        //         }
-        //     }.awaitAll().sortedBy { it.chunkIndex } + uploadChunkIfNeeded(
-        //         metadata = metadata,
-        //         chunkIndex = lastChunkIndex,
-        //         isLastChunk = true
-        //     )
-        // }
-
         val etags = coroutineScope {
             List(totalChunks) { chunkIndex ->
                 async {
