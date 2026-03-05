@@ -56,7 +56,7 @@ class AbandonedTransferV2CleanupWorker @AssistedInject constructor(
         const val REQUEST_UTC_TIMESTAMP_MILLIS = "request_utc_timestamp_millis"
     }
 
-    private fun isBeyondBackedAutoCleanup(): Boolean {
+    private fun isBeyondBackedAutoCleanup(): Boolean { //TODO[ST-v2]: Duplicates the one in AbandonedTransferCleanupWorker. Fix it
         val requestUtcTimestampMillis = inputData.getLong(DataKeys.REQUEST_UTC_TIMESTAMP_MILLIS, 0L)
         val giveUpUtcTimestampMillis = requestUtcTimestampMillis + backendAutoCleanupDelay.inWholeMilliseconds
         return System.currentTimeMillis() >= giveUpUtcTimestampMillis
