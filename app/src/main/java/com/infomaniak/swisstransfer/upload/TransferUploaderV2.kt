@@ -202,7 +202,7 @@ class TransferUploaderV2(
                             isLastChunk = chunkIndex == lastChunkIndex
                         )
                     }
-                }.also { if (chunkIndex == 0) it.await() }
+                }
             }.awaitAll().sortedBy { it.chunkIndex }
         }
         uploadManager.finalizeFileUploadedInChunks(transfer.id, metadata.uuid, etags)
