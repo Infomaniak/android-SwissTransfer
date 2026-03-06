@@ -26,17 +26,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,19 +53,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
-import com.infomaniak.core.ui.compose.preview.previewparameter.usersPreviewData
+import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
@@ -79,7 +75,7 @@ import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
-import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.previewparameter.filesPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
@@ -503,7 +499,8 @@ enum class PasswordTransferOption(
 
 @PreviewAllWindows
 @Composable
-private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
+private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
+    val files = filesPreviewData
     val transferOptionsCallbacks = TransferOptionsCallbacks(
         transferOptionsStates = {
             listOf(
@@ -538,7 +535,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
         validatedRecipientsEmails = GetSetCallbacks(get = { setOf("test.test@ik.me") }, set = {}),
     )
 
-    CompositionLocalProvider(LocalUser provides usersPreviewData.first()) {
+    CompositionLocalProvider(LocalUser provides users.first()) {
         SwissTransferTheme {
             PickFilesScreen(
                 files = { files },
