@@ -249,9 +249,12 @@ private suspend fun buildDownloadRequest(
         }
         else -> return null
     }
+
     val extraHeaders = buildSet {
-        val password = transfer.password ?: return null
-        if (transfer.apiSource == TransferUi.ApiSource.V2) add("Transfer-Password" to password)
+        if (transfer.apiSource == TransferUi.ApiSource.V2) {
+            val password = transfer.password ?: return@buildSet
+            add("Transfer-Password" to password)
+        }
     }
 
     return runCatching {
