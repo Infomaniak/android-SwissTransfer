@@ -242,11 +242,16 @@ private suspend fun buildDownloadRequest(
             val fileName = DownloadManagerUtils.withoutProblematicCharacters(targetFile.fileName)
             name = "SwissTransfer/$fileName${if (targetFile.isFolder) ".zip" else ""}"
         }
-        else -> {
+        transfer.apiSource == TransferUi.ApiSource.V1 -> {
             url = apiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return null
             val fileName = currentDateTimeWithSecondsString()
             name = "SwissTransfer/$fileName.zip"
         }
+        else -> return null
+    }
+    val extraHeaders = buildSet {
+        val password = transfer.password ?: return null
+        if (transfer.apiSource == TransferUi.ApiSource.V2) add("Transfer-Password" to password)
     }
 
     return runCatching {
@@ -255,6 +260,7 @@ private suspend fun buildDownloadRequest(
             nameWithoutProblematicChars = name,
             mimeType = Dispatchers.IO { FileType.guessMimeTypeFromFileName(name) },
             userAgent = userAgent,
+            extraHeaders = extraHeaders,
         )
     }.cancellable().onFailure {
         // Unlikely to happen since mitigation in requestFor, but we don't want to crash the app if it happens.
