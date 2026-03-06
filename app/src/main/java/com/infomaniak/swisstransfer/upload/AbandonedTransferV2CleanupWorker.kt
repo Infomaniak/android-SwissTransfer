@@ -114,6 +114,6 @@ class AbandonedTransferV2CleanupWorker @AssistedInject constructor(
 
         private val backendAutoCleanupDelay = 24.hours
 
-        private const val TAG = "AbandonedTransferCleanupWorker"
+        private const val TAG = "AbandonedTransferV2CleanupWorker"
     }
 }
