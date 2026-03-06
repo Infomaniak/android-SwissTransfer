@@ -102,6 +102,7 @@
                 <data android:host="@string/preprod_host" />
                 <data android:host="@string/prod_host" />
                 <data android:pathPattern="/d/.*" />
+                <data android:pathPattern="/dl/.*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
