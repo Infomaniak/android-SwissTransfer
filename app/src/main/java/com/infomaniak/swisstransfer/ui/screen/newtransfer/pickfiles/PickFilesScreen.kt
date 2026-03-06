@@ -64,6 +64,7 @@ import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -85,6 +86,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.isApiV2
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
@@ -102,7 +104,6 @@ fun PickFilesScreen(
 ) {
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
-    val isApiV2 by pickFilesViewModel.isApiV2Flow.collectAsStateWithLifecycle()
     val canSendStatus: CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
 
     val selectedTransferType: TransferTypeUi by pickFilesViewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
@@ -199,7 +200,6 @@ fun PickFilesScreen(
             // Notification permission is optional, so we don’t wait for the result
             pickFilesViewModel.send()
         },
-        isApiV2 = { isApiV2 },
         isAwaitingSend = { pickFilesViewModel.isReadyToSend() },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
@@ -224,7 +224,6 @@ private fun PickFilesScreen(
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
     exitNewTransfer: () -> Unit,
-    isApiV2: () -> Boolean,
     isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
@@ -261,7 +260,6 @@ private fun PickFilesScreen(
                     emailTextFieldCallbacks = emailTextFieldCallbacks,
                     transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
-                    isApiV2 = isApiV2,
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
@@ -295,10 +293,9 @@ private fun ColumnScope.ImportTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
-    isApiV2: () -> Boolean,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
-    if (isApiV2()) {
+    if (LocalUser.current.isApiV2()) {
         SwissTransferTextField(
             modifier = modifier,
             label = stringResource(R.string.transferTitlePlaceholder),
@@ -307,7 +304,7 @@ private fun ColumnScope.ImportTextFields(
             onValueChange = { transferTitleState.value = it }
         )
     }
-    EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, isApiV2)
+    EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields)
     SwissTransferTextField(
         modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
@@ -323,7 +320,6 @@ private fun ColumnScope.EmailAddressesTextFields(
     modifier: Modifier,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
-    isApiV2: () -> Boolean,
 ) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
@@ -338,7 +334,7 @@ private fun ColumnScope.EmailAddressesTextFields(
                 maxLineNumber = 1,
                 imeAction = ImeAction.Next,
                 isError = isAuthorError,
-                isReadOnly = isApiV2(),
+                isReadOnly = LocalUser.current.isApiV2(),
                 supportingText = getEmailError(isAuthorError),
                 onValueChange = transferAuthorEmail.set,
             )
@@ -540,7 +536,6 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             pickFiles = {},
             exitNewTransfer = {},
             onSendButtonClick = {},
-            isApiV2 = { true },
             isAwaitingSend = { true },
             navigateToFilesDetails = {},
         )
