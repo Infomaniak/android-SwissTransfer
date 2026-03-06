@@ -25,18 +25,22 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -52,7 +56,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -61,6 +68,7 @@ import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.preview.previewparameter.usersPreviewData
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
@@ -287,7 +295,7 @@ private fun FilesToImport(
 }
 
 @Composable
-private fun ColumnScope.ImportTextFields(
+private fun ImportTextFields(
     horizontalPaddingModifier: Modifier,
     transferTitleState: MutableState<String>,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
@@ -295,39 +303,46 @@ private fun ColumnScope.ImportTextFields(
     shouldShowEmailAddressesFields: () -> Boolean,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
-    if (LocalUser.current.isApiV2()) {
+
+    val textFieldSpacing = Margin.Medium
+    Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
+        if (LocalUser.current.isApiV2()) {
+            SwissTransferTextField(
+                modifier = modifier,
+                label = stringResource(R.string.transferTitlePlaceholder),
+                isRequired = false,
+                maxLineNumber = 1,
+                onValueChange = { transferTitleState.value = it },
+            )
+        }
+
+        EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, textFieldSpacing)
+
         SwissTransferTextField(
             modifier = modifier,
-            label = stringResource(R.string.transferTitlePlaceholder),
+            label = stringResource(R.string.transferMessagePlaceholder),
             isRequired = false,
-            maxLineNumber = 1,
-            onValueChange = { transferTitleState.value = it }
+            minLineNumber = 3,
+            capitalization = KeyboardCapitalization.Sentences,
+            onValueChange = transferMessageCallbacks.set,
         )
     }
-    EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields)
-    SwissTransferTextField(
-        modifier = modifier,
-        label = stringResource(R.string.transferMessagePlaceholder),
-        isRequired = false,
-        minLineNumber = 3,
-        capitalization = KeyboardCapitalization.Sentences,
-        onValueChange = transferMessageCallbacks.set,
-    )
 }
 
 @Composable
-private fun ColumnScope.EmailAddressesTextFields(
+private fun EmailAddressesTextFields(
     modifier: Modifier,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
+    textFieldSpacing: Dp,
 ) = with(emailTextFieldCallbacks) {
-    AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
-        Column {
+    AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
+        Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
             val isAuthorError = checkEmailError(isAuthor = true)
             val isRecipientError = checkEmailError(isAuthor = false)
 
             SwissTransferTextField(
-                modifier = modifier,
+                modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
                 initialValue = transferAuthorEmail.get(),
                 keyboardType = KeyboardType.Email,
@@ -338,9 +353,9 @@ private fun ColumnScope.EmailAddressesTextFields(
                 supportingText = getEmailError(isAuthorError),
                 onValueChange = transferAuthorEmail.set,
             )
-            Spacer(Modifier.height(Margin.Medium))
+
             EmailAddressTextField(
-                modifier = modifier,
+                modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 initialValue = recipientEmail.get(),
                 validatedRecipientsEmails = validatedRecipientsEmails,
@@ -348,7 +363,6 @@ private fun ColumnScope.EmailAddressesTextFields(
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
             )
-            Spacer(Modifier.height(Margin.Medium))
         }
     }
 }
@@ -524,20 +538,22 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
         validatedRecipientsEmails = GetSetCallbacks(get = { setOf("test.test@ik.me") }, set = {}),
     )
 
-    SwissTransferTheme {
-        PickFilesScreen(
-            files = { files },
-            canSendStatus = { CanSendStatus.Yes },
-            transferTitleState = remember { mutableStateOf("") },
-            emailTextFieldCallbacks = emailTextFieldCallbacks,
-            transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
-            selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
-            transferOptionsCallbacks = transferOptionsCallbacks,
-            pickFiles = {},
-            exitNewTransfer = {},
-            onSendButtonClick = {},
-            isAwaitingSend = { true },
-            navigateToFilesDetails = {},
-        )
+    CompositionLocalProvider(LocalUser provides usersPreviewData.first()) {
+        SwissTransferTheme {
+            PickFilesScreen(
+                files = { files },
+                canSendStatus = { CanSendStatus.Yes },
+                transferTitleState = remember { mutableStateOf("") },
+                emailTextFieldCallbacks = emailTextFieldCallbacks,
+                transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
+                selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
+                transferOptionsCallbacks = transferOptionsCallbacks,
+                pickFiles = {},
+                exitNewTransfer = {},
+                onSendButtonClick = {},
+                isAwaitingSend = { true },
+                navigateToFilesDetails = {},
+            )
+        }
     }
 }
