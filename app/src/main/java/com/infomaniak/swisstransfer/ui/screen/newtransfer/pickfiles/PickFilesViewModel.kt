@@ -54,6 +54,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesVie
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus.Issue
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
@@ -76,6 +77,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
+    private val accountUtils: AccountUtils,
     private val appSettingsManager: AppSettingsManager,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val savedStateHandle: SavedStateHandle,
@@ -84,6 +86,8 @@ class PickFilesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val canSendStatusFlow: StateFlow<CanSendStatus>
+    val isApiV2Flow = accountUtils.currentUserIdFlow.map { it != null }
+        .stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     fun send() = sendRequest()
     fun isReadyToSend() = sendRequest.isAwaitingCall
@@ -147,7 +151,7 @@ class PickFilesViewModel @Inject constructor(
     private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
-    //region Transfer title TODO[ST-v2]: Add title text input for users connected via v2 API.
+    //region Transfer title
     val transferTitleState = mutableStateOf("")
     private var transferTitle by transferTitleState
     //endregion
@@ -193,6 +197,13 @@ class PickFilesViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
+        viewModelScope.launch {
+            accountUtils.currentUserFlow.collect { user ->
+                if (user != null) {
+                    transferAuthorEmail = user.email
+                }
+            }
+        }
         viewModelScope.launch { handleSessionStart() }
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
