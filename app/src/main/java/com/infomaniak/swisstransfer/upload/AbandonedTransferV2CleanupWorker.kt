@@ -65,7 +65,7 @@ class AbandonedTransferV2CleanupWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         if (isBeyondBackedAutoCleanup()) return Result.failure()
         if (accountManager.currentUser?.id != inputData.getLong(key = DataKeys.USER_ID, defaultValue = -1)) {
-            SentryLog.e(TAG, "Couldn't complte the abandoner transfer cleanup because the user id changed in the meantime.")
+            SentryLog.e(TAG, "Couldn't complete the abandoner transfer cleanup because the user id changed in the meantime.")
             return Result.failure()
         }
 
