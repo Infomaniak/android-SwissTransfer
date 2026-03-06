@@ -245,10 +245,12 @@ private fun TransferDetailsScreen(
         }
     }
 
+    val title = getTransfer().title ?: getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL)
+
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                title = getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL),
+                title = title,
                 navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
                 actions = {
                     when (direction) {
