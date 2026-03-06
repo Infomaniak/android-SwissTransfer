@@ -67,8 +67,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import splitties.coroutines.repeatWhileActive
@@ -86,8 +88,6 @@ class PickFilesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val canSendStatusFlow: StateFlow<CanSendStatus>
-    val isApiV2Flow = accountUtils.currentUserIdFlow.map { it != null }
-        .stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     fun send() = sendRequest()
     fun isReadyToSend() = sendRequest.isAwaitingCall
@@ -198,10 +198,8 @@ class PickFilesViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            accountUtils.currentUserFlow.collect { user ->
-                if (user != null) {
-                    transferAuthorEmail = user.email
-                }
+            accountUtils.currentUserFlow.mapNotNull { it?.email }.distinctUntilChanged().collect { userEmail ->
+                transferAuthorEmail = userEmail
             }
         }
         viewModelScope.launch { handleSessionStart() }
