@@ -38,6 +38,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -56,10 +57,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
-import com.infomaniak.core.common.mapSync
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.R
@@ -101,6 +102,7 @@ fun PickFilesScreen(
 ) {
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
+    val isApiV2 by pickFilesViewModel.isApiV2Flow.collectAsStateWithLifecycle()
     val canSendStatus: CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
 
     val selectedTransferType: TransferTypeUi by pickFilesViewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
@@ -178,6 +180,7 @@ fun PickFilesScreen(
     PickFilesScreen(
         files = { files },
         canSendStatus = { canSendStatus },
+        transferTitleState = pickFilesViewModel.transferTitleState,
         emailTextFieldCallbacks = emailTextFieldCallbacks,
         transferMessageCallbacks = pickFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
@@ -196,6 +199,7 @@ fun PickFilesScreen(
             // Notification permission is optional, so we don’t wait for the result
             pickFilesViewModel.send()
         },
+        isApiV2 = { isApiV2 },
         isAwaitingSend = { pickFilesViewModel.isReadyToSend() },
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
@@ -213,12 +217,14 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 private fun PickFilesScreen(
     files: () -> List<FileUi>,
     canSendStatus: () -> CanSendStatus,
+    transferTitleState: MutableState<String>,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
     exitNewTransfer: () -> Unit,
+    isApiV2: () -> Boolean,
     isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState? = null,
@@ -251,9 +257,11 @@ private fun PickFilesScreen(
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
                     horizontalPaddingModifier = modifier,
+                    transferTitleState = transferTitleState,
                     emailTextFieldCallbacks = emailTextFieldCallbacks,
                     transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
+                    isApiV2 = isApiV2,
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
@@ -283,12 +291,23 @@ private fun FilesToImport(
 @Composable
 private fun ColumnScope.ImportTextFields(
     horizontalPaddingModifier: Modifier,
+    transferTitleState: MutableState<String>,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
+    isApiV2: () -> Boolean,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
-    EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields)
+    if (isApiV2()) {
+        SwissTransferTextField(
+            modifier = modifier,
+            label = stringResource(R.string.transferTitlePlaceholder),
+            isRequired = false,
+            maxLineNumber = 1,
+            onValueChange = { transferTitleState.value = it }
+        )
+    }
+    EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, isApiV2)
     SwissTransferTextField(
         modifier = modifier,
         label = stringResource(R.string.transferMessagePlaceholder),
@@ -304,6 +323,7 @@ private fun ColumnScope.EmailAddressesTextFields(
     modifier: Modifier,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
+    isApiV2: () -> Boolean,
 ) = with(emailTextFieldCallbacks) {
     AnimatedVisibility(visible = shouldShowEmailAddressesFields()) {
         Column {
@@ -318,6 +338,7 @@ private fun ColumnScope.EmailAddressesTextFields(
                 maxLineNumber = 1,
                 imeAction = ImeAction.Next,
                 isError = isAuthorError,
+                isReadOnly = isApiV2(),
                 supportingText = getEmailError(isAuthorError),
                 onValueChange = transferAuthorEmail.set,
             )
@@ -511,6 +532,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
         PickFilesScreen(
             files = { files },
             canSendStatus = { CanSendStatus.Yes },
+            transferTitleState = remember { mutableStateOf("") },
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
             selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
@@ -518,6 +540,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             pickFiles = {},
             exitNewTransfer = {},
             onSendButtonClick = {},
+            isApiV2 = { true },
             isAwaitingSend = { true },
             navigateToFilesDetails = {},
         )
