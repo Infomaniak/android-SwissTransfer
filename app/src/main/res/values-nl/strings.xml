@@ -185,6 +185,7 @@
         <item quantity="one">%s over</item>
         <item quantity="other">%s over</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Geef je transfer een titel</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">QR-code</string>
