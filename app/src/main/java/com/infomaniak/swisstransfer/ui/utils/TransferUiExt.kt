@@ -101,3 +101,7 @@ fun TransferUi.getWholeDate(): String {
         expiry.format(FORMAT_HOUR_MINUTES),
     )
 }
+
+fun TransferUi.isV1(): Boolean = apiSource == TransferUi.ApiSource.V1
+
+fun TransferUi.isV2(): Boolean = apiSource == TransferUi.ApiSource.V2
