@@ -146,7 +146,7 @@ class TransferUploaderV2(
             thumbnailsLocalStorage.generateThumbnailFor(
                 fileUri = targetFileUri,
                 fileName = fileUUID,
-                extension = mimeType.substring(mimeType.indexOfLast { it == '/' }),
+                extension = mimeType.substringAfterLast('/'),
             )
             metadata.thumbnailSaved = true
         }
