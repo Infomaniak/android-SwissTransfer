@@ -195,6 +195,7 @@
         <item quantity="many">%s pozostało</item>
         <item quantity="other">%s pozostało</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Nadaj tytuł swojemu transferowi</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">Kod QR</string>

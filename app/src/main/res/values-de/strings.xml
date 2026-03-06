@@ -185,6 +185,7 @@
         <item quantity="one">%s übrig</item>
         <item quantity="other">%s übrig</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Gib deinem Transfer einen Titel</string>
     <string name="transferTypeEmail">E-Mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">QR Code</string>

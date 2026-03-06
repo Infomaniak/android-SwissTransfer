@@ -185,6 +185,7 @@
         <item quantity="one">%s απομένει</item>
         <item quantity="other">%s απομένουν</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Δώσε έναν τίτλο στη μεταφορά σου</string>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Σύνδεσμος</string>
     <string name="transferTypeQrCode">Κωδικός QR</string>
