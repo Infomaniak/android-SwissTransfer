@@ -96,7 +96,7 @@ suspend fun handleTransferDownload(
     }
     downloadManager.cancelAndRemove(id)
     transferManager.writeDownloadManagerId(
-        transferUUID = transfer.uuid,
+        transfer = transfer,
         fileUid = targetFile?.uid,
         uniqueDownloadManagerId = null,
     )
@@ -104,10 +104,10 @@ suspend fun handleTransferDownload(
 
 fun downloadManagerId(
     transferManager: TransferManager,
-    transferUuid: String,
+    transfer: TransferUi,
     fileUid: String?,
 ): Flow<UniqueDownloadId?> = transferManager.downloadManagerIdFor(
-    transferUUID = transferUuid,
+    transfer = transfer,
     fileUid = fileUid,
 ).map { UniqueDownloadId(it ?: return@map null) }
 
@@ -139,7 +139,7 @@ private fun currentOrNewDownloadManagerId(
     direction: TransferDirection?,
 ): Flow<UniqueDownloadId> = downloadManagerId(
     transferManager = transferManager,
-    transferUuid = transfer.uuid,
+    transfer = transfer,
     fileUid = targetFile?.uid,
 ).mapLatest { id ->
     id ?: repeatWhileActive {
@@ -203,7 +203,7 @@ private suspend fun getNewDownloadId(
     val request = buildDownloadRequest(transfer, targetFile, apiUrlCreator, userAgent, direction) ?: return null
     val newId = downloadManager.startDownloadingFile(request)
     transferManager.writeDownloadManagerId(
-        transferUUID = transfer.uuid,
+        transfer = transfer,
         fileUid = targetFile?.uid,
         uniqueDownloadManagerId = newId?.value,
     )
@@ -238,14 +238,22 @@ private suspend fun buildDownloadRequest(
 
     when {
         targetFile != null -> {
-            url = apiUrlCreator.downloadFileUrl(transfer.uuid, targetFile.uid) ?: return null
+            url = apiUrlCreator.downloadFileUrl(transfer, targetFile.uid) ?: return null
             val fileName = DownloadManagerUtils.withoutProblematicCharacters(targetFile.fileName)
             name = "SwissTransfer/$fileName${if (targetFile.isFolder) ".zip" else ""}"
         }
-        else -> {
+        transfer.apiSource == TransferUi.ApiSource.V1 -> {
             url = apiUrlCreator.downloadFilesUrl(transfer.uuid) ?: return null
             val fileName = currentDateTimeWithSecondsString()
             name = "SwissTransfer/$fileName.zip"
+        }
+        else -> return null
+    }
+
+    val extraHeaders = buildSet {
+        if (transfer.apiSource == TransferUi.ApiSource.V2) {
+            val password = transfer.password ?: return@buildSet
+            add("Transfer-Password" to password)
         }
     }
 
@@ -255,6 +263,7 @@ private suspend fun buildDownloadRequest(
             nameWithoutProblematicChars = name,
             mimeType = Dispatchers.IO { FileType.guessMimeTypeFromFileName(name) },
             userAgent = userAgent,
+            extraHeaders = extraHeaders,
         )
     }.cancellable().onFailure {
         // Unlikely to happen since mitigation in requestFor, but we don't want to crash the app if it happens.

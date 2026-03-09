@@ -23,13 +23,16 @@ import androidx.compose.runtime.LongState
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.work.WorkManager
+import com.infomaniak.core.common.Xor
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.withPartialWakeLock
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
@@ -63,7 +66,6 @@ import kotlinx.coroutines.yield
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
-import splitties.init.appCtx
 import javax.inject.Inject
 import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -71,7 +73,9 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 class UploadSessionManager @Inject constructor(
-    private val uploadManager: InMemoryUploadManager,
+    private val legacyUploadManager: InMemoryUploadManager,
+    private val uploadManager: UploadV2Manager,
+    accountManager: AccountManager,
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val notificationsUtils: NotificationsUtils,
@@ -79,6 +83,8 @@ class UploadSessionManager @Inject constructor(
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     private val workManager: WorkManager,
 ) {
+
+    private val currentUser = accountManager.currentUser
 
     suspend fun handleNewTransfer(
         startRequestWithTheoreticalSizes: StartUploadRequest,
@@ -161,44 +167,72 @@ class UploadSessionManager @Inject constructor(
             return
         }
 
-        val transferUuid = tryCompletingUnlessCancelled(
+        val uploadResult: TransferUploader.UploadResult? = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
             valueIfCancelled = null
         ) {
-            TransferUploader(
-                startRequest = startRequest,
-                uploadManager = uploadManager,
-                transferManager = transferManager,
-                fileChunkSizeManager = fileChunkSizeManager,
-                request = request,
-                destination = destination,
-                thumbnailsLocalStorage = thumbnailsLocalStorage,
-            ).getUuidFromUploadWithRetries(
+            val uploader: TransferUploader = when (destination) {
+                is Xor.First -> TransferUploaderV1(
+                    startRequest = startRequest,
+                    uploadManager = legacyUploadManager,
+                    transferManager = transferManager,
+                    fileChunkSizeManager = fileChunkSizeManager,
+                    request = request,
+                    destination = destination.value,
+                    thumbnailsLocalStorage = thumbnailsLocalStorage,
+                )
+                is Xor.Second -> TransferUploaderV2(
+                    startRequest = startRequest,
+                    uploadManager = uploadManager,
+                    transferManager = transferManager,
+                    fileChunkSizeManager = fileChunkSizeManager,
+                    transfer = destination.value,
+                    thumbnailsLocalStorage = thumbnailsLocalStorage,
+                )
+            }
+            uploader.getUuidFromUploadWithRetries(
                 uploadState = uploadState,
                 shouldRetry = ::shouldRetry,
             )
         }
 
-        currentState = if (transferUuid != null) {
-            val url = sharedApiUrlCreator.shareTransferUrl(transferUuid)
+        currentState = if (uploadResult != null) {
+            val url = when (destination) {
+                is Xor.First -> sharedApiUrlCreator.shareTransferUrl(transferUUID = uploadResult.transferId)
+                is Xor.Second -> sharedApiUrlCreator.shareTransferV2Url(linkUUID = uploadResult.linkId!!)
+            }
             val transferType = startRequest.info.type
 
             removeAllFiles()
 
             notificationsUtils.uploadSucceeded(
                 transferType = transferType,
-                transferUuid = transferUuid,
+                transferUuid = uploadResult.transferId,
                 transferUrl = url,
             )
 
             UploadState.Complete(
                 transferType = transferType,
-                transferUuid = transferUuid,
+                transferUuid = uploadResult.transferId,
                 transferUrl = url,
             )
         } else {
-            AbandonedTransferCleanupWorker.schedule(workManager, destination.container.uuid).onFailure {
-                SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferCleanupWorker!", it)
+            when (destination) {
+                is Xor.First -> {
+                    AbandonedTransferCleanupWorker.schedule(workManager, destination.value.container.uuid).onFailure {
+                        SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferCleanupWorker!", it)
+                    }
+                }
+                is Xor.Second -> {
+                    AbandonedTransferV2CleanupWorker.schedule(
+                        workManager = workManager,
+                        userId = currentUser!!.id,
+                        transferId = destination.value.id,
+                        failed = false
+                    ).onFailure {
+                        SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferV2CleanupWorker!", it)
+                    }
+                }
             }
             null
         }
@@ -210,7 +244,7 @@ class UploadSessionManager @Inject constructor(
     private suspend fun TransferUploader.getUuidFromUploadWithRetries(
         uploadState: MutableStateFlow<UploadState?>,
         shouldRetry: suspend () -> Boolean,
-    ): String? {
+    ): TransferUploader.UploadResult? {
         repeatWhileActive retryLoop@{
             @Suppress("VariableNeverRead") // Only here for the setter.
             var currentState by uploadState::value
@@ -292,13 +326,14 @@ class UploadSessionManager @Inject constructor(
         valueIfCancelled
     })
 
-    private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability(
-        context = appCtx
-    ).isNetworkAvailable.conflate().distinctUntilChanged().shareIn(
-        scope = CoroutineScope(Dispatchers.Default),
-        started = SharingStarted.WhileSubscribed(),
-        replay = 1
-    )
+    private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability().isNetworkAvailable
+        .conflate()
+        .distinctUntilChanged()
+        .shareIn(
+            scope = CoroutineScope(Dispatchers.Default),
+            started = SharingStarted.WhileSubscribed(),
+            replay = 1
+        )
 }
 
 private const val EXPECTED_CHUNK_SIZE = 50L * 1_024 * 1_024 // 50 MB

@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">een wachtwoord.</string>
     <string name="onboardingPasswordSubtitleTemplate">Bescherm je shares met %s</string>
     <string name="onboardingPasswordTitle">Behoud de controle!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Verstuur je bestanden</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s nu!</string>
+    <string name="onboardingSendFilesTitle">Klaar om te beginnen?</string>
     <string name="onboardingStorageSubtitleArgument">Deel tot 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s bestanden gratis en zonder registratie.</string>
     <string name="onboardingStorageTitle">Verstuur grote bestanden!</string>
@@ -109,6 +112,7 @@
     <string name="settingsCategoryDataManagement">Gegevens &amp; Privacy</string>
     <string name="settingsCategoryDefaultSettings">Standaardinstellingen</string>
     <string name="settingsCategoryGeneral">Algemeen</string>
+    <string name="settingsDeleteMyAccount">Mijn account verwijderen</string>
     <string name="settingsDownloadsLimitTitle">Stel een standaard downloadlimiet in voor je overdrachten</string>
     <string name="settingsEmailLanguageTitle">Stel een standaardtaal in voor je e-mailoverdrachten</string>
     <string name="settingsEmailLanguageValueEnglish">Engels</string>
@@ -116,6 +120,8 @@
     <string name="settingsEmailLanguageValueGerman">Duits</string>
     <string name="settingsEmailLanguageValueItalian">Italiaans</string>
     <string name="settingsEmailLanguageValueSpanish">Spaans</string>
+    <string name="settingsHelpAndSupport">Hulp &amp; Ondersteuning</string>
+    <string name="settingsLogOut">Uitloggen</string>
     <string name="settingsMatomoDescription">Matomo is een analysetool die uitsluitend door Infomaniak wordt gehost en beheerd om te begrijpen hoe de applicatie wordt gebruikt.\n\nDoor deze gegevens te bestuderen, kan ons team de interface van de applicatie voortdurend verbeteren.</string>
     <string name="settingsNotificationsTitle">Selecteer een voorkeur</string>
     <string name="settingsOptionActivated">Geactiveerd</string>
@@ -135,6 +141,8 @@
     <string name="settingsOptionValidityPeriod">Geldigheidsperiode</string>
     <string name="settingsPasswordDescription">Je ontvangers moeten het wachtwoord invoeren om de bestanden te downloaden.</string>
     <string name="settingsPasswordToggleDescription">Bescherming activeren</string>
+    <string name="settingsSignIn">Inloggen</string>
+    <string name="settingsSwitchAccount">Van account wisselen</string>
     <string name="settingsThemeTitle">Selecteer een thema</string>
     <string name="settingsTitle">Instellingen</string>
     <string name="settingsValidityPeriodTitle">Stel een standaard geldigheidsperiode in voor je overdrachten</string>
@@ -177,6 +185,7 @@
         <item quantity="one">%s over</item>
         <item quantity="other">%s over</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Geef je transfer een titel</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">QR-code</string>

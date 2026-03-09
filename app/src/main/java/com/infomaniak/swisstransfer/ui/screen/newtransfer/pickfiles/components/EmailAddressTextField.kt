@@ -35,6 +35,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,6 +58,7 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -68,10 +70,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
-import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferInputChip
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextFieldDefaults
@@ -130,7 +134,7 @@ fun EmailAddressTextField(
         }
 
     BasicTextField(
-        modifier = emailAddressTextFieldModifier,
+        modifier = emailAddressTextFieldModifier.padding(top = minimizedLabelHalfHeight()),
         value = textFieldValue,
         onValueChange = state::updateUiTextValue,
         textStyle = TextStyle(color = SwissTransferTheme.colors.primaryTextColor),
@@ -153,6 +157,17 @@ fun EmailAddressTextField(
             )
         }
     )
+}
+
+/**
+ * Copied from OutlineTextField so the BasicTextField can have the same spacing as OutlineTextField with a label
+ */
+@Composable
+private fun minimizedLabelHalfHeight(): Dp {
+    val compositionLocalValue = MaterialTheme.typography.bodySmall.lineHeight
+    val fallbackValue = 16.sp
+    val value = if (compositionLocalValue.isSp) compositionLocalValue else fallbackValue
+    return with(LocalDensity.current) { value.toDp() / 2 }
 }
 
 private class EmailAddressTextFieldState(

@@ -33,6 +33,10 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import com.infomaniak.core.avatar.AvatarColors
+import com.infomaniak.core.avatar.LocalAvatarColors
+import com.infomaniak.core.ui.compose.basics.bottomsheet.BottomSheetThemeDefaults
+import com.infomaniak.core.ui.compose.basics.bottomsheet.LocalBottomSheetTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.ScaffoldThemeDefault
 import com.infomaniak.core.ui.compose.theme.LocalIsThemeDarkMode
@@ -46,10 +50,12 @@ fun SwissTransferTheme(
     content: @Composable () -> Unit,
 ) {
     val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
+    val avatarColors = if (isDarkTheme) AvatarColorsDark else AvatarColorsLight
     val scaffoldTheme = ScaffoldThemeDefault.theme(
         singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
         stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
     )
+
     val activity = LocalActivity.current
     LaunchedEffect(isDarkTheme) {
         val window = activity?.window ?: return@LaunchedEffect
@@ -61,13 +67,25 @@ fun SwissTransferTheme(
         LocalCustomColorScheme provides customColors,
         LocalWindowAdaptiveInfo provides currentWindowAdaptiveInfo(),
         LocalIsThemeDarkMode provides isDarkTheme,
-        LocalScaffoldTheme provides scaffoldTheme
+        LocalScaffoldTheme provides scaffoldTheme,
+        LocalAvatarColors provides AvatarColors(avatarColors.colorList, customColors.avatarInitialsColor),
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme,
             shapes = Shapes,
-            content = content,
-        )
+        ) {
+            // Needs both LocalCustomColorScheme and MaterialTheme's colorScheme to be defined by this point
+            val bottomSheetTheme = BottomSheetThemeDefaults.theme(
+                contentColor = SwissTransferTheme.colors.primaryTextColor,
+                titleTextStyle = BottomSheetStyle.TitleTextStyle,
+                titleColor = BottomSheetStyle.TitleColor,
+            )
+
+            CompositionLocalProvider(
+                LocalBottomSheetTheme provides bottomSheetTheme,
+                content = content,
+            )
+        }
     }
 }
 
@@ -114,7 +132,23 @@ data class CustomColorScheme(
     val swipeDelete: Color = Color.Unspecified,
     val swipeIcon: Color = Color.Unspecified,
     val fileStatusButtonBackground: Color = Color.Unspecified,
+    val avatarInitialsColor: Color = Color.Unspecified,
 )
+
+@Immutable
+class AvatarColors(
+    yellow: Color,
+    coral: Color,
+    grass: Color,
+    fougere: Color,
+    cobalt: Color,
+    jean: Color,
+    tropical: Color,
+    mauve: Color,
+    prince: Color,
+) {
+    val colorList = listOf(yellow, coral, grass, fougere, cobalt, jean, tropical, mauve, prince)
+}
 
 private val Shapes = Shapes(
     extraSmall = CustomShapes.EXTRA_SMALL,

@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">salasanalla.</string>
     <string name="onboardingPasswordSubtitleTemplate">Suojaa jakosi %s</string>
     <string name="onboardingPasswordTitle">Pysy hallinnassa!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Lähetä tiedostosi</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s nyt!</string>
+    <string name="onboardingSendFilesTitle">Valmis aloittamaan?</string>
     <string name="onboardingStorageSubtitleArgument">Jaa jopa 50 Gt</string>
     <string name="onboardingStorageSubtitleTemplate">%s tiedostoja ilmaiseksi ilman rekisteröitymistä.</string>
     <string name="onboardingStorageTitle">Lähetä isoja tiedostoja!</string>
@@ -109,6 +112,7 @@
     <string name="settingsCategoryDataManagement">Tiedot &amp; Yksityisyys</string>
     <string name="settingsCategoryDefaultSettings">Oletusasetukset</string>
     <string name="settingsCategoryGeneral">Yleiset</string>
+    <string name="settingsDeleteMyAccount">Poista tilini</string>
     <string name="settingsDownloadsLimitTitle">Aseta oletusarvoinen latausraja siirroillesi</string>
     <string name="settingsEmailLanguageTitle">Aseta oletuskieli sähköpostilähetyksillesi</string>
     <string name="settingsEmailLanguageValueEnglish">Englanti</string>
@@ -116,6 +120,8 @@
     <string name="settingsEmailLanguageValueGerman">Saksa</string>
     <string name="settingsEmailLanguageValueItalian">Italia</string>
     <string name="settingsEmailLanguageValueSpanish">Espanja</string>
+    <string name="settingsHelpAndSupport">Ohje &amp; Tuki</string>
+    <string name="settingsLogOut">Kirjaudu ulos</string>
     <string name="settingsMatomoDescription">Matomo on analyysityökalu, jota Infomaniak isännöi ja hallinnoi yksinomaan ymmärtääkseen kuinka sovellusta käytetään.\n\nTutkimalla näitä tietoja tiimimme pystyy jatkuvasti parantamaan sovelluksen käyttöliittymää.</string>
     <string name="settingsNotificationsTitle">Valitse asetus</string>
     <string name="settingsOptionActivated">Aktivoitu</string>
@@ -135,6 +141,8 @@
     <string name="settingsOptionValidityPeriod">Voimassaoloaika</string>
     <string name="settingsPasswordDescription">Vastaanottajien täytyy syöttää salasana ladatakseen tiedostot.</string>
     <string name="settingsPasswordToggleDescription">Aktivoi suojaus</string>
+    <string name="settingsSignIn">Kirjaudu sisään</string>
+    <string name="settingsSwitchAccount">Vaihda tiliä</string>
     <string name="settingsThemeTitle">Valitse teema</string>
     <string name="settingsTitle">Asetukset</string>
     <string name="settingsValidityPeriodTitle">Aseta oletusarvoinen voimassaoloaika siirroillesi</string>
@@ -177,6 +185,7 @@
         <item quantity="one">%s jäljellä</item>
         <item quantity="other">%s jäljellä</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Anna siirrollesi otsikko</string>
     <string name="transferTypeEmail">Sähköposti</string>
     <string name="transferTypeLink">Linkki</string>
     <string name="transferTypeQrCode">QR-koodi</string>

@@ -26,6 +26,7 @@ data class NewTransferParams(
     val validityPeriod: ValidityPeriod,
     val authorEmail: String,
     val password: String,
+    val title: String?,
     val message: String,
     val downloadCountLimit: DownloadLimit,
     val languageCode: EmailLanguage,

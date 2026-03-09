@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">uma palavra-passe.</string>
     <string name="onboardingPasswordSubtitleTemplate">Protege as tuas partilhas com %s</string>
     <string name="onboardingPasswordTitle">Mantém o controlo!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Envia os teus ficheiros</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s agora!</string>
+    <string name="onboardingSendFilesTitle">Pronto para começar?</string>
     <string name="onboardingStorageSubtitleArgument">Partilha até 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s de ficheiros gratuitamente e sem registo.</string>
     <string name="onboardingStorageTitle">Envia a peso!</string>
@@ -109,6 +112,7 @@
     <string name="settingsCategoryDataManagement">Dados &amp; Privacidade</string>
     <string name="settingsCategoryDefaultSettings">Definições padrão</string>
     <string name="settingsCategoryGeneral">Geral</string>
+    <string name="settingsDeleteMyAccount">Eliminar a minha conta</string>
     <string name="settingsDownloadsLimitTitle">Define um limite de transferências padrão para as tuas transferências</string>
     <string name="settingsEmailLanguageTitle">Define um idioma padrão para as tuas transferências por e-mail</string>
     <string name="settingsEmailLanguageValueEnglish">Inglês</string>
@@ -116,6 +120,8 @@
     <string name="settingsEmailLanguageValueGerman">Alemão</string>
     <string name="settingsEmailLanguageValueItalian">Italiano</string>
     <string name="settingsEmailLanguageValueSpanish">Espanhol</string>
+    <string name="settingsHelpAndSupport">Ajuda &amp; Suporte</string>
+    <string name="settingsLogOut">Terminar sessão</string>
     <string name="settingsMatomoDescription">O Matomo é uma ferramenta de análise alojada e gerida exclusivamente pela Infomaniak para compreender como a aplicação é utilizada.\n\nAo estudar estes dados, a nossa equipa consegue melhorar continuamente a interface da aplicação.</string>
     <string name="settingsNotificationsTitle">Selecionar uma preferência</string>
     <string name="settingsOptionActivated">Ativado</string>
@@ -135,6 +141,8 @@
     <string name="settingsOptionValidityPeriod">Período de validade</string>
     <string name="settingsPasswordDescription">Os teus destinatários terão de introduzir a palavra-passe para descarregar os ficheiros.</string>
     <string name="settingsPasswordToggleDescription">Ativar proteção</string>
+    <string name="settingsSignIn">Iniciar sessão</string>
+    <string name="settingsSwitchAccount">Mudar de conta</string>
     <string name="settingsThemeTitle">Selecionar um tema</string>
     <string name="settingsTitle">Definições</string>
     <string name="settingsValidityPeriodTitle">Define um período de validade padrão para as tuas transferências</string>
@@ -177,6 +185,7 @@
         <item quantity="one">%s restante</item>
         <item quantity="other">%s restantes</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Dê um título à sua transferência</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Ligação</string>
     <string name="transferTypeQrCode">Código QR</string>

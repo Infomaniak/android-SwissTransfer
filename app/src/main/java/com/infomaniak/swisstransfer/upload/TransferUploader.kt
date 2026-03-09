@@ -33,8 +33,8 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
-import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.DefinitelyComplete
-import com.infomaniak.swisstransfer.upload.TransferUploader.ChunkUploadStatus.StartedOrComplete
+import com.infomaniak.swisstransfer.upload.TransferUploaderV1.ChunkUploadStatus.DefinitelyComplete
+import com.infomaniak.swisstransfer.upload.TransferUploaderV1.ChunkUploadStatus.StartedOrComplete
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import io.ktor.http.content.OutgoingContent
@@ -56,15 +56,15 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 @OptIn(ExperimentalAtomicApi::class)
-class TransferUploader(
-    val startRequest: StartUploadRequest,
+class TransferUploaderV1(
+    override val startRequest: StartUploadRequest,
     private val uploadManager: InMemoryUploadManager,
     private val transferManager: TransferManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
     private val request: UploadSessionRequest,
     private val destination: UploadDestination,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
-) {
+) : TransferUploader {
 
     private val pickedFiles: List<PickedFile> = startRequest.files
 
@@ -107,7 +107,7 @@ class TransferUploader(
     /**
      * Returns the transfer UUID once the upload completes successfully.
      */
-    suspend fun uploadRemainderOrThrow(updateState: (UploadState.Ongoing) -> Unit): String = autoCancelScope {
+    override suspend fun uploadRemainderOrThrow(updateState: (UploadState.Ongoing) -> Unit) = autoCancelScope {
         launch {
             uploadedBytesUpdates.collect { _ ->
                 updateState(newUploadState(uploadedBytes.load()))
@@ -124,7 +124,7 @@ class TransferUploader(
         )
     }
 
-    private suspend fun uploadRemainderOrThrow(): String {
+    private suspend fun uploadRemainderOrThrow(): TransferUploader.UploadResult {
         uploadFiles()
         val session = NewUploadSession(
             duration = request.validityPeriod,
@@ -148,7 +148,7 @@ class TransferUploader(
             thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transferUuid).toString(),
         )
 
-        return transferUuid
+        return TransferUploader.UploadResult(transferId = transferUuid, linkId = null)
     }
 
     private suspend fun uploadFiles() {

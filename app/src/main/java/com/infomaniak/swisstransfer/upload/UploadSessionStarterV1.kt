@@ -21,37 +21,29 @@ import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
 import com.infomaniak.core.appintegrity.exceptions.IntegrityException
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
+import com.infomaniak.core.common.Xor
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.swisstransfer.BuildConfig
-import javax.inject.Inject
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException as KmpNetworkException
 
-class UploadSessionStarter @Inject constructor(
+class UploadSessionStarterV1(
     private val appIntegrityManager: AppIntegrityManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val uploadManager: InMemoryUploadManager,
-) {
+) : UploadSessionStarter() {
 
-    suspend fun tryStarting(request: StartUploadRequest): Result {
-        val uploadSessionRequest = request.params.toUploadSessionRequest(
-            filesMetadata = request.files.map { it.toFileUploadMetaData() }
-        )
-        return tryStarting(uploadSessionRequest)
-    }
-
-    private suspend fun tryStarting(sessionRequest: UploadSessionRequest): Result = runCatching {
+    override suspend fun tryStarting(sessionRequest: UploadSessionRequest): Result = runCatching {
         val destination = uploadManager.startUploadSession(
             request = sessionRequest,
             attestationHeaderName = AppIntegrityManager.ATTESTATION_TOKEN_HEADER,
             generateAttestationToken = { fetchNewAttestationToken() },
         )
-        Result.Success(sessionRequest, destination)
+        Result.Success(sessionRequest, Xor.First(destination))
     }.cancellable().getOrElse { t ->
         SentryLog.w(TAG, "Throwable while trying to start the upload session", t)
         when (t) {
@@ -84,22 +76,6 @@ class UploadSessionStarter @Inject constructor(
         return attestationToken
     }
     //endregion
-
-    sealed interface Result {
-
-        data class Success(
-            val request: UploadSessionRequest,
-            val destination: UploadDestination
-        ) : Result
-
-        data object EmailValidationRequired : Result
-
-        sealed interface Issue : Result
-        data object RestrictedLocation : Issue
-        data object AppIntegrityIssue : Issue
-        data object NetworkIssue : Issue
-        data class OtherIssue(val t: Throwable) : Issue
-    }
 }
 
 private const val TAG = "UploadSessionStarter"

@@ -30,12 +30,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.core.common.mapSync
-import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.common.tryCompletingWhileTrue
 import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
+import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
@@ -54,6 +54,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesVie
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel.CanSendStatus.Issue
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
@@ -66,8 +67,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import splitties.coroutines.repeatWhileActive
@@ -76,6 +79,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
+    private val accountUtils: AccountUtils,
     private val appSettingsManager: AppSettingsManager,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val savedStateHandle: SavedStateHandle,
@@ -147,6 +151,11 @@ class PickFilesViewModel @Inject constructor(
     private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
     //endregion
 
+    //region Transfer title
+    val transferTitleState = mutableStateOf("")
+    private var transferTitle by transferTitleState
+    //endregion
+
     //region Transfer Message
     private var transferMessage by mutableStateOf("")
     val transferMessageCallbacks = GetSetCallbacks(get = { transferMessage }, set = { transferMessage = it })
@@ -188,6 +197,11 @@ class PickFilesViewModel @Inject constructor(
             initialValue = emptyList(),
         )
 
+        viewModelScope.launch {
+            accountUtils.currentUserFlow.mapNotNull { it?.email }.distinctUntilChanged().collect { userEmail ->
+                transferAuthorEmail = userEmail
+            }
+        }
         viewModelScope.launch { handleSessionStart() }
         viewModelScope.launch(ioDispatcher) {
             if (isFirstViewModelCreation) {
@@ -288,6 +302,7 @@ class PickFilesViewModel @Inject constructor(
         validityPeriod = selectedValidityPeriodOption.value.apiValue,
         authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
+        title = transferTitle,
         message = transferMessage,
         downloadCountLimit = selectedDownloadLimitOption.value.apiValue,
         languageCode = selectedLanguageOption.value.apiValue,

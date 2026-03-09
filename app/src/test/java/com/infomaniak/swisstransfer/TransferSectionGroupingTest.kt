@@ -149,14 +149,17 @@ class TransferSectionGroupingTest {
         fun Long.toTransferUi(): TransferUi {
             return TransferUi(
                 uuid = "",
+                linkId = null,
                 createdDateTimestamp = this,
                 expirationDateTimestamp = 0,
                 sizeUploaded = 0,
                 downloadLimit = 0,
                 downloadLeft = 0,
+                title = "",
                 message = "",
                 password = "",
                 files = emptyList(),
+                apiSource = TransferUi.ApiSource.V1
             )
         }
 

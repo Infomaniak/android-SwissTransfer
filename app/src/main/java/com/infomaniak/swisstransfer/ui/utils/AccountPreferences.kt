@@ -15,47 +15,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@file:OptIn(ExperimentalSplittiesApi::class)
+
 package com.infomaniak.swisstransfer.ui.utils
 
-import android.content.Context
-import android.content.SharedPreferences
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
+import androidx.core.content.edit
+import kotlinx.coroutines.flow.Flow
+import splitties.experimental.ExperimentalSplittiesApi
+import splitties.preferences.Preferences
+import splitties.preferences.SuspendPrefsAccessor
 
-@Singleton
-class AccountPreferences @Inject constructor(@ApplicationContext private val appContext: Context) {
-
-    private val sharedPreferences = appContext.applicationContext.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)!!
-
-    private var _currentUserId by sharedValue("currentUserId", NO_USER)
-    var currentUserId
-        get() = _currentUserId.takeIf { it != NO_USER }
-        set(value) {
-            _currentUserId = value ?: NO_USER
-        }
-
-    //region SharedValues methods to remove
-    // TODO: Extend SharedValues when the util class is migrated to Core instead of using these two methods
-    private fun sharedValue(key: String, defaultValue: Int): ReadWriteProperty<Any, Int> = with(sharedPreferences) {
-        return object : ReadWriteProperty<Any, Int> {
-            override fun getValue(thisRef: Any, property: KProperty<*>): Int = getInt(key, defaultValue)
-            override fun setValue(thisRef: Any, property: KProperty<*>, value: Int) = transaction { putInt(key, value) }
-        }
-    }
-
-    private fun SharedPreferences.transaction(block: SharedPreferences.Editor.() -> Unit) {
-        with(edit()) {
-            block(this)
-            apply()
-        }
-    }
-    //endregion
-
-    companion object {
-        private const val SHARED_PREFS_NAME = "AccountPreferences"
+class AccountPreferences private constructor(): Preferences(name = "AccountPreferences") {
+    companion object : SuspendPrefsAccessor<AccountPreferences>(::AccountPreferences) {
+        private const val GUEST_USER_ID = 0
         private const val NO_USER = -1
+    }
+
+    val isOnboardingDoneFlow: Flow<Boolean>
+    var isOnboardingDone by boolPref(key = "isOnboardingDone", defaultValue = false).also {
+        isOnboardingDoneFlow = it.valueFlow()
+    }
+
+    init {
+        migrateOldDataIfNeeded()
+    }
+
+    private fun migrateOldDataIfNeeded() {
+        /**
+         * This used to be currentUserId but in the end, the data of the current user is stored inside of
+         * [com.infomaniak.core.auth.PersistedCurrentUserAccountUtils].
+         * The value behind [legacyCurrentGuestUserIdKey] will always contain the guest user
+         * id if the onboarding is done. No other user id value has ever been stored here.
+         */
+        val legacyCurrentGuestUserIdKey = "currentUserId"
+        if (legacyCurrentGuestUserIdKey in prefs) {
+            isOnboardingDone = prefs.getInt(legacyCurrentGuestUserIdKey, NO_USER) == GUEST_USER_ID
+            prefs.edit(commit = true) { remove(legacyCurrentGuestUserIdKey) }
+        }
     }
 }

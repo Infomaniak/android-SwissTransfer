@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">en adgangskode.</string>
     <string name="onboardingPasswordSubtitleTemplate">Beskyt dine delinger med %s</string>
     <string name="onboardingPasswordTitle">Behold kontrollen!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Send dine filer</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s nu!</string>
+    <string name="onboardingSendFilesTitle">Klar til at komme i gang?</string>
     <string name="onboardingStorageSubtitleArgument">Del op til 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s filer gratis uden registrering.</string>
     <string name="onboardingStorageTitle">Send store filer!</string>
@@ -109,6 +112,7 @@
     <string name="settingsCategoryDataManagement">Data &amp; Privatliv</string>
     <string name="settingsCategoryDefaultSettings">Standardindstillinger</string>
     <string name="settingsCategoryGeneral">Generelt</string>
+    <string name="settingsDeleteMyAccount">Slet min konto</string>
     <string name="settingsDownloadsLimitTitle">Angiv en standarddownloadgrænse for dine overføringer</string>
     <string name="settingsEmailLanguageTitle">Angiv et standardsprog for dine e-mailoverføringer</string>
     <string name="settingsEmailLanguageValueEnglish">Engelsk</string>
@@ -116,6 +120,8 @@
     <string name="settingsEmailLanguageValueGerman">Tysk</string>
     <string name="settingsEmailLanguageValueItalian">Italiensk</string>
     <string name="settingsEmailLanguageValueSpanish">Spansk</string>
+    <string name="settingsHelpAndSupport">Hjælp &amp; Support</string>
+    <string name="settingsLogOut">Log ud</string>
     <string name="settingsMatomoDescription">Matomo er et analyseværktøj, der udelukkende hostes og administreres af Infomaniak for at forstå, hvordan applikationen bruges.\n\nVed at studere disse data er vores team i stand til løbende at forbedre applikationens grænseflade.</string>
     <string name="settingsNotificationsTitle">Vælg en præference</string>
     <string name="settingsOptionActivated">Aktiveret</string>
@@ -135,6 +141,8 @@
     <string name="settingsOptionValidityPeriod">Gyldighedsperiode</string>
     <string name="settingsPasswordDescription">Dine modtagere skal indtaste adgangskoden for at downloade filerne.</string>
     <string name="settingsPasswordToggleDescription">Aktiver beskyttelse</string>
+    <string name="settingsSignIn">Log ind</string>
+    <string name="settingsSwitchAccount">Skift konto</string>
     <string name="settingsThemeTitle">Vælg et tema</string>
     <string name="settingsTitle">Indstillinger</string>
     <string name="settingsValidityPeriodTitle">Angiv en standardgyldighedsperiode for dine overføringer</string>
@@ -177,6 +185,7 @@
         <item quantity="one">%s tilbage</item>
         <item quantity="other">%s tilbage</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Giv din overførsel en titel</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">QR-kode</string>

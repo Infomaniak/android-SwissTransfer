@@ -17,36 +17,60 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import android.content.Context
+import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
+import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.multiplatform_swisstransfer.data.STUser
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.swisstransfer.ui.MainApplication
+import dagger.hilt.android.qualifiers.ApplicationContext
+import io.sentry.Sentry
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
+import io.sentry.protocol.User as SentryUser
 
 @Singleton
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
-    private val accountPreferences: AccountPreferences,
-) {
+    @ApplicationContext context: Context,
+) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
 
-    suspend fun init() {
-        accountPreferences.currentUserId?.let {
-            accountManager.loadUser(it)
+    suspend fun activate(): Nothing {
+
+        combine(currentUserFlow, AccountPreferences().isOnboardingDoneFlow) { user, isOnboardingDone ->
+            user to isOnboardingDone
+        }.collect { (currentUser, isOnboardingDone) ->
+            Sentry.setUser(SentryUser().apply {
+                id = currentUser?.id?.toString() ?: "-1"
+                email = currentUser?.email
+            })
+
+            val stUser: STUser = currentUser.toStUser().takeIf { isOnboardingDone } ?: return@collect
+
+            accountManager.loadUser(stUser)
         }
+        awaitCancellation() // Unreachable because currentUserFlow is infinite.
     }
 
-    suspend fun login(userId: Int = DEFAULT_USER_ID) {
-        accountPreferences.currentUserId = userId
-        accountManager.loadUser(userId)
+    suspend fun loginGuestUser() {
+        accountManager.loadUser(STUser.GuestUser)
     }
 
-    suspend fun logout(userId: Int) {
-        accountManager.removeUser(userId)
-        // TODO: Handle logging as the next available connected user or the DEFAULT_USER_ID
-        accountPreferences.currentUserId = DEFAULT_USER_ID
+    override suspend fun removeUser(userId: Int) {
+        super.removeUser(userId)
+        accountManager.logoutCurrentUser(newSTUser = userDao.getFirst().toStUser())
+
+
+        if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
-    fun isUserConnected(): Boolean = accountPreferences.currentUserId != null
-
-    companion object {
-        const val DEFAULT_USER_ID = 0
+    private fun User?.toStUser(): STUser = when (this) {
+        null -> STUser.GuestUser
+        else -> STUser.AuthUser(id = id.toLong(), token = apiToken.accessToken)
     }
+
+    suspend fun isUserConnected(): Boolean = AccountPreferences().isOnboardingDone
 }

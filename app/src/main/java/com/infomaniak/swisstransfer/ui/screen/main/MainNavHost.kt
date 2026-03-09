@@ -27,12 +27,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.*
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination.Companion.receivedDestination
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination.Companion.sentDestination
-import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SettingsDestination
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsScreenWrapper
+import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
 @Composable
@@ -62,6 +60,6 @@ fun MainNavHost(
             val args = it.toRoute<ReceivedDestination>()
             TransfersScreenWrapper(TransferDirection.RECEIVED, transferUuid = args.transferUuid, hideBottomBar = hideBottomBar)
         }
-        composable<SettingsDestination> { SettingsScreenWrapper() }
+        composable<MyAccountDestination> { MyAccountScreenWrapper() }
     }
 }

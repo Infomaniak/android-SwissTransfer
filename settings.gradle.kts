@@ -35,9 +35,21 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         google()
-        // mavenLocal() // Do not put this in production
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
+        maven {
+            url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+            content { includeGroup("com.infomaniak.multiplatform_swisstransfer") }
+        }
+        maven {
+            url = uri("https://jitpack.io")
+            content {
+                includeModule("com.github.infomaniak", "android-login")
+                includeModule("com.github.lottiefiles", "dotlottie-android")
+                includeModule("com.github.matomo-org", "matomo-sdk-android")
+                includeModule("com.github.AppDevNext.Logcat", "LogcatCoreLib")
+            }
+        }
+        // mavenLocal() // Do not put this in production
     }
     versionCatalogs {
         create("core") { from(files("Core/gradle/core.versions.toml")) }

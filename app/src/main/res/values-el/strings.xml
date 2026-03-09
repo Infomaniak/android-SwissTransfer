@@ -92,6 +92,9 @@
     <string name="onboardingPasswordSubtitleArgument">κωδικό πρόσβασης.</string>
     <string name="onboardingPasswordSubtitleTemplate">Προστάτευσε τις κοινοποιήσεις σου με %s</string>
     <string name="onboardingPasswordTitle">Διατήρησε τον έλεγχο!</string>
+    <string name="onboardingSendFilesSubtitleArgument">Στείλε τα αρχεία σου</string>
+    <string name="onboardingSendFilesSubtitleTemplate">\u0020%s τώρα!</string>
+    <string name="onboardingSendFilesTitle">Έτοιμος να ξεκινήσεις;</string>
     <string name="onboardingStorageSubtitleArgument">Μοιράσου έως 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s αρχείων δωρεάν χωρίς εγγραφή.</string>
     <string name="onboardingStorageTitle">Στείλε μεγάλα αρχεία!</string>
@@ -109,6 +112,7 @@
     <string name="settingsCategoryDataManagement">Δεδομένα &amp; Απόρρητο</string>
     <string name="settingsCategoryDefaultSettings">Προεπιλεγμένες ρυθμίσεις</string>
     <string name="settingsCategoryGeneral">Γενικά</string>
+    <string name="settingsDeleteMyAccount">Διαγραφή του λογαριασμού μου</string>
     <string name="settingsDownloadsLimitTitle">Όρισε ένα προεπιλεγμένο όριο λήψεων για τις μεταφορές σου</string>
     <string name="settingsEmailLanguageTitle">Όρισε μια προεπιλεγμένη γλώσσα για τις μεταφορές σου μέσω email</string>
     <string name="settingsEmailLanguageValueEnglish">Αγγλικά</string>
@@ -116,6 +120,8 @@
     <string name="settingsEmailLanguageValueGerman">Γερμανικά</string>
     <string name="settingsEmailLanguageValueItalian">Ιταλικά</string>
     <string name="settingsEmailLanguageValueSpanish">Ισπανικά</string>
+    <string name="settingsHelpAndSupport">Βοήθεια &amp; Υποστήριξη</string>
+    <string name="settingsLogOut">Αποσύνδεση</string>
     <string name="settingsMatomoDescription">Το Matomo είναι ένα εργαλείο ανάλυσης που φιλοξενείται και διαχειρίζεται αποκλειστικά από την Infomaniak για να κατανοήσει πώς χρησιμοποιείται η εφαρμογή.\n\nΜελετώντας αυτά τα δεδομένα, η ομάδα μας μπορεί να βελτιώνει συνεχώς τη διεπαφή της εφαρμογής.</string>
     <string name="settingsNotificationsTitle">Επίλεξε μια προτίμηση</string>
     <string name="settingsOptionActivated">Ενεργοποιημένο</string>
@@ -135,6 +141,8 @@
     <string name="settingsOptionValidityPeriod">Περίοδος ισχύος</string>
     <string name="settingsPasswordDescription">Οι παραλήπτες σου θα πρέπει να εισάγουν τον κωδικό πρόσβασης για να κατεβάσουν τα αρχεία.</string>
     <string name="settingsPasswordToggleDescription">Ενεργοποίηση προστασίας</string>
+    <string name="settingsSignIn">Σύνδεση</string>
+    <string name="settingsSwitchAccount">Εναλλαγή λογαριασμού</string>
     <string name="settingsThemeTitle">Επίλεξε θέμα</string>
     <string name="settingsTitle">Ρυθμίσεις</string>
     <string name="settingsValidityPeriodTitle">Όρισε μια προεπιλεγμένη περίοδο ισχύος για τις μεταφορές σου</string>
@@ -177,6 +185,7 @@
         <item quantity="one">%s απομένει</item>
         <item quantity="other">%s απομένουν</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Δώσε έναν τίτλο στη μεταφορά σου</string>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Σύνδεσμος</string>
     <string name="transferTypeQrCode">Κωδικός QR</string>

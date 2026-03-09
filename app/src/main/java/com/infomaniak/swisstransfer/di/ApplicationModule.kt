@@ -23,8 +23,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.common.utils.buildUserAgent
+import com.infomaniak.core.network.LOGIN_ENDPOINT_URL
+import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,5 +68,33 @@ object ApplicationModule {
     @Singleton
     fun providesNotificationManagerCompat(@ApplicationContext appContext: Context): NotificationManagerCompat {
         return NotificationManagerCompat.from(appContext)
+    }
+
+    @Provides
+    @Singleton
+    fun providesInfomaniakLogin(@ApplicationContext appContext: Context): InfomaniakLogin {
+        return InfomaniakLogin(
+            context = appContext,
+            loginUrl = "${LOGIN_ENDPOINT_URL}/",
+            appUID = ConfigUtils.safePackage.substringBefore(".preprod"),
+            clientID = BuildConfig.CLIENT_ID,
+            accessType = null,
+            sentryCallback = { errorMessage, extras ->
+                val result = Regex("""(https?:\S+)\s+([A-Z]+\s+\d+)""").find(errorMessage)
+                val url = result?.groupValues[1]
+                val methodAndCode = result?.groupValues[2]
+
+                SentryLog.e(
+                    tag = "WebViewLogin",
+                    msg = "An error occurred on the login/Account creation webview",
+                    scopeCallback = { scope ->
+                        scope.setTag("error", errorMessage)
+                        scope.setTag("url", "$url")
+                        scope.setTag("code", "$methodAndCode")
+                        extras.forEach(scope::setExtra)
+                    },
+                )
+            }
+        )
     }
 }

@@ -108,6 +108,22 @@ object MatomoSwissTransfer : Matomo {
     fun trackDeleteTransferHistory(name: MatomoName) {
         trackEvent(MatomoCategory.DeleteTransferHistory, name)
     }
+
+    fun trackAccountEvent(name: MatomoName) {
+        trackEvent(MatomoCategory.Account, name)
+    }
+
+    fun trackMyAccount(name: MatomoName) {
+        trackEvent(MatomoCategory.MyAccount, name)
+    }
+
+    fun trackSettings(name: MatomoName) {
+        trackEvent(MatomoCategory.Settings, name)
+    }
+
+    fun trackSwitchUserBottomSheet(name: MatomoName) {
+        trackEvent(MatomoCategory.SwitchUserBottomSheet, name)
+    }
     //endregion
 
     //region Track screens

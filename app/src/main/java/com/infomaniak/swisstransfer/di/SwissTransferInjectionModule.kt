@@ -17,14 +17,25 @@
  */
 package com.infomaniak.swisstransfer.di
 
+import com.infomaniak.core.appintegrity.AppIntegrityManager
+import com.infomaniak.core.network.ApiEnvironment
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
-import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment
-import com.infomaniak.swisstransfer.BuildConfig
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
+import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
+import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
+import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
+import com.infomaniak.swisstransfer.upload.UploadSessionStarter
+import com.infomaniak.swisstransfer.upload.UploadSessionStarterV1
+import com.infomaniak.swisstransfer.upload.UploadSessionStarterV2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment as KmpApiEnvironement
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -32,35 +43,64 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun providesSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
+    fun provideSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
         return SwissTransferInjection(
-            environment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.Preprod else ApiEnvironment.Prod,
+            environment = ApiEnvironment.current.toKmpApiEnvironment(),
             userAgent = userAgent,
-            crashReport = crashReport
+            crashReport = crashReport,
+            databaseNameOrPath = "swisstransfer",
         )
     }
 
     @Provides
-    @Singleton
-    fun providesTransferManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.transferManager
+    fun provideUploadSessionStarter(
+        sti: SwissTransferInjection,
+        appIntegrityManager: AppIntegrityManager,
+        sharedApiUrlCreator: SharedApiUrlCreator,
+        legacyUploadManager: InMemoryUploadManager,
+        uploadManager: UploadV2Manager,
+    ): UploadSessionStarter = when {
+        sti.accountManager.shouldUseV1Api -> UploadSessionStarterV1(
+            appIntegrityManager = appIntegrityManager,
+            sharedApiUrlCreator = sharedApiUrlCreator,
+            uploadManager = legacyUploadManager,
+        )
+        else -> UploadSessionStarterV2(uploadManager)
+    }
 
     @Provides
     @Singleton
-    fun providesFileManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.fileManager
+    fun provideTransferManager(sti: SwissTransferInjection): TransferManager = sti.transferManager
 
     @Provides
     @Singleton
-    fun providesAppSettingsManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.appSettingsManager
+    fun provideFileManager(sti: SwissTransferInjection): FileManager = sti.fileManager
 
     @Provides
     @Singleton
-    fun providesAccountManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.accountManager
+    fun provideAppSettingsManager(sti: SwissTransferInjection): AppSettingsManager = sti.appSettingsManager
 
     @Provides
     @Singleton
-    fun providesUploadManager(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.inMemoryUploadManager
+    fun provideAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
 
     @Provides
     @Singleton
-    fun providesSharedApiUrlCreator(swissTransferInjection: SwissTransferInjection) = swissTransferInjection.sharedApiUrlCreator
+    fun provideV1UploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
+
+    @Provides
+    @Singleton
+    fun provideUploadManager(sti: SwissTransferInjection): UploadV2Manager = sti.uploadV2Manager
+
+    @Provides
+    @Singleton
+    fun provideSharedApiUrlCreator(sti: SwissTransferInjection): SharedApiUrlCreator = sti.sharedApiUrlCreator
+}
+
+private fun ApiEnvironment.toKmpApiEnvironment(): KmpApiEnvironement {
+    return when (this) {
+        ApiEnvironment.PreProd -> KmpApiEnvironement.Preprod
+        ApiEnvironment.Prod -> KmpApiEnvironement.Prod
+        is ApiEnvironment.Custom -> error("Custom api environment is not handled by the kmp lib")
+    }
 }

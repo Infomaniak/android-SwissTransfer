@@ -34,7 +34,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun SettingsValidityPeriodScreen(
     validityPeriod: ValidityPeriod,
-    navigateBack: (() -> Unit)?,
+    navigateBack: (() -> Unit),
     onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
     OptionScaffold(
@@ -77,7 +77,7 @@ enum class ValidityPeriodOption(
 
 @Composable
 private fun getValidityPeriodTitle(validityPeriod: ValidityPeriod): String {
-    val count = validityPeriod.value.toInt()
+    val count = validityPeriod.days
     return pluralStringResource(R.plurals.settingsValidityPeriodValue, count, count)
 }
 

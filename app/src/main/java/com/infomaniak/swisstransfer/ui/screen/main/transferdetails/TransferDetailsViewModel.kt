@@ -145,7 +145,19 @@ class TransferDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getTransferUrl(transferUuid: String): String = sharedApiUrlCreator.shareTransferUrl(transferUuid)
+    fun getTransferUrl(transferUi: TransferUi): String {
+        val linkId = transferUi.linkId
+        return when (transferUi.apiSource) {
+            TransferUi.ApiSource.V1 -> sharedApiUrlCreator.shareTransferUrl(transferUi.uuid)
+            TransferUi.ApiSource.V2 if linkId != null -> sharedApiUrlCreator.shareTransferV2Url(linkId)
+            else -> {
+                SentryLog.wtf(TAG, "The transfer is missing a linkId") { scope ->
+                    scope.extras["transferUuid"] = transferUi.uuid
+                }
+                ""
+            }
+        }
+    }
 
     suspend fun handleTransferDownload(
         ui: TransferDownloadUi,
@@ -201,6 +213,7 @@ class TransferDetailsViewModel @Inject constructor(
 
     private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
         TransferStatus.NOT_YET_FETCHED -> Loading
+        TransferStatus.PENDING_UPLOAD -> Loading
         TransferStatus.UNKNOWN -> Unknown
         TransferStatus.READY -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)

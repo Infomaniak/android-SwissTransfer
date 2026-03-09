@@ -28,6 +28,7 @@ import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
+import com.infomaniak.swisstransfer.ui.utils.AccountPreferences
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
@@ -97,7 +98,10 @@ class LaunchActivity : ComponentActivity() {
      * intent, we want to handle it correctly but we first need to connect the user seamlessly.
      */
     private suspend fun connectLoggedOutUser() {
-        if (!accountUtils.isUserConnected()) accountUtils.login()
+        if (!accountUtils.isUserConnected()) {
+            accountUtils.loginGuestUser()
+            AccountPreferences().isOnboardingDone = true
+        }
     }
 
     private fun createDeeplinkIntent(): Intent {
