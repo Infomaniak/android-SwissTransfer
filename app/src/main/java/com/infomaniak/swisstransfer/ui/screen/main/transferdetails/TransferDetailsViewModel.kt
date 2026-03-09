@@ -201,6 +201,7 @@ class TransferDetailsViewModel @Inject constructor(
 
     private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {
         TransferStatus.NOT_YET_FETCHED -> Loading
+        TransferStatus.PENDING_UPLOAD -> Loading
         TransferStatus.UNKNOWN -> Unknown
         TransferStatus.READY -> Success(this)
         TransferStatus.EXPIRED_DOWNLOAD_QUOTA -> ByQuota(downloadLimit, isInLocal)

@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,12 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
-import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+interface TransferUploader {
+    suspend fun uploadRemainderOrThrow(updateState: (UploadState.Ongoing) -> Unit): UploadResult
+    val startRequest: StartUploadRequest
 
-data class NewTransferParams(
-    val validityPeriod: ValidityPeriod,
-    val authorEmail: String,
-    val password: String,
-    val title: String?,
-    val message: String,
-    val downloadCountLimit: DownloadLimit,
-    val languageCode: EmailLanguage,
-    val recipientsEmails: Set<String>,
-    val type: TransferTypeUi,
-)
+    data class UploadResult(
+        val transferId: String,
+        val linkId: String?
+    )
+}

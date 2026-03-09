@@ -184,7 +184,7 @@ private fun Theme?.getString(): String {
 
 @Composable
 private fun ValidityPeriod?.getString(): String {
-    return this?.value?.toInt()?.let {
+    return this?.days?.let {
         pluralStringResource(R.plurals.settingsValidityPeriodValue, it, it)
     } ?: ""
 }

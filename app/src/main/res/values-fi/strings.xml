@@ -185,6 +185,7 @@
         <item quantity="one">%s jäljellä</item>
         <item quantity="other">%s jäljellä</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Anna siirrollesi otsikko</string>
     <string name="transferTypeEmail">Sähköposti</string>
     <string name="transferTypeLink">Linkki</string>
     <string name="transferTypeQrCode">QR-koodi</string>

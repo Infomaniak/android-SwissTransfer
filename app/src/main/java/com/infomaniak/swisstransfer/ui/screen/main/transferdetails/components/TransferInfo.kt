@@ -53,6 +53,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.getWholeDate
+import com.infomaniak.swisstransfer.ui.utils.isV1
 
 @Composable
 fun TransferInfo(getTransfer: () -> TransferUi) {
@@ -84,7 +85,7 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
         text = getTransfer().getWholeDate(),
     )
 
-    if (direction == TransferDirection.SENT) {
+    if (direction == TransferDirection.SENT && getTransfer().isV1()) {
         HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
 
         IconText(

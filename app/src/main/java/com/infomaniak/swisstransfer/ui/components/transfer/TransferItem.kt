@@ -93,7 +93,7 @@ fun TransferItem(
             Column(modifier = Modifier.weight(1.0f)) {
 
                 Text(
-                    text = createdDate,
+                    text = transfer.title ?: createdDate,
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.colors.primaryTextColor,
                     maxLines = 1,

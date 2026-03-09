@@ -18,14 +18,15 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.content.Context
-import android.database.sqlite.SQLiteConstraintException
 import com.infomaniak.core.auth.PersistedCurrentUserAccountUtils
 import com.infomaniak.core.auth.models.user.User
+import com.infomaniak.multiplatform_swisstransfer.data.STUser
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.swisstransfer.ui.MainApplication
-import com.infomaniak.swisstransfer.ui.utils.AccountPreferences.Companion.GUEST_USER_ID
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,45 +35,42 @@ import io.sentry.protocol.User as SentryUser
 @Singleton
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
-    private val accountPreferences: AccountPreferences,
     @ApplicationContext context: Context,
 ) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
 
-    suspend fun init() {
-        val realUserId = currentUserIdFlow.first()
-        val userId = realUserId ?: GUEST_USER_ID.takeIf { accountPreferences.isOnboardingDone }
-        if (userId == null) {
-            Sentry.setUser(SentryUser().apply { id = "-1" })
-        } else {
-            accountManager.loadUser(userId)
-        }
+    suspend fun activate(): Nothing {
 
-        currentUserFlow.collect { user ->
+        combine(currentUserFlow, AccountPreferences().isOnboardingDoneFlow) { user, isOnboardingDone ->
+            user to isOnboardingDone
+        }.collect { (currentUser, isOnboardingDone) ->
             Sentry.setUser(SentryUser().apply {
-                id = user?.id?.toString() ?: "-1"
-                email = user?.email
+                id = currentUser?.id?.toString() ?: "-1"
+                email = currentUser?.email
             })
+
+            val stUser: STUser = currentUser.toStUser().takeIf { isOnboardingDone } ?: return@collect
+
+            accountManager.loadUser(stUser)
         }
+        awaitCancellation() // Unreachable because currentUserFlow is infinite.
     }
 
     suspend fun loginGuestUser() {
-        accountManager.loadUser(GUEST_USER_ID)
-    }
-
-    /**
-     * @throws SQLiteConstraintException when adding a user with a primary key that already exists
-     */
-    override suspend fun addUser(user: User) {
-        super.addUser(user)
-        accountManager.loadUser(user.id)
+        accountManager.loadUser(STUser.GuestUser)
     }
 
     override suspend fun removeUser(userId: Int) {
         super.removeUser(userId)
-        accountManager.removeUser(userId)
+        accountManager.logoutCurrentUser(newSTUser = userDao.getFirst().toStUser())
+
 
         if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
-    fun isUserConnected(): Boolean = accountPreferences.isOnboardingDone
+    private fun User?.toStUser(): STUser = when (this) {
+        null -> STUser.GuestUser
+        else -> STUser.AuthUser(id = id.toLong(), token = apiToken.accessToken)
+    }
+
+    suspend fun isUserConnected(): Boolean = AccountPreferences().isOnboardingDone
 }

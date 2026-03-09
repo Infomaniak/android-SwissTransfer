@@ -22,6 +22,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.core.common.AssociatedUserDataCleanable
 import com.infomaniak.core.crossapplogin.back.internal.deviceinfo.DeviceInfoUpdateManager
+import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
@@ -45,6 +46,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import splitties.init.injectAsAppCtx
 import javax.inject.Inject
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException as KmpNetworkException
 
@@ -79,6 +81,11 @@ class MainApplication : Application(), Configuration.Provider {
     @IoDispatcher
     lateinit var ioDispatcher: CoroutineDispatcher
 
+    init {
+        injectAsAppCtx()
+        configureInfomaniakCore()
+    }
+
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
@@ -87,7 +94,6 @@ class MainApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
-        configureInfomaniakCore()
         configureSentry()
 
         userDataCleanableList = listOf<AssociatedUserDataCleanable>(DeviceInfoUpdateManager)
@@ -95,7 +101,7 @@ class MainApplication : Application(), Configuration.Provider {
         notificationUtils.initNotificationsChannel()
 
         globalCoroutineScope.launch {
-            accountUtils.init()
+            launch { accountUtils.activate() }
 
             launch(ioDispatcher) {
                 transferManager.getAllTransfers().collectLatest(thumbnailsLocalStorage::cleanExpiredThumbnails)
@@ -122,6 +128,7 @@ class MainApplication : Application(), Configuration.Provider {
             appId = ConfigUtils.safePackage,
             appVersionName = BuildConfig.VERSION_NAME,
             appVersionCode = BuildConfig.VERSION_CODE,
+            apiEnvironment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.PreProd else ApiEnvironment.Prod
         )
     }
 

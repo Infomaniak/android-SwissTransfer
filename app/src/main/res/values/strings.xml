@@ -190,6 +190,7 @@
         <item quantity="one">%s left</item>
         <item quantity="other">%s left</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Give a title to your transfer</string>
     <string name="transferTypeEmail">Email</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">QR Code</string>

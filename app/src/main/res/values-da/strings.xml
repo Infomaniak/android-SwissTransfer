@@ -185,6 +185,7 @@
         <item quantity="one">%s tilbage</item>
         <item quantity="other">%s tilbage</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Giv din overførsel en titel</string>
     <string name="transferTypeEmail">E-mail</string>
     <string name="transferTypeLink">Link</string>
     <string name="transferTypeQrCode">QR-kode</string>

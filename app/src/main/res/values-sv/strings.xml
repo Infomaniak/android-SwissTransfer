@@ -185,6 +185,7 @@
         <item quantity="one">%s kvar</item>
         <item quantity="other">%s kvar</item>
     </plurals>
+    <string name="transferTitlePlaceholder">Ge din överföring en titel</string>
     <string name="transferTypeEmail">E-post</string>
     <string name="transferTypeLink">Länk</string>
     <string name="transferTypeQrCode">QR-kod</string>

@@ -44,9 +44,6 @@ class LaunchActivity : ComponentActivity() {
     lateinit var accountUtils: AccountUtils
 
     @Inject
-    lateinit var accountPreferences: AccountPreferences
-
-    @Inject
     lateinit var appSettingsManager: AppSettingsManager
 
     @Inject
@@ -103,7 +100,7 @@ class LaunchActivity : ComponentActivity() {
     private suspend fun connectLoggedOutUser() {
         if (!accountUtils.isUserConnected()) {
             accountUtils.loginGuestUser()
-            accountPreferences.isOnboardingDone = true
+            AccountPreferences().isOnboardingDone = true
         }
     }
 

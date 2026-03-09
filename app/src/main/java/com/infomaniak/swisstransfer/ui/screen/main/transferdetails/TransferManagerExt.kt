@@ -41,7 +41,7 @@ fun TransferManager.previewUriForFile(
     thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ): Flow<Uri?> = downloadManagerId(
     transferManager = this,
-    transferUuid = transfer.uuid,
+    transfer = transfer,
     fileUid = file.uid,
 ).transformLatest { uniqueDownloadId ->
     if (file.thumbnailPath != null) {
