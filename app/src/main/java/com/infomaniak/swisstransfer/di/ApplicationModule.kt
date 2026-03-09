@@ -19,12 +19,12 @@ package com.infomaniak.swisstransfer.di
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.common.utils.buildUserAgent
 import com.infomaniak.core.network.LOGIN_ENDPOINT_URL
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
@@ -79,11 +79,21 @@ object ApplicationModule {
             appUID = ConfigUtils.safePackage.substringBefore(".preprod"),
             clientID = BuildConfig.CLIENT_ID,
             accessType = null,
-            sentryCallback = { message, extras ->
-                //TODO[Sentry]: Should we forward this to Sentry, or leave it only in logcat for debug?
-                val tag = "LoginIssue"
-                Log.e(tag, message)
-                Log.e(tag, extras.toString())
+            sentryCallback = { errorMessage, extras ->
+                val result = Regex("""(https?:\S+)\s+([A-Z]+\s+\d+)""").find(errorMessage)
+                val url = result?.groupValues[1]
+                val methodAndCode = result?.groupValues[2]
+
+                SentryLog.e(
+                    tag = "WebViewLogin",
+                    msg = "An error occurred on the login/Account creation webview",
+                    scopeCallback = { scope ->
+                        scope.setTag("error", errorMessage)
+                        scope.setTag("url", "$url")
+                        scope.setTag("code", "$methodAndCode")
+                        extras.forEach(scope::setExtra)
+                    },
+                )
             }
         )
     }
