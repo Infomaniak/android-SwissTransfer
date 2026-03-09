@@ -142,7 +142,7 @@ fun TransferDetailsScreen(
         is Success -> {
             val success by rememberUpdatedState(state)
             TransferDetailsScreen(
-                transferUrl = transferDetailsViewModel.getTransferUrl(transferUuid),
+                transferUrl = transferDetailsViewModel.getTransferUrl(state.transfer),
                 direction = direction,
                 navigateBack = navigateBack,
                 getTransfer = { success.transfer },
