@@ -155,6 +155,7 @@ class TransferSectionGroupingTest {
                 sizeUploaded = 0,
                 downloadLimit = 0,
                 downloadLeft = 0,
+                title = "",
                 message = "",
                 password = "",
                 files = emptyList(),
