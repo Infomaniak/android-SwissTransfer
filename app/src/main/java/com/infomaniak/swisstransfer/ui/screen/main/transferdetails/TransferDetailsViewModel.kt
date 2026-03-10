@@ -110,14 +110,14 @@ class TransferDetailsViewModel @Inject constructor(
     )
     //endregion
 
-    fun loadTransfer(transferUuid: String) {
+    fun loadTransfer(transferUuid: String, isApiV2Deeplink: Boolean?) {
         viewModelScope.launch {
             runCatching {
                 _isWrongDeeplinkPassword.emit(false)
                 val transfer = transferManager.getTransferFlow(transferUuid).first()
-                if (transfer == null) {
-                    handleTransferDeeplink(transferUuid, _deeplinkPassword)
-                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
+                if (transfer == null && isApiV2Deeplink != null) {
+                    val transferId = handleTransferDeeplink(transferUuid, _deeplinkPassword, isApiV2Deeplink)
+                    _transferSourceFlow.emit(TransferSource.Local(transferId))
                 } else {
                     _transferSourceFlow.emit(TransferSource.Local(transferUuid))
                     transferManager.fetchTransfer(transferUuid)
@@ -181,15 +181,22 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     @OptIn(UnreliableToastApi::class)
-    private suspend fun handleTransferDeeplink(transferUuid: String, password: String) {
-        runCatching {
-            transferManager.addTransferByLinkUUID(
-                linkUUID = transferUuid,
-                password = password,
-                transferDirection = TransferDirection.RECEIVED,
-            )
+    private suspend fun handleTransferDeeplink(transferUuid: String, password: String, isApiV2Deeplink: Boolean): String {
+        return runCatching {
+            if (isApiV2Deeplink) {
+                val transferId = transferManager.addTransferByLinkIdApiV2(linkId = transferUuid, password = password)
+                return@runCatching transferId
+            } else {
+                transferManager.addTransferByLinkUUID(
+                    linkUUID = transferUuid,
+                    password = password,
+                    transferDirection = TransferDirection.RECEIVED,
+                )
+            }
+
             _isWrongDeeplinkPassword.emit(false)
             _isDeeplinkNeedingPassword.emit(false)
+            return@runCatching transferUuid
         }.cancellable().onFailure { exception ->
             when (exception) {
                 is NotFoundFetchTransferException,
@@ -204,7 +211,7 @@ class TransferDetailsViewModel @Inject constructor(
                     throw UnknownDeeplinkHandlingException(exception)
                 }
             }
-        }
+        }.getOrDefault(transferUuid)
     }
 
     fun deleteTransfer(transferUuid: String) {

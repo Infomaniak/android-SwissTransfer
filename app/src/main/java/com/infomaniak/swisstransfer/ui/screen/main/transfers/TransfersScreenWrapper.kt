@@ -70,6 +70,7 @@ import kotlinx.parcelize.Parcelize
 fun TransfersScreenWrapper(
     direction: TransferDirection,
     transferUuid: String? = null,
+    isApiV2Deeplink: Boolean? = null,
     hideBottomBar: MutableState<Boolean>,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -99,6 +100,7 @@ fun TransfersScreenWrapper(
             DetailPane(
                 navigator = this,
                 hasTransfer = { hasTransfer },
+                isApiV2Deeplink = isApiV2Deeplink,
             )
         },
     )
@@ -191,6 +193,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     hasTransfer: () -> Boolean,
+    isApiV2Deeplink: Boolean? = null,
 ) {
     val isWindowLarge = LocalWindowAdaptiveInfo.current.isWindowLarge()
     val destinationContent = if (isWindowLarge) navigator.currentDestination?.contentKey else navigator.safeCurrentContent()
@@ -207,6 +210,7 @@ private fun DetailPane(
             TransferDetailsScreen(
                 transferUuid = destinationContent.transferUuid,
                 direction = destinationContent.direction,
+                isApiV2Deeplink = isApiV2Deeplink,
                 navigateBack = navigateBack,
                 navigateToFolder = { selectedFolderUuid ->
                     scope.launch {

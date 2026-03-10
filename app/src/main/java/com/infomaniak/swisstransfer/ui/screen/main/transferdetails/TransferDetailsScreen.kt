@@ -120,6 +120,7 @@ fun TransferDetailsScreen(
     transferUuid: String,
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
+    isApiV2Deeplink: Boolean? = null,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
     navigateToFolder: (folderUuid: String) -> Unit,
     onDeleteTransfer: () -> Unit,
@@ -131,7 +132,7 @@ fun TransferDetailsScreen(
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     LaunchedEffect(transferUuid) {
-        transferDetailsViewModel.loadTransfer(transferUuid)
+        transferDetailsViewModel.loadTransfer(transferUuid, isApiV2Deeplink)
     }
 
     val context = LocalContext.current
@@ -188,7 +189,7 @@ fun TransferDetailsScreen(
                 transferDetailsViewModel.resetIsDeeplinkNeedingPassword()
                 navigateBack?.invoke()
             },
-            onConfirmation = { transferDetailsViewModel.loadTransfer(transferUuid) },
+            onConfirmation = { transferDetailsViewModel.loadTransfer(transferUuid, isApiV2Deeplink) },
             isError = { isWrongDeeplinkPassword },
         )
     }
