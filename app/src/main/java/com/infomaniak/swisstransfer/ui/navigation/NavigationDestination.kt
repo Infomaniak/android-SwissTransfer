@@ -62,11 +62,15 @@ sealed class MainNavigation : NavigationDestination() {
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class ReceivedDestination(val transferUuid: String? = null) : MainNavigation() {
+    data class ReceivedDestination(val transferUuid: String? = null, val isApiV2: Boolean? = null) : MainNavigation() {
 
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
-                getDeeplinkDirection<ReceivedDestination>(content, ReceivedDestination::transferUuid.name)
+                getDeeplinkDirection<ReceivedDestination>(
+                    content = content,
+                    transferUuidName = ReceivedDestination::transferUuid.name,
+                    suffix = "/{${ReceivedDestination::isApiV2.name}}",
+                )
             }
         }
     }
