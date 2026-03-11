@@ -183,20 +183,14 @@ class TransferDetailsViewModel @Inject constructor(
     @OptIn(UnreliableToastApi::class)
     private suspend fun handleTransferDeeplink(transferUuid: String, password: String, isApiV2Deeplink: Boolean): String {
         return runCatching {
-            if (isApiV2Deeplink) {
-                val transferId = transferManager.addTransferByLinkIdApiV2(linkId = transferUuid, password = password)
-                return@runCatching transferId
-            } else {
-                transferManager.addTransferByLinkUUID(
-                    linkUUID = transferUuid,
-                    password = password,
-                    transferDirection = TransferDirection.RECEIVED,
-                )
+            val transferId = when {
+                isApiV2Deeplink -> transferManager.addTransferByLinkIdApiV2(linkId = transferUuid, password = password)
+                else -> transferManager.addTransferByLinkUUIDApiV1(transferUuid, password)
             }
 
             _isWrongDeeplinkPassword.emit(false)
             _isDeeplinkNeedingPassword.emit(false)
-            return@runCatching transferUuid
+            return@runCatching transferId
         }.cancellable().onFailure { exception ->
             when (exception) {
                 is NotFoundFetchTransferException,
@@ -211,7 +205,7 @@ class TransferDetailsViewModel @Inject constructor(
                     throw UnknownDeeplinkHandlingException(exception)
                 }
             }
-        }.getOrDefault(transferUuid)
+        }.getOrThrow()
     }
 
     fun deleteTransfer(transferUuid: String) {
@@ -228,6 +222,15 @@ class TransferDetailsViewModel @Inject constructor(
         TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
         TransferStatus.VIRUS_DETECTED -> VirusDetected(isInLocal)
         null -> Deleted(isInLocal)
+    }
+
+    private suspend fun TransferManager.addTransferByLinkUUIDApiV1(transferUuid: String, password: String): String {
+        addTransferByLinkUUID(
+            linkUUID = transferUuid,
+            password = password,
+            transferDirection = TransferDirection.RECEIVED,
+        )
+        return transferUuid
     }
 
     sealed interface TransferDetailsUiState {
