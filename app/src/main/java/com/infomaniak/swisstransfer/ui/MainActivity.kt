@@ -95,7 +95,8 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
 
         lifecycleScope.launch {
             var deeplinkTransferDirection: TransferDirection? = null
-            val deepLinkTypeFromURL = DeepLinkType.fromURL(intent.data.toString())
+            val deeplinkUrl = intent.data.toString()
+            val deepLinkTypeFromURL = DeepLinkType.fromURL(deeplinkUrl)
             when (deepLinkTypeFromURL) {
                 is DeepLinkType.DeleteTransfer -> {
                     // Modify the intent to avoid opening the transfer when we want to delete it via deeplink
@@ -106,7 +107,9 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                         ?: TransferDirection.RECEIVED
                     if (deeplinkTransferDirection == TransferDirection.SENT) {
                         // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                        intent.setData((intent.data.toString() + SENT_DEEPLINK_SUFFIX).toUri())
+                        intent.setData((deeplinkUrl + SENT_DEEPLINK_SUFFIX).toUri())
+                    } else if (deeplinkTransferDirection == TransferDirection.RECEIVED) {
+                        intent.setData((deeplinkUrl + "/${deeplinkUrl.contains("/dl/")}").toUri())
                     }
                 }
                 else -> Unit

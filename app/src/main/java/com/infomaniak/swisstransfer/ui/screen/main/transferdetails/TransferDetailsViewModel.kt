@@ -110,14 +110,14 @@ class TransferDetailsViewModel @Inject constructor(
     )
     //endregion
 
-    fun loadTransfer(transferUuid: String) {
+    fun loadTransfer(transferUuid: String, isApiV2Deeplink: Boolean?) {
         viewModelScope.launch {
             runCatching {
                 _isWrongDeeplinkPassword.emit(false)
                 val transfer = transferManager.getTransferFlow(transferUuid).first()
-                if (transfer == null) {
-                    handleTransferDeeplink(transferUuid, _deeplinkPassword)
-                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
+                if (transfer == null && isApiV2Deeplink != null) {
+                    val transferId = handleTransferDeeplink(transferUuid, _deeplinkPassword, isApiV2Deeplink)
+                    _transferSourceFlow.emit(TransferSource.Local(transferId))
                 } else {
                     _transferSourceFlow.emit(TransferSource.Local(transferUuid))
                     transferManager.fetchTransfer(transferUuid)
@@ -181,15 +181,16 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     @OptIn(UnreliableToastApi::class)
-    private suspend fun handleTransferDeeplink(transferUuid: String, password: String) {
-        runCatching {
-            transferManager.addTransferByLinkUUID(
-                linkUUID = transferUuid,
-                password = password,
-                transferDirection = TransferDirection.RECEIVED,
-            )
+    private suspend fun handleTransferDeeplink(transferUuid: String, password: String, isApiV2Deeplink: Boolean): String {
+        return runCatching {
+            val transferId = when {
+                isApiV2Deeplink -> transferManager.addTransferByLinkIdApiV2(linkId = transferUuid, password = password)
+                else -> transferManager.addTransferByLinkUUIDApiV1(transferUuid, password)
+            }
+
             _isWrongDeeplinkPassword.emit(false)
             _isDeeplinkNeedingPassword.emit(false)
+            return@runCatching transferId
         }.cancellable().onFailure { exception ->
             when (exception) {
                 is NotFoundFetchTransferException,
@@ -204,7 +205,7 @@ class TransferDetailsViewModel @Inject constructor(
                     throw UnknownDeeplinkHandlingException(exception)
                 }
             }
-        }
+        }.getOrThrow()
     }
 
     fun deleteTransfer(transferUuid: String) {
@@ -221,6 +222,15 @@ class TransferDetailsViewModel @Inject constructor(
         TransferStatus.WAIT_VIRUS_CHECK -> WaitVirusCheck
         TransferStatus.VIRUS_DETECTED -> VirusDetected(isInLocal)
         null -> Deleted(isInLocal)
+    }
+
+    private suspend fun TransferManager.addTransferByLinkUUIDApiV1(transferUuid: String, password: String): String {
+        addTransferByLinkUUID(
+            linkUUID = transferUuid,
+            password = password,
+            transferDirection = TransferDirection.RECEIVED,
+        )
+        return transferUuid
     }
 
     sealed interface TransferDetailsUiState {

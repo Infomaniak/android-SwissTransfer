@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import androidx.activity.ComponentActivity
 
-private val TRANSFER_DEEPLINK_REGEX = "https://.+/d/([^?]+)(?:\\?delete=(.+))?".toRegex()
+private val TRANSFER_DEEPLINK_REGEX = "https://.+/dl?/([^?]+)(?:\\?delete=(.+))?".toRegex()
 
 fun ComponentActivity.hasValidTransferDeeplink(): Boolean {
     val deeplink = intent?.data?.toString()
