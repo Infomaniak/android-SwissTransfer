@@ -57,6 +57,7 @@ import com.infomaniak.swisstransfer.ui.utils.AccountPreferences
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -149,6 +150,12 @@ class OnboardingActivity : ComponentActivity() {
     private fun loginUsersIntoTheApp(users: List<User>) {
         trackAccountEvent(MatomoName.LoggedIn)
         lifecycleScope.launch {
+            if (accountUtils.users.first().isEmpty()) {
+                //TODO[kmp]: On the KMP side, we don't support deep links for logged-in users from cross-app-login
+                // without going through the Guest account.
+                // To be removed once this is supported
+                accountUtils.loginGuestUser()
+            }
             users.forEach { user -> accountUtils.addUser(user) }
             if (shouldDisplayRequiredLogin) finish() else completeOnboarding()
         }
