@@ -40,8 +40,10 @@ android {
     compileSdk = appCompileSdk
 
     // Those urls are duplicated with the ones we have in KMP so don't forget to change them also in KMP
-    val preprodHost = "swisstransfer.preprod.dev.infomaniak.ch"
+    val preprodHost = "swisstransfer-legacy.preprod.dev.infomaniak.ch"
+    val preprodHostV2 = "swisstransfer.preprod.dev.infomaniak.ch"
     val prodHost = "www.swisstransfer.com"
+    val prodHostV2 = "swisstransfer.infomaniak.com"
 
     defaultConfig {
         applicationId = "com.infomaniak.swisstransfer"
@@ -58,7 +60,9 @@ android {
         }
 
         resValue("string", "preprod_host", preprodHost)
+        resValue("string", "preprod_host_v2", preprodHostV2)
         resValue("string", "prod_host", prodHost)
+        resValue("string", "prod_host_v2", prodHostV2)
 
         buildConfigField("String", "GITHUB_REPO_URL", "\"https://github.com/Infomaniak/android-SwissTransfer\"")
         buildConfigField("String", "CLIENT_ID", "\"17EE3471-9843-4FB9-AD95-CB8C41BAD624\"")
@@ -102,9 +106,11 @@ android {
         create("preprod") {
             applicationIdSuffix = ".preprod"
             buildConfigField("String", "BASE_URL", "\"https://$preprodHost\"")
+            buildConfigField("String", "BASE_URL_V2", "\"https://$preprodHostV2\"")
         }
         create("prod") {
             buildConfigField("String", "BASE_URL", "\"https://$prodHost\"")
+            buildConfigField("String", "BASE_URL_V2", "\"https://$prodHostV2\"")
             isDefault = true
         }
     }

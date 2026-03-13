@@ -43,7 +43,7 @@ sealed class MainNavigation : NavigationDestination() {
         suffix: String = "",
     ) {
         val basePath = "${BuildConfig.BASE_URL}/d/{$transferUuidName}$suffix"
-        val basePathForV2 = "${BuildConfig.BASE_URL}/dl/{$transferUuidName}$suffix"
+        val basePathForV2 = "${BuildConfig.BASE_URL_V2}/dl/{$transferUuidName}$suffix"
         val deeplinks = listOf(navDeepLink<T>(basePath), navDeepLink<T>(basePathForV2))
 
         composable<T>(deepLinks = deeplinks, content = content)
