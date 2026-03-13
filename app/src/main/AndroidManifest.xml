@@ -100,7 +100,9 @@
 
                 <data android:scheme="https" />
                 <data android:host="@string/preprod_host" />
+                <data android:host="@string/preprod_host_v2" />
                 <data android:host="@string/prod_host" />
+                <data android:host="@string/prod_host_v2" />
                 <data android:pathPattern="/d/.*" />
                 <data android:pathPattern="/dl/.*" />
             </intent-filter>
