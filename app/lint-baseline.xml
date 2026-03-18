@@ -1,0 +1,796 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.13.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.0)" variant="all" version="8.13.0">
+
+    <issue
+        id="ComposeViewModelInjection"
+        message="Implicit dependencies of composables should be made explicit.&#xA;Usages of hiltViewModel to acquire a ViewModel should be done in composable default parameters, so that it is more testable and flexible.&#xA;See https://slackhq.github.io/compose-lints/rules/#viewmodels for more information."
+        errorLine1="            val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/NewTransferNavHost.kt"
+            line="71"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ComposeViewModelInjection"
+        message="Implicit dependencies of composables should be made explicit.&#xA;Usages of hiltViewModel to acquire a ViewModel should be done in composable default parameters, so that it is more testable and flexible.&#xA;See https://slackhq.github.io/compose-lints/rules/#viewmodels for more information."
+        errorLine1="            val transfersViewModel = hiltViewModel&lt;TransfersViewModel>()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transfers/TransfersScreenWrapper.kt"
+            line="80"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ComposeViewModelInjection"
+        message="Implicit dependencies of composables should be made explicit.&#xA;Usages of hiltViewModel to acquire a ViewModel should be done in composable default parameters, so that it is more testable and flexible.&#xA;See https://slackhq.github.io/compose-lints/rules/#viewmodels for more information."
+        errorLine1="            val deeplinkViewModel = hiltViewModel&lt;DeeplinkViewModel>()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transfers/TransfersScreenWrapper.kt"
+            line="81"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ComposeViewModelInjection"
+        message="Implicit dependencies of composables should be made explicit.&#xA;Usages of hiltViewModel to acquire a ViewModel should be done in composable default parameters, so that it is more testable and flexible.&#xA;See https://slackhq.github.io/compose-lints/rules/#viewmodels for more information."
+        errorLine1="            val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/upload/UploadScreen.kt"
+            line="101"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                    context.getString(R.string.validateMailCodeResentFeedback, emailToValidate)"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/validateemail/ValidateUserEmailScreen.kt"
+            line="136"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/validateemail/ValidateUserEmailScreen.kt"
+            line="156"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="LocalContextGetResourceValueCall"
+        message="Querying resource values using LocalContext.current"
+        errorLine1="                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/validateemail/ValidateUserEmailScreen.kt"
+            line="159"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierReused"
+        message="Modifiers should only be used once and by the root level layout of a Composable. This is true even if appended to or with other modifiers e.g. modifier.fillMaxWidth().Use Modifier (with a capital &apos;M&apos;) to construct a new Modifier that you can pass to other composables.See https://slackhq.github.io/compose-lints/rules/#dont-re-use-modifiers for more information."
+        errorLine1="            SwissTransferTextField("
+        errorLine2="            ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="306"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierReused"
+        message="Modifiers should only be used once and by the root level layout of a Composable. This is true even if appended to or with other modifiers e.g. modifier.fillMaxWidth().Use Modifier (with a capital &apos;M&apos;) to construct a new Modifier that you can pass to other composables.See https://slackhq.github.io/compose-lints/rules/#dont-re-use-modifiers for more information."
+        errorLine1="        EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, textFieldSpacing)"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="315"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierReused"
+        message="Modifiers should only be used once and by the root level layout of a Composable. This is true even if appended to or with other modifiers e.g. modifier.fillMaxWidth().Use Modifier (with a capital &apos;M&apos;) to construct a new Modifier that you can pass to other composables.See https://slackhq.github.io/compose-lints/rules/#dont-re-use-modifiers for more information."
+        errorLine1="        SwissTransferTextField("
+        errorLine2="        ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="317"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierReused"
+        message="Modifiers should only be used once and by the root level layout of a Composable. This is true even if appended to or with other modifiers e.g. modifier.fillMaxWidth().Use Modifier (with a capital &apos;M&apos;) to construct a new Modifier that you can pass to other composables.See https://slackhq.github.io/compose-lints/rules/#dont-re-use-modifiers for more information."
+        errorLine1="    PickFilesTitle(modifier, R.string.advancedSettingsTitle)"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="392"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierReused"
+        message="Modifiers should only be used once and by the root level layout of a Composable. This is true even if appended to or with other modifiers e.g. modifier.fillMaxWidth().Use Modifier (with a capital &apos;M&apos;) to construct a new Modifier that you can pass to other composables.See https://slackhq.github.io/compose-lints/rules/#dont-re-use-modifiers for more information."
+        errorLine1="    TransferOptionsTypes("
+        errorLine2="    ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="393"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    modifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/Buttons.kt"
+            line="105"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    modifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/emptystate/EmptyStateScreen.kt"
+            line="75"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    modifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="277"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    horizontalPaddingModifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="295"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    modifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="330"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="private fun SendByOptions(modifier: Modifier, selectedTransferType: GetSetCallbacks&lt;TransferTypeUi>) {"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="378"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="private fun TransferOptions(modifier: Modifier, transferOptionsCallbacks: TransferOptionsCallbacks) {"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="384"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    modifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="447"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    modifier: Modifier,"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SwissTransferAlertDialog.kt"
+            line="99"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="private fun UnpaddedTitle(modifier: Modifier, titleRes: Int) {"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/settings/components/Titles.kt"
+            line="51"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ComposeModifierWithoutDefault"
+        message="This @Composable function has a modifier parameter but it doesn&apos;t have a default value.See https://slackhq.github.io/compose-lints/rules/#modifiers-should-have-default-parameters for more information."
+        errorLine1="    fun CardProgressBar(modifier: Modifier) {"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/TransferDownloadComposeUi.kt"
+            line="264"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="ComposeMultipleContentEmitters"
+        message="Composable functions should only be emitting content into the composition from one source at their top level.&#xA;&#xA;See https://slackhq.github.io/compose-lints/rules/#do-not-emit-multiple-pieces-of-content for more information."
+        errorLine1="@Composable"
+        errorLine2="^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="383"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="ComposeMultipleContentEmitters"
+        message="Composable functions should only be emitting content into the composition from one source at their top level.&#xA;&#xA;See https://slackhq.github.io/compose-lints/rules/#do-not-emit-multiple-pieces-of-content for more information."
+        errorLine1="@Composable"
+        errorLine2="^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/TransferDetailsScreen.kt"
+            line="421"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="ComposeMultipleContentEmitters"
+        message="Composable functions should only be emitting content into the composition from one source at their top level.&#xA;&#xA;See https://slackhq.github.io/compose-lints/rules/#do-not-emit-multiple-pieces-of-content for more information."
+        errorLine1="@Composable"
+        errorLine2="^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/TransferDetailsScreen.kt"
+            line="432"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="ComposeMultipleContentEmitters"
+        message="Composable functions should only be emitting content into the composition from one source at their top level.&#xA;&#xA;See https://slackhq.github.io/compose-lints/rules/#do-not-emit-multiple-pieces-of-content for more information."
+        errorLine1="@Composable"
+        errorLine2="^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/components/TransferInfo.kt"
+            line="58"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    hideBottomBar: MutableState&lt;Boolean>,"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/components/AppNavigationSuiteScaffold.kt"
+            line="90"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    hideBottomBar: MutableState&lt;Boolean>,"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/MainNavHost.kt"
+            line="42"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    hideBottomBar: MutableState&lt;Boolean>,"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/components/MainScaffold.kt"
+            line="47"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    hideBottomBar: MutableState&lt;Boolean>,"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/components/MainScaffold.kt"
+            line="64"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    transferTitleState: MutableState&lt;String>,"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="224"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    transferTitleState: MutableState&lt;String>,"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="296"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="ComposeMutableParameters"
+        message="Using mutable objects as state in Compose will cause your users to see incorrect or stale data in your app.Mutable objects that are not observable, such as ArrayList&lt;T> or a mutable data class, cannot be observed by Compose to trigger recomposition when they change.See https://slackhq.github.io/compose-lints/rules/#do-not-use-inherently-mutable-types-as-parameters for more information."
+        errorLine1="    hideBottomBar: MutableState&lt;Boolean>,"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transfers/TransfersScreenWrapper.kt"
+            line="74"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [offsetY: Dp, contentColor: Color, direction: ArrowDirection, modifier: Modifier = Modifier, strokeWidth: Dp] but should be [offsetY: Dp, contentColor: Color, direction: ArrowDirection, strokeWidth: Dp, modifier: Modifier = Modifier].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="private fun ArrowCanvas("
+        errorLine2="                       ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/navigation/AnimatedArrowCircle.kt"
+            line="296"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [title: String, modifier: Modifier = Modifier, style: ButtonType = ButtonType.Primary, enabled: () -> Boolean = { true }, showIndeterminateProgress: () -> Boolean = { false }, progress: (() -> Float)? = null, onClick: () -> Unit, imageVector: ImageVector? = null] but should be [title: String, onClick: () -> Unit, modifier: Modifier = Modifier, style: ButtonType = ButtonType.Primary, enabled: () -> Boolean = { true }, showIndeterminateProgress: () -> Boolean = { false }, progress: (() -> Float)? = null, imageVector: ImageVector? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun LargeButton("
+        errorLine2="               ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/Buttons.kt"
+            line="52"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [title: String, modifier: Modifier = Modifier, style: ButtonType = ButtonType.Primary, enabled: () -> Boolean = { true }, showIndeterminateProgress: () -> Boolean = { false }, progress: (() -> Float)? = null, onClick: () -> Unit, imageVector: ImageVector? = null] but should be [title: String, onClick: () -> Unit, modifier: Modifier = Modifier, style: ButtonType = ButtonType.Primary, enabled: () -> Boolean = { true }, showIndeterminateProgress: () -> Boolean = { false }, progress: (() -> Float)? = null, imageVector: ImageVector? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SmallButton("
+        errorLine2="               ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/Buttons.kt"
+            line="79"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [ColumnScope, modifier: Modifier = Modifier, otpCode: () -> String, updateOtpCode: (String, Boolean) -> Unit, isLoading: () -> Boolean, isInvalidVerificationCode: () -> Boolean] but should be [ColumnScope, otpCode: () -> String, updateOtpCode: (String, Boolean) -> Unit, isLoading: () -> Boolean, modifier: Modifier = Modifier, isInvalidVerificationCode: () -> Boolean].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun ColumnScope.CodeVerification("
+        errorLine2="                                ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/validateemail/components/CodeVerification.kt"
+            line="46"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, label: String, initialValue: String, validatedRecipientsEmails: GetSetCallbacks&lt;Set&lt;String>>, onValueChange: (TextFieldValue) -> Unit, isError: Boolean = false, supportingText: (@Composable () -> Unit)? = null] but should be [label: String, initialValue: String, validatedRecipientsEmails: GetSetCallbacks&lt;Set&lt;String>>, onValueChange: (TextFieldValue) -> Unit, modifier: Modifier = Modifier, isError: Boolean = false, supportingText: (@Composable () -> Unit)? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun EmailAddressTextField("
+        errorLine2="                         ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/components/EmailAddressTextField.kt"
+            line="88"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [content: (@Composable () -> Unit)? = null, @StringRes titleRes: Int? = null, @StringRes descriptionRes: Int? = null, modifier: Modifier = Modifier] but should be [modifier: Modifier = Modifier, content: (@Composable () -> Unit)? = null, @StringRes titleRes: Int? = null, @StringRes descriptionRes: Int? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun EmptyState("
+        errorLine2="              ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/EmptyState.kt"
+            line="40"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [content: (@Composable () -> Unit)? = null, title: String?, description: String?, modifier: Modifier = Modifier] but should be [title: String?, description: String?, modifier: Modifier = Modifier, content: (@Composable () -> Unit)? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun EmptyState("
+        errorLine2="              ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/EmptyState.kt"
+            line="48"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel&lt;FilesDetailsViewModel>(), folderUuid: String, transferUuid: String, navigateToFolder: (String) -> Unit, withFilesSize: Boolean, withSpaceLeft: Boolean, navigateBack: () -> Unit, close: () -> Unit] but should be [folderUuid: String, transferUuid: String, navigateToFolder: (String) -> Unit, withFilesSize: Boolean, withSpaceLeft: Boolean, navigateBack: () -> Unit, filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel&lt;FilesDetailsViewModel>(), close: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun ExistingTransferFilesDetailsScreen("
+        errorLine2="                                      ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/components/ExistingTransferFilesDetailsScreen.kt"
+            line="36"
+            column="39"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, file: FileUi, isRemoveButtonVisible: Boolean, isCheckboxVisible: Boolean, isChecked: () -> Boolean = { false }, onClick: (() -> Unit)? = null, onRemove: (() -> Unit)? = null, previewUriForFile: State&lt;String?> = rememberUpdatedState(file.thumbnailPath), previewOverlay: @Composable BoxScope.() -> Unit = {}] but should be [file: FileUi, isRemoveButtonVisible: Boolean, isCheckboxVisible: Boolean, modifier: Modifier = Modifier, isChecked: () -> Boolean = { false }, onClick: (() -> Unit)? = null, onRemove: (() -> Unit)? = null, previewUriForFile: State&lt;String?> = rememberUpdatedState(file.thumbnailPath), previewOverlay: @Composable BoxScope.() -> Unit = {}].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun FileItem("
+        errorLine2="            ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/FileItem.kt"
+            line="60"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, isCheckboxVisible: Boolean, isChecked: () -> Boolean, isRemoveButtonVisible: Boolean, onRemove: (() -> Unit)?, title: String, description: String, content: @Composable BoxScope.() -> Unit] but should be [isCheckboxVisible: Boolean, isChecked: () -> Boolean, isRemoveButtonVisible: Boolean, onRemove: (() -> Unit)?, title: String, description: String, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null, content: @Composable BoxScope.() -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="private fun FileItemContent("
+        errorLine2="                           ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/FileItem.kt"
+            line="103"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="    Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;    Current params are: [modifier: Modifier = Modifier, snackbarHostState: SnackbarHostState, writeExternalStoragePermissionState: PermissionState? = null, files: List&lt;FileUi>, isDownloadButtonVisible: Boolean, isRemoveButtonVisible: Boolean, isCheckboxVisible: () -> Boolean, isUidChecked: (String) -> Boolean, setUidCheckStatus: (String, Boolean) -> Unit, onRemoveUid: ((String) -> Unit)? = null, navigateToFolder: ((uid: String) -> Unit)? = null, header: (@Composable LazyGridItemScope.() -> Unit)? = null, transferFlow: Flow&lt;TransferUi> = emptyFlow(), runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->&#xA;    awaitCancellation()&#xA;}, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }, direction: TransferDirection?] but should be [snackbarHostState: SnackbarHostState, files: List&lt;FileUi>, isDownloadButtonVisible: Boolean, isRemoveButtonVisible: Boolean, isCheckboxVisible: () -> Boolean, isUidChecked: (String) -> Boolean, setUidCheckStatus: (String, Boolean) -> Unit, direction: TransferDirection?, modifier: Modifier = Modifier, writeExternalStoragePermissionState: PermissionState? = null, onRemoveUid: ((String) -> Unit)? = null, navigateToFolder: ((uid: String) -> Unit)? = null, header: (@Composable LazyGridItemScope.() -> Unit)? = null, transferFlow: Flow&lt;TransferUi> = emptyFlow(), runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->&#xA;    awaitCancellation()&#xA;}, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }].&#xA;    See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun FileItemList("
+        errorLine2="                ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/FileItemList.kt"
+            line="58"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [file: FileUi, previewUri: String? = file.thumbnailPath, circleColor: Color, circleSize: Dp, showFileName: Boolean, fileIconContentPadding: PaddingValues = PaddingValues()] but should be [file: FileUi, circleColor: Color, circleSize: Dp, showFileName: Boolean, previewUri: String? = file.thumbnailPath, fileIconContentPadding: PaddingValues = PaddingValues()].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun FilePreview("
+        errorLine2="               ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/FilePreview.kt"
+            line="59"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="    Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;    Current params are: [paddingValues: PaddingValues = PaddingValues(0.dp), snackbarHostState: SnackbarHostState, files: List&lt;FileUi>, navigateToFolder: ((String) -> Unit)? = null, transferFlow: Flow&lt;TransferUi> = emptyFlow(), runDownloadUi: suspend (&#xA;    ui: TransferDownloadUi,&#xA;    transfer: TransferUi,&#xA;    file: FileUi&#xA;) -> Nothing = { _, _, _ -> awaitCancellation() }, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }, withFileSize: Boolean, withSpaceLeft: Boolean, isDownloadButtonVisible: Boolean, onFileRemoved: ((uuid: String) -> Unit)? = null, direction: TransferDirection? = null] but should be [snackbarHostState: SnackbarHostState, files: List&lt;FileUi>, withFileSize: Boolean, withSpaceLeft: Boolean, isDownloadButtonVisible: Boolean, paddingValues: PaddingValues = PaddingValues(0.dp), navigateToFolder: ((String) -> Unit)? = null, transferFlow: Flow&lt;TransferUi> = emptyFlow(), runDownloadUi: suspend (&#xA;    ui: TransferDownloadUi,&#xA;    transfer: TransferUi,&#xA;    file: FileUi&#xA;) -> Nothing = { _, _, _ -> awaitCancellation() }, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }, onFileRemoved: ((uuid: String) -> Unit)? = null, direction: TransferDirection? = null].&#xA;    See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun FilesDetailsScreen("
+        errorLine2="                      ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/transfer/FilesDetailsScreen.kt"
+            line="50"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [actualSize: Long, maxSize: Long, useIecUnits: Boolean = false, ttsFriendly: Boolean] but should be [actualSize: Long, maxSize: Long, ttsFriendly: Boolean, useIecUnits: Boolean = false].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="    fun formatSpaceOver("
+        errorLine2="                       ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/utils/HumanReadableSizeUtils.kt"
+            line="47"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, files: () -> List&lt;FileUi>, canSendStatus: () -> CanSendStatus, pickFiles: () -> Unit, navigateToFilesDetails: () -> Unit] but should be [files: () -> List&lt;FileUi>, canSendStatus: () -> CanSendStatus, pickFiles: () -> Unit, modifier: Modifier = Modifier, navigateToFilesDetails: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun ImportedFilesCard("
+        errorLine2="                     ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/components/ImportedFilesCard.kt"
+            line="73"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, newTransferFabType: NewTransferFabType] but should be [newTransferFabType: NewTransferFabType, modifier: Modifier = Modifier].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun NewTransferFab("
+        errorLine2="                  ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/NewTransferFab.kt"
+            line="34"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, otpText: String, otpLength: Int, horizontalArrangement: Arrangement.Horizontal, onOtpTextChange: (String, Boolean) -> Unit, isCharacterValid: ((Char) -> Boolean)? = null, otpTextFieldStyle: OtpTextFieldStyle = OtpTextFieldStyle.default(), isError: () -> Boolean = { false }, isEnabled: () -> Boolean = { true }] but should be [otpText: String, otpLength: Int, horizontalArrangement: Arrangement.Horizontal, onOtpTextChange: (String, Boolean) -> Unit, modifier: Modifier = Modifier, isCharacterValid: ((Char) -> Boolean)? = null, otpTextFieldStyle: OtpTextFieldStyle = OtpTextFieldStyle.default(), isError: () -> Boolean = { false }, isEnabled: () -> Boolean = { true }].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun OtpTextField("
+        errorLine2="                ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/validateemail/components/OtpTextField.kt"
+            line="66"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, @StringRes titleRes: Int] but should be [@StringRes titleRes: Int, modifier: Modifier = Modifier].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="private fun PickFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/PickFilesScreen.kt"
+            line="437"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [navigateToDetails: (transferUuid: String) -> Unit, getSelectedTransferUuid: () -> String?, transfersViewModel: TransfersViewModel = hiltViewModel&lt;TransfersViewModel>(), hasTransfer: (Boolean) -> Unit, onDeleteTransfer: () -> Unit] but should be [navigateToDetails: (transferUuid: String) -> Unit, getSelectedTransferUuid: () -> String?, hasTransfer: (Boolean) -> Unit, transfersViewModel: TransfersViewModel = hiltViewModel&lt;TransfersViewModel>(), onDeleteTransfer: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun ReceivedScreen("
+        errorLine2="                  ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/received/ReceivedScreen.kt"
+            line="54"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, onResendEmailCode: () -> Unit, enabled: () -> Boolean] but should be [onResendEmailCode: () -> Unit, modifier: Modifier = Modifier, enabled: () -> Boolean].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: () -> Unit, enabled: () -> Boolean) {"
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/validateemail/components/ResendCodeCountDownButton.kt"
+            line="51"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [navigateToDetails: (transferUuid: String) -> Unit, getSelectedTransferUuid: () -> String?, transfersViewModel: TransfersViewModel = hiltViewModel&lt;TransfersViewModel>(), hasTransfer: (Boolean) -> Unit, onDeleteTransfer: () -> Unit] but should be [navigateToDetails: (transferUuid: String) -> Unit, getSelectedTransferUuid: () -> String?, hasTransfer: (Boolean) -> Unit, transfersViewModel: TransfersViewModel = hiltViewModel&lt;TransfersViewModel>(), onDeleteTransfer: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SentScreen("
+        errorLine2="              ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/sent/SentScreen.kt"
+            line="53"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [ColumnScope, modifier: Modifier = Modifier, transferLink: String, snackbarHostState: SnackbarHostState] but should be [ColumnScope, transferLink: String, snackbarHostState: SnackbarHostState, modifier: Modifier = Modifier].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink: String, snackbarHostState: SnackbarHostState) {"
+        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/upload/components/ShareAndCopyButtons.kt"
+            line="64"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, isSelected: () -> Boolean = { false }, onClick: () -> Unit, contentPadding: PaddingValues = PaddingValues(0.dp), content: @Composable RowScope.() -> Unit] but should be [onClick: () -> Unit, modifier: Modifier = Modifier, isSelected: () -> Boolean = { false }, contentPadding: PaddingValues = PaddingValues(0.dp), content: @Composable RowScope.() -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SharpRippleButton("
+        errorLine2="                     ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SharpRippleButton.kt"
+            line="32"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, file: FileUi, smallFileTileSize: SmallFileTileSize] but should be [file: FileUi, smallFileTileSize: SmallFileTileSize, modifier: Modifier = Modifier].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SmallFileItem("
+        errorLine2="                 ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SmallFileItem.kt"
+            line="44"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, contentShape: Shape, onSwiped: () -> Unit = {}, content: @Composable () -> Unit] but should be [contentShape: Shape, modifier: Modifier = Modifier, onSwiped: () -> Unit = {}, content: @Composable () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SwipeToDismissComponent("
+        errorLine2="                           ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SwipeToDismissComponent.kt"
+            line="57"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, title: String, description: String? = null, positiveButton: @Composable () -> Unit, negativeButton: @Composable () -> Unit, onDismiss: () -> Unit, content: @Composable (ColumnScope.() -> Unit)? = null] but should be [title: String, positiveButton: @Composable () -> Unit, negativeButton: @Composable () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier, description: String? = null, content: @Composable (ColumnScope.() -> Unit)? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SwissTransferAlertDialog("
+        errorLine2="                            ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SwissTransferAlertDialog.kt"
+            line="69"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), onDismissRequest: () -> Unit, imageVector: ImageVector? = null, title: String? = null, description: String? = null, topButton: @Composable ((Modifier) -> Unit)? = null, bottomButton: @Composable ((Modifier) -> Unit)? = null, content: @Composable (() -> Unit)? = null] but should be [onDismissRequest: () -> Unit, modifier: Modifier = Modifier, sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), imageVector: ImageVector? = null, title: String? = null, description: String? = null, topButton: @Composable ((Modifier) -> Unit)? = null, bottomButton: @Composable ((Modifier) -> Unit)? = null, content: @Composable (() -> Unit)? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SwissTransferBottomSheet("
+        errorLine2="                            ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SwissTransferBottomSheet.kt"
+            line="57"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, text: String, isSelected: () -> Boolean, onClick: () -> Unit, onDismiss: () -> Unit] but should be [text: String, isSelected: () -> Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, onDismiss: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun SwissTransferInputChip("
+        errorLine2="                          ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/SwissTransferChips.kt"
+            line="65"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [firstText: @Composable () -> Unit, secondText: (@Composable () -> Unit)? = null, modifier: Modifier = Modifier, color: Color = SwissTransferTheme.colors.secondaryTextColor, style: TextStyle = SwissTransferTheme.typography.bodySmallRegular] but should be [firstText: @Composable () -> Unit, modifier: Modifier = Modifier, secondText: (@Composable () -> Unit)? = null, color: Color = SwissTransferTheme.colors.secondaryTextColor, style: TextStyle = SwissTransferTheme.typography.bodySmallRegular].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun TextDotText("
+        errorLine2="               ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/TextDotText.kt"
+            line="38"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [transferUuid: String, direction: TransferDirection, navigateBack: (() -> Unit)?, isApiV2Deeplink: Boolean? = null, transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel&lt;TransferDetailsViewModel>(), navigateToFolder: (folderUuid: String) -> Unit, onDeleteTransfer: () -> Unit] but should be [transferUuid: String, direction: TransferDirection, navigateBack: (() -> Unit)?, navigateToFolder: (folderUuid: String) -> Unit, isApiV2Deeplink: Boolean? = null, transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel&lt;TransferDetailsViewModel>(), onDeleteTransfer: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun TransferDetailsScreen("
+        errorLine2="                         ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/TransferDetailsScreen.kt"
+            line="119"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [transferUrl: String, direction: TransferDirection, navigateBack: (() -> Unit)?, getTransfer: () -> TransferUi, runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi?) -> Nothing, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }, getCheckedFiles: () -> SnapshotStateMap&lt;String, Boolean>, clearCheckedFiles: () -> Unit, setFileCheckStatus: (String, Boolean) -> Unit, navigateToFolder: (folderUuid: String) -> Unit] but should be [transferUrl: String, direction: TransferDirection, navigateBack: (() -> Unit)?, getTransfer: () -> TransferUi, runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi?) -> Nothing, getCheckedFiles: () -> SnapshotStateMap&lt;String, Boolean>, clearCheckedFiles: () -> Unit, setFileCheckStatus: (String, Boolean) -> Unit, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }, navigateToFolder: (folderUuid: String) -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="private fun TransferDetailsScreen("
+        errorLine2="                                 ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/TransferDetailsScreen.kt"
+            line="211"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [ColumnScope, snackbarHostState: SnackbarHostState, writeExternalStoragePermissionState: PermissionState?, getTransfer: () -> TransferUi, transferRecipients: Set&lt;String>, isMultiselectOn: Boolean, getCheckedFiles: () -> SnapshotStateMap&lt;String, Boolean>, setFileCheckStatus: (String, Boolean) -> Unit, navigateToFolder: ((folderUuid: String) -> Unit)? = null, transferFlow: Flow&lt;TransferUi>, runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }, direction: TransferDirection] but should be [ColumnScope, snackbarHostState: SnackbarHostState, writeExternalStoragePermissionState: PermissionState?, getTransfer: () -> TransferUi, transferRecipients: Set&lt;String>, isMultiselectOn: Boolean, getCheckedFiles: () -> SnapshotStateMap&lt;String, Boolean>, setFileCheckStatus: (String, Boolean) -> Unit, transferFlow: Flow&lt;TransferUi>, runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing, direction: TransferDirection, navigateToFolder: ((folderUuid: String) -> Unit)? = null, previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow&lt;Uri?> = { _, _ -> emptyFlow() }].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="private fun ColumnScope.FilesList("
+        errorLine2="                                 ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transferdetails/TransferDetailsScreen.kt"
+            line="369"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [transfer: TransferUi, shape: Shape = CustomShapes.SMALL, isSelected: () -> Boolean, onClick: () -> Unit] but should be [transfer: TransferUi, isSelected: () -> Boolean, shape: Shape = CustomShapes.SMALL, onClick: () -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun TransferItem("
+        errorLine2="                ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/transfer/TransferItem.kt"
+            line="62"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, direction: TransferDirection, navigateToDetails: (transferUuid: String) -> Unit, getSelectedTransferUuid: () -> String?, getTransfers: () -> GroupedTransfers, onDeleteTransfer: (String) -> Unit] but should be [direction: TransferDirection, navigateToDetails: (transferUuid: String) -> Unit, getSelectedTransferUuid: () -> String?, getTransfers: () -> GroupedTransfers, modifier: Modifier = Modifier, onDeleteTransfer: (String) -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun TransferItemList("
+        errorLine2="                    ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/components/transfer/TransferItemList.kt"
+            line="46"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [modifier: Modifier = Modifier, transferOptionsStates: () -> List&lt;TransferOptionState>, onClick: (TransferOptionType) -> Unit] but should be [transferOptionsStates: () -> List&lt;TransferOptionState>, modifier: Modifier = Modifier, onClick: (TransferOptionType) -> Unit].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun TransferOptionsTypes("
+        errorLine2="                        ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/pickfiles/components/TransferOptionsTypes.kt"
+            line="46"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [direction: TransferDirection, transferUuid: String? = null, isApiV2Deeplink: Boolean? = null, hideBottomBar: MutableState&lt;Boolean>] but should be [direction: TransferDirection, hideBottomBar: MutableState&lt;Boolean>, transferUuid: String? = null, isApiV2Deeplink: Boolean? = null].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="fun TransfersScreenWrapper("
+        errorLine2="                          ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/main/transfers/TransfersScreenWrapper.kt"
+            line="70"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ComposeParameterOrder"
+        message="Parameters in a composable function should be ordered following this pattern: params without defaults, modifiers, params with defaults and optionally, a trailing function that might not have a default param.&#xA;Current params are: [exitNewTransfer: () -> Unit, illustration: ThemedImage = AppIllus.GhostScrollCrossPointing, title: String = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) &quot; Feur&quot; else &quot;&quot;, desc: String] but should be [exitNewTransfer: () -> Unit, desc: String, illustration: ThemedImage = AppIllus.GhostScrollCrossPointing, title: String = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) &quot; Feur&quot; else &quot;&quot;].&#xA;See https://slackhq.github.io/compose-lints/rules/#ordering-composable-parameters-properly for more information."
+        errorLine1="private fun UploadFailureScreen("
+        errorLine2="                               ^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/upload/UploadFailureScreen.kt"
+            line="75"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="ComposePreviewPublic"
+        message="Composables annotated with @Preview that are used only for previewing the UI should not be public.See https://slackhq.github.io/compose-lints/rules/#preview-composables-should-not-be-public for more information."
+        errorLine1="@Preview(name = &quot;Light&quot;)"
+        errorLine2="^">
+        <location
+            file="src/main/java/com/infomaniak/swisstransfer/ui/screen/newtransfer/filesdetails/components/FilesSize.kt"
+            line="87"
+            column="1"/>
+    </issue>
+
+</issues>
