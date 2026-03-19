@@ -151,7 +151,7 @@
         <item quantity="other">%d dias</item>
     </plurals>
     <string name="sharePasswordButton">Copiar palavra-passe</string>
-    <string name="sharePasswordDescription">Aqui está a senha para descarregar os ficheiros!</string>
+    <string name="sharePasswordDescription">Aqui está a palavra mágica para descarregar os ficheiros!</string>
     <string name="sharePasswordTitle">Esta transferência é segura</string>
     <string name="shareQrCodeDescription">Mostra este código QR para partilhar a tua transferência:</string>
     <string name="shareQrCodeTitle">Partilha rápida</string>
