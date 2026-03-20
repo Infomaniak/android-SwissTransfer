@@ -207,7 +207,7 @@ private enum class Page(
             val isCurrentPageVisible = { pagerState.currentPage == index }
             when (illustration) {
                 is ThemedLottieMethod.Qualifier -> {
-                    DefaultLottieIllustration(illustration.res, isCurrentPageVisible)
+                    DefaultLottieIllustration(illustration.res, isCurrentPageVisible, modifier = Modifier.size(350.dp))
                 }
                 is ThemedLottieMethod.Theme -> {
                     ThemedDotLottie(
