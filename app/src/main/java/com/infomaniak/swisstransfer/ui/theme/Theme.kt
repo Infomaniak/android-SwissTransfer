@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.infomaniak.core.avatar.AvatarColors
 import com.infomaniak.core.avatar.LocalAvatarColors
+import com.infomaniak.core.avatar.theme.DarkAvatarColorsScheme
+import com.infomaniak.core.avatar.theme.LightAvatarColorsScheme
 import com.infomaniak.core.ui.compose.basics.bottomsheet.BottomSheetThemeDefaults
 import com.infomaniak.core.ui.compose.basics.bottomsheet.LocalBottomSheetTheme
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.LocalScaffoldTheme
@@ -50,7 +52,7 @@ fun SwissTransferTheme(
     content: @Composable () -> Unit,
 ) {
     val customColors = if (isDarkTheme) CustomDarkColorScheme else CustomLightColorScheme
-    val avatarColors = if (isDarkTheme) AvatarColorsDark else AvatarColorsLight
+    val avatarColors = if (isDarkTheme) DarkAvatarColorsScheme else LightAvatarColorsScheme
     val scaffoldTheme = ScaffoldThemeDefault.theme(
         singlePaneMaxWidth = Dimens.MaxSinglePaneScreenWidth,
         stackedButtonVerticalPadding = Dimens.ButtonComboVerticalPadding
@@ -134,21 +136,6 @@ data class CustomColorScheme(
     val fileStatusButtonBackground: Color = Color.Unspecified,
     val avatarInitialsColor: Color = Color.Unspecified,
 )
-
-@Immutable
-class AvatarColors(
-    yellow: Color,
-    coral: Color,
-    grass: Color,
-    fougere: Color,
-    cobalt: Color,
-    jean: Color,
-    tropical: Color,
-    mauve: Color,
-    prince: Color,
-) {
-    val colorList = listOf(yellow, coral, grass, fougere, cobalt, jean, tropical, mauve, prince)
-}
 
 private val Shapes = Shapes(
     extraSmall = CustomShapes.EXTRA_SMALL,
