@@ -15,7 +15,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ImpliedQuantity,MissingQuantity">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="awaitingNetwork">En attente de réseau</string>
     <string name="buttonCancelTransfer">Annuler le transfert</string>
@@ -100,7 +100,7 @@
     <string name="onboardingStorageTitle">Envoie du lourd !</string>
     <string name="receivedFilesTitle">Fichiers reçus</string>
     <string name="receivedTitle">Reçu</string>
-    <plurals name="recipientHeader">
+    <plurals name="recipientHeader" tools:ignore="ImpliedQuantity">
         <item quantity="one">Destinataire :</item>
         <item quantity="other">Destinataires :</item>
     </plurals>
@@ -205,7 +205,7 @@
     <string name="uploadProgressIndication">Transfert en cours…</string>
     <string name="uploadProgressTitleArgument">différent</string>
     <string name="uploadProgressTitleTemplate">Ce qui nous rend %s ?</string>
-    <plurals name="uploadSuccessEmailDescription">
+    <plurals name="uploadSuccessEmailDescription" tools:ignore="ImpliedQuantity">
         <item quantity="one">Le lien de téléchargement a bien été envoyé au destinataire suivant :</item>
         <item quantity="other">Le lien de téléchargement a été envoyé aux destinataires suivants :</item>
     </plurals>
