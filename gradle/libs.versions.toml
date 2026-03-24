@@ -1,6 +1,5 @@
 [versions]
 accompanistPermissions = "0.37.3"
-agp = "8.13.1"
 constraintlayoutCompose = "1.1.1"
 coreSplashscreen = "1.2.0"
 desugarJDK = "2.1.5"
@@ -19,7 +18,3 @@ qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 room-processing = { module = "androidx.room:room-compiler-processing", version.ref = "room" }
 swisstransfer-core = { module = "com.infomaniak.multiplatform_swisstransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.infomaniak.multiplatform_swisstransfer:STNetwork", version.ref = "swisstransfer" }
-
-[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
