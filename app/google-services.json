@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "890863238862",
+    "project_id": "infomaniak-swisstransfer",
+    "storage_bucket": "infomaniak-swisstransfer.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890863238862:android:d6eadefaa2c25f7ffc5a9f",
+        "android_client_info": {
+          "package_name": "com.infomaniak.swisstransfer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXDKLPBaYCR7XbSu6CYs-RESfti1WVVcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890863238862:android:d5cac1916b00f444fc5a9f",
+        "android_client_info": {
+          "package_name": "com.infomaniak.swisstransfer.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXDKLPBaYCR7XbSu6CYs-RESfti1WVVcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

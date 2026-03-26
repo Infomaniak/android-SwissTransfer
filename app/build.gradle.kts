@@ -27,6 +27,7 @@ plugins {
     alias(core.plugins.kapt)
     alias(core.plugins.kotlin.android)
     alias(core.plugins.sentry.plugin)
+    alias(core.plugins.google.services)
     kotlin("plugin.parcelize")
     kotlin("plugin.serialization") version core.versions.kotlin
 }
