@@ -57,7 +57,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.twofactorauth.twoFactorAuthManager
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
 import dagger.hilt.android.AndroidEntryPoint

@@ -34,7 +34,6 @@ import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.services.DeviceInfoUpdateWorker
 import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker
 import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker.Companion.getNotificationTopicsFlow
-import com.infomaniak.swisstransfer.twofactorauth.initTwoFactorAuthManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
