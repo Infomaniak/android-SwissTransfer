@@ -25,9 +25,11 @@ import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.common.utils.buildUserAgent
 import com.infomaniak.core.network.LOGIN_ENDPOINT_URL
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.core.twofactorauth.back.TwoFactorAuthManager
 import com.infomaniak.lib.login.InfomaniakLogin
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.MainApplication
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import dagger.Module
 import dagger.Provides
@@ -68,6 +70,12 @@ object ApplicationModule {
     @Singleton
     fun providesNotificationManagerCompat(@ApplicationContext appContext: Context): NotificationManagerCompat {
         return NotificationManagerCompat.from(appContext)
+    }
+
+    @Provides
+    @Singleton
+    fun providesTwoFactorAuthManager(accountUtils: AccountUtils): TwoFactorAuthManager {
+        return TwoFactorAuthManager { accountUtils.getHttpClient(it) }
     }
 
     @Provides

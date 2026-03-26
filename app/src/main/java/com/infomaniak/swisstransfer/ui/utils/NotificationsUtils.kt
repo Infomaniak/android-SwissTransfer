@@ -29,6 +29,7 @@ import com.infomaniak.core.notifications.buildNotificationChannel
 import com.infomaniak.core.notifications.cancelNotification
 import com.infomaniak.core.notifications.createNotificationChannels
 import com.infomaniak.core.notifications.notifyCompat
+import com.infomaniak.core.twofactorauth.back.notifications.TwoFactorAuthNotifications
 import com.infomaniak.core.common.utils.percent
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
@@ -76,6 +77,8 @@ class NotificationsUtils @Inject constructor(
             importance = NotificationManager.IMPORTANCE_HIGH
         )
         channelList.add(transferCompleteChannel)
+
+        channelList.add(TwoFactorAuthNotifications.channel())
 
         createNotificationChannels(channelList)
     }
