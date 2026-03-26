@@ -43,6 +43,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.inappupdate.ui.composable.UpdateRequiredScreen
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
+import com.infomaniak.core.twofactorauth.back.TwoFactorAuthManager
+import com.infomaniak.core.twofactorauth.front.TwoFactorAuthApprovalAutoManagedBottomSheet
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.data.DeepLinkType
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -59,6 +61,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.twofactorauth.twoFactorAuthManager
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
 import com.infomaniak.swisstransfer.ui.utils.wrapWithLocaleFallback
@@ -75,6 +78,9 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
 
     @Inject
     lateinit var transferManager: TransferManager
+
+    @Inject
+    lateinit var twoFactorAuthManager: TwoFactorAuthManager
 
     @Inject
     lateinit var accountUtils: AccountUtils
@@ -129,6 +135,8 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             }
 
             setContent {
+                TwoFactorAuthApprovalAutoManagedBottomSheet(twoFactorAuthManager)
+
                 val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
                 CompositionLocalProvider(LocalUser provides user) {
                     val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)

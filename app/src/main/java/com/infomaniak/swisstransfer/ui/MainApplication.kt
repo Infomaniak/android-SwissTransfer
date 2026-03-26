@@ -24,6 +24,7 @@ import com.infomaniak.core.common.AssociatedUserDataCleanable
 import com.infomaniak.core.crossapplogin.back.internal.deviceinfo.DeviceInfoUpdateManager
 import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.network.NetworkConfiguration
+import com.infomaniak.core.notifications.registration.NotificationsRegistrationManager
 import com.infomaniak.core.sentry.SentryConfig.configureSentry
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
@@ -31,6 +32,9 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.services.DeviceInfoUpdateWorker
+import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker
+import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker.Companion.getNotificationTopicsFlow
+import com.infomaniak.swisstransfer.twofactorauth.initTwoFactorAuthManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -100,7 +104,7 @@ class MainApplication : Application(), Configuration.Provider {
 
         configureSentry()
 
-        userDataCleanableList = listOf<AssociatedUserDataCleanable>(DeviceInfoUpdateManager)
+        userDataCleanableList = listOf(DeviceInfoUpdateManager, NotificationsRegistrationManager)
 
         notificationUtils.initNotificationsChannel()
 
@@ -124,6 +128,8 @@ class MainApplication : Application(), Configuration.Provider {
             DeviceInfoUpdateManager.scheduleWorkerOnDeviceInfoUpdate<DeviceInfoUpdateWorker>()
         }
 
+        registerUserNotificationsIfNeeded()
+
         MatomoSwissTransfer.addTrackingCallbackForDebugLog()
     }
 
@@ -134,6 +140,14 @@ class MainApplication : Application(), Configuration.Provider {
             appVersionCode = BuildConfig.VERSION_CODE,
             apiEnvironment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.PreProd else ApiEnvironment.Prod
         )
+    }
+
+    private fun registerUserNotificationsIfNeeded() {
+        applicationScope.launch {
+            NotificationsRegistrationManager.scheduleWorkerOnUpdate<RegisterUserDeviceWorker>(
+                latestNotificationTopics = { _ -> getNotificationTopicsFlow() }
+            )
+        }
     }
 
     /**

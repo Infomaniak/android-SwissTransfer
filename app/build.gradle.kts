@@ -204,10 +204,13 @@ dependencies {
     implementation(core.infomaniak.core.network)
     implementation(core.infomaniak.core.network.ktor)
     implementation(core.infomaniak.core.notifications)
+    implementation(core.infomaniak.core.notifications.registration)
     implementation(core.infomaniak.core.onboarding)
     implementation(core.infomaniak.core.sentry)
     implementation(core.infomaniak.core.sharedvalues)
     implementation(core.infomaniak.core.thumbnails)
+    implementation(core.infomaniak.core.twofactorauth.back)
+    implementation(core.infomaniak.core.twofactorauth.front)
     implementation(core.infomaniak.core.ui.compose.accountbottomsheet)
     implementation(core.infomaniak.core.ui.compose.basicbutton)
     implementation(core.infomaniak.core.ui.compose.basics)
@@ -271,6 +274,7 @@ dependencies {
     implementation(core.splitties.toast)
     implementation(core.splitties.preferences)
     implementation(core.okhttp)
+    implementation(core.firebase.messaging.ktx)
 
     // Test
     testImplementation(core.junit)
