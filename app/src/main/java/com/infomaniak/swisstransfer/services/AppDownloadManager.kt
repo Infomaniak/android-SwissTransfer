@@ -103,7 +103,6 @@ class AppDownloadManager @Inject constructor(
         fileUi: FileUi,
         onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ) {
-        val mimeType = fileUi.mimeType ?: "application/octet-stream"
         val path = transferUi.computeDownloadPathWith(fileUi)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -111,7 +110,6 @@ class AppDownloadManager @Inject constructor(
                 url = downloadUrl,
                 fileUi = fileUi,
                 path = path,
-                mimeType = mimeType,
                 onDownload = onDownload,
             )
         } else {
@@ -129,14 +127,14 @@ class AppDownloadManager @Inject constructor(
         url: String,
         fileUi: FileUi,
         path: String,
-        mimeType: String,
         onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ): Uri? = withContext(Dispatchers.IO) {
         val resolver = appContext.contentResolver
 
+        val mimeType = fileUi.mimeType?.takeIf { it.isNotEmpty() }
         val contentValues = ContentValues().apply {
             put(MediaStore.Downloads.DISPLAY_NAME, fileUi.fileName)
-            // put(MediaStore.Downloads.MIME_TYPE, mimeType)
+            if (mimeType != null) put(MediaStore.Downloads.MIME_TYPE, fileUi.mimeType)
             put(MediaStore.Downloads.IS_PENDING, 1)
             put(MediaStore.Downloads.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/$path")
         }
