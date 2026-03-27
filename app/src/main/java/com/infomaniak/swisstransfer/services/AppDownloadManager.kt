@@ -143,7 +143,7 @@ class AppDownloadManager @Inject constructor(
         val itemUri = resolver.insert(collection, contentValues) ?: return@withContext null
 
         return@withContext runCatching {
-            resolver.openFileDescriptor(itemUri, "rwt")?.use { pfd ->
+            resolver.openFileDescriptor(itemUri, "wt")?.use { pfd ->
                 FileOutputStream(pfd.fileDescriptor).use { outputStream ->
                     downloadFile(url, outputStream, onDownload)
                 }
