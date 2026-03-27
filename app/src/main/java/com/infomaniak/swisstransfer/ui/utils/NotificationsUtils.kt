@@ -24,12 +24,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.infomaniak.core.common.utils.percent
 import com.infomaniak.core.notifications.buildNotification
 import com.infomaniak.core.notifications.buildNotificationChannel
 import com.infomaniak.core.notifications.cancelNotification
 import com.infomaniak.core.notifications.createNotificationChannels
 import com.infomaniak.core.notifications.notifyCompat
-import com.infomaniak.core.common.utils.percent
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
@@ -76,6 +76,13 @@ class NotificationsUtils @Inject constructor(
             importance = NotificationManager.IMPORTANCE_HIGH
         )
         channelList.add(transferCompleteChannel)
+
+        val downloadChannel = buildNotificationChannel(
+            channelId = ChannelIds.downloadChannelId,
+            name = "Download Notifications",
+            importance = NotificationManager.IMPORTANCE_DEFAULT,
+        )
+        channelList.add(downloadChannel)
 
         createNotificationChannels(channelList)
     }
@@ -155,6 +162,24 @@ class NotificationsUtils @Inject constructor(
         ).build()
     }
 
+    fun buildDownloadProgressNotification(title: String, percent: Int, indeterminate: Boolean): Notification {
+        return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
+            .setContentTitle(title)
+            .setContentText("$percent%")
+            .setProgress(100, percent, indeterminate)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setSmallIcon(android.R.drawable.stat_sys_download)
+            .build()
+    }
+
+    fun buildDownloadNotification(title: String): Notification {
+        return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
+            .setContentTitle(title)
+            .setContentText("Download complete")
+            .setSmallIcon(android.R.drawable.stat_sys_download_done)
+            .build()
+    }
+
     private fun buildUploadProgressNotification(
         title: String,
         description: String? = null,
@@ -210,6 +235,7 @@ class NotificationsUtils @Inject constructor(
 
     private object ChannelIds {
         val ongoingUploads = appCtx.getString(R.string.notifications_upload_channel_id)
+        val downloadChannelId = "download_channel"
         val transferDraft = "transfer_draft"
         val transferComplete = "transfer_complete"
     }
