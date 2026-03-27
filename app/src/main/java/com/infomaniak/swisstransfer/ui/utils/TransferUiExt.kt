@@ -21,6 +21,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.common.utils.FORMAT_DATE_TITLE
 import com.infomaniak.core.common.utils.FORMAT_HOUR_MINUTES
 import com.infomaniak.core.common.utils.endOfTheDay
 import com.infomaniak.core.common.utils.format
@@ -83,6 +84,13 @@ val TransferUi.isExpired: Boolean
         @OptIn(ExperimentalTime::class)
         val now = Clock.System.now().epochSeconds.toDateFromSeconds()
         return expiry.before(now) || downloadLeft <= 0
+    }
+
+val TransferUi.displayTitle: String
+    get() {
+        val createdDate = createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_TITLE)
+        val title = title ?: createdDate
+        return title
     }
 
 @Composable
