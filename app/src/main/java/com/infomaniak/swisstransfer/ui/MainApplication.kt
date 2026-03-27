@@ -33,7 +33,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.services.DeviceInfoUpdateWorker
 import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker
-import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker.Companion.getNotificationTopicsFlow
+import com.infomaniak.swisstransfer.services.RegisterUserDeviceWorker.Companion.notificationTopicsFlow
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -140,7 +140,7 @@ class MainApplication : Application(), Configuration.Provider {
     private fun registerUserNotificationsIfNeeded() {
         applicationScope.launch {
             NotificationsRegistrationManager.scheduleWorkerOnUpdate<RegisterUserDeviceWorker>(
-                latestNotificationTopics = { _ -> getNotificationTopicsFlow() }
+                latestNotificationTopics = { _ -> notificationTopicsFlow }
             )
         }
     }

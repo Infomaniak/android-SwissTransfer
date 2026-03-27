@@ -48,7 +48,7 @@ class RegisterUserDeviceWorker @AssistedInject constructor(
     }
 
     companion object {
-        fun getNotificationTopicsFlow(): Flow<List<String>> = notificationManager
+        val notificationTopicsFlow: Flow<List<String>> = notificationManager
             .isChannelEnabledFlow(TwoFactorAuthNotifications.CHANNEL_ID)
             .map(::getNotificationTopics)
     }
