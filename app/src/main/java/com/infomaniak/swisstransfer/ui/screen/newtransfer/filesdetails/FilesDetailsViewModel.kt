@@ -25,6 +25,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
@@ -36,6 +37,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FilesDetailsViewModel @Inject constructor(
+    private val downloadWorkerScheduler: DownloadWorker.Scheduler,
     private val fileManager: FileManager,
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
@@ -62,6 +64,7 @@ class FilesDetailsViewModel @Inject constructor(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
+        downloadWorkerScheduler= downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
         targetFile = targetFile,
