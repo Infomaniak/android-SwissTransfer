@@ -56,6 +56,6 @@ class SwissTransferFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        private const val TAG = "SwissTransferFirebaseMe"
+        private const val TAG = "SwissTransferFirebaseMessagingService"
     }
 }
