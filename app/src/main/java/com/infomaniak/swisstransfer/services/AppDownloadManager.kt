@@ -103,7 +103,7 @@ class AppDownloadManager @Inject constructor(
         fileUi: FileUi,
         onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ) {
-        val path = transferUi.computeDownloadPathWith(fileUi)
+        val path = transferUi.computeFolderDownloadPathWith(fileUi)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             downloadToPublicDownloads(
@@ -209,8 +209,11 @@ class AppDownloadManager @Inject constructor(
         private const val DEFAULT_BUFFER_SIZE: Long = 8 * 1024
         const val ROOT_FOLDER_NAME = "SwissTransfer"
 
-        fun TransferUi.computeDownloadPathWith(fileUi: FileUi): String {
-            return "$ROOT_FOLDER_NAME/${this.displayTitle}${fileUi.path?.substringBeforeLast("/") ?: ""}"
+        fun TransferUi.computeFolderDownloadPathWith(fileUi: FileUi): String {
+            val filePath = fileUi.path?.takeIf { it.contains("/") }?.let {
+                if (it.startsWith("/")) it.substringAfter("/") else it
+            }
+            return "$ROOT_FOLDER_NAME/${this.displayTitle}/${filePath?.substringBeforeLast("/") ?: ""}"
         }
 
         suspend fun uriFor(transferUi: TransferUi, fileUi: FileUi): Uri? = withContext(Dispatchers.IO) {
@@ -227,7 +230,7 @@ class AppDownloadManager @Inject constructor(
         @RequiresApi(Build.VERSION_CODES.Q)
         private fun uriForAboveApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
             val contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
-            val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/${transferUi.computeDownloadPathWith(fileUi)}"
+            val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/${transferUi.computeFolderDownloadPathWith(fileUi)}"
             val selection = "${MediaStore.DownloadColumns.RELATIVE_PATH}=? AND ${MediaStore.DownloadColumns.DISPLAY_NAME}=?" +
                     " AND ${MediaStore.DownloadColumns.IS_PENDING}=0"
             val selectionArgs = arrayOf(relativePath, fileUi.fileName)
@@ -245,7 +248,7 @@ class AppDownloadManager @Inject constructor(
 
         private fun uriForUnderApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
             val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val path = "${ROOT_FOLDER_NAME}/${transferUi.computeDownloadPathWith(fileUi)}"
+            val path = "${ROOT_FOLDER_NAME}/${transferUi.computeFolderDownloadPathWith(fileUi)}"
             val file = File(downloadsDir, "$path/${fileUi.fileName}")
             return if (file.exists()) Uri.fromFile(file) else null
         }
