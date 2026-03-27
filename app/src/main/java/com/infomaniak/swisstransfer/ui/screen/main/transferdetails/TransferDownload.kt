@@ -103,7 +103,6 @@ suspend fun handleTransferDownload(
             else -> downloadManager.downloadStatusFlow(id)
         }.stateIn(scope = this)
 
-
         raceOf(
             { ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow, supportsPreview = targetFile?.hasPreview == true) },
             { awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow, transfer, targetFile) },
