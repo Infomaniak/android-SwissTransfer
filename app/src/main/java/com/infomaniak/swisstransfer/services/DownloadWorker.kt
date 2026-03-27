@@ -109,7 +109,7 @@ class DownloadWorker @AssistedInject constructor(
 
                 }
                 else -> {
-                    val title = "Downloading transfer ${transferUi.title}"
+                    val title = "transfer ${transferUi.displayTitle}"
                     setForegroundAsync(getForegroundInfoForDownload(title, bytesSent = 0, totalBytes = 0))
 
                     appDownloadManager.downloadTransferToPublicDownload(transferUi) { bytesSent, contentLength ->
