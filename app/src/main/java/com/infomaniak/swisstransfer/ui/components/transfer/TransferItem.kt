@@ -55,6 +55,7 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
+import com.infomaniak.swisstransfer.ui.utils.displayTitle
 import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -93,7 +94,7 @@ fun TransferItem(
             Column(modifier = Modifier.weight(1.0f)) {
 
                 Text(
-                    text = transfer.title ?: createdDate,
+                    text = transfer.displayTitle,
                     style = SwissTransferTheme.typography.bodyMedium,
                     color = SwissTransferTheme.colors.primaryTextColor,
                     maxLines = 1,
