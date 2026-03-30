@@ -179,7 +179,6 @@ class DownloadWorker @AssistedInject constructor(
         fun downloadStatusFlow(transferId: String, folderId: String?): Flow<DownloadStatus> {
             val workQuery = WorkQuery.Builder
                 .fromUniqueWorkNames(listOf(uniqueWorkName(transferId, folderId)))
-                .addStates(listOf(WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED, WorkInfo.State.RUNNING))
                 .build()
 
             return workManager.getWorkInfosFlow(workQuery).transform {
