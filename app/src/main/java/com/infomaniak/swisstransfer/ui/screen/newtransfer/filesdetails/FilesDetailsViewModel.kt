@@ -52,7 +52,12 @@ class FilesDetailsViewModel @Inject constructor(
     fun transferFlow(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
 
     fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.previewUriForFile(transfer = transfer, file = file, thumbnailsLocalStorage)
+        return transferManager.previewUriForFile(
+            transfer = transfer,
+            file = file,
+            downloadWorkerScheduler = downloadWorkerScheduler,
+            thumbnailsLocalStorage = thumbnailsLocalStorage
+        )
     }
 
     suspend fun handleTransferDownload(
@@ -64,7 +69,7 @@ class FilesDetailsViewModel @Inject constructor(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
-        downloadWorkerScheduler= downloadWorkerScheduler,
+        downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
         targetFile = targetFile,

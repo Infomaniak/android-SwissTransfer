@@ -25,7 +25,10 @@ import com.infomaniak.core.common.uriFor
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.services.AppDownloadManager
+import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.isV2
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +41,7 @@ import splitties.systemservices.downloadManager
 fun TransferManager.previewUriForFile(
     transfer: TransferUi,
     file: FileUi,
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
     thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ): Flow<Uri?> = downloadManagerId(
     transferManager = this,
@@ -53,13 +57,23 @@ fun TransferManager.previewUriForFile(
         emit(null)
         return@transformLatest
     }
-    val uriFlow = downloadManager.downloadStatusFlow(uniqueDownloadId).transformLatest { status ->
+    val downloadStatusFlow = when {
+        transfer.isV2() -> downloadWorkerScheduler.downloadStatusFlow(
+            transferId = transfer.uuid,
+            folderId = file.uid,
+        )
+        else -> downloadManager.downloadStatusFlow(uniqueDownloadId)
+    }
+    val uriFlow = downloadStatusFlow.transformLatest { status ->
         if (status !is DownloadStatus.Complete) {
             emit(null)
             awaitCancellation()
         }
 
-        val uri = downloadManager.uriFor(uniqueDownloadId)
+        val uri = when {
+            transfer.isV2() -> AppDownloadManager.uriFor(transfer, file)
+            else -> downloadManager.uriFor(uniqueDownloadId)
+        }
 
         file.mimeType?.let { mimeType ->
             thumbnailsLocalStorage.generateThumbnailFor(

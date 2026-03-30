@@ -180,7 +180,7 @@ class TransferDetailsViewModel @Inject constructor(
     )
 
     fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.previewUriForFile(transfer, file, thumbnailsLocalStorage)
+        return transferManager.previewUriForFile(transfer, file, downloadWorkerScheduler, thumbnailsLocalStorage)
     }
 
     @OptIn(UnreliableToastApi::class)
