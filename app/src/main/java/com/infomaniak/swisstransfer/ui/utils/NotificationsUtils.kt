@@ -164,19 +164,25 @@ class NotificationsUtils @Inject constructor(
 
     fun buildDownloadProgressNotification(title: String, percent: Int, indeterminate: Boolean): Notification {
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
+            .setTicker(title)
             .setContentTitle(title)
             .setContentText("$percent%")
             .setProgress(100, percent, indeterminate)
+            .setOngoing(true)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setSmallIcon(android.R.drawable.stat_sys_download)
+            .setColor(notificationIconColor)
             .build()
     }
 
     fun buildDownloadNotification(title: String): Notification {
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
+            .setTicker(title)
             .setContentTitle(title)
             .setContentText("Download complete")
-            .setSmallIcon(android.R.drawable.stat_sys_download_done)
+            .setSmallIcon(defaultSmallIcon)
+            .setColor(notificationIconColor)
+            .setAutoCancel(true)
             .build()
     }
 
