@@ -79,7 +79,7 @@ class NotificationsUtils @Inject constructor(
 
         val downloadChannel = buildNotificationChannel(
             channelId = ChannelIds.downloadChannelId,
-            name = "Download Notifications",
+            name = getString(R.string.notificationsDownloadChannelName),
             importance = NotificationManager.IMPORTANCE_DEFAULT,
         )
         channelList.add(downloadChannel)
@@ -179,7 +179,7 @@ class NotificationsUtils @Inject constructor(
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
             .setTicker(title)
             .setContentTitle(title)
-            .setContentText("Download complete")
+            .setContentText(appContext.getString(R.string.notificationDownloadSuccessNotificationTitle))
             .setSmallIcon(defaultSmallIcon)
             .setColor(notificationIconColor)
             .setAutoCancel(true)
