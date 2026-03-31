@@ -28,6 +28,7 @@
     <string name="buttonDownloaded">Lastet ned</string>
     <string name="buttonDownloading">Laster ned</string>
     <string name="buttonEditTransfer">Rediger overføringen min</string>
+    <string name="buttonFeedback">Tilbakemelding</string>
     <string name="buttonFinished">Ferdig</string>
     <string name="buttonOpenMailApp">Åpne e-postappen</string>
     <string name="buttonShare">Del</string>
@@ -77,6 +78,7 @@
     <string name="noTransferReceivedTitle">Ingen mottatte overføringer</string>
     <string name="noTransferSelectedDescription">Velg en overføring eller opprett en ny.</string>
     <string name="noTransferSelectedTitle">Ingen overføringer å vise</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Nedlasting fullført</string>
     <string name="notificationTransferDraftDescription">Fortsett der du slapp</string>
     <string name="notificationTransferDraftTitle">Ventende overføring</string>
     <string name="notificationUploadFailureDescription">Det oppstod et problem, prøv igjen</string>
@@ -87,6 +89,7 @@
     <string name="notificationUploadSuccessTitle">Overføring fullført</string>
     <string name="notificationUsageDescription">Varsler hjelper deg med å spore fremdriften for overføringer og nedlastinger som er fullført. Appen fungerer normalt selv om du velger å ikke aktivere dem.</string>
     <string name="notificationUsageTitle">Tillat varsler?</string>
+    <string name="notificationsDownloadChannelName">Nedlastingsvarsler</string>
     <string name="notificationsUploadChannelName">Opplastingsvarsler</string>
     <string name="onboardingExpirationSubtitleArgument">30 dager.</string>
     <string name="onboardingExpirationSubtitleTemplate">Del filene dine via e-post, lenke eller QR-kode. Lenkene dine forblir aktive i %s</string>

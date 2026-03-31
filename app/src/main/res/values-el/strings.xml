@@ -28,6 +28,7 @@
     <string name="buttonDownloaded">Ελήφθη</string>
     <string name="buttonDownloading">Λήψη</string>
     <string name="buttonEditTransfer">Επεξεργασία της μεταφοράς μου</string>
+    <string name="buttonFeedback">Σχόλια</string>
     <string name="buttonFinished">Τέλος</string>
     <string name="buttonOpenMailApp">Άνοιγμα εφαρμογής email</string>
     <string name="buttonShare">Κοινοποίηση</string>
@@ -77,6 +78,7 @@
     <string name="noTransferReceivedTitle">Δεν ελήφθησαν μεταφορές</string>
     <string name="noTransferSelectedDescription">Επίλεξε μια μεταφορά ή δημιούργησε μια νέα.</string>
     <string name="noTransferSelectedTitle">Δεν υπάρχουν μεταφορές για εμφάνιση</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Η λήψη ολοκληρώθηκε</string>
     <string name="notificationTransferDraftDescription">Συνέχισε από εκεί που σταμάτησες</string>
     <string name="notificationTransferDraftTitle">Εκκρεμής μεταφορά</string>
     <string name="notificationUploadFailureDescription">Παρουσιάστηκε πρόβλημα, δοκίμασε ξανά</string>
@@ -87,6 +89,7 @@
     <string name="notificationUploadSuccessTitle">Η μεταφορά ολοκληρώθηκε</string>
     <string name="notificationUsageDescription">Οι ειδοποιήσεις σάς βοηθούν να παρακολουθείτε την πρόοδο των μεταφορών και την ολοκλήρωση των λήψεων. Η εφαρμογή λειτουργεί κανονικά ακόμα και αν επιλέξετε να μην τις ενεργοποιήσετε.</string>
     <string name="notificationUsageTitle">Να επιτρέπονται οι ειδοποιήσεις;</string>
+    <string name="notificationsDownloadChannelName">Ειδοποιήσεις λήψεων</string>
     <string name="notificationsUploadChannelName">Ειδοποιήσεις μεταφόρτωσης</string>
     <string name="onboardingExpirationSubtitleArgument">30 ημέρες.</string>
     <string name="onboardingExpirationSubtitleTemplate">Μοιράσου τα αρχεία σου μέσω email, συνδέσμου ή κωδικού QR. Οι σύνδεσμοί σου παραμένουν ενεργοί για %s</string>

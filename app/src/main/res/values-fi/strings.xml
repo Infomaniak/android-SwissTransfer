@@ -28,6 +28,7 @@
     <string name="buttonDownloaded">Ladattu</string>
     <string name="buttonDownloading">Ladataan</string>
     <string name="buttonEditTransfer">Muokkaa siirtoani</string>
+    <string name="buttonFeedback">Palaute</string>
     <string name="buttonFinished">Valmis</string>
     <string name="buttonOpenMailApp">Avaa sähköpostisovellus</string>
     <string name="buttonShare">Jaa</string>
@@ -77,6 +78,7 @@
     <string name="noTransferReceivedTitle">Ei vastaanotettuja siirtoja</string>
     <string name="noTransferSelectedDescription">Valitse siirto tai luo uusi.</string>
     <string name="noTransferSelectedTitle">Ei näytettäviä siirtoja</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Lataus valmis</string>
     <string name="notificationTransferDraftDescription">Jatka siitä mihin jäit</string>
     <string name="notificationTransferDraftTitle">Odottava siirto</string>
     <string name="notificationUploadFailureDescription">Tapahtui ongelma, yritä uudelleen</string>
@@ -87,6 +89,7 @@
     <string name="notificationUploadSuccessTitle">Siirto valmis</string>
     <string name="notificationUsageDescription">Ilmoitukset auttavat sinua seuraamaan siirtojen edistymistä ja latausten valmistumista. Sovellus toimii normaalisti, vaikka et ottaisi niitä käyttöön.</string>
     <string name="notificationUsageTitle">Salli ilmoitukset?</string>
+    <string name="notificationsDownloadChannelName">Latausilmoitukset</string>
     <string name="notificationsUploadChannelName">Lähetyksen ilmoitukset</string>
     <string name="onboardingExpirationSubtitleArgument">30 päivää.</string>
     <string name="onboardingExpirationSubtitleTemplate">Jaa tiedostosi sähköpostitse, linkillä tai QR-koodilla. Linkkisi pysyvät aktiivisina %s</string>

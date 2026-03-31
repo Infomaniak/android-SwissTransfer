@@ -28,6 +28,7 @@
     <string name="buttonDownloaded">Pobrano</string>
     <string name="buttonDownloading">Pobieranie</string>
     <string name="buttonEditTransfer">Edytuj mój transfer</string>
+    <string name="buttonFeedback">Opinia</string>
     <string name="buttonFinished">Zakończ</string>
     <string name="buttonOpenMailApp">Otwórz aplikację pocztową</string>
     <string name="buttonShare">Udostępnij</string>
@@ -79,6 +80,7 @@
     <string name="noTransferReceivedTitle">Brak otrzymanych transferów</string>
     <string name="noTransferSelectedDescription">Wybierz transfer lub utwórz nowy.</string>
     <string name="noTransferSelectedTitle">Brak transferów do wyświetlenia</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Pobieranie zakończone</string>
     <string name="notificationTransferDraftDescription">Kontynuuj od miejsca, w którym skończyłeś</string>
     <string name="notificationTransferDraftTitle">Oczekujący transfer</string>
     <string name="notificationUploadFailureDescription">Wystąpił problem, spróbuj ponownie</string>
@@ -89,6 +91,7 @@
     <string name="notificationUploadSuccessTitle">Transfer zakończony</string>
     <string name="notificationUsageDescription">Powiadomienia pomagają śledzić postęp transferów i ukończenie pobierania. Aplikacja działa normalnie, nawet jeśli zdecydujesz się ich nie włączać.</string>
     <string name="notificationUsageTitle">Zezwolić na powiadomienia?</string>
+    <string name="notificationsDownloadChannelName">Powiadomienia o pobieraniu</string>
     <string name="notificationsUploadChannelName">Powiadomienia o przesyłaniu</string>
     <string name="onboardingExpirationSubtitleArgument">30 dni.</string>
     <string name="onboardingExpirationSubtitleTemplate">Udostępniaj pliki przez e-mail, link lub kod QR. Twoje linki pozostają aktywne przez %s</string>

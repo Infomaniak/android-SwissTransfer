@@ -28,6 +28,7 @@
     <string name="buttonDownloaded">Descargado</string>
     <string name="buttonDownloading">Descargar</string>
     <string name="buttonEditTransfer">Editar mi transferencia</string>
+    <string name="buttonFeedback">Comentarios</string>
     <string name="buttonFinished">Acabado</string>
     <string name="buttonOpenMailApp">Abrir la aplicación de correo</string>
     <string name="buttonShare">Compartir</string>
@@ -77,6 +78,7 @@
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
     <string name="noTransferSelectedDescription">Selecciona una transferencia o crea una nueva.</string>
     <string name="noTransferSelectedTitle">No hay transferencias que mostrar</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Descarga completa</string>
     <string name="notificationTransferDraftDescription">Continúa donde lo dejaste</string>
     <string name="notificationTransferDraftTitle">Transferencia pendiente</string>
     <string name="notificationUploadFailureDescription">Se ha producido un problema, inténtelo de nuevo</string>
@@ -87,6 +89,7 @@
     <string name="notificationUploadSuccessTitle">Transferencia completada</string>
     <string name="notificationUsageDescription">Las notificaciones te ayudan a seguir el progreso de las transferencias y la finalización de las descargas. La aplicación funciona con normalidad aunque decidas no activarlas.</string>
     <string name="notificationUsageTitle">¿Permitir notificaciones?</string>
+    <string name="notificationsDownloadChannelName">Notificaciones de descargas</string>
     <string name="notificationsUploadChannelName">Notificaciones de carga</string>
     <string name="onboardingExpirationSubtitleArgument">30 días.</string>
     <string name="onboardingExpirationSubtitleTemplate">Comparte tus archivos por correo, enlace o código QR. Tus enlaces estarán activos durante %s</string>

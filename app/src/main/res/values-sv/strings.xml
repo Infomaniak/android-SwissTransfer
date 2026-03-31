@@ -28,6 +28,7 @@
     <string name="buttonDownloaded">Nedladdad</string>
     <string name="buttonDownloading">Laddar ner</string>
     <string name="buttonEditTransfer">Redigera min överföring</string>
+    <string name="buttonFeedback">Feedback</string>
     <string name="buttonFinished">Klar</string>
     <string name="buttonOpenMailApp">Öppna e-postappen</string>
     <string name="buttonShare">Dela</string>
@@ -77,6 +78,7 @@
     <string name="noTransferReceivedTitle">Inga mottagna överföringar</string>
     <string name="noTransferSelectedDescription">Välj en överföring eller skapa en ny.</string>
     <string name="noTransferSelectedTitle">Inga överföringar att visa</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Nedladdning slutförd</string>
     <string name="notificationTransferDraftDescription">Fortsätt där du slutade</string>
     <string name="notificationTransferDraftTitle">Väntande överföring</string>
     <string name="notificationUploadFailureDescription">Ett problem uppstod, försök igen</string>
@@ -87,6 +89,7 @@
     <string name="notificationUploadSuccessTitle">Överföring slutförd</string>
     <string name="notificationUsageDescription">Aviseringar hjälper dig att spåra överföringarnas förlopp och slutförda nedladdningar. Appen fungerar normalt även om du väljer att inte aktivera dem.</string>
     <string name="notificationUsageTitle">Tillåt aviseringar?</string>
+    <string name="notificationsDownloadChannelName">Nedladdningsaviseringar</string>
     <string name="notificationsUploadChannelName">Uppladdningsaviseringar</string>
     <string name="onboardingExpirationSubtitleArgument">30 dagar.</string>
     <string name="onboardingExpirationSubtitleTemplate">Dela dina filer via e-post, länk eller QR-kod. Dina länkar förblir aktiva i %s</string>
