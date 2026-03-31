@@ -157,6 +157,17 @@ class DownloadWorker @AssistedInject constructor(
         }
     }
 
+    private fun hasAvailableSpace(requiredBytes: Long): Boolean {
+        val path = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> applicationContext.getExternalFilesDir(null)?.path ?: return true
+            else -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
+        }
+        val availableBytes = StatFs(path).availableBytes
+        // Add a safety margin of 10% extra space
+        val requiredWithMargin = (requiredBytes * 110) / 100
+        return availableBytes >= requiredWithMargin
+    }
+
     @Singleton
     class Scheduler @Inject constructor(@param:ApplicationContext private val appContext: Context) {
         private val workManager: WorkManager by lazy { WorkManager.getInstance(appContext) }
