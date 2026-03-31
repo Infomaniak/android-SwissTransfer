@@ -179,7 +179,10 @@ private fun currentOrNewDownloadManagerId(
             direction = direction,
         ) ?: return@repeatWhileActive
     }
-}.distinctUntilChanged()
+}.distinctUntilChanged { old, new ->
+    val isApiV2Folder = transfer.isV2() && targetFile?.isFolder != false
+    if (isApiV2Folder) false else old == new
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun awaitFileDeletion(
