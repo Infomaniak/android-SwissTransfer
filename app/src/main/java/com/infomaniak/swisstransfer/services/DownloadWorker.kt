@@ -20,6 +20,8 @@ package com.infomaniak.swisstransfer.services
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.os.Environment
+import android.os.StatFs
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -34,6 +36,8 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.infomaniak.core.common.DownloadStatus
 import com.infomaniak.core.common.UniqueDownloadId
+import com.infomaniak.core.common.utils.enumValueOfOrNull
+import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -93,7 +97,11 @@ class DownloadWorker @AssistedInject constructor(
                         SentryLog.wtf(TAG, "Finish with failure because folderPath is null")
                         return Result.failure()
                     }
-                    val title = "Downloading folder $folderPath"
+                    if (hasAvailableSpace(folder.fileSize).not()) {
+                        SentryLog.w(TAG, "Finish with failure because not enough space to download folder")
+                        return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
+                    }
+                    val title = folder.fileName
                     setForegroundAsync(getForegroundInfoForDownload(title, bytesSent = 0, totalBytes = 0))
 
                     appDownloadManager.downloadFolderToPublicDownload(
@@ -104,12 +112,16 @@ class DownloadWorker @AssistedInject constructor(
                         setForegroundAsync(getForegroundInfoForDownload(title, bytesSent, totalBytes = contentLength))
                     }
 
-                    val notification = notificationsUtils.buildDownloadNotification("Folder ${folder.fileName}")
+                    val notification = notificationsUtils.buildDownloadNotification(title)
                     notificationManager.notify(uniqueWorkName(transferId, folderId), 1, notification)
 
                 }
                 else -> {
-                    val title = "transfer ${transferUi.displayTitle}"
+                    if (hasAvailableSpace(transferUi.sizeUploaded).not()) {
+                        SentryLog.w(TAG, "Finish with failure because not enough space to download transfer")
+                        return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
+                    }
+                    val title = transferUi.displayTitle
                     setForegroundAsync(getForegroundInfoForDownload(title, bytesSent = 0, totalBytes = 0))
 
                     appDownloadManager.downloadTransferToPublicDownload(transferUi) { bytesSent, contentLength ->
@@ -118,7 +130,7 @@ class DownloadWorker @AssistedInject constructor(
                         )
                     }
 
-                    val notification = notificationsUtils.buildDownloadNotification("Folder ${transferUi.displayTitle}")
+                    val notification = notificationsUtils.buildDownloadNotification(title)
                     notificationManager.notify(uniqueWorkName(transferId, null), 1, notification)
                 }
             }
@@ -219,7 +231,11 @@ class DownloadWorker @AssistedInject constructor(
                 WorkInfo.State.BLOCKED -> DownloadStatus.Pending
                 WorkInfo.State.RUNNING -> DownloadStatus.InProgress(downloadedBytes, totalBytes)
                 WorkInfo.State.SUCCEEDED -> DownloadStatus.Complete
-                WorkInfo.State.FAILED -> DownloadStatus.Failed(DownloadStatus.Failed.Reason.UnknownError)
+                WorkInfo.State.FAILED -> {
+                    val failureValue = outputData.getString(FAILURE_REASON_KEY)
+                    val reason = enumValueOfOrNull<FailureReason>(failureValue)?.toDownloadStatus()
+                    DownloadStatus.Failed(reason ?: DownloadStatus.Failed.Reason.UnknownError)
+                }
                 WorkInfo.State.CANCELLED -> DownloadStatus.Failed(DownloadStatus.Failed.Reason.CannotResume)
             }
         }
@@ -231,12 +247,22 @@ class DownloadWorker @AssistedInject constructor(
         fun newId(): Int = nextId.fetchAndIncrement()
     }
 
+    private enum class FailureReason {
+        InsufficientAvailableSpace;
+
+        fun toDownloadStatus() = when (this) {
+            InsufficientAvailableSpace -> DownloadStatus.Failed.LocalIssue.InsufficientSpace
+        }
+    }
+
     companion object {
         private const val TAG = "DownloadWorker"
+
         private const val TRANSFER_ID_KEY = "transferId"
         private const val FOLDER_ID_KEY = "filePath"
         private const val DOWNLOADED_BYTES_KEY = "downloaded_bytes_key"
         private const val TOTAL_SIZE_IN_BYTES_KEY = "total_size_in_bytes"
+        private const val FAILURE_REASON_KEY = "reason"
 
         private fun uniqueWorkName(transferId: String, folderId: String?): String {
             return "DownloadWorker_${transferId}_${folderId ?: "all"}"
