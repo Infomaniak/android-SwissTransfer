@@ -92,14 +92,11 @@ suspend fun handleTransferDownload(
     targetFile = targetFile,
     direction = direction,
 ).collectLatest { id ->
+    val isNeedDownloadWorker = transfer.isV2() && targetFile?.isFolder != false
+
     autoCancelScope {
-        val isApiV2 = transfer.isV2()
         val downloadStatusFlow = when {
-            isApiV2 && targetFile == null -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, folderId = null)
-            isApiV2 && targetFile?.isFolder == true -> downloadWorkerScheduler.downloadStatusFlow(
-                transferId = transfer.uuid,
-                folderId = targetFile.uid,
-            )
+            isNeedDownloadWorker -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, targetFile?.uid)
             else -> downloadManager.downloadStatusFlow(id)
         }.stateIn(scope = this)
 
@@ -109,7 +106,12 @@ suspend fun handleTransferDownload(
             { handleOpenRequests(downloadStatusFlow, id, ui, transfer, targetFile, openFile) },
         )
     }
-    downloadManager.cancelAndRemove(id)
+
+    if (isNeedDownloadWorker) {
+        downloadWorkerScheduler.cancelWork(transfer.uuid, targetFile?.uid)
+    } else {
+        downloadManager.cancelAndRemove(id)
+    }
     transferManager.writeDownloadManagerId(
         transfer = transfer,
         fileUid = targetFile?.uid,
