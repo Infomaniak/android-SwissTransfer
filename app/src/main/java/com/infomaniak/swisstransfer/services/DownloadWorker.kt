@@ -202,6 +202,10 @@ class DownloadWorker @AssistedInject constructor(
             }
         }
 
+        fun cancelWork(transferId: String, folderId: String?) {
+            workManager.cancelUniqueWork(uniqueWorkName(transferId, folderId))
+        }
+
         private fun WorkInfo.toDownloadStatus(): DownloadStatus {
             val downloadedBytes = progress.getLong(DOWNLOADED_BYTES_KEY, 0)
             val totalBytes = progress.getLong(TOTAL_SIZE_IN_BYTES_KEY, 0)
