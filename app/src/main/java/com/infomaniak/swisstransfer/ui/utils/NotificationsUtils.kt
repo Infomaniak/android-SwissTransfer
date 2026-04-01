@@ -139,6 +139,11 @@ class NotificationsUtils @Inject constructor(
         notification.post(Ids.LastUpload)
     }
 
+    fun downloadSucceeded(tag: String, title: String) {
+        val notification = buildDownloadNotification(title)
+        notificationManagerCompat.notifyCompat(tag, 1, notification)
+    }
+
     fun buildUploadFailedNotification(canRetry: Boolean): Notification {
         val contentIntent = Intent(appContext, NewTransferActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -175,7 +180,7 @@ class NotificationsUtils @Inject constructor(
             .build()
     }
 
-    fun buildDownloadNotification(title: String): Notification {
+    private fun buildDownloadNotification(title: String): Notification {
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
             .setTicker(title)
             .setContentTitle(title)

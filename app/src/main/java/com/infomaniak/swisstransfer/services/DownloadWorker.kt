@@ -50,7 +50,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transform
-import splitties.systemservices.notificationManager
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.atomics.AtomicInt
@@ -112,8 +111,7 @@ class DownloadWorker @AssistedInject constructor(
                         setForegroundAsync(getForegroundInfoForDownload(title, bytesSent, totalBytes = contentLength))
                     }
 
-                    val notification = notificationsUtils.buildDownloadNotification(title)
-                    notificationManager.notify(uniqueWorkName(transferId, folderId), 1, notification)
+                    notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferId, folderId), title)
 
                 }
                 else -> {
@@ -130,8 +128,7 @@ class DownloadWorker @AssistedInject constructor(
                         )
                     }
 
-                    val notification = notificationsUtils.buildDownloadNotification(title)
-                    notificationManager.notify(uniqueWorkName(transferId, null), 1, notification)
+                    notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferId, null), title)
                 }
             }
         }.getOrElse { exception ->
