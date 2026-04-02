@@ -61,27 +61,25 @@ class AppDownloadManager @Inject constructor(
         folderPath: String,
         onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
     ) {
-        fileManager.getFilesUnderPath(transferUi.uuid, folderPath).forEach { fileUi ->
-            val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
-            if (downloadUrl == null) {
-                SentryLog.wtf(TAG, "Finish with failure because downloadUrl is null")
-                throw FailureException()
-            }
-
-            var previousBytesSentTotal = 0L
-            downloadToPublicDownload(downloadUrl, transferUi, fileUi) { bytesSentTotal, contentLength ->
-                val bytesSent = bytesSentTotal - previousBytesSentTotal
-                onDownload(bytesSent, folder.fileSize)
-                previousBytesSentTotal = bytesSentTotal
-            }
-        }
+        val files = fileManager.getFilesUnderPath(transferUi.uuid, folderPath)
+        downloadFilesToPublicDownload(transferUi, files, folder.fileSize, onDownload)
     }
 
     suspend fun downloadTransferToPublicDownload(
         transferUi: TransferUi,
         onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
     ) {
-        fileManager.getTransferFilesOnly(transferUi.uuid).forEach { fileUi ->
+        val files = fileManager.getTransferFilesOnly(transferUi.uuid)
+        downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onDownload)
+    }
+
+    private suspend fun downloadFilesToPublicDownload(
+        transferUi: TransferUi,
+        files: List<FileUi>,
+        totalSize: Long,
+        onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
+    ) {
+        files.forEach { fileUi ->
             val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
             if (downloadUrl == null) {
                 SentryLog.wtf(TAG, "Finish with failure because downloadUrl is null")
@@ -91,7 +89,7 @@ class AppDownloadManager @Inject constructor(
             var previousBytesSentTotal = 0L
             downloadToPublicDownload(downloadUrl, transferUi, fileUi) { bytesSentTotal, contentLength ->
                 val bytesSent = bytesSentTotal - previousBytesSentTotal
-                onDownload(bytesSent, transferUi.sizeUploaded)
+                onDownload(bytesSent, totalSize)
                 previousBytesSentTotal = bytesSentTotal
             }
         }
