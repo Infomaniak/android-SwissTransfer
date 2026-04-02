@@ -42,6 +42,7 @@ import com.infomaniak.core.auth.utils.LoginFlowController
 import com.infomaniak.core.auth.utils.LoginUtils
 import com.infomaniak.core.common.observe
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
+import com.infomaniak.core.crossapplogin.back.CrossAppLoginFacade
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
 import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
@@ -141,6 +142,7 @@ class OnboardingActivity : ComponentActivity() {
         }
 
         lifecycleScope.launch {
+            @OptIn(CrossAppLoginFacade.UncheckedTokens::class)
             crossAppLoginViewModel.availableAccounts.observe(this@OnboardingActivity) { accounts ->
                 SentryLog.i(TAG, "Got ${accounts.count()} accounts from other apps")
             }
@@ -184,7 +186,7 @@ class OnboardingActivity : ComponentActivity() {
         loginResult.errorMessageIds.forEach { messageResId -> snackbarHostState.showSnackbar(getString(messageResId)) }
     }
 
-    private suspend fun loginUsers(loginResult: BaseCrossAppLoginViewModel.LoginResult, snackbarHostState: SnackbarHostState) {
+    private suspend fun loginUsers(loginResult: CrossAppLoginFacade.LoginResult, snackbarHostState: SnackbarHostState) {
         val results = LoginUtils.getLoginResultsAfterCrossApp(loginResult.tokens, this, accountUtils)
         val users = buildList {
             results.forEach { result ->
