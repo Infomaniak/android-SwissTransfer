@@ -17,7 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_PICK
+import android.net.Uri
+import android.provider.ContactsContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,8 +36,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,10 +52,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -72,6 +83,8 @@ import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.PersonsCircleAdd
 import com.infomaniak.swisstransfer.ui.previewparameter.filesPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -85,12 +98,14 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferOptionsTypes
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isApiV2
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
@@ -191,6 +206,7 @@ fun PickFilesScreen(
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
+        selectContact = pickFilesViewModel::processContactPickerResultUri,
         exitNewTransfer = { exit() },
         onSendButtonClick = {
             MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoName)
@@ -221,6 +237,7 @@ private fun PickFilesScreen(
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
+    selectContact: (Uri, Context) -> Unit,
     exitNewTransfer: () -> Unit,
     isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
@@ -258,6 +275,7 @@ private fun PickFilesScreen(
                     emailTextFieldCallbacks = emailTextFieldCallbacks,
                     transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
+                    selectContact = selectContact,
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
@@ -291,6 +309,7 @@ private fun ImportTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
+    selectContact: (Uri, Context) -> Unit,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
 
@@ -306,7 +325,9 @@ private fun ImportTextFields(
             )
         }
 
-        EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, textFieldSpacing)
+        EmailAddressesTextFields(
+            modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, textFieldSpacing, selectContact
+        )
 
         SwissTransferTextField(
             modifier = modifier,
@@ -325,7 +346,34 @@ private fun EmailAddressesTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
     textFieldSpacing: Dp,
+    selectContact: (Uri, Context) -> Unit,
 ) = with(emailTextFieldCallbacks) {
+    val context = LocalContext.current
+    val coroutine = rememberCoroutineScope()
+
+    val pickContact = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val clipData = it.data?.clipData
+
+            if (clipData != null) {
+
+                val length = clipData.itemCount
+                val result = mutableListOf<Uri>()
+                for (i in 0 until length) {
+                    selectContact(clipData.getItemAt(i).uri, context)
+                }
+            } else {
+                val data = it.data?.data ?: return@rememberLauncherForActivityResult
+            }
+
+            // if (resultUris != mutableListOf<Uri>()) {
+            //     coroutine.launch {
+            //         selectContact(resultUris, context)
+            //     }
+            // }
+        }
+    }
+
     AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
             val isAuthorError = checkEmailError(isAuthor = true)
@@ -352,8 +400,35 @@ private fun EmailAddressesTextFields(
                 onValueChange = { recipientEmail.set(it.text) },
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
+                trailingIcon =
+                    {
+                        TrailingButton(
+                            AppIcons.PersonsCircleAdd,
+                            {
+                                try {
+                                    val pickContactIntent =
+                                        Intent(ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI).apply {
+                                            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                                        }
+                                    pickContact.launch(pickContactIntent)
+                                } catch (_: ActivityNotFoundException) {
+                                    coroutine.launch {
+                                        longToast("The contact picker isn't available on your version of Android")
+                                    }
+                                }
+                            })
+                    },
             )
         }
+    }
+}
+
+@Composable
+private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        val (contentDescription, icon) = stringResource(R.string.contentDescriptionButtonHidePassword) to appIcon
+
+        Icon(icon, contentDescription, Modifier.size(Dimens.SmallIconSize))
     }
 }
 
@@ -540,6 +615,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
                 selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
                 transferOptionsCallbacks = transferOptionsCallbacks,
                 pickFiles = {},
+                selectContact = { _, _ -> },
                 exitNewTransfer = {},
                 onSendButtonClick = {},
                 isAwaitingSend = { true },
