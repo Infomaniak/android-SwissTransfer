@@ -210,7 +210,7 @@ class DownloadWorker @AssistedInject constructor(
                 .setConstraints(constraints)
                 .build()
             workManager.enqueueUniqueWork(uniqueWorkName, ExistingWorkPolicy.REPLACE, workRequest)
-            return UniqueDownloadId(999)
+            return UniqueDownloadId(DOWNLOAD_WORKER_DOWNLOAD_ID)
         }
 
         fun downloadStatusFlow(transferId: String, folderId: String?): Flow<DownloadStatus> {
@@ -275,6 +275,8 @@ class DownloadWorker @AssistedInject constructor(
         private const val DOWNLOADED_BYTES_KEY = "downloaded_bytes_key"
         private const val TOTAL_SIZE_IN_BYTES_KEY = "total_size_in_bytes"
         private const val FAILURE_REASON_KEY = "reason"
+
+        private const val DOWNLOAD_WORKER_DOWNLOAD_ID = -1L
 
         private fun uniqueWorkName(transferId: String, folderId: String?): String {
             return "DownloadWorker_${transferId}_${folderId ?: "all"}"
