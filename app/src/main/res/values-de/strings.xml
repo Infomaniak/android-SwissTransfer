@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Passwort verbergen</string>
     <string name="contentDescriptionButtonRemove">Datei entfernen</string>
     <string name="contentDescriptionButtonRemoveRecipient">%s entfernen</string>
+    <string name="contentDescriptionButtonSelectContact">Kontaktliste öffnen</string>
     <string name="contentDescriptionButtonShowPassword">Passwort anzeigen</string>
     <string name="contentDescriptionCreateNewTransferButton">Neuer Transfer</string>
     <string name="contentDescriptionViewTransferDetails">Übertragungsdetails anzeigen</string>

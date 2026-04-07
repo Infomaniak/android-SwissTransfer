@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Απόκρυψη κωδικού πρόσβασης</string>
     <string name="contentDescriptionButtonRemove">Αφαίρεση αρχείου</string>
     <string name="contentDescriptionButtonRemoveRecipient">Αφαίρεση %s</string>
+    <string name="contentDescriptionButtonSelectContact">Άνοιγμα λίστας επαφών</string>
     <string name="contentDescriptionButtonShowPassword">Εμφάνιση κωδικού πρόσβασης</string>
     <string name="contentDescriptionCreateNewTransferButton">Νέα μεταφορά</string>
     <string name="contentDescriptionViewTransferDetails">Προβολή λεπτομερειών μεταφοράς</string>
