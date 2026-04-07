@@ -22,6 +22,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Environment
 import android.os.StatFs
+import android.os.SystemClock
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -50,10 +51,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.atomics.AtomicInt
-import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.fetchAndIncrement
 import kotlin.coroutines.cancellation.CancellationException
@@ -69,7 +71,8 @@ class DownloadWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, params) {
 
     @OptIn(ExperimentalAtomicApi::class)
-    private val downloadBytes = AtomicLong(0L)
+    private var lastNotificationUpdateTimeMs = 0L
+    private val notificationUpdateMutex = Mutex()
 
     private val foregroundId by lazy { ForegroundIds.newId() }
 
@@ -101,14 +104,14 @@ class DownloadWorker @AssistedInject constructor(
                         return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
                     }
                     val title = folder.fileName
-                    setForegroundAsync(getForegroundInfoForDownload(title, bytesSent = 0, totalBytes = 0))
+                    setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
 
                     appDownloadManager.downloadFolderToPublicDownload(
                         transferUi = transferUi,
                         folder = folder,
                         folderPath = folderPath,
-                    ) { bytesSent, contentLength ->
-                        setForegroundAsync(getForegroundInfoForDownload(title, bytesSent, totalBytes = contentLength))
+                    ) { downloadedBytes, totalBytes ->
+                        updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
                     }
 
                     notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferId, folderId), title)
@@ -120,12 +123,10 @@ class DownloadWorker @AssistedInject constructor(
                         return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
                     }
                     val title = transferUi.displayTitle
-                    setForegroundAsync(getForegroundInfoForDownload(title, bytesSent = 0, totalBytes = 0))
+                    setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
 
-                    appDownloadManager.downloadTransferToPublicDownload(transferUi) { bytesSent, contentLength ->
-                        setForegroundAsync(
-                            getForegroundInfoForDownload(title = title, bytesSent = bytesSent, totalBytes = contentLength)
-                        )
+                    appDownloadManager.downloadTransferToPublicDownload(transferUi) { downloadedBytes, totalBytes ->
+                        updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
                     }
 
                     notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferId, null), title)
@@ -146,8 +147,22 @@ class DownloadWorker @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalAtomicApi::class)
-    private suspend fun getForegroundInfoForDownload(title: String, bytesSent: Long, totalBytes: Long): ForegroundInfo {
-        val downloadedBytes = downloadBytes.addAndFetch(bytesSent)
+    private suspend fun updateForegroundNotificationIfNeeded(
+        title: String,
+        downloadedBytes: Long,
+        totalBytes: Long,
+    ) {
+        notificationUpdateMutex.withLock {
+            val now = SystemClock.elapsedRealtime()
+            if (now - lastNotificationUpdateTimeMs >= 500 || downloadedBytes >= totalBytes) {
+                setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes, totalBytes))
+                lastNotificationUpdateTimeMs = now
+            }
+        }
+    }
+
+    @OptIn(ExperimentalAtomicApi::class)
+    private suspend fun getForegroundInfoForDownload(title: String, downloadedBytes: Long, totalBytes: Long): ForegroundInfo {
         val percent = if (totalBytes == 0L) 0 else downloadedBytes * 100 / totalBytes
         setProgress(workDataOf(DOWNLOADED_BYTES_KEY to downloadedBytes, TOTAL_SIZE_IN_BYTES_KEY to totalBytes))
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
