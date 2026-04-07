@@ -44,7 +44,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.io.readByteArray
 import splitties.init.appCtx
@@ -87,26 +88,28 @@ class AppDownloadManager @Inject constructor(
         onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
     ) = coroutineScope {
         val totalDownloadedBytes = AtomicLong(0L)
-        val semaphore = Semaphore(6)
+        val iterator = files.iterator()
+        val mutex = Mutex()
 
-        files.map { fileUi ->
-            val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
-            if (downloadUrl == null) {
-                SentryLog.wtf(TAG, "Finish with failure because downloadUrl is null")
-                throw FailureException()
-            }
+        suspend fun nextFile(): FileUi? = mutex.withLock { if (iterator.hasNext()) iterator.next() else null }
 
-            semaphore.acquire()
+        List(PARALLEL_DOWNLOADS_COUNT) {
             launch {
-                try {
+                while (true) {
+                    val fileUi = nextFile() ?: break
+
+                    val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
+                    if (downloadUrl == null) {
+                        SentryLog.wtf(TAG, "Finish with failure because downloadUrl is null")
+                        throw FailureException()
+                    }
+
                     var previousFileDownloadedBytes = 0L
                     downloadToPublicDownload(downloadUrl, transferUi, fileUi) { bytesSentTotal, _ ->
                         val downloadedDelta = bytesSentTotal - previousFileDownloadedBytes
                         onProgress(totalDownloadedBytes.addAndFetch(downloadedDelta), totalBytes)
                         previousFileDownloadedBytes = bytesSentTotal
                     }
-                } finally {
-                    semaphore.release()
                 }
             }
         }.joinAll()
@@ -223,6 +226,8 @@ class AppDownloadManager @Inject constructor(
         private val TAG = AppDownloadManager::javaClass.name
         private const val DEFAULT_BUFFER_SIZE: Long = 8 * 1024
         const val ROOT_FOLDER_NAME = "SwissTransfer"
+
+        private const val PARALLEL_DOWNLOADS_COUNT = 6
 
         fun TransferUi.computeFolderDownloadPathWith(fileUi: FileUi): String {
             val filePath = fileUi.path?.takeIf { it.contains("/") }?.let {
