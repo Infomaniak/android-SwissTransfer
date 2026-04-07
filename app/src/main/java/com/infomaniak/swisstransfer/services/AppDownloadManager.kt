@@ -60,17 +60,21 @@ class AppDownloadManager @Inject constructor(
         folder: FileUi,
         folderPath: String,
         onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
     ) {
         val files = fileManager.getFilesUnderPath(transferUi.uuid, folderPath)
         downloadFilesToPublicDownload(transferUi, files, folder.fileSize, onDownload)
+        downloadFilesToPublicDownload(transferUi, files, folder.fileSize, onProgress)
     }
 
     suspend fun downloadTransferToPublicDownload(
         transferUi: TransferUi,
         onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
     ) {
         val files = fileManager.getTransferFilesOnly(transferUi.uuid)
         downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onDownload)
+        downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onProgress)
     }
 
     private suspend fun downloadFilesToPublicDownload(
@@ -99,7 +103,7 @@ class AppDownloadManager @Inject constructor(
         downloadUrl: String,
         transferUi: TransferUi,
         fileUi: FileUi,
-        onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ) {
         val path = transferUi.computeFolderDownloadPathWith(fileUi)
 
@@ -108,14 +112,14 @@ class AppDownloadManager @Inject constructor(
                 url = downloadUrl,
                 fileUi = fileUi,
                 path = path,
-                onDownload = onDownload,
+                onProgress = onProgress,
             )
         } else {
             downloadToPublicDownloadsUnderApi29(
                 url = downloadUrl,
                 fileName = fileUi.fileName,
                 path = path,
-                onDownload = onDownload,
+                onProgress = onProgress,
             )
         }
     }
@@ -125,7 +129,7 @@ class AppDownloadManager @Inject constructor(
         url: String,
         fileUi: FileUi,
         path: String,
-        onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ): Uri? = withContext(Dispatchers.IO) {
         val resolver = appContext.contentResolver
 
@@ -143,7 +147,7 @@ class AppDownloadManager @Inject constructor(
         return@withContext runCatching {
             resolver.openFileDescriptor(itemUri, "wt")?.use { pfd ->
                 FileOutputStream(pfd.fileDescriptor).use { outputStream ->
-                    downloadFile(url, outputStream, onDownload)
+                    downloadFile(url, outputStream, onProgress)
                 }
             } ?: throw IllegalStateException("OutputStream not available")
 
@@ -163,7 +167,7 @@ class AppDownloadManager @Inject constructor(
         url: String,
         fileName: String,
         path: String,
-        onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ) = withContext(Dispatchers.IO) {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val file = File(downloadsDir, "$path/$fileName").also {
@@ -172,7 +176,7 @@ class AppDownloadManager @Inject constructor(
         }
         runCatching {
             file.outputStream().use { outputStream ->
-                downloadFile(url, outputStream, onDownload)
+                downloadFile(url, outputStream, onProgress)
             }
         }.onFailure {
             file.delete()
@@ -183,12 +187,12 @@ class AppDownloadManager @Inject constructor(
     private suspend fun downloadFile(
         url: String,
         output: OutputStream,
-        onDownload: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ) {
         createHttpClient(HttpClient.okHttpClient).prepareGet(url) {
             accept(ContentType.Any)
             onDownload { bytesSentTotal, contentLength ->
-                onDownload(bytesSentTotal, contentLength)
+                onProgress(bytesSentTotal, contentLength)
             }
         }.execute { response ->
             val channel = response.bodyAsChannel()
