@@ -179,9 +179,9 @@ private fun currentOrNewDownloadManagerId(
             direction = direction,
         ) ?: return@repeatWhileActive
     }
-}.distinctUntilChanged { old, new ->
-    val isApiV2Folder = transfer.isV2() && targetFile?.isFolder != false
-    if (isApiV2Folder) false else old == new
+}.apply {
+    // Since api v2 the download id of a folder is always the same (see: DownloadWork.DOWNLOAD_WORKER_DOWNLOAD_ID)
+    if (transfer.isV1() || targetFile?.isFolder == false) distinctUntilChanged()
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
