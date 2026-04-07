@@ -42,6 +42,7 @@ import io.ktor.http.ContentType
 import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -95,7 +96,7 @@ class AppDownloadManager @Inject constructor(
 
         List(PARALLEL_DOWNLOADS_COUNT) {
             launch {
-                while (true) {
+                while (isActive) {
                     val fileUi = nextFile() ?: break
 
                     val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
