@@ -106,6 +106,7 @@ import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
@@ -364,13 +365,9 @@ private fun EmailAddressesTextFields(
                 }
             } else {
                 val data = it.data?.data ?: return@rememberLauncherForActivityResult
+                selectContact(data, context)
             }
 
-            // if (resultUris != mutableListOf<Uri>()) {
-            //     coroutine.launch {
-            //         selectContact(resultUris, context)
-            //     }
-            // }
         }
     }
 
