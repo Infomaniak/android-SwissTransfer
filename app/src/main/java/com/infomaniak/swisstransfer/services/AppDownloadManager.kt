@@ -41,6 +41,10 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.ContentType
 import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.io.readByteArray
 import splitties.init.appCtx
@@ -48,6 +52,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 class AppDownloadManager @Inject constructor(
     @param:ApplicationContext private val appContext: Context,
@@ -59,44 +65,51 @@ class AppDownloadManager @Inject constructor(
         transferUi: TransferUi,
         folder: FileUi,
         folderPath: String,
-        onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
         onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
     ) {
         val files = fileManager.getFilesUnderPath(transferUi.uuid, folderPath)
-        downloadFilesToPublicDownload(transferUi, files, folder.fileSize, onDownload)
         downloadFilesToPublicDownload(transferUi, files, folder.fileSize, onProgress)
     }
 
     suspend fun downloadTransferToPublicDownload(
         transferUi: TransferUi,
-        onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
         onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
     ) {
         val files = fileManager.getTransferFilesOnly(transferUi.uuid)
-        downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onDownload)
         downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onProgress)
     }
 
+    @OptIn(ExperimentalAtomicApi::class)
     private suspend fun downloadFilesToPublicDownload(
         transferUi: TransferUi,
         files: List<FileUi>,
-        totalSize: Long,
-        onDownload: suspend (bytesSent: Long, contentLength: Long) -> Unit,
-    ) {
-        files.forEach { fileUi ->
+        totalBytes: Long,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
+    ) = coroutineScope {
+        val totalDownloadedBytes = AtomicLong(0L)
+        val semaphore = Semaphore(6)
+
+        files.map { fileUi ->
             val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
             if (downloadUrl == null) {
                 SentryLog.wtf(TAG, "Finish with failure because downloadUrl is null")
                 throw FailureException()
             }
 
-            var previousBytesSentTotal = 0L
-            downloadToPublicDownload(downloadUrl, transferUi, fileUi) { bytesSentTotal, contentLength ->
-                val bytesSent = bytesSentTotal - previousBytesSentTotal
-                onDownload(bytesSent, totalSize)
-                previousBytesSentTotal = bytesSentTotal
+            semaphore.acquire()
+            launch {
+                try {
+                    var previousFileDownloadedBytes = 0L
+                    downloadToPublicDownload(downloadUrl, transferUi, fileUi) { bytesSentTotal, _ ->
+                        val downloadedDelta = bytesSentTotal - previousFileDownloadedBytes
+                        onProgress(totalDownloadedBytes.addAndFetch(downloadedDelta), totalBytes)
+                        previousFileDownloadedBytes = bytesSentTotal
+                    }
+                } finally {
+                    semaphore.release()
+                }
             }
-        }
+        }.joinAll()
     }
 
     private suspend fun downloadToPublicDownload(
