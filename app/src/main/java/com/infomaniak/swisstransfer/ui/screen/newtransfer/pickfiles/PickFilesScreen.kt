@@ -371,9 +371,7 @@ private fun EmailAddressesTextFields(
             val clipData = it.data?.clipData
 
             if (clipData != null) {
-
                 val length = clipData.itemCount
-                val result = mutableListOf<Uri>()
                 for (i in 0 until length) {
                     selectContact(clipData.getItemAt(i).uri, context)
                 }
