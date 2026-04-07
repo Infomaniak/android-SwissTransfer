@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonHidePassword">Skjul adgangskode</string>
     <string name="contentDescriptionButtonRemove">Fjern fil</string>
     <string name="contentDescriptionButtonRemoveRecipient">Fjern %s</string>
+    <string name="contentDescriptionButtonSelectContact">Åbn kontaktlisten</string>
     <string name="contentDescriptionButtonShowPassword">Vis adgangskode</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny overføring</string>
     <string name="deeplinkPasswordDescription">Indtast den adgangskode, du har modtaget, for at downloade disse filer.</string>

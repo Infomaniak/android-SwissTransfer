@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonHidePassword">Απόκρυψη κωδικού πρόσβασης</string>
     <string name="contentDescriptionButtonRemove">Αφαίρεση αρχείου</string>
     <string name="contentDescriptionButtonRemoveRecipient">Αφαίρεση %s</string>
+    <string name="contentDescriptionButtonSelectContact">Άνοιγμα λίστας επαφών</string>
     <string name="contentDescriptionButtonShowPassword">Εμφάνιση κωδικού πρόσβασης</string>
     <string name="contentDescriptionCreateNewTransferButton">Νέα μεταφορά</string>
     <string name="deeplinkPasswordDescription">Εισάγαλε τον κωδικό πρόσβασης που σου δόθηκε για να κατεβάσεις αυτά τα αρχεία.</string>

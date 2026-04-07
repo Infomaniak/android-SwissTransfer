@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonHidePassword">Piilota salasana</string>
     <string name="contentDescriptionButtonRemove">Poista tiedosto</string>
     <string name="contentDescriptionButtonRemoveRecipient">Poista %s</string>
+    <string name="contentDescriptionButtonSelectContact">Avaa yhteysluettelo</string>
     <string name="contentDescriptionButtonShowPassword">Näytä salasana</string>
     <string name="contentDescriptionCreateNewTransferButton">Uusi siirto</string>
     <string name="deeplinkPasswordDescription">Syötä saamasi salasana ladataksesi nämä tiedostot.</string>

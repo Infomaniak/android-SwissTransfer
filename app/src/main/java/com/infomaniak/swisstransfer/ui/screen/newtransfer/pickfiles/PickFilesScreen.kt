@@ -424,7 +424,7 @@ private fun EmailAddressesTextFields(
                                     pickContact.launch(pickContactIntent)
                                 } catch (_: ActivityNotFoundException) {
                                     coroutine.launch {
-                                        longToast("The contact picker isn't available on your version of Android")
+                                        longToast(R.string.startActivityCantHandleAction)
                                     }
                                 }
                             })
@@ -437,7 +437,7 @@ private fun EmailAddressesTextFields(
 @Composable
 private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        val (contentDescription, icon) = stringResource(R.string.contentDescriptionButtonHidePassword) to appIcon
+        val (contentDescription, icon) = stringResource(R.string.contentDescriptionButtonSelectContact) to appIcon
 
         Icon(icon, contentDescription, Modifier.size(Dimens.SmallIconSize))
     }
