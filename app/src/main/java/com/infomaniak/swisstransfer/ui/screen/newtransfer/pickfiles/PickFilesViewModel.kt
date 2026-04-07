@@ -20,7 +20,9 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import android.content.Context
 import android.net.Uri
+import android.provider.ContactsContract
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +62,7 @@ import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -73,9 +76,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
+import kotlin.collections.mutableListOf
+import kotlin.collections.set
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
@@ -404,6 +410,66 @@ class PickFilesViewModel @Inject constructor(
             is EmailLanguageOption -> selectTransferLanguage(option)
         }
     }
+
+    data class Contact(
+        val lookupKey: String,
+        val emails: List<String>,
+    )
+
+    fun processContactPickerResultUri(
+        sessionUris: Uri,
+        context: Context,
+    ) {
+        viewModelScope.launch { contactPickLaunch(sessionUris, context) }
+    }
+
+    private suspend fun contactPickLaunch(
+        sessionUris: Uri,
+        context: Context,
+    ) = withContext(Dispatchers.IO) {
+        val projection = arrayOf(
+            ContactsContract.Contacts.LOOKUP_KEY,
+            ContactsContract.Data.MIMETYPE,
+            ContactsContract.Data.DATA1,
+        )
+
+        val contactsMap = mutableMapOf<String, Contact>()
+
+        context.contentResolver.query(sessionUris, projection, null, null, null)?.use { cursor ->
+            val lookupKeyIdx = cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)
+            val mimeTypeIdx = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE)
+            val data1Idx = cursor.getColumnIndex(ContactsContract.Data.DATA1)
+
+            while (cursor.moveToNext()) {
+                val lookupKey = cursor.getString(lookupKeyIdx)
+                val mimeType = cursor.getString(mimeTypeIdx)
+                val data1 = cursor.getString(data1Idx) ?: ""
+
+                val email = if (mimeType == ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) data1 else null
+
+                val existingContact = contactsMap[lookupKey]
+                if (existingContact != null) {
+                    contactsMap[lookupKey] = existingContact.copy(
+                        emails = if (email != null) existingContact.emails + email else existingContact.emails,
+                    )
+                } else {
+                    contactsMap[lookupKey] = Contact(
+                        lookupKey = lookupKey,
+                        emails = if (email != null) listOf(email) else emptyList(),
+                    )
+                }
+            }
+        }
+
+        val iterator = contactsMap.entries.iterator()
+        while (iterator.hasNext()) {
+            val (key, value) = iterator.next()
+            validatedRecipientsEmails = validatedRecipientsEmails.plus(value.emails)
+
+        }
+
+    }
+
 //endregion
 
     companion object {

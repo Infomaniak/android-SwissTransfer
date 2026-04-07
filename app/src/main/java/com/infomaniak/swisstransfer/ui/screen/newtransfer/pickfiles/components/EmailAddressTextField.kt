@@ -83,16 +83,18 @@ import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EmailAddressTextField(
-    modifier: Modifier = Modifier,
     label: String,
     initialValue: String,
     validatedRecipientsEmails: GetSetCallbacks<Set<String>>,
     onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier = Modifier,
     isError: Boolean = false,
     supportingText: (@Composable () -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
 
     val state = remember(validatedRecipientsEmails) {
@@ -154,10 +156,12 @@ fun EmailAddressTextField(
                 isError = isError,
                 supportingText = supportingText,
                 textFieldColors = SwissTransferTextFieldDefaults.colors(),
+                trailingIcon = trailingIcon,
             )
         }
     )
 }
+
 
 /**
  * Copied from OutlineTextField so the BasicTextField can have the same spacing as OutlineTextField with a label
@@ -289,6 +293,7 @@ private fun EmailAddressDecorationBox(
     isError: Boolean,
     supportingText: @Composable (() -> Unit)?,
     textFieldColors: TextFieldColors,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextFieldDefaults.DecorationBox(
         value = text,
@@ -313,6 +318,7 @@ private fun EmailAddressDecorationBox(
         supportingText = supportingText,
         label = { Text(label) },
         colors = textFieldColors,
+        trailingIcon = trailingIcon,
     ) {
         OutlinedTextFieldDefaults.Container(
             enabled = true,
