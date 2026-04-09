@@ -420,7 +420,11 @@ class PickFilesViewModel @Inject constructor(
         sessionUris: Uri,
         context: Context,
     ) {
-        viewModelScope.launch { contactPickLaunch(sessionUris, context) }
+        try {
+            viewModelScope.launch { contactPickLaunch(sessionUris, context) }
+        }catch (e: Exception){
+            SentryLog.e(TAG, "Error while launching contact picker", e)
+        }
     }
 
     private suspend fun contactPickLaunch(
@@ -461,11 +465,9 @@ class PickFilesViewModel @Inject constructor(
             }
         }
 
-        val iterator = contactsMap.entries.iterator()
-        while (iterator.hasNext()) {
-            val (key, value) = iterator.next()
-            validatedRecipientsEmails = validatedRecipientsEmails.plus(value.emails)
-
+        withContext(Dispatchers.Main) {
+            val allNewEmails = contactsMap.values.flatMap { it.emails }.toSet()
+            validatedRecipientsEmails = validatedRecipientsEmails.plus(allNewEmails)
         }
 
     }
