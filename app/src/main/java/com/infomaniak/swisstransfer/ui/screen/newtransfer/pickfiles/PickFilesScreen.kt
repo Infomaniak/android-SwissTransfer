@@ -106,7 +106,6 @@ import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
@@ -360,7 +359,7 @@ private fun EmailAddressesTextFields(
                 val length = clipData.itemCount
                 for (i in 0 until length) {
                     clipData.getItemAt(i).uri?.let { uri ->
-                        selectContact(uri,context)
+                        selectContact(uri, context)
                     }
                 }
             } else {
