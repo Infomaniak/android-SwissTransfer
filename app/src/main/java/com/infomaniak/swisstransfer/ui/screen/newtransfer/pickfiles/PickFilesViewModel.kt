@@ -444,6 +444,11 @@ class PickFilesViewModel @Inject constructor(
             val mimeTypeIdx = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE)
             val data1Idx = cursor.getColumnIndex(ContactsContract.Data.DATA1)
 
+            if (lookupKeyIdx == -1 || mimeTypeIdx == -1 || data1Idx == -1) {
+                SentryLog.e(TAG, "Projection invalide, colonnes manquantes.")
+                return@use
+            }
+
             while (cursor.moveToNext()) {
                 val lookupKey = cursor.getString(lookupKeyIdx)
                 val mimeType = cursor.getString(mimeTypeIdx)
