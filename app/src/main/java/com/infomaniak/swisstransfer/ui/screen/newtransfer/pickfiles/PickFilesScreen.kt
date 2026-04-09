@@ -33,9 +33,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -59,7 +57,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -85,16 +82,11 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.ButtonType
-import com.infomaniak.swisstransfer.ui.components.FabType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
-import com.infomaniak.swisstransfer.ui.components.SwissTransferFab
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
-import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.EyeCrossed
-import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.images.icons.PersonsCircleAdd
 import com.infomaniak.swisstransfer.ui.previewparameter.filesPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
@@ -117,7 +109,6 @@ import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
@@ -374,7 +365,7 @@ private fun EmailAddressesTextFields(
                 val length = clipData.itemCount
                 for (i in 0 until length) {
                     clipData.getItemAt(i).uri?.let { uri ->
-                        selectContact(uri,context)
+                        selectContact(uri, context)
                     }
                 }
             } else {
