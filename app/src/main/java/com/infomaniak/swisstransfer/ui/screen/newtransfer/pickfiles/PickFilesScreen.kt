@@ -373,7 +373,9 @@ private fun EmailAddressesTextFields(
             if (clipData != null) {
                 val length = clipData.itemCount
                 for (i in 0 until length) {
-                    selectContact(clipData.getItemAt(i).uri, context)
+                    clipData.getItemAt(i).uri?.let { uri ->
+                        selectContact(uri,context)
+                    }
                 }
             } else {
                 val data = it.data?.data ?: return@rememberLauncherForActivityResult
