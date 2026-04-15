@@ -216,6 +216,7 @@ dependencies {
     implementation(core.infomaniak.core.ui.compose.preview)
     implementation(core.infomaniak.core.ui.compose.theme)
     implementation(core.infomaniak.core.webview)
+    implementation(core.infomaniak.core.permissionmanager)
 
     implementation(kotlin("reflect"))
 

@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
-import android.Manifest
 import android.content.ActivityNotFoundException
-import android.os.Build.VERSION.SDK_INT
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -57,10 +55,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.rememberPermissionState
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.mapSync
+import com.infomaniak.core.permissionmanager.CustomPermissionManager
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
@@ -105,6 +102,7 @@ fun PickFilesScreen(
     exitNewTransfer: () -> Unit,
     navigateToUploadProgress: () -> Unit,
     navigateToFilesDetails: () -> Unit,
+    permissionManager: CustomPermissionManager,
 ) {
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -121,10 +119,6 @@ fun PickFilesScreen(
         contract = ActivityResultContracts.OpenMultipleDocuments(),
         onResult = pickFilesViewModel::importUris,
     )
-
-    val notificationPermissionState: PermissionState? = if (SDK_INT >= 33) {
-        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-    } else null
 
     fun pickFiles() {
         try {
@@ -200,7 +194,7 @@ fun PickFilesScreen(
         exitNewTransfer = { exit() },
         onSendButtonClick = {
             MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoName)
-            notificationPermissionState?.launchPermissionRequest()
+            permissionManager.askPermission()
             // Notification permission is optional, so we don’t wait for the result
             pickFilesViewModel.send()
         },

@@ -21,12 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
+import com.infomaniak.core.permissionmanager.CustomPermissionManager
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 
 @Composable
 fun NewTransferScreen(
     startDestination: NewTransferNavigation,
     inAppReviewManager: InAppReviewManager,
+    permissionManager: CustomPermissionManager,
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     newTransferViewModel: NewTransferViewModel = hiltViewModel<NewTransferViewModel>(),
 ) {
@@ -34,6 +36,7 @@ fun NewTransferScreen(
         navController = rememberNavController(),
         startDestination = startDestination,
         inAppReviewManager = inAppReviewManager,
+        permissionManager = permissionManager,
         closeActivity = closeActivity,
         cancelUploadNotification = { newTransferViewModel.cancelUploadNotification() }
     )
