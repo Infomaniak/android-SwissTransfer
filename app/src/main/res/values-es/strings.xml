@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">El enlace de descarga se ha enviado a los destinatarios</string>
     <string name="notificationUploadSuccessDescriptionOther">Haga clic para obtener su enlace de descarga</string>
     <string name="notificationUploadSuccessTitle">Transferencia completada</string>
+    <string name="notificationUsageDescription">Las notificaciones te ayudan a seguir el progreso de las transferencias y la finalización de las descargas. La aplicación funciona con normalidad aunque decidas no activarlas.</string>
+    <string name="notificationUsageTitle">¿Permitir notificaciones?</string>
     <string name="notificationsUploadChannelName">Notificaciones de carga</string>
     <string name="onboardingExpirationSubtitleArgument">30 días.</string>
     <string name="onboardingExpirationSubtitleTemplate">Comparte tus archivos por correo, enlace o código QR. Tus enlaces estarán activos durante %s</string>

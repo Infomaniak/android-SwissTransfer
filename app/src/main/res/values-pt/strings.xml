@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">A ligação de transferência foi enviada para os destinatários</string>
     <string name="notificationUploadSuccessDescriptionOther">Clica para obter a tua ligação de transferência</string>
     <string name="notificationUploadSuccessTitle">Transferência concluída</string>
+    <string name="notificationUsageDescription">As notificações ajudam a acompanhar o progresso das transferências e a conclusão dos descarregamentos. A aplicação funciona normalmente, mesmo que opte por não as ativar.</string>
+    <string name="notificationUsageTitle">Permitir notificações?</string>
     <string name="notificationsUploadChannelName">Notificações de envio</string>
     <string name="onboardingExpirationSubtitleArgument">30 dias.</string>
     <string name="onboardingExpirationSubtitleTemplate">Partilha os teus ficheiros por e-mail, ligação ou código QR. As tuas ligações ficam ativas por %s</string>

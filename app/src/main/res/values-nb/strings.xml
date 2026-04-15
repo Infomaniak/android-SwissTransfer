@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">Nedlastingslenken er sendt til mottakerne</string>
     <string name="notificationUploadSuccessDescriptionOther">Trykk for å få nedlastingslenken din</string>
     <string name="notificationUploadSuccessTitle">Overføring fullført</string>
+    <string name="notificationUsageDescription">Varsler hjelper deg med å spore fremdriften for overføringer og nedlastinger som er fullført. Appen fungerer normalt selv om du velger å ikke aktivere dem.</string>
+    <string name="notificationUsageTitle">Tillat varsler?</string>
     <string name="notificationsUploadChannelName">Opplastingsvarsler</string>
     <string name="onboardingExpirationSubtitleArgument">30 dager.</string>
     <string name="onboardingExpirationSubtitleTemplate">Del filene dine via e-post, lenke eller QR-kode. Lenkene dine forblir aktive i %s</string>

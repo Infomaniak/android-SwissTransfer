@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">Der Download-Link wurde an die Empfänger gesendet</string>
     <string name="notificationUploadSuccessDescriptionOther">Klicke, um deinen Download-Link zu erhalten</string>
     <string name="notificationUploadSuccessTitle">Transfer abgeschlossen</string>
+    <string name="notificationUsageDescription">Benachrichtigungen helfen dir, den Übertragungsfortschritt und den Abschluss von Downloads zu verfolgen. Die App funktioniert ganz normal, auch wenn du dich entscheidest, sie nicht zu aktivieren.</string>
+    <string name="notificationUsageTitle">Benachrichtigungen zulassen?</string>
     <string name="notificationsUploadChannelName">Upload-Benachrichtigungen</string>
     <string name="onboardingExpirationSubtitleArgument">30 Tage</string>
     <string name="onboardingExpirationSubtitleTemplate">Teile deine Dateien per E-Mail, Link oder QR-Code. Deine Links bleiben %s aktiv.</string>

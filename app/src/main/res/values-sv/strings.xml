@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">Nedladdningslänken har skickats till mottagarna</string>
     <string name="notificationUploadSuccessDescriptionOther">Tryck för att få din nedladdningslänk</string>
     <string name="notificationUploadSuccessTitle">Överföring slutförd</string>
+    <string name="notificationUsageDescription">Aviseringar hjälper dig att spåra överföringarnas förlopp och slutförda nedladdningar. Appen fungerar normalt även om du väljer att inte aktivera dem.</string>
+    <string name="notificationUsageTitle">Tillåt aviseringar?</string>
     <string name="notificationsUploadChannelName">Uppladdningsaviseringar</string>
     <string name="onboardingExpirationSubtitleArgument">30 dagar.</string>
     <string name="onboardingExpirationSubtitleTemplate">Dela dina filer via e-post, länk eller QR-kod. Dina länkar förblir aktiva i %s</string>

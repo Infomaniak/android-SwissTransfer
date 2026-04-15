@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">Ο σύνδεσμος λήψης εστάλη στους παραλήπτες</string>
     <string name="notificationUploadSuccessDescriptionOther">Πάτησε για να αποκτήσεις τον σύνδεσμο λήψης σου</string>
     <string name="notificationUploadSuccessTitle">Η μεταφορά ολοκληρώθηκε</string>
+    <string name="notificationUsageDescription">Οι ειδοποιήσεις σάς βοηθούν να παρακολουθείτε την πρόοδο των μεταφορών και την ολοκλήρωση των λήψεων. Η εφαρμογή λειτουργεί κανονικά ακόμα και αν επιλέξετε να μην τις ενεργοποιήσετε.</string>
+    <string name="notificationUsageTitle">Να επιτρέπονται οι ειδοποιήσεις;</string>
     <string name="notificationsUploadChannelName">Ειδοποιήσεις μεταφόρτωσης</string>
     <string name="onboardingExpirationSubtitleArgument">30 ημέρες.</string>
     <string name="onboardingExpirationSubtitleTemplate">Μοιράσου τα αρχεία σου μέσω email, συνδέσμου ή κωδικού QR. Οι σύνδεσμοί σου παραμένουν ενεργοί για %s</string>

@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">Latauslinkki on lähetetty vastaanottajille</string>
     <string name="notificationUploadSuccessDescriptionOther">Napauta saadaksesi lataustilasi</string>
     <string name="notificationUploadSuccessTitle">Siirto valmis</string>
+    <string name="notificationUsageDescription">Ilmoitukset auttavat sinua seuraamaan siirtojen edistymistä ja latausten valmistumista. Sovellus toimii normaalisti, vaikka et ottaisi niitä käyttöön.</string>
+    <string name="notificationUsageTitle">Salli ilmoitukset?</string>
     <string name="notificationsUploadChannelName">Lähetyksen ilmoitukset</string>
     <string name="onboardingExpirationSubtitleArgument">30 päivää.</string>
     <string name="onboardingExpirationSubtitleTemplate">Jaa tiedostosi sähköpostitse, linkillä tai QR-koodilla. Linkkisi pysyvät aktiivisina %s</string>
