@@ -67,13 +67,13 @@ object SwissTransferAlertDialogDefaults {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferAlertDialog(
-    modifier: Modifier = Modifier,
     title: String,
-    description: String? = null,
-    positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit,
     onDismiss: () -> Unit,
-    content: @Composable (ColumnScope.() -> Unit)? = null,
+    positiveButton: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    description: String? = null,
+    negativeButton: (@Composable () -> Unit)? = null,
+    content: @Composable (ColumnScope.() -> Unit)? = null
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
@@ -96,12 +96,12 @@ fun SwissTransferAlertDialog(
 
 @Composable
 private fun BasicAlertDialogContent(
-    modifier: Modifier,
     title: String,
     description: String?,
     positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit,
-    additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    negativeButton: (@Composable () -> Unit)? = null,
+    additionalContent: @Composable (ColumnScope.() -> Unit)? = null
 ) {
     Column(modifier.padding(Margin.Large)) {
         TitleAndDescription(title, description)
@@ -135,14 +135,14 @@ private fun TitleAndDescription(title: String, description: String?) {
 @Composable
 private fun ActionButtons(
     positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit,
+    negativeButton: (@Composable () -> Unit)? = null,
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
         itemVerticalAlignment = Alignment.CenterVertically,
     ) {
-        negativeButton()
+        negativeButton?.invoke()
         positiveButton()
     }
 }
