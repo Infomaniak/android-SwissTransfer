@@ -29,8 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.infomaniak.core.permissionmanager.PermissionType
-import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -65,7 +63,7 @@ fun FilesDetailsScreen(
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     onFileRemoved: ((uuid: String) -> Unit)? = null,
-    direction: TransferDirection? = null
+    direction: TransferDirection? = null,
 ) {
     Column(
         modifier = Modifier
@@ -90,7 +88,6 @@ fun FilesDetailsScreen(
             runDownloadUi = runDownloadUi,
             previewUriForFile = previewUriForFile,
             direction = direction,
-            permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStoragePermissionState),
         )
     }
 }

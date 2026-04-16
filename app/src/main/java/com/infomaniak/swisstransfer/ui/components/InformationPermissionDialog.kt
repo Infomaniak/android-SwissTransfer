@@ -20,33 +20,51 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.permissionmanager.PermissionManagerState
+import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun ExplainNotificationPermissionDialog(permissionManager: PermissionManagerState) {
+    ExplainNotificationPermissionDialog(
+        isVisible = permissionManager::shouldShowRationale,
+        onDismiss = permissionManager::dismissAndAskPermission,
+    )
+}
+
+@Composable
+private fun ExplainNotificationPermissionDialog(isVisible: () -> Boolean, onDismiss: () -> Unit) {
     InformationPermissionDialog(
-        permissionManager = permissionManager,
         title = stringResource(R.string.notificationUsageTitle),
         description = stringResource(R.string.notificationUsageDescription),
+        isVisible = isVisible,
+        onDismiss = onDismiss,
     )
 }
 
 @Composable
 private fun InformationPermissionDialog(
-    permissionManager: PermissionManagerState,
     title: String,
     description: String,
+    onDismiss: () -> Unit,
+    isVisible: () -> Boolean,
 ) {
-    if (permissionManager.shouldShow) {
+    if (isVisible()) {
         SwissTransferAlertDialog(
             title = title,
             description = description,
-            onDismiss = permissionManager::dismissAndAskPermission,
+            onDismiss = onDismiss,
             positiveButton = {
-                SwissTransferAlertDialogDefaults.ConfirmButton(
-                    onClick = permissionManager::dismissAndAskPermission,
-                )
+                SwissTransferAlertDialogDefaults.ConfirmButton(onClick = onDismiss)
             },
         )
+    }
+}
+
+@PreviewLightAndDark
+@Composable
+private fun ExplainNotificationPermissionDialogPreview() {
+    SwissTransferTheme {
+        ExplainNotificationPermissionDialog(onDismiss = { }, isVisible = { true })
     }
 }

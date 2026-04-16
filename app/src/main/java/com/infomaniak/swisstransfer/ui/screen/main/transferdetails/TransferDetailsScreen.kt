@@ -69,9 +69,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.common.utils.FORMAT_DATE_FULL
 import com.infomaniak.core.common.utils.format
-import com.infomaniak.core.permissionmanager.PermissionManagerState
-import com.infomaniak.core.permissionmanager.PermissionType
-import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
@@ -230,9 +227,8 @@ private fun TransferDetailsScreen(
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val snackbarHostState = remember { SnackbarHostState() }
-    val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStoragePermissionState)
     val downloadUi = remember(lifecycle) {
-        TransferDownloadComposeUi(lifecycle, snackbarHostState, permissionManagerState, direction)
+        TransferDownloadComposeUi(lifecycle, snackbarHostState, direction)
     }
     val transferFlow = remember { snapshotFlow { getTransfer() } }
     LaunchedEffect(Unit) {
@@ -271,7 +267,6 @@ private fun TransferDetailsScreen(
 
             FilesList(
                 snackbarHostState = snackbarHostState,
-                permissionManagerState = permissionManagerState,
                 getTransfer = getTransfer,
                 transferRecipients = transferRecipients,
                 isMultiselectOn = isMultiselectOn,
@@ -369,12 +364,11 @@ private fun ColumnScope.FilesList(
     isMultiselectOn: Boolean,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
-    permissionManagerState: PermissionManagerState,
     transferFlow: Flow<TransferUi>,
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing,
     direction: TransferDirection,
     navigateToFolder: ((folderUuid: String) -> Unit)? = null,
-    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() }
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -385,7 +379,6 @@ private fun ColumnScope.FilesList(
             .weight(1.0f)
             .padding(horizontal = Margin.Medium),
         snackbarHostState = snackbarHostState,
-        permissionManagerState = permissionManagerState,
         files = getTransfer().files,
         isDownloadButtonVisible = true,
         isRemoveButtonVisible = false,

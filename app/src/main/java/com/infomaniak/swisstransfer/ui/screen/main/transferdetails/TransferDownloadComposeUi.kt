@@ -63,7 +63,6 @@ import com.infomaniak.core.common.DownloadStatus
 import com.infomaniak.core.common.DownloadStatus.InProgress
 import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.common.snackbarMsgResId
-import com.infomaniak.core.permissionmanager.PermissionManagerState
 import com.infomaniak.core.permissionmanager.PermissionType
 import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.basics.CallableState
@@ -99,7 +98,6 @@ import com.infomaniak.core.common.R as RCore
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
     private val snackbarHostState: SnackbarHostState,
-    private val permissionManagerState: PermissionManagerState,
     private val direction: TransferDirection?,
 ) : TransferDownloadUi {
 
@@ -179,9 +177,11 @@ class TransferDownloadComposeUi(
                 }
             }
         } else {
+            val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = permissionManagerState.guardedCallback { downloadRequest() },
+                onClick = permissionManagerState.waitUntilGranted { downloadRequest() },
             )
         }
     }
@@ -200,11 +200,13 @@ class TransferDownloadComposeUi(
                 )
             }
         } else {
+            val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+
             BottomBarButton(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = permissionManagerState.guardedCallback { downloadRequest() },
+                onClick = permissionManagerState.waitUntilGranted { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -223,11 +225,13 @@ class TransferDownloadComposeUi(
                 )
             }
         } else {
+            val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+
             CardCornerButton(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = permissionManagerState.guardedCallback { downloadRequest() },
+                onClick = permissionManagerState.waitUntilGranted { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -359,12 +363,10 @@ private fun InProgress.getProgress(): Float {
 @Composable
 private fun Preview() = SwissTransferTheme {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStoragePermissionState)
     val ui = remember {
         TransferDownloadComposeUi(
             lifecycle = lifecycle,
             snackbarHostState = SnackbarHostState(),
-            permissionManagerState = permissionManagerState,
             direction = TransferDirection.SENT,
         )
     }
