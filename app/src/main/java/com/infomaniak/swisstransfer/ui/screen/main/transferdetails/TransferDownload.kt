@@ -206,7 +206,9 @@ private suspend fun isFileDeleted(id: UniqueDownloadId, transfer: TransferUi, ta
         runCatching {
             return when {
                 transfer.isV1() -> downloadManager.doesFileExist(id).not()
-                targetFile != null -> AppDownloadManager.doesFileExists(transfer, targetFile).not()
+                targetFile != null -> {
+                    downloadManager.doesFileExist(id).not() && AppDownloadManager.doesFileExists(transfer, targetFile).not()
+                }
                 else -> true
             }
         }.cancellable().onFailure { throwable ->
