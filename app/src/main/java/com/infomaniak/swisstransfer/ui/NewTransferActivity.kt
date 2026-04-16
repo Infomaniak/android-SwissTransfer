@@ -34,8 +34,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.common.utils.enumValueOfOrNull
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
-import com.infomaniak.core.permissionmanager.CustomPermission
-import com.infomaniak.core.permissionmanager.rememberPermissionManager
+import com.infomaniak.core.permissionmanager.PermissionType
+import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.swisstransfer.ui.components.ExplainNotificationPermissionDialog
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
@@ -80,7 +80,7 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
         setContent {
             val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
             val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
-            val permissionManager = rememberPermissionManager(CustomPermission.Notification)
+            val permissionManager = rememberPermissionManagerState(PermissionType.Notification)
 
             CompositionLocalProvider(LocalUser provides user) {
                 SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {

@@ -19,11 +19,11 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.permissionmanager.CustomPermissionManager
+import com.infomaniak.core.permissionmanager.PermissionManagerState
 import com.infomaniak.swisstransfer.R
 
 @Composable
-fun ExplainNotificationPermissionDialog(permissionManager: CustomPermissionManager) {
+fun ExplainNotificationPermissionDialog(permissionManager: PermissionManagerState) {
     InformationPermissionDialog(
         permissionManager = permissionManager,
         title = stringResource(R.string.notificationUsageTitle),
@@ -33,7 +33,7 @@ fun ExplainNotificationPermissionDialog(permissionManager: CustomPermissionManag
 
 @Composable
 private fun InformationPermissionDialog(
-    permissionManager: CustomPermissionManager,
+    permissionManager: PermissionManagerState,
     title: String,
     description: String,
 ) {

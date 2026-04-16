@@ -25,7 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
-import com.infomaniak.core.permissionmanager.CustomPermissionManager
+import com.infomaniak.core.permissionmanager.PermissionManagerState
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.NewTransferFilesDetailsDestination
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.PickFilesDestination
@@ -43,7 +43,7 @@ fun NewTransferNavHost(
     navController: NavHostController,
     startDestination: NewTransferNavigation,
     inAppReviewManager: InAppReviewManager,
-    permissionManager: CustomPermissionManager,
+    permissionManager: PermissionManagerState,
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     cancelUploadNotification: () -> Unit,
 ) {
