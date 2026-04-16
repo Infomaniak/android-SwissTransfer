@@ -37,7 +37,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
+import com.infomaniak.core.permissionmanager.PermissionManagerState
+import com.infomaniak.core.permissionmanager.PermissionType
+import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -47,7 +49,6 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.guardedCallback
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -56,15 +57,16 @@ import kotlinx.coroutines.flow.emptyFlow
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FileItemList(
-    modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
-    writeExternalStoragePermissionState: PermissionState? = null,
+    permissionManagerState: PermissionManagerState,
     files: List<FileUi>,
     isDownloadButtonVisible: Boolean,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: () -> Boolean,
     isUidChecked: (String) -> Boolean,
     setUidCheckStatus: (String, Boolean) -> Unit,
+    direction: TransferDirection?,
+    modifier: Modifier = Modifier,
     onRemoveUid: ((String) -> Unit)? = null,
     navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
@@ -72,8 +74,7 @@ fun FileItemList(
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
-    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    direction: TransferDirection?,
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() }
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -96,7 +97,7 @@ fun FileItemList(
         items(files, key = { it.uid }) { file ->
 
             val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
-                TransferDownloadComposeUi(lifecycle, snackbarHostState, writeExternalStoragePermissionState, direction)
+                TransferDownloadComposeUi(lifecycle, snackbarHostState, permissionManagerState, direction)
             }
 
             LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
@@ -110,7 +111,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> writeExternalStoragePermissionState.guardedCallback { downloadUi.onFileClick() }
+                    else -> permissionManagerState.guardedCallback { downloadUi.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
@@ -142,6 +143,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
     SwissTransferTheme {
         FileItemList(
             snackbarHostState = remember { SnackbarHostState() },
+            permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStoragePermissionState),
             files = files,
             isRemoveButtonVisible = false,
             isDownloadButtonVisible = false,

@@ -59,11 +59,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
 import com.infomaniak.core.common.DownloadStatus
 import com.infomaniak.core.common.DownloadStatus.InProgress
 import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.common.snackbarMsgResId
+import com.infomaniak.core.permissionmanager.PermissionManagerState
+import com.infomaniak.core.permissionmanager.PermissionType
+import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.basics.withForwardTo
 import com.infomaniak.core.ui.compose.margin.Margin
@@ -78,7 +80,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
 import com.infomaniak.swisstransfer.ui.images.icons.Stop
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.guardedCallback
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
@@ -98,7 +99,7 @@ import com.infomaniak.core.common.R as RCore
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
     private val snackbarHostState: SnackbarHostState,
-    private val writeExternalStoragePermissionState: PermissionState?,
+    private val permissionManagerState: PermissionManagerState,
     private val direction: TransferDirection?,
 ) : TransferDownloadUi {
 
@@ -180,7 +181,7 @@ class TransferDownloadComposeUi(
         } else {
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
+                onClick = permissionManagerState.guardedCallback { downloadRequest() },
             )
         }
     }
@@ -203,7 +204,7 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
+                onClick = permissionManagerState.guardedCallback { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -226,7 +227,7 @@ class TransferDownloadComposeUi(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = writeExternalStoragePermissionState.guardedCallback { downloadRequest() },
+                onClick = permissionManagerState.guardedCallback { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -261,7 +262,7 @@ class TransferDownloadComposeUi(
     }
 
     @Composable
-    fun CardProgressBar(modifier: Modifier) {
+    fun CardProgressBar(modifier: Modifier = Modifier) {
         when (val status = downloadStatus) {
             DownloadStatus.Complete -> Unit
             is DownloadStatus.Failed -> {
@@ -358,12 +359,13 @@ private fun InProgress.getProgress(): Float {
 @Composable
 private fun Preview() = SwissTransferTheme {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStoragePermissionState)
     val ui = remember {
         TransferDownloadComposeUi(
             lifecycle = lifecycle,
             snackbarHostState = SnackbarHostState(),
-            writeExternalStoragePermissionState = null,
-            direction = TransferDirection.SENT
+            permissionManagerState = permissionManagerState,
+            direction = TransferDirection.SENT,
         )
     }
     LaunchedEffect(Unit) {

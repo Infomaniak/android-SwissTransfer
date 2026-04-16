@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.infomaniak.core.permissionmanager.PermissionType
+import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -48,9 +50,12 @@ import kotlinx.coroutines.flow.emptyFlow
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FilesDetailsScreen(
-    paddingValues: PaddingValues = PaddingValues(0.dp),
     snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
+    withFileSize: Boolean,
+    withSpaceLeft: Boolean,
+    isDownloadButtonVisible: Boolean,
+    paddingValues: PaddingValues = PaddingValues(0.dp),
     navigateToFolder: ((String) -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
     runDownloadUi: suspend (
@@ -59,11 +64,8 @@ fun FilesDetailsScreen(
         file: FileUi
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    withFileSize: Boolean,
-    withSpaceLeft: Boolean,
-    isDownloadButtonVisible: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
-    direction: TransferDirection? = null,
+    direction: TransferDirection? = null
 ) {
     Column(
         modifier = Modifier
@@ -88,6 +90,7 @@ fun FilesDetailsScreen(
             runDownloadUi = runDownloadUi,
             previewUriForFile = previewUriForFile,
             direction = direction,
+            permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStoragePermissionState),
         )
     }
 }
@@ -109,7 +112,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
                 withFileSize = true,
                 withSpaceLeft = true,
                 onFileRemoved = {},
-                direction = TransferDirection.SENT
+                direction = TransferDirection.SENT,
             )
         }
     }
