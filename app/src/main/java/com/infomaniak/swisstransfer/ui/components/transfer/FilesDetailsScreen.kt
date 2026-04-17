@@ -52,7 +52,7 @@ fun FilesDetailsScreen(
     files: List<FileUi>,
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
-    isDownloadButtonVisible: Boolean,
+    isNewTransfer: Boolean,
     paddingValues: PaddingValues = PaddingValues(0.dp),
     navigateToFolder: ((String) -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
@@ -63,7 +63,7 @@ fun FilesDetailsScreen(
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     onFileRemoved: ((uuid: String) -> Unit)? = null,
-    direction: TransferDirection? = null,
+    direction: TransferDirection? = null
 ) {
     Column(
         modifier = Modifier
@@ -74,7 +74,7 @@ fun FilesDetailsScreen(
         FileItemList(
             snackbarHostState = snackbarHostState,
             files = files,
-            isDownloadButtonVisible = isDownloadButtonVisible,
+            isNewTransfer = isNewTransfer,
             isRemoveButtonVisible = onFileRemoved != null,
             isCheckboxVisible = { false },
             isUidChecked = { false },
@@ -100,7 +100,7 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             FilesDetailsScreen(
                 paddingValues = PaddingValues(0.dp),
                 snackbarHostState = remember { SnackbarHostState() },
-                isDownloadButtonVisible = false,
+                isNewTransfer = false,
                 files = files,
                 navigateToFolder = {},
                 transferFlow = emptyFlow(),

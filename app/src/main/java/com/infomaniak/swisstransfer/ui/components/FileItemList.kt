@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,8 +35,10 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.permissionmanager.PermissionType
@@ -48,6 +52,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -58,7 +63,7 @@ import kotlinx.coroutines.flow.emptyFlow
 fun FileItemList(
     snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
-    isDownloadButtonVisible: Boolean,
+    isNewTransfer: Boolean,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: () -> Boolean,
     isUidChecked: (String) -> Boolean,
@@ -72,11 +77,12 @@ fun FileItemList(
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
-    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() }
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+    val context = LocalContext.current
 
     LazyVerticalGrid(
         modifier = modifier,
@@ -110,6 +116,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
+                    isNewTransfer -> fun() { context.openLocalFile(file.uid.toUri()) }
                     else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
@@ -121,7 +128,7 @@ fun FileItemList(
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
-                    if (isDownloadButtonVisible) {
+                    if (!isNewTransfer) {
                         downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
                         downloadUi.CardProgressBar(
                             modifier = Modifier
@@ -135,6 +142,14 @@ fun FileItemList(
     }
 }
 
+fun Context.openLocalFile(contentUri: Uri) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(contentUri, contentResolver.getType(contentUri))
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    safeStartActivity(intent)
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @PreviewLightAndDark
 @Composable
@@ -144,7 +159,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
             snackbarHostState = remember { SnackbarHostState() },
             files = files,
             isRemoveButtonVisible = false,
-            isDownloadButtonVisible = false,
+            isNewTransfer = false,
             isCheckboxVisible = { true },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
