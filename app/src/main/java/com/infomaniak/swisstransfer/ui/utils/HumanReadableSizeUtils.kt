@@ -34,22 +34,17 @@ import com.infomaniak.swisstransfer.R
 
 object HumanReadableSizeUtils {
 
-    fun getHumanReadableSize(context: Context, sizeInBytes: Long) = context.formatShortFileSize(sizeInBytes)
+    fun getHumanReadableSize(context: Context, fileSizeInBytes: Long) = context.formatShortFileSize(fileSizeInBytes)
 
-    private fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
+    fun getFilesSizeInBytes(files: List<FileUi>) = files.sumOf { it.fileSize }
 
-    fun Context.getSpaceLeft(files: List<FileUi>): String {
-        val spaceLeft = (FileUtils.MAX_FILES_SIZE - getFilesSizeInBytes(files)).coerceAtLeast(0)
+    fun Context.getSpaceLeft(fileSizeInBytes: Long): String {
+        val spaceLeft = (FileUtils.MAX_FILES_SIZE - fileSizeInBytes).coerceAtLeast(0)
         return getHumanReadableSize(this, spaceLeft)
     }
 
     @Composable
-    fun formatSpaceOver(
-        actualSize: Long,
-        maxSize: Long,
-        useIecUnits: Boolean = false,
-        ttsFriendly: Boolean,
-    ): String {
+    fun formatSpaceOver(actualSize: Long, maxSize: Long, ttsFriendly: Boolean, useIecUnits: Boolean = false): String {
         val context = LocalContext.current
         val configuration = LocalConfiguration.current
 

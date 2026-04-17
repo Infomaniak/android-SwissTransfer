@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components.FilesSize
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getFilesSizeInBytes
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -48,9 +49,12 @@ import kotlinx.coroutines.flow.emptyFlow
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FilesDetailsScreen(
-    paddingValues: PaddingValues = PaddingValues(0.dp),
     snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
+    withFileSize: Boolean,
+    withSpaceLeft: Boolean,
+    isDownloadButtonVisible: Boolean,
+    paddingValues: PaddingValues = PaddingValues(0.dp),
     navigateToFolder: ((String) -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
     runDownloadUi: suspend (
@@ -59,9 +63,6 @@ fun FilesDetailsScreen(
         file: FileUi
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    withFileSize: Boolean,
-    withSpaceLeft: Boolean,
-    isDownloadButtonVisible: Boolean,
     onFileRemoved: ((uuid: String) -> Unit)? = null,
     direction: TransferDirection? = null,
 ) {
@@ -70,7 +71,12 @@ fun FilesDetailsScreen(
             .padding(paddingValues)
             .padding(horizontal = Margin.Medium)
     ) {
-        FilesSize(files, withFilesSize = withFileSize, withSpaceLeft)
+        FilesSize(
+            filesCount = files.count(),
+            filesSizeInBytes = getFilesSizeInBytes(files),
+            withFilesSize = withFileSize,
+            withSpaceLeft = withSpaceLeft,
+        )
         FileItemList(
             snackbarHostState = snackbarHostState,
             files = files,
