@@ -36,7 +36,7 @@ import com.infomaniak.core.common.utils.enumValueOfOrNull
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.permissionmanager.PermissionType
 import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
-import com.infomaniak.swisstransfer.ui.components.ExplainNotificationPermissionDialog
+import com.infomaniak.swisstransfer.ui.components.dialog.permission.ExplainNotificationPermissionDialog
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation

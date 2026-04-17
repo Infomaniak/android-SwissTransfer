@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.components
+package com.infomaniak.swisstransfer.ui.components.dialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.core.common.R as RCore
 
@@ -74,6 +76,7 @@ fun SwissTransferAlertDialog(
     description: String? = null,
     negativeButton: @Composable () -> Unit = { },
     content: @Composable (ColumnScope.() -> Unit)? = null,
+
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,

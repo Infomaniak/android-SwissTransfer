@@ -15,35 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.components
+package com.infomaniak.swisstransfer.ui.components.dialog.permission
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.permissionmanager.PermissionManagerState
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ExplainNotificationPermissionDialog(permissionManager: PermissionManagerState) {
-    ExplainNotificationPermissionDialog(
-        isVisible = permissionManager::shouldShowRationale,
-        onDismiss = permissionManager::dismissAndAskPermission,
-    )
-}
-
-@Composable
-private fun ExplainNotificationPermissionDialog(isVisible: () -> Boolean, onDismiss: () -> Unit) {
-    InformationPermissionDialog(
-        title = stringResource(R.string.notificationUsageTitle),
-        description = stringResource(R.string.notificationUsageDescription),
-        isVisible = isVisible,
-        onDismiss = onDismiss,
-    )
-}
-
-@Composable
-private fun InformationPermissionDialog(
+fun InformationPermissionDialog(
     title: String,
     description: String,
     onDismiss: () -> Unit,
@@ -63,8 +46,13 @@ private fun InformationPermissionDialog(
 
 @PreviewLightAndDark
 @Composable
-private fun ExplainNotificationPermissionDialogPreview() {
+private fun InformationPermissionDialogPreview() {
     SwissTransferTheme {
-        ExplainNotificationPermissionDialog(onDismiss = { }, isVisible = { true })
+        InformationPermissionDialog(
+            title = "Permission title",
+            description = "Allow permission description",
+            onDismiss = { },
+            isVisible = { true },
+        )
     }
 }
