@@ -41,6 +41,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components.FilesSize
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getFilesSizeInBytes
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -70,7 +71,12 @@ fun FilesDetailsScreen(
             .padding(paddingValues)
             .padding(horizontal = Margin.Medium)
     ) {
-        FilesSize(files, withFilesSize = withFileSize, withSpaceLeft)
+        FilesSize(
+            filesCount = files.count(),
+            filesSizeInBytes = getFilesSizeInBytes(files),
+            withFilesSize = withFileSize,
+            withSpaceLeft = withSpaceLeft,
+        )
         FileItemList(
             snackbarHostState = snackbarHostState,
             files = files,

@@ -30,21 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.ui.compose.margin.Margin
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TextDotText
-import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceLeft
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 
 @Composable
-fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolean) {
+fun FilesSize(filesCount: Int, filesSizeInBytes: Long, withFilesSize: Boolean, withSpaceLeft: Boolean) {
     Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
-        val filesInfo = getFilesInfo(files, withFilesSize)
+        val filesInfo = getFilesInfo(filesCount = filesCount, filesSizeInBytes = filesSizeInBytes, withFilesSize = withFilesSize)
         TextDotText(
             firstText = { Text(filesInfo.filesCountText) },
             secondText = { Text(filesInfo.filesSizeText) },
@@ -62,22 +59,17 @@ fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolea
 }
 
 @Composable
-private fun getFilesInfo(files: List<FileUi>, withFileSize: Boolean): FileInfo {
-    val filesCount = files.count()
-    val filesCountText = pluralStringResource(
-        R.plurals.filesCount,
-        filesCount,
-        filesCount
-    )
+private fun getFilesInfo(filesCount: Int, filesSizeInBytes: Long, withFilesSize: Boolean): FileInfo {
+    val filesCountText = pluralStringResource(id = R.plurals.filesCount, count = filesCount, filesCount)
 
     val context = LocalContext.current
-    val fileSizeText: String = if (withFileSize) {
-        HumanReadableSizeUtils.getHumanReadableSize(context, files.sumOf { it.fileSize })
+    val fileSizeText: String = if (withFilesSize) {
+        HumanReadableSizeUtils.getHumanReadableSize(context = context, fileSizeInBytes = filesSizeInBytes)
     } else {
         ""
     }
 
-    val spaceLeftText = formatSpaceLeft { context.getSpaceLeft(files) }
+    val spaceLeftText = formatSpaceLeft { context.getSpaceLeft(fileSizeInBytes = filesSizeInBytes) }
 
     return FileInfo(filesCountText, fileSizeText, spaceLeftText)
 }
@@ -87,14 +79,14 @@ private data class FileInfo(val filesCountText: String, val filesSizeText: Strin
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL)
 @Composable
-fun FileSizePreview(@PreviewParameter(FileUiListPreviewParameter::class) files: List<FileUi>) {
+private fun FileSizePreview() {
     SwissTransferTheme {
         Surface {
             Column {
-                FilesSize(files, withFilesSize = false, withSpaceLeft = true)
-                FilesSize(files, withFilesSize = true, withSpaceLeft = true)
-                FilesSize(files, withFilesSize = true, withSpaceLeft = false)
-                FilesSize(files, withFilesSize = false, withSpaceLeft = false)
+                FilesSize(filesCount = 1, filesSizeInBytes = 2000, withFilesSize = false, withSpaceLeft = true)
+                FilesSize(filesCount = 1, filesSizeInBytes = 2000, withFilesSize = true, withSpaceLeft = true)
+                FilesSize(filesCount = 1, filesSizeInBytes = 2000, withFilesSize = true, withSpaceLeft = false)
+                FilesSize(filesCount = 1, filesSizeInBytes = 2000, withFilesSize = false, withSpaceLeft = false)
             }
         }
     }
