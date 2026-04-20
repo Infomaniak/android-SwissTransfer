@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Avancerade inställningar</string>
     <string name="awaitingNetwork">Väntar på nätverk</string>
+    <string name="buttonAll">Alla</string>
+    <string name="buttonCancel">Avbryt</string>
     <string name="buttonCancelTransfer">Avbryt överföringen</string>
     <string name="buttonCloseAndContinue">Stäng och fortsätt</string>
     <string name="buttonConfirm">Bekräfta</string>
@@ -70,6 +72,10 @@
     <string name="importFilesScreenTitle">Filer att överföra</string>
     <string name="invalidAddress">Ogiltig adress</string>
     <string name="messageHeader">Meddelande:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d vald</item>
+        <item quantity="other">%d valda</item>
+    </plurals>
     <string name="myFilesTitle">Mina filer</string>
     <string name="networkUnavailable">Nätverk ej tillgängligt</string>
     <string name="newTransferConfirmLeavingDialogTitle">Hoppsan, vill du verkligen avbryta?</string>

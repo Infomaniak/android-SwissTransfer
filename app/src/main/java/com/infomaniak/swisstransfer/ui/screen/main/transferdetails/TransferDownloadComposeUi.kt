@@ -187,7 +187,7 @@ class TransferDownloadComposeUi(
     }
 
     @Composable
-    fun BottomBarItem(modifier: Modifier = Modifier) {
+    fun BottomBarItem(modifier: Modifier = Modifier, isSelection: Boolean = false) {
         if (removalRequest.isAwaitingCall) {
             DownloadStatus { btnData, action, progressIndicator ->
                 BottomBarButton(
@@ -201,10 +201,10 @@ class TransferDownloadComposeUi(
             }
         } else {
             val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
-
+            val btnData =  if (isSelection) ButtonData.downloadSelected else ButtonData.download
             BottomBarButton(
-                icon = ButtonData.download.icon,
-                labelResId = ButtonData.download.labelResId,
+                icon = btnData.icon,
+                labelResId = btnData.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
                 onClick = writeExternalStoragePermissionManager.dropIfDenied { downloadRequest() },
                 modifier = modifier,
@@ -321,6 +321,10 @@ class TransferDownloadComposeUi(
             val download = ButtonData(
                 icon = AppImages.AppIcons.ArrowDownBar,
                 labelResId = R.string.buttonDownload,
+            )
+            val downloadSelected = ButtonData(
+                icon = AppImages.AppIcons.ArrowDownBar,
+                labelResId = R.string.buttonDownloadSelected
             )
             val downloaded = ButtonData(
                 icon = AppImages.AppIcons.Checkmark,

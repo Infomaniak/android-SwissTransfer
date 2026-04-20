@@ -19,21 +19,30 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.isV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,8 +52,12 @@ class FilesDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
+    private val appDownloadManager: AppDownloadManager,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
+
+    private val _fileDownloadRequests = MutableSharedFlow<String>()
+    val fileDownloadRequests: SharedFlow<String> = _fileDownloadRequests.asSharedFlow()
 
     fun filesFlow(folderUuid: String): Flow<List<FileUi>> {
         return fileManager.getFilesFromTransfer(folderUuid)
@@ -69,16 +82,33 @@ class FilesDetailsViewModel @Inject constructor(
     suspend fun handleTransferDownload(
         ui: TransferDownloadUi,
         transfer: TransferUi,
-        targetFile: FileUi?,
+        downloadTarget: DownloadTarget,
         openFile: suspend (Uri) -> Unit,
     ): Nothing = handleTransferDownload(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
+        appDownloadManager = appDownloadManager,
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
-        targetFile = targetFile,
+        downloadTarget = downloadTarget,
         openFile = openFile,
     )
+
+    fun scheduleFileSelectionDownload(transferUuid: String, selectedFileUids: List<String>) {
+        viewModelScope.launch {
+            val transfer = transferManager.getTransferFlow(transferUuid).first() ?: return@launch
+            val selectedFiles = selectedFileUids.mapNotNull { fileManager.getFileUi(it) }
+            if (selectedFiles.isEmpty()) return@launch
+
+            when {
+                transfer.isV2() -> downloadWorkerScheduler.scheduleFileSelectionWork(
+                    transferId = transfer.uuid,
+                    fileIds = selectedFiles.map { it.uid },
+                )
+                else -> selectedFiles.forEach { file -> _fileDownloadRequests.emit(file.uid) }
+            }
+        }
+    }
 }

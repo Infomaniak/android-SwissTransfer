@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Geavanceerde instellingen</string>
     <string name="awaitingNetwork">Wachten op netwerk</string>
+    <string name="buttonAll">Alles</string>
+    <string name="buttonCancel">Annuleren</string>
     <string name="buttonCancelTransfer">Overdracht annuleren</string>
     <string name="buttonCloseAndContinue">Sluiten en doorgaan</string>
     <string name="buttonConfirm">Bevestigen</string>
@@ -70,6 +72,10 @@
     <string name="importFilesScreenTitle">Te overdragen bestanden</string>
     <string name="invalidAddress">Ongeldig adres</string>
     <string name="messageHeader">Bericht:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d geselecteerd</item>
+        <item quantity="other">%d geselecteerd</item>
+    </plurals>
     <string name="myFilesTitle">Mijn bestanden</string>
     <string name="networkUnavailable">Netwerk niet beschikbaar</string>
     <string name="newTransferConfirmLeavingDialogTitle">Oeps, wil je echt annuleren?</string>

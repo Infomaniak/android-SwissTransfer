@@ -23,6 +23,8 @@
 
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
+    <string name="buttonAll">All</string>
+    <string name="buttonCancel">Cancel</string>
     <string name="buttonCancelTransfer">Cancel the transfer</string>
     <string name="buttonCloseAndContinue">Close and continue</string>
     <string name="buttonConfirm">Confirm</string>
@@ -75,6 +77,10 @@
     <string name="importFilesScreenTitle">Files to transfer</string>
     <string name="invalidAddress">Invalid address</string>
     <string name="messageHeader">Message:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
     <string name="myFilesTitle">My files</string>
     <string name="networkUnavailable">Network unavailable</string>
     <string name="newTransferConfirmLeavingDialogTitle">Oops, do you really want to cancel?</string>

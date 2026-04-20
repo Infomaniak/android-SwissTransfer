@@ -42,6 +42,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType.LinkId
@@ -57,13 +58,16 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCase
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.isV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -78,6 +82,7 @@ class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val deleteTransfer: DeleteTransferUseCase,
     private val downloadWorkerScheduler: DownloadWorker.Scheduler,
+    private val appDownloadManager: AppDownloadManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
@@ -96,6 +101,31 @@ class TransferDetailsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+
+    private val _fileDownloadRequests = MutableSharedFlow<String>()
+    val fileDownloadRequests: SharedFlow<String> = _fileDownloadRequests.asSharedFlow()
+
+    fun triggerFileDownload(fileUid: String) {
+        viewModelScope.launch {
+            _fileDownloadRequests.emit(fileUid)
+        }
+    }
+
+    fun triggerFileSelectionDownload(selectedUids: List<String>) {
+        viewModelScope.launch {
+            val transfer = (uiState.value as? Success)?.transfer ?: return@launch
+            val selectedFiles = transfer.files.filter { it.uid in selectedUids }
+            if (selectedFiles.isEmpty()) return@launch
+
+            when {
+                transfer.isV2() -> downloadWorkerScheduler.scheduleFileSelectionWork(
+                    transferId = transfer.uuid,
+                    fileIds = selectedFiles.map { it.uid },
+                )
+                else -> selectedFiles.forEach { file -> _fileDownloadRequests.emit(file.uid) }
+            }
+        }
+    }
 
     //region Deeplink Password
     private val _isDeeplinkNeedingPassword = MutableStateFlow(false)
@@ -175,17 +205,18 @@ class TransferDetailsViewModel @Inject constructor(
     suspend fun handleTransferDownload(
         ui: TransferDownloadUi,
         transfer: TransferUi,
-        targetFile: FileUi?,
+        downloadTarget: DownloadTarget,
         openFile: suspend (Uri) -> Unit,
         direction: TransferDirection,
     ): Nothing = handleTransferDownload(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
+        appDownloadManager = appDownloadManager,
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
-        targetFile = targetFile,
+        downloadTarget = downloadTarget,
         openFile = openFile,
         direction = direction,
     )

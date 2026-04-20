@@ -84,6 +84,15 @@ class AppDownloadManager @Inject constructor(
         downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onProgress)
     }
 
+    suspend fun downloadFilesSelectionToPublicDownload(
+        transferUi: TransferUi,
+        selectedFiles: List<FileUi>,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
+    ) {
+        val totalBytes = selectedFiles.sumOf { it.fileSize }
+        downloadFilesToPublicDownload(transferUi, selectedFiles, totalBytes, onProgress)
+    }
+
     @OptIn(ExperimentalAtomicApi::class)
     private suspend fun downloadFilesToPublicDownload(
         transferUi: TransferUi,
