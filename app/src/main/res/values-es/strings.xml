@@ -18,6 +18,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingQuantity">
     <string name="advancedSettingsTitle">Ajustes avanzados</string>
     <string name="awaitingNetwork">Esperando la red</string>
+    <string name="buttonAll">Todos</string>
+    <string name="buttonCancel">Cancelar</string>
     <string name="buttonCancelTransfer">Cancelar transferencia</string>
     <string name="buttonCloseAndContinue">Cerrar y continuar</string>
     <string name="buttonConfirm">Confirme</string>
@@ -70,6 +72,10 @@
     <string name="importFilesScreenTitle">Archivos para transferir</string>
     <string name="invalidAddress">Dirección no válida</string>
     <string name="messageHeader">Mensaje:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d seleccionado</item>
+        <item quantity="other">%d seleccionados</item>
+    </plurals>
     <string name="myFilesTitle">Mis archivos</string>
     <string name="networkUnavailable">Red no disponible</string>
     <string name="newTransferConfirmLeavingDialogTitle">Ups, ¿realmente quieres cancelar?</string>

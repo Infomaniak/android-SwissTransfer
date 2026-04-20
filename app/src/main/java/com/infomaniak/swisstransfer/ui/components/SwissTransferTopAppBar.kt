@@ -19,6 +19,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,6 +69,26 @@ fun SwissTransferTopAppBar(
         navigationIcon = navigationIcon,
         actions = actions,
         modifier = modifier.sharedTransitionAppBar(),
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun SwissTransferCenterTopAppBar(
+    title: String = "",
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = SwissTransferTheme.materialColors.tertiary,
+            titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
+            actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
+            navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
+        ),
+        title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
+        navigationIcon = navigationIcon,
+        actions = actions,
     )
 }
 
@@ -133,3 +154,21 @@ private fun SwissTransferTopAppBarPreview() {
         )
     }
 }
+
+@PreviewLightAndDark
+@Composable
+private fun SwissTransferCenterTopAppBarPreview() {
+    SwissTransferTheme {
+        SwissTransferCenterTopAppBar(
+            title = stringResource(R.string.appName),
+            navigationIcon = { TopAppBarButtons.Back {} },
+            actions = {
+                TopAppBarButton(AppIcons.Add, R.string.appName, onClick = {})
+                TopAppBarButtons.Close {}
+                TopAppBarButtons.QrCode {}
+                TopAppBarButtons.Download(onClick = {})
+            }
+        )
+    }
+}
+

@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -64,6 +64,7 @@ fun FileItem(
     modifier: Modifier = Modifier,
     isChecked: () -> Boolean = { false },
     onClick: (() -> Unit)? = null,
+    onLongPress: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
     previewUriForFile: State<String?> = rememberUpdatedState(file.thumbnailPath),
     previewOverlay: @Composable BoxScope.() -> Unit = {}
@@ -71,6 +72,7 @@ fun FileItem(
     FileItemContent(
         modifier = modifier,
         onClick = onClick,
+        onLongPress = onLongPress,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
         isRemoveButtonVisible = isRemoveButtonVisible,
@@ -109,10 +111,12 @@ private fun FileItemContent(
     onRemove: (() -> Unit)?,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    onLongPress: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
     Card(
-        modifier = modifier.then(getCardModifier(onClick)),
+        modifier = modifier
+            .then(getCardModifier(onClick, onLongPress)),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -157,10 +161,13 @@ private fun FileItemContent(
     }
 }
 
-private fun getCardModifier(onClick: (() -> Unit)? = null): Modifier {
+private fun getCardModifier(onClick: (() -> Unit)? = null, onLongPress: (() -> Unit)? = null): Modifier {
     return Modifier
         .aspectRatio(164.0f / 152.0f)
-        .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+        .then(Modifier.combinedClickable(
+            onClick = onClick ?: {},
+            onLongClick = onLongPress ?: {}
+        ))
 }
 
 @PreviewLightAndDark

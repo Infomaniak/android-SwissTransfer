@@ -48,6 +48,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -57,6 +58,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -71,14 +73,16 @@ fun FileItemList(
     setUidCheckStatus: (String, Boolean) -> Unit,
     direction: TransferDirection?,
     modifier: Modifier = Modifier,
+    onLongPress: ((String) -> Unit)? = null,
     onRemoveUid: ((String) -> Unit)? = null,
     navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
-    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
+    downloadRequestFlow: Flow<String> = emptyFlow(),
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
-    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() }
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -109,11 +113,23 @@ fun FileItemList(
             if (downloadUi != null) {
                 LaunchedEffect(file.uid) {
                     transferFlow.collect { transfer ->
-                        runDownloadUi(downloadUi, transfer, file)
+                        runDownloadUi(
+                            downloadUi,
+                            transfer,
+                            DownloadTarget.SingleFile(file)
+                        )
                     }
                 }
             }
-            
+
+            val onDownloadFile = writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
+
+            LaunchedEffect(Unit) {
+                downloadRequestFlow.filter { it == file.uid }.collect {
+                    onDownloadFile()
+                }
+            }
+
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -130,8 +146,9 @@ fun FileItemList(
                             }
                         }
                     }
-                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
+                    else -> onDownloadFile
                 },
+                onLongPress = onLongPress?.let { callback -> { callback(file.uid) } },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
                         previewUriForFile(transfer, file).collect { uri: Uri? ->
