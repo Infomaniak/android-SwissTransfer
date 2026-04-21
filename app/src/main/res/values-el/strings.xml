@@ -100,6 +100,8 @@
     <string name="onboardingStorageSubtitleArgument">Μοιράσου έως 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s αρχείων δωρεάν χωρίς εγγραφή.</string>
     <string name="onboardingStorageTitle">Στείλε μεγάλα αρχεία!</string>
+    <string name="oneClickSharing">Κοινοποίηση με 1 κλικ!</string>
+    <string name="quickSharingDescription">Για γρήγορη κοινοποίηση, χρησιμοποίησε το κουμπί %1$s ή %2$s κάτω από τον κωδικό QR.\nΕίναι πιο εύκολο από τη λήψη στιγμιότυπου οθόνης.</string>
     <string name="receivedFilesTitle">Ληφθέντα αρχεία</string>
     <string name="receivedTitle">Ελήφθη</string>
     <plurals name="recipientHeader">
@@ -197,6 +199,7 @@
     <string name="transferVirusCheckTitle">Τα αρχεία ελέγχονται</string>
     <string name="transferVirusDetectedDescription">Δεν μπορείς να αποκτήσεις πρόσβαση σε αυτή τη μεταφορά επειδή δεν συμμορφώνεται με τους όρους χρήσης μας.</string>
     <string name="transferVirusDetectedTitle">Μη συμβατά αρχεία</string>
+    <string name="understandTitleButton">Κατάλαβα!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Είσαι σίγουρος ότι θέλεις να ακυρώσεις τη μεταφορά;</string>
     <string name="uploadErrorDescription">Η μεταφορά δεν λειτούργησε, δώσε της μια ακόμα ευκαιρία. Αν το πρόβλημα παραμένει, επικοινώνησε με την ομάδα υποστήριξής μας.</string>
     <string name="uploadErrorTitle">Περίμενε, τι συνέβη μόλις;</string>

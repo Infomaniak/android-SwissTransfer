@@ -104,6 +104,8 @@
     <string name="onboardingStorageSubtitleArgument">Share up to 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s of files for free without any registration.</string>
     <string name="onboardingStorageTitle">Send Big!</string>
+    <string name="oneClickSharing">Share in 1 click!</string>
+    <string name="quickSharingDescription">To quickly share, use the %1$s or %2$s button below the QR.\nIt’s easier than capturing the screen.</string>
     <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
     <plurals name="recipientHeader">
@@ -201,6 +203,7 @@
     <string name="transferVirusCheckTitle">Files being checked</string>
     <string name="transferVirusDetectedDescription">You cannot access this transfer because it does not comply with our terms of use.</string>
     <string name="transferVirusDetectedTitle">Non-compliant files</string>
+    <string name="understandTitleButton">I understood!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Are you sure you want to cancel the transfer?</string>
     <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
     <string name="uploadErrorTitle">Wait, what just happened?</string>

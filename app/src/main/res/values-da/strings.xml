@@ -100,6 +100,8 @@
     <string name="onboardingStorageSubtitleArgument">Del op til 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s filer gratis uden registrering.</string>
     <string name="onboardingStorageTitle">Send store filer!</string>
+    <string name="oneClickSharing">Del med 1 klik!</string>
+    <string name="quickSharingDescription">For hurtig deling, brug knappen %1$s eller %2$s under QR-koden.\nDet er nemmere end at tage et skærmbillede.</string>
     <string name="receivedFilesTitle">Modtagne filer</string>
     <string name="receivedTitle">Modtaget</string>
     <plurals name="recipientHeader">
@@ -197,6 +199,7 @@
     <string name="transferVirusCheckTitle">Filer kontrolleres</string>
     <string name="transferVirusDetectedDescription">Du kan ikke få adgang til denne overføring, da den ikke overholder vores brugsbetingelser.</string>
     <string name="transferVirusDetectedTitle">Ikke-kompatible filer</string>
+    <string name="understandTitleButton">Jeg forstod!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Er du sikker på, at du vil annullere overføringen?</string>
     <string name="uploadErrorDescription">Overføringen virkede ikke, giv det endnu en chance. Hvis problemet fortsætter, skal du kontakte vores supportteam.</string>
     <string name="uploadErrorTitle">Vent, hvad skete der lige?</string>

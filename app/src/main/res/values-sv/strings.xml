@@ -100,6 +100,8 @@
     <string name="onboardingStorageSubtitleArgument">Dela upp till 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s filer gratis utan registrering.</string>
     <string name="onboardingStorageTitle">Skicka tunga filer!</string>
+    <string name="oneClickSharing">Dela med 1 klick!</string>
+    <string name="quickSharingDescription">För snabb delning, använd knappen %1$s eller %2$s under QR-koden.\nDet är enklare än att ta en skärmbild.</string>
     <string name="receivedFilesTitle">Mottagna filer</string>
     <string name="receivedTitle">Mottaget</string>
     <plurals name="recipientHeader">
@@ -197,6 +199,7 @@
     <string name="transferVirusCheckTitle">Filer kontrolleras</string>
     <string name="transferVirusDetectedDescription">Du kan inte komma åt denna överföring eftersom den inte uppfyller våra användarvillkor.</string>
     <string name="transferVirusDetectedTitle">Ej kompatibla filer</string>
+    <string name="understandTitleButton">Jag förstår!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Är du säker på att du vill avbryta överföringen?</string>
     <string name="uploadErrorDescription">Överföringen fungerade inte, ge det en ny chans. Om problemet kvarstår, kontakta vårt supportteam.</string>
     <string name="uploadErrorTitle">Vänta, vad hände just?</string>

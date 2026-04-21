@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import android.app.Activity
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,9 +34,15 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
@@ -48,6 +56,7 @@ import com.infomaniak.swisstransfer.ui.components.QrCode
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ScreenshotBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ShareAndCopyButtons
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -55,6 +64,31 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val context = LocalContext.current
+    val activity = context as? Activity
+    var showScreenshotBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        var callback: Activity.ScreenCaptureCallback? = null
+
+        if (activity != null) {
+            callback = Activity.ScreenCaptureCallback {
+                showScreenshotBottomSheet = true
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                activity.registerScreenCaptureCallback(activity.mainExecutor, callback)
+            }
+        }
+
+        onDispose {
+            if (activity != null && callback != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    activity.unregisterScreenCaptureCallback(callback)
+                }
+            }
+        }
+    }
 
     BottomStickyButtonScaffold(
         snackbarHostState = snackbarHostState,
@@ -78,6 +112,12 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
             )
         }
     }
+
+    ScreenshotBottomSheet(
+        isVisible = { showScreenshotBottomSheet },
+        closeBottomSheet = { showScreenshotBottomSheet = false },
+        transferLink = transferUrl,
+    )
 }
 
 @Composable

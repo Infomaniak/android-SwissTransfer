@@ -100,6 +100,8 @@
     <string name="onboardingStorageSubtitleArgument">Deel tot 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s bestanden gratis en zonder registratie.</string>
     <string name="onboardingStorageTitle">Verstuur grote bestanden!</string>
+    <string name="oneClickSharing">Delen in 1 klik!</string>
+    <string name="quickSharingDescription">Om snel te delen, gebruik de knop %1$s of %2$s onder de QR.\nHet is eenvoudiger dan het scherm vastleggen.</string>
     <string name="receivedFilesTitle">Ontvangen bestanden</string>
     <string name="receivedTitle">Ontvangen</string>
     <plurals name="recipientHeader">
@@ -197,6 +199,7 @@
     <string name="transferVirusCheckTitle">Bestanden worden gecontroleerd</string>
     <string name="transferVirusDetectedDescription">Je kunt geen toegang krijgen tot deze overdracht omdat deze niet voldoet aan onze gebruiksvoorwaarden.</string>
     <string name="transferVirusDetectedTitle">Niet-conforme bestanden</string>
+    <string name="understandTitleButton">Begrepen!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Weet je zeker dat je de overdracht wilt annuleren?</string>
     <string name="uploadErrorDescription">De overdracht is mislukt, geef het een nieuwe kans. Als het probleem aanhoudt, neem dan contact op met ons ondersteuningsteam.</string>
     <string name="uploadErrorTitle">Wacht, wat is er zojuist gebeurd?</string>

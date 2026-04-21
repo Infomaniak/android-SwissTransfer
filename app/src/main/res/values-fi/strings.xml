@@ -100,6 +100,8 @@
     <string name="onboardingStorageSubtitleArgument">Jaa jopa 50 Gt</string>
     <string name="onboardingStorageSubtitleTemplate">%s tiedostoja ilmaiseksi ilman rekisteröitymistä.</string>
     <string name="onboardingStorageTitle">Lähetä isoja tiedostoja!</string>
+    <string name="oneClickSharing">Jaa yhdellä napsautuksella!</string>
+    <string name="quickSharingDescription">Jakaminen nopeasti onnistuu käyttämällä %1$s- tai %2$s-painiketta QR-koodin alla.\nSe on helpompaa kuin kuvakaappauksen ottaminen.</string>
     <string name="receivedFilesTitle">Vastaanotetut tiedostot</string>
     <string name="receivedTitle">Vastaanotettu</string>
     <plurals name="recipientHeader">
@@ -197,6 +199,7 @@
     <string name="transferVirusCheckTitle">Tiedostoja tarkistetaan</string>
     <string name="transferVirusDetectedDescription">Et voi käyttää tätä siirtoa, koska se ei noudata käyttöehtojamme.</string>
     <string name="transferVirusDetectedTitle">Vaatimustenvastaisia tiedostoja</string>
+    <string name="understandTitleButton">Ymmärsin!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Haluatko varmasti peruuttaa siirron?</string>
     <string name="uploadErrorDescription">Siirto ei onnistunut, anna sille toinen mahdollisuus. Jos ongelma jatkuu, ota yhteyttä tukitiimiimme.</string>
     <string name="uploadErrorTitle">Odota, mitä juuri tapahtui?</string>

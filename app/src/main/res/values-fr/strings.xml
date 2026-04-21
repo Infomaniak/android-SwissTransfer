@@ -100,6 +100,8 @@
     <string name="onboardingStorageSubtitleArgument">Partage jusqu’à 50 Go</string>
     <string name="onboardingStorageSubtitleTemplate">%s de fichiers gratuitement et sans inscription.</string>
     <string name="onboardingStorageTitle">Envoie du lourd !</string>
+    <string name="oneClickSharing">Partage en 1 clic !</string>
+    <string name="quickSharingDescription">Pour partager rapidement, utilise le bouton %1$s ou %2$s sous le QR.\nC’est plus simple que de capturer l’écran.</string>
     <string name="receivedFilesTitle">Fichiers reçus</string>
     <string name="receivedTitle">Reçu</string>
     <plurals name="recipientHeader" tools:ignore="ImpliedQuantity">
@@ -197,6 +199,7 @@
     <string name="transferVirusCheckTitle">Fichiers en cours de vérification</string>
     <string name="transferVirusDetectedDescription">Tu ne peux pas accéder à ce transfert car il ne respecte pas nos conditions d’utilisation.</string>
     <string name="transferVirusDetectedTitle">Fichiers non conformes</string>
+    <string name="understandTitleButton">J’ai compris !</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Es-tu certain de vouloir annuler le transfert ?</string>
     <string name="uploadErrorDescription">Le transfert n’a pas fonctionné, donnes-lui une autre chance. Si le problème persiste, contacte notre support.</string>
     <string name="uploadErrorTitle">Qu’est-ce que quoi ?</string>
