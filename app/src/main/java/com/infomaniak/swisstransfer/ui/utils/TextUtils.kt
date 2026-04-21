@@ -22,6 +22,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 object TextUtils {
     @Composable
@@ -38,7 +39,7 @@ object TextUtils {
             val startIndex1 = description.indexOf(argument1)
             if (startIndex1 != -1) {
                 addStyle(
-                    style = SpanStyle(fontWeight = FontWeight.Bold),
+                    style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
                     start = startIndex1,
                     end = startIndex1 + argument1.length
                 )
@@ -48,7 +49,7 @@ object TextUtils {
                 val startIndex2 = description.indexOf(argument2)
                 if (startIndex2 != -1) {
                     addStyle(
-                        style = SpanStyle(fontWeight = FontWeight.Bold),
+                        style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
                         start = startIndex2,
                         end = startIndex2 + argument2.length
                     )
