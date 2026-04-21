@@ -67,9 +67,9 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     direction: TransferDirection,
-    transferUuid: String? = null,
-    isApiV2Deeplink: Boolean? = null,
     hideBottomBar: MutableState<Boolean>,
+    transferUuid: String? = null,
+    isApiV2Deeplink: Boolean? = null
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
