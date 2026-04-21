@@ -17,17 +17,18 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components
 
-import android.content.Context
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
-import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
 import com.infomaniak.swisstransfer.ui.images.AppImages
@@ -38,17 +39,18 @@ import com.infomaniak.swisstransfer.ui.utils.shareText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenshotBottomSheet(isVisible: () -> Boolean, closeBottomSheet: () -> Unit, transferLink: String) {
-    if (!isVisible()) return
-
+fun ScreenshotBottomSheet(onDismissRequest: () -> Unit, transferLink: String) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val descriptionTemplate = stringResource(R.string.quickSharingDescription)
     val buttonShareLabel = stringResource(R.string.buttonShare)
     val buttonCopyLinkLabel = stringResource(R.string.buttonCopyLink)
 
     SwissTransferBottomSheet(
-        onDismissRequest = closeBottomSheet,
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
         topButton = {
             LargeButton(
                 modifier = it,
@@ -56,15 +58,8 @@ fun ScreenshotBottomSheet(isVisible: () -> Boolean, closeBottomSheet: () -> Unit
                 onClick = {
                     MatomoSwissTransfer.trackNewTransferEvent(MatomoName.Share)
                     context.shareText(transferLink)
+                    sheetState.dismissGracefully(scope, { onDismissRequest() })
                 },
-            )
-        },
-        bottomButton = {
-            LargeButton(
-                modifier = it,
-                title = stringResource(R.string.understandTitleButton),
-                style = ButtonType.Tertiary,
-                onClick = closeBottomSheet,
             )
         },
         imageVector = AppImages.AppIllus.Lightbulb.image(),
@@ -79,8 +74,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             ScreenshotBottomSheet(
-                isVisible = { true },
-                closeBottomSheet = {},
+                onDismissRequest = {},
                 transferLink = "",
             )
         }
