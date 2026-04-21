@@ -33,7 +33,7 @@ object TextUtils {
             } else {
                 String.format(template, argument1)
             }
-        } catch (e: java.util.MissingFormatArgumentException) {
+        } catch (e: java.util.IllegalFormatException) {
             template
         }
 
