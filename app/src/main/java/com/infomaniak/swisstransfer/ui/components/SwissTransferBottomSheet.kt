@@ -65,10 +65,18 @@ fun SwissTransferBottomSheet(
     annotatedDescription: AnnotatedString? = null,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
-    content: @Composable (() -> Unit)? = null,
+    content: @Composable (() -> Unit)? = null
 ) {
-    ModalBottomSheet(onDismissRequest, modifier, sheetState) {
-        BottomSheetContent(imageVector, title, description, content, annotatedDescription, topButton, bottomButton)
+    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {
+        BottomSheetContent(
+            imageVector = imageVector,
+            title = title,
+            description = description,
+            content = content,
+            annotatedDescription = annotatedDescription,
+            topButton = topButton,
+            bottomButton = bottomButton
+        )
     }
 }
 
@@ -105,26 +113,28 @@ private fun BottomSheetContent(
             Spacer(Modifier.height(Margin.Large))
         }
 
-        description?.let {
-            Text(
-                text = it,
-                textAlign = TextAlign.Center,
-                style = SwissTransferTheme.typography.bodyRegular,
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                modifier = paddedModifier,
-            )
-            Spacer(Modifier.height(Margin.Large))
-        }
-
-        annotatedDescription?.let {
-            Text(
-                text = it,
-                textAlign = TextAlign.Center,
-                style = SwissTransferTheme.typography.bodyRegular,
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                modifier = paddedModifier,
-            )
-            Spacer(Modifier.height(Margin.Large))
+        if (!annotatedDescription.isNullOrBlank()) {
+            annotatedDescription.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = paddedModifier,
+                )
+                Spacer(Modifier.height(Margin.Large))
+            }
+        } else {
+            description?.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = paddedModifier,
+                )
+                Spacer(Modifier.height(Margin.Large))
+            }
         }
 
         content?.let {
