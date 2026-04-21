@@ -199,7 +199,6 @@
     <string name="transferVirusCheckTitle">Ficheiros em verificação</string>
     <string name="transferVirusDetectedDescription">Não podes aceder a esta transferência porque não cumpre os nossos termos de utilização.</string>
     <string name="transferVirusDetectedTitle">Ficheiros não conformes</string>
-    <string name="understandTitleButton">Percebi!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Tens a certeza de que queres cancelar a transferência?</string>
     <string name="uploadErrorDescription">A transferência não funcionou, dá-lhe uma nova oportunidade. Se o problema persistir, contacta a nossa equipa de suporte.</string>
     <string name="uploadErrorTitle">Espera, o que aconteceu aqui?</string>

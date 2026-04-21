@@ -199,7 +199,6 @@
     <string name="transferVirusCheckTitle">Filer kontrolleras</string>
     <string name="transferVirusDetectedDescription">Du kan inte komma åt denna överföring eftersom den inte uppfyller våra användarvillkor.</string>
     <string name="transferVirusDetectedTitle">Ej kompatibla filer</string>
-    <string name="understandTitleButton">Jag förstår!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Är du säker på att du vill avbryta överföringen?</string>
     <string name="uploadErrorDescription">Överföringen fungerade inte, ge det en ny chans. Om problemet kvarstår, kontakta vårt supportteam.</string>
     <string name="uploadErrorTitle">Vänta, vad hände just?</string>

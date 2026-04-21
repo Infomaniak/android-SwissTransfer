@@ -199,7 +199,6 @@
     <string name="transferVirusCheckTitle">Bestanden worden gecontroleerd</string>
     <string name="transferVirusDetectedDescription">Je kunt geen toegang krijgen tot deze overdracht omdat deze niet voldoet aan onze gebruiksvoorwaarden.</string>
     <string name="transferVirusDetectedTitle">Niet-conforme bestanden</string>
-    <string name="understandTitleButton">Begrepen!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Weet je zeker dat je de overdracht wilt annuleren?</string>
     <string name="uploadErrorDescription">De overdracht is mislukt, geef het een nieuwe kans. Als het probleem aanhoudt, neem dan contact op met ons ondersteuningsteam.</string>
     <string name="uploadErrorTitle">Wacht, wat is er zojuist gebeurd?</string>

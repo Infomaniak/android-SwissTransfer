@@ -209,7 +209,6 @@
     <string name="transferVirusCheckTitle">Pliki są sprawdzane</string>
     <string name="transferVirusDetectedDescription">Nie możesz uzyskać dostępu do tego transferu, ponieważ nie jest zgodny z naszymi warunkami użytkowania.</string>
     <string name="transferVirusDetectedTitle">Niezgodne pliki</string>
-    <string name="understandTitleButton">Rozumiem!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Czy na pewno chcesz anulować transfer?</string>
     <string name="uploadErrorDescription">Transfer nie zadziałał, daj mu jeszcze jedną szansę. Jeśli problem będzie się utrzymywał, skontaktuj się z naszym zespołem wsparcia.</string>
     <string name="uploadErrorTitle">Poczekaj, co tu się właśnie stało?</string>

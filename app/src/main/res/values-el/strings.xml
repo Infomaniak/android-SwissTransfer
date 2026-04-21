@@ -199,7 +199,6 @@
     <string name="transferVirusCheckTitle">Τα αρχεία ελέγχονται</string>
     <string name="transferVirusDetectedDescription">Δεν μπορείς να αποκτήσεις πρόσβαση σε αυτή τη μεταφορά επειδή δεν συμμορφώνεται με τους όρους χρήσης μας.</string>
     <string name="transferVirusDetectedTitle">Μη συμβατά αρχεία</string>
-    <string name="understandTitleButton">Κατάλαβα!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Είσαι σίγουρος ότι θέλεις να ακυρώσεις τη μεταφορά;</string>
     <string name="uploadErrorDescription">Η μεταφορά δεν λειτούργησε, δώσε της μια ακόμα ευκαιρία. Αν το πρόβλημα παραμένει, επικοινώνησε με την ομάδα υποστήριξής μας.</string>
     <string name="uploadErrorTitle">Περίμενε, τι συνέβη μόλις;</string>

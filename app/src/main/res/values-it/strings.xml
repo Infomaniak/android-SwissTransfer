@@ -199,7 +199,6 @@
     <string name="transferVirusCheckTitle">File controllati</string>
     <string name="transferVirusDetectedDescription">Non è possibile accedere a questo trasferimento perché non è conforme alle nostre condizioni d’uso.</string>
     <string name="transferVirusDetectedTitle">File non conformi</string>
-    <string name="understandTitleButton">Ho capito!</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Sei sicuro di voler annullare il trasferimento?</string>
     <string name="uploadErrorDescription">Il trasferimento non ha funzionato, da un’altra possibilità. Se il problema persiste, contatta il nostro team di assistenza.</string>
     <string name="uploadErrorTitle">Che cosa che… cosa?</string>
