@@ -146,7 +146,8 @@ fun FileItemList(
 
 private fun Context.openLocalFile(contentUri: Uri) {
     val intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(contentUri, contentResolver.getType(contentUri))
+        val mimeType = contentResolver.getType(contentUri) ?: "*/*"
+        setDataAndType(contentUri, mimeType)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
     safeStartActivity(intent)
