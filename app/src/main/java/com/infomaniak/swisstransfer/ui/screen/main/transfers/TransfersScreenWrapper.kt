@@ -69,9 +69,9 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     direction: TransferDirection,
-    transferUuid: String? = null,
-    isApiV2Deeplink: Boolean? = null,
     hideBottomBar: MutableState<Boolean>,
+    transferUuid: String? = null,
+    isApiV2Deeplink: Boolean? = null
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -209,7 +209,8 @@ private fun DetailPane(
         is DestinationContent.RootLevel -> {
             TransferDetailsScreen(
                 transferUuid = destinationContent.transferUuid,
-                direction = destinationContent.direction, isApiV2Deeplink = isApiV2Deeplink,
+                direction = destinationContent.direction,
+                isApiV2Deeplink = isApiV2Deeplink,
                 navigateBack = navigateBack,
                 navigateToFolder = { selectedFolderUuid ->
                     scope.launch {
@@ -219,7 +220,8 @@ private fun DetailPane(
                             selectedFolderUuid,
                         )
                     }
-                }, onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
+                },
+                onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
             )
         }
         is DestinationContent.FolderLevel -> {
