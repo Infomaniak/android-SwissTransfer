@@ -144,7 +144,7 @@ fun FileItemList(
     }
 }
 
-fun Context.openLocalFile(contentUri: Uri) {
+private fun Context.openLocalFile(contentUri: Uri) {
     val intent = Intent(Intent.ACTION_VIEW).apply {
         setDataAndType(contentUri, contentResolver.getType(contentUri))
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
