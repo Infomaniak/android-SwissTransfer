@@ -160,7 +160,7 @@
     <string name="startActivityCantHandleAction">Es wurde keine Anwendung gefunden, die diese Aktion bearbeitet</string>
     <string name="textFieldOptional">(Optional)</string>
     <string name="tooLargeFilesDescription">Die maximale Grösse einer Übertragung wurde überschritten.</string>
-    <string name="tooLargeFilesTitle">Das ist ein bisschen viel..</string>
+    <string name="tooLargeFilesTitle">Das ist ein bisschen viel…</string>
     <string name="transferContentHeader">Inhalt der Übertragung:</string>
     <string name="transferExpiredButton">Aus dem Verlauf löschen</string>
     <string name="transferExpiredDateReachedDescription">Tut mir leid, diese Übertragung ist am %s abgelaufen. Du kannst die Dateien nicht mehr herunterladen oder ansehen.</string>
