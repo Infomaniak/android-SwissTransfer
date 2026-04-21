@@ -105,7 +105,9 @@ fun FileItemList(
                 TransferDownloadComposeUi(lifecycle, snackbarHostState, direction)
             }
 
-            LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
+            if (!isNewTransfer){
+                LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
+            }
 
             FileItem(
                 modifier = Modifier.animateItem(),
