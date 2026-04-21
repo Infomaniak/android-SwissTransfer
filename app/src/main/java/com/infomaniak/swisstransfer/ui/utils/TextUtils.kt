@@ -27,10 +27,14 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 object TextUtils {
     @Composable
     fun assembleWithBoldArgument(template: String, argument1: String, argument2: String? = null): AnnotatedString {
-        val description = if (argument2 != null) {
-            String.format(template, argument1, argument2)
-        } else {
-            String.format(template, argument1)
+        val description = try {
+            if (argument2 != null) {
+                String.format(template, argument1, argument2)
+            } else {
+                String.format(template, argument1)
+            }
+        } catch (e: java.util.MissingFormatArgumentException) {
+            template
         }
 
         return buildAnnotatedString {
