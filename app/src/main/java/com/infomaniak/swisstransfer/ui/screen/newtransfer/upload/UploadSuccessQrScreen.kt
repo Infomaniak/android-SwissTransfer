@@ -113,11 +113,12 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
         }
     }
 
-    ScreenshotBottomSheet(
-        isVisible = { showScreenshotBottomSheet },
-        closeBottomSheet = { showScreenshotBottomSheet = false },
-        transferLink = transferUrl,
-    )
+    if (showScreenshotBottomSheet) {
+        ScreenshotBottomSheet(
+            onDismissRequest = { showScreenshotBottomSheet = false },
+            transferLink = transferUrl,
+        )
+    }
 }
 
 @Composable
