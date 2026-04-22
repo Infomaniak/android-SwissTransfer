@@ -145,11 +145,12 @@ fun FileItemList(
 }
 
 private fun Context.openLocalFile(contentUri: Uri) {
-    require(contentUri.scheme == "content") { "URI must be a content:// URI" }
     val intent = Intent(Intent.ACTION_VIEW).apply {
         val mimeType = contentResolver.getType(contentUri) ?: "*/*"
         setDataAndType(contentUri, mimeType)
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        if (contentUri.scheme == "content") {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
     }
     safeStartActivity(intent)
 }
