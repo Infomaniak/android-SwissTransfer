@@ -105,7 +105,7 @@ fun FileItemList(
                 TransferDownloadComposeUi(lifecycle, snackbarHostState, direction)
             }
 
-            if (!isNewTransfer){
+            if (!isNewTransfer) {
                 LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
             }
 
@@ -118,7 +118,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    isNewTransfer -> fun() { context.openLocalFile(file.uid.toUri()) }
+                    isNewTransfer -> fun() { file.localPath?.let { filePath -> context.openLocalFile(filePath.toUri()) } }
                     else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
