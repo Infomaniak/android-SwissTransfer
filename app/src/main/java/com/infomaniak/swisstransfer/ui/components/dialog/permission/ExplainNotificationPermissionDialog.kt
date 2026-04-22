@@ -19,25 +19,15 @@ package com.infomaniak.swisstransfer.ui.components.dialog.permission
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.infomaniak.core.permissionmanager.PermissionManagerState
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ExplainNotificationPermissionDialog(permissionManager: PermissionManagerState) {
-    ExplainNotificationPermissionDialog(
-        isVisible = permissionManager::shouldShowRationale,
-        onDismiss = permissionManager::dismissAndAskPermission,
-    )
-}
-
-@Composable
-private fun ExplainNotificationPermissionDialog(isVisible: () -> Boolean, onDismiss: () -> Unit) {
+fun ExplainNotificationPermissionDialog(onDismiss: () -> Unit) {
     InformationPermissionDialog(
         title = stringResource(R.string.notificationUsageTitle),
         description = stringResource(R.string.notificationUsageDescription),
-        isVisible = isVisible,
         onDismiss = onDismiss,
     )
 }
@@ -46,6 +36,6 @@ private fun ExplainNotificationPermissionDialog(isVisible: () -> Boolean, onDism
 @Composable
 private fun ExplainNotificationPermissionDialogPreview() {
     SwissTransferTheme {
-        ExplainNotificationPermissionDialog(onDismiss = { }, isVisible = { true })
+        ExplainNotificationPermissionDialog(onDismiss = { })
     }
 }

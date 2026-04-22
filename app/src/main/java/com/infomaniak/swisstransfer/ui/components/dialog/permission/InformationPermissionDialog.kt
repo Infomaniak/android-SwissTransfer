@@ -18,9 +18,7 @@
 package com.infomaniak.swisstransfer.ui.components.dialog.permission
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
-import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -30,18 +28,15 @@ fun InformationPermissionDialog(
     title: String,
     description: String,
     onDismiss: () -> Unit,
-    isVisible: () -> Boolean,
 ) {
-    if (isVisible()) {
-        SwissTransferAlertDialog(
-            title = title,
-            description = description,
-            onDismiss = onDismiss,
-            positiveButton = {
-                SwissTransferAlertDialogDefaults.ConfirmButton(onClick = onDismiss)
-            },
-        )
-    }
+    SwissTransferAlertDialog(
+        title = title,
+        description = description,
+        onDismiss = onDismiss,
+        positiveButton = {
+            SwissTransferAlertDialogDefaults.ConfirmButton(onClick = onDismiss)
+        },
+    )
 }
 
 @PreviewLightAndDark
@@ -51,8 +46,7 @@ private fun InformationPermissionDialogPreview() {
         InformationPermissionDialog(
             title = "Permission title",
             description = "Allow permission description",
-            onDismiss = { },
-            isVisible = { true },
+            onDismiss = {},
         )
     }
 }

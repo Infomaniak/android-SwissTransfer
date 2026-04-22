@@ -74,9 +74,8 @@ fun SwissTransferAlertDialog(
     positiveButton: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     description: String? = null,
-    negativeButton: @Composable () -> Unit = { },
+    negativeButton: @Composable () -> Unit = {},
     content: @Composable (ColumnScope.() -> Unit)? = null,
-
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
@@ -103,7 +102,7 @@ private fun BasicAlertDialogContent(
     description: String?,
     positiveButton: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    negativeButton: @Composable () -> Unit = { },
+    negativeButton: @Composable () -> Unit = {},
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     Column(modifier.padding(Margin.Large)) {
@@ -138,7 +137,7 @@ private fun TitleAndDescription(title: String, description: String?) {
 @Composable
 private fun ActionButtons(
     positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit = { },
+    negativeButton: @Composable () -> Unit = {},
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),

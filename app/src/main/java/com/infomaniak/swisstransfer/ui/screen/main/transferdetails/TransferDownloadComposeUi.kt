@@ -177,11 +177,11 @@ class TransferDownloadComposeUi(
                 }
             }
         } else {
-            val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+            val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
             TopAppBarButtons.Download(
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = permissionManagerState.waitUntilGranted { downloadRequest() },
+                onClick = writeExternalStoragePermissionManager.dropIfDenied { downloadRequest() },
             )
         }
     }
@@ -200,13 +200,13 @@ class TransferDownloadComposeUi(
                 )
             }
         } else {
-            val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+            val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
             BottomBarButton(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = permissionManagerState.waitUntilGranted { downloadRequest() },
+                onClick = writeExternalStoragePermissionManager.dropIfDenied { downloadRequest() },
                 modifier = modifier,
             )
         }
@@ -225,13 +225,13 @@ class TransferDownloadComposeUi(
                 )
             }
         } else {
-            val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+            val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
             CardCornerButton(
                 icon = ButtonData.download.icon,
                 labelResId = ButtonData.download.labelResId,
                 enabled = downloadRequest.isAwaitingCall,
-                onClick = permissionManagerState.waitUntilGranted { downloadRequest() },
+                onClick = writeExternalStoragePermissionManager.dropIfDenied { downloadRequest() },
                 modifier = modifier,
             )
         }

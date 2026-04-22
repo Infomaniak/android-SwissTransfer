@@ -57,7 +57,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.mapSync
-import com.infomaniak.core.permissionmanager.PermissionManagerState
+import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
@@ -102,7 +102,7 @@ fun PickFilesScreen(
     exitNewTransfer: () -> Unit,
     navigateToUploadProgress: () -> Unit,
     navigateToFilesDetails: () -> Unit,
-    permissionManager: PermissionManagerState,
+    notificationPermissionManager: RationalePermissionManagerState,
 ) {
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
@@ -194,7 +194,7 @@ fun PickFilesScreen(
         exitNewTransfer = { exit() },
         onSendButtonClick = {
             MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoName)
-            permissionManager.askPermission()
+            notificationPermissionManager.requestPermissionOrShowRationaleIfNeeded()
             // Notification permission is optional, so we don’t wait for the result
             pickFilesViewModel.send()
         },

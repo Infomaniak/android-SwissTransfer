@@ -76,7 +76,7 @@ fun FileItemList(
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val permissionManagerState = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+    val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
     LazyVerticalGrid(
         modifier = modifier,
@@ -110,7 +110,7 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> permissionManagerState.waitUntilGranted { downloadUi.onFileClick() }
+                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
