@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,11 +53,15 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.guardedCallback
+import com.infomaniak.swisstransfer.ui.utils.openFile
 import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -109,6 +114,8 @@ fun FileItemList(
                 LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
             }
 
+            val scope = rememberCoroutineScope()
+
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -118,8 +125,15 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    isNewTransfer -> fun() { file.localPath?.let { filePath -> context.openLocalFile(filePath.toUri()) } }
+                    isNewTransfer -> fun() {
+                        file.localPath?.let { filePath ->
+                            scope.launch(Dispatchers.IO) {
+                                context.openFile(filePath.toUri())
+                            }
+                        }
+                    }
                     else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
+
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
@@ -142,17 +156,6 @@ fun FileItemList(
             )
         }
     }
-}
-
-private fun Context.openLocalFile(contentUri: Uri) {
-    val intent = Intent(Intent.ACTION_VIEW).apply {
-        val mimeType = contentResolver.getType(contentUri) ?: "*/*"
-        setDataAndType(contentUri, mimeType)
-        if (contentUri.scheme == "content") {
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    }
-    safeStartActivity(intent)
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
