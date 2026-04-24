@@ -17,8 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -53,9 +51,7 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.guardedCallback
 import com.infomaniak.swisstransfer.ui.utils.openFile
-import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
@@ -105,13 +101,23 @@ fun FileItemList(
         }
 
         items(files, key = { it.uid }) { file ->
-
-            val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
-                TransferDownloadComposeUi(lifecycle, snackbarHostState, direction)
-            }
-
-            if (!isNewTransfer) {
-                LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
+            val downloadUi: TransferDownloadComposeUi? =
+                if (!isNewTransfer) {
+                    remember(lifecycle) {
+                        TransferDownloadComposeUi(
+                            lifecycle,
+                            snackbarHostState,
+                            writeExternalStoragePermissionState,
+                            direction
+                        )
+                    }
+                } else null
+            if (downloadUi != null) {
+                LaunchedEffect(file.uid) {
+                    transferFlow.collect { transfer ->
+                        runDownloadUi(downloadUi, transfer, file)
+                    }
+                }
             }
 
             val scope = rememberCoroutineScope()
@@ -133,7 +139,6 @@ fun FileItemList(
                         }
                     }
                     else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
-
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
@@ -144,14 +149,12 @@ fun FileItemList(
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
-                    if (!isNewTransfer) {
-                        downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
-                        downloadUi.CardProgressBar(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .fillMaxWidth(),
-                        )
-                    }
+                    downloadUi?.CardCornerButton(Modifier.align(Alignment.TopEnd))
+                    downloadUi?.CardProgressBar(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth(),
+                    )
                 },
             )
         }
