@@ -56,7 +56,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -110,7 +109,6 @@ import com.infomaniak.swisstransfer.ui.utils.isApiV2
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.launch
 import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
@@ -355,7 +353,6 @@ private fun EmailAddressesTextFields(
     selectContact: (Uri, Context) -> Unit,
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
-    val coroutine = rememberCoroutineScope()
 
     fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -385,9 +382,7 @@ private fun EmailAddressesTextFields(
         try {
             launcher.launch(buildPickEmailContactIntent())
         } catch (_: ActivityNotFoundException) {
-            coroutine.launch {
-                longToast(R.string.startActivityCantHandleAction)
-            }
+            longToast(R.string.startActivityCantHandleAction)
         }
     }
 
