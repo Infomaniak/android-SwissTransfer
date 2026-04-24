@@ -21,6 +21,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
 import androidx.compose.runtime.derivedStateOf
@@ -80,8 +81,6 @@ import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
-import kotlin.collections.mutableListOf
-import kotlin.collections.set
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
@@ -134,9 +133,7 @@ class PickFilesViewModel @Inject constructor(
             }
 
             enum class Email : Issue {
-                AuthorUnspecified,
-                AuthorInvalid,
-                NoValidatedRecipients,
+                AuthorUnspecified, AuthorInvalid, NoValidatedRecipients,
             }
         }
     }
@@ -196,8 +193,7 @@ class PickFilesViewModel @Inject constructor(
             initialValue = FilesDetailsUiState.Success(emptyList()),
         )
 
-        @OptIn(FlowPreview::class)
-        importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
+        @OptIn(FlowPreview::class) importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList(),
@@ -256,8 +252,7 @@ class PickFilesViewModel @Inject constructor(
     }
 
     private fun pickedFilesIssues(
-        maxFilesSize: Long = FileUtils.MAX_FILES_SIZE,
-        maxFilesCount: Int = FileUtils.MAX_FILE_COUNT
+        maxFilesSize: Long = FileUtils.MAX_FILES_SIZE, maxFilesCount: Int = FileUtils.MAX_FILE_COUNT
     ): StateFlow<Set<Issue>> = UploadForegroundService.pickedFilesFlow.mapSync { pickedFiles ->
         if (pickedFiles.isEmpty()) {
             setOf(Issue.Files.NonePicked)
@@ -326,8 +321,7 @@ class PickFilesViewModel @Inject constructor(
 
     //region Transfer Options
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
-        key = SELECTED_VALIDITY_PERIOD_KEY,
-        initialValue = ValidityPeriodOption.THIRTY
+        key = SELECTED_VALIDITY_PERIOD_KEY, initialValue = ValidityPeriodOption.THIRTY
     )
 
     val selectedDownloadLimitOption = savedStateHandle.getStateFlow(
@@ -422,7 +416,7 @@ class PickFilesViewModel @Inject constructor(
     ) {
         try {
             viewModelScope.launch { contactPickLaunch(sessionUris, context) }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             SentryLog.e(TAG, "Error while importing contacts from picker result", e)
         }
     }
@@ -430,7 +424,17 @@ class PickFilesViewModel @Inject constructor(
     private suspend fun contactPickLaunch(
         sessionUris: Uri,
         context: Context,
-    ) = withContext(Dispatchers.IO) {
+    ) {
+        val contacts = queryContacts(sessionUris, context)
+        val newEmails = contacts.values.asSequence().flatMap { it.emails.asSequence() }.toSet()
+
+        updateValidatedRecipientsEmails(newEmails)
+    }
+
+    private suspend fun queryContacts(
+        sessionUris: Uri,
+        context: Context,
+    ): Map<String, Contact> = withContext(Dispatchers.IO) {
         val projection = arrayOf(
             ContactsContract.Contacts.LOOKUP_KEY,
             ContactsContract.Data.MIMETYPE,
@@ -440,43 +444,55 @@ class PickFilesViewModel @Inject constructor(
         val contactsMap = mutableMapOf<String, Contact>()
 
         context.contentResolver.query(sessionUris, projection, null, null, null)?.use { cursor ->
-            val lookupKeyIdx = cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)
-            val mimeTypeIdx = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE)
-            val data1Idx = cursor.getColumnIndex(ContactsContract.Data.DATA1)
-
-            if (lookupKeyIdx == -1 || mimeTypeIdx == -1 || data1Idx == -1) {
+            val indices = cursor.contactProjectionIndicesOrNull()
+            if (indices == null) {
                 SentryLog.e(TAG, "Projection invalide, colonnes manquantes.")
                 return@use
             }
 
             while (cursor.moveToNext()) {
-                val lookupKey = cursor.getString(lookupKeyIdx)
-                val mimeType = cursor.getString(mimeTypeIdx)
-                val data1 = cursor.getString(data1Idx) ?: ""
+                val lookupKey = cursor.getString(indices.lookupKeyIdx)
+                val email = cursor.emailOrNull(indices.mimeTypeIdx, indices.data1Idx) ?: continue
 
-                val email = if (mimeType == ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) data1 else null
-
-                val existingContact = contactsMap[lookupKey]
-                if (existingContact != null) {
-                    contactsMap[lookupKey] = existingContact.copy(
-                        emails = if (email != null) existingContact.emails + email else existingContact.emails,
-                    )
-                } else {
-                    contactsMap[lookupKey] = Contact(
-                        lookupKey = lookupKey,
-                        emails = if (email != null) listOf(email) else emptyList(),
-                    )
-                }
+                val current = contactsMap[lookupKey] ?: Contact(lookupKey = lookupKey, emails = emptyList())
+                contactsMap[lookupKey] = current.copy(emails = current.emails + email)
             }
         }
-
-        withContext(Dispatchers.Main) {
-            val allNewEmails = contactsMap.values.flatMap { it.emails }.toSet()
-            validatedRecipientsEmails = validatedRecipientsEmails.plus(allNewEmails)
-        }
-
+        contactsMap
     }
 
+    private suspend fun updateValidatedRecipientsEmails(newEmails: Set<String>) = withContext(Dispatchers.Main) {
+        validatedRecipientsEmails = validatedRecipientsEmails + newEmails
+    }
+
+    private data class ContactProjectionIndices(
+        val lookupKeyIdx: Int,
+        val mimeTypeIdx: Int,
+        val data1Idx: Int,
+    )
+
+    private fun Cursor.contactProjectionIndicesOrNull(): ContactProjectionIndices? {
+        val lookupKeyIdx = getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)
+        val mimeTypeIdx = getColumnIndex(ContactsContract.Data.MIMETYPE)
+        val data1Idx = getColumnIndex(ContactsContract.Data.DATA1)
+
+        return if (lookupKeyIdx == -1 || mimeTypeIdx == -1 || data1Idx == -1) {
+            null
+        } else {
+            ContactProjectionIndices(
+                lookupKeyIdx = lookupKeyIdx,
+                mimeTypeIdx = mimeTypeIdx,
+                data1Idx = data1Idx,
+            )
+        }
+    }
+
+    private fun Cursor.emailOrNull(mimeTypeIdx: Int, data1Idx: Int): String? {
+        val mimeType = getString(mimeTypeIdx)
+        if (mimeType != ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) return null
+
+        return getString(data1Idx)
+    }
 //endregion
 
     companion object {

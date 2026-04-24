@@ -28,6 +28,8 @@ import android.os.Build.VERSION.SDK_INT
 import android.provider.ContactsContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -257,9 +259,7 @@ private fun PickFilesScreen(
         modifier = Modifier.imePadding(),
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.importFilesScreenTitle,
-                actions = { TopAppBarButtons.Close(onClick = { exitNewTransfer() }) }
-            )
+                titleRes = R.string.importFilesScreenTitle, actions = { TopAppBarButtons.Close(onClick = { exitNewTransfer() }) })
         },
         topButton = { modifier ->
             SendButton(
@@ -357,24 +357,42 @@ private fun EmailAddressesTextFields(
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
 
-    val pickContact = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val clipData = it.data?.clipData
+    fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI).apply {
+        putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+    }
 
-            if (clipData != null) {
-                val length = clipData.itemCount
-                for (i in 0 until length) {
-                    clipData.getItemAt(i).uri?.let { uri ->
-                        selectContact(uri, context)
-                    }
+    fun handlePickedContacts(result: ActivityResult) {
+        if (result.resultCode != Activity.RESULT_OK) return
+
+        val dataIntent = result.data ?: return
+        val clipData = dataIntent.clipData
+
+        if (clipData != null) {
+            for (i in 0 until clipData.itemCount) {
+                clipData.getItemAt(i).uri?.let { uri ->
+                    selectContact(uri, context)
                 }
-            } else {
-                val data = it.data?.data ?: return@rememberLauncherForActivityResult
-                selectContact(data, context)
             }
+            return
+        }
 
+        dataIntent.data?.let { uri ->
+            selectContact(uri, context)
         }
     }
+
+    fun launchPickContactSafely(launcher: ActivityResultLauncher<Intent>) {
+        try {
+            launcher.launch(buildPickEmailContactIntent())
+        } catch (_: ActivityNotFoundException) {
+            coroutine.launch {
+                longToast(R.string.startActivityCantHandleAction)
+            }
+        }
+    }
+
+    val pickContactLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult(), ::handlePickedContacts)
 
     AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
@@ -402,24 +420,10 @@ private fun EmailAddressesTextFields(
                 onValueChange = { recipientEmail.set(it.text) },
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
-                trailingIcon =
-                    {
-                        TrailingButton(
-                            AppIcons.PersonsCircleAdd,
-                            {
-                                try {
-                                    val pickContactIntent =
-                                        Intent(ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI).apply {
-                                            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                                        }
-                                    pickContact.launch(pickContactIntent)
-                                } catch (_: ActivityNotFoundException) {
-                                    coroutine.launch {
-                                        longToast(R.string.startActivityCantHandleAction)
-                                    }
-                                }
-                            })
-                    },
+                trailingIcon = {
+                    TrailingButton(
+                        AppIcons.PersonsCircleAdd, onClick = { launchPickContactSafely(pickContactLauncher) })
+                },
             )
         }
     }
@@ -564,8 +568,7 @@ enum class PasswordTransferOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
 ) : SettingOption {
-    NONE({ stringResource(R.string.settingsOptionNone) }),
-    ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
+    NONE({ stringResource(R.string.settingsOptionNone) }), ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
 }
 
 @PreviewAllWindows
