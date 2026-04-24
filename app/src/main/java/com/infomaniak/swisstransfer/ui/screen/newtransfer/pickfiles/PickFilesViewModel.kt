@@ -405,36 +405,36 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    data class Contact(
+    private data class Contact(
         val lookupKey: String,
         val emails: List<String>,
     )
 
     fun processContactPickerResultUri(
-        sessionUris: Uri,
+        sessionUri: Uri,
         context: Context,
     ) {
         try {
-            viewModelScope.launch { contactPickLaunch(sessionUris, context) }
+            viewModelScope.launch { contactPickLaunch(sessionUri, context) }
         } catch (e: Exception) {
             SentryLog.e(TAG, "Error while importing contacts from picker result", e)
         }
     }
 
     private suspend fun contactPickLaunch(
-        sessionUris: Uri,
+        sessionUri: Uri,
         context: Context,
     ) {
-        val contacts = queryContacts(sessionUris, context)
+        val contacts = queryContacts(sessionUri, context)
         val newEmails = contacts.values.asSequence().flatMap { it.emails.asSequence() }.toSet()
 
         updateValidatedRecipientsEmails(newEmails)
     }
 
     private suspend fun queryContacts(
-        sessionUris: Uri,
+        sessionUri: Uri,
         context: Context,
-    ): Map<String, Contact> = withContext(Dispatchers.IO) {
+    ): Map<String, Contact> = withContext(ioDispatcher) {
         val projection = arrayOf(
             ContactsContract.Contacts.LOOKUP_KEY,
             ContactsContract.Data.MIMETYPE,
@@ -443,10 +443,10 @@ class PickFilesViewModel @Inject constructor(
 
         val contactsMap = mutableMapOf<String, Contact>()
 
-        context.contentResolver.query(sessionUris, projection, null, null, null)?.use { cursor ->
+        context.contentResolver.query(sessionUri, projection, null, null, null)?.use { cursor ->
             val indices = cursor.contactProjectionIndicesOrNull()
             if (indices == null) {
-                SentryLog.e(TAG, "Projection invalide, colonnes manquantes.")
+                SentryLog.e(TAG, "Invalid projection, missing columns.")
                 return@use
             }
 
