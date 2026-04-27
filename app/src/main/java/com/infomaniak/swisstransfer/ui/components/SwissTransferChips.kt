@@ -120,10 +120,10 @@ private fun Preview() {
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                 ) {
-                    SwissTransferInputChip(text = getLoremText(2), isSelected = { true }, onClick = {}, onDismiss = { })
-                    SwissTransferInputChip(text = getLoremText(1), isSelected = { false }, onClick = {}, onDismiss = { })
-                    SwissTransferInputChip(text = getLoremText(4), isSelected = { false }, onClick = {}, onDismiss = { })
-                    SwissTransferInputChip(text = getLoremText(1), isSelected = { false }, onClick = {}, onDismiss = { })
+                    SwissTransferInputChip(text = getLoremText(2), isSelected = { true }, onClick = {}, onDismiss = {})
+                    SwissTransferInputChip(text = getLoremText(1), isSelected = { false }, onClick = {}, onDismiss = {})
+                    SwissTransferInputChip(text = getLoremText(4), isSelected = { false }, onClick = {}, onDismiss = {})
+                    SwissTransferInputChip(text = getLoremText(1), isSelected = { false }, onClick = {}, onDismiss = {})
                 }
             }
         }
