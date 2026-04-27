@@ -21,21 +21,24 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
+import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
-import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.ButtonType
@@ -115,7 +118,7 @@ fun UploadScreen(
                 showCancelBottomSheet = false
                 uploadViewModel.abandonUploadRequest()
             },
-            closeButtonSheet = { showCancelBottomSheet = false },
+            onDismissRequest = { showCancelBottomSheet = false },
         )
     }
 }
@@ -140,10 +143,14 @@ private fun NoUploadOngoingEmptyState() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -> Unit) {
+private fun CancelUploadBottomSheet(onCancel: () -> Unit, onDismissRequest: () -> Unit) {
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
     SwissTransferBottomSheet(
         title = stringResource(R.string.uploadCancelConfirmBottomSheetTitle),
         imageVector = AppIllus.RedCrossPaperPlanes.image(),
+        sheetState = state,
         topButton = {
             LargeButton(
                 title = stringResource(R.string.buttonCancelTransfer),
@@ -157,10 +164,10 @@ private fun CancelUploadBottomSheet(onCancel: () -> Unit, closeButtonSheet: () -
                 title = stringResource(R.string.buttonCloseAndContinue),
                 modifier = it,
                 style = ButtonType.Tertiary,
-                onClick = closeButtonSheet,
+                onClick = { state.dismissGracefully(scope, onDismissRequest = { onDismissRequest() }) },
             )
         },
-        onDismissRequest = closeButtonSheet,
+        onDismissRequest = onDismissRequest,
     )
 }
 
