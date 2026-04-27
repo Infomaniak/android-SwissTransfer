@@ -17,6 +17,11 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -121,17 +126,19 @@ private fun SentContent(
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit
 ) {
-    if (transfers.isEmpty()) {
-        SentEmptyScreen()
-    } else {
-        TransferItemList(
-            modifier = Modifier.fillMaxHeight(),
-            direction = TransferDirection.SENT,
-            navigateToDetails = navigateToDetails,
-            getSelectedTransferUuid = getSelectedTransferUuid,
-            getTransfers = { transfers },
-            onDeleteTransfer = onDeleteTransfer,
-        )
+    AnimatedContent(targetState = transfers.isEmpty(), transitionSpec = { fadeIn() togetherWith fadeOut() }) { isEmpty ->
+        if (isEmpty) {
+            SentEmptyScreen()
+        } else {
+            TransferItemList(
+                modifier = Modifier.fillMaxHeight(),
+                direction = TransferDirection.SENT,
+                navigateToDetails = navigateToDetails,
+                getSelectedTransferUuid = getSelectedTransferUuid,
+                getTransfers = { transfers },
+                onDeleteTransfer = onDeleteTransfer,
+            )
+        }
     }
 }
 
