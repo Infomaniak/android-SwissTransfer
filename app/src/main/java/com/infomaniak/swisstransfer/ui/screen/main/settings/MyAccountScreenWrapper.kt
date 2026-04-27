@@ -24,6 +24,8 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -59,6 +61,7 @@ import com.infomaniak.swisstransfer.ui.OnboardingActivity
 import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.components.selectItem
@@ -128,7 +131,7 @@ fun MyAccountScreenWrapper(
     onDisconnectCurrentUser: () -> Unit,
     onSwitchUser: (userId: Int) -> Unit,
 ) {
-    TwoPaneScaffold<SettingsOptionScreens>(
+    TwoPaneScaffold(
         listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
         detailPane = {
             DetailPane(
@@ -211,55 +214,62 @@ private fun DetailPane(
         if (result.resultCode == Activity.RESULT_OK) onDisconnectCurrentUser()
     }
 
-    when (destination) {
-        SETTINGS -> {
-            val user = LocalUser.current
-            val context = LocalContext.current
+    AnimatedContent(
+        targetState = destination,
+        transitionSpec = {
+            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
+        },
+    ) { targetDestination ->
+        when (targetDestination) {
+            SETTINGS -> {
+                val user = LocalUser.current
+                val context = LocalContext.current
 
-            SettingsScreen(
-                theme = theme,
-                isAccountDeletable = { user != null },
-                validityPeriod = validityPeriod,
-                downloadLimit = downloadLimit,
-                emailLanguage = emailLanguage,
-                onItemClick = { item ->
-                    handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
-                },
+                SettingsScreen(
+                    theme = theme,
+                    isAccountDeletable = { user != null },
+                    validityPeriod = validityPeriod,
+                    downloadLimit = downloadLimit,
+                    emailLanguage = emailLanguage,
+                    onItemClick = { item ->
+                        handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
+                    },
+                    navigateBack = navigateBack,
+                    getSelectedSetting = { navigator.currentDestination?.contentKey },
+                )
+            }
+            THEME -> SettingsThemeScreen(
+                theme = theme.get(),
                 navigateBack = navigateBack,
-                getSelectedSetting = { navigator.currentDestination?.contentKey },
+                onThemeUpdate = { theme.set(it) },
             )
+            VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
+                validityPeriod = validityPeriod.get(),
+                navigateBack = navigateBack,
+                onValidityPeriodChange = { validityPeriod.set(it) },
+            )
+            DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
+                downloadLimit = downloadLimit.get(),
+                navigateBack = navigateBack,
+                onDownloadLimitChange = { downloadLimit.set(it) },
+            )
+            EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
+                emailLanguage = emailLanguage.get(),
+                navigateBack = navigateBack,
+                onEmailLanguageChange = { emailLanguage.set(it) },
+            )
+            DATA_MANAGEMENT -> SettingsDataManagementScreen(
+                navigateBack = navigateBack,
+                onItemClick = { item ->
+                    scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                },
+            )
+            DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+            DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
+            NOTIFICATIONS,
+            DELETE_MY_ACCOUNT,
+            null -> NoSelectionEmptyState()
         }
-        THEME -> SettingsThemeScreen(
-            theme = theme.get(),
-            navigateBack = navigateBack,
-            onThemeUpdate = { theme.set(it) },
-        )
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
-            validityPeriod = validityPeriod.get(),
-            navigateBack = navigateBack,
-            onValidityPeriodChange = { validityPeriod.set(it) },
-        )
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
-            downloadLimit = downloadLimit.get(),
-            navigateBack = navigateBack,
-            onDownloadLimitChange = { downloadLimit.set(it) },
-        )
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
-            emailLanguage = emailLanguage.get(),
-            navigateBack = navigateBack,
-            onEmailLanguageChange = { emailLanguage.set(it) },
-        )
-        DATA_MANAGEMENT -> SettingsDataManagementScreen(
-            navigateBack = navigateBack,
-            onItemClick = { item ->
-                scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
-            },
-        )
-        DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
-        DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        NOTIFICATIONS,
-        DELETE_MY_ACCOUNT,
-        null -> NoSelectionEmptyState()
     }
 }
 
