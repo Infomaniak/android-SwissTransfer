@@ -19,6 +19,8 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import android.content.Context
 import android.os.Parcelable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,6 +47,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.popBackStack
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
@@ -202,38 +205,45 @@ private fun DetailPane(
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
     }
 
-    when (destinationContent) {
-        null -> {
-            NoSelectionEmptyState(hasTransfer())
-        }
-        is DestinationContent.RootLevel -> {
-            TransferDetailsScreen(
-                transferUuid = destinationContent.transferUuid,
-                direction = destinationContent.direction,
-                isApiV2Deeplink = isApiV2Deeplink,
-                navigateBack = navigateBack,
-                navigateToFolder = { selectedFolderUuid ->
-                    scope.launch {
-                        navigator.navigateToFolder(
-                            destinationContent.direction,
-                            destinationContent.transferUuid,
-                            selectedFolderUuid,
-                        )
-                    }
-                },
-                onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
-            )
-        }
-        is DestinationContent.FolderLevel -> {
-            val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    AnimatedContent(
+        targetState = destinationContent,
+        transitionSpec = {
+            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
+        },
+    ) { targetDestination ->
+        when (targetDestination) {
+            null -> {
+                NoSelectionEmptyState(hasTransfer())
+            }
+            is DestinationContent.RootLevel -> {
+                TransferDetailsScreen(
+                    transferUuid = targetDestination.transferUuid,
+                    direction = targetDestination.direction,
+                    isApiV2Deeplink = isApiV2Deeplink,
+                    navigateBack = navigateBack,
+                    navigateToFolder = { selectedFolderUuid ->
+                        scope.launch {
+                            navigator.navigateToFolder(
+                                direction = targetDestination.direction,
+                                transferUuid = targetDestination.transferUuid,
+                                folderUuid = selectedFolderUuid,
+                            )
+                        }
+                    },
+                    onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
+                )
+            }
+            is DestinationContent.FolderLevel -> {
+                val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-            ExistingTransferFilesDetails(
-                navigator,
-                destinationContent.folderUuid,
-                destinationContent.direction,
-                destinationContent.transferUuid,
-                windowAdaptiveInfo,
-            )
+                ExistingTransferFilesDetails(
+                    navigator = navigator,
+                    folderUuid = targetDestination.folderUuid,
+                    transferDirection = targetDestination.direction,
+                    transferUuid = targetDestination.transferUuid,
+                    windowAdaptiveInfo = windowAdaptiveInfo,
+                )
+            }
         }
     }
 }
