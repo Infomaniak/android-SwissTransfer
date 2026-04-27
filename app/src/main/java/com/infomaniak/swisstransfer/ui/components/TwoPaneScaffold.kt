@@ -30,6 +30,7 @@ import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
@@ -90,7 +92,9 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                navigator.listPane()
+                CompositionLocalProvider(LocalAnimatedVisibilityScope provides this@AnimatedPane) {
+                    navigator.listPane()
+                }
             }
         },
         detailPane = {
@@ -98,7 +102,9 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                navigator.detailPane()
+                CompositionLocalProvider(LocalAnimatedVisibilityScope provides this@AnimatedPane) {
+                    navigator.detailPane()
+                }
             }
         },
         modifier = modifier,

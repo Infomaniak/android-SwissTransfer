@@ -63,6 +63,7 @@ import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
@@ -74,6 +75,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
+import com.infomaniak.swisstransfer.ui.screen.main.transfers.NoSelectionEmptyState
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -106,7 +108,14 @@ private fun MyAccountScreenWrapper(
     onSwitchUser: (userId: Int) -> Unit,
 ) {
     TwoPaneScaffold(
-        listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
+        listPane = {
+            ListPane(
+                navigator = this,
+                users = users,
+                onDisconnectCurrentUser = onDisconnectCurrentUser,
+                onSwitchUser = onSwitchUser,
+            )
+        },
         detailPane = {
             DetailPane(
                 navigator = this,
@@ -178,41 +187,49 @@ private fun DetailPane(
         if (result.resultCode == Activity.RESULT_OK) onDisconnectCurrentUser()
     }
 
+    val paneScope = LocalAnimatedVisibilityScope.current
+
     AnimatedContent(
         targetState = destination,
         transitionSpec = {
             SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
         },
     ) { targetDestination ->
-        when (targetDestination) {
-            SETTINGS -> {
-                val user = LocalUser.current
-                val context = LocalContext.current
+        val contentScope = this@AnimatedContent
+        val isPaneAnimating = paneScope?.transition?.let { it.currentState != it.targetState } == true
+        val activeScope = if (isPaneAnimating) paneScope else contentScope
 
-                SettingsScreen(
-                    isAccountDeletable = { user != null },
-                    onItemClick = { item ->
-                        handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
-                    },
+        CompositionLocalProvider(LocalAnimatedVisibilityScope provides activeScope) {
+            when (targetDestination) {
+                SETTINGS -> {
+                    val user = LocalUser.current
+                    val context = LocalContext.current
+
+                    SettingsScreen(
+                        isAccountDeletable = { user != null },
+                        onItemClick = { item ->
+                            handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
+                        },
+                        navigateBack = navigateBack,
+                        getSelectedSetting = { navigator.currentDestination?.contentKey },
+                    )
+                }
+                THEME -> SettingsThemeScreen(navigateBack = navigateBack)
+                VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
+                DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
+                EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
+                DATA_MANAGEMENT -> SettingsDataManagementScreen(
                     navigateBack = navigateBack,
-                    getSelectedSetting = { navigator.currentDestination?.contentKey },
+                    onItemClick = { item ->
+                        scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                    },
                 )
+                DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+                DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
+                NOTIFICATIONS,
+                DELETE_MY_ACCOUNT,
+                null -> NoSelectionEmptyState()
             }
-            THEME -> SettingsThemeScreen(navigateBack = navigateBack)
-            VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
-            DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
-            EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
-            DATA_MANAGEMENT -> SettingsDataManagementScreen(
-                navigateBack = navigateBack,
-                onItemClick = { item ->
-                    scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
-                },
-            )
-            DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
-            DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-            NOTIFICATIONS,
-            DELETE_MY_ACCOUNT,
-            null -> NoSelectionEmptyState()
         }
     }
 }

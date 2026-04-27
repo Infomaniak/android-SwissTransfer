@@ -17,8 +17,17 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalLookaheadAnimationVisualDebugApi
+import androidx.compose.animation.LookaheadAnimationVisualDebugging
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,6 +43,8 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
 
+@OptIn(ExperimentalLookaheadAnimationVisualDebugApi::class)
+@SuppressLint("DisallowLookaheadAnimationVisualDebug")
 @Composable
 fun MainNavHost(
     navController: NavHostController,
@@ -47,25 +58,62 @@ fun MainNavHost(
         else -> MainNavigation.startDestination
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = { SwissTransferTransition.enterTransition },
-        exitTransition = { SwissTransferTransition.exitTransition },
+    LookaheadAnimationVisualDebugging(
+        overlayColor = Color(0x4AE91E63),
+        isEnabled = true,
+        multipleMatchesColor = Color.Green,
+        isShowKeyLabelEnabled = false,
+        unmatchedElementColor = Color.Red,
     ) {
-        sentDestination {
-            val args = it.toRoute<SentDestination>()
-            TransfersScreenWrapper(TransferDirection.SENT, transferUuid = args.transferUuid, hideBottomBar = hideBottomBar)
+        SharedTransitionLayout {
+            CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
+                NavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                    enterTransition = { SwissTransferTransition.enterTransition },
+                    exitTransition = { SwissTransferTransition.exitTransition },
+                ) {
+                    sentDestination {
+                        val args = it.toRoute<SentDestination>()
+                        CompositionLocalProvider(
+                            LocalAnimatedVisibilityScope provides this@sentDestination,
+                            LocalNavHostAnimatedVisibilityScope provides this@sentDestination
+                        ) {
+                            TransfersScreenWrapper(
+                                TransferDirection.SENT,
+                                transferUuid = args.transferUuid,
+                                hideBottomBar = hideBottomBar
+                            )
+                        }
+                    }
+                    receivedDestination {
+                        val args = it.toRoute<ReceivedDestination>()
+                        CompositionLocalProvider(
+                            LocalAnimatedVisibilityScope provides this@receivedDestination,
+                            LocalNavHostAnimatedVisibilityScope provides this@receivedDestination
+                        ) {
+                            TransfersScreenWrapper(
+                                direction = TransferDirection.RECEIVED,
+                                transferUuid = args.transferUuid,
+                                isApiV2Deeplink = args.isApiV2,
+                                hideBottomBar = hideBottomBar,
+                            )
+                        }
+                    }
+                    composable<MyAccountDestination> {
+                        CompositionLocalProvider(
+                            LocalAnimatedVisibilityScope provides this@composable,
+                            LocalNavHostAnimatedVisibilityScope provides this@composable
+                        ) {
+                            MyAccountScreenWrapper()
+                        }
+                    }
+                }
+            }
         }
-        receivedDestination {
-            val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(
-                direction = TransferDirection.RECEIVED,
-                transferUuid = args.transferUuid,
-                isApiV2Deeplink = args.isApiV2,
-                hideBottomBar = hideBottomBar,
-            )
-        }
-        composable<MyAccountDestination> { MyAccountScreenWrapper() }
     }
 }
+
+val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
+val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalNavHostAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }

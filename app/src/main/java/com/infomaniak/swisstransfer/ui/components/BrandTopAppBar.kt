@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import android.util.Log
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,10 +43,13 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.LogoInfomaniak
 import com.infomaniak.swisstransfer.ui.images.illus.LogoSwissTransfer
+import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
+import com.infomaniak.swisstransfer.ui.screen.main.LocalNavHostAnimatedVisibilityScope
+import com.infomaniak.swisstransfer.ui.screen.main.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 fun BrandTopAppBar() {
     val toolbarTextColor = SwissTransferTheme.colors.toolbarTextColor
 
@@ -69,7 +74,31 @@ fun BrandTopAppBar() {
                 )
             }
         },
+        modifier = Modifier.sharedTransitionAppBar(),
     )
+}
+
+@Composable
+fun Modifier.sharedTransitionAppBar(): Modifier {
+    val sharedScope = LocalSharedTransitionScope.current
+    val localScope = LocalAnimatedVisibilityScope.current
+    val navHostScope = LocalNavHostAnimatedVisibilityScope.current
+
+    if (sharedScope != null) {
+        val isNavHostAnimating = navHostScope?.transition?.let { it.currentState != it.targetState } == true
+        val activeScope = if (isNavHostAnimating) navHostScope else localScope
+
+        if (activeScope != null) {
+            with(sharedScope) {
+                return this@sharedTransitionAppBar then Modifier.sharedElement(
+                    sharedContentState = rememberSharedContentState(key = "top_bar"),
+                    animatedVisibilityScope = activeScope,
+                )
+            }
+        }
+    }
+
+    return this
 }
 
 @PreviewAllWindows
