@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonHidePassword">Wachtwoord verbergen</string>
     <string name="contentDescriptionButtonRemove">Bestand verwijderen</string>
     <string name="contentDescriptionButtonRemoveRecipient">%s verwijderen</string>
+    <string name="contentDescriptionButtonSelectContact">Contactenlijst openen</string>
     <string name="contentDescriptionButtonShowPassword">Wachtwoord weergeven</string>
     <string name="contentDescriptionCreateNewTransferButton">Nieuwe overdracht</string>
     <string name="deeplinkPasswordDescription">Voer het wachtwoord in dat je hebt ontvangen om deze bestanden te downloaden.</string>

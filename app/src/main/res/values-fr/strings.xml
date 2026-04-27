@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonHidePassword">Cacher le mot de passe</string>
     <string name="contentDescriptionButtonRemove">Supprimer le fichier</string>
     <string name="contentDescriptionButtonRemoveRecipient">Supprimer %s</string>
+    <string name="contentDescriptionButtonSelectContact">Ouvrir la liste des contacts</string>
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="deeplinkPasswordDescription">Saisis le mot de passe qui t’a été fourni pour télécharger ces fichiers.</string>

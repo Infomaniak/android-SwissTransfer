@@ -39,6 +39,7 @@
     <string name="contentDescriptionButtonHidePassword">Dölj lösenord</string>
     <string name="contentDescriptionButtonRemove">Ta bort fil</string>
     <string name="contentDescriptionButtonRemoveRecipient">Ta bort %s</string>
+    <string name="contentDescriptionButtonSelectContact">Öppna kontaktlistan</string>
     <string name="contentDescriptionButtonShowPassword">Visa lösenord</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny överföring</string>
     <string name="deeplinkPasswordDescription">Ange lösenordet du har fått för att ladda ner dessa filer.</string>

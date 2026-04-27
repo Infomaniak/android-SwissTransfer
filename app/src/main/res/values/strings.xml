@@ -20,7 +20,6 @@
     <string name="matomo" translatable="false">Matomo</string>
     <string name="sentry" translatable="false">Sentry</string>
     <string name="notifications_upload_channel_id" translatable="false">upload_channel_id</string>
-
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
     <string name="buttonCancelTransfer">Cancel the transfer</string>
@@ -44,6 +43,7 @@
     <string name="contentDescriptionButtonHidePassword">Hide password</string>
     <string name="contentDescriptionButtonRemove">Remove file</string>
     <string name="contentDescriptionButtonRemoveRecipient">Remove %s</string>
+    <string name="contentDescriptionButtonSelectContact">Open the contacts list</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
