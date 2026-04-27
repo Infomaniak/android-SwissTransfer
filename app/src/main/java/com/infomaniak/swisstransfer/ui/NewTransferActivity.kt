@@ -26,6 +26,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -80,13 +81,15 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
 
             CompositionLocalProvider(LocalUser provides user) {
                 SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                    NewTransferScreen(
-                        startDestination = remember { getStartDestination() },
-                        inAppReviewManager = inAppReviewManager,
-                        closeActivity = { startMainActivityIfTaskIsEmpty ->
-                            finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
-                        },
-                    )
+                    Surface {
+                        NewTransferScreen(
+                            startDestination = remember { getStartDestination() },
+                            inAppReviewManager = inAppReviewManager,
+                            closeActivity = { startMainActivityIfTaskIsEmpty ->
+                                finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
+                            },
+                        )
+                    }
                 }
             }
         }
