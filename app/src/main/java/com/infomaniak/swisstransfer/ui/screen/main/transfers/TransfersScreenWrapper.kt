@@ -19,6 +19,8 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import android.content.Context
 import android.os.Parcelable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,6 +46,7 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.popBackStack
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
@@ -199,35 +202,42 @@ private fun DetailPane(
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
     }
 
-    when (destinationContent) {
-        null -> {
-            NoSelectionEmptyState(hasTransfer())
-        }
-        is DestinationContent.RootLevel -> {
-            TransferDetailsScreen(
-                transferUuid = destinationContent.transferUuid,
-                direction = destinationContent.direction,
-                isApiV2Deeplink = isApiV2Deeplink.takeIf { destinationContent.isDeeplinkNavigation },
-                navigateBack = navigateBack,
-                navigateToFolder = { selectedFolderUuid ->
-                    scope.launch {
-                        navigator.navigateToFolder(
-                            destinationContent.direction,
-                            destinationContent.transferUuid,
-                            selectedFolderUuid,
-                        )
-                    }
-                },
-                onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
-            )
-        }
-        is DestinationContent.FolderLevel -> {
-            ExistingTransferFilesDetails(
-                navigator,
-                destinationContent.folderUuid,
-                destinationContent.direction,
-                destinationContent.transferUuid,
-            )
+    AnimatedContent(
+        targetState = destinationContent,
+        transitionSpec = {
+            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
+        },
+    ) { targetDestination ->
+        when (targetDestination) {
+            null -> {
+                NoSelectionEmptyState(hasTransfer())
+            }
+            is DestinationContent.RootLevel -> {
+                TransferDetailsScreen(
+                    transferUuid = destinationContent.transferUuid,
+                    direction = destinationContent.direction,
+                    isApiV2Deeplink = isApiV2Deeplink.takeIf { destinationContent.isDeeplinkNavigation },
+                    navigateBack = navigateBack,
+                    navigateToFolder = { selectedFolderUuid ->
+                        scope.launch {
+                            navigator.navigateToFolder(
+                                destinationContent.direction,
+                                destinationContent.transferUuid,
+                                selectedFolderUuid,
+                            )
+                        }
+                    },
+                    onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
+                )
+            }
+            is DestinationContent.FolderLevel -> {
+                ExistingTransferFilesDetails(
+                    navigator = navigator,
+                    folderUuid = destinationContent.folderUuid,
+                    transferDirection = destinationContent.direction,
+                    transferUuid = destinationContent.transferUuid,
+                )
+            }
         }
     }
 }

@@ -24,6 +24,8 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -55,6 +57,7 @@ import com.infomaniak.swisstransfer.ui.OnboardingActivity
 import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.components.selectItem
@@ -164,7 +167,6 @@ private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
     onDisconnectCurrentUser: () -> Unit,
 ) {
-
     val destination = navigator.safeCurrentContent()
 
     val scope = rememberCoroutineScope()
@@ -176,33 +178,42 @@ private fun DetailPane(
         if (result.resultCode == Activity.RESULT_OK) onDisconnectCurrentUser()
     }
 
-    when (destination) {
-        SETTINGS -> {
-            val user = LocalUser.current
-            val context = LocalContext.current
+    AnimatedContent(
+        targetState = destination,
+        transitionSpec = {
+            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
+        },
+    ) { targetDestination ->
+        when (targetDestination) {
+            SETTINGS -> {
+                val user = LocalUser.current
+                val context = LocalContext.current
 
-            SettingsScreen(
-                isAccountDeletable = { user != null },
-                onItemClick = { item ->
-                    handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
-                },
+                SettingsScreen(
+                    isAccountDeletable = { user != null },
+                    onItemClick = { item ->
+                        handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
+                    },
+                    navigateBack = navigateBack,
+                    getSelectedSetting = { navigator.currentDestination?.contentKey },
+                )
+            }
+            THEME -> SettingsThemeScreen(navigateBack = navigateBack)
+            VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
+            DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
+            EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
+            DATA_MANAGEMENT -> SettingsDataManagementScreen(
                 navigateBack = navigateBack,
-                getSelectedSetting = { navigator.currentDestination?.contentKey },
+                onItemClick = { item ->
+                    scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                },
             )
+            DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+            DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
+            NOTIFICATIONS,
+            DELETE_MY_ACCOUNT,
+            null -> NoSelectionEmptyState()
         }
-        THEME -> SettingsThemeScreen(navigateBack = navigateBack)
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
-        DATA_MANAGEMENT -> SettingsDataManagementScreen(
-            navigateBack = navigateBack,
-            onItemClick = { item ->
-                scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
-            },
-        )
-        DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
-        DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        NOTIFICATIONS, DELETE_MY_ACCOUNT, null -> NoSelectionEmptyState()
     }
 }
 
