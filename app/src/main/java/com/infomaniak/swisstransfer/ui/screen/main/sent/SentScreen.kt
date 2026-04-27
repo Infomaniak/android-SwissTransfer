@@ -18,9 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
@@ -43,6 +40,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -126,7 +124,10 @@ private fun SentContent(
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit
 ) {
-    AnimatedContent(targetState = transfers.isEmpty(), transitionSpec = { fadeIn() togetherWith fadeOut() }) { isEmpty ->
+    AnimatedContent(
+        targetState = transfers.isEmpty(),
+        transitionSpec = { SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition },
+    ) { isEmpty ->
         if (isEmpty) {
             SentEmptyScreen()
         } else {
