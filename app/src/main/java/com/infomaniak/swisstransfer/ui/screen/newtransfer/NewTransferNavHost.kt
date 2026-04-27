@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.NewTransferFilesDetailsDestination
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation.PickFilesDestination
@@ -48,7 +49,12 @@ fun NewTransferNavHost(
     cancelUploadNotification: () -> Unit,
 ) {
 
-    NavHost(navController, startDestination) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        enterTransition = { SwissTransferTransition.enterTransition },
+        exitTransition = { SwissTransferTransition.exitTransition },
+    ) {
         composable<PickFilesDestination> {
             cancelUploadNotification()
             PickFilesScreen(
