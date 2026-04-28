@@ -234,13 +234,14 @@ private suspend fun getNewDownloadId(
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
-    direction: TransferDirection?
+    direction: TransferDirection?,
 ): UniqueDownloadId? {
     ui.awaitDownloadRequest()
-    val isApiV2 = transfer.isV2()
     val newId = when {
-        isApiV2 && targetFile == null -> downloadWorkerScheduler.scheduleWork(transfer.uuid, folderId = null)
-        isApiV2 && targetFile?.isFolder == true -> downloadWorkerScheduler.scheduleWork(transfer.uuid, folderId = targetFile.uid)
+        transfer.isV2() && targetFile?.isFolder != false -> downloadWorkerScheduler.scheduleWork(
+            transferId = transfer.uuid,
+            folderId = targetFile?.uid,
+        )
         else -> {
             val request = buildDownloadRequest(transfer, targetFile, apiUrlCreator, userAgent, direction) ?: return null
             downloadManager.startDownloadingFile(request)
