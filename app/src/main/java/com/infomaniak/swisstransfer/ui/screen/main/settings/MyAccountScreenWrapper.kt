@@ -181,7 +181,7 @@ private fun ListPane(
         },
         getSelectedSetting = {
             val contentKey = navigator.currentDestination?.contentKey
-            MyAccountSettingAction.Navigation.entries.firstOrNull { contentKey is SettingsOptionScreens.Settings }
+            if (contentKey is SettingsOptionScreens.Settings) MyAccountSettingAction.Navigation.Settings else null
         },
     )
 }
