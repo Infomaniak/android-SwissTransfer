@@ -88,9 +88,7 @@ val TransferUi.isExpired: Boolean
 
 val TransferUi.displayTitle: String
     get() {
-        val createdDate = createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_TITLE)
-        val title = title ?: createdDate
-        return title
+        return title ?: createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_TITLE)
     }
 
 @Composable
