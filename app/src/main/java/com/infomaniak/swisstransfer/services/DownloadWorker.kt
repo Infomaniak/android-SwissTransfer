@@ -48,9 +48,10 @@ import com.infomaniak.swisstransfer.ui.utils.displayTitle
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
@@ -183,12 +184,12 @@ class DownloadWorker @AssistedInject constructor(
 
     private fun hasAvailableSpace(requiredBytes: Long): Boolean {
         val path = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> applicationContext.getExternalFilesDir(null)?.path ?: return true
+            Build.VERSION.SDK_INT >= 29 -> applicationContext.getExternalFilesDir(null)?.path ?: return true
             else -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
         }
         val availableBytes = StatFs(path).availableBytes
         // Add a safety margin of 10% extra space
-        val requiredWithMargin = (requiredBytes * 110) / 100
+        val requiredWithMargin = requiredBytes * 1.1
         return availableBytes >= requiredWithMargin
     }
 
@@ -213,20 +214,21 @@ class DownloadWorker @AssistedInject constructor(
             return UniqueDownloadId(DOWNLOAD_WORKER_DOWNLOAD_ID)
         }
 
+        @OptIn(ExperimentalCoroutinesApi::class)
         fun downloadStatusFlow(transferId: String, folderId: String?): Flow<DownloadStatus> {
             fun WorkInfo.isPending() = state == WorkInfo.State.ENQUEUED || state == WorkInfo.State.BLOCKED
             val workQuery = WorkQuery.Builder
                 .fromUniqueWorkNames(listOf(uniqueWorkName(transferId, folderId)))
                 .build()
 
-            return workManager.getWorkInfosFlow(workQuery).transform {
+            return workManager.getWorkInfosFlow(workQuery).mapLatest {
                 val workInfo = it.firstOrNull()
                 if (workInfo == null) {
-                    emit(DownloadStatus.Complete)
+                    DownloadStatus.Complete
                 } else if (workInfo.isPending() && isNetworkAvailableFlow.first().not()) {
-                    emit(DownloadStatus.Paused(DownloadStatus.Paused.Reason.WaitingForNetwork))
+                    DownloadStatus.Paused(DownloadStatus.Paused.Reason.WaitingForNetwork)
                 } else {
-                    emit(workInfo.toDownloadStatus())
+                    workInfo.toDownloadStatus()
                 }
             }
         }
