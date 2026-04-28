@@ -251,12 +251,13 @@ class AppDownloadManager @Inject constructor(
         @RequiresApi(Build.VERSION_CODES.Q)
         private fun uriForFromApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
             val contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+            val projections = arrayOf(MediaStore.DownloadColumns._ID)
             val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/${transferUi.computeFolderDownloadPathWith(fileUi)}"
             val selection = "${MediaStore.DownloadColumns.RELATIVE_PATH}=? AND ${MediaStore.DownloadColumns.DISPLAY_NAME}=?" +
                     " AND ${MediaStore.DownloadColumns.IS_PENDING}=0"
             val selectionArgs = arrayOf(relativePath, fileUi.fileName)
 
-            return appCtx.contentResolver.query(contentUri, null, selection, selectionArgs, null)?.use { cursor ->
+            return appCtx.contentResolver.query(contentUri, projections, selection, selectionArgs, null)?.use { cursor ->
                 if (cursor.moveToFirst()) {
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.DownloadColumns._ID)
                     val id = cursor.getLong(idColumn)
