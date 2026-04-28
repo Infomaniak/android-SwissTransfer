@@ -240,7 +240,7 @@ class AppDownloadManager @Inject constructor(
         suspend fun uriFor(transferUi: TransferUi, fileUi: FileUi): Uri? = withContext(Dispatchers.IO) {
             return@withContext when {
                 Build.VERSION.SDK_INT >= 29 -> uriForFromApi29(transferUi, fileUi)
-                else -> uriForUnderApi29(transferUi, fileUi)
+                else -> uriForBeforeApi29(transferUi, fileUi)
             }
         }
 
@@ -268,9 +268,9 @@ class AppDownloadManager @Inject constructor(
             }
         }
 
-        private fun uriForUnderApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
+        private fun uriForBeforeApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
             val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val path = "${ROOT_FOLDER_NAME}/${transferUi.computeFolderDownloadPathWith(fileUi)}"
+            val path = transferUi.computeFolderDownloadPathWith(fileUi)
             val file = File(downloadsDir, "$path/${fileUi.fileName}")
             return if (file.exists()) Uri.fromFile(file) else null
         }
