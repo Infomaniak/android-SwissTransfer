@@ -52,6 +52,8 @@ fun MainNavHost(
         startDestination = startDestination,
         enterTransition = { SwissTransferTransition.enterTransition },
         exitTransition = { SwissTransferTransition.exitTransition },
+        popEnterTransition = { SwissTransferTransition.popEnterTransition },
+        popExitTransition = { SwissTransferTransition.popExitTransition },
     ) {
         sentDestination {
             val args = it.toRoute<SentDestination>()

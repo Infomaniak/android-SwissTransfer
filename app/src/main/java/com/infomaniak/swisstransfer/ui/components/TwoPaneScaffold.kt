@@ -86,18 +86,15 @@ fun <T> TwoPaneScaffold(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
         listPane = {
-            AnimatedPane(
-                enterTransition = SwissTransferTransition.enterTransition,
-                exitTransition = SwissTransferTransition.exitTransition,
-            ) {
+            // Use Material 3 Adaptive's default PaneMotion instead of overriding it with a
+            // crossfade. The default produces a polished slide-and-fade tuned for list/detail
+            // transitions and avoids the simultaneous-transparency "blink" of identical chrome.
+            AnimatedPane {
                 navigator.listPane()
             }
         },
         detailPane = {
-            AnimatedPane(
-                enterTransition = SwissTransferTransition.enterTransition,
-                exitTransition = SwissTransferTransition.exitTransition,
-            ) {
+            AnimatedPane {
                 navigator.detailPane()
             }
         },

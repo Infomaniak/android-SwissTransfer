@@ -17,69 +17,110 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.ui.unit.IntOffset
 
+/**
+ * Centralised screen transitions, aligned with Material 3 motion guidelines.
+ *
+ * Two patterns are exposed and should be picked based on context:
+ *
+ * 1. **Shared Axis X** — for navigation between sibling destinations (`NavHost`).
+ *    Content slides a small distance horizontally while fading. Forward navigation
+ *    moves end → start, backward navigation moves start → end. The slide distance
+ *    is intentionally small (≈ 30 dp worth) so that even when two consecutive
+ *    screens share the same chrome (top app bar / bottom app bar), the motion
+ *    reads as a deliberate transition rather than a crossfade through transparency.
+ *
+ * 2. **Fade Through** — for in-place content swaps inside a screen (`AnimatedContent`,
+ *    e.g. empty state ↔ list, or list-detail sub-destination changes).
+ *    The outgoing content fades out completely first, *then* the incoming content
+ *    fades in. The two never overlap in transparency, which is what removes the
+ *    "blinking bars / background bleeding through" issue caused by a naive crossfade
+ *    when both states render an identical Scaffold chrome.
+ *
+ * See: https://m3.material.io/styles/motion/transitions/transition-patterns
+ */
 object SwissTransferTransition {
-    // Fade simple (actuel)
-    val enterTransition = fadeIn()
-    val exitTransition = fadeOut()
 
-    // Fade simple rapide
-    // val enterTransition = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium))
-    // val exitTransition = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium))
+    // ---------------------------------------------------------------------------------------------
+    // Shared Axis X — for NavHost navigation between sibling destinations.
+    // ---------------------------------------------------------------------------------------------
 
-    // Slide depuis la droite
-    // val enterTransition = slideInHorizontally(initialOffsetX = { it })
-    // val exitTransition = slideOutHorizontally(targetOffsetX = { it })
+    private const val SHARED_AXIS_DURATION_MS = 300
+    // Material spec uses ~30 dp of motion. We approximate it as a fraction of the slot
+    // size so it works on every screen size without hard-coding a dp value here.
+    private const val SHARED_AXIS_SLIDE_FRACTION = 0.10f
 
-    // Slide depuis le bas
-    // val enterTransition = slideInVertically(initialOffsetY = { it })
-    // val exitTransition = slideOutVertically(targetOffsetY = { it })
+    private val sharedAxisSlideSpec = tween<IntOffset>(
+        durationMillis = SHARED_AXIS_DURATION_MS,
+        easing = FastOutSlowInEasing,
+    )
+    private val sharedAxisFadeInSpec = tween<Float>(
+        durationMillis = SHARED_AXIS_DURATION_MS,
+        easing = LinearOutSlowInEasing,
+    )
+    private val sharedAxisFadeOutSpec = tween<Float>(
+        durationMillis = SHARED_AXIS_DURATION_MS,
+        easing = FastOutLinearInEasing,
+    )
 
-    // Slide depuis la gauche
-    // val enterTransition = slideInHorizontally(initialOffsetX = { -it })
-    // val exitTransition = slideOutHorizontally(targetOffsetX = { -it })
+    /** Forward navigation — incoming screen slides in from the end (right in LTR). */
+    val enterTransition: EnterTransition =
+        slideInHorizontally(animationSpec = sharedAxisSlideSpec) { fullWidth ->
+            (fullWidth * SHARED_AXIS_SLIDE_FRACTION).toInt()
+        } + fadeIn(animationSpec = sharedAxisFadeInSpec)
 
-    // Slide depuis le haut
-    // val enterTransition = slideInVertically(initialOffsetY = { -it })
-    // val exitTransition = slideOutVertically(targetOffsetY = { -it })
+    /** Forward navigation — outgoing screen slides out toward the start (left in LTR). */
+    val exitTransition: ExitTransition =
+        slideOutHorizontally(animationSpec = sharedAxisSlideSpec) { fullWidth ->
+            -(fullWidth * SHARED_AXIS_SLIDE_FRACTION).toInt()
+        } + fadeOut(animationSpec = sharedAxisFadeOutSpec)
 
-    // Zoom + Fade (enter)
-    // val enterTransition = scaleIn(initialScale = 0.8f) + fadeIn()
-    // val exitTransition = scaleOut(targetScale = 0.8f) + fadeOut()
+    /** Back navigation — incoming screen slides in from the start. */
+    val popEnterTransition: EnterTransition =
+        slideInHorizontally(animationSpec = sharedAxisSlideSpec) { fullWidth ->
+            -(fullWidth * SHARED_AXIS_SLIDE_FRACTION).toInt()
+        } + fadeIn(animationSpec = sharedAxisFadeInSpec)
 
-    // Slide droite + Fade
-    // val enterTransition = slideInHorizontally(initialOffsetX = { it }) + fadeIn()
-    // val exitTransition = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+    /** Back navigation — outgoing screen slides out toward the end. */
+    val popExitTransition: ExitTransition =
+        slideOutHorizontally(animationSpec = sharedAxisSlideSpec) { fullWidth ->
+            (fullWidth * SHARED_AXIS_SLIDE_FRACTION).toInt()
+        } + fadeOut(animationSpec = sharedAxisFadeOutSpec)
 
-    // Slide bas + Fade (pour un effet drawer)
-    // val enterTransition = slideInVertically(initialOffsetY = { it }) + fadeIn()
-    // val exitTransition = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+    // ---------------------------------------------------------------------------------------------
+    // Fade Through — for in-place content swaps inside a single screen (AnimatedContent).
+    // The outgoing content fades out first; the incoming content fades in afterwards. They never
+    // overlap in transparency, so identical Scaffold chrome (top/bottom bars) does not blink.
+    // ---------------------------------------------------------------------------------------------
 
-    // Expand + Fade (grossissement)
-    // val enterTransition = expandIn(expandFrom = Alignment.Center) + fadeIn()
-    // val exitTransition = shrinkOut(shrinkTowards = Alignment.Center) + fadeOut()
+    private const val FADE_THROUGH_OUT_DURATION_MS = 90
+    private const val FADE_THROUGH_IN_DURATION_MS = 210
 
-    // Expand depuis le coin haut-gauche
-    // val enterTransition = expandIn(expandFrom = Alignment.TopStart) + fadeIn()
-    // val exitTransition = shrinkOut(shrinkTowards = Alignment.TopStart) + fadeOut()
+    /** Fade-through enter — starts only after [fadeThroughExit] has completed. */
+    val fadeThroughEnter: EnterTransition = fadeIn(
+        animationSpec = tween(
+            durationMillis = FADE_THROUGH_IN_DURATION_MS,
+            delayMillis = FADE_THROUGH_OUT_DURATION_MS,
+            easing = LinearOutSlowInEasing,
+        ),
+    )
 
-    // Expand depuis le coin bas-droit
-    // val enterTransition = expandIn(expandFrom = Alignment.BottomEnd) + fadeIn()
-    // val exitTransition = shrinkOut(shrinkTowards = Alignment.BottomEnd) + fadeOut()
-
-    // Slide droite + Zoom
-    // val enterTransition = slideInHorizontally(initialOffsetX = { it }) + scaleIn(initialScale = 0.9f)
-    // val exitTransition = slideOutHorizontally(targetOffsetX = { it }) + scaleOut(targetScale = 0.9f)
-
-    // Rotation + Fade
-    // val enterTransition = rotateIn(initialRotationDegrees = 45f) + fadeIn()
-    // val exitTransition = rotateOut(targetRotationDegrees = 45f) + fadeOut()
-
-    // Clip expand + Slide (effet révélation)
-    // val enterTransition = clipInHorizontally(initialWidth = { 0 }) + slideInHorizontally(initialOffsetX = { it })
-    // val exitTransition = clipOutHorizontally(targetWidth = { 0 }) + slideOutHorizontally(targetOffsetX = { it })
+    /** Fade-through exit — short, runs first so the new content appears on a clean container. */
+    val fadeThroughExit: ExitTransition = fadeOut(
+        animationSpec = tween(
+            durationMillis = FADE_THROUGH_OUT_DURATION_MS,
+            easing = FastOutLinearInEasing,
+        ),
+    )
 }

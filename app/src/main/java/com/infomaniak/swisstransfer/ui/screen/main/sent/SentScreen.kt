@@ -126,7 +126,7 @@ private fun SentContent(
 ) {
     AnimatedContent(
         targetState = transfers.isEmpty(),
-        transitionSpec = { SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition },
+        transitionSpec = { SwissTransferTransition.fadeThroughEnter togetherWith SwissTransferTransition.fadeThroughExit },
     ) { isEmpty ->
         if (isEmpty) {
             SentEmptyScreen()

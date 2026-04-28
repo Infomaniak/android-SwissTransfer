@@ -52,6 +52,8 @@ fun NewTransferNavHost(
         startDestination = startDestination,
         enterTransition = { SwissTransferTransition.enterTransition },
         exitTransition = { SwissTransferTransition.exitTransition },
+        popEnterTransition = { SwissTransferTransition.popEnterTransition },
+        popExitTransition = { SwissTransferTransition.popExitTransition },
     ) {
         composable<PickFilesDestination> {
             cancelUploadNotification()

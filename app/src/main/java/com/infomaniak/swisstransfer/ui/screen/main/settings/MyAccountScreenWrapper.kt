@@ -217,7 +217,7 @@ private fun DetailPane(
     AnimatedContent(
         targetState = destination,
         transitionSpec = {
-            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
+            SwissTransferTransition.fadeThroughEnter togetherWith SwissTransferTransition.fadeThroughExit
         },
     ) { targetDestination ->
         when (targetDestination) {
