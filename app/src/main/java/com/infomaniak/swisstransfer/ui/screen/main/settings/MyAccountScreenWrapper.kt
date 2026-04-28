@@ -65,10 +65,6 @@ import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DataManagement
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DeleteMyAccount
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.Notifications
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.Root
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -179,10 +175,7 @@ private fun ListPane(
                 }
             }
         },
-        getSelectedSetting = {
-            val contentKey = navigator.currentDestination?.contentKey
-            if (contentKey is SettingsOptionScreens.Settings) MyAccountSettingAction.Navigation.Settings else null
-        },
+        getSelectedSetting = { MyAccountSettingAction.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
     )
 }
 
@@ -209,7 +202,7 @@ private fun DetailPane(
     }
 
     when (destination) {
-        Root -> {
+        SettingsOptionScreens.Root -> {
             val user = LocalUser.current
             val context = LocalContext.current
 
@@ -226,36 +219,36 @@ private fun DetailPane(
                 getSelectedSetting = { navigator.currentDestination?.contentKey },
             )
         }
-        SettingsOptionScreens.Settings.Theme -> SettingsThemeScreen(
+        SettingsOptionScreens.Theme -> SettingsThemeScreen(
             theme = theme.get(),
             navigateBack = navigateBack,
             onThemeUpdate = { theme.set(it) },
         )
-        SettingsOptionScreens.Settings.ValidityPeriod -> SettingsValidityPeriodScreen(
+        SettingsOptionScreens.ValidityPeriod -> SettingsValidityPeriodScreen(
             validityPeriod = validityPeriod.get(),
             navigateBack = navigateBack,
             onValidityPeriodChange = { validityPeriod.set(it) },
         )
-        SettingsOptionScreens.Settings.DownloadLimit -> SettingsDownloadsLimitScreen(
+        SettingsOptionScreens.DownloadLimit -> SettingsDownloadsLimitScreen(
             downloadLimit = downloadLimit.get(),
             navigateBack = navigateBack,
             onDownloadLimitChange = { downloadLimit.set(it) },
         )
-        SettingsOptionScreens.Settings.EmailLanguage -> SettingsEmailLanguageScreen(
+        SettingsOptionScreens.EmailLanguage -> SettingsEmailLanguageScreen(
             emailLanguage = emailLanguage.get(),
             navigateBack = navigateBack,
             onEmailLanguageChange = { emailLanguage.set(it) },
         )
-        DataManagement.Root -> SettingsDataManagementScreen(
+        SettingsOptionScreens.DataManagement.Root -> SettingsDataManagementScreen(
             navigateBack = navigateBack,
             onItemClick = { item ->
                 scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
             },
         )
-        DataManagement.Matomo -> SettingsDataManagementMatomoScreen(navigateBack)
-        DataManagement.Sentry -> SettingsDataManagementSentryScreen(navigateBack)
-        Notifications,
-        DeleteMyAccount,
+        SettingsOptionScreens.DataManagement.Matomo -> SettingsDataManagementMatomoScreen(navigateBack)
+        SettingsOptionScreens.DataManagement.Sentry -> SettingsDataManagementSentryScreen(navigateBack)
+        SettingsOptionScreens.Notifications,
+        SettingsOptionScreens.DeleteMyAccount,
         null -> NoSelectionEmptyState()
     }
 }
@@ -270,7 +263,7 @@ private fun handleSettingsItemClick(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
 ) {
     when (item) {
-        DeleteMyAccount -> {
+        SettingsOptionScreens.DeleteMyAccount -> {
             WebViewActivity.startActivity(
                 context = context,
                 url = TERMINATE_ACCOUNT_FULL_URL,
@@ -279,7 +272,7 @@ private fun handleSettingsItemClick(
                 activityResultLauncher = accountDeletionActivityResultLauncher,
             )
         }
-        Notifications -> context.openAppNotificationSettings()
+        SettingsOptionScreens.Notifications -> context.openAppNotificationSettings()
         else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
     }
 }

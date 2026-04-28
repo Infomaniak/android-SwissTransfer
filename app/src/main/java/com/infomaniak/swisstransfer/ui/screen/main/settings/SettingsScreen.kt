@@ -50,9 +50,6 @@ import com.infomaniak.swisstransfer.ui.images.icons.PaintbrushPalette
 import com.infomaniak.swisstransfer.ui.images.icons.Shield
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DataManagement
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DeleteMyAccount
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.Notifications
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
@@ -99,11 +96,11 @@ fun SettingsScreen(
             if (SDK_INT >= 29) {
                 SettingItem(
                     titleRes = R.string.settingsOptionTheme,
-                    isSelected = { selectedSetting == SettingsOptionScreens.Settings.Theme },
+                    isSelected = { selectedSetting == SettingsOptionScreens.Theme },
                     icon = AppIcons.PaintbrushPalette,
                     description = theme.get().getString(),
                     endIcon = CHEVRON,
-                    onClick = { onItemClick(SettingsOptionScreens.Settings.Theme) },
+                    onClick = { onItemClick(SettingsOptionScreens.Theme) },
                 )
             }
 
@@ -114,7 +111,7 @@ fun SettingsScreen(
                 endIcon = OPEN_OUTSIDE,
                 onClick = {
                     MatomoSwissTransfer.trackSettings(MatomoName.Notifications)
-                    onItemClick(Notifications)
+                    onItemClick(SettingsOptionScreens.Notifications)
                 },
             )
             SettingDivider()
@@ -122,37 +119,37 @@ fun SettingsScreen(
             SettingTitle(R.string.settingsCategoryDefaultSettings)
             SettingItem(
                 titleRes = R.string.settingsOptionValidityPeriod,
-                isSelected = { selectedSetting == SettingsOptionScreens.Settings.ValidityPeriod },
+                isSelected = { selectedSetting == SettingsOptionScreens.ValidityPeriod },
                 icon = AppIcons.Clock,
                 description = validityPeriod.get().getString(),
                 endIcon = CHEVRON,
-                onClick = { onItemClick(SettingsOptionScreens.Settings.ValidityPeriod) },
+                onClick = { onItemClick(SettingsOptionScreens.ValidityPeriod) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionDownloadLimit,
-                isSelected = { selectedSetting == SettingsOptionScreens.Settings.DownloadLimit },
+                isSelected = { selectedSetting == SettingsOptionScreens.DownloadLimit },
                 icon = AppIcons.ArrowDownFile,
                 description = downloadLimit.get().getString(),
                 endIcon = CHEVRON,
-                onClick = { onItemClick(SettingsOptionScreens.Settings.DownloadLimit) },
+                onClick = { onItemClick(SettingsOptionScreens.DownloadLimit) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionEmailLanguage,
-                isSelected = { selectedSetting == SettingsOptionScreens.Settings.EmailLanguage },
+                isSelected = { selectedSetting == SettingsOptionScreens.EmailLanguage },
                 icon = AppIcons.SpeechBubble,
                 description = emailLanguage.get().getString(),
                 endIcon = CHEVRON,
-                onClick = { onItemClick(SettingsOptionScreens.Settings.EmailLanguage) },
+                onClick = { onItemClick(SettingsOptionScreens.EmailLanguage) },
             )
             SettingDivider()
 
             SettingTitle(R.string.settingsCategoryDataManagement)
             SettingItem(
                 titleRes = RCore.string.trackingManagementTitle,
-                isSelected = { selectedSetting is SettingsOptionScreens.Settings.DataManagement },
+                isSelected = { selectedSetting is SettingsOptionScreens.DataManagement },
                 icon = AppIcons.Shield,
                 endIcon = CHEVRON,
-                onClick = { onItemClick(DataManagement.Root) },
+                onClick = { onItemClick(SettingsOptionScreens.DataManagement.Root) },
             )
             if (isAccountDeletable()) {
                 SettingItem(
@@ -162,7 +159,7 @@ fun SettingsScreen(
                     endIcon = OPEN_OUTSIDE,
                     onClick = {
                         MatomoSwissTransfer.trackSettings(MatomoName.DeleteMyAccount)
-                        onItemClick(DeleteMyAccount)
+                        onItemClick(SettingsOptionScreens.DeleteMyAccount)
                     },
                 )
             }
@@ -205,21 +202,29 @@ private fun EmailLanguage?.getString(): String {
 @Parcelize
 sealed interface SettingsOptionScreens : Parcelable {
     @Parcelize
-    sealed interface Settings : SettingsOptionScreens {
-        @Parcelize data object Root : Settings
-        @Parcelize data object Theme : Settings
-        @Parcelize data object Notifications : Settings
-        @Parcelize data object ValidityPeriod : Settings
-        @Parcelize data object DownloadLimit : Settings
-        @Parcelize data object EmailLanguage : Settings
+    data object Root : SettingsOptionScreens
+    @Parcelize
+    data object Theme : SettingsOptionScreens
+    @Parcelize
+    data object Notifications : SettingsOptionScreens
+    @Parcelize
+    data object ValidityPeriod : SettingsOptionScreens
+    @Parcelize
+    data object DownloadLimit : SettingsOptionScreens
+    @Parcelize
+    data object EmailLanguage : SettingsOptionScreens
+    @Parcelize
+    sealed interface DataManagement : SettingsOptionScreens {
         @Parcelize
-        sealed interface DataManagement : Settings {
-            @Parcelize data object Root : DataManagement
-            @Parcelize data object Matomo : DataManagement
-            @Parcelize data object Sentry : DataManagement
-        }
-        @Parcelize data object DeleteMyAccount : Settings
+        data object Root : DataManagement
+        @Parcelize
+        data object Matomo : DataManagement
+        @Parcelize
+        data object Sentry : DataManagement
     }
+
+    @Parcelize
+    data object DeleteMyAccount : SettingsOptionScreens
 }
 
 @PreviewAllWindows
