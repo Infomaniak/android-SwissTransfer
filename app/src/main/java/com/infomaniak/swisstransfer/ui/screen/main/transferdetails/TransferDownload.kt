@@ -92,11 +92,11 @@ suspend fun handleTransferDownload(
     targetFile = targetFile,
     direction = direction,
 ).collectLatest { id ->
-    val isNeedDownloadWorker = transfer.isV2() && targetFile?.isFolder != false
+    val needsDownloadWorker = transfer.isV2() && targetFile?.isFolder != false
 
     autoCancelScope {
         val downloadStatusFlow = when {
-            isNeedDownloadWorker -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, targetFile?.uid)
+            needsDownloadWorker -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, targetFile?.uid)
             else -> downloadManager.downloadStatusFlow(id)
         }.stateIn(scope = this)
 
@@ -107,7 +107,7 @@ suspend fun handleTransferDownload(
         )
     }
 
-    if (isNeedDownloadWorker) {
+    if (needsDownloadWorker) {
         downloadWorkerScheduler.cancelWork(transfer.uuid, targetFile?.uid)
     } else {
         downloadManager.cancelAndRemove(id)
