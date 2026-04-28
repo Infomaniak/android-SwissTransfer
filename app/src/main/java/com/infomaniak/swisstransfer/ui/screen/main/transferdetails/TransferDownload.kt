@@ -137,10 +137,9 @@ private suspend fun handleOpenRequests(
     openFile: suspend (Uri) -> Unit,
 ) = downloadStatusFlow.collectLatest { status ->
     if (status !is DownloadStatus.Complete) return@collectLatest
-    val isApiV2 = transfer.isV2()
     val uri = when {
         transfer.isV1() -> downloadManager.uriFor(id)
-        isApiV2 && targetFile != null -> downloadManager.uriFor(id) ?: AppDownloadManager.uriFor(transfer, targetFile)
+        targetFile != null -> downloadManager.uriFor(id) ?: AppDownloadManager.uriFor(transfer, targetFile)
         else -> null // Shouldn't happen, if it's an api v2, then we have a targetFile
     } ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
     repeatWhileActive {
