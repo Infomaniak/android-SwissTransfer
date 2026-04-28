@@ -18,5 +18,5 @@ plugins {
     alias(core.plugins.navigation.safeargs) apply false
     kotlin("plugin.serialization") version core.versions.kotlin apply false
 
-    id("com.infomaniak.core.compose.lint")
+    alias(core.plugins.compose.lint)
 }
