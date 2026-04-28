@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main.settings
 
 import android.os.Build.VERSION.SDK_INT
-import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
@@ -59,7 +58,6 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
-import kotlinx.parcelize.Parcelize
 import com.infomaniak.core.common.R as RCore
 
 @Composable
@@ -199,31 +197,20 @@ private fun EmailLanguage?.getString(): String {
     }
 }
 
-@Parcelize
-sealed interface SettingsOptionScreens : Parcelable {
-    @Parcelize
+sealed interface SettingsOptionScreens {
     data object Root : SettingsOptionScreens
-    @Parcelize
     data object Theme : SettingsOptionScreens
-    @Parcelize
     data object Notifications : SettingsOptionScreens
-    @Parcelize
     data object ValidityPeriod : SettingsOptionScreens
-    @Parcelize
     data object DownloadLimit : SettingsOptionScreens
-    @Parcelize
     data object EmailLanguage : SettingsOptionScreens
-    @Parcelize
+
     sealed interface DataManagement : SettingsOptionScreens {
-        @Parcelize
         data object Root : DataManagement
-        @Parcelize
         data object Matomo : DataManagement
-        @Parcelize
         data object Sentry : DataManagement
     }
 
-    @Parcelize
     data object DeleteMyAccount : SettingsOptionScreens
 }
 
