@@ -140,8 +140,8 @@ class NotificationsUtils @Inject constructor(
     }
 
     fun downloadSucceeded(tag: String, title: String) {
-        val notification = buildDownloadNotification(title)
-        notificationManagerCompat.notifyCompat(tag, 1, notification)
+        val notificationBuilder = downloadNotificationBuilder(title)
+        notificationManagerCompat.notifyCompat(notificationId = 1, notificationBuilder, tag)
     }
 
     fun buildUploadFailedNotification(canRetry: Boolean): Notification {
@@ -180,7 +180,7 @@ class NotificationsUtils @Inject constructor(
             .build()
     }
 
-    private fun buildDownloadNotification(title: String): Notification {
+    private fun downloadNotificationBuilder(title: String): NotificationCompat.Builder {
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
             .setTicker(title)
             .setContentTitle(title)
@@ -188,7 +188,6 @@ class NotificationsUtils @Inject constructor(
             .setSmallIcon(defaultSmallIcon)
             .setColor(notificationIconColor)
             .setAutoCancel(true)
-            .build()
     }
 
     private fun buildUploadProgressNotification(
