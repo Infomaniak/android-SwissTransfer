@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import android.app.DownloadManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -183,8 +182,10 @@ class NotificationsUtils @Inject constructor(
     }
 
     private fun downloadNotificationBuilder(title: String): NotificationCompat.Builder {
-        val contentIntent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
-        val pendingIntent = PendingIntent.getActivity(appContext, Ids.DownloadSuccess, contentIntent, PendingIntent.FLAG_IMMUTABLE)
+        val contentIntent = appContext.packageManager.getLaunchIntentForPackage(appContext.packageName)
+        val pendingIntent = contentIntent?.let {
+            PendingIntent.getActivity(appContext, Ids.DownloadSuccess, it, PendingIntent.FLAG_IMMUTABLE)
+        }
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
             .setTicker(appContext.getString(R.string.notificationDownloadSuccessNotificationTitle))
             .setContentTitle(title)
