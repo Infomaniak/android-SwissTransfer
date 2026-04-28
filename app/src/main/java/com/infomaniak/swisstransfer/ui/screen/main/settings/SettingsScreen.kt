@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import android.os.Parcelable
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -49,13 +50,9 @@ import com.infomaniak.swisstransfer.ui.images.icons.PaintbrushPalette
 import com.infomaniak.swisstransfer.ui.images.icons.Shield
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DELETE_MY_ACCOUNT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DataManagement
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DeleteMyAccount
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.Notifications
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
@@ -65,6 +62,7 @@ import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
+import kotlinx.parcelize.Parcelize
 import com.infomaniak.core.common.R as RCore
 
 @Composable
@@ -101,11 +99,11 @@ fun SettingsScreen(
             if (SDK_INT >= 29) {
                 SettingItem(
                     titleRes = R.string.settingsOptionTheme,
-                    isSelected = { selectedSetting == THEME },
+                    isSelected = { selectedSetting == SettingsOptionScreens.Settings.Theme },
                     icon = AppIcons.PaintbrushPalette,
                     description = theme.get().getString(),
                     endIcon = CHEVRON,
-                    onClick = { onItemClick(THEME) },
+                    onClick = { onItemClick(SettingsOptionScreens.Settings.Theme) },
                 )
             }
 
@@ -116,7 +114,7 @@ fun SettingsScreen(
                 endIcon = OPEN_OUTSIDE,
                 onClick = {
                     MatomoSwissTransfer.trackSettings(MatomoName.Notifications)
-                    onItemClick(NOTIFICATIONS)
+                    onItemClick(Notifications)
                 },
             )
             SettingDivider()
@@ -124,37 +122,37 @@ fun SettingsScreen(
             SettingTitle(R.string.settingsCategoryDefaultSettings)
             SettingItem(
                 titleRes = R.string.settingsOptionValidityPeriod,
-                isSelected = { selectedSetting == VALIDITY_PERIOD },
+                isSelected = { selectedSetting == SettingsOptionScreens.Settings.ValidityPeriod },
                 icon = AppIcons.Clock,
                 description = validityPeriod.get().getString(),
                 endIcon = CHEVRON,
-                onClick = { onItemClick(VALIDITY_PERIOD) },
+                onClick = { onItemClick(SettingsOptionScreens.Settings.ValidityPeriod) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionDownloadLimit,
-                isSelected = { selectedSetting == DOWNLOAD_LIMIT },
+                isSelected = { selectedSetting == SettingsOptionScreens.Settings.DownloadLimit },
                 icon = AppIcons.ArrowDownFile,
                 description = downloadLimit.get().getString(),
                 endIcon = CHEVRON,
-                onClick = { onItemClick(DOWNLOAD_LIMIT) },
+                onClick = { onItemClick(SettingsOptionScreens.Settings.DownloadLimit) },
             )
             SettingItem(
                 titleRes = R.string.settingsOptionEmailLanguage,
-                isSelected = { selectedSetting == EMAIL_LANGUAGE },
+                isSelected = { selectedSetting == SettingsOptionScreens.Settings.EmailLanguage },
                 icon = AppIcons.SpeechBubble,
                 description = emailLanguage.get().getString(),
                 endIcon = CHEVRON,
-                onClick = { onItemClick(EMAIL_LANGUAGE) },
+                onClick = { onItemClick(SettingsOptionScreens.Settings.EmailLanguage) },
             )
             SettingDivider()
 
             SettingTitle(R.string.settingsCategoryDataManagement)
             SettingItem(
                 titleRes = RCore.string.trackingManagementTitle,
-                isSelected = { selectedSetting?.isDataManagementSetting() == true },
+                isSelected = { selectedSetting is SettingsOptionScreens.Settings.DataManagement },
                 icon = AppIcons.Shield,
                 endIcon = CHEVRON,
-                onClick = { onItemClick(DATA_MANAGEMENT) },
+                onClick = { onItemClick(DataManagement.Root) },
             )
             if (isAccountDeletable()) {
                 SettingItem(
@@ -164,7 +162,7 @@ fun SettingsScreen(
                     endIcon = OPEN_OUTSIDE,
                     onClick = {
                         MatomoSwissTransfer.trackSettings(MatomoName.DeleteMyAccount)
-                        onItemClick(DELETE_MY_ACCOUNT)
+                        onItemClick(DeleteMyAccount)
                     },
                 )
             }
@@ -204,14 +202,24 @@ private fun EmailLanguage?.getString(): String {
     }
 }
 
-enum class SettingsOptionScreens {
-    SETTINGS,
-    THEME, NOTIFICATIONS,
-    VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
-    DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY,
-    DELETE_MY_ACCOUNT;
-
-    fun isDataManagementSetting() = this == DATA_MANAGEMENT || this == DATA_MANAGEMENT_MATOMO || this == DATA_MANAGEMENT_SENTRY
+@Parcelize
+sealed interface SettingsOptionScreens : Parcelable {
+    @Parcelize
+    sealed interface Settings : SettingsOptionScreens {
+        @Parcelize data object Root : Settings
+        @Parcelize data object Theme : Settings
+        @Parcelize data object Notifications : Settings
+        @Parcelize data object ValidityPeriod : Settings
+        @Parcelize data object DownloadLimit : Settings
+        @Parcelize data object EmailLanguage : Settings
+        @Parcelize
+        sealed interface DataManagement : Settings {
+            @Parcelize data object Root : DataManagement
+            @Parcelize data object Matomo : DataManagement
+            @Parcelize data object Sentry : DataManagement
+        }
+        @Parcelize data object DeleteMyAccount : Settings
+    }
 }
 
 @PreviewAllWindows

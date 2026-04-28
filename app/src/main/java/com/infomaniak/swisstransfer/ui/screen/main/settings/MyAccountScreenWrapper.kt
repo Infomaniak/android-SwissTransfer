@@ -65,16 +65,10 @@ import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DELETE_MY_ACCOUNT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DOWNLOAD_LIMIT
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DataManagement
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DeleteMyAccount
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.Notifications
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.Root
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -185,7 +179,10 @@ private fun ListPane(
                 }
             }
         },
-        getSelectedSetting = { MyAccountSettingAction.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
+        getSelectedSetting = {
+            val contentKey = navigator.currentDestination?.contentKey
+            MyAccountSettingAction.Navigation.entries.firstOrNull { contentKey is SettingsOptionScreens.Settings }
+        },
     )
 }
 
@@ -212,7 +209,7 @@ private fun DetailPane(
     }
 
     when (destination) {
-        SETTINGS -> {
+        Root -> {
             val user = LocalUser.current
             val context = LocalContext.current
 
@@ -229,36 +226,36 @@ private fun DetailPane(
                 getSelectedSetting = { navigator.currentDestination?.contentKey },
             )
         }
-        THEME -> SettingsThemeScreen(
+        SettingsOptionScreens.Settings.Theme -> SettingsThemeScreen(
             theme = theme.get(),
             navigateBack = navigateBack,
             onThemeUpdate = { theme.set(it) },
         )
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
+        SettingsOptionScreens.Settings.ValidityPeriod -> SettingsValidityPeriodScreen(
             validityPeriod = validityPeriod.get(),
             navigateBack = navigateBack,
             onValidityPeriodChange = { validityPeriod.set(it) },
         )
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
+        SettingsOptionScreens.Settings.DownloadLimit -> SettingsDownloadsLimitScreen(
             downloadLimit = downloadLimit.get(),
             navigateBack = navigateBack,
             onDownloadLimitChange = { downloadLimit.set(it) },
         )
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
+        SettingsOptionScreens.Settings.EmailLanguage -> SettingsEmailLanguageScreen(
             emailLanguage = emailLanguage.get(),
             navigateBack = navigateBack,
             onEmailLanguageChange = { emailLanguage.set(it) },
         )
-        DATA_MANAGEMENT -> SettingsDataManagementScreen(
+        DataManagement.Root -> SettingsDataManagementScreen(
             navigateBack = navigateBack,
             onItemClick = { item ->
                 scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
             },
         )
-        DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
-        DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        NOTIFICATIONS,
-        DELETE_MY_ACCOUNT,
+        DataManagement.Matomo -> SettingsDataManagementMatomoScreen(navigateBack)
+        DataManagement.Sentry -> SettingsDataManagementSentryScreen(navigateBack)
+        Notifications,
+        DeleteMyAccount,
         null -> NoSelectionEmptyState()
     }
 }
@@ -273,7 +270,7 @@ private fun handleSettingsItemClick(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
 ) {
     when (item) {
-        DELETE_MY_ACCOUNT -> {
+        DeleteMyAccount -> {
             WebViewActivity.startActivity(
                 context = context,
                 url = TERMINATE_ACCOUNT_FULL_URL,
@@ -282,7 +279,7 @@ private fun handleSettingsItemClick(
                 activityResultLauncher = accountDeletionActivityResultLauncher,
             )
         }
-        NOTIFICATIONS -> context.openAppNotificationSettings()
+        Notifications -> context.openAppNotificationSettings()
         else -> scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
     }
 }

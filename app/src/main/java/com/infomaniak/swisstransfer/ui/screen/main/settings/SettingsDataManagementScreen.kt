@@ -42,8 +42,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.matomo.Matomo
 import com.infomaniak.swisstransfer.ui.images.icons.sentry.Sentry
 import com.infomaniak.swisstransfer.ui.images.illus.dataProtection.DataProtection
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_SENTRY
+import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.Settings.DataManagement
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.theme.Dimens
@@ -101,7 +100,7 @@ fun SettingsDataManagementScreen(
                 icon = AppIcons.Matomo.image(),
                 endIcon = CHEVRON,
                 shouldTintIcon = false,
-                onClick = { onItemClick(DATA_MANAGEMENT_MATOMO) },
+                onClick = { onItemClick(DataManagement.Matomo) },
             )
             SettingItem(
                 titleRes = RCore.string.trackingSentryTitle,
@@ -109,7 +108,7 @@ fun SettingsDataManagementScreen(
                 icon = AppIcons.Sentry.image(),
                 endIcon = CHEVRON,
                 shouldTintIcon = false,
-                onClick = { onItemClick(DATA_MANAGEMENT_SENTRY) },
+                onClick = { onItemClick(DataManagement.Sentry) },
             )
         }
     }
