@@ -17,9 +17,11 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
+import android.app.DownloadManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
@@ -141,7 +143,7 @@ class NotificationsUtils @Inject constructor(
 
     fun downloadSucceeded(tag: String, title: String) {
         val notificationBuilder = downloadNotificationBuilder(title)
-        notificationManagerCompat.notifyCompat(notificationId = 1, notificationBuilder, tag)
+        notificationManagerCompat.notifyCompat(notificationId = Ids.DownloadSuccess, notificationBuilder, tag)
     }
 
     fun buildUploadFailedNotification(canRetry: Boolean): Notification {
@@ -181,6 +183,8 @@ class NotificationsUtils @Inject constructor(
     }
 
     private fun downloadNotificationBuilder(title: String): NotificationCompat.Builder {
+        val contentIntent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+        val pendingIntent = PendingIntent.getActivity(appContext, Ids.DownloadSuccess, contentIntent, PendingIntent.FLAG_IMMUTABLE)
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
             .setTicker(appContext.getString(R.string.notificationDownloadSuccessNotificationTitle))
             .setContentTitle(title)
@@ -188,6 +192,7 @@ class NotificationsUtils @Inject constructor(
             .setSmallIcon(defaultSmallIcon)
             .setColor(notificationIconColor)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
     }
 
     private fun buildUploadProgressNotification(
@@ -241,6 +246,7 @@ class NotificationsUtils @Inject constructor(
     object Ids {
         const val OngoingUpload = 1
         const val LastUpload = 2
+        const val DownloadSuccess = 3
     }
 
     private object ChannelIds {
