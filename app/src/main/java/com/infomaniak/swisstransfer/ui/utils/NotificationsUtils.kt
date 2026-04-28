@@ -182,7 +182,7 @@ class NotificationsUtils @Inject constructor(
 
     private fun downloadNotificationBuilder(title: String): NotificationCompat.Builder {
         return NotificationCompat.Builder(appContext, ChannelIds.downloadChannelId)
-            .setTicker(title)
+            .setTicker(appContext.getString(R.string.notificationDownloadSuccessNotificationTitle))
             .setContentTitle(title)
             .setContentText(appContext.getString(R.string.notificationDownloadSuccessNotificationTitle))
             .setSmallIcon(defaultSmallIcon)
