@@ -46,8 +46,8 @@ import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.toFloat
-import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
-import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaults
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.WeightOneSpacer

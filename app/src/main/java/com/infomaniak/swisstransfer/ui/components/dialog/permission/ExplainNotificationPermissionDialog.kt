@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,31 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.components
+package com.infomaniak.swisstransfer.ui.components.dialog.permission
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.core.common.R as RCore
+import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ReviewAlertDialog(onUserWantsToReview: () -> Unit, onUserWantsToGiveFeedback: () -> Unit, onDismiss: () -> Unit) {
-    SwissTransferAlertDialog(
-        title = stringResource(RCore.string.reviewAlertTitle, stringResource(R.string.appName)),
-        positiveButton = {
-            SmallButton(
-                style = ButtonType.Tertiary,
-                title = stringResource(RCore.string.buttonYes),
-                onClick = onUserWantsToReview,
-            )
-        },
-        negativeButton = {
-            SmallButton(
-                style = ButtonType.Tertiary,
-                title = stringResource(RCore.string.buttonNo),
-                onClick = onUserWantsToGiveFeedback,
-            )
-        },
+fun ExplainNotificationPermissionDialog(onDismiss: () -> Unit) {
+    InformationPermissionDialog(
+        title = stringResource(R.string.notificationUsageTitle),
+        description = stringResource(R.string.notificationUsageDescription),
         onDismiss = onDismiss,
     )
+}
+
+@PreviewLightAndDark
+@Composable
+private fun ExplainNotificationPermissionDialogPreview() {
+    SwissTransferTheme {
+        ExplainNotificationPermissionDialog(onDismiss = { })
+    }
 }

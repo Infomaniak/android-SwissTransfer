@@ -34,7 +34,6 @@ import com.infomaniak.swisstransfer.ui.utils.openFile
 
 @Composable
 fun ExistingTransferFilesDetailsScreen(
-    filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
     folderUuid: String,
     transferUuid: String,
     navigateToFolder: (String) -> Unit,
@@ -42,6 +41,7 @@ fun ExistingTransferFilesDetailsScreen(
     withSpaceLeft: Boolean,
     navigateBack: () -> Unit,
     close: () -> Unit,
+    filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
 ) {
     val files by remember(folderUuid) {
         filesDetailsViewModel.filesFlow(folderUuid)

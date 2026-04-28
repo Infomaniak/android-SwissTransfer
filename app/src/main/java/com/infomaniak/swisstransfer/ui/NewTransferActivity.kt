@@ -34,6 +34,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.infomaniak.core.common.utils.enumValueOfOrNull
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
+import com.infomaniak.core.permissionmanager.PermissionType
+import com.infomaniak.core.permissionmanager.rationale.rememberRationalePermissionManagerState
+import com.infomaniak.swisstransfer.ui.components.dialog.permission.ExplainNotificationPermissionDialog
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NewTransferNavigation
@@ -77,16 +80,22 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
         setContent {
             val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
             val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
+            val notificationPermissionManager = rememberRationalePermissionManagerState(PermissionType.Notification)
 
             CompositionLocalProvider(LocalUser provides user) {
                 SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
                     NewTransferScreen(
                         startDestination = remember { getStartDestination() },
                         inAppReviewManager = inAppReviewManager,
+                        notificationPermissionManager = notificationPermissionManager,
                         closeActivity = { startMainActivityIfTaskIsEmpty ->
                             finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
                         },
                     )
+
+                    if (notificationPermissionManager.shouldShowRationale) {
+                        ExplainNotificationPermissionDialog(onDismiss = notificationPermissionManager::dismissAndAskPermission)
+                    }
                 }
             }
         }

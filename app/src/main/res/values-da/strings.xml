@@ -85,6 +85,8 @@
     <string name="notificationUploadSuccessDescriptionMail">Downloadlinket er sendt til modtagerne</string>
     <string name="notificationUploadSuccessDescriptionOther">Tryk for at få dit downloadlink</string>
     <string name="notificationUploadSuccessTitle">Overføring fuldført</string>
+    <string name="notificationUsageDescription">Notifikationer hjælper dig med at spore fremdriften for overførsler og fuldførte downloads. Appen fungerer normalt, selvom du vælger ikke at aktivere dem.</string>
+    <string name="notificationUsageTitle">Tillad notifikationer?</string>
     <string name="notificationsUploadChannelName">Upload-notifikationer</string>
     <string name="onboardingExpirationSubtitleArgument">30 dage.</string>
     <string name="onboardingExpirationSubtitleTemplate">Del dine filer via e-mail, link eller QR-kode. Dine links forbliver aktive i %s</string>

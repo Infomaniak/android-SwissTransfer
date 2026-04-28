@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.components
+package com.infomaniak.swisstransfer.ui.components.dialog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.core.common.R as RCore
 
@@ -67,12 +69,12 @@ object SwissTransferAlertDialogDefaults {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferAlertDialog(
-    modifier: Modifier = Modifier,
     title: String,
-    description: String? = null,
-    positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit,
     onDismiss: () -> Unit,
+    positiveButton: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    description: String? = null,
+    negativeButton: @Composable () -> Unit = {},
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     BasicAlertDialog(
@@ -96,11 +98,11 @@ fun SwissTransferAlertDialog(
 
 @Composable
 private fun BasicAlertDialogContent(
-    modifier: Modifier,
     title: String,
     description: String?,
     positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    negativeButton: @Composable () -> Unit = {},
     additionalContent: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     Column(modifier.padding(Margin.Large)) {
@@ -135,7 +137,7 @@ private fun TitleAndDescription(title: String, description: String?) {
 @Composable
 private fun ActionButtons(
     positiveButton: @Composable () -> Unit,
-    negativeButton: @Composable () -> Unit,
+    negativeButton: @Composable () -> Unit = {},
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),

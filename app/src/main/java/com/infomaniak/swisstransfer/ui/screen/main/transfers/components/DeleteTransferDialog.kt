@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.SmallButton
-import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
-import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaults
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
