@@ -132,7 +132,7 @@ class AppDownloadManager @Inject constructor(
                 onProgress = onProgress,
             )
         } else {
-            downloadToPublicDownloadsUnderApi29(
+            downloadToPublicDownloadsBeforeApi29(
                 url = downloadUrl,
                 fileName = fileUi.fileName,
                 path = path,
@@ -180,7 +180,7 @@ class AppDownloadManager @Inject constructor(
     }
 
 
-    private suspend fun downloadToPublicDownloadsUnderApi29(
+    private suspend fun downloadToPublicDownloadsBeforeApi29(
         url: String,
         fileName: String,
         path: String,
@@ -239,17 +239,17 @@ class AppDownloadManager @Inject constructor(
 
         suspend fun uriFor(transferUi: TransferUi, fileUi: FileUi): Uri? = withContext(Dispatchers.IO) {
             return@withContext when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> uriForAboveApi29(transferUi, fileUi)
+                Build.VERSION.SDK_INT >= 29 -> uriForFromApi29(transferUi, fileUi)
                 else -> uriForUnderApi29(transferUi, fileUi)
             }
         }
 
-        suspend fun doesFileExists(transferUi: TransferUi, fileUi: FileUi): Boolean {
+        suspend fun doesFileExist(transferUi: TransferUi, fileUi: FileUi): Boolean {
             return uriFor(transferUi, fileUi) != null
         }
 
         @RequiresApi(Build.VERSION_CODES.Q)
-        private fun uriForAboveApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
+        private fun uriForFromApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
             val contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
             val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/${transferUi.computeFolderDownloadPathWith(fileUi)}"
             val selection = "${MediaStore.DownloadColumns.RELATIVE_PATH}=? AND ${MediaStore.DownloadColumns.DISPLAY_NAME}=?" +
