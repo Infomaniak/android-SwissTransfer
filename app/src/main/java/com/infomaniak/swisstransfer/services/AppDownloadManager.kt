@@ -62,6 +62,7 @@ class AppDownloadManager @Inject constructor(
     private val fileManager: FileManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
 ) {
+    private val httpClient = createHttpClient(HttpClient.okHttpClient)
 
     suspend fun downloadFolderToPublicDownload(
         transferUi: TransferUi,
@@ -206,7 +207,7 @@ class AppDownloadManager @Inject constructor(
         output: OutputStream,
         onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
     ) {
-        createHttpClient(HttpClient.okHttpClient).prepareGet(url) {
+        httpClient.prepareGet(url) {
             accept(ContentType.Any)
             onDownload { bytesSentTotal, contentLength ->
                 onProgress(bytesSentTotal, contentLength)
