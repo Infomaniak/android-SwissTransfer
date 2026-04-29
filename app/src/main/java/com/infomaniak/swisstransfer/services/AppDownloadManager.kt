@@ -22,6 +22,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
@@ -125,7 +126,7 @@ class AppDownloadManager @Inject constructor(
     ) {
         val path = transferUi.computeFolderDownloadPathWith(fileUi)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (SDK_INT >= 29) {
             downloadToPublicDownloads(
                 url = downloadUrl,
                 fileUi = fileUi,
@@ -238,7 +239,7 @@ class AppDownloadManager @Inject constructor(
 
         suspend fun uriFor(transferUi: TransferUi, fileUi: FileUi): Uri? = withContext(Dispatchers.IO) {
             return@withContext when {
-                Build.VERSION.SDK_INT >= 29 -> uriForFromApi29(transferUi, fileUi)
+                SDK_INT >= 29 -> uriForFromApi29(transferUi, fileUi)
                 else -> uriForBeforeApi29(transferUi, fileUi)
             }
         }
