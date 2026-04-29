@@ -58,7 +58,7 @@ fun TransferManager.previewUriForFile(
         return@transformLatest
     }
     val downloadStatusFlow = when {
-        transfer.isV2() -> downloadWorkerScheduler.downloadStatusFlow(
+        transfer.isV2() && file.isFolder -> downloadWorkerScheduler.downloadStatusFlow(
             transferId = transfer.uuid,
             folderId = file.uid,
         )
