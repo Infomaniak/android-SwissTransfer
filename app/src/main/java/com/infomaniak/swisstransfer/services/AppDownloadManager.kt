@@ -232,10 +232,8 @@ class AppDownloadManager @Inject constructor(
         private const val PARALLEL_DOWNLOADS_COUNT = 6
 
         fun TransferUi.computeFolderDownloadPathWith(fileUi: FileUi): String {
-            val filePath = fileUi.path?.takeIf { it.contains("/") }?.let {
-                if (it.startsWith("/")) it.substringAfter("/") else it
-            }
-            return "$ROOT_FOLDER_NAME/${this.displayTitle}/${filePath?.substringBeforeLast("/") ?: ""}"
+            val filePath = fileUi.path?.removePrefix("/")?.removeSuffix("/")
+            return "$ROOT_FOLDER_NAME/${this.displayTitle}/${filePath ?: ""}"
         }
 
         suspend fun uriFor(transferUi: TransferUi, fileUi: FileUi): Uri? = withContext(Dispatchers.IO) {
