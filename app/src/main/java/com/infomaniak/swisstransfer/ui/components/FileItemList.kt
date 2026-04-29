@@ -107,7 +107,6 @@ fun FileItemList(
                         TransferDownloadComposeUi(
                             lifecycle,
                             snackbarHostState,
-                            writeExternalStoragePermissionState,
                             direction
                         )
                     }
@@ -138,7 +137,7 @@ fun FileItemList(
                             }
                         }
                     }
-                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
+                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
