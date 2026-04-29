@@ -19,6 +19,9 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import android.Manifest
 import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,12 +52,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -72,6 +77,8 @@ import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.components.SwissTransferAlertDialogDefaults
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -94,9 +101,13 @@ import com.infomaniak.swisstransfer.ui.utils.isApiV2
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import splitties.init.appCtx
 import splitties.toast.longToast
+import androidx.core.content.edit
 
 private val HORIZONTAL_PADDING = Margin.Medium
+private const val PREFS_NAME = "swisstransfer_prefs"
+private const val KEY_MEDIA_LOCATION_DIALOG_SHOWN = "media_location_dialog_shown"
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -122,13 +133,51 @@ fun PickFilesScreen(
         onResult = pickFilesViewModel::importUris,
     )
 
+    fun openFilePicker() {
+        filePickerLauncher.launch(arrayOf("*/*"))
+    }
+
+    val accessMediaLocationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { _ ->
+            openFilePicker()
+        },
+    )
+
+    val mediaLocationDialogShown = rememberDialogShownPrefState()
+    var showMediaLocationDialog by rememberSaveable { mutableStateOf(false) }
+
+    fun requestAccessMediaLocationThenOpenPicker() {
+        if (SDK_INT < Build.VERSION_CODES.Q) {
+            openFilePicker()
+            return
+        }
+
+        val granted = ContextCompat.checkSelfPermission(
+            appCtx,
+            Manifest.permission.ACCESS_MEDIA_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            openFilePicker()
+            return
+        }
+
+        if (!mediaLocationDialogShown.value) {
+            mediaLocationDialogShown.value = true
+            showMediaLocationDialog = true
+        } else {
+            openFilePicker()
+        }
+    }
+
     val notificationPermissionState: PermissionState? = if (SDK_INT >= 33) {
         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
     } else null
 
     fun pickFiles() {
         try {
-            filePickerLauncher.launch(arrayOf("*/*"))
+            requestAccessMediaLocationThenOpenPicker()
         } catch (e: ActivityNotFoundException) {
             longToast(R.string.startActivityCantHandleAction)
         }
@@ -208,6 +257,45 @@ fun PickFilesScreen(
         snackbarHostState = snackbarHostState,
         navigateToFilesDetails = navigateToFilesDetails,
     )
+
+    if (showMediaLocationDialog) {
+        SwissTransferAlertDialog(
+            title = "Partager les données de localisation",
+            description = "Souhaitez vous partager les données de localisation pouvant être contenues dans les photos/vidéo que vous transférez.",
+            positiveButton = {
+                SwissTransferAlertDialogDefaults.ConfirmButton {
+                    showMediaLocationDialog = false
+                    accessMediaLocationPermissionLauncher.launch(Manifest.permission.ACCESS_MEDIA_LOCATION)
+                }
+            },
+            negativeButton = {
+                SwissTransferAlertDialogDefaults.CancelButton {
+                    showMediaLocationDialog = false
+                    openFilePicker()
+                }
+            },
+            onDismiss = {
+                showMediaLocationDialog = false
+                openFilePicker()
+            },
+        )
+    }
+}
+
+@Composable
+private fun rememberDialogShownPrefState(): MutableState<Boolean> {
+    val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) }
+
+    val state = remember {
+        mutableStateOf(prefs.getBoolean(KEY_MEDIA_LOCATION_DIALOG_SHOWN, false))
+    }
+
+    LaunchedEffect(state.value) {
+        prefs.edit { putBoolean(KEY_MEDIA_LOCATION_DIALOG_SHOWN, state.value)}
+    }
+
+    return state
 }
 
 @Composable
