@@ -224,7 +224,7 @@ class AppDownloadManager @Inject constructor(
     class FailureException : IllegalStateException()
 
     companion object {
-        private val TAG = AppDownloadManager::javaClass.name
+        private val TAG = AppDownloadManager::class.java.name
         private const val DEFAULT_BUFFER_SIZE: Long = 8 * 1024
         const val ROOT_FOLDER_NAME = "SwissTransfer"
 
