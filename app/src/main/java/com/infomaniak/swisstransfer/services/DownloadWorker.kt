@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.services
 
 import android.content.Context
 import android.content.pm.ServiceInfo
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.os.StatFs
 import android.os.SystemClock
@@ -166,7 +166,7 @@ class DownloadWorker @AssistedInject constructor(
     private suspend fun getForegroundInfoForDownload(title: String, downloadedBytes: Long, totalBytes: Long): ForegroundInfo {
         val percent = if (totalBytes == 0L) 0 else downloadedBytes * 100 / totalBytes
         setProgress(workDataOf(DOWNLOADED_BYTES_KEY to downloadedBytes, TOTAL_SIZE_IN_BYTES_KEY to totalBytes))
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        return if (SDK_INT >= 29) {
             ForegroundInfo(
                 /* notificationId = */ foregroundId,
                 /* notification = */
@@ -184,7 +184,7 @@ class DownloadWorker @AssistedInject constructor(
 
     private fun hasAvailableSpace(requiredBytes: Long): Boolean {
         val path = when {
-            Build.VERSION.SDK_INT >= 29 -> applicationContext.getExternalFilesDir(null)?.path ?: return true
+            SDK_INT >= 29 -> applicationContext.getExternalFilesDir(null)?.path ?: return true
             else -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path
         }
         val availableBytes = StatFs(path).availableBytes
