@@ -84,6 +84,7 @@ fun FileItemList(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     LazyVerticalGrid(
         modifier = modifier,
@@ -118,9 +119,7 @@ fun FileItemList(
                     }
                 }
             }
-
-            val scope = rememberCoroutineScope()
-
+            
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
