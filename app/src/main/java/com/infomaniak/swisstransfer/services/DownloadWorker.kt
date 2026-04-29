@@ -40,6 +40,7 @@ import com.infomaniak.core.common.UniqueDownloadId
 import com.infomaniak.core.common.utils.enumValueOfOrNull
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
@@ -91,47 +92,8 @@ class DownloadWorker @AssistedInject constructor(
 
         runCatching {
             when {
-                folderId != null -> {
-                    val folder = fileManager.getFileUi(folderId) ?: run {
-                        SentryLog.wtf(TAG, "Finish with failure because FileUi is null")
-                        return Result.failure()
-                    }
-                    val folderPath = folder.path ?: run {
-                        SentryLog.wtf(TAG, "Finish with failure because folderPath is null")
-                        return Result.failure()
-                    }
-                    if (hasAvailableSpace(folder.fileSize).not()) {
-                        SentryLog.w(TAG, "Finish with failure because not enough space to download folder")
-                        return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
-                    }
-                    val title = folder.fileName
-                    setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
-
-                    appDownloadManager.downloadFolderToPublicDownload(
-                        transferUi = transferUi,
-                        folder = folder,
-                        folderPath = folderPath,
-                    ) { downloadedBytes, totalBytes ->
-                        updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
-                    }
-
-                    notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferId, folderId), title)
-
-                }
-                else -> {
-                    if (hasAvailableSpace(transferUi.sizeUploaded).not()) {
-                        SentryLog.w(TAG, "Finish with failure because not enough space to download transfer")
-                        return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
-                    }
-                    val title = transferUi.displayTitle
-                    setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
-
-                    appDownloadManager.downloadTransferToPublicDownload(transferUi) { downloadedBytes, totalBytes ->
-                        updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
-                    }
-
-                    notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferId, null), title)
-                }
+                folderId != null -> downloadFolder(folderId, transferUi)
+                else -> downloadTransfer(transferUi)
             }
         }.getOrElse { exception ->
             return when (exception) {
@@ -143,6 +105,54 @@ class DownloadWorker @AssistedInject constructor(
                 }
             }
         }
+
+        return Result.success()
+    }
+
+    private suspend fun downloadFolder(
+        folderId: String,
+        transferUi: TransferUi,
+    ): Result {
+        val folder = fileManager.getFileUi(folderId) ?: run {
+            SentryLog.wtf(TAG, "Finish with failure because FileUi is null")
+            return Result.failure()
+        }
+        val folderPath = folder.path ?: run {
+            SentryLog.wtf(TAG, "Finish with failure because folderPath is null")
+            return Result.failure()
+        }
+        if (hasAvailableSpace(folder.fileSize).not()) {
+            SentryLog.w(TAG, "Finish with failure because not enough space to download folder")
+            return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
+        }
+        val title = folder.fileName
+        setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
+
+        appDownloadManager.downloadFolderToPublicDownload(
+            transferUi = transferUi,
+            folder = folder,
+            folderPath = folderPath,
+        ) { downloadedBytes, totalBytes ->
+            updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
+        }
+
+        notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferUi.uuid, folderId), title)
+        return Result.success()
+    }
+
+    private suspend fun downloadTransfer(transferUi: TransferUi): Result {
+        if (hasAvailableSpace(transferUi.sizeUploaded).not()) {
+            SentryLog.w(TAG, "Finish with failure because not enough space to download transfer")
+            return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
+        }
+        val title = transferUi.displayTitle
+        setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
+
+        appDownloadManager.downloadTransferToPublicDownload(transferUi) { downloadedBytes, totalBytes ->
+            updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
+        }
+
+        notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferUi.uuid, null), title)
 
         return Result.success()
     }
