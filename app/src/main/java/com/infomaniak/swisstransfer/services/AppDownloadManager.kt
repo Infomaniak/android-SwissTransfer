@@ -53,6 +53,7 @@ import kotlinx.io.readByteArray
 import splitties.init.appCtx
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.OutputStream
 import javax.inject.Inject
 import kotlin.concurrent.atomics.AtomicLong
@@ -161,7 +162,8 @@ class AppDownloadManager @Inject constructor(
         }
 
         val collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI
-        val itemUri = resolver.insert(collection, contentValues) ?: return@withContext null
+        val itemUri = resolver.insert(collection, contentValues)
+            ?: throw MediaStoreInsertException(fileUi.fileName, path)
 
         return@withContext runCatching {
             resolver.openFileDescriptor(itemUri, "wt")?.use { pfd ->
@@ -224,6 +226,10 @@ class AppDownloadManager @Inject constructor(
     }
 
     class FailureException : IllegalStateException()
+    class MediaStoreInsertException(
+        fileName: String,
+        path: String,
+    ) : IOException("Failed to insert '$fileName' into MediaStore at '$path'")
 
     companion object {
         private val TAG = AppDownloadManager::class.java.name
