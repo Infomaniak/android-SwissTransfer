@@ -47,12 +47,12 @@ fun WindowAdaptiveInfo.isWindowLarge(context: Context): Boolean {
 fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.current)
 
 /**
- * Determines if the current window is classified as a medium or larger window suitable for foldable and tablet devices.
+ * Determines if the current window is classified as a medium window suitable for foldable and tablet devices.
  *
  * This is typically used to adapt the UI, such as displaying a list-detail layout or using a [NavigationRail]
  * vs a [NavigationBar] for navigation.
  *
- * @return `true` if the window is medium or larger (foldable and tablet), `false` otherwise.
+ * @return `true` if the window is medium (foldable and tablet), `false` otherwise.
  */
 fun WindowAdaptiveInfo.isWindowMedium(context: Context): Boolean {
     return getCustomWindowClass(context) == MEDIUM && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
@@ -72,7 +72,7 @@ fun WindowAdaptiveInfo.isWindowMedium(): Boolean = isWindowMedium(LocalContext.c
 fun WindowAdaptiveInfo.isWindowSmall(context: Context): Boolean = !isWindowLarge(context) && !isWindowMedium(context)
 
 @Composable
-fun WindowAdaptiveInfo.isWindowSmall(): Boolean = !isWindowLarge() && !isWindowMedium()
+fun WindowAdaptiveInfo.isWindowSmall(): Boolean = isWindowSmall(LocalContext.current)
 
 private fun getCustomWindowClass(context: Context): WindowWidthSizeClass {
     val windowBounds = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context).bounds
