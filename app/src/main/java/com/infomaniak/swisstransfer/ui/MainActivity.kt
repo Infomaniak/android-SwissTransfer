@@ -45,6 +45,7 @@ import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.data.DeepLinkType
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.multiplatform_swisstransfer.network.utils.ApiUrlMatcher
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
@@ -103,8 +104,10 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     intent.setData(null)
                 }
                 is DeepLinkType.OpenTransfer -> {
-                    deeplinkTransferDirection = deeplinkViewModel.getDeeplinkTransferDirection(deepLinkTypeFromURL.uuid)
-                        ?: TransferDirection.RECEIVED
+                    deeplinkTransferDirection = deeplinkViewModel.getDeeplinkTransferDirection(
+                        transferUuid = deepLinkTypeFromURL.uuid,
+                        isApiV2 = ApiUrlMatcher.isV2Url(deeplinkUrl),
+                    ) ?: TransferDirection.RECEIVED
                     if (deeplinkTransferDirection == TransferDirection.SENT) {
                         // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
                         intent.setData((deeplinkUrl + SENT_DEEPLINK_SUFFIX).toUri())
