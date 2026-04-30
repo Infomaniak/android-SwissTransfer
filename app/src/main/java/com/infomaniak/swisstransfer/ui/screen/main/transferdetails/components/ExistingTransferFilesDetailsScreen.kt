@@ -40,8 +40,8 @@ fun ExistingTransferFilesDetailsScreen(
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     navigateBack: () -> Unit,
-    close: () -> Unit,
     filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
+    close: () -> Unit
 ) {
     val files by remember(folderUuid) {
         filesDetailsViewModel.filesFlow(folderUuid)
@@ -75,7 +75,7 @@ fun ExistingTransferFilesDetailsScreen(
                 previewUriForFile = { transfer, file -> filesDetailsViewModel.previewUriForFile(transfer, file) },
                 withFileSize = withFilesSize,
                 withSpaceLeft = withSpaceLeft,
-                isDownloadButtonVisible = true,
+                isNewTransfer = false,
             )
         }
     }

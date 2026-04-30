@@ -69,9 +69,9 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     direction: TransferDirection,
-    transferUuid: String? = null,
-    isApiV2Deeplink: Boolean? = null,
     hideBottomBar: MutableState<Boolean>,
+    transferUuid: String? = null,
+    isApiV2Deeplink: Boolean? = null
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -250,26 +250,25 @@ private fun ExistingTransferFilesDetails(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     ExistingTransferFilesDetailsScreen(
+        folderUuid = folderUuid,
+        transferUuid = transferUuid,
         navigateToFolder = { selectedFolderUuid ->
             scope.launch {
                 navigator.navigateToFolder(transferDirection, transferUuid, selectedFolderUuid)
             }
         },
-        transferUuid = transferUuid,
-        folderUuid = folderUuid,
-        navigateBack = { scope.launch { navigator.popBackStack() } },
-        close = {
-            // Because on phones, if we navigateToDetails, we arrive on the TransferDetailsScreen but
-            // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all
-            // the FilesDetailsScreen's
-            scope.launch {
-                if (windowAdaptiveInfo.isWindowSmall(context)) navigator.navigateBack()
-                navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferUuid)
-            }
-        },
         withFilesSize = false,
         withSpaceLeft = false,
-    )
+        navigateBack = { scope.launch { navigator.popBackStack() } },
+    ) {
+        // Because on phones, if we navigateToDetails, we arrive on the TransferDetailsScreen but
+        // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all
+        // the FilesDetailsScreen's
+        scope.launch {
+            if (windowAdaptiveInfo.isWindowSmall(context)) navigator.navigateBack()
+            navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferUuid)
+        }
+    }
 }
 
 @Composable

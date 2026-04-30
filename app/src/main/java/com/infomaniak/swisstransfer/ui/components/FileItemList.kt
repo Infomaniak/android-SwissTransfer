@@ -31,10 +31,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.permissionmanager.PermissionType
@@ -48,17 +51,20 @@ import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParamet
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.openFile
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FileItemList(
     snackbarHostState: SnackbarHostState,
     files: List<FileUi>,
-    isDownloadButtonVisible: Boolean,
+    isNewTransfer: Boolean,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: () -> Boolean,
     isUidChecked: (String) -> Boolean,
@@ -72,11 +78,13 @@ fun FileItemList(
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
-    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() }
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     LazyVerticalGrid(
         modifier = modifier,
@@ -94,13 +102,24 @@ fun FileItemList(
         }
 
         items(files, key = { it.uid }) { file ->
-
-            val downloadUi: TransferDownloadComposeUi = remember(lifecycle) {
-                TransferDownloadComposeUi(lifecycle, snackbarHostState, direction)
+            val downloadUi: TransferDownloadComposeUi? =
+                if (!isNewTransfer) {
+                    remember(lifecycle) {
+                        TransferDownloadComposeUi(
+                            lifecycle,
+                            snackbarHostState,
+                            direction
+                        )
+                    }
+                } else null
+            if (downloadUi != null) {
+                LaunchedEffect(file.uid) {
+                    transferFlow.collect { transfer ->
+                        runDownloadUi(downloadUi, transfer, file)
+                    }
+                }
             }
-
-            LaunchedEffect(Unit) { transferFlow.collect { transfer -> runDownloadUi(downloadUi, transfer, file) } }
-
+            
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -110,7 +129,14 @@ fun FileItemList(
                 onClick = when {
                     isCheckboxVisible() -> fun() { setUidCheckStatus(file.uid, !isUidChecked(file.uid)) }
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
-                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi.onFileClick() }
+                    isNewTransfer -> fun() {
+                        file.localPath?.let { filePath ->
+                            scope.launch(Dispatchers.IO) {
+                                context.openFile(filePath.toUri())
+                            }
+                        }
+                    }
+                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
                 },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
@@ -121,14 +147,12 @@ fun FileItemList(
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
-                    if (isDownloadButtonVisible) {
-                        downloadUi.CardCornerButton(Modifier.align(Alignment.TopEnd))
-                        downloadUi.CardProgressBar(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .fillMaxWidth(),
-                        )
-                    }
+                    downloadUi?.CardCornerButton(Modifier.align(Alignment.TopEnd))
+                    downloadUi?.CardProgressBar(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth(),
+                    )
                 },
             )
         }
@@ -144,7 +168,7 @@ private fun FileItemListPreview(@PreviewParameter(FileUiListPreviewParameter::cl
             snackbarHostState = remember { SnackbarHostState() },
             files = files,
             isRemoveButtonVisible = false,
-            isDownloadButtonVisible = false,
+            isNewTransfer = false,
             isCheckboxVisible = { true },
             isUidChecked = { false },
             setUidCheckStatus = { _, _ -> },
