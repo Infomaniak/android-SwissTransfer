@@ -91,7 +91,7 @@ private fun ReceivedScreen(
     SwissTransferScaffold(
         topBar = {
             if (windowAdaptiveInfo.isWindowLarge()) {
-                SwissTransferTopAppBar(stringResource(R.string.receivedFilesTitle))
+                SwissTransferTopAppBar(title = stringResource(R.string.receivedFilesTitle))
             } else {
                 BrandTopAppBar()
             }

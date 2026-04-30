@@ -119,7 +119,7 @@ fun MyAccountScreen(
     SwissTransferScaffold(
         topBar = {
             if (windowAdaptiveInfo.isWindowLarge()) {
-                SwissTransferTopAppBar(pluralStringResource(RCore.plurals.myAccount, 1))
+                SwissTransferTopAppBar(title = pluralStringResource(RCore.plurals.myAccount, 1))
             } else {
                 BrandTopAppBar()
             }

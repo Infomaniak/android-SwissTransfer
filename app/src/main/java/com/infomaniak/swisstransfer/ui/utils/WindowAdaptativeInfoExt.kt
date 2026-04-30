@@ -47,6 +47,21 @@ fun WindowAdaptiveInfo.isWindowLarge(context: Context): Boolean {
 fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.current)
 
 /**
+ * Determines if the current window is classified as a medium window suitable for foldable and tablet devices.
+ *
+ * This is typically used to adapt the UI, such as displaying a list-detail layout or using a [NavigationRail]
+ * vs a [NavigationBar] for navigation.
+ *
+ * @return `true` if the window is medium (foldable and tablet), `false` otherwise.
+ */
+fun WindowAdaptiveInfo.isWindowMedium(context: Context): Boolean {
+    return getCustomWindowClass(context) == MEDIUM && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
+}
+
+@Composable
+fun WindowAdaptiveInfo.isWindowMedium(): Boolean = isWindowMedium(LocalContext.current)
+
+/**
  * Determines if the current window is classified as a small window suitable for mobile devices.
  *
  * This is typically used to adapt the UI, such as displaying a list-detail layout or using a [NavigationRail]
@@ -54,15 +69,13 @@ fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.cur
  *
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowSmall(context: Context): Boolean = !isWindowLarge(context)
+fun WindowAdaptiveInfo.isWindowSmall(context: Context): Boolean = !isWindowLarge(context) && !isWindowMedium(context)
 
 @Composable
-fun WindowAdaptiveInfo.isWindowSmall(): Boolean = !isWindowLarge()
+fun WindowAdaptiveInfo.isWindowSmall(): Boolean = isWindowSmall(LocalContext.current)
 
 private fun getCustomWindowClass(context: Context): WindowWidthSizeClass {
-    val windowBounds = WindowMetricsCalculator.getOrCreate()
-        .computeCurrentWindowMetrics(context)
-        .bounds
+    val windowBounds = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context).bounds
     val dpWidth = windowBounds.width().toDpInt()
 
     require(dpWidth >= 0) { "Width must be positive, received $dpWidth" }
