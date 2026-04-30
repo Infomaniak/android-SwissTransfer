@@ -120,12 +120,19 @@ class TransferDetailsViewModel @Inject constructor(
                     isApiV2Deeplink == true -> transferManager.getTransferByLinkId(transferUuid)
                     else -> transferManager.getTransferFlow(transferUuid).first()
                 }
-                if (transfer == null && isApiV2Deeplink != null) {
-                    val transferId = handleTransferDeeplink(transferUuid, _deeplinkPassword, isApiV2Deeplink)
-                    _transferSourceFlow.emit(TransferSource.Local(transferId))
-                } else {
-                    _transferSourceFlow.emit(TransferSource.Local(transferUuid))
-                    transferManager.fetchTransfer(transferUuid)
+
+                when {
+                    transfer == null && isApiV2Deeplink != null -> {
+                        val transferId = handleTransferDeeplink(transferUuid, _deeplinkPassword, isApiV2Deeplink)
+                        _transferSourceFlow.emit(TransferSource.Local(transferId))
+                    }
+                    transfer != null -> {
+                        _transferSourceFlow.emit(TransferSource.Local(transfer.uuid))
+                        transferManager.fetchTransfer(transfer.uuid)
+                    }
+                    else -> {
+                        error("No transfer found for uuid=$transferUuid outside of deeplink context.")
+                    }
                 }
             }.cancellable().onFailure { exception ->
                 when (exception) {
