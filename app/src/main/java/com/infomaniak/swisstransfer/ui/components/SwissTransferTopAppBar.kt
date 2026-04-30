@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
@@ -44,17 +45,19 @@ fun SwissTransferTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    SwissTransferTopAppBar(title = stringResource(titleRes), navigationIcon, actions)
+    SwissTransferTopAppBar(title = stringResource(titleRes), navigationIcon = navigationIcon, actions = actions)
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferTopAppBar(
+    modifier: Modifier = Modifier,
     title: String = "",
     navigationIcon: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
+        modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
             titleContentColor = SwissTransferTheme.colors.toolbarTextColor,

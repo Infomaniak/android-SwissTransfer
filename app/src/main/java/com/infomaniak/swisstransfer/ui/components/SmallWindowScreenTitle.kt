@@ -22,12 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun SmallWindowScreenTitle(title: String, modifier: Modifier = Modifier) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-    if (windowAdaptiveInfo.isWindowSmall()) {
+    if (windowAdaptiveInfo.isWindowSmall() || windowAdaptiveInfo.isWindowMedium()) {
         Text(
             text = title,
             style = SwissTransferTheme.typography.h1,

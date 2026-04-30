@@ -38,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
@@ -114,6 +115,8 @@ private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
 
 private fun calculateFromAdaptiveInfo(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
     return if (windowAdaptiveInfo.isWindowLarge(context)) {
+        NavigationSuiteType.NavigationDrawer
+    } else if (windowAdaptiveInfo.isWindowMedium(context)) {
         NavigationSuiteType.NavigationRail
     } else {
         NavigationSuiteType.NavigationBar
