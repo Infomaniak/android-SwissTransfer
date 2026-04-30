@@ -77,6 +77,7 @@
     <string name="noTransferReceivedTitle">Nenhuma transferência recebida</string>
     <string name="noTransferSelectedDescription">Seleciona uma transferência ou cria uma nova.</string>
     <string name="noTransferSelectedTitle">Nenhuma transferência a mostrar</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Transferência concluída</string>
     <string name="notificationTransferDraftDescription">Continua onde paraste</string>
     <string name="notificationTransferDraftTitle">Transferência pendente</string>
     <string name="notificationUploadFailureDescription">Ocorreu um problema, tenta novamente</string>
@@ -87,6 +88,7 @@
     <string name="notificationUploadSuccessTitle">Transferência concluída</string>
     <string name="notificationUsageDescription">As notificações ajudam a acompanhar o progresso das transferências e a conclusão dos descarregamentos. A aplicação funciona normalmente, mesmo que opte por não as ativar.</string>
     <string name="notificationUsageTitle">Permitir notificações?</string>
+    <string name="notificationsDownloadChannelName">Notificações de download</string>
     <string name="notificationsUploadChannelName">Notificações de envio</string>
     <string name="onboardingExpirationSubtitleArgument">30 dias.</string>
     <string name="onboardingExpirationSubtitleTemplate">Partilha os teus ficheiros por e-mail, ligação ou código QR. As tuas ligações ficam ativas por %s</string>

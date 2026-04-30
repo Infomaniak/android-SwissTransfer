@@ -81,6 +81,7 @@
     <string name="noTransferReceivedTitle">No transfers received</string>
     <string name="noTransferSelectedDescription">Select a transfer or create a new one.</string>
     <string name="noTransferSelectedTitle">No transfers to display</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Download completed</string>
     <string name="notificationTransferDraftDescription">Continue where you left off</string>
     <string name="notificationTransferDraftTitle">Pending transfer</string>
     <string name="notificationUploadFailureDescription">A problem has occurred, please try again</string>
@@ -91,6 +92,7 @@
     <string name="notificationUploadSuccessTitle">Transfer completed</string>
     <string name="notificationUsageTitle">Allow notifications?</string>
     <string name="notificationUsageDescription">Notifications help you track transfer progress and download completion. The app works normally even if you choose not to enable them.</string>
+    <string name="notificationsDownloadChannelName">Download Notifications</string>
     <string name="notificationsUploadChannelName">Upload notifications</string>
     <string name="onboardingExpirationSubtitleArgument">30 days.</string>
     <string name="onboardingExpirationSubtitleTemplate">Share your files via email, link, or QR code. Your links stay active for %s</string>

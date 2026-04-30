@@ -203,6 +203,7 @@ dependencies {
     implementation(core.infomaniak.core.inappupdate)
     implementation(core.infomaniak.core.matomo)
     implementation(core.infomaniak.core.network)
+    implementation(core.infomaniak.core.network.ktor)
     implementation(core.infomaniak.core.notifications)
     implementation(core.infomaniak.core.onboarding)
     implementation(core.infomaniak.core.sentry)

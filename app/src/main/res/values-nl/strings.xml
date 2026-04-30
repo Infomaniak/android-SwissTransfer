@@ -77,6 +77,7 @@
     <string name="noTransferReceivedTitle">Geen ontvangen overdrachten</string>
     <string name="noTransferSelectedDescription">Selecteer een overdracht of maak een nieuwe aan.</string>
     <string name="noTransferSelectedTitle">Geen overdrachten om weer te geven</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Download voltooid</string>
     <string name="notificationTransferDraftDescription">Ga verder waar je gebleven was</string>
     <string name="notificationTransferDraftTitle">Overdracht in behandeling</string>
     <string name="notificationUploadFailureDescription">Er is een probleem opgetreden, probeer het opnieuw</string>
@@ -87,6 +88,7 @@
     <string name="notificationUploadSuccessTitle">Overdracht voltooid</string>
     <string name="notificationUsageDescription">Meldingen helpen je de voortgang van overdrachten en voltooide downloads bij te houden. De app werkt normaal, zelfs als je ervoor kiest om ze niet in te schakelen.</string>
     <string name="notificationUsageTitle">Meldingen toestaan?</string>
+    <string name="notificationsDownloadChannelName">Downloadmeldingen</string>
     <string name="notificationsUploadChannelName">Uploadmeldingen</string>
     <string name="onboardingExpirationSubtitleArgument">30 dagen.</string>
     <string name="onboardingExpirationSubtitleTemplate">Deel je bestanden via e-mail, link of QR-code. Je links blijven actief voor %s</string>

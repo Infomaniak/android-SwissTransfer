@@ -42,8 +42,12 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.services.AppDownloadManager
+import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.utils.hasPreview
+import com.infomaniak.swisstransfer.ui.utils.isV1
+import com.infomaniak.swisstransfer.ui.utils.isV2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
@@ -72,6 +76,7 @@ suspend fun handleTransferDownload(
     ui: TransferDownloadUi,
     transferManager: TransferManager,
     apiUrlCreator: SharedApiUrlCreator,
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
@@ -81,20 +86,32 @@ suspend fun handleTransferDownload(
     transferManager = transferManager,
     ui = ui,
     apiUrlCreator = apiUrlCreator,
+    downloadWorkerScheduler = downloadWorkerScheduler,
     userAgent = userAgent,
     transfer = transfer,
     targetFile = targetFile,
     direction = direction,
 ).collectLatest { id ->
+    val needsDownloadWorker = transfer.isV2() && targetFile?.isFolder != false
+
     autoCancelScope {
-        val downloadStatusFlow = downloadManager.downloadStatusFlow(id).stateIn(scope = this)
+        val downloadStatusFlow = when {
+            needsDownloadWorker -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, targetFile?.uid)
+            else -> downloadManager.downloadStatusFlow(id)
+        }.stateIn(scope = this)
+
         raceOf(
             { ui.showStatusAndAwaitRemovalRequest(downloadStatusFlow, supportsPreview = targetFile?.hasPreview == true) },
-            { awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow) },
-            { handleOpenRequests(downloadStatusFlow, id, ui, openFile) },
+            { awaitFileDeletion(ui.lifecycle, id, downloadStatusFlow, transfer, targetFile) },
+            { handleOpenRequests(downloadStatusFlow, id, ui, transfer, targetFile, openFile) },
         )
     }
-    downloadManager.cancelAndRemove(id)
+
+    if (needsDownloadWorker) {
+        downloadWorkerScheduler.cancelWork(transfer.uuid, targetFile?.uid)
+    } else {
+        downloadManager.cancelAndRemove(id)
+    }
     transferManager.writeDownloadManagerId(
         transfer = transfer,
         fileUid = targetFile?.uid,
@@ -115,10 +132,16 @@ private suspend fun handleOpenRequests(
     downloadStatusFlow: StateFlow<DownloadStatus?>,
     id: UniqueDownloadId,
     ui: TransferDownloadUi,
+    transfer: TransferUi,
+    targetFile: FileUi?,
     openFile: suspend (Uri) -> Unit,
 ) = downloadStatusFlow.collectLatest { status ->
     if (status !is DownloadStatus.Complete) return@collectLatest
-    val uri = downloadManager.uriFor(id) ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
+    val uri = when {
+        transfer.isV1() -> downloadManager.uriFor(id)
+        targetFile != null -> downloadManager.uriFor(id) ?: AppDownloadManager.uriFor(transfer, targetFile)
+        else -> null // Shouldn't happen, if it's an api v2, then we have a targetFile
+    } ?: return@collectLatest // Shouldn't happen since DownloadStatus is Complete.
     repeatWhileActive {
         ui.awaitOpenRequest()
         openFile(uri)
@@ -133,6 +156,7 @@ private fun currentOrNewDownloadManagerId(
     transferManager: TransferManager,
     ui: TransferDownloadUi,
     apiUrlCreator: SharedApiUrlCreator,
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
@@ -146,6 +170,7 @@ private fun currentOrNewDownloadManagerId(
         return@mapLatest getNewDownloadId(
             ui = ui,
             apiUrlCreator = apiUrlCreator,
+            downloadWorkerScheduler = downloadWorkerScheduler,
             transferManager = transferManager,
             userAgent = userAgent,
             transfer = transfer,
@@ -153,27 +178,38 @@ private fun currentOrNewDownloadManagerId(
             direction = direction,
         ) ?: return@repeatWhileActive
     }
-}.distinctUntilChanged()
+}.let {
+    // Since api v2 the download id of a folder is always the same (see: DownloadWork.DOWNLOAD_WORKER_DOWNLOAD_ID)
+    if (transfer.isV1() || targetFile?.isFolder == false) it.distinctUntilChanged() else it
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun awaitFileDeletion(
     lifecycle: Lifecycle,
     id: UniqueDownloadId,
     downloadStatusFlow: SharedFlow<DownloadStatus?>,
+    transfer: TransferUi,
+    targetFile: FileUi?,
 ) = downloadStatusFlow.mapLatest { status ->
     when (status) {
         null -> return@mapLatest
         DownloadStatus.Complete -> lifecycle.isResumedFlow().transformLatest { isResumed ->
-            if (isResumed) emit(isFileDeleted(id))
+            if (isResumed) emit(isFileDeleted(id, transfer, targetFile))
         }.first { deleted -> deleted }
         else -> awaitCancellation()
     }
 }.first()
 
-private suspend fun isFileDeleted(id: UniqueDownloadId): Boolean {
+private suspend fun isFileDeleted(id: UniqueDownloadId, transfer: TransferUi, targetFile: FileUi?): Boolean {
     repeat(2) { attemptIndex ->
         runCatching {
-            return downloadManager.doesFileExist(id).not()
+            return when {
+                transfer.isV1() -> downloadManager.doesFileExist(id).not()
+                targetFile != null -> {
+                    downloadManager.doesFileExist(id).not() && AppDownloadManager.doesFileExist(transfer, targetFile).not()
+                }
+                else -> true
+            }
         }.cancellable().onFailure { throwable ->
             when (throwable) {
                 is SecurityException, is IOException -> {
@@ -193,15 +229,24 @@ private suspend fun isFileDeleted(id: UniqueDownloadId): Boolean {
 private suspend fun getNewDownloadId(
     ui: TransferDownloadUi,
     apiUrlCreator: SharedApiUrlCreator,
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
     transferManager: TransferManager,
     userAgent: String,
     transfer: TransferUi,
     targetFile: FileUi?,
-    direction: TransferDirection?
+    direction: TransferDirection?,
 ): UniqueDownloadId? {
     ui.awaitDownloadRequest()
-    val request = buildDownloadRequest(transfer, targetFile, apiUrlCreator, userAgent, direction) ?: return null
-    val newId = downloadManager.startDownloadingFile(request)
+    val newId = when {
+        transfer.isV2() && targetFile?.isFolder != false -> downloadWorkerScheduler.scheduleWork(
+            transferId = transfer.uuid,
+            folderId = targetFile?.uid,
+        )
+        else -> {
+            val request = buildDownloadRequest(transfer, targetFile, apiUrlCreator, userAgent, direction) ?: return null
+            downloadManager.startDownloadingFile(request)
+        }
+    }
     transferManager.writeDownloadManagerId(
         transfer = transfer,
         fileUid = targetFile?.uid,

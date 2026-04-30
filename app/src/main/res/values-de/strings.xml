@@ -77,6 +77,7 @@
     <string name="noTransferReceivedTitle">Keinen Transfer erhalten</string>
     <string name="noTransferSelectedDescription">Wähle eine Übertragung aus oder erstelle eine neue.</string>
     <string name="noTransferSelectedTitle">Keine Transfers zum Anzeigen</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Download abgeschlossen</string>
     <string name="notificationTransferDraftDescription">Weitermachen, wo Sie aufgehört haben</string>
     <string name="notificationTransferDraftTitle">Ausstehende Übertragung</string>
     <string name="notificationUploadFailureDescription">Ein Problem ist aufgetreten, bitte versuchen Sie es erneut</string>
@@ -87,6 +88,7 @@
     <string name="notificationUploadSuccessTitle">Transfer abgeschlossen</string>
     <string name="notificationUsageDescription">Benachrichtigungen helfen dir, den Übertragungsfortschritt und den Abschluss von Downloads zu verfolgen. Die App funktioniert ganz normal, auch wenn du dich entscheidest, sie nicht zu aktivieren.</string>
     <string name="notificationUsageTitle">Benachrichtigungen zulassen?</string>
+    <string name="notificationsDownloadChannelName">Downloadbenachrichtigungen</string>
     <string name="notificationsUploadChannelName">Upload-Benachrichtigungen</string>
     <string name="onboardingExpirationSubtitleArgument">30 Tage</string>
     <string name="onboardingExpirationSubtitleTemplate">Teile deine Dateien per E-Mail, Link oder QR-Code. Deine Links bleiben %s aktiv.</string>

@@ -42,6 +42,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
+import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
@@ -73,6 +74,7 @@ import javax.inject.Inject
 class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val deleteTransfer: DeleteTransferUseCase,
+    private val downloadWorkerScheduler: DownloadWorker.Scheduler,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
@@ -169,6 +171,7 @@ class TransferDetailsViewModel @Inject constructor(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
+        downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
         targetFile = targetFile,
@@ -177,7 +180,7 @@ class TransferDetailsViewModel @Inject constructor(
     )
 
     fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
-        return transferManager.previewUriForFile(transfer, file, thumbnailsLocalStorage)
+        return transferManager.previewUriForFile(transfer, file, downloadWorkerScheduler, thumbnailsLocalStorage)
     }
 
     @OptIn(UnreliableToastApi::class)

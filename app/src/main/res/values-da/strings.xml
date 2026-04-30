@@ -77,6 +77,7 @@
     <string name="noTransferReceivedTitle">Ingen modtagne overføringer</string>
     <string name="noTransferSelectedDescription">Vælg en overføring eller opret en ny.</string>
     <string name="noTransferSelectedTitle">Ingen overføringer at vise</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Download fuldført</string>
     <string name="notificationTransferDraftDescription">Fortsæt, hvor du slap</string>
     <string name="notificationTransferDraftTitle">Afventende overføring</string>
     <string name="notificationUploadFailureDescription">Der opstod et problem, prøv igen</string>
@@ -87,6 +88,7 @@
     <string name="notificationUploadSuccessTitle">Overføring fuldført</string>
     <string name="notificationUsageDescription">Notifikationer hjælper dig med at spore fremdriften for overførsler og fuldførte downloads. Appen fungerer normalt, selvom du vælger ikke at aktivere dem.</string>
     <string name="notificationUsageTitle">Tillad notifikationer?</string>
+    <string name="notificationsDownloadChannelName">Downloadnotifikationer</string>
     <string name="notificationsUploadChannelName">Upload-notifikationer</string>
     <string name="onboardingExpirationSubtitleArgument">30 dage.</string>
     <string name="onboardingExpirationSubtitleTemplate">Del dine filer via e-mail, link eller QR-kode. Dine links forbliver aktive i %s</string>

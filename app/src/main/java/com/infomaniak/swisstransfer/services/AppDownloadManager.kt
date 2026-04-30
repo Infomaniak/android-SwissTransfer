@@ -1,0 +1,284 @@
+/*
+ * Infomaniak SwissTransfer - Android
+ * Copyright (C) 2026 Infomaniak Network SA
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.infomaniak.swisstransfer.services
+
+import android.content.ContentUris
+import android.content.ContentValues
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
+import com.infomaniak.core.network.networking.HttpClient
+import com.infomaniak.core.sentry.SentryLog
+import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
+import com.infomaniak.swisstransfer.ui.utils.displayTitle
+import createHttpClient
+import dagger.hilt.android.qualifiers.ApplicationContext
+import io.ktor.client.plugins.onDownload
+import io.ktor.client.request.accept
+import io.ktor.client.request.prepareGet
+import io.ktor.client.statement.bodyAsChannel
+import io.ktor.http.ContentType
+import io.ktor.utils.io.readRemaining
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import kotlinx.io.readByteArray
+import splitties.init.appCtx
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+
+class AppDownloadManager @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
+    private val fileManager: FileManager,
+    private val sharedApiUrlCreator: SharedApiUrlCreator,
+) {
+    private val httpClient = createHttpClient(HttpClient.okHttpClient)
+
+    suspend fun downloadFolderToPublicDownload(
+        transferUi: TransferUi,
+        folder: FileUi,
+        folderPath: String,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
+    ) {
+        val files = fileManager.getFilesUnderPath(transferUi.uuid, folderPath)
+        downloadFilesToPublicDownload(transferUi, files, folder.fileSize, onProgress)
+    }
+
+    suspend fun downloadTransferToPublicDownload(
+        transferUi: TransferUi,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
+    ) {
+        val files = fileManager.getTransferFilesOnly(transferUi.uuid)
+        downloadFilesToPublicDownload(transferUi, files, transferUi.sizeUploaded, onProgress)
+    }
+
+    @OptIn(ExperimentalAtomicApi::class)
+    private suspend fun downloadFilesToPublicDownload(
+        transferUi: TransferUi,
+        files: List<FileUi>,
+        totalBytes: Long,
+        onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
+    ) = coroutineScope {
+        val totalDownloadedBytes = AtomicLong(0L)
+        val iterator = files.iterator()
+        val mutex = Mutex()
+
+        suspend fun nextFile(): FileUi? = mutex.withLock { if (iterator.hasNext()) iterator.next() else null }
+
+        List(PARALLEL_DOWNLOADS_COUNT) {
+            launch {
+                while (isActive) {
+                    val fileUi = nextFile() ?: break
+
+                    val downloadUrl = sharedApiUrlCreator.downloadFileUrl(transferUi, fileUi.uid)
+                    if (downloadUrl == null) {
+                        SentryLog.wtf(TAG, "Finish with failure because downloadUrl is null")
+                        throw FailureException()
+                    }
+
+                    var previousFileDownloadedBytes = 0L
+                    downloadToPublicDownload(downloadUrl, transferUi, fileUi) { bytesSentTotal, _ ->
+                        val downloadedDelta = bytesSentTotal - previousFileDownloadedBytes
+                        onProgress(totalDownloadedBytes.addAndFetch(downloadedDelta), totalBytes)
+                        previousFileDownloadedBytes = bytesSentTotal
+                    }
+                }
+            }
+        }.joinAll()
+    }
+
+    private suspend fun downloadToPublicDownload(
+        downloadUrl: String,
+        transferUi: TransferUi,
+        fileUi: FileUi,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+    ) {
+        val path = transferUi.computeFolderDownloadPathWith(fileUi)
+
+        if (SDK_INT >= 29) {
+            downloadToPublicDownloads(
+                url = downloadUrl,
+                fileUi = fileUi,
+                path = path,
+                onProgress = onProgress,
+            )
+        } else {
+            downloadToPublicDownloadsBeforeApi29(
+                url = downloadUrl,
+                fileName = fileUi.fileName,
+                path = path,
+                onProgress = onProgress,
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun downloadToPublicDownloads(
+        url: String,
+        fileUi: FileUi,
+        path: String,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+    ): Uri? = withContext(Dispatchers.IO) {
+        val resolver = appContext.contentResolver
+
+        val mimeType = fileUi.mimeType?.takeIf { it.isNotEmpty() }
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, fileUi.fileName)
+            if (mimeType != null) put(MediaStore.Downloads.MIME_TYPE, fileUi.mimeType)
+            put(MediaStore.Downloads.IS_PENDING, 1)
+            put(MediaStore.Downloads.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/$path")
+        }
+
+        val collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        val itemUri = resolver.insert(collection, contentValues)
+            ?: throw MediaStoreInsertException(fileUi.fileName, path)
+
+        return@withContext runCatching {
+            resolver.openFileDescriptor(itemUri, "wt")?.use { pfd ->
+                FileOutputStream(pfd.fileDescriptor).use { outputStream ->
+                    downloadFile(url, outputStream, onProgress)
+                }
+            } ?: throw IllegalStateException("OutputStream not available")
+
+            contentValues.clear()
+            contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+            resolver.update(itemUri, contentValues, null, null)
+
+            return@runCatching itemUri
+        }.onFailure {
+            resolver.delete(itemUri, null, null)
+            throw it
+        }.getOrNull()
+    }
+
+
+    private suspend fun downloadToPublicDownloadsBeforeApi29(
+        url: String,
+        fileName: String,
+        path: String,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+    ) = withContext(Dispatchers.IO) {
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(downloadsDir, "$path/$fileName").also {
+            if (it.parentFile?.exists() == false) it.parentFile?.mkdirs()
+            if (it.exists()) it.delete()
+        }
+        runCatching {
+            file.outputStream().use { outputStream ->
+                downloadFile(url, outputStream, onProgress)
+            }
+        }.onFailure {
+            file.delete()
+            throw it
+        }
+    }
+
+    private suspend fun downloadFile(
+        url: String,
+        output: OutputStream,
+        onProgress: suspend (bytesSentTotal: Long, contentLength: Long?) -> Unit,
+    ) {
+        httpClient.prepareGet(url) {
+            accept(ContentType.Any)
+            onDownload { bytesSentTotal, contentLength ->
+                onProgress(bytesSentTotal, contentLength)
+            }
+        }.execute { response ->
+            val channel = response.bodyAsChannel()
+            while (!channel.isClosedForRead) {
+                val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE)
+                while (!packet.exhausted()) output.write(packet.readByteArray())
+            }
+            output.flush()
+        }
+    }
+
+    class FailureException : IllegalStateException()
+    class MediaStoreInsertException(
+        fileName: String,
+        path: String,
+    ) : IOException("Failed to insert '$fileName' into MediaStore at '$path'")
+
+    companion object {
+        private val TAG = AppDownloadManager::class.java.name
+        private const val DEFAULT_BUFFER_SIZE: Long = 8 * 1024
+        const val ROOT_FOLDER_NAME = "SwissTransfer"
+
+        private const val PARALLEL_DOWNLOADS_COUNT = 6
+
+        fun TransferUi.computeFolderDownloadPathWith(fileUi: FileUi): String {
+            val filePath = fileUi.path?.removePrefix("/")?.removeSuffix("/")
+            return "$ROOT_FOLDER_NAME/${this.displayTitle}/${filePath ?: ""}"
+        }
+
+        suspend fun uriFor(transferUi: TransferUi, fileUi: FileUi): Uri? = withContext(Dispatchers.IO) {
+            return@withContext when {
+                SDK_INT >= 29 -> uriForFromApi29(transferUi, fileUi)
+                else -> uriForBeforeApi29(transferUi, fileUi)
+            }
+        }
+
+        suspend fun doesFileExist(transferUi: TransferUi, fileUi: FileUi): Boolean {
+            return uriFor(transferUi, fileUi) != null
+        }
+
+        @RequiresApi(Build.VERSION_CODES.Q)
+        private fun uriForFromApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
+            val contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+            val projections = arrayOf(MediaStore.DownloadColumns._ID)
+            val relativePath = "${Environment.DIRECTORY_DOWNLOADS}/${transferUi.computeFolderDownloadPathWith(fileUi)}"
+            val selection = "${MediaStore.DownloadColumns.RELATIVE_PATH}=? AND ${MediaStore.DownloadColumns.DISPLAY_NAME}=?" +
+                    " AND ${MediaStore.DownloadColumns.IS_PENDING}=0"
+            val selectionArgs = arrayOf(relativePath, fileUi.fileName)
+
+            return appCtx.contentResolver.query(contentUri, projections, selection, selectionArgs, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.DownloadColumns._ID)
+                    val id = cursor.getLong(idColumn)
+                    ContentUris.withAppendedId(contentUri, id)
+                } else {
+                    null
+                }
+            }
+        }
+
+        private fun uriForBeforeApi29(transferUi: TransferUi, fileUi: FileUi): Uri? {
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val path = transferUi.computeFolderDownloadPathWith(fileUi)
+            val file = File(downloadsDir, "$path/${fileUi.fileName}")
+            return if (file.exists()) Uri.fromFile(file) else null
+        }
+    }
+}

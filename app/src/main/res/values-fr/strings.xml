@@ -77,6 +77,7 @@
     <string name="noTransferReceivedTitle">Aucun transfert reçu</string>
     <string name="noTransferSelectedDescription">Sélectionne un transfert ou créé-en un nouveau.</string>
     <string name="noTransferSelectedTitle">Aucun transfert à afficher</string>
+    <string name="notificationDownloadSuccessNotificationTitle">Téléchargement terminé</string>
     <string name="notificationTransferDraftDescription">Poursuivre là où vous vous êtes arrêté</string>
     <string name="notificationTransferDraftTitle">Transfert en attente</string>
     <string name="notificationUploadFailureDescription">Un problème est survenu, veuillez réessayer</string>
@@ -87,6 +88,7 @@
     <string name="notificationUploadSuccessTitle">Transfert terminé</string>
     <string name="notificationUsageDescription">Les notifications vous aident à suivre la progression des transferts et l’achèvement des téléchargements. L’application fonctionne normalement même si vous choisissez de ne pas les activer.</string>
     <string name="notificationUsageTitle">Autoriser les notifications ?</string>
+    <string name="notificationsDownloadChannelName">Notifications de téléchargement</string>
     <string name="notificationsUploadChannelName">Notifications de téléchargement</string>
     <string name="onboardingExpirationSubtitleArgument">30 jours.</string>
     <string name="onboardingExpirationSubtitleTemplate">Partages tes fichiers par e-mail, lien ou QR code. Tes liens restent actifs %s</string>
