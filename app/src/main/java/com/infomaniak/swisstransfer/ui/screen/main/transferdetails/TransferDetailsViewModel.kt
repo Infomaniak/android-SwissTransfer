@@ -116,7 +116,10 @@ class TransferDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 _isWrongDeeplinkPassword.emit(false)
-                val transfer = transferManager.getTransferFlow(transferUuid).first()
+                val transfer = when {
+                    isApiV2Deeplink == true -> transferManager.getTransferByLinkId(transferUuid)
+                    else -> transferManager.getTransferFlow(transferUuid).first()
+                }
                 if (transfer == null && isApiV2Deeplink != null) {
                     val transferId = handleTransferDeeplink(transferUuid, _deeplinkPassword, isApiV2Deeplink)
                     _transferSourceFlow.emit(TransferSource.Local(transferId))
