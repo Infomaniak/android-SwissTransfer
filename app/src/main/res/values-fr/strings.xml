@@ -102,6 +102,8 @@
     <string name="onboardingStorageSubtitleArgument">Partage jusqu’à 50 Go</string>
     <string name="onboardingStorageSubtitleTemplate">%s de fichiers gratuitement et sans inscription.</string>
     <string name="onboardingStorageTitle">Envoie du lourd !</string>
+    <string name="oneClickSharing">Partage en 1 clic !</string>
+    <string name="quickSharingDescription">Pour partager rapidement, utilise le bouton %1$s ou %2$s sous le QR.\nC’est plus simple que de capturer l’écran.</string>
     <string name="receivedFilesTitle">Fichiers reçus</string>
     <string name="receivedTitle">Reçu</string>
     <plurals name="recipientHeader" tools:ignore="ImpliedQuantity">

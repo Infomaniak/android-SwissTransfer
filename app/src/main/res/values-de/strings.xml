@@ -102,6 +102,8 @@
     <string name="onboardingStorageSubtitleArgument">Teile bis zu 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s Dateien – kostenlos und ohne Anmeldung.</string>
     <string name="onboardingStorageTitle">Hau richtig rein!</string>
+    <string name="oneClickSharing">Teilen mit 1 Klick!</string>
+    <string name="quickSharingDescription">Zum schnellen Teilen verwenden Sie die Schaltfläche %1$s oder %2$s unter dem QR.\nDas ist einfacher als das Erfassen des Bildschirms.</string>
     <string name="receivedFilesTitle">Empfangene Dateien</string>
     <string name="receivedTitle">Empfangen</string>
     <plurals name="recipientHeader">

@@ -102,6 +102,8 @@
     <string name="onboardingStorageSubtitleArgument">Jaa jopa 50 Gt</string>
     <string name="onboardingStorageSubtitleTemplate">%s tiedostoja ilmaiseksi ilman rekisteröitymistä.</string>
     <string name="onboardingStorageTitle">Lähetä isoja tiedostoja!</string>
+    <string name="oneClickSharing">Jaa yhdellä napsautuksella!</string>
+    <string name="quickSharingDescription">Jakaminen nopeasti onnistuu käyttämällä %1$s- tai %2$s-painiketta QR-koodin alla.\nSe on helpompaa kuin kuvakaappauksen ottaminen.</string>
     <string name="receivedFilesTitle">Vastaanotetut tiedostot</string>
     <string name="receivedTitle">Vastaanotettu</string>
     <plurals name="recipientHeader">

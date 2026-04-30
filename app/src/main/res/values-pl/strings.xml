@@ -104,6 +104,8 @@
     <string name="onboardingStorageSubtitleArgument">Udostępniaj do 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s plików za darmo bez rejestracji.</string>
     <string name="onboardingStorageTitle">Wysyłaj duże pliki!</string>
+    <string name="oneClickSharing">Udostępnij w 1 kliknięciu!</string>
+    <string name="quickSharingDescription">Aby szybko udostępnić, użyj przycisku %1$s lub %2$s pod kodem QR.\nTo prostsze niż robienie zrzutu ekranu.</string>
     <string name="receivedFilesTitle">Otrzymane pliki</string>
     <string name="receivedTitle">Otrzymane</string>
     <plurals name="recipientHeader">

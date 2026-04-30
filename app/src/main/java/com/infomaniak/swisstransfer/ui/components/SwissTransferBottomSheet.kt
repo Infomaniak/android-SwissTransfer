@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.DoubleStackedButtonScaffold
@@ -55,18 +56,27 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwissTransferBottomSheet(
+    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-    onDismissRequest: () -> Unit,
     imageVector: ImageVector? = null,
     title: String? = null,
     description: String? = null,
+    annotatedDescription: AnnotatedString? = null,
     topButton: @Composable ((Modifier) -> Unit)? = null,
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
-    content: @Composable (() -> Unit)? = null,
+    content: @Composable (() -> Unit)? = null
 ) {
-    ModalBottomSheet(onDismissRequest, modifier, sheetState) {
-        BottomSheetContent(imageVector, title, description, content, topButton, bottomButton)
+    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {
+        BottomSheetContent(
+            imageVector = imageVector,
+            title = title,
+            description = description,
+            content = content,
+            annotatedDescription = annotatedDescription,
+            topButton = topButton,
+            bottomButton = bottomButton
+        )
     }
 }
 
@@ -75,9 +85,8 @@ private fun BottomSheetContent(
     imageVector: ImageVector?,
     title: String?,
     description: String?,
-    content: @Composable (() -> Unit)?,
-    topButton: @Composable ((Modifier) -> Unit)? = null,
-    bottomButton: @Composable ((Modifier) -> Unit)? = null,
+    content: @Composable (() -> Unit)?, annotatedDescription: AnnotatedString? = null,
+    topButton: @Composable ((Modifier) -> Unit)? = null, bottomButton: @Composable ((Modifier) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier
@@ -104,15 +113,28 @@ private fun BottomSheetContent(
             Spacer(Modifier.height(Margin.Large))
         }
 
-        description?.let {
-            Text(
-                text = it,
-                textAlign = TextAlign.Center,
-                style = SwissTransferTheme.typography.bodyRegular,
-                color = SwissTransferTheme.colors.secondaryTextColor,
-                modifier = paddedModifier,
-            )
-            Spacer(Modifier.height(Margin.Large))
+        if (!annotatedDescription.isNullOrBlank()) {
+            annotatedDescription.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = paddedModifier,
+                )
+                Spacer(Modifier.height(Margin.Large))
+            }
+        } else {
+            description?.let {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    color = SwissTransferTheme.colors.secondaryTextColor,
+                    modifier = paddedModifier,
+                )
+                Spacer(Modifier.height(Margin.Large))
+            }
         }
 
         content?.let {

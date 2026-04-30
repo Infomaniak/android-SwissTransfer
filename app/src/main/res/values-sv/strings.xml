@@ -102,6 +102,8 @@
     <string name="onboardingStorageSubtitleArgument">Dela upp till 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s filer gratis utan registrering.</string>
     <string name="onboardingStorageTitle">Skicka tunga filer!</string>
+    <string name="oneClickSharing">Dela med 1 klick!</string>
+    <string name="quickSharingDescription">För snabb delning, använd knappen %1$s eller %2$s under QR-koden.\nDet är enklare än att ta en skärmbild.</string>
     <string name="receivedFilesTitle">Mottagna filer</string>
     <string name="receivedTitle">Mottaget</string>
     <plurals name="recipientHeader">

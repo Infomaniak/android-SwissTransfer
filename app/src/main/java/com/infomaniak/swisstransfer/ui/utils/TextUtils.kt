@@ -26,19 +26,39 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 object TextUtils {
     @Composable
-    fun assembleWithBoldArgument(template: String, argument: String): AnnotatedString {
-        val description = String.format(template, argument)
-
-        val startIndex = description.indexOf(argument)
-        val endIndex = startIndex + argument.length
+    fun assembleWithBoldArgument(template: String, argument1: String, argument2: String? = null): AnnotatedString {
+        val description = try {
+            if (argument2 != null) {
+                String.format(template, argument1, argument2)
+            } else {
+                String.format(template, argument1)
+            }
+        } catch (e: java.util.IllegalFormatException) {
+            template
+        }
 
         return buildAnnotatedString {
             append(description)
-            addStyle(
-                style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
-                start = startIndex,
-                end = endIndex,
-            )
+
+            val startIndex1 = description.indexOf(argument1)
+            if (startIndex1 != -1) {
+                addStyle(
+                    style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
+                    start = startIndex1,
+                    end = startIndex1 + argument1.length
+                )
+            }
+
+            if (argument2 != null) {
+                val startIndex2 = description.indexOf(argument2)
+                if (startIndex2 != -1) {
+                    addStyle(
+                        style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
+                        start = startIndex2,
+                        end = startIndex2 + argument2.length
+                    )
+                }
+            }
         }
     }
 }

@@ -106,6 +106,8 @@
     <string name="onboardingStorageSubtitleArgument">Share up to 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s of files for free without any registration.</string>
     <string name="onboardingStorageTitle">Send Big!</string>
+    <string name="oneClickSharing">Share in 1 click!</string>
+    <string name="quickSharingDescription">To quickly share, use the %1$s or %2$s button below the QR.\nIt’s easier than capturing the screen.</string>
     <string name="receivedFilesTitle">Received files</string>
     <string name="receivedTitle">Received</string>
     <plurals name="recipientHeader">

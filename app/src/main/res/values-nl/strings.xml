@@ -102,6 +102,8 @@
     <string name="onboardingStorageSubtitleArgument">Deel tot 50 GB</string>
     <string name="onboardingStorageSubtitleTemplate">%s bestanden gratis en zonder registratie.</string>
     <string name="onboardingStorageTitle">Verstuur grote bestanden!</string>
+    <string name="oneClickSharing">Delen in 1 klik!</string>
+    <string name="quickSharingDescription">Om snel te delen, gebruik de knop %1$s of %2$s onder de QR.\nHet is eenvoudiger dan het scherm vastleggen.</string>
     <string name="receivedFilesTitle">Ontvangen bestanden</string>
     <string name="receivedTitle">Ontvangen</string>
     <plurals name="recipientHeader">
