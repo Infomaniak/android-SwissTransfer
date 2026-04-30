@@ -323,8 +323,11 @@ sealed class MyAccountSettingAction(val matomoValue: MatomoName?) {
 
     data class SwitchAccount(val userId: Int) : MyAccountSettingAction(null) // Matomo sent by hand in the code
 
-    sealed class Navigation(val destination: SettingsOptionScreens) : MyAccountSettingAction(null) {
-        data object Settings : Navigation(SettingsOptionScreens.SETTINGS)
+    sealed class Navigation(
+        val destination: SettingsOptionScreens,
+        val isSelected: (SettingsOptionScreens?) -> Boolean,
+    ) : MyAccountSettingAction(null) {
+        data object Settings : Navigation(SettingsOptionScreens.SETTINGS, { it is SettingsOptionScreens })
 
         companion object {
             val entries = arrayOf(Settings)

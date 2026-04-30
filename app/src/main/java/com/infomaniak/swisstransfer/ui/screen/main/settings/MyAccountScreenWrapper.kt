@@ -185,7 +185,7 @@ private fun ListPane(
                 }
             }
         },
-        getSelectedSetting = { MyAccountSettingAction.Navigation.entries.firstOrNull { it.destination == navigator.currentDestination?.contentKey } },
+        getSelectedSetting = { MyAccountSettingAction.Navigation.entries.firstOrNull { it.isSelected(navigator.currentDestination?.contentKey) } },
     )
 }
 
