@@ -22,15 +22,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.text.TextAutoSize.Companion.StepBased
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorProducer
+import androidx.compose.ui.graphics.toColorLong
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
@@ -42,6 +50,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun BrandTopAppBar() {
+    val toolbarTextColor = SwissTransferTheme.colors.toolbarTextColor
+
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
@@ -55,7 +65,12 @@ fun BrandTopAppBar() {
                 Spacer(Modifier.width(Margin.Medium))
                 Image(imageVector = AppIllus.LogoSwissTransfer, contentDescription = null)
                 Spacer(Modifier.width(Margin.Mini))
-                Text(text = stringResource(id = R.string.appName), color = SwissTransferTheme.colors.toolbarTextColor)
+                BasicText(
+                    text = stringResource(id = R.string.appName),
+                    color = ColorProducer { toolbarTextColor },
+                    autoSize = StepBased(minFontSize = 8.sp, stepSize = 0.5.sp, maxFontSize = LocalTextStyle.current.fontSize),
+                    maxLines = 1,
+                )
             }
         },
     )

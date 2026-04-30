@@ -81,7 +81,7 @@ private fun getCustomWindowClass(context: Context): WindowWidthSizeClass {
     require(dpWidth >= 0) { "Width must be positive, received $dpWidth" }
 
     return when {
-        dpWidth < 650 -> COMPACT
+        dpWidth < 600 -> COMPACT
         dpWidth < 1080 -> MEDIUM
         else -> EXPANDED
     }
