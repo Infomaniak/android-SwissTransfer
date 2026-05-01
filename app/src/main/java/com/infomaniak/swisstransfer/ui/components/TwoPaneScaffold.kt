@@ -23,7 +23,7 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
-import androidx.compose.material3.adaptive.layout.PaneMotionDefaults
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldDestinationItem
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
+import com.infomaniak.swisstransfer.ui.screen.main.LocalCurrentTopBarKey
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
@@ -102,7 +103,15 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                CompositionLocalProvider(LocalAnimatedVisibilityScope provides this@AnimatedPane) {
+                val isListPaneVisible = navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
+                val isDetailPaneVisible = navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
+                val isSinglePane = !isListPaneVisible || !isDetailPaneVisible
+                val currentTopAppBarKey = if (isSinglePane) TopBarKey.FIRST_TOP_BAR else TopBarKey.SECOND_TOP_BAR
+
+                CompositionLocalProvider(
+                    LocalAnimatedVisibilityScope provides this@AnimatedPane,
+                    LocalCurrentTopBarKey provides currentTopAppBarKey,
+                ) {
                     navigator.detailPane()
                 }
             }

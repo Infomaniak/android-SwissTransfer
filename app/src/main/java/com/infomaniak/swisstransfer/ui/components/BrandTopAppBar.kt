@@ -44,6 +44,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.LogoInfomaniak
 import com.infomaniak.swisstransfer.ui.images.illus.LogoSwissTransfer
 import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
+import com.infomaniak.swisstransfer.ui.screen.main.LocalCurrentTopBarKey
 import com.infomaniak.swisstransfer.ui.screen.main.LocalNavHostAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.screen.main.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -89,9 +90,11 @@ fun Modifier.sharedTransitionAppBar(): Modifier {
         val activeScope = if (isNavHostAnimating) navHostScope else localScope
 
         if (activeScope != null) {
+            val currentTopBarKey = LocalCurrentTopBarKey.current
+
             with(sharedScope) {
                 return this@sharedTransitionAppBar then Modifier.sharedElement(
-                    sharedContentState = rememberSharedContentState(key = "top_bar"),
+                    sharedContentState = rememberSharedContentState(key = currentTopBarKey),
                     animatedVisibilityScope = activeScope,
                 )
             }
@@ -99,6 +102,10 @@ fun Modifier.sharedTransitionAppBar(): Modifier {
     }
 
     return this
+}
+
+enum class TopBarKey(key: String) {
+    FIRST_TOP_BAR(key = "firstTopBar"), SECOND_TOP_BAR(key = "secondTopBar")
 }
 
 @PreviewAllWindows

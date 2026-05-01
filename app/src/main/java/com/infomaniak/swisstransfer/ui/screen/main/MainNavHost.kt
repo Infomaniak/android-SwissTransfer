@@ -34,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
+import com.infomaniak.swisstransfer.ui.components.TopBarKey
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
@@ -58,13 +59,13 @@ fun MainNavHost(
         else -> MainNavigation.startDestination
     }
 
-    LookaheadAnimationVisualDebugging(
-        overlayColor = Color(0x4AE91E63),
-        isEnabled = true,
-        multipleMatchesColor = Color.Green,
-        isShowKeyLabelEnabled = false,
-        unmatchedElementColor = Color.Red,
-    ) {
+    // LookaheadAnimationVisualDebugging(
+    //     overlayColor = Color(0x4AE91E63),
+    //     isEnabled = true,
+    //     multipleMatchesColor = Color.Green,
+    //     isShowKeyLabelEnabled = false,
+    //     unmatchedElementColor = Color.Red,
+    // ) {
         SharedTransitionLayout {
             CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
                 NavHost(
@@ -80,9 +81,9 @@ fun MainNavHost(
                             LocalNavHostAnimatedVisibilityScope provides this@sentDestination
                         ) {
                             TransfersScreenWrapper(
-                                TransferDirection.SENT,
+                                direction = TransferDirection.SENT,
                                 transferUuid = args.transferUuid,
-                                hideBottomBar = hideBottomBar
+                                hideBottomBar = hideBottomBar,
                             )
                         }
                     }
@@ -109,7 +110,7 @@ fun MainNavHost(
                         }
                     }
                 }
-            }
+            // }
         }
     }
 }
@@ -117,3 +118,4 @@ fun MainNavHost(
 val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
 val LocalAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
 val LocalNavHostAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalCurrentTopBarKey = staticCompositionLocalOf { TopBarKey.FIRST_TOP_BAR }
