@@ -22,9 +22,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
@@ -39,15 +42,21 @@ fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottom
 
     if (!isVisible()) return
 
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
     SwissTransferBottomSheet(
         onDismissRequest = closeBottomSheet,
         bottomButton = {
             LargeButton(
                 modifier = it,
                 title = stringResource(R.string.contentDescriptionButtonClose),
-                onClick = closeBottomSheet,
+                onClick = {
+                    sheetState.dismissGracefully(scope, onDismissRequest = { closeBottomSheet() })
+                },
             )
         },
+        sheetState = sheetState,
         title = stringResource(R.string.shareQrCodeTitle),
         description = stringResource(R.string.shareQrCodeDescription),
     ) {
