@@ -155,12 +155,27 @@ private fun NavigationSmallWindowPreview() {
 
 @PreviewLargeWindow
 @Composable
-private fun NavigationLargeWindowPreview() {
+private fun NavigationMediumWindowPreview() {
     SwissTransferTheme {
         MainScaffold(
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
+            hideBottomBar = remember { mutableStateOf(false) },
+            content = {},
+        )
+    }
+}
+
+
+@PreviewLargeWindow
+@Composable
+private fun NavigationLargeWindowPreview() {
+    SwissTransferTheme {
+        MainScaffold(
+            currentDestination = MainNavigation.SentDestination(),
+            navigateToSelectedItem = {},
+            navType = NavigationSuiteType.NavigationDrawer,
             hideBottomBar = remember { mutableStateOf(false) },
             content = {},
         )
