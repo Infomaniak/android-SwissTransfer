@@ -26,7 +26,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -85,20 +84,17 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
 
             CompositionLocalProvider(LocalUser provides user) {
                 SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
-                    Surface {
+                    NewTransferScreen(
+                        startDestination = remember { getStartDestination() },
+                        inAppReviewManager = inAppReviewManager,
+                        notificationPermissionManager = notificationPermissionManager,
+                        closeActivity = { startMainActivityIfTaskIsEmpty ->
+                            finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
+                        },
+                    )
 
-                        NewTransferScreen(
-                            startDestination = remember { getStartDestination() },
-                            inAppReviewManager = inAppReviewManager,
-                            notificationPermissionManager = notificationPermissionManager,
-                            closeActivity = { startMainActivityIfTaskIsEmpty ->
-                                finishNewTransferActivity(startMainActivityIfTaskIsEmpty)
-                            },
-                        )
-
-                        if (notificationPermissionManager.shouldShowRationale) {
-                            ExplainNotificationPermissionDialog(onDismiss = notificationPermissionManager::dismissAndAskPermission)
-                        }
+                    if (notificationPermissionManager.shouldShowRationale) {
+                        ExplainNotificationPermissionDialog(onDismiss = notificationPermissionManager::dismissAndAskPermission)
                     }
                 }
             }

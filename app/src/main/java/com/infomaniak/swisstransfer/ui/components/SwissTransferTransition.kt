@@ -17,15 +17,47 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+
+val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
+val LocalAnimatedPaneVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalNavHostAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
+val LocalCurrentTopBarKey = staticCompositionLocalOf { TopBarKey.FIRST }
 
 object SwissTransferTransition {
-    // No transition
-    // val enterTransition = EnterTransition.None
-    // val exitTransition = ExitTransition.None
-
-    // Fade simple (actuel)
     val enterTransition = fadeIn()
     val exitTransition = fadeOut()
+}
+
+@Composable
+fun Modifier.sharedTransitionAppBar(): Modifier {
+    val sharedScope = LocalSharedTransitionScope.current
+    val localScope = LocalAnimatedPaneVisibilityScope.current
+    val navHostScope = LocalNavHostAnimatedVisibilityScope.current
+    val currentTopBarKey = LocalCurrentTopBarKey.current
+
+    val activeScope = remember(navHostScope, localScope) {
+        val isNavHostAnimating = navHostScope?.transition?.let { it.currentState != it.targetState } == true
+        if (isNavHostAnimating) navHostScope else localScope
+    }
+
+    if (activeScope == null || sharedScope == null) return this
+
+    return with(sharedScope) {
+        this@sharedTransitionAppBar then Modifier.sharedElement(
+            sharedContentState = rememberSharedContentState(key = currentTopBarKey),
+            animatedVisibilityScope = activeScope,
+        )
+    }
+}
+
+enum class TopBarKey {
+    FIRST, SECOND, THIRD
 }

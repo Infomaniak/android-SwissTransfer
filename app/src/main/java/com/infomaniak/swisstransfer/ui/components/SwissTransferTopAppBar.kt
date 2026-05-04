@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,7 +67,7 @@ fun SwissTransferTopAppBar(
         title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
         navigationIcon = navigationIcon,
         actions = actions,
-        modifier = Modifier.sharedTransitionAppBar(),
+        modifier = modifier.sharedTransitionAppBar(),
     )
 }
 

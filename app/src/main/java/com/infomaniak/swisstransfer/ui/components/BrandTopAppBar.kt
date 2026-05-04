@@ -17,8 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
-import android.util.Log
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,10 +41,6 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.LogoInfomaniak
 import com.infomaniak.swisstransfer.ui.images.illus.LogoSwissTransfer
-import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
-import com.infomaniak.swisstransfer.ui.screen.main.LocalCurrentTopBarKey
-import com.infomaniak.swisstransfer.ui.screen.main.LocalNavHostAnimatedVisibilityScope
-import com.infomaniak.swisstransfer.ui.screen.main.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -75,37 +69,8 @@ fun BrandTopAppBar() {
                 )
             }
         },
-        modifier = Modifier.sharedTransitionAppBar(),
+        modifier = modifier.sharedTransitionAppBar(),
     )
-}
-
-@Composable
-fun Modifier.sharedTransitionAppBar(): Modifier {
-    val sharedScope = LocalSharedTransitionScope.current
-    val localScope = LocalAnimatedVisibilityScope.current
-    val navHostScope = LocalNavHostAnimatedVisibilityScope.current
-
-    if (sharedScope != null) {
-        val isNavHostAnimating = navHostScope?.transition?.let { it.currentState != it.targetState } == true
-        val activeScope = if (isNavHostAnimating) navHostScope else localScope
-
-        if (activeScope != null) {
-            val currentTopBarKey = LocalCurrentTopBarKey.current
-
-            with(sharedScope) {
-                return this@sharedTransitionAppBar then Modifier.sharedElement(
-                    sharedContentState = rememberSharedContentState(key = currentTopBarKey),
-                    animatedVisibilityScope = activeScope,
-                )
-            }
-        }
-    }
-
-    return this
-}
-
-enum class TopBarKey(key: String) {
-    FIRST_TOP_BAR(key = "firstTopBar"), SECOND_TOP_BAR(key = "secondTopBar")
 }
 
 @PreviewAllWindows

@@ -24,8 +24,6 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -55,15 +53,14 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.OnboardingActivity
 import com.infomaniak.swisstransfer.ui.OnboardingActivity.Companion.EXTRA_REQUIRED_LOGIN_KEY
+import com.infomaniak.swisstransfer.ui.components.AnimatedContentDetailPane
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
-import com.infomaniak.swisstransfer.ui.screen.main.LocalAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.DATA_MANAGEMENT_MATOMO
@@ -75,7 +72,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
-import com.infomaniak.swisstransfer.ui.screen.main.transfers.NoSelectionEmptyState
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -187,49 +183,36 @@ private fun DetailPane(
         if (result.resultCode == Activity.RESULT_OK) onDisconnectCurrentUser()
     }
 
-    val paneScope = LocalAnimatedVisibilityScope.current
+    AnimatedContentDetailPane(destinationContent = destination) { targetDestination ->
+        when (targetDestination) {
+            SETTINGS -> {
+                val user = LocalUser.current
+                val context = LocalContext.current
 
-    AnimatedContent(
-        targetState = destination,
-        transitionSpec = {
-            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
-        },
-    ) { targetDestination ->
-        val contentScope = this@AnimatedContent
-        val isPaneAnimating = paneScope?.transition?.let { it.currentState != it.targetState } == true
-        val activeScope = if (isPaneAnimating) paneScope else contentScope
-
-        CompositionLocalProvider(LocalAnimatedVisibilityScope provides activeScope) {
-            when (targetDestination) {
-                SETTINGS -> {
-                    val user = LocalUser.current
-                    val context = LocalContext.current
-
-                    SettingsScreen(
-                        isAccountDeletable = { user != null },
-                        onItemClick = { item ->
-                            handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
-                        },
-                        navigateBack = navigateBack,
-                        getSelectedSetting = { navigator.currentDestination?.contentKey },
-                    )
-                }
-                THEME -> SettingsThemeScreen(navigateBack = navigateBack)
-                VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
-                DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
-                EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
-                DATA_MANAGEMENT -> SettingsDataManagementScreen(
-                    navigateBack = navigateBack,
+                SettingsScreen(
+                    isAccountDeletable = { user != null },
                     onItemClick = { item ->
-                        scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                        handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
                     },
+                    navigateBack = navigateBack,
+                    getSelectedSetting = { navigator.currentDestination?.contentKey },
                 )
-                DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
-                DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-                NOTIFICATIONS,
-                DELETE_MY_ACCOUNT,
-                null -> NoSelectionEmptyState()
             }
+            THEME -> SettingsThemeScreen(navigateBack = navigateBack)
+            VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
+            DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
+            EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
+            DATA_MANAGEMENT -> SettingsDataManagementScreen(
+                navigateBack = navigateBack,
+                onItemClick = { item ->
+                    scope.launch { navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, item) }
+                },
+            )
+            DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
+            DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
+            NOTIFICATIONS,
+            DELETE_MY_ACCOUNT,
+            null -> NoSelectionEmptyState()
         }
     }
 }

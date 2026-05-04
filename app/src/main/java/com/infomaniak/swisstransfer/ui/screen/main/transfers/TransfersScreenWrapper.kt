@@ -19,8 +19,6 @@ package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
 import android.content.Context
 import android.os.Parcelable
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,9 +42,9 @@ import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.components.AnimatedContentDetailPane
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
 import com.infomaniak.swisstransfer.ui.components.popBackStack
 import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
@@ -202,12 +200,7 @@ private fun DetailPane(
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
     }
 
-    AnimatedContent(
-        targetState = destinationContent,
-        transitionSpec = {
-            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
-        },
-    ) { targetDestination ->
+    AnimatedContentDetailPane(destinationContent = destinationContent) { targetDestination ->
         when (targetDestination) {
             null -> {
                 NoSelectionEmptyState(hasTransfer())
@@ -227,7 +220,7 @@ private fun DetailPane(
                             )
                         }
                     },
-                    onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
+                    onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } },
                 )
             }
             is DestinationContent.FolderLevel -> {
