@@ -163,7 +163,7 @@ fun TransferDetailsScreen(
         is TransferError -> {
             EmptyStateScreen(
                 transferError = state,
-                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
+                onCloseClicked = if (isWindowSmall()) {
                     { navigateBack?.invoke() }
                 } else {
                     null
@@ -243,7 +243,7 @@ private fun TransferDetailsScreen(
         topBar = {
             SwissTransferTopAppBar(
                 title = title,
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                navigationIcon = { if (isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
                 actions = {
                     when (direction) {
                         TransferDirection.SENT -> downloadUi.TopAppBarButton()
@@ -345,7 +345,7 @@ private fun TransferDetailsScreen(
 
 @Composable
 private fun getBottomBarPadding(): PaddingValues {
-    return if (LocalWindowAdaptiveInfo.current.isWindowSmall()) {
+    return if (isWindowSmall()) {
         WindowInsets.navigationBars.asPaddingValues()
     } else {
         PaddingValues()

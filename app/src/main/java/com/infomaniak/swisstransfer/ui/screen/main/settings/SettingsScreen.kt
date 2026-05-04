@@ -87,7 +87,7 @@ fun SettingsScreen(
         topBar = {
             SwissTransferTopAppBar(
                 title = stringResource(R.string.settingsTitle),
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack) }
+                navigationIcon = { if (isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack) }
             )
         }
     ) {

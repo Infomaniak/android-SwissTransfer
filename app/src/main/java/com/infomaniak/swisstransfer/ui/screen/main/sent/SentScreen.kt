@@ -98,7 +98,7 @@ private fun SentScreen(
         },
         floatingActionButton = {
             val hasTransfers = (uiState() as? TransferUiState.Success)?.data?.isNotEmpty() == true
-            if (windowAdaptiveInfo.isWindowSmall() && hasTransfers) {
+            if (isWindowSmall() && hasTransfers) {
                 NewTransferFab(newTransferFabType = NewTransferFabType.BOTTOM_BAR)
             }
         },

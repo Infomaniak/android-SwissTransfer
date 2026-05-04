@@ -52,7 +52,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackAccountEvent
 import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
 import com.infomaniak.swisstransfer.ui.screen.onboarding.OnboardingScreen
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.AccountPreferences
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
@@ -90,7 +89,7 @@ class OnboardingActivity : ComponentActivity() {
             val snackbarHostState = remember { SnackbarHostState() }
 
             SwissTransferTheme {
-                LockScreenOrientation(isLocked = LocalWindowAdaptiveInfo.current.isWindowSmall())
+                LockScreenOrientation(isLocked = isWindowSmall())
 
                 val accountsCheckingState by crossAppLoginViewModel.accountsCheckingState.collectAsStateWithLifecycle()
                 val skippedIds by crossAppLoginViewModel.skippedAccountIds.collectAsStateWithLifecycle()

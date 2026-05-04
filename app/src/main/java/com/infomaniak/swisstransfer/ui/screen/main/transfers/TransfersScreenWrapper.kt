@@ -265,7 +265,7 @@ private fun ExistingTransferFilesDetails(
             // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all
             // the FilesDetailsScreen's
             scope.launch {
-                if (windowAdaptiveInfo.isWindowSmall(context)) navigator.navigateBack()
+                if (isWindowSmall(context)) navigator.navigateBack()
                 navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferUuid)
             }
         },

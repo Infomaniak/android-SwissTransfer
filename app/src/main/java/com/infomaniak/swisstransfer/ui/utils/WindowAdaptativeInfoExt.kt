@@ -69,10 +69,13 @@ fun WindowAdaptiveInfo.isWindowMedium(): Boolean = isWindowMedium(LocalContext.c
  *
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowSmall(context: Context): Boolean = !isWindowLarge(context) && !isWindowMedium(context)
+fun isWindowSmall(context: Context): Boolean {
+    val widthClass = getCustomWindowClass(context)
+    return widthClass != EXPANDED && widthClass != MEDIUM
+}
 
 @Composable
-fun WindowAdaptiveInfo.isWindowSmall(): Boolean = isWindowSmall(LocalContext.current)
+fun isWindowSmall(): Boolean = isWindowSmall(LocalContext.current)
 
 private fun getCustomWindowClass(context: Context): WindowWidthSizeClass {
     val windowBounds = WindowMetricsCalculator.getOrCreate()

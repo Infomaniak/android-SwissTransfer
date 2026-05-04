@@ -97,7 +97,7 @@ private fun ReceivedScreen(
             }
         },
         floatingActionButton = {
-            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })
+            if (isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })
         },
     ) {
         if (uiState() is TransferUiState.Success) {
@@ -119,7 +119,7 @@ private fun ReceivedContent(
     onDeleteTransfer: (String) -> Unit,
 ) {
     if (transfers.isEmpty()) {
-        val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
+        val shouldDisplayIcon = isWindowSmall()
         EmptyState(
             content = if (shouldDisplayIcon) {
                 { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) }

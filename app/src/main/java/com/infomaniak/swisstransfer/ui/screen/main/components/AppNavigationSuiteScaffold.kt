@@ -76,8 +76,9 @@ import kotlinx.coroutines.launch
  * the [NavigationSuite] component according to the given [layoutType].
  *
  * @param layoutType The current [NavigationSuiteType]. It determines whether
- * the app will use a bottom navigation bar ([NavigationSuiteType.NavigationBar])
- * or a navigation rail ([NavigationSuiteType.NavigationRail]).
+ * the app will use a bottom navigation bar ([NavigationSuiteType.NavigationBar]),
+ * a navigation rail ([NavigationSuiteType.NavigationRail]) or a navigation drawer
+ * ([NavigationSuiteType.NavigationDrawer]).
  *
  * @param navigationItems The navigation items to be displayed.
  *

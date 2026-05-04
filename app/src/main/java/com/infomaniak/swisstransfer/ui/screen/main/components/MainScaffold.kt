@@ -76,7 +76,7 @@ private fun MainScaffold(
             hideBottomBar = hideBottomBar,
             navigateToSelectedItem = navigateToSelectedItem,
         ) {
-            if (windowAdaptiveInfo.isWindowSmall()) {
+            if (isWindowSmall()) {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
                     HorizontalDivider()
