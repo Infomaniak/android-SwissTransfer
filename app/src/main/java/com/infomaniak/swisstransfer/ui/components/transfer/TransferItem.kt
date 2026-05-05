@@ -40,6 +40,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.ui.compose.margin.Margin
@@ -78,7 +84,13 @@ fun TransferItem(
         null
     }
 
+    val cardContentDescription = stringResource(R.string.contentDescriptionViewTransferDetails)
+
     Card(
+        modifier = Modifier.semantics{
+            role = Role.Button
+            onClick(cardContentDescription, null)
+        },
         onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.surfaceContainerHighest),
         shape = shape,
@@ -121,7 +133,7 @@ fun TransferItem(
             Spacer(Modifier.width(Margin.Medium))
             Icon(
                 imageVector = AppIcons.ChevronRightThick,
-                contentDescription = stringResource(R.string.contentDescriptionViewTransferDetails),
+                contentDescription = null,
                 modifier = Modifier.size(Dimens.SmallIconSize),
                 tint = SwissTransferTheme.colors.iconColor,
             )
