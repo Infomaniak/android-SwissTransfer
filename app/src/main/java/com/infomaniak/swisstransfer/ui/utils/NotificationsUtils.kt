@@ -80,13 +80,6 @@ class NotificationsUtils @Inject constructor(
         )
         channelList.add(transferCompleteChannel)
 
-        val accountEventsChannel = buildNotificationChannel(
-            channelId = ChannelIds.accountEvents,
-            name = getString(R.string.notificationsAccountEventsChannelName),
-            importance = NotificationManager.IMPORTANCE_HIGH,
-        )
-        channelList.add(accountEventsChannel)
-
         val downloadChannel = buildNotificationChannel(
             channelId = ChannelIds.downloadChannelId,
             name = getString(R.string.notificationsDownloadChannelName),
@@ -194,7 +187,7 @@ class NotificationsUtils @Inject constructor(
         val contentIntent = appContext.packageManager.getLaunchIntentForPackage(appContext.packageName)
             ?: Intent(appContext, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val builder = appContext.buildNotification(
-            channelId = ChannelIds.accountEvents,
+            channelId = ChannelIds.transferComplete,
             requestCode = Ids.Disconnected,
             intent = contentIntent,
             icon = defaultSmallIcon,
@@ -280,7 +273,6 @@ class NotificationsUtils @Inject constructor(
         val downloadChannelId = "download_channel"
         val transferDraft = "transfer_draft"
         val transferComplete = "transfer_complete"
-        val accountEvents = "account_events"
     }
 
     companion object {
