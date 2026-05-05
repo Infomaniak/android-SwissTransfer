@@ -32,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadSessionStarter
 import com.infomaniak.swisstransfer.upload.UploadSessionStarterV1
 import com.infomaniak.swisstransfer.upload.UploadSessionStarterV2
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,8 +49,8 @@ object SwissTransferInjectionModule {
     @Singleton
     fun provideSwissTransferInjection(
         @UserAgent userAgent: String,
-        accountUtils: AccountUtils,
-        notificationsUtils: NotificationsUtils,
+        accountUtils: Lazy<AccountUtils>,
+        notificationsUtils: Lazy<NotificationsUtils>,
     ): SwissTransferInjection {
         return SwissTransferInjection(
             environment = ApiEnvironment.current.toKmpApiEnvironment(),
@@ -59,9 +60,10 @@ object SwissTransferInjectionModule {
             unauthorizedHandler = { userId ->
                 val userIdAsInt = userId?.toInt()
                 if (userIdAsInt != null) {
-                    val currentUser = accountUtils.currentUserIdFlow.first()
-                    if (currentUser == userIdAsInt) notificationsUtils.notifyUserDisconnected()
-                    accountUtils.removeUser(userIdAsInt)
+                    val resolvedAccountUtils = accountUtils.get()
+                    val currentUser = resolvedAccountUtils.currentUserIdFlow.first()
+                    if (currentUser == userIdAsInt) notificationsUtils.get().notifyUserDisconnected()
+                    resolvedAccountUtils.removeUser(userIdAsInt)
                 }
             }
         )
