@@ -41,6 +41,7 @@
     <string name="contentDescriptionButtonRemoveRecipient">Remover %s</string>
     <string name="contentDescriptionButtonShowPassword">Mostrar palavra-passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nova transferência</string>
+    <string name="contentDescriptionViewTransferDetails">Ver detalhes da transferência</string>
     <string name="deeplinkPasswordDescription">Introduz a palavra-passe que te foi fornecida para descarregar estes ficheiros.</string>
     <string name="deeplinkTransferExpired">Esta transferência expirou</string>
     <string name="deeplinkTransferNotFound">Esta transferência não existe</string>

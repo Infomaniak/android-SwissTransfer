@@ -39,11 +39,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.TextDotText
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
@@ -119,7 +121,7 @@ fun TransferItem(
             Spacer(Modifier.width(Margin.Medium))
             Icon(
                 imageVector = AppIcons.ChevronRightThick,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.contentDescriptionViewTransferDetails),
                 modifier = Modifier.size(Dimens.SmallIconSize),
                 tint = SwissTransferTheme.colors.iconColor,
             )

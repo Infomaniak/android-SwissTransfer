@@ -41,6 +41,7 @@
     <string name="contentDescriptionButtonRemoveRecipient">%s verwijderen</string>
     <string name="contentDescriptionButtonShowPassword">Wachtwoord weergeven</string>
     <string name="contentDescriptionCreateNewTransferButton">Nieuwe overdracht</string>
+    <string name="contentDescriptionViewTransferDetails">Overdrachtsdetails bekijken</string>
     <string name="deeplinkPasswordDescription">Voer het wachtwoord in dat je hebt ontvangen om deze bestanden te downloaden.</string>
     <string name="deeplinkTransferExpired">Deze overdracht is verlopen</string>
     <string name="deeplinkTransferNotFound">Deze overdracht bestaat niet</string>
