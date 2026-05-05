@@ -119,7 +119,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
         val context = LocalContext.current
         val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
         LaunchedEffect(Unit) {
-            navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid)
+            navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid, isDeeplinkNavigation = true)
         }
     }
 }
@@ -164,13 +164,15 @@ private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDet
     windowAdaptiveInfo: WindowAdaptiveInfo,
     direction: TransferDirection,
     transferUuid: String,
+    isDeeplinkNavigation: Boolean = false,
 ) {
     val matomoScreen = when (direction) {
         TransferDirection.SENT -> MatomoScreen.SentTransferDetails
         TransferDirection.RECEIVED -> MatomoScreen.ReceivedTransferDetails
     }
     MatomoSwissTransfer.trackScreen(matomoScreen)
-    selectItem(context, windowAdaptiveInfo, DestinationContent.RootLevel(direction, transferUuid))
+    val item = DestinationContent.RootLevel(direction, transferUuid, isDeeplinkNavigation)
+    selectItem(context, windowAdaptiveInfo, item)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -210,7 +212,7 @@ private fun DetailPane(
             TransferDetailsScreen(
                 transferUuid = destinationContent.transferUuid,
                 direction = destinationContent.direction,
-                isApiV2Deeplink = isApiV2Deeplink,
+                isApiV2Deeplink = isApiV2Deeplink.takeIf { destinationContent.isDeeplinkNavigation },
                 navigateBack = navigateBack,
                 navigateToFolder = { selectedFolderUuid ->
                     scope.launch {
@@ -300,6 +302,7 @@ private sealed interface DestinationContent : Parcelable {
     data class RootLevel(
         override val direction: TransferDirection,
         override val transferUuid: String,
+        val isDeeplinkNavigation: Boolean,
     ) : DestinationContent
 
     @Parcelize
