@@ -32,6 +32,7 @@ import com.infomaniak.core.notifications.cancelNotification
 import com.infomaniak.core.notifications.createNotificationChannels
 import com.infomaniak.core.notifications.notifyCompat
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.MainActivity
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.navigation.EXTERNAL_NAVIGATION_KEY
 import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
@@ -47,6 +48,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import splitties.init.appCtx
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.infomaniak.core.common.R as RCommon
 
 @Singleton
 class NotificationsUtils @Inject constructor(
@@ -181,6 +183,21 @@ class NotificationsUtils @Inject constructor(
             .build()
     }
 
+    fun notifyUserDisconnected() {
+        val contentIntent = appContext.packageManager.getLaunchIntentForPackage(appContext.packageName)
+            ?: Intent(appContext, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val builder = appContext.buildNotification(
+            channelId = ChannelIds.transferComplete,
+            requestCode = Ids.Disconnected,
+            intent = contentIntent,
+            icon = defaultSmallIcon,
+            iconColor = notificationIconColor,
+            title = appContext.getString(RCommon.string.youHaveBeenDisconnectedLabel),
+            onlyAlertOnce = true,
+        )
+        notificationManagerCompat.notifyCompat(Ids.Disconnected, builder)
+    }
+
     private fun downloadNotificationBuilder(title: String): NotificationCompat.Builder {
         val contentIntent = appContext.packageManager.getLaunchIntentForPackage(appContext.packageName)
         val pendingIntent = contentIntent?.let {
@@ -248,6 +265,7 @@ class NotificationsUtils @Inject constructor(
         const val OngoingUpload = 1
         const val LastUpload = 2
         const val DownloadSuccess = 3
+        const val Disconnected = 4
     }
 
     private object ChannelIds {
