@@ -41,6 +41,7 @@
     <string name="contentDescriptionButtonRemoveRecipient">Usuń %s</string>
     <string name="contentDescriptionButtonShowPassword">Pokaż hasło</string>
     <string name="contentDescriptionCreateNewTransferButton">Nowy transfer</string>
+    <string name="contentDescriptionViewTransferDetails">Zobacz szczegóły transferu</string>
     <string name="deeplinkPasswordDescription">Wprowadź hasło, które otrzymałeś, aby pobrać te pliki.</string>
     <string name="deeplinkTransferExpired">Ten transfer wygasł</string>
     <string name="deeplinkTransferNotFound">Ten transfer nie istnieje</string>

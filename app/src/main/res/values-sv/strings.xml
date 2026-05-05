@@ -41,6 +41,7 @@
     <string name="contentDescriptionButtonRemoveRecipient">Ta bort %s</string>
     <string name="contentDescriptionButtonShowPassword">Visa lösenord</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny överföring</string>
+    <string name="contentDescriptionViewTransferDetails">Visa överföringsdetaljer</string>
     <string name="deeplinkPasswordDescription">Ange lösenordet du har fått för att ladda ner dessa filer.</string>
     <string name="deeplinkTransferExpired">Denna överföring har gått ut</string>
     <string name="deeplinkTransferNotFound">Denna överföring existerar inte</string>

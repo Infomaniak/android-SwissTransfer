@@ -41,6 +41,7 @@
     <string name="contentDescriptionButtonRemoveRecipient">Αφαίρεση %s</string>
     <string name="contentDescriptionButtonShowPassword">Εμφάνιση κωδικού πρόσβασης</string>
     <string name="contentDescriptionCreateNewTransferButton">Νέα μεταφορά</string>
+    <string name="contentDescriptionViewTransferDetails">Προβολή λεπτομερειών μεταφοράς</string>
     <string name="deeplinkPasswordDescription">Εισάγαλε τον κωδικό πρόσβασης που σου δόθηκε για να κατεβάσεις αυτά τα αρχεία.</string>
     <string name="deeplinkTransferExpired">Αυτή η μεταφορά έχει λήξει</string>
     <string name="deeplinkTransferNotFound">Αυτή η μεταφορά δεν υπάρχει</string>

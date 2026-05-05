@@ -45,6 +45,7 @@
     <string name="contentDescriptionButtonRemoveRecipient">Remove %s</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
+    <string name="contentDescriptionViewTransferDetails">View transfer details</string>
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
     <string name="deeplinkTransferExpired">This transfer has expired</string>
     <string name="deeplinkTransferNotFound">This transfer does not exist</string>
