@@ -27,13 +27,17 @@ import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
+import com.infomaniak.swisstransfer.ui.utils.AccountUtils
+import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadSessionStarter
 import com.infomaniak.swisstransfer.upload.UploadSessionStarterV1
 import com.infomaniak.swisstransfer.upload.UploadSessionStarterV2
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
 import javax.inject.Singleton
 import com.infomaniak.multiplatform_swisstransfer.common.utils.ApiEnvironment as KmpApiEnvironement
 
@@ -43,12 +47,25 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun provideSwissTransferInjection(@UserAgent userAgent: String): SwissTransferInjection {
+    fun provideSwissTransferInjection(
+        @UserAgent userAgent: String,
+        accountUtils: Lazy<AccountUtils>,
+        notificationsUtils: Lazy<NotificationsUtils>,
+    ): SwissTransferInjection {
         return SwissTransferInjection(
             environment = ApiEnvironment.current.toKmpApiEnvironment(),
             userAgent = userAgent,
             crashReport = crashReport,
             databaseNameOrPath = "swisstransfer",
+            unauthorizedHandler = { userId ->
+                val userIdAsInt = userId?.toInt()
+                if (userIdAsInt != null) {
+                    val resolvedAccountUtils = accountUtils.get()
+                    val currentUser = resolvedAccountUtils.currentUserIdFlow.first()
+                    if (currentUser == userIdAsInt) notificationsUtils.get().notifyUserDisconnected()
+                    resolvedAccountUtils.removeUser(userIdAsInt)
+                }
+            }
         )
     }
 

@@ -63,7 +63,6 @@ class AccountUtils @Inject constructor(
         super.removeUser(userId)
         accountManager.logoutCurrentUser(newSTUser = userDao.getFirst().toStUser())
 
-
         if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
