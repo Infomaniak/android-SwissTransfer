@@ -36,10 +36,10 @@ class DeeplinkViewModel @Inject constructor(
         if (!isDeeplinkConsumed.value) savedStateHandle[IS_DEEPLINK_CONSUMED_KEY] = true
     }
 
-    suspend fun getDeeplinkTransferDirection(transferUuid: String, isApiV2: Boolean): TransferDirection? {
+    suspend fun getDeeplinkTransferDirection(transferIdOrLinkId: String, isApiV2: Boolean): TransferDirection? {
         return when {
-            isApiV2 -> transferManager.getTransferByLinkId(transferUuid)?.direction
-            else -> transferManager.getTransferByUUID(transferUuid)?.direction
+            isApiV2 -> transferManager.getTransferByLinkId(transferIdOrLinkId)?.direction
+            else -> transferManager.getTransferByUUID(transferIdOrLinkId)?.direction
         }
     }
 

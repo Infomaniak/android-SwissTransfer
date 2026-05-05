@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                 }
                 is DeepLinkType.OpenTransfer -> {
                     deeplinkTransferDirection = deeplinkViewModel.getDeeplinkTransferDirection(
-                        transferUuid = deepLinkTypeFromURL.uuid,
+                        transferIdOrLinkId = deepLinkTypeFromURL.uuid,
                         isApiV2 = ApiUrlMatcher.isV2Url(deeplinkUrl),
                     ) ?: TransferDirection.RECEIVED
                     if (deeplinkTransferDirection == TransferDirection.SENT) {
