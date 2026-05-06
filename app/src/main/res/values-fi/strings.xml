@@ -34,6 +34,8 @@
     <string name="buttonStart">Aloita</string>
     <string name="cantImportFileX">Tiedostoa %s ei voi tuoda</string>
     <string name="checkingFiles">Tarkistetaan tiedostoja…</string>
+    <string name="confirmLogoutDescription">Haluatko varmasti kirjautua ulos tililtä %s?</string>
+    <string name="confirmLogoutTitle">Kirjaudu ulos</string>
     <string name="contentDescriptionButtonBack">Takaisin</string>
     <string name="contentDescriptionButtonClose">Sulje</string>
     <string name="contentDescriptionButtonHidePassword">Piilota salasana</string>

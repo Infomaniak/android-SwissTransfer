@@ -34,6 +34,8 @@
     <string name="buttonStart">Έναρξη</string>
     <string name="cantImportFileX">Δεν είναι δυνατή η εισαγωγή του αρχείου %s</string>
     <string name="checkingFiles">Έλεγχος αρχείων…</string>
+    <string name="confirmLogoutDescription">Είσαι σίγουρος ότι θέλεις να αποσυνδεθείς από %s;</string>
+    <string name="confirmLogoutTitle">Αποσύνδεση</string>
     <string name="contentDescriptionButtonBack">Πίσω</string>
     <string name="contentDescriptionButtonClose">Κλείσιμο</string>
     <string name="contentDescriptionButtonHidePassword">Απόκρυψη κωδικού πρόσβασης</string>

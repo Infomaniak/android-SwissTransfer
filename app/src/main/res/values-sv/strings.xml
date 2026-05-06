@@ -34,6 +34,8 @@
     <string name="buttonStart">Starta</string>
     <string name="cantImportFileX">Det går inte att importera filen %s</string>
     <string name="checkingFiles">Kontrollerar filer…</string>
+    <string name="confirmLogoutDescription">Är du säker på att du vill logga ut från %s?</string>
+    <string name="confirmLogoutTitle">Logga ut</string>
     <string name="contentDescriptionButtonBack">Tillbaka</string>
     <string name="contentDescriptionButtonClose">Stäng</string>
     <string name="contentDescriptionButtonHidePassword">Dölj lösenord</string>

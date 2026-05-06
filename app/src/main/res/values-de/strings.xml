@@ -34,6 +34,8 @@
     <string name="buttonStart">Starten</string>
     <string name="cantImportFileX">Die Datei %s kann nicht importiert werden</string>
     <string name="checkingFiles">Überprüfung der Dateien…</string>
+    <string name="confirmLogoutDescription">Sind Sie sicher, dass Sie sich von %s abmelden möchten?</string>
+    <string name="confirmLogoutTitle">Abmelden</string>
     <string name="contentDescriptionButtonBack">Zurück</string>
     <string name="contentDescriptionButtonClose">Schliessen</string>
     <string name="contentDescriptionButtonHidePassword">Passwort verbergen</string>

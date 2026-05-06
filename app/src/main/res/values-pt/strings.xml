@@ -34,6 +34,8 @@
     <string name="buttonStart">Começar</string>
     <string name="cantImportFileX">Não é possível importar o ficheiro %s</string>
     <string name="checkingFiles">A verificar ficheiros…</string>
+    <string name="confirmLogoutDescription">Tens a certeza de que queres terminar a sessão de %s?</string>
+    <string name="confirmLogoutTitle">Terminar sessão</string>
     <string name="contentDescriptionButtonBack">Voltar</string>
     <string name="contentDescriptionButtonClose">Fechar</string>
     <string name="contentDescriptionButtonHidePassword">Ocultar palavra-passe</string>
