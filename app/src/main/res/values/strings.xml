@@ -91,8 +91,8 @@
     <string name="notificationUploadSuccessDescriptionMail">The download link has been sent to the recipients</string>
     <string name="notificationUploadSuccessDescriptionOther">Click to get your download link</string>
     <string name="notificationUploadSuccessTitle">Transfer completed</string>
-    <string name="notificationUsageTitle">Allow notifications?</string>
     <string name="notificationUsageDescription">Notifications help you track transfer progress and download completion. The app works normally even if you choose not to enable them.</string>
+    <string name="notificationUsageTitle">Allow notifications?</string>
     <string name="notificationsDownloadChannelName">Download Notifications</string>
     <string name="notificationsUploadChannelName">Upload notifications</string>
     <string name="onboardingExpirationSubtitleArgument">30 days.</string>
