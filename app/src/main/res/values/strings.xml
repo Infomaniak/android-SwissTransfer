@@ -39,7 +39,6 @@
     <string name="cantImportFileX">Can’t import the file %s</string>
     <string name="checkingFiles">Checking files…</string>
     <string name="confirmLogoutDescription">Are you sure you want to log out from %s?</string>
-    <string name="confirmLogoutTitle">Log out</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>

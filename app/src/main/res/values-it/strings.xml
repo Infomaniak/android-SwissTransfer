@@ -35,7 +35,6 @@
     <string name="cantImportFileX">Impossibile importare il file %s</string>
     <string name="checkingFiles">Controllo dei file…</string>
     <string name="confirmLogoutDescription">Sei sicuro di volerti disconnettere da %s?</string>
-    <string name="confirmLogoutTitle">Disconnettersi</string>
     <string name="contentDescriptionButtonBack">Indietro</string>
     <string name="contentDescriptionButtonClose">Chiudi</string>
     <string name="contentDescriptionButtonHidePassword">Nascondere la password</string>

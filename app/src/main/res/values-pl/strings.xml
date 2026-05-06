@@ -35,7 +35,6 @@
     <string name="cantImportFileX">Nie można zaimportować pliku %s</string>
     <string name="checkingFiles">Sprawdzanie plików…</string>
     <string name="confirmLogoutDescription">Czy na pewno chcesz się wylogować z %s?</string>
-    <string name="confirmLogoutTitle">Wyloguj się</string>
     <string name="contentDescriptionButtonBack">Wstecz</string>
     <string name="contentDescriptionButtonClose">Zamknij</string>
     <string name="contentDescriptionButtonHidePassword">Ukryj hasło</string>

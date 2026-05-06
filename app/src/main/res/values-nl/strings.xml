@@ -35,7 +35,6 @@
     <string name="cantImportFileX">Kan het bestand %s niet importeren</string>
     <string name="checkingFiles">Bestanden controleren…</string>
     <string name="confirmLogoutDescription">Weet je zeker dat je wilt uitloggen van %s?</string>
-    <string name="confirmLogoutTitle">Uitloggen</string>
     <string name="contentDescriptionButtonBack">Terug</string>
     <string name="contentDescriptionButtonClose">Sluiten</string>
     <string name="contentDescriptionButtonHidePassword">Wachtwoord verbergen</string>

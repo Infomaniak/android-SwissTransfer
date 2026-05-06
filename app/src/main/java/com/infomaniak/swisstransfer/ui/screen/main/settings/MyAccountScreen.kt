@@ -274,13 +274,11 @@ private fun SettingsItems(
         )
 
         AnimatedVisibility(currentUser != null) {
-            currentUser?.let {
-                LogoutItem(
-                    currentUser = it,
-                    isSelected = { selectedSetting == Logout },
-                    onConfirmClick = { onActionAndMatomo(Logout) },
-                )
-            }
+            LogoutItem(
+                currentUserEmail = currentUser?.email,
+                isSelected = { selectedSetting == Logout },
+                onConfirmClick = { onActionAndMatomo(Logout) },
+            )
         }
         SettingDivider()
 
@@ -319,13 +317,13 @@ private fun SettingsItems(
 }
 
 @Composable
-private fun LogoutItem(currentUser: User, isSelected: () -> Boolean, onConfirmClick: () -> Unit) {
+private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onConfirmClick: () -> Unit) {
     var shouldDisplayLogoutDialog by rememberSaveable { mutableStateOf(false) }
 
-    if (shouldDisplayLogoutDialog) {
+    if (shouldDisplayLogoutDialog && currentUserEmail != null) {
         SwissTransferAlertDialog(
-            title = stringResource(R.string.confirmLogoutTitle),
-            description = stringResource(R.string.confirmLogoutDescription, currentUser.email),
+            title = stringResource(R.string.settingsLogOut),
+            description = stringResource(R.string.confirmLogoutDescription, currentUserEmail),
             onDismiss = {
                 shouldDisplayLogoutDialog = false
             },
