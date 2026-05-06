@@ -48,16 +48,16 @@ fun ExistingTransferFilesDetailsScreen(
     }.collectAsStateWithLifecycle(initialValue = null)
     val snackbarHostState = remember { SnackbarHostState() }
 
-    files?.let {
-        SwissTransferScaffold(
-            topBar = {
-                SwissTransferTopAppBar(
-                    navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
-                    actions = { TopAppBarButtons.Close(close) },
-                )
-            },
-            snackbarHost = { SnackbarHost(snackbarHostState) }
-        ) {
+    SwissTransferScaffold(
+        topBar = {
+            SwissTransferTopAppBar(
+                navigationIcon = { TopAppBarButtons.Back(onClick = navigateBack) },
+                actions = { TopAppBarButtons.Close(close) },
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) {
+        files?.let {
             val context = LocalContext.current
             FilesDetailsScreen(
                 snackbarHostState = snackbarHostState,
