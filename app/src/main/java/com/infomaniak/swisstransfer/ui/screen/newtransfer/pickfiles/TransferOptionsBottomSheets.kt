@@ -19,8 +19,11 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -41,6 +44,8 @@ private fun TransferOptionBottomSheetScaffold(
     optionEntries: List<SettingOption>,
     title: String,
 ) {
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
 
     val selectedPosition = when (initialValue) {
         is ValidityPeriodOption -> initialValue.ordinal
@@ -53,6 +58,7 @@ private fun TransferOptionBottomSheetScaffold(
     SwissTransferBottomSheet(
         onDismissRequest = closeBottomSheet,
         title = title,
+        sheetState = state,
         content = {
             SingleSelectOptions(
                 items = optionEntries,
@@ -60,7 +66,7 @@ private fun TransferOptionBottomSheetScaffold(
                 setSelectedItem = { position ->
                     val selectedValue = optionEntries[position]
                     onOptionClicked(selectedValue)
-                    closeBottomSheet()
+                    state.dismissGracefully(scope, onDismissRequest = { closeBottomSheet() })
                 },
             )
         },
