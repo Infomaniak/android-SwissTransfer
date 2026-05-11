@@ -62,6 +62,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -84,6 +85,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val accountUtils: AccountUtils,
     private val appSettingsManager: AppSettingsManager,
     private val newTransferOpenManager: NewTransferOpenManager,
@@ -412,11 +414,10 @@ class PickFilesViewModel @Inject constructor(
 
     fun processContactPickerResultUri(
         sessionUri: Uri,
-        context: Context,
     ) {
         viewModelScope.launch {
             try {
-                contactPickLaunch(sessionUri, context)
+                contactPickLaunch(sessionUri, appContext)
             } catch (e: Exception) {
                 SentryLog.e(TAG, "Error while importing contacts from picker result", e)
             }

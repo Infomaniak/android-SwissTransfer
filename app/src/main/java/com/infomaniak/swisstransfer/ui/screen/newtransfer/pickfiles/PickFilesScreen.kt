@@ -237,7 +237,7 @@ private fun PickFilesScreen(
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
-    selectContact: (Uri, Context) -> Unit,
+    selectContact: (Uri) -> Unit,
     exitNewTransfer: () -> Unit,
     isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
@@ -307,7 +307,7 @@ private fun ImportTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
-    selectContact: (Uri, Context) -> Unit,
+    selectContact: (Uri) -> Unit,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
 
@@ -344,7 +344,7 @@ private fun EmailAddressesTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
     textFieldSpacing: Dp,
-    selectContact: (Uri, Context) -> Unit,
+    selectContact: (Uri) -> Unit,
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
 
@@ -361,14 +361,14 @@ private fun EmailAddressesTextFields(
         if (clipData != null) {
             for (i in 0 until clipData.itemCount) {
                 clipData.getItemAt(i).uri?.let { uri ->
-                    selectContact(uri, context)
+                    selectContact(uri)
                 }
             }
             return
         }
 
         dataIntent.data?.let { uri ->
-            selectContact(uri, context)
+            selectContact(uri)
         }
     }
 
@@ -609,7 +609,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
                 selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
                 transferOptionsCallbacks = transferOptionsCallbacks,
                 pickFiles = {},
-                selectContact = { _, _ -> },
+                selectContact = { _ -> },
                 exitNewTransfer = {},
                 onSendButtonClick = {},
                 isAwaitingSend = { true },
