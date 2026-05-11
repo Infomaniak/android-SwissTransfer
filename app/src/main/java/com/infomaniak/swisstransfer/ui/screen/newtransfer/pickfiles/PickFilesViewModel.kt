@@ -414,10 +414,12 @@ class PickFilesViewModel @Inject constructor(
         sessionUri: Uri,
         context: Context,
     ) {
-        try {
-            viewModelScope.launch { contactPickLaunch(sessionUri, context) }
-        } catch (e: Exception) {
-            SentryLog.e(TAG, "Error while importing contacts from picker result", e)
+        viewModelScope.launch {
+            try {
+                contactPickLaunch(sessionUri, context)
+            } catch (e: Exception) {
+                SentryLog.e(TAG, "Error while importing contacts from picker result", e)
+            }
         }
     }
 
