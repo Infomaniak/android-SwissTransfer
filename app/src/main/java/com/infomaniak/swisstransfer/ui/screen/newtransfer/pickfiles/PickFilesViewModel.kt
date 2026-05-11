@@ -464,7 +464,7 @@ class PickFilesViewModel @Inject constructor(
         contactsMap
     }
 
-    private suspend fun updateValidatedRecipientsEmails(newEmails: Set<String>) = withContext(Dispatchers.Main) {
+    private suspend fun updateValidatedRecipientsEmails(newEmails: Set<String>) = withContext(ioDispatcher) {
         validatedRecipientsEmails = validatedRecipientsEmails + newEmails
     }
 
