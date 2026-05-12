@@ -69,6 +69,22 @@ git submodule update --init --recursive
 - Prefer using existing managers/utilities (`TransferManager`, `AccountUtils`, upload session abstractions) rather than duplicating
   flow logic in Activities.
 
+### Commit & PR title convention
+
+Every commit message **and** PR title must match the following regex (enforced by CI via
+`.github/workflows/semantic-commit.yml`):
+
+```
+^Merge .+|(^(feat|fix|chore|docs|style|refactor|perf|ci|test)(\(.+\))?: [A-Z0-9].+)
+```
+
+In plain English:
+- Start with one of: `feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `perf`, `ci`, `test`
+- Optionally add a scope in parentheses: `feat(upload): …`
+- Follow with `: ` and a message whose first character is **uppercase** or a digit
+
+Examples: `feat: Add offline support`, `fix(upload): Retry on network error`, `chore: Bump dependencies`
+
 ## Key Files
 
 - Project settings/composite build: `settings.gradle.kts`
