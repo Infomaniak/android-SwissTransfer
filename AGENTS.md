@@ -197,7 +197,6 @@ find app/src/androidTest -name "*.kt"
 
 - **Always use `SentryLog`** (`.d`, `.i`, `.e`, …) instead of `android.util.Log`. This ensures errors surface in Sentry and
   are filtered consistently (network errors and `CancellationException` are intentionally suppressed — see `MainApplication`).
-- Tag constants commonly follow `val TAG = Foo::class.java.simpleName` in a `companion object`, but `private const val TAG = "..."` and `Foo::class.java.name` are also used.
 
 ### Coroutines & flows
 
