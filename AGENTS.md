@@ -8,7 +8,7 @@ business logic and networking.
 
 **Languages**: Kotlin (100%), Jetpack Compose UI
 
-**Key architecture**: Single-activity, Compose-first, MVVM + Hilt DI, KMP for cross-platform business logic
+**Key architecture**: Multi-activity entry points with a Compose-first UI, MVVM + Hilt DI, KMP for cross-platform business logic
 
 ## Setup & Development
 
@@ -91,7 +91,7 @@ android-SwissTransfer/
 
 ### UI layer
 
-- Compose-first with a single `MainActivity`.
+- Compose-first UI, with `MainActivity` hosting most app screens plus dedicated `LaunchActivity`, `OnboardingActivity`, and `NewTransferActivity` entry points.
 - Adaptive list/detail layout via `TwoPaneScaffold` (`ListDetailPaneScaffold` from Material3 adaptive).
 - `LocalWindowAdaptiveInfo` CompositionLocal propagates window size info to nested composables.
 - Matomo analytics via `MatomoSwissTransfer` object (site ID 24).
@@ -144,7 +144,7 @@ Examples: `feat: Add offline support`, `fix(upload): Retry on network error`, `c
 | `settings.gradle.kts`                                             | Composite build setup, version catalogs, submodule include |
 | `app/build.gradle.kts`                                            | App dependencies, flavors, Sentry config                   |
 | `app/src/main/java/…/ui/MainApplication.kt`                       | App entry point, Core init, Sentry config                  |
-| `app/src/main/java/…/ui/MainActivity.kt`                          | Single activity, deep-link handling                        |
+| `app/src/main/java/…/ui/MainActivity.kt`                          | Primary Compose host activity, deep-link handling          |
 | `app/src/main/java/…/ui/LaunchActivity.kt`                        | Splash/routing activity                                    |
 | `app/src/main/java/…/ui/navigation/NavigationDestination.kt`      | All typed nav destination sealed classes                   |
 | `app/src/main/java/…/ui/screen/main/MainNavHost.kt`               | Main bottom-nav host                                       |
@@ -197,7 +197,7 @@ find app/src/androidTest -name "*.kt"
 
 - **Always use `SentryLog`** (`.d`, `.i`, `.e`, …) instead of `android.util.Log`. This ensures errors surface in Sentry and
   are filtered consistently (network errors and `CancellationException` are intentionally suppressed — see `MainApplication`).
-- Tag constants follow `val TAG = Foo::class.java.simpleName` in a `companion object`.
+- Tag constants commonly follow `val TAG = Foo::class.java.simpleName` in a `companion object`, but `private const val TAG = "..."` and `Foo::class.java.name` are also used.
 
 ### Coroutines & flows
 
