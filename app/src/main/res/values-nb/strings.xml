@@ -34,6 +34,7 @@
     <string name="buttonStart">Start</string>
     <string name="cantImportFileX">Kan ikke importere filen %s</string>
     <string name="checkingFiles">Kontrollerer filer…</string>
+    <string name="confirmLogoutDescription">Er du sikker på at du vil logge ut fra %s?</string>
     <string name="contentDescriptionButtonBack">Tilbake</string>
     <string name="contentDescriptionButtonClose">Lukk</string>
     <string name="contentDescriptionButtonHidePassword">Skjul passord</string>
