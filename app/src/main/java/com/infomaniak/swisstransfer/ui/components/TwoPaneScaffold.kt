@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.isAnimating
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
@@ -135,12 +136,13 @@ fun <T> AnimatedContentDetailPane(
             SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
         },
     ) { targetDestination ->
-        val paneScope = LocalAnimatedPaneVisibilityScope.current
-        val contentScope = this@AnimatedContent
+        val activeScope = LocalAnimatedPaneVisibilityScope.current?.let { paneScope ->
+            val contentScope = this@AnimatedContent
 
-        val activeScope = remember(paneScope, contentScope) {
-            val isPaneAnimating = paneScope?.transition?.let { it.currentState != it.targetState } == true
-            if (isPaneAnimating) paneScope else contentScope
+            remember(paneScope, contentScope) {
+                val isPaneAnimating = paneScope.isAnimating()
+                if (isPaneAnimating) paneScope else contentScope
+            }
         }
 
         CompositionLocalProvider(LocalAnimatedPaneVisibilityScope provides activeScope) {
