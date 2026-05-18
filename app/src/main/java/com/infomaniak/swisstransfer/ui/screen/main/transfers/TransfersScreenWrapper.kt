@@ -207,9 +207,9 @@ private fun DetailPane(
             }
             is DestinationContent.RootLevel -> {
                 TransferDetailsScreen(
-                    transferUuid = destinationContent.transferUuid,
-                    direction = destinationContent.direction,
-                    isApiV2Deeplink = isApiV2Deeplink.takeIf { destinationContent.isDeeplinkNavigation },
+                    transferUuid = targetDestination.transferUuid,
+                    direction = targetDestination.direction,
+                    isApiV2Deeplink = isApiV2Deeplink.takeIf { targetDestination.isDeeplinkNavigation },
                     navigateBack = navigateBack,
                     navigateToFolder = { selectedFolderUuid ->
                         scope.launch {

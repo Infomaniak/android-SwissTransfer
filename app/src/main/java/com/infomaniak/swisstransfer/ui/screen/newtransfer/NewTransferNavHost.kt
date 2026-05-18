@@ -28,7 +28,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
-import com.infomaniak.swisstransfer.ui.components.LocalAnimatedPaneVisibilityScope
 import com.infomaniak.swisstransfer.ui.components.LocalNavHostAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.components.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
@@ -62,10 +61,7 @@ fun NewTransferNavHost(
                 exitTransition = { SwissTransferTransition.exitTransition },
             ) {
                 composable<PickFilesDestination> {
-                    CompositionLocalProvider(
-                        LocalAnimatedPaneVisibilityScope provides this@composable,
-                        LocalNavHostAnimatedVisibilityScope provides this@composable,
-                    ) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@composable) {
                         cancelUploadNotification()
                         PickFilesScreen(
                             pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
@@ -77,10 +73,7 @@ fun NewTransferNavHost(
                     }
                 }
                 composable<UploadDestination> {
-                    CompositionLocalProvider(
-                        LocalAnimatedPaneVisibilityScope provides this@composable,
-                        LocalNavHostAnimatedVisibilityScope provides this@composable,
-                    ) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@composable) {
                         UploadScreen(
                             inAppReviewManager = inAppReviewManager,
                             navigateBackToPickFiles = {
@@ -94,10 +87,7 @@ fun NewTransferNavHost(
                     }
                 }
                 composable<UploadSuccessDestination> {
-                    CompositionLocalProvider(
-                        LocalAnimatedPaneVisibilityScope provides this@composable,
-                        LocalNavHostAnimatedVisibilityScope provides this@composable,
-                    ) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@composable) {
                         // The transfer has succeeded so we decrement the review countdown
                         inAppReviewManager.decrementAppReviewCountdown()
 
@@ -115,10 +105,7 @@ fun NewTransferNavHost(
                     }
                 }
                 composable<NewTransferFilesDetailsDestination> {
-                    CompositionLocalProvider(
-                        LocalAnimatedPaneVisibilityScope provides this@composable,
-                        LocalNavHostAnimatedVisibilityScope provides this@composable,
-                    ) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@composable) {
                         val backStackEntry = remember(it) { navController.getBackStackEntry(PickFilesDestination) }
                         NewTransferFilesDetailsScreen(
                             pickFilesViewModel = hiltViewModel<PickFilesViewModel>(backStackEntry),

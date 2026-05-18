@@ -21,17 +21,14 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
-import com.infomaniak.swisstransfer.ui.components.LocalCurrentTopBarKey
 import com.infomaniak.swisstransfer.ui.components.LocalNavHostAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.components.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
-import com.infomaniak.swisstransfer.ui.components.TopBarKey
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
@@ -55,10 +52,7 @@ fun MainNavHost(
     }
 
     SharedTransitionLayout {
-        CompositionLocalProvider(
-            LocalSharedTransitionScope provides this@SharedTransitionLayout,
-            LocalCurrentTopBarKey provides TopBarKey.FIRST,
-        ) {
+        CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
             NavHost(
                 navController = navController,
                 startDestination = startDestination,
@@ -67,8 +61,7 @@ fun MainNavHost(
             ) {
                 sentDestination {
                     val args = it.toRoute<SentDestination>()
-                    val animatedContentScope = remember { this@sentDestination }
-                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides animatedContentScope) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@sentDestination) {
                         TransfersScreenWrapper(
                             direction = TransferDirection.SENT,
                             transferUuid = args.transferUuid,
@@ -78,8 +71,7 @@ fun MainNavHost(
                 }
                 receivedDestination {
                     val args = it.toRoute<ReceivedDestination>()
-                    val animatedContentScope = remember { this@receivedDestination }
-                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides animatedContentScope) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@receivedDestination) {
                         TransfersScreenWrapper(
                             direction = TransferDirection.RECEIVED,
                             transferUuid = args.transferUuid,
@@ -89,8 +81,7 @@ fun MainNavHost(
                     }
                 }
                 composable<MyAccountDestination> {
-                    val animatedContentScope = remember { this@composable }
-                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides animatedContentScope) {
+                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@composable) {
                         MyAccountScreenWrapper()
                     }
                 }

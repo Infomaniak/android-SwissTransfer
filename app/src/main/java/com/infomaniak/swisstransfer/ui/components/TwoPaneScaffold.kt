@@ -94,8 +94,8 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                val animatedPaneScope = remember { this@AnimatedPane }
-                val topAppBarKey = remember { if (isInSinglePaneMode(navigator)) TopBarKey.FIRST else TopBarKey.SECOND }
+                val animatedPaneScope = this@AnimatedPane
+                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.FIRST else TopBarKey.SECOND
                 CompositionLocalProvider(
                     LocalAnimatedPaneVisibilityScope provides animatedPaneScope,
                     LocalCurrentTopBarKey provides topAppBarKey,
@@ -109,8 +109,8 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                val animatedPaneScope = remember { this@AnimatedPane }
-                val topAppBarKey = remember { if (isInSinglePaneMode(navigator)) TopBarKey.FIRST else TopBarKey.THIRD }
+                val animatedPaneScope = this@AnimatedPane
+                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.FIRST else TopBarKey.THIRD
                 CompositionLocalProvider(
                     LocalAnimatedPaneVisibilityScope provides animatedPaneScope,
                     LocalCurrentTopBarKey provides topAppBarKey,
@@ -128,14 +128,13 @@ fun <T> AnimatedContentDetailPane(
     destinationContent: T,
     content: @Composable (T) -> Unit,
 ) {
-    val paneScope = LocalAnimatedPaneVisibilityScope.current
-
     AnimatedContent(
         targetState = destinationContent,
         transitionSpec = {
             SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
         },
     ) { targetDestination ->
+        val paneScope = LocalAnimatedPaneVisibilityScope.current
         val contentScope = this@AnimatedContent
 
         val activeScope = remember(paneScope, contentScope) {
