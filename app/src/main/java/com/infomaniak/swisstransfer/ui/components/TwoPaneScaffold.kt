@@ -94,11 +94,9 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                val animatedPaneScope = this@AnimatedPane
-                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.SINGLE_PANE else TopBarKey.LIST_PANE
                 CompositionLocalProvider(
-                    LocalAnimatedPaneVisibilityScope provides animatedPaneScope,
-                    LocalCurrentTopBarKey provides topAppBarKey,
+                    LocalAnimatedPaneVisibilityScope provides this@AnimatedPane,
+                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.LIST_PANE),
                 ) {
                     navigator.listPane()
                 }
@@ -109,11 +107,9 @@ fun <T> TwoPaneScaffold(
                 enterTransition = SwissTransferTransition.enterTransition,
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
-                val animatedPaneScope = this@AnimatedPane
-                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.SINGLE_PANE else TopBarKey.DETAIL_PANE
                 CompositionLocalProvider(
-                    LocalAnimatedPaneVisibilityScope provides animatedPaneScope,
-                    LocalCurrentTopBarKey provides topAppBarKey,
+                    LocalAnimatedPaneVisibilityScope provides this@AnimatedPane,
+                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.DETAIL_PANE),
                 ) {
                     navigator.detailPane()
                 }
@@ -121,6 +117,11 @@ fun <T> TwoPaneScaffold(
         },
         modifier = modifier,
     )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun <T> ThreePaneScaffoldNavigator<T>.getTopAppBarKey(dualPaneKey: TopBarKey): TopBarKey {
+    return if (isInSinglePaneMode(this)) TopBarKey.SINGLE_PANE else dualPaneKey
 }
 
 @Composable
