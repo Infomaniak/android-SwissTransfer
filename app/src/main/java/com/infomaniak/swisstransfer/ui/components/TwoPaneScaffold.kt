@@ -95,7 +95,7 @@ fun <T> TwoPaneScaffold(
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
                 val animatedPaneScope = this@AnimatedPane
-                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.FIRST else TopBarKey.SECOND
+                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.SINGLE_PANE else TopBarKey.LIST_PANE
                 CompositionLocalProvider(
                     LocalAnimatedPaneVisibilityScope provides animatedPaneScope,
                     LocalCurrentTopBarKey provides topAppBarKey,
@@ -110,7 +110,7 @@ fun <T> TwoPaneScaffold(
                 exitTransition = SwissTransferTransition.exitTransition,
             ) {
                 val animatedPaneScope = this@AnimatedPane
-                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.FIRST else TopBarKey.THIRD
+                val topAppBarKey = if (isInSinglePaneMode(navigator)) TopBarKey.SINGLE_PANE else TopBarKey.DETAIL_PANE
                 CompositionLocalProvider(
                     LocalAnimatedPaneVisibilityScope provides animatedPaneScope,
                     LocalCurrentTopBarKey provides topAppBarKey,
@@ -183,6 +183,5 @@ suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, item:
 private fun <T> isInSinglePaneMode(navigator: ThreePaneScaffoldNavigator<T>): Boolean {
     val isListPaneVisible = navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
     val isDetailPaneVisible = navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
-    val isSinglePane = !isListPaneVisible || !isDetailPaneVisible
-    return isSinglePane
+    return !isListPaneVisible || !isDetailPaneVisible
 }

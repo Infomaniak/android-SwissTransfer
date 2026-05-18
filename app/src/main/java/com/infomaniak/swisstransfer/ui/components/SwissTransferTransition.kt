@@ -22,14 +22,13 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 
 val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
 val LocalAnimatedPaneVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
 val LocalNavHostAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
-val LocalCurrentTopBarKey = staticCompositionLocalOf { TopBarKey.FIRST }
+val LocalCurrentTopBarKey = staticCompositionLocalOf { TopBarKey.SINGLE_PANE }
 
 object SwissTransferTransition {
     val enterTransition = fadeIn()
@@ -43,10 +42,8 @@ fun Modifier.sharedTransitionAppBar(): Modifier {
     val navHostScope = LocalNavHostAnimatedVisibilityScope.current
     val currentTopBarKey = LocalCurrentTopBarKey.current
 
-    val activeScope = remember(navHostScope, localScope) {
-        val isNavHostAnimating = navHostScope?.transition?.let { it.currentState != it.targetState } == true
-        if (isNavHostAnimating) navHostScope else localScope
-    }
+    val isNavHostAnimating = navHostScope?.transition?.let { it.currentState != it.targetState } == true
+    val activeScope = if (isNavHostAnimating) navHostScope else localScope
 
     if (activeScope == null || sharedScope == null) return this
 
@@ -59,5 +56,5 @@ fun Modifier.sharedTransitionAppBar(): Modifier {
 }
 
 enum class TopBarKey {
-    FIRST, SECOND, THIRD
+    SINGLE_PANE, LIST_PANE, DETAIL_PANE
 }

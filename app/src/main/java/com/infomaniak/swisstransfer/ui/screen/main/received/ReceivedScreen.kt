@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
@@ -36,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
@@ -53,9 +56,9 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     hasTransfer: (Boolean) -> Unit,
     onDeleteTransfer: () -> Unit,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
 
     val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
@@ -115,24 +118,29 @@ private fun ReceivedContent(
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit,
 ) {
-    if (transfers.isEmpty()) {
-        val shouldDisplayIcon = isWindowSmall()
-        EmptyState(
-            content = if (shouldDisplayIcon) {
-                { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) }
-            } else null,
-            titleRes = R.string.noTransferReceivedTitle,
-            descriptionRes = R.string.noTransferReceivedDescription,
-        )
-    } else {
-        TransferItemList(
-            modifier = Modifier.fillMaxHeight(),
-            direction = TransferDirection.RECEIVED,
-            navigateToDetails = navigateToDetails,
-            getSelectedTransferUuid = getSelectedTransferUuid,
-            getTransfers = { transfers },
-            onDeleteTransfer = onDeleteTransfer,
-        )
+    AnimatedContent(
+        targetState = transfers.isEmpty(),
+        transitionSpec = { SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition },
+    ) { isEmpty ->
+        if (isEmpty) {
+            val shouldDisplayIcon = isWindowSmall()
+            EmptyState(
+                content = if (shouldDisplayIcon) {
+                    { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) }
+                } else null,
+                titleRes = R.string.noTransferReceivedTitle,
+                descriptionRes = R.string.noTransferReceivedDescription,
+            )
+        } else {
+            TransferItemList(
+                modifier = Modifier.fillMaxHeight(),
+                direction = TransferDirection.RECEIVED,
+                navigateToDetails = navigateToDetails,
+                getSelectedTransferUuid = getSelectedTransferUuid,
+                getTransfers = { transfers },
+                onDeleteTransfer = onDeleteTransfer,
+            )
+        }
     }
 }
 
