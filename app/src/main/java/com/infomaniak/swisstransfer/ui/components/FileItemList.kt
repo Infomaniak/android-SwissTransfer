@@ -131,7 +131,7 @@ fun FileItemList(
                     file.isFolder -> fun() { navigateToFolder?.invoke(file.uid) }
                     isNewTransfer -> fun() {
                         file.localPath?.let { filePath ->
-                            scope.launch(Dispatchers.IO) {
+                            scope.launch(Dispatchers.Default) {
                                 context.openFile(filePath.toUri())
                             }
                         }
