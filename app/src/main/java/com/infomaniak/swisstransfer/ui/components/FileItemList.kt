@@ -102,16 +102,10 @@ fun FileItemList(
         }
 
         items(files, key = { it.uid }) { file ->
-            val downloadUi: TransferDownloadComposeUi? =
-                if (!isNewTransfer) {
-                    remember(lifecycle) {
-                        TransferDownloadComposeUi(
-                            lifecycle,
-                            snackbarHostState,
-                            direction
-                        )
-                    }
-                } else null
+            val downloadUi: TransferDownloadComposeUi? = remember(lifecycle) {
+                TransferDownloadComposeUi(lifecycle, snackbarHostState, direction)
+            }.takeUnless { isNewTransfer }
+
             if (downloadUi != null) {
                 LaunchedEffect(file.uid) {
                     transferFlow.collect { transfer ->
@@ -147,12 +141,14 @@ fun FileItemList(
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
-                    downloadUi?.CardCornerButton(Modifier.align(Alignment.TopEnd))
-                    downloadUi?.CardProgressBar(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth(),
-                    )
+                    downloadUi?.run {
+                        CardCornerButton(modifier = Modifier.align(Alignment.TopEnd))
+                        CardProgressBar(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .fillMaxWidth()
+                        )
+                    }
                 },
             )
         }
