@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.infomaniak.core.common.extensions.findActivity
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
@@ -66,14 +67,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val activity = LocalContext.current as? Activity
+    val activity = LocalContext.current.findActivity()
     var showScreenshotBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && activity != null) {
         DisposableEffect(Unit) {
-            var callback: ScreenCaptureCallback? = null
-
-            callback = ScreenCaptureCallback { showScreenshotBottomSheet = true }
+            val callback = ScreenCaptureCallback { showScreenshotBottomSheet = true }
             activity.registerScreenCaptureCallback(activity.mainExecutor, callback)
 
             onDispose {
