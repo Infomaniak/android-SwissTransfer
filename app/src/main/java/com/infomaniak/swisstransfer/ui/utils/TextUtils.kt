@@ -23,40 +23,34 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import java.util.IllegalFormatException
 
 object TextUtils {
     @Composable
-    fun assembleWithBoldArgument(template: String, argument1: String, argument2: String? = null): AnnotatedString {
+    fun assembleWithBoldArgument(template: String, vararg arguments: String): AnnotatedString {
         val description = try {
-            if (argument2 != null) {
-                String.format(template, argument1, argument2)
-            } else {
-                String.format(template, argument1)
-            }
-        } catch (e: java.util.IllegalFormatException) {
+            String.format(template, *arguments)
+        } catch (exception: IllegalFormatException) {
             template
         }
 
         return buildAnnotatedString {
             append(description)
 
-            val startIndex1 = description.indexOf(argument1)
-            if (startIndex1 != -1) {
-                addStyle(
-                    style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
-                    start = startIndex1,
-                    end = startIndex1 + argument1.length
-                )
-            }
+            arguments.forEach { argument ->
+                var startIndex = description.indexOf(argument)
 
-            if (argument2 != null) {
-                val startIndex2 = description.indexOf(argument2)
-                if (startIndex2 != -1) {
+                while (startIndex != -1) {
                     addStyle(
-                        style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
-                        start = startIndex2,
-                        end = startIndex2 + argument2.length
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = SwissTransferTheme.colors.primaryTextColor
+                        ),
+                        start = startIndex,
+                        end = startIndex + argument.length
                     )
+
+                    startIndex = description.indexOf(argument, startIndex + argument.length)
                 }
             }
         }
