@@ -113,7 +113,6 @@ fun MyAccountScreen(
     getSelectedSetting: () -> MyAccountSettingAction?,
 ) {
     val selectedSetting = getSelectedSetting()
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val scope = rememberCoroutineScope()
 
     var showAccountSwitchBottomSheet by remember { mutableStateOf(false) }
@@ -122,7 +121,7 @@ fun MyAccountScreen(
 
     SwissTransferScaffold(
         topBar = {
-            if (windowAdaptiveInfo.isWindowLarge()) {
+            if (isWindowLarge()) {
                 SwissTransferTopAppBar(title = pluralStringResource(RCore.plurals.myAccount, 1))
             } else {
                 BrandTopAppBar()

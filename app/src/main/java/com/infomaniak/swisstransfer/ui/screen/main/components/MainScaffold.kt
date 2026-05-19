@@ -113,8 +113,8 @@ private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
 
 private fun calculateFromAdaptiveInfo(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
     return when {
-        windowAdaptiveInfo.isWindowLarge(context) -> NavigationSuiteType.NavigationDrawer
-        windowAdaptiveInfo.isWindowMedium(context) -> NavigationSuiteType.NavigationRail
+        isWindowLarge(context) -> NavigationSuiteType.NavigationDrawer
+        isWindowMedium(context) -> NavigationSuiteType.NavigationRail
         else -> NavigationSuiteType.NavigationBar
     }
 }

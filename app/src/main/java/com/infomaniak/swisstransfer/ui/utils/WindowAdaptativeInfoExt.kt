@@ -24,12 +24,23 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.window.core.layout.WindowHeightSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
-import androidx.window.core.layout.WindowWidthSizeClass.Companion.EXPANDED
-import androidx.window.core.layout.WindowWidthSizeClass.Companion.MEDIUM
 import androidx.window.layout.WindowMetricsCalculator
+
+/**
+ * Custom window width classification based on Material 3 breakpoints.
+ * Uses [WindowMetricsCalculator] to read the real window size in dp.
+ */
+private enum class CustomWindowWidthClass(val minWidthDp: Int) {
+    SMALL(0),
+    MEDIUM(600),
+    LARGE(1080),
+}
+
+private enum class CustomWindowHeightClass(val minHeightDp: Int) {
+    COMPACT(0),
+    MEDIUM(480),
+    EXPANDED(900),
+}
 
 /**
  * Determines if the current window is classified as a large window suitable for tablet devices.
@@ -39,12 +50,13 @@ import androidx.window.layout.WindowMetricsCalculator
  *
  * @return `true` if the window is large (tablet), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowLarge(context: Context): Boolean {
-    return getCustomWindowClass(context) == EXPANDED && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
+fun isWindowLarge(context: Context): Boolean {
+    return context.getCustomWindowWidthClass() == CustomWindowWidthClass.LARGE &&
+            context.getCustomWindowHeightClass() != CustomWindowHeightClass.COMPACT
 }
 
 @Composable
-fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.current)
+fun isWindowLarge(): Boolean = isWindowLarge(LocalContext.current)
 
 /**
  * Determines if the current window is classified as a medium window suitable for foldable and tablet devices.
@@ -54,12 +66,13 @@ fun WindowAdaptiveInfo.isWindowLarge(): Boolean = isWindowLarge(LocalContext.cur
  *
  * @return `true` if the window is medium (foldable and tablet), `false` otherwise.
  */
-fun WindowAdaptiveInfo.isWindowMedium(context: Context): Boolean {
-    return getCustomWindowClass(context) == MEDIUM && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT
+fun isWindowMedium(context: Context): Boolean {
+    return context.getCustomWindowWidthClass() == CustomWindowWidthClass.MEDIUM &&
+            context.getCustomWindowHeightClass() != CustomWindowHeightClass.COMPACT
 }
 
 @Composable
-fun WindowAdaptiveInfo.isWindowMedium(): Boolean = isWindowMedium(LocalContext.current)
+fun isWindowMedium(): Boolean = isWindowMedium(LocalContext.current)
 
 /**
  * Determines if the current window is classified as a small window suitable for mobile devices.
@@ -70,28 +83,33 @@ fun WindowAdaptiveInfo.isWindowMedium(): Boolean = isWindowMedium(LocalContext.c
  * @return `true` if the window is small (mobile), `false` otherwise.
  */
 fun isWindowSmall(context: Context): Boolean {
-    val widthClass = getCustomWindowClass(context)
-    return widthClass != EXPANDED && widthClass != MEDIUM
+    return context.getCustomWindowWidthClass() == CustomWindowWidthClass.SMALL
 }
 
 @Composable
 fun isWindowSmall(): Boolean = isWindowSmall(LocalContext.current)
 
-private fun getCustomWindowClass(context: Context): WindowWidthSizeClass {
-    val windowBounds = WindowMetricsCalculator.getOrCreate()
-        .computeCurrentWindowMetrics(context)
-        .bounds
-    val dpWidth = windowBounds.width().toDpInt()
-
+private fun Context.getCustomWindowWidthClass(): CustomWindowWidthClass {
+    val dpWidth = windowBounds().width().toDpInt()
     require(dpWidth >= 0) { "Width must be positive, received $dpWidth" }
 
     return when {
-        dpWidth < 600 -> COMPACT
-        dpWidth < 1080 -> MEDIUM
-        else -> EXPANDED
+        dpWidth >= CustomWindowWidthClass.LARGE.minWidthDp -> CustomWindowWidthClass.LARGE
+        dpWidth >= CustomWindowWidthClass.MEDIUM.minWidthDp -> CustomWindowWidthClass.MEDIUM
+        else -> CustomWindowWidthClass.SMALL
     }
 }
 
-private fun Int.toDpInt(): Int {
-    return (this / Resources.getSystem().displayMetrics.density).toInt()
+private fun Context.getCustomWindowHeightClass(): CustomWindowHeightClass {
+    val dpHeight = windowBounds().height().toDpInt()
+
+    return when {
+        dpHeight >= CustomWindowHeightClass.EXPANDED.minHeightDp -> CustomWindowHeightClass.EXPANDED
+        dpHeight >= CustomWindowHeightClass.MEDIUM.minHeightDp -> CustomWindowHeightClass.MEDIUM
+        else -> CustomWindowHeightClass.COMPACT
+    }
 }
+
+private fun Context.windowBounds() = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(this).bounds
+
+private fun Int.toDpInt(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()

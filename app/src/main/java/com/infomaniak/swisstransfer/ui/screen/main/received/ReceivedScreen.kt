@@ -86,11 +86,9 @@ private fun ReceivedScreen(
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit,
 ) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-
     SwissTransferScaffold(
         topBar = {
-            if (windowAdaptiveInfo.isWindowLarge()) {
+            if (isWindowLarge()) {
                 SwissTransferTopAppBar(title = stringResource(R.string.receivedFilesTitle))
             } else {
                 BrandTopAppBar()
