@@ -27,7 +27,6 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun SmallOrMediumWindowScreenTitle(title: String, modifier: Modifier = Modifier) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     if (isWindowSmall() || isWindowMedium()) {
         Text(
             text = title,
