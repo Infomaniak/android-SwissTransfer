@@ -38,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowLeft
 import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.sharedTransitionAppBar
 
 @Composable
 fun SwissTransferTopAppBar(

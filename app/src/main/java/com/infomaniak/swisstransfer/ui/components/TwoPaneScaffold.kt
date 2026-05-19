@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.components
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.togetherWith
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -42,6 +41,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.LocalAnimatedPaneVisibilityScope
+import com.infomaniak.swisstransfer.ui.utils.LocalCurrentTopBarKey
+import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
+import com.infomaniak.swisstransfer.ui.utils.TopBarKey
 import com.infomaniak.swisstransfer.ui.utils.isAnimating
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
@@ -97,7 +100,7 @@ fun <T> TwoPaneScaffold(
             ) {
                 CompositionLocalProvider(
                     LocalAnimatedPaneVisibilityScope provides this@AnimatedPane,
-                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.LIST_PANE),
+                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.ListPane),
                 ) {
                     navigator.listPane()
                 }
@@ -110,7 +113,7 @@ fun <T> TwoPaneScaffold(
             ) {
                 CompositionLocalProvider(
                     LocalAnimatedPaneVisibilityScope provides this@AnimatedPane,
-                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.DETAIL_PANE),
+                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.DetailPane),
                 ) {
                     navigator.detailPane()
                 }
@@ -122,7 +125,7 @@ fun <T> TwoPaneScaffold(
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.getTopAppBarKey(dualPaneKey: TopBarKey): TopBarKey {
-    return if (isInSinglePaneMode(this)) TopBarKey.SINGLE_PANE else dualPaneKey
+    return if (isInSinglePaneMode(this)) TopBarKey.SinglePane else dualPaneKey
 }
 
 @Composable
@@ -132,16 +135,13 @@ fun <T> AnimatedContentDetailPane(
 ) {
     AnimatedContent(
         targetState = destinationContent,
-        transitionSpec = {
-            SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition
-        },
+        transitionSpec = { SwissTransferTransition.transitionSpec },
     ) { targetDestination ->
         val activeScope = LocalAnimatedPaneVisibilityScope.current?.let { paneScope ->
             val contentScope = this@AnimatedContent
 
             remember(paneScope, contentScope) {
-                val isPaneAnimating = paneScope.isAnimating()
-                if (isPaneAnimating) paneScope else contentScope
+                if (paneScope.isAnimating()) paneScope else contentScope
             }
         }
 

@@ -15,37 +15,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.infomaniak.swisstransfer.ui.components
+package com.infomaniak.swisstransfer.ui.utils
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDeepLink
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 
 val LocalSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
 val LocalAnimatedPaneVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
 val LocalNavHostAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
-val LocalCurrentTopBarKey = staticCompositionLocalOf { TopBarKey.SINGLE_PANE }
+val LocalCurrentTopBarKey = staticCompositionLocalOf { TopBarKey.SinglePane }
 
 object SwissTransferTransition {
     val enterTransition = fadeIn()
     val exitTransition = fadeOut()
+    val transitionSpec = enterTransition togetherWith exitTransition
 }
+
 
 @Composable
 fun Modifier.sharedTransitionAppBar(): Modifier {
-    val sharedScope = LocalSharedTransitionScope.current
+    val sharedScope = LocalSharedTransitionScope.current ?: return this
+    val navHostScope = LocalNavHostAnimatedVisibilityScope.current ?: return this
     val localScope = LocalAnimatedPaneVisibilityScope.current
-    val navHostScope = LocalNavHostAnimatedVisibilityScope.current
     val currentTopBarKey = LocalCurrentTopBarKey.current
 
-    val isNavHostAnimating = navHostScope?.transition?.let { it.currentState != it.targetState } == true
-    val activeScope = if (isNavHostAnimating) navHostScope else localScope
+    val activeScope = if (navHostScope.isAnimating()) navHostScope else localScope
 
-    if (activeScope == null || sharedScope == null) return this
+    if (activeScope == null) return this
 
     return with(sharedScope) {
         this@sharedTransitionAppBar then Modifier.sharedElement(
@@ -55,6 +63,17 @@ fun Modifier.sharedTransitionAppBar(): Modifier {
     }
 }
 
+inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    crossinline content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
+) {
+    composable<T>(deepLinks = deepLinks) { entry ->
+        CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this) {
+            content(entry)
+        }
+    }
+}
+
 enum class TopBarKey {
-    SINGLE_PANE, LIST_PANE, DETAIL_PANE
+    SinglePane, ListPane, DetailPane
 }

@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.screen.main.received
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
@@ -38,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
@@ -49,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel.TransferUiState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
@@ -120,7 +119,7 @@ private fun ReceivedContent(
 ) {
     AnimatedContent(
         targetState = transfers.isEmpty(),
-        transitionSpec = { SwissTransferTransition.enterTransition togetherWith SwissTransferTransition.exitTransition },
+        transitionSpec = { SwissTransferTransition.transitionSpec },
     ) { isEmpty ->
         if (isEmpty) {
             val shouldDisplayIcon = isWindowSmall()

@@ -21,7 +21,6 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.infomaniak.core.sentry.SentryLog
@@ -29,6 +28,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.utils.animatedComposable
 import kotlinx.serialization.Serializable
 
 /**
@@ -46,7 +46,7 @@ sealed class MainNavigation : NavigationDestination() {
         val basePathForV2 = "${BuildConfig.BASE_URL_V2}/dl/{$transferUuidName}$suffix"
         val deeplinks = listOf(navDeepLink<T>(basePath), navDeepLink<T>(basePathForV2))
 
-        composable<T>(deepLinks = deeplinks, content = content)
+        animatedComposable<T>(deepLinks = deeplinks, content = content)
     }
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.

@@ -23,12 +23,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
-import com.infomaniak.swisstransfer.ui.components.LocalNavHostAnimatedVisibilityScope
-import com.infomaniak.swisstransfer.ui.components.LocalSharedTransitionScope
-import com.infomaniak.swisstransfer.ui.components.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.ReceivedDestination
@@ -37,6 +33,10 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination.Companion.sentDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
+import com.infomaniak.swisstransfer.ui.utils.LocalNavHostAnimatedVisibilityScope
+import com.infomaniak.swisstransfer.ui.utils.LocalSharedTransitionScope
+import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
+import com.infomaniak.swisstransfer.ui.utils.animatedComposable
 
 @Composable
 fun MainNavHost(
@@ -80,10 +80,8 @@ fun MainNavHost(
                         )
                     }
                 }
-                composable<MyAccountDestination> {
-                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@composable) {
-                        MyAccountScreenWrapper()
-                    }
+                animatedComposable<MyAccountDestination> {
+                    MyAccountScreenWrapper()
                 }
             }
         }
