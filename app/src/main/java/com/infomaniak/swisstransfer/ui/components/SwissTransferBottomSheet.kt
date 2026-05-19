@@ -67,7 +67,7 @@ fun SwissTransferBottomSheet(
     bottomButton: @Composable ((Modifier) -> Unit)? = null,
     content: @Composable (() -> Unit)? = null
 ) {
-    ModalBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {
+    ModalBottomSheet(onDismissRequest, modifier, sheetState) {
         BottomSheetContent(
             imageVector = imageVector,
             title = title,
@@ -85,8 +85,10 @@ private fun BottomSheetContent(
     imageVector: ImageVector?,
     title: String?,
     description: String?,
-    content: @Composable (() -> Unit)?, annotatedDescription: AnnotatedString? = null,
-    topButton: @Composable ((Modifier) -> Unit)? = null, bottomButton: @Composable ((Modifier) -> Unit)? = null
+    content: @Composable (() -> Unit)?,
+    annotatedDescription: AnnotatedString? = null,
+    topButton: @Composable ((Modifier) -> Unit)? = null,
+    bottomButton: @Composable ((Modifier) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier

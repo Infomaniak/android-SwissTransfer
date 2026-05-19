@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
 import android.app.Activity
+import android.app.Activity.ScreenCaptureCallback
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -65,25 +66,18 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val context = LocalContext.current
-    val activity = context as? Activity
+    val activity = LocalContext.current as? Activity
     var showScreenshotBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && activity != null) {
         DisposableEffect(Unit) {
-            var callback: Activity.ScreenCaptureCallback? = null
+            var callback: ScreenCaptureCallback? = null
 
-            if (activity != null) {
-                callback = Activity.ScreenCaptureCallback {
-                    showScreenshotBottomSheet = true
-                }
-                activity.registerScreenCaptureCallback(activity.mainExecutor, callback)
-            }
+            callback = ScreenCaptureCallback { showScreenshotBottomSheet = true }
+            activity.registerScreenCaptureCallback(activity.mainExecutor, callback)
 
             onDispose {
-                if (activity != null && callback != null) {
-                    activity.unregisterScreenCaptureCallback(callback)
-                }
+                activity.unregisterScreenCaptureCallback(callback)
             }
         }
     }

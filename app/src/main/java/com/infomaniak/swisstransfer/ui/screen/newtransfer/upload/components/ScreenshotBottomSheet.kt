@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
@@ -39,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.utils.shareText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenshotBottomSheet(onDismissRequest: () -> Unit, transferLink: String) {
+fun ScreenshotBottomSheet(onDismissRequest: () -> Unit, transferLink: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -50,6 +51,7 @@ fun ScreenshotBottomSheet(onDismissRequest: () -> Unit, transferLink: String) {
 
     SwissTransferBottomSheet(
         onDismissRequest = onDismissRequest,
+        modifier = modifier,
         sheetState = sheetState,
         topButton = {
             LargeButton(
@@ -58,7 +60,7 @@ fun ScreenshotBottomSheet(onDismissRequest: () -> Unit, transferLink: String) {
                 onClick = {
                     MatomoSwissTransfer.trackNewTransferEvent(MatomoName.Share)
                     context.shareText(transferLink)
-                    sheetState.dismissGracefully(scope, { onDismissRequest() })
+                    sheetState.dismissGracefully(scope) { onDismissRequest() }
                 },
             )
         },

@@ -128,11 +128,6 @@ val AppIllus.LightbulbLight: ImageVector
                     }
                     path(
                         fill = SolidColor(Color(0xFFE3F6DC)),
-                        stroke = null,
-                        strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt,
-                        strokeLineJoin = Miter,
-                        strokeLineMiter = 4.0f,
                         pathFillType = NonZero,
                     ) {
                         moveTo(32.29f, 45.83f)
@@ -166,11 +161,6 @@ val AppIllus.LightbulbLight: ImageVector
                     }
                     path(
                         fill = SolidColor(Color(0xFF014958)),
-                        stroke = null,
-                        strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt,
-                        strokeLineJoin = Miter,
-                        strokeLineMiter = 4.0f,
                         pathFillType = NonZero,
                     ) {
                         moveTo(0.0f, 11.44f)
@@ -182,11 +172,6 @@ val AppIllus.LightbulbLight: ImageVector
                     }
                     path(
                         fill = SolidColor(Color(0xFF014958)),
-                        stroke = null,
-                        strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt,
-                        strokeLineJoin = Miter,
-                        strokeLineMiter = 4.0f,
                         pathFillType = NonZero,
                     ) {
                         moveTo(63.97f, 11.44f)
@@ -198,11 +183,6 @@ val AppIllus.LightbulbLight: ImageVector
                     }
                     path(
                         fill = SolidColor(Color(0xFF3CB572)),
-                        stroke = null,
-                        strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt,
-                        strokeLineJoin = Miter,
-                        strokeLineMiter = 4.0f,
                         pathFillType = NonZero,
                     ) {
                         moveTo(33.85f, 0.0f)
