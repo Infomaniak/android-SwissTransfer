@@ -115,28 +115,18 @@ private fun BottomSheetContent(
             Spacer(Modifier.height(Margin.Large))
         }
 
-        if (!annotatedDescription.isNullOrBlank()) {
-            annotatedDescription.let {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    style = SwissTransferTheme.typography.bodyRegular,
-                    color = SwissTransferTheme.colors.secondaryTextColor,
-                    modifier = paddedModifier,
-                )
-                Spacer(Modifier.height(Margin.Large))
-            }
-        } else {
-            description?.let {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    style = SwissTransferTheme.typography.bodyRegular,
-                    color = SwissTransferTheme.colors.secondaryTextColor,
-                    modifier = paddedModifier,
-                )
-                Spacer(Modifier.height(Margin.Large))
-            }
+        val textToDisplay: AnnotatedString? = annotatedDescription.takeUnless { it.isNullOrBlank() }
+            ?: description?.let(::AnnotatedString)
+
+        textToDisplay?.let {
+            Text(
+                text = it,
+                textAlign = TextAlign.Center,
+                style = SwissTransferTheme.typography.bodyRegular,
+                color = SwissTransferTheme.colors.secondaryTextColor,
+                modifier = paddedModifier,
+            )
+            Spacer(Modifier.height(Margin.Large))
         }
 
         content?.let {
