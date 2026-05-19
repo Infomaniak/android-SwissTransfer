@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -68,7 +69,7 @@ fun <T> TwoPaneScaffold(
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val paneScaffoldDirective = calculatePaneScaffoldDirective(windowAdaptiveInfo)
-    val maxHorizontalPartitions = if (windowAdaptiveInfo.isWindowMedium() || windowAdaptiveInfo.isWindowLarge()) 2 else 1
+    val maxHorizontalPartitions = if (isWindowSmall()) 1 else 2
     val navigator = rememberListDetailPaneScaffoldNavigator<T>(
         scaffoldDirective = paneScaffoldDirective.copy(
             maxHorizontalPartitions = maxHorizontalPartitions,

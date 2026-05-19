@@ -114,12 +114,10 @@ private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
 }
 
 private fun calculateFromAdaptiveInfo(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
-    return if (windowAdaptiveInfo.isWindowLarge(context)) {
-        NavigationSuiteType.NavigationDrawer
-    } else if (windowAdaptiveInfo.isWindowMedium(context)) {
-        NavigationSuiteType.NavigationRail
-    } else {
-        NavigationSuiteType.NavigationBar
+    return when {
+        windowAdaptiveInfo.isWindowLarge(context) -> NavigationSuiteType.NavigationDrawer
+        windowAdaptiveInfo.isWindowMedium(context) -> NavigationSuiteType.NavigationRail
+        else -> NavigationSuiteType.NavigationBar
     }
 }
 
@@ -166,7 +164,6 @@ private fun NavigationMediumWindowPreview() {
         )
     }
 }
-
 
 @PreviewLargeWindow
 @Composable

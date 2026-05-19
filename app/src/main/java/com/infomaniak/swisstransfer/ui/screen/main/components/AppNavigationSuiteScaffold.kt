@@ -144,7 +144,7 @@ private fun AppNavigationBar(
             val selected = currentDestination::class == navigationItem.destination::class
 
             NavigationBarItem(
-                icon = { NavigationIcon(true, navigationItem, arrowAnimationState) },
+                icon = { NavigationIcon(isNavigationBar = true, navigationItem, arrowAnimationState) },
                 label = { NavigationLabel(navigationItem) },
                 selected = selected,
                 onClick = {
