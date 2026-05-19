@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
-import android.app.Activity
 import android.app.Activity.ScreenCaptureCallback
 import android.os.Build
 import androidx.compose.foundation.Image
