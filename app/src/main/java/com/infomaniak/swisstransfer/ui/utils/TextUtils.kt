@@ -38,6 +38,8 @@ object TextUtils {
             append(description)
 
             arguments.forEach { argument ->
+                if (argument.isBlank()) return@forEach
+
                 var startIndex = description.indexOf(argument)
 
                 while (startIndex != -1) {
