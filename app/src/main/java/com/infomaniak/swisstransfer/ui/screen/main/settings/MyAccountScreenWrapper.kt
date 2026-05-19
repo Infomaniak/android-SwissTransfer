@@ -72,7 +72,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
@@ -210,9 +209,7 @@ private fun DetailPane(
             )
             DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
             DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-            NOTIFICATIONS,
-            DELETE_MY_ACCOUNT,
-            null -> NoSelectionEmptyState()
+            NOTIFICATIONS, DELETE_MY_ACCOUNT, null -> NoSelectionEmptyState()
         }
     }
 }

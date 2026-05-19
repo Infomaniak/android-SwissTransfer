@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,7 +47,7 @@ import com.infomaniak.swisstransfer.ui.utils.sharedTransitionAppBar
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
-fun BrandTopAppBar() {
+fun BrandTopAppBar(modifier: Modifier = Modifier) {
     val toolbarTextColor = SwissTransferTheme.colors.toolbarTextColor
 
     CenterAlignedTopAppBar(

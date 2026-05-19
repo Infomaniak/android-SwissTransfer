@@ -33,7 +33,6 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination.Companion.sentDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
-import com.infomaniak.swisstransfer.ui.utils.LocalNavHostAnimatedVisibilityScope
 import com.infomaniak.swisstransfer.ui.utils.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.utils.animatedComposable
@@ -61,24 +60,20 @@ fun MainNavHost(
             ) {
                 sentDestination {
                     val args = it.toRoute<SentDestination>()
-                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@sentDestination) {
-                        TransfersScreenWrapper(
-                            direction = TransferDirection.SENT,
-                            transferUuid = args.transferUuid,
-                            hideBottomBar = hideBottomBar,
-                        )
-                    }
+                    TransfersScreenWrapper(
+                        direction = TransferDirection.SENT,
+                        transferUuid = args.transferUuid,
+                        hideBottomBar = hideBottomBar,
+                    )
                 }
                 receivedDestination {
                     val args = it.toRoute<ReceivedDestination>()
-                    CompositionLocalProvider(LocalNavHostAnimatedVisibilityScope provides this@receivedDestination) {
-                        TransfersScreenWrapper(
-                            direction = TransferDirection.RECEIVED,
-                            transferUuid = args.transferUuid,
-                            isApiV2Deeplink = args.isApiV2,
-                            hideBottomBar = hideBottomBar,
-                        )
-                    }
+                    TransfersScreenWrapper(
+                        direction = TransferDirection.RECEIVED,
+                        transferUuid = args.transferUuid,
+                        isApiV2Deeplink = args.isApiV2,
+                        hideBottomBar = hideBottomBar,
+                    )
                 }
                 animatedComposable<MyAccountDestination> {
                     MyAccountScreenWrapper()

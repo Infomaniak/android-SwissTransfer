@@ -35,7 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -68,13 +68,13 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     direction: TransferDirection,
+    hideBottomBar: MutableState<Boolean>,
     transferUuid: String? = null,
     isApiV2Deeplink: Boolean? = null,
-    hideBottomBar: MutableState<Boolean>,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    TwoPaneScaffold<DestinationContent>(
+    TwoPaneScaffold(
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
@@ -214,8 +214,8 @@ private fun DetailPane(
                     navigateToFolder = { selectedFolderUuid ->
                         scope.launch {
                             navigator.navigateToFolder(
-                                destinationContent.direction,
-                                destinationContent.transferUuid,
+                                targetDestination.direction,
+                                targetDestination.transferUuid,
                                 selectedFolderUuid,
                             )
                         }
@@ -226,9 +226,9 @@ private fun DetailPane(
             is DestinationContent.FolderLevel -> {
                 ExistingTransferFilesDetails(
                     navigator = navigator,
-                    folderUuid = destinationContent.folderUuid,
-                    transferDirection = destinationContent.direction,
-                    transferUuid = destinationContent.transferUuid,
+                    folderUuid = targetDestination.folderUuid,
+                    transferDirection = targetDestination.direction,
+                    transferUuid = targetDestination.transferUuid,
                 )
             }
         }

@@ -43,7 +43,6 @@ object SwissTransferTransition {
     val transitionSpec = enterTransition togetherWith exitTransition
 }
 
-
 @Composable
 fun Modifier.sharedTransitionAppBar(): Modifier {
     val sharedScope = LocalSharedTransitionScope.current ?: return this

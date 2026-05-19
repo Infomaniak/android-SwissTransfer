@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.sent
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -32,7 +31,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -46,7 +44,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel.TransferUiState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
@@ -54,9 +51,9 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun SentScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     hasTransfer: (Boolean) -> Unit,
     onDeleteTransfer: () -> Unit,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
 
     val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
@@ -102,38 +99,15 @@ private fun SentScreen(
             }
         },
     ) {
-        if (uiState() is TransferUiState.Success) {
-            SentContent(
-                transfers = (uiState() as TransferUiState.Success).data,
-                navigateToDetails = navigateToDetails,
-                getSelectedTransferUuid = getSelectedTransferUuid,
-                onDeleteTransfer = onDeleteTransfer,
-            )
-        }
-    }
-}
-
-@Composable
-private fun SentContent(
-    transfers: GroupedTransfers,
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
-    onDeleteTransfer: (String) -> Unit
-) {
-    AnimatedContent(
-        targetState = transfers.isEmpty(),
-        transitionSpec = { SwissTransferTransition.transitionSpec },
-    ) { isEmpty ->
-        if (isEmpty) {
-            SentEmptyScreen()
-        } else {
+        (uiState() as? TransferUiState.Success)?.let { transferUiStateSuccess ->
             TransferItemList(
                 modifier = Modifier.fillMaxHeight(),
-                direction = TransferDirection.SENT,
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferUuid = getSelectedTransferUuid,
-                getTransfers = { transfers },
                 onDeleteTransfer = onDeleteTransfer,
+                getTransfers = { transferUiStateSuccess.data },
+                title = stringResource(R.string.sentFilesTitle),
+                emptyState = { SentEmptyScreen() },
             )
         }
     }

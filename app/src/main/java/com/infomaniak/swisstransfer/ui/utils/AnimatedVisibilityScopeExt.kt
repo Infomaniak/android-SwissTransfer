@@ -18,6 +18,5 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import androidx.compose.animation.AnimatedVisibilityScope
-import kotlin.let
 
-fun AnimatedVisibilityScope.isAnimating(): Boolean = transition.let { it.currentState != it.targetState }
+fun AnimatedVisibilityScope.isAnimating(): Boolean = transition.currentState != transition.targetState

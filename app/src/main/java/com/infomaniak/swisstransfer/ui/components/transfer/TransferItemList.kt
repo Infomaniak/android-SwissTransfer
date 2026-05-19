@@ -17,6 +17,10 @@
  */
 package com.infomaniak.swisstransfer.ui.components.transfer
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SmallOrMediumWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
@@ -44,19 +47,44 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun TransferItemList(
-    modifier: Modifier = Modifier,
-    direction: TransferDirection,
+    title: String,
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
     getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
+    emptyState: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedContent(
+        targetState = getTransfers().isEmpty(),
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+    ) { isEmpty ->
+        if (isEmpty) {
+            emptyState()
+        } else {
+            TransferItemList(
+                title = title,
+                navigateToDetails = navigateToDetails,
+                getSelectedTransferUuid = getSelectedTransferUuid,
+                onDeleteTransfer = onDeleteTransfer,
+                modifier = modifier,
+                getTransfers = getTransfers,
+            )
+        }
+    }
+}
+
+@Composable
+private fun TransferItemList(
+    title: String,
+    navigateToDetails: (String) -> Unit,
+    getSelectedTransferUuid: () -> String?,
+    getTransfers: () -> GroupedTransfers,
+    onDeleteTransfer: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val selectedTransferUuid = getSelectedTransferUuid()
     val itemShape = CustomShapes.SMALL
-    val titleRes = when (direction) {
-        TransferDirection.SENT -> R.string.sentFilesTitle
-        TransferDirection.RECEIVED -> R.string.receivedFilesTitle
-    }
     // stickyHeader seems to over-remember, causing theme to not be applied.
     // Hoisting it outside of the LazyColumn fixes it.
     val stickyHeaderBackground = SwissTransferTheme.materialColors.background
@@ -67,7 +95,7 @@ fun TransferItemList(
         contentPadding = PaddingValues(top = Margin.Large, bottom = Margin.Medium, start = Margin.Medium, end = Margin.Medium),
     ) {
 
-        item { SmallOrMediumWindowScreenTitle(title = stringResource(titleRes)) }
+        item { SmallOrMediumWindowScreenTitle(title = title) }
 
         getTransfers().forEach { (section, transfers) ->
             stickyHeader(key = section.uid) {
@@ -120,11 +148,12 @@ private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::
     SwissTransferTheme {
         Surface {
             TransferItemList(
-                direction = TransferDirection.RECEIVED,
+                title = stringResource(R.string.sentFilesTitle),
                 navigateToDetails = {},
-                getSelectedTransferUuid = { null },
                 getTransfers = { transfers },
+                getSelectedTransferUuid = { null },
                 onDeleteTransfer = {},
+                emptyState = {},
             )
         }
     }
