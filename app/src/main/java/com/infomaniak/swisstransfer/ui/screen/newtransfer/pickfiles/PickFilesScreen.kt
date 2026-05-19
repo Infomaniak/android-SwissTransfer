@@ -19,11 +19,10 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_PICK
 import android.net.Uri
-import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -103,10 +102,10 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isApiV2
+import com.infomaniak.swisstransfer.ui.utils.showToast
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
-import splitties.toast.longToast
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
@@ -119,6 +118,7 @@ fun PickFilesScreen(
     navigateToFilesDetails: () -> Unit,
     notificationPermissionManager: RationalePermissionManagerState,
 ) {
+    val context = LocalContext.current
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val canSendStatus: CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
@@ -139,7 +139,7 @@ fun PickFilesScreen(
         try {
             filePickerLauncher.launch(arrayOf("*/*"))
         } catch (e: ActivityNotFoundException) {
-            longToast(R.string.startActivityCantHandleAction)
+            context.showToast(R.string.startActivityCantHandleAction)
         }
     }
 
@@ -324,7 +324,11 @@ private fun ImportTextFields(
         }
 
         EmailAddressesTextFields(
-            modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, textFieldSpacing, selectContact
+            modifier = modifier,
+            emailTextFieldCallbacks = emailTextFieldCallbacks,
+            shouldShowEmailAddressesFields = shouldShowEmailAddressesFields,
+            textFieldSpacing = textFieldSpacing,
+            selectContact = selectContact
         )
 
         SwissTransferTextField(
@@ -347,41 +351,33 @@ private fun EmailAddressesTextFields(
     selectContact: (Uri) -> Unit,
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
-
-    fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, ContactsContract.CommonDataKinds.Email.CONTENT_URI).apply {
+    fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
     }
 
     fun handlePickedContacts(result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK) return
-
         val dataIntent = result.data ?: return
-        val clipData = dataIntent.clipData
 
-        if (clipData != null) {
+        dataIntent.clipData?.let { clipData ->
             for (i in 0 until clipData.itemCount) {
-                clipData.getItemAt(i).uri?.let { uri ->
-                    selectContact(uri)
-                }
+                clipData.getItemAt(i).uri?.let { uri -> selectContact(uri) }
             }
-            return
-        }
-
-        dataIntent.data?.let { uri ->
-            selectContact(uri)
-        }
+        } ?: dataIntent.data?.let { uri -> selectContact(uri) }
     }
 
     fun launchPickContactSafely(launcher: ActivityResultLauncher<Intent>) {
         try {
             launcher.launch(buildPickEmailContactIntent())
         } catch (_: ActivityNotFoundException) {
-            longToast(R.string.startActivityCantHandleAction)
+            context.showToast(R.string.startActivityCantHandleAction)
         }
     }
 
-    val pickContactLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult(), ::handlePickedContacts)
+    val pickContactLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = ::handlePickedContacts,
+    )
 
     AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
@@ -410,8 +406,9 @@ private fun EmailAddressesTextFields(
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
                 trailingIcon = {
-                    TrailingButton(
-                        AppIcons.PersonsCircleAdd, onClick = { launchPickContactSafely(pickContactLauncher) })
+                    TrailingButton(AppIcons.PersonsCircleAdd, onClick = {
+                        launchPickContactSafely(pickContactLauncher)
+                    }, R.string.contentDescriptionButtonSelectContact)
                 },
             )
         }
@@ -419,11 +416,9 @@ private fun EmailAddressesTextFields(
 }
 
 @Composable
-private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit) {
+private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit, contentDescription: Int) {
     IconButton(onClick = onClick) {
-        val (contentDescription, icon) = stringResource(R.string.contentDescriptionButtonSelectContact) to appIcon
-
-        Icon(icon, contentDescription, Modifier.size(Dimens.SmallIconSize))
+        Icon(appIcon, stringResource(contentDescription), Modifier.size(Dimens.SmallIconSize))
     }
 }
 
@@ -557,7 +552,8 @@ enum class PasswordTransferOption(
     override val imageVector: ImageVector? = null,
     override val imageVectorResId: Int? = null,
 ) : SettingOption {
-    NONE({ stringResource(R.string.settingsOptionNone) }), ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
+    NONE({ stringResource(R.string.settingsOptionNone) }),
+    ACTIVATED({ stringResource(R.string.settingsOptionActivated) }),
 }
 
 @PreviewAllWindows
@@ -609,7 +605,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
                 selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
                 transferOptionsCallbacks = transferOptionsCallbacks,
                 pickFiles = {},
-                selectContact = { _ -> },
+                selectContact = {},
                 exitNewTransfer = {},
                 onSendButtonClick = {},
                 isAwaitingSend = { true },

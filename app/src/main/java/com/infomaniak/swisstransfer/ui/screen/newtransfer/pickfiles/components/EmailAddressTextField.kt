@@ -83,7 +83,6 @@ import com.infomaniak.swisstransfer.ui.previewparameter.EmailsPreviewParameter
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EmailAddressTextField(
@@ -161,7 +160,6 @@ fun EmailAddressTextField(
         }
     )
 }
-
 
 /**
  * Copied from OutlineTextField so the BasicTextField can have the same spacing as OutlineTextField with a label

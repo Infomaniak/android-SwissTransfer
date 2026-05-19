@@ -20,6 +20,7 @@
     <string name="matomo" translatable="false">Matomo</string>
     <string name="sentry" translatable="false">Sentry</string>
     <string name="notifications_upload_channel_id" translatable="false">upload_channel_id</string>
+
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
     <string name="buttonCancelTransfer">Cancel the transfer</string>

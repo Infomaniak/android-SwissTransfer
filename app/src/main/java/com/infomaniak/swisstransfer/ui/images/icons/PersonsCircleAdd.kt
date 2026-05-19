@@ -36,11 +36,6 @@ val AppIcons.PersonsCircleAdd: ImageVector
             group {
                 path(
                     fill = SolidColor(Color(0xFF9F9F9F)),
-                    stroke = null,
-                    strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt,
-                    strokeLineJoin = Miter,
-                    strokeLineMiter = 4.0f,
                     pathFillType = NonZero,
                 ) {
                     moveTo(18.0f, 12.0f)
