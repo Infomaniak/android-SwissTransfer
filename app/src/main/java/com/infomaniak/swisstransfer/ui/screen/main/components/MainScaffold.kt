@@ -66,8 +66,6 @@ private fun MainScaffold(
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-
     Column {
         AppNavigationSuiteScaffold(
             layoutType = navType,

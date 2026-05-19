@@ -100,7 +100,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.Qr
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate.EmptyStateScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openFile
@@ -123,8 +122,6 @@ fun TransferDetailsScreen(
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
     val isWrongDeeplinkPassword by transferDetailsViewModel.isWrongDeeplinkPassword.collectAsStateWithLifecycle()
-
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid, isApiV2Deeplink)
@@ -217,7 +214,6 @@ private fun TransferDetailsScreen(
 ) {
 
     val context = LocalContext.current
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val transferRecipients: Set<String> = getTransfer().recipientsEmails
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
