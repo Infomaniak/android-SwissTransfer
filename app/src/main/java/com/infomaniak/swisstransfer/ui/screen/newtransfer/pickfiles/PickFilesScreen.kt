@@ -243,7 +243,7 @@ private fun PickFilesScreen(
     exitNewTransfer: () -> Unit,
     isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
-    snackbarHostState: SnackbarHostState? = null,
+    snackbarHostState: SnackbarHostState,
     navigateToFilesDetails: () -> Unit,
 ) {
 
@@ -309,11 +309,11 @@ private fun FilesToImport(
 private fun ImportTextFields(
     horizontalPaddingModifier: Modifier,
     transferTitleState: MutableState<String>,
+    snackbarHostState: SnackbarHostState,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
     selectContact: (Uri) -> Unit,
-    snackbarHostState: SnackbarHostState?
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
 
@@ -334,6 +334,7 @@ private fun ImportTextFields(
             shouldShowEmailAddressesFields = shouldShowEmailAddressesFields,
             textFieldSpacing = textFieldSpacing,
             selectContact = selectContact,
+            snackbarHostState = snackbarHostState,
             modifier = modifier,
         )
 
@@ -354,7 +355,7 @@ private fun EmailAddressesTextFields(
     shouldShowEmailAddressesFields: () -> Boolean,
     textFieldSpacing: Dp,
     selectContact: (Uri) -> Unit,
-    snackbarHostState: SnackbarHostState?,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
@@ -367,7 +368,7 @@ private fun EmailAddressesTextFields(
 
     fun handlePickedContacts(result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK || result.data == null) {
-            scope.launch { snackbarHostState?.showSnackbar(contactRetreivalError) }
+            scope.launch { snackbarHostState.showSnackbar(contactRetreivalError) }
             return
         }
         val dataIntent = result.data ?: return
@@ -625,6 +626,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
                 onSendButtonClick = {},
                 isAwaitingSend = { true },
                 navigateToFilesDetails = {},
+                snackbarHostState = remember { SnackbarHostState() }
             )
         }
     }
