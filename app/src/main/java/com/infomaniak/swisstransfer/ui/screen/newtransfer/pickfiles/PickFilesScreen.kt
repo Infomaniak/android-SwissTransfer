@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,11 +326,11 @@ private fun ImportTextFields(
         }
 
         EmailAddressesTextFields(
-            modifier = modifier,
             emailTextFieldCallbacks = emailTextFieldCallbacks,
             shouldShowEmailAddressesFields = shouldShowEmailAddressesFields,
             textFieldSpacing = textFieldSpacing,
-            selectContact = selectContact
+            selectContact = selectContact,
+            modifier = modifier,
         )
 
         SwissTransferTextField(
@@ -346,13 +346,14 @@ private fun ImportTextFields(
 
 @Composable
 private fun EmailAddressesTextFields(
-    modifier: Modifier,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
     textFieldSpacing: Dp,
     selectContact: (Uri) -> Unit,
+    modifier: Modifier = Modifier,
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
+
     fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
     }
@@ -409,9 +410,9 @@ private fun EmailAddressesTextFields(
                 supportingText = getEmailError(isRecipientError),
                 trailingIcon = {
                     TrailingButton(
-                        AppIcons.PersonsCircleAdd,
+                        appIcon = AppIcons.PersonsCircleAdd,
                         onClick = { launchPickContactSafely(pickContactLauncher) },
-                        R.string.contentDescriptionButtonSelectContact
+                        contentDescriptionRes = R.string.contentDescriptionButtonSelectContact
                     )
                 },
             )
