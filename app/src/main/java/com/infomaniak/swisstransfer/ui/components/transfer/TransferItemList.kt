@@ -35,7 +35,7 @@ import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SmallWindowScreenTitle
+import com.infomaniak.swisstransfer.ui.components.SmallOrMediumWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
@@ -67,7 +67,7 @@ fun TransferItemList(
         contentPadding = PaddingValues(top = Margin.Large, bottom = Margin.Medium, start = Margin.Medium, end = Margin.Medium),
     ) {
 
-        item { SmallWindowScreenTitle(title = stringResource(titleRes)) }
+        item { SmallOrMediumWindowScreenTitle(title = stringResource(titleRes)) }
 
         getTransfers().forEach { (section, transfers) ->
             stickyHeader(key = section.uid) {

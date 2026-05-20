@@ -100,7 +100,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.Qr
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.TransferInfo
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate.EmptyStateScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openFile
@@ -123,8 +122,6 @@ fun TransferDetailsScreen(
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
     val isWrongDeeplinkPassword by transferDetailsViewModel.isWrongDeeplinkPassword.collectAsStateWithLifecycle()
-
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     LaunchedEffect(transferUuid) {
         transferDetailsViewModel.loadTransfer(transferUuid, isApiV2Deeplink)
@@ -163,7 +160,7 @@ fun TransferDetailsScreen(
         is TransferError -> {
             EmptyStateScreen(
                 transferError = state,
-                onCloseClicked = if (windowAdaptiveInfo.isWindowSmall()) {
+                onCloseClicked = if (isWindowSmall()) {
                     { navigateBack?.invoke() }
                 } else {
                     null
@@ -217,7 +214,6 @@ private fun TransferDetailsScreen(
 ) {
 
     val context = LocalContext.current
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val transferRecipients: Set<String> = getTransfer().recipientsEmails
 
     var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -243,7 +239,7 @@ private fun TransferDetailsScreen(
         topBar = {
             SwissTransferTopAppBar(
                 title = title,
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
+                navigationIcon = { if (isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
                 actions = {
                     when (direction) {
                         TransferDirection.SENT -> downloadUi.TopAppBarButton()
@@ -345,7 +341,7 @@ private fun TransferDetailsScreen(
 
 @Composable
 private fun getBottomBarPadding(): PaddingValues {
-    return if (LocalWindowAdaptiveInfo.current.isWindowSmall()) {
+    return if (isWindowSmall()) {
         WindowInsets.navigationBars.asPaddingValues()
     } else {
         PaddingValues()

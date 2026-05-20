@@ -39,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
+import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -67,7 +69,7 @@ fun <T> TwoPaneScaffold(
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val paneScaffoldDirective = calculatePaneScaffoldDirective(windowAdaptiveInfo)
-    val maxHorizontalPartitions = if (windowAdaptiveInfo.isWindowLarge()) 2 else 1
+    val maxHorizontalPartitions = if (isWindowSmall()) 1 else 2
     val navigator = rememberListDetailPaneScaffoldNavigator<T>(
         scaffoldDirective = paneScaffoldDirective.copy(
             maxHorizontalPartitions = maxHorizontalPartitions,
@@ -116,7 +118,7 @@ suspend fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
-    if (windowAdaptiveInfo.isWindowLarge(context)) navigateBack()
+suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, item: T) {
+    if (isWindowMedium(context) || isWindowLarge(context)) navigateBack()
     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
 }

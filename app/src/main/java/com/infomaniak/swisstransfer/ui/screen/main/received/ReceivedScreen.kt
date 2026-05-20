@@ -45,7 +45,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.received.components.ReceivedE
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersViewModel.TransferUiState
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
@@ -86,18 +85,16 @@ private fun ReceivedScreen(
     getSelectedTransferUuid: () -> String?,
     onDeleteTransfer: (String) -> Unit,
 ) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-
     SwissTransferScaffold(
         topBar = {
-            if (windowAdaptiveInfo.isWindowLarge()) {
-                SwissTransferTopAppBar(stringResource(R.string.receivedFilesTitle))
+            if (isWindowLarge()) {
+                SwissTransferTopAppBar(title = stringResource(R.string.receivedFilesTitle))
             } else {
                 BrandTopAppBar()
             }
         },
         floatingActionButton = {
-            if (windowAdaptiveInfo.isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })
+            if (isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })
         },
     ) {
         if (uiState() is TransferUiState.Success) {
@@ -119,7 +116,7 @@ private fun ReceivedContent(
     onDeleteTransfer: (String) -> Unit,
 ) {
     if (transfers.isEmpty()) {
-        val shouldDisplayIcon = LocalWindowAdaptiveInfo.current.isWindowSmall()
+        val shouldDisplayIcon = isWindowSmall()
         EmptyState(
             content = if (shouldDisplayIcon) {
                 { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) }

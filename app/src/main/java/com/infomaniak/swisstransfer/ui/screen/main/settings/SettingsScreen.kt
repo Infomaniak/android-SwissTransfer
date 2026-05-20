@@ -61,7 +61,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconTy
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
@@ -78,7 +77,6 @@ fun SettingsScreen(
     navigateBack: () -> Unit,
     getSelectedSetting: () -> SettingsOptionScreens?,
 ) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
     val selectedSetting = getSelectedSetting()
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Settings) }
@@ -86,8 +84,8 @@ fun SettingsScreen(
     SwissTransferScaffold(
         topBar = {
             SwissTransferTopAppBar(
-                stringResource(R.string.settingsTitle),
-                navigationIcon = { if (windowAdaptiveInfo.isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack) }
+                title = stringResource(R.string.settingsTitle),
+                navigationIcon = { if (isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack) }
             )
         }
     ) {

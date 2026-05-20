@@ -21,7 +21,6 @@ import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -35,9 +34,9 @@ import com.infomaniak.core.ui.compose.preview.PreviewLargeWindow
 import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
 import com.infomaniak.swisstransfer.ui.navigation.NavigationItem
-import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
+import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
@@ -65,8 +64,6 @@ private fun MainScaffold(
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
-
     Column {
         AppNavigationSuiteScaffold(
             layoutType = navType,
@@ -75,7 +72,7 @@ private fun MainScaffold(
             hideBottomBar = hideBottomBar,
             navigateToSelectedItem = navigateToSelectedItem,
         ) {
-            if (windowAdaptiveInfo.isWindowSmall()) {
+            if (isWindowSmall()) {
                 Column {
                     Box(modifier = Modifier.weight(1.0f)) { content() }
                     HorizontalDivider()
@@ -88,10 +85,7 @@ private fun MainScaffold(
 }
 
 @Composable
-private fun rememberNavType(
-    currentDestination: MainNavigation,
-    windowAdaptiveInfo: WindowAdaptiveInfo = LocalWindowAdaptiveInfo.current,
-): NavigationSuiteType {
+private fun rememberNavType(currentDestination: MainNavigation): NavigationSuiteType {
 
     val showNavigation = remember(currentDestination) {
         isDestinationInTopLevelNav(currentDestination)
@@ -99,9 +93,9 @@ private fun rememberNavType(
 
     val context = LocalContext.current
 
-    return remember(context, showNavigation, windowAdaptiveInfo) {
+    return remember(context, showNavigation) {
         if (showNavigation) {
-            calculateFromAdaptiveInfo(context, windowAdaptiveInfo)
+            calculateFromAdaptiveInfo(context)
         } else {
             NavigationSuiteType.None
         }
@@ -112,11 +106,11 @@ private fun isDestinationInTopLevelNav(destination: MainNavigation): Boolean {
     return NavigationItem.entries.any { it.destination::class == destination::class }
 }
 
-private fun calculateFromAdaptiveInfo(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo): NavigationSuiteType {
-    return if (windowAdaptiveInfo.isWindowLarge(context)) {
-        NavigationSuiteType.NavigationRail
-    } else {
-        NavigationSuiteType.NavigationBar
+private fun calculateFromAdaptiveInfo(context: Context): NavigationSuiteType {
+    return when {
+        isWindowLarge(context) -> NavigationSuiteType.NavigationDrawer
+        isWindowMedium(context) -> NavigationSuiteType.NavigationRail
+        else -> NavigationSuiteType.NavigationBar
     }
 }
 
@@ -152,12 +146,26 @@ private fun NavigationSmallWindowPreview() {
 
 @PreviewLargeWindow
 @Composable
-private fun NavigationLargeWindowPreview() {
+private fun NavigationMediumWindowPreview() {
     SwissTransferTheme {
         MainScaffold(
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
+            hideBottomBar = remember { mutableStateOf(false) },
+            content = {},
+        )
+    }
+}
+
+@PreviewLargeWindow
+@Composable
+private fun NavigationLargeWindowPreview() {
+    SwissTransferTheme {
+        MainScaffold(
+            currentDestination = MainNavigation.SentDestination(),
+            navigateToSelectedItem = {},
+            navType = NavigationSuiteType.NavigationDrawer,
             hideBottomBar = remember { mutableStateOf(false) },
             content = {},
         )

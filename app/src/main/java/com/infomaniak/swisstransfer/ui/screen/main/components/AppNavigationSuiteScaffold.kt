@@ -19,6 +19,8 @@ package com.infomaniak.swisstransfer.ui.screen.main.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -27,15 +29,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailDefaults
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuite
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
@@ -52,6 +59,8 @@ import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.NewTransferActivity
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.SwissTransferFab
+import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.navigation.ArrowAnimationState
@@ -67,8 +76,9 @@ import kotlinx.coroutines.launch
  * the [NavigationSuite] component according to the given [layoutType].
  *
  * @param layoutType The current [NavigationSuiteType]. It determines whether
- * the app will use a bottom navigation bar ([NavigationSuiteType.NavigationBar])
- * or a navigation rail ([NavigationSuiteType.NavigationRail]).
+ * the app will use a bottom navigation bar ([NavigationSuiteType.NavigationBar]),
+ * a navigation rail ([NavigationSuiteType.NavigationRail]) or a navigation drawer
+ * ([NavigationSuiteType.NavigationDrawer]).
  *
  * @param navigationItems The navigation items to be displayed.
  *
@@ -99,6 +109,7 @@ fun AppNavigationSuiteScaffold(
                     NavigationSuiteType.NavigationBar -> {
                         if (!hideBottomBar.value) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
+                    NavigationSuiteType.NavigationRail -> AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
                     else -> AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)
                 }
             },
@@ -133,7 +144,7 @@ private fun AppNavigationBar(
             val selected = currentDestination::class == navigationItem.destination::class
 
             NavigationBarItem(
-                icon = { NavigationIcon(true, navigationItem, arrowAnimationState) },
+                icon = { NavigationIcon(isNavigationBar = true, navigationItem, arrowAnimationState) },
                 label = { NavigationLabel(navigationItem) },
                 selected = selected,
                 onClick = {
@@ -141,6 +152,57 @@ private fun AppNavigationBar(
                     onClick(navigationItem.destination)
                 },
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppNavigationRail(
+    navigationItems: List<NavigationItem>,
+    currentDestination: MainNavigation,
+    onClick: (MainNavigation) -> Unit,
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier.width(IntrinsicSize.Min),
+    ) {
+        SwissTransferTopAppBar()
+
+        Row {
+            NavigationRail(
+                containerColor = SwissTransferTheme.colors.navigationItemBackground,
+                windowInsets = NavigationRailDefaults.windowInsets.only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                ),
+            ) {
+                navigationItems.forEach { navigationItem ->
+                    val arrowAnimationState = rememberArrowAnimationState()
+                    val selected = currentDestination::class == navigationItem.destination::class
+
+                    NavigationRailItem(
+                        modifier = Modifier.padding(horizontal = Margin.Mini, vertical = Margin.Medium),
+                        selected = selected,
+                        onClick = {
+                            if (!selected) scope.launch { arrowAnimationState.play() }
+                            onClick(navigationItem.destination)
+                        },
+                        icon = { NavigationIcon(false, navigationItem, arrowAnimationState) },
+                        label = { NavigationLabel(navigationItem) },
+                        alwaysShowLabel = true,
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                SwissTransferFab(
+                    onClick = { context.launchActivity(NewTransferActivity::class) },
+                )
+            }
+
+            VerticalDivider()
         }
     }
 }
