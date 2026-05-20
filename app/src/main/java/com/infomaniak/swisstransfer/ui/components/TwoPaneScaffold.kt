@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.components
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
@@ -52,7 +51,6 @@ private val backBehavior = BackNavigationBehavior.PopUntilContentChange
  * between list and detail panes.
  * @param T the type representing the item displayed in the detail pane. This can be an item id or a whole instance.
  * This type must be storable in a Bundle. If this customization is unneeded, you can pass [Nothing]
- * @param windowAdaptiveInfo An instance of [WindowAdaptiveInfo] that provides information about
  * the current window's size class and adaptive state.
  * @param listPane A composable function that describes the content of the list pane.
  * @param detailPane A composable function that describes the content of the detail pane.
