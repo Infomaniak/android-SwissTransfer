@@ -421,11 +421,18 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-        val newEmails = contacts.values.flatMapTo(mutableSetOf()) { it.emails.asSequence() }.toSet()
     private suspend fun contactPickLaunch(pickedContactUri: Uri, context: Context) {
         val contacts = queryContacts(pickedContactUri, context)
+        val newEmails = normalizeAndValidateEmails(contacts.values.flatMapTo(mutableSetOf()) { it.emails }.toSet())
 
         validatedRecipientsEmails = validatedRecipientsEmails + newEmails
+    }
+
+    private fun normalizeAndValidateEmails(emails: Iterable<String>): Set<String> {
+        return emails.mapNotNullTo(mutableSetOf()) { email ->
+            email.trim()
+                .takeIf { it.isNotEmpty() && it.isEmailRfc5321Compliant() }
+        }
     }
 
     private suspend fun queryContacts(
