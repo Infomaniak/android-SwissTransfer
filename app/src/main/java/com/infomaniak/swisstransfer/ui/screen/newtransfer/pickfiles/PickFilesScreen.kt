@@ -416,9 +416,9 @@ private fun EmailAddressesTextFields(
 }
 
 @Composable
-private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit, contentDescription: Int) {
+private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit, @StringRes contentDescriptionRes: Int) {
     IconButton(onClick = onClick) {
-        Icon(appIcon, stringResource(contentDescription), Modifier.size(Dimens.SmallIconSize))
+        Icon(appIcon, stringResource(contentDescriptionRes), Modifier.size(Dimens.SmallIconSize))
     }
 }
 
