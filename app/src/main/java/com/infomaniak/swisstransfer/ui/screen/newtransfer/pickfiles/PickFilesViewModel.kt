@@ -410,10 +410,10 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    fun processContactPickerResultUri(sessionUri: Uri) {
+    fun processContactPickerResultUri(pickedContactUri: Uri) {
         viewModelScope.launch {
             runCatching {
-                contactPickLaunch(sessionUri, appContext)
+                contactPickLaunch(pickedContactUri, appContext)
             }.cancellable()
                 .onFailure { exception ->
                     SentryLog.e(TAG, "Error while importing contacts from picker result", exception)
@@ -421,15 +421,15 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun contactPickLaunch(sessionUri: Uri, context: Context) {
-        val contacts = queryContacts(sessionUri, context)
         val newEmails = contacts.values.flatMapTo(mutableSetOf()) { it.emails.asSequence() }.toSet()
+    private suspend fun contactPickLaunch(pickedContactUri: Uri, context: Context) {
+        val contacts = queryContacts(pickedContactUri, context)
 
         validatedRecipientsEmails = validatedRecipientsEmails + newEmails
     }
 
     private suspend fun queryContacts(
-        sessionUri: Uri,
+        pickedContactUri: Uri,
         context: Context,
     ): Map<String, Contact> = withContext(ioDispatcher) {
         val projection = arrayOf(
