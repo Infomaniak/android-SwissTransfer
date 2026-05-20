@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.compose.runtime.derivedStateOf
@@ -82,7 +81,6 @@ import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
-import kotlin.collections.mutableSetOf
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
@@ -414,36 +412,28 @@ class PickFilesViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 contactPickLaunch(pickedContactUri, appContext)
-            }.cancellable()
-                .onFailure { exception ->
-                    SentryLog.e(TAG, "Error while importing contacts from picker result", exception)
-                }
+            }.cancellable().onFailure { exception ->
+                SentryLog.e(TAG, "Error while importing contacts from picker result", exception)
+            }
         }
     }
 
     private suspend fun contactPickLaunch(pickedContactUri: Uri, context: Context) {
         val contacts = queryContacts(pickedContactUri, context)
-        val newEmails = normalizeAndValidateEmails(contacts.values.flatMapTo(mutableSetOf()) { it.emails }.toSet())
+        val newEmails = contacts.values.flatMapTo(mutableSetOf()) { contact ->
+            contact.emails.mapNotNull { email ->
+                email.trim().takeIf { it.isNotEmpty() && it.isEmailRfc5321Compliant() }
+            }
+        }
 
         validatedRecipientsEmails = validatedRecipientsEmails + newEmails
-    }
-
-    private fun normalizeAndValidateEmails(emails: Iterable<String>): Set<String> {
-        return emails.mapNotNullTo(mutableSetOf()) { email ->
-            email.trim()
-                .takeIf { it.isNotEmpty() && it.isEmailRfc5321Compliant() }
-        }
     }
 
     private suspend fun queryContacts(
         pickedContactUri: Uri,
         context: Context,
     ): Map<String, Contact> = withContext(ioDispatcher) {
-        val projection = arrayOf(
-            Email.LOOKUP_KEY,
-            Email.ADDRESS,
-        )
-
+        val projection = arrayOf(Email.LOOKUP_KEY, Email.ADDRESS)
         val contactsMap = mutableMapOf<String, Contact>()
 
         context.contentResolver.query(pickedContactUri, projection, null, null, null)?.use { cursor ->
