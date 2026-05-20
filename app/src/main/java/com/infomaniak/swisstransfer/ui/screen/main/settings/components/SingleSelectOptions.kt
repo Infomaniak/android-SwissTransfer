@@ -50,7 +50,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun SingleSelectOptions(items: List<SettingOption>, selectedItem: () -> Int, setSelectedItem: (Int) -> Unit) {
+fun SingleSelectOptions(items: List<SettingOption>, selectedItem: () -> Int?, setSelectedItem: (Int) -> Unit) {
     Column(Modifier.selectableGroup()) {
         items.forEachIndexed { index, item ->
             if (index > 0) HorizontalDivider(Modifier.padding(horizontal = Margin.Medium))
