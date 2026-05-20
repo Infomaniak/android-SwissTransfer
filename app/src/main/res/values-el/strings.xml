@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Απόκρυψη κωδικού πρόσβασης</string>
     <string name="contentDescriptionButtonRemove">Αφαίρεση αρχείου</string>
     <string name="contentDescriptionButtonRemoveRecipient">Αφαίρεση %s</string>
+    <string name="contentDescriptionButtonSelectContact">Άνοιγμα λίστας επαφών</string>
     <string name="contentDescriptionButtonShowPassword">Εμφάνιση κωδικού πρόσβασης</string>
     <string name="contentDescriptionCreateNewTransferButton">Νέα μεταφορά</string>
     <string name="contentDescriptionViewTransferDetails">Προβολή λεπτομερειών μεταφοράς</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Αυτή η μεταφορά και τα αρχεία που περιέχει θα διαγραφούν.</string>
     <string name="deleteThisTransferTitle">Διαγραφή αυτής της μεταφοράς;</string>
     <string name="downloadedTransferLabel">Ληφθείσα μεταφορά: %d/%d</string>
+    <string name="errorContactPicker">Η ανάκτηση επαφών απέτυχε.</string>
     <string name="errorIncorrectPassword">Λανθασμένος κωδικός πρόσβασης</string>
     <string name="errorTransferPasswordLength">Ο κωδικός πρόσβασης πρέπει να είναι μεταξύ 6 και 25 χαρακτήρων</string>
     <string name="expired">Ληγμένο</string>

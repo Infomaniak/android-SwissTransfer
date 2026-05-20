@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Ukryj hasło</string>
     <string name="contentDescriptionButtonRemove">Usuń plik</string>
     <string name="contentDescriptionButtonRemoveRecipient">Usuń %s</string>
+    <string name="contentDescriptionButtonSelectContact">Otwórz listę kontaktów</string>
     <string name="contentDescriptionButtonShowPassword">Pokaż hasło</string>
     <string name="contentDescriptionCreateNewTransferButton">Nowy transfer</string>
     <string name="contentDescriptionViewTransferDetails">Zobacz szczegóły transferu</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Ten transfer i zawarte w nim pliki zostaną usunięte.</string>
     <string name="deleteThisTransferTitle">Usunąć ten transfer?</string>
     <string name="downloadedTransferLabel">Pobrany transfer: %d/%d</string>
+    <string name="errorContactPicker">Pobieranie kontaktów nie powiodło się.</string>
     <string name="errorIncorrectPassword">Nieprawidłowe hasło</string>
     <string name="errorTransferPasswordLength">Hasło musi mieć od 6 do 25 znaków</string>
     <string name="expired">Wygasłe</string>

@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Cacher le mot de passe</string>
     <string name="contentDescriptionButtonRemove">Supprimer le fichier</string>
     <string name="contentDescriptionButtonRemoveRecipient">Supprimer %s</string>
+    <string name="contentDescriptionButtonSelectContact">Ouvrir la liste des contacts</string>
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
     <string name="contentDescriptionViewTransferDetails">Voir les détails du transfert</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Ce transfert et les fichiers qu’il contient seront supprimés.</string>
     <string name="deleteThisTransferTitle">Supprimer ce transfert ?</string>
     <string name="downloadedTransferLabel">Transfert téléchargé : %d/%d</string>
+    <string name="errorContactPicker">La récupération des contacts a échoué.</string>
     <string name="errorIncorrectPassword">Mot de passe incorrect</string>
     <string name="errorTransferPasswordLength">Le mot de passe doit comporter entre 6 et 25 caractères</string>
     <string name="expired">Expiré</string>

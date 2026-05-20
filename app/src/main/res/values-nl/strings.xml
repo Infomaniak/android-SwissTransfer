@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Wachtwoord verbergen</string>
     <string name="contentDescriptionButtonRemove">Bestand verwijderen</string>
     <string name="contentDescriptionButtonRemoveRecipient">%s verwijderen</string>
+    <string name="contentDescriptionButtonSelectContact">Contactenlijst openen</string>
     <string name="contentDescriptionButtonShowPassword">Wachtwoord weergeven</string>
     <string name="contentDescriptionCreateNewTransferButton">Nieuwe overdracht</string>
     <string name="contentDescriptionViewTransferDetails">Overdrachtsdetails bekijken</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Deze overdracht en de bestanden die het bevat, worden verwijderd.</string>
     <string name="deleteThisTransferTitle">Deze overdracht verwijderen?</string>
     <string name="downloadedTransferLabel">Gedownloade overdracht: %d/%d</string>
+    <string name="errorContactPicker">Ophalen van contacten mislukt.</string>
     <string name="errorIncorrectPassword">Onjuist wachtwoord</string>
     <string name="errorTransferPasswordLength">Het wachtwoord moet tussen de 6 en 25 tekens bevatten</string>
     <string name="expired">Verlopen</string>

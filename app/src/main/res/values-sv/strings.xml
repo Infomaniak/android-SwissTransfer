@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Dölj lösenord</string>
     <string name="contentDescriptionButtonRemove">Ta bort fil</string>
     <string name="contentDescriptionButtonRemoveRecipient">Ta bort %s</string>
+    <string name="contentDescriptionButtonSelectContact">Öppna kontaktlistan</string>
     <string name="contentDescriptionButtonShowPassword">Visa lösenord</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny överföring</string>
     <string name="contentDescriptionViewTransferDetails">Visa överföringsdetaljer</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Denna överföring och filerna den innehåller kommer att tas bort.</string>
     <string name="deleteThisTransferTitle">Ta bort denna överföring?</string>
     <string name="downloadedTransferLabel">Nedladdad överföring: %d/%d</string>
+    <string name="errorContactPicker">Hämtning av kontakter misslyckades.</string>
     <string name="errorIncorrectPassword">Felaktigt lösenord</string>
     <string name="errorTransferPasswordLength">Lösenordet måste vara mellan 6 och 25 tecken</string>
     <string name="expired">Utgången</string>

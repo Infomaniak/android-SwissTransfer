@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Skjul passord</string>
     <string name="contentDescriptionButtonRemove">Fjern fil</string>
     <string name="contentDescriptionButtonRemoveRecipient">Fjern %s</string>
+    <string name="contentDescriptionButtonSelectContact">Åpne kontaktlisten</string>
     <string name="contentDescriptionButtonShowPassword">Vis passord</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny overføring</string>
     <string name="contentDescriptionViewTransferDetails">Se overføringsdetaljer</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Denne overføringen og filene den inneholder vil bli slettet.</string>
     <string name="deleteThisTransferTitle">Slette denne overføringen?</string>
     <string name="downloadedTransferLabel">Lastet ned overføring: %d/%d</string>
+    <string name="errorContactPicker">Henting av kontakter mislyktes.</string>
     <string name="errorIncorrectPassword">Feil passord</string>
     <string name="errorTransferPasswordLength">Passordet må være mellom 6 og 25 tegn</string>
     <string name="expired">Utløpt</string>

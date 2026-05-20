@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,9 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import android.content.Context
 import android.net.Uri
+import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.common.tryCompletingWhileTrue
 import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
@@ -59,6 +62,7 @@ import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
@@ -73,12 +77,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val accountUtils: AccountUtils,
     private val appSettingsManager: AppSettingsManager,
     private val newTransferOpenManager: NewTransferOpenManager,
@@ -128,9 +134,7 @@ class PickFilesViewModel @Inject constructor(
             }
 
             enum class Email : Issue {
-                AuthorUnspecified,
-                AuthorInvalid,
-                NoValidatedRecipients,
+                AuthorUnspecified, AuthorInvalid, NoValidatedRecipients,
             }
         }
     }
@@ -320,8 +324,7 @@ class PickFilesViewModel @Inject constructor(
 
     //region Transfer Options
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
-        key = SELECTED_VALIDITY_PERIOD_KEY,
-        initialValue = ValidityPeriodOption.THIRTY
+        key = SELECTED_VALIDITY_PERIOD_KEY, initialValue = ValidityPeriodOption.THIRTY
     )
 
     val selectedDownloadLimitOption = savedStateHandle.getStateFlow(
@@ -404,6 +407,59 @@ class PickFilesViewModel @Inject constructor(
             is EmailLanguageOption -> selectTransferLanguage(option)
         }
     }
+
+    fun processContactPickerResultUri(pickedContactUri: Uri) {
+        viewModelScope.launch {
+            runCatching {
+                addContactEmail(pickedContactUri, appContext)
+            }.cancellable().onFailure { exception ->
+                SentryLog.e(TAG, "Error while importing contacts from picker result", exception)
+            }
+        }
+    }
+
+    private suspend fun addContactEmail(pickedContactUri: Uri, context: Context) {
+        val contacts = queryContacts(pickedContactUri, context)
+        val newEmails = contacts.values.flatMapTo(mutableSetOf()) { contact ->
+            contact.emails.mapNotNull { email ->
+                email.trim().takeIf { it.isNotEmpty() && it.isEmailRfc5321Compliant() }
+            }
+        }
+
+        validatedRecipientsEmails = validatedRecipientsEmails + newEmails
+    }
+
+    private suspend fun queryContacts(
+        pickedContactUri: Uri,
+        context: Context,
+    ): Map<String, Contact> = withContext(ioDispatcher) {
+        val projection = arrayOf(Email.LOOKUP_KEY, Email.ADDRESS)
+        val contactsMap = mutableMapOf<String, Contact>()
+
+        context.contentResolver.query(pickedContactUri, projection, null, null, null)?.use { cursor ->
+            val lookupKeyIndex = cursor.getColumnIndex(Email.LOOKUP_KEY)
+            val addressIndex = cursor.getColumnIndex(Email.ADDRESS)
+
+            if (lookupKeyIndex == -1 || addressIndex == -1) {
+                SentryLog.e(TAG, "Invalid projection, missing columns.")
+                return@use
+            }
+
+            while (cursor.moveToNext()) {
+                val lookupKey = cursor.getString(lookupKeyIndex)?.takeIf { it.isNotBlank() } ?: continue
+                val email = cursor.getString(addressIndex)?.takeIf { it.isNotBlank() } ?: continue
+
+                val current = contactsMap[lookupKey] ?: Contact(lookupKey = lookupKey, emails = emptyList())
+                contactsMap[lookupKey] = current.copy(emails = current.emails + email)
+            }
+        }
+        contactsMap
+    }
+
+    private data class Contact(
+        val lookupKey: String,
+        val emails: List<String>,
+    )
 //endregion
 
     companion object {

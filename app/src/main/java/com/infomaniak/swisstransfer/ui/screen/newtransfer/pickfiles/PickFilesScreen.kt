@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,16 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.content.Intent.ACTION_PICK
+import android.net.Uri
+import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -30,8 +37,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,10 +53,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -72,6 +84,8 @@ import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.PersonsCircleAdd
 import com.infomaniak.swisstransfer.ui.previewparameter.filesPreviewData
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -85,13 +99,15 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferOptionsTypes
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeButtons
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isApiV2
+import com.infomaniak.swisstransfer.ui.utils.showToast
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
-import splitties.toast.longToast
+import kotlinx.coroutines.launch
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
@@ -104,6 +120,7 @@ fun PickFilesScreen(
     navigateToFilesDetails: () -> Unit,
     notificationPermissionManager: RationalePermissionManagerState,
 ) {
+    val context = LocalContext.current
 
     val files by pickFilesViewModel.importedFilesDebounced.collectAsStateWithLifecycle()
     val canSendStatus: CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
@@ -124,7 +141,7 @@ fun PickFilesScreen(
         try {
             filePickerLauncher.launch(arrayOf("*/*"))
         } catch (e: ActivityNotFoundException) {
-            longToast(R.string.startActivityCantHandleAction)
+            context.showToast(R.string.startActivityCantHandleAction)
         }
     }
 
@@ -191,6 +208,7 @@ fun PickFilesScreen(
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
         pickFiles = ::pickFiles,
+        selectContact = pickFilesViewModel::processContactPickerResultUri,
         exitNewTransfer = { exit() },
         onSendButtonClick = {
             MatomoSwissTransfer.trackNewTransferDataEvent(pickFilesViewModel.selectedTransferTypeFlow.value.dbValue.matomoName)
@@ -221,10 +239,11 @@ private fun PickFilesScreen(
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     transferOptionsCallbacks: TransferOptionsCallbacks,
     pickFiles: () -> Unit,
+    selectContact: (Uri) -> Unit,
     exitNewTransfer: () -> Unit,
     isAwaitingSend: () -> Boolean,
     onSendButtonClick: () -> Unit,
-    snackbarHostState: SnackbarHostState? = null,
+    snackbarHostState: SnackbarHostState,
     navigateToFilesDetails: () -> Unit,
 ) {
 
@@ -258,6 +277,8 @@ private fun PickFilesScreen(
                     emailTextFieldCallbacks = emailTextFieldCallbacks,
                     transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
+                    selectContact = selectContact,
+                    snackbarHostState = snackbarHostState
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
@@ -288,9 +309,11 @@ private fun FilesToImport(
 private fun ImportTextFields(
     horizontalPaddingModifier: Modifier,
     transferTitleState: MutableState<String>,
+    snackbarHostState: SnackbarHostState,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
+    selectContact: (Uri) -> Unit,
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
 
@@ -306,7 +329,14 @@ private fun ImportTextFields(
             )
         }
 
-        EmailAddressesTextFields(modifier, emailTextFieldCallbacks, shouldShowEmailAddressesFields, textFieldSpacing)
+        EmailAddressesTextFields(
+            emailTextFieldCallbacks = emailTextFieldCallbacks,
+            shouldShowEmailAddressesFields = shouldShowEmailAddressesFields,
+            textFieldSpacing = textFieldSpacing,
+            selectContact = selectContact,
+            snackbarHostState = snackbarHostState,
+            modifier = modifier,
+        )
 
         SwissTransferTextField(
             modifier = modifier,
@@ -321,11 +351,48 @@ private fun ImportTextFields(
 
 @Composable
 private fun EmailAddressesTextFields(
-    modifier: Modifier,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     shouldShowEmailAddressesFields: () -> Boolean,
     textFieldSpacing: Dp,
+    selectContact: (Uri) -> Unit,
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
 ) = with(emailTextFieldCallbacks) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val contactRetreivalError = stringResource(R.string.errorContactPicker)
+
+    fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
+        putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+    }
+
+    fun handlePickedContacts(result: ActivityResult) {
+        if (result.resultCode != Activity.RESULT_OK || result.data == null) {
+            scope.launch { snackbarHostState.showSnackbar(contactRetreivalError) }
+            return
+        }
+        val dataIntent = result.data ?: return
+
+        dataIntent.clipData?.let { clipData ->
+            for (i in 0 until clipData.itemCount) {
+                clipData.getItemAt(i).uri?.let { uri -> selectContact(uri) }
+            }
+        } ?: dataIntent.data?.let { uri -> selectContact(uri) }
+    }
+
+    fun launchPickContactSafely(launcher: ActivityResultLauncher<Intent>) {
+        try {
+            launcher.launch(buildPickEmailContactIntent())
+        } catch (_: ActivityNotFoundException) {
+            context.showToast(R.string.startActivityCantHandleAction)
+        }
+    }
+
+    val pickContactLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = ::handlePickedContacts,
+    )
+
     AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
             val isAuthorError = checkEmailError(isAuthor = true)
@@ -352,8 +419,22 @@ private fun EmailAddressesTextFields(
                 onValueChange = { recipientEmail.set(it.text) },
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
+                trailingIcon = {
+                    TrailingButton(
+                        appIcon = AppIcons.PersonsCircleAdd,
+                        onClick = { launchPickContactSafely(pickContactLauncher) },
+                        contentDescriptionRes = R.string.contentDescriptionButtonSelectContact
+                    )
+                },
             )
         }
+    }
+}
+
+@Composable
+private fun TrailingButton(appIcon: ImageVector, onClick: () -> Unit, @StringRes contentDescriptionRes: Int) {
+    IconButton(onClick = onClick) {
+        Icon(appIcon, stringResource(contentDescriptionRes), Modifier.size(Dimens.SmallIconSize))
     }
 }
 
@@ -540,10 +621,12 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
                 selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),
                 transferOptionsCallbacks = transferOptionsCallbacks,
                 pickFiles = {},
+                selectContact = {},
                 exitNewTransfer = {},
                 onSendButtonClick = {},
                 isAwaitingSend = { true },
                 navigateToFilesDetails = {},
+                snackbarHostState = remember { SnackbarHostState() }
             )
         }
     }

@@ -40,6 +40,7 @@
     <string name="contentDescriptionButtonHidePassword">Nascondere la password</string>
     <string name="contentDescriptionButtonRemove">Rimuovi il file</string>
     <string name="contentDescriptionButtonRemoveRecipient">Rimuove %s</string>
+    <string name="contentDescriptionButtonSelectContact">Apri l’elenco contatti</string>
     <string name="contentDescriptionButtonShowPassword">Mostra password</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
     <string name="contentDescriptionViewTransferDetails">Vedi dettagli del trasferimento</string>
@@ -49,6 +50,7 @@
     <string name="deleteThisTransferDescription">Questo trasferimento e i file in esso contenuti verranno eliminati.</string>
     <string name="deleteThisTransferTitle">Cancellare questo trasferimento?</string>
     <string name="downloadedTransferLabel">Trasferimento scaricato: %d/%d</string>
+    <string name="errorContactPicker">Recupero contatti non riuscito.</string>
     <string name="errorIncorrectPassword">Password errata</string>
     <string name="errorTransferPasswordLength">La password deve essere compresa tra 6 e 24 caratteri</string>
     <string name="expired">Scaduto</string>
