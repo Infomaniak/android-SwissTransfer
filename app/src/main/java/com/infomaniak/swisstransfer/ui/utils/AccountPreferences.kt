@@ -25,7 +25,7 @@ import splitties.experimental.ExperimentalSplittiesApi
 import splitties.preferences.Preferences
 import splitties.preferences.SuspendPrefsAccessor
 
-class AccountPreferences private constructor(): Preferences(name = "AccountPreferences") {
+class AccountPreferences private constructor() : Preferences(name = "AccountPreferences") {
     companion object : SuspendPrefsAccessor<AccountPreferences>(::AccountPreferences) {
         private const val GUEST_USER_ID = 0
         private const val NO_USER = -1
