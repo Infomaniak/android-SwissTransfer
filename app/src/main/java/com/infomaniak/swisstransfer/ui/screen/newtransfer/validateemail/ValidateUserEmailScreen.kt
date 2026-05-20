@@ -269,11 +269,7 @@ private enum class LayoutStyle(
 
     companion object {
         @Composable
-        fun getCurrentLayoutStyle() = if (isWindowLarge()) {
-            Centered
-        } else {
-            TopLeft
-        }
+        fun getCurrentLayoutStyle() = if (isWindowLarge()) Centered else TopLeft
     }
 }
 
