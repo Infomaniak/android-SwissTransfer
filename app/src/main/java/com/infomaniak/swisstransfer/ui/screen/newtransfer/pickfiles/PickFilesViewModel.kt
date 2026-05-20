@@ -411,14 +411,14 @@ class PickFilesViewModel @Inject constructor(
     fun processContactPickerResultUri(pickedContactUri: Uri) {
         viewModelScope.launch {
             runCatching {
-                contactPickLaunch(pickedContactUri, appContext)
+                addContactEmail(pickedContactUri, appContext)
             }.cancellable().onFailure { exception ->
                 SentryLog.e(TAG, "Error while importing contacts from picker result", exception)
             }
         }
     }
 
-    private suspend fun contactPickLaunch(pickedContactUri: Uri, context: Context) {
+    private suspend fun addContactEmail(pickedContactUri: Uri, context: Context) {
         val contacts = queryContacts(pickedContactUri, context)
         val newEmails = contacts.values.flatMapTo(mutableSetOf()) { contact ->
             contact.emails.mapNotNull { email ->
