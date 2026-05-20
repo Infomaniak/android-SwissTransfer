@@ -23,7 +23,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -83,6 +82,7 @@ import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
+import kotlin.collections.mutableSetOf
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
@@ -440,23 +440,24 @@ class PickFilesViewModel @Inject constructor(
         context: Context,
     ): Map<String, Contact> = withContext(ioDispatcher) {
         val projection = arrayOf(
-            ContactsContract.Contacts.LOOKUP_KEY,
-            ContactsContract.Data.MIMETYPE,
-            ContactsContract.Data.DATA1,
+            Email.LOOKUP_KEY,
+            Email.ADDRESS,
         )
 
         val contactsMap = mutableMapOf<String, Contact>()
 
-        context.contentResolver.query(sessionUri, projection, null, null, null)?.use { cursor ->
-            val indices = cursor.contactProjectionIndicesOrNull()
-            if (indices == null) {
+        context.contentResolver.query(pickedContactUri, projection, null, null, null)?.use { cursor ->
+            val lookupKeyIndex = cursor.getColumnIndex(Email.LOOKUP_KEY)
+            val addressIndex = cursor.getColumnIndex(Email.ADDRESS)
+
+            if (lookupKeyIndex == -1 || addressIndex == -1) {
                 SentryLog.e(TAG, "Invalid projection, missing columns.")
                 return@use
             }
 
             while (cursor.moveToNext()) {
-                val lookupKey = cursor.getString(indices.lookupKeyIndex)
-                val email = cursor.emailOrNull(indices.mimeTypeIndex, indices.data1Index) ?: continue
+                val lookupKey = cursor.getString(lookupKeyIndex)?.takeIf { it.isNotBlank() } ?: continue
+                val email = cursor.getString(addressIndex)?.takeIf { it.isNotBlank() } ?: continue
 
                 val current = contactsMap[lookupKey] ?: Contact(lookupKey = lookupKey, emails = emptyList())
                 contactsMap[lookupKey] = current.copy(emails = current.emails + email)
@@ -464,35 +465,6 @@ class PickFilesViewModel @Inject constructor(
         }
         contactsMap
     }
-
-    private fun Cursor.contactProjectionIndicesOrNull(): ContactProjectionIndices? {
-        val lookupKeyIndex = getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)
-        val mimeTypeIndex = getColumnIndex(ContactsContract.Data.MIMETYPE)
-        val data1Index = getColumnIndex(ContactsContract.Data.DATA1)
-
-        return if (lookupKeyIndex == -1 || mimeTypeIndex == -1 || data1Index == -1) {
-            null
-        } else {
-            ContactProjectionIndices(
-                lookupKeyIndex = lookupKeyIndex,
-                mimeTypeIndex = mimeTypeIndex,
-                data1Index = data1Index,
-            )
-        }
-    }
-
-    private fun Cursor.emailOrNull(mimeTypeIdx: Int, data1Idx: Int): String? {
-        val mimeType = getString(mimeTypeIdx)
-        if (mimeType != Email.CONTENT_ITEM_TYPE) return null
-
-        return getString(data1Idx)
-    }
-
-    private data class ContactProjectionIndices(
-        val lookupKeyIndex: Int,
-        val mimeTypeIndex: Int,
-        val data1Index: Int,
-    )
 
     private data class Contact(
         val lookupKey: String,
