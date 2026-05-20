@@ -251,7 +251,9 @@ private fun PickFilesScreen(
         modifier = Modifier.imePadding(),
         topBar = {
             SwissTransferTopAppBar(
-                titleRes = R.string.importFilesScreenTitle, actions = { TopAppBarButtons.Close(onClick = { exitNewTransfer() }) })
+                titleRes = R.string.importFilesScreenTitle,
+                actions = { TopAppBarButtons.Close(onClick = { exitNewTransfer() }) }
+            )
         },
         topButton = { modifier ->
             SendButton(
@@ -406,9 +408,11 @@ private fun EmailAddressesTextFields(
                 isError = isRecipientError,
                 supportingText = getEmailError(isRecipientError),
                 trailingIcon = {
-                    TrailingButton(AppIcons.PersonsCircleAdd, onClick = {
-                        launchPickContactSafely(pickContactLauncher)
-                    }, R.string.contentDescriptionButtonSelectContact)
+                    TrailingButton(
+                        AppIcons.PersonsCircleAdd,
+                        onClick = { launchPickContactSafely(pickContactLauncher) },
+                        R.string.contentDescriptionButtonSelectContact
+                    )
                 },
             )
         }
