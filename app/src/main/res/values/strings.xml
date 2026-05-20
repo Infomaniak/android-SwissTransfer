@@ -55,6 +55,7 @@
     <string name="deleteThisTransferDescription">This transfer and the files it contains will be deleted.</string>
     <string name="deleteThisTransferTitle">Delete this transfer?</string>
     <string name="downloadedTransferLabel">Downloaded transfer: %d/%d</string>
+    <string name="errorContactPicker">Contact retrieval failed.</string>
     <string name="errorIncorrectPassword">Incorrect password</string>
     <string name="errorTransferPasswordLength">The password must be between 6 and 25 characters</string>
     <string name="expired">Expired</string>

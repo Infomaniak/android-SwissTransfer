@@ -50,6 +50,7 @@
     <string name="deleteThisTransferDescription">Esta transferência e os ficheiros que contém serão eliminados.</string>
     <string name="deleteThisTransferTitle">Eliminar esta transferência?</string>
     <string name="downloadedTransferLabel">Transferência descarregada: %d/%d</string>
+    <string name="errorContactPicker">A recuperação de contactos falhou.</string>
     <string name="errorIncorrectPassword">Palavra-passe incorreta</string>
     <string name="errorTransferPasswordLength">A palavra-passe deve ter entre 6 e 25 caracteres</string>
     <string name="expired">Expirado</string>

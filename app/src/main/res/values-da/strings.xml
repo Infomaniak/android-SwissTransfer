@@ -50,6 +50,7 @@
     <string name="deleteThisTransferDescription">Denne overføring og de filer, den indeholder, vil blive slettet.</string>
     <string name="deleteThisTransferTitle">Slet denne overføring?</string>
     <string name="downloadedTransferLabel">Downloadet overføring: %d/%d</string>
+    <string name="errorContactPicker">Hentning af kontakter mislykkedes.</string>
     <string name="errorIncorrectPassword">Forkert adgangskode</string>
     <string name="errorTransferPasswordLength">Adgangskoden skal være mellem 6 og 25 tegn</string>
     <string name="expired">Udløbet</string>

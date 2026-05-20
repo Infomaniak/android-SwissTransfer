@@ -50,6 +50,7 @@
     <string name="deleteThisTransferDescription">Diese Übertragung und die darin enthaltenen Dateien werden gelöscht.</string>
     <string name="deleteThisTransferTitle">Diese Übertragung löschen?</string>
     <string name="downloadedTransferLabel">Heruntergeladene Übertragung: %d/%d</string>
+    <string name="errorContactPicker">Das Abrufen der Kontakte ist fehlgeschlagen.</string>
     <string name="errorIncorrectPassword">Falsches Kennwort</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
     <string name="expired">Abgelaufen</string>

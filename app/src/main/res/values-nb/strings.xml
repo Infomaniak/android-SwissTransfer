@@ -50,6 +50,7 @@
     <string name="deleteThisTransferDescription">Denne overføringen og filene den inneholder vil bli slettet.</string>
     <string name="deleteThisTransferTitle">Slette denne overføringen?</string>
     <string name="downloadedTransferLabel">Lastet ned overføring: %d/%d</string>
+    <string name="errorContactPicker">Henting av kontakter mislyktes.</string>
     <string name="errorIncorrectPassword">Feil passord</string>
     <string name="errorTransferPasswordLength">Passordet må være mellom 6 og 25 tegn</string>
     <string name="expired">Utløpt</string>

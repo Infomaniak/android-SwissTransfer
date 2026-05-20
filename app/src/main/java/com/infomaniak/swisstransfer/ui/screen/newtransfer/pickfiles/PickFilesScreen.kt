@@ -53,6 +53,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -106,6 +107,7 @@ import com.infomaniak.swisstransfer.ui.utils.showToast
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
@@ -276,6 +278,7 @@ private fun PickFilesScreen(
                     transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                     selectContact = selectContact,
+                    snackbarHostState = snackbarHostState
                 )
                 TransferOptions(modifier, transferOptionsCallbacks)
             }
@@ -310,6 +313,7 @@ private fun ImportTextFields(
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
     selectContact: (Uri) -> Unit,
+    snackbarHostState: SnackbarHostState?
 ) {
     val modifier = horizontalPaddingModifier.fillMaxWidth()
 
@@ -350,16 +354,22 @@ private fun EmailAddressesTextFields(
     shouldShowEmailAddressesFields: () -> Boolean,
     textFieldSpacing: Dp,
     selectContact: (Uri) -> Unit,
+    snackbarHostState: SnackbarHostState?,
     modifier: Modifier = Modifier,
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val contactRetreivalError = stringResource(R.string.errorContactPicker)
 
     fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
     }
 
     fun handlePickedContacts(result: ActivityResult) {
-        if (result.resultCode != Activity.RESULT_OK) return
+        if (result.resultCode != Activity.RESULT_OK || result.data == null) {
+            scope.launch { snackbarHostState?.showSnackbar(contactRetreivalError) }
+            return
+        }
         val dataIntent = result.data ?: return
 
         dataIntent.clipData?.let { clipData ->
