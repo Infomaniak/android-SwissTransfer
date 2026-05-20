@@ -29,6 +29,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -62,20 +64,16 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDi
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingItem
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingTitle
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun SettingsScreen(
-    theme: GetSetCallbacks<Theme>,
     isAccountDeletable: () -> Boolean,
-    validityPeriod: GetSetCallbacks<ValidityPeriod>,
-    downloadLimit: GetSetCallbacks<DownloadLimit>,
-    emailLanguage: GetSetCallbacks<EmailLanguage>,
     onItemClick: (SettingsOptionScreens) -> Unit,
     navigateBack: () -> Unit,
     getSelectedSetting: () -> SettingsOptionScreens?,
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
     val selectedSetting = getSelectedSetting()
 
@@ -96,75 +94,79 @@ fun SettingsScreen(
         ) {
             SettingTitle(R.string.settingsCategoryGeneral)
 
-            if (SDK_INT >= 29) {
+            val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
+            appSettings.value?.let { securedAppSettings ->
+                if (SDK_INT >= 29) {
+                    SettingItem(
+                        titleRes = R.string.settingsOptionTheme,
+                        isSelected = { selectedSetting == THEME },
+                        icon = AppIcons.PaintbrushPalette,
+                        description = securedAppSettings.theme.getString(),
+                        endIcon = CHEVRON,
+                        onClick = { onItemClick(THEME) },
+                    )
+                }
+
                 SettingItem(
-                    titleRes = R.string.settingsOptionTheme,
-                    isSelected = { selectedSetting == THEME },
-                    icon = AppIcons.PaintbrushPalette,
-                    description = theme.get().getString(),
-                    endIcon = CHEVRON,
-                    onClick = { onItemClick(THEME) },
-                )
-            }
-
-            SettingItem(
-                titleRes = R.string.settingsOptionNotifications,
-                isSelected = { false },
-                icon = AppIcons.Bell,
-                endIcon = OPEN_OUTSIDE,
-                onClick = {
-                    MatomoSwissTransfer.trackSettings(MatomoName.Notifications)
-                    onItemClick(NOTIFICATIONS)
-                },
-            )
-            SettingDivider()
-
-            SettingTitle(R.string.settingsCategoryDefaultSettings)
-            SettingItem(
-                titleRes = R.string.settingsOptionValidityPeriod,
-                isSelected = { selectedSetting == VALIDITY_PERIOD },
-                icon = AppIcons.Clock,
-                description = validityPeriod.get().getString(),
-                endIcon = CHEVRON,
-                onClick = { onItemClick(VALIDITY_PERIOD) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionDownloadLimit,
-                isSelected = { selectedSetting == DOWNLOAD_LIMIT },
-                icon = AppIcons.ArrowDownFile,
-                description = downloadLimit.get().getString(),
-                endIcon = CHEVRON,
-                onClick = { onItemClick(DOWNLOAD_LIMIT) },
-            )
-            SettingItem(
-                titleRes = R.string.settingsOptionEmailLanguage,
-                isSelected = { selectedSetting == EMAIL_LANGUAGE },
-                icon = AppIcons.SpeechBubble,
-                description = emailLanguage.get().getString(),
-                endIcon = CHEVRON,
-                onClick = { onItemClick(EMAIL_LANGUAGE) },
-            )
-            SettingDivider()
-
-            SettingTitle(R.string.settingsCategoryDataManagement)
-            SettingItem(
-                titleRes = RCore.string.trackingManagementTitle,
-                isSelected = { selectedSetting?.isDataManagementSetting() == true },
-                icon = AppIcons.Shield,
-                endIcon = CHEVRON,
-                onClick = { onItemClick(DATA_MANAGEMENT) },
-            )
-            if (isAccountDeletable()) {
-                SettingItem(
-                    titleRes = R.string.settingsDeleteMyAccount,
+                    titleRes = R.string.settingsOptionNotifications,
                     isSelected = { false },
-                    icon = AppIcons.CircleCross,
+                    icon = AppIcons.Bell,
                     endIcon = OPEN_OUTSIDE,
                     onClick = {
-                        MatomoSwissTransfer.trackSettings(MatomoName.DeleteMyAccount)
-                        onItemClick(DELETE_MY_ACCOUNT)
+                        MatomoSwissTransfer.trackSettings(MatomoName.Notifications)
+                        onItemClick(NOTIFICATIONS)
                     },
                 )
+                SettingDivider()
+
+                SettingTitle(R.string.settingsCategoryDefaultSettings)
+                SettingItem(
+                    titleRes = R.string.settingsOptionValidityPeriod,
+                    isSelected = { selectedSetting == VALIDITY_PERIOD },
+                    icon = AppIcons.Clock,
+                    description = securedAppSettings.validityPeriod.getString(),
+                    endIcon = CHEVRON,
+                    onClick = { onItemClick(VALIDITY_PERIOD) },
+                )
+                SettingItem(
+                    titleRes = R.string.settingsOptionDownloadLimit,
+                    isSelected = { selectedSetting == DOWNLOAD_LIMIT },
+                    icon = AppIcons.ArrowDownFile,
+                    description = securedAppSettings.downloadLimit.getString(),
+                    endIcon = CHEVRON,
+                    onClick = { onItemClick(DOWNLOAD_LIMIT) },
+                )
+                SettingItem(
+                    titleRes = R.string.settingsOptionEmailLanguage,
+                    isSelected = { selectedSetting == EMAIL_LANGUAGE },
+                    icon = AppIcons.SpeechBubble,
+                    description = securedAppSettings.emailLanguage.getString(),
+                    endIcon = CHEVRON,
+                    onClick = { onItemClick(EMAIL_LANGUAGE) },
+                )
+                SettingDivider()
+
+                SettingTitle(R.string.settingsCategoryDataManagement)
+                SettingItem(
+                    titleRes = RCore.string.trackingManagementTitle,
+                    isSelected = { selectedSetting?.isDataManagementSetting() == true },
+                    icon = AppIcons.Shield,
+                    endIcon = CHEVRON,
+                    onClick = { onItemClick(DATA_MANAGEMENT) },
+                )
+                if (isAccountDeletable()) {
+                    SettingItem(
+                        titleRes = R.string.settingsDeleteMyAccount,
+                        isSelected = { false },
+                        icon = AppIcons.CircleCross,
+                        endIcon = OPEN_OUTSIDE,
+                        onClick = {
+                            MatomoSwissTransfer.trackSettings(MatomoName.DeleteMyAccount)
+                            onItemClick(DELETE_MY_ACCOUNT)
+                        },
+                    )
+                }
             }
         }
     }
@@ -218,11 +220,7 @@ private fun SettingsScreenPreview() {
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingsScreen(
-                theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
                 isAccountDeletable = { true },
-                validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
-                emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                 onItemClick = {},
                 navigateBack = {},
                 getSelectedSetting = { null },

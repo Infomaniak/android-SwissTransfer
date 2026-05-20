@@ -66,7 +66,7 @@ fun SettingsDataManagementMatomoScreen(navigateBack: (() -> Unit)?) {
 }
 
 @Composable
-fun SettingsDataManagementMatomoScreen(
+private fun SettingsDataManagementMatomoScreen(
     navigateBack: (() -> Unit)?,
     isMatomoAuthorized: () -> Boolean,
     setMatomoAuthorization: (Boolean) -> Unit,
