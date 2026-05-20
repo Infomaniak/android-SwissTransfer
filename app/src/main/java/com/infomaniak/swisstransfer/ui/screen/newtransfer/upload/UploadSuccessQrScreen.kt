@@ -70,7 +70,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
     var showScreenshotBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && activity != null) {
-        DisposableEffect(Unit) {
+        DisposableEffect(activity) {
             val callback = ScreenCaptureCallback { showScreenshotBottomSheet = true }
             activity.registerScreenCaptureCallback(activity.mainExecutor, callback)
 
