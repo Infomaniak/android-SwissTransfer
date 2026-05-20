@@ -77,6 +77,8 @@
     <plurals name="multipleSelectionTitle">
         <item quantity="one">%d zaznaczony</item>
         <item quantity="few">%d zaznaczone</item>
+        <item quantity="many">%d zaznaczonych</item>
+        <item quantity="other">%d zaznaczone</item>
     </plurals>
     <string name="myFilesTitle">Moje pliki</string>
     <string name="networkUnavailable">Sieć niedostępna</string>
