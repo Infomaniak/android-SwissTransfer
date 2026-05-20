@@ -37,7 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.extensions.goToAppStore
@@ -90,9 +90,7 @@ private val TERMINATE_ACCOUNT_FULL_URL = "$AUTOLOG_URL/?url=$TERMINATE_ACCOUNT_U
 private const val URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION = "login.infomaniak.com"
 
 @Composable
-fun MyAccountScreenWrapper(
-    myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>(),
-) {
+fun MyAccountScreenWrapper(myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>()) {
     val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val users by myAccountViewModel.users.collectAsStateWithLifecycle(emptyList())
 

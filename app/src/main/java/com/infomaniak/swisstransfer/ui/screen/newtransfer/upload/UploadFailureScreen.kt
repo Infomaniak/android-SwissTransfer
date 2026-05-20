@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
@@ -36,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCrossPointing
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme

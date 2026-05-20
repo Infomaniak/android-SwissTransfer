@@ -23,9 +23,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
+import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.images.AppImages
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
-import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 val AppIllus.Matomo: ThemedImage
