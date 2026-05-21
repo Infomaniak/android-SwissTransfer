@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
@@ -56,6 +57,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
 import com.infomaniak.swisstransfer.ui.screen.main.sent.SentScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsScreen
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.ExistingTransferFilesDetailsScreen
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
@@ -115,8 +117,9 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
     if (transferUuid != null && !isDeepLinkConsumed()) {
         consumeDeepLink()
         val context = LocalContext.current
+        val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
         LaunchedEffect(Unit) {
-            navigateToDetails(context, direction, transferUuid, isDeeplinkNavigation = true)
+            navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid, isDeeplinkNavigation = true)
         }
     }
 }
@@ -130,12 +133,13 @@ private fun ListPane(
     updateHasTransfer: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
-    val isWindowLarge = isWindowLarge()
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    val isWindowLarge = windowAdaptiveInfo.isWindowLarge()
     val scope = rememberCoroutineScope()
     when (direction) {
         TransferDirection.SENT -> SentScreen(
             navigateToDetails = { transferUuid ->
-                scope.launch { navigator.navigateToDetails(context, direction, transferUuid) }
+                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid) }
             },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
@@ -144,7 +148,7 @@ private fun ListPane(
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
             navigateToDetails = { transferUuid ->
-                scope.launch { navigator.navigateToDetails(context, direction, transferUuid) }
+                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid) }
             },
             getSelectedTransferUuid = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
@@ -157,6 +161,7 @@ private fun ListPane(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDetails(
     context: Context,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
     direction: TransferDirection,
     transferUuid: String,
     isDeeplinkNavigation: Boolean = false,
@@ -167,7 +172,7 @@ private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDet
     }
     MatomoSwissTransfer.trackScreen(matomoScreen)
     val item = DestinationContent.RootLevel(direction, transferUuid, isDeeplinkNavigation)
-    selectItem(context, item)
+    selectItem(context, windowAdaptiveInfo, item)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -192,7 +197,7 @@ private fun DetailPane(
     hasTransfer: () -> Boolean,
     isApiV2Deeplink: Boolean? = null,
 ) {
-    val isWindowLarge = isWindowLarge()
+    val isWindowLarge = LocalWindowAdaptiveInfo.current.isWindowLarge()
     val destinationContent = if (isWindowLarge) navigator.currentDestination?.contentKey else navigator.safeCurrentContent()
     val scope = rememberCoroutineScope()
     val navigateBack: () -> Unit = {
@@ -222,11 +227,14 @@ private fun DetailPane(
             )
         }
         is DestinationContent.FolderLevel -> {
+            val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
             ExistingTransferFilesDetails(
                 navigator,
                 destinationContent.folderUuid,
                 destinationContent.direction,
                 destinationContent.transferUuid,
+                windowAdaptiveInfo,
             )
         }
     }
@@ -239,6 +247,7 @@ private fun ExistingTransferFilesDetails(
     folderUuid: String,
     transferDirection: TransferDirection,
     transferUuid: String,
+    windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -259,7 +268,7 @@ private fun ExistingTransferFilesDetails(
         // the FilesDetailsScreen's
         scope.launch {
             if (isWindowSmall(context)) navigator.navigateBack()
-            navigator.navigateToDetails(context, transferDirection, transferUuid)
+            navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferUuid)
         }
     }
 }

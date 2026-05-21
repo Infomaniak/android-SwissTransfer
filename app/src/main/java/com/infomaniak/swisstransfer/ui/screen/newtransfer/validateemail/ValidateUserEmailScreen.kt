@@ -62,6 +62,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.Validate
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidationRequest
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
@@ -269,7 +270,11 @@ private enum class LayoutStyle(
 
     companion object {
         @Composable
-        fun getCurrentLayoutStyle() = if (isWindowLarge()) Centered else TopLeft
+        fun getCurrentLayoutStyle() = if (LocalWindowAdaptiveInfo.current.isWindowLarge()) {
+            Centered
+        } else {
+            TopLeft
+        }
     }
 }
 
