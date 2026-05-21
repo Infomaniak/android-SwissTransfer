@@ -84,9 +84,9 @@ private fun getCustomWindowClass(context: Context): CustomWindowWidthClass {
     require(dpWidth >= 0) { "Width must be positive, received $dpWidth" }
 
     return when {
-        dpWidth < 600 -> CustomWindowWidthClass.Small
-        dpWidth < 1080 -> CustomWindowWidthClass.Medium
-        else -> CustomWindowWidthClass.Large
+        dpWidth >= CustomWindowWidthClass.Large.minWidthDp -> CustomWindowWidthClass.Large
+        dpWidth >= CustomWindowWidthClass.Medium.minWidthDp -> CustomWindowWidthClass.Medium
+        else -> CustomWindowWidthClass.Small
     }
 }
 

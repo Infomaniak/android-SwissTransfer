@@ -104,20 +104,8 @@ private fun MyAccountScreenWrapper(
     onSwitchUser: (userId: Int) -> Unit,
 ) {
     TwoPaneScaffold(
-        listPane = {
-            ListPane(
-                navigator = this,
-                users = users,
-                onDisconnectCurrentUser = onDisconnectCurrentUser,
-                onSwitchUser = onSwitchUser,
-            )
-        },
-        detailPane = {
-            DetailPane(
-                navigator = this,
-                onDisconnectCurrentUser = onDisconnectCurrentUser
-            )
-        },
+        listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
+        detailPane = { DetailPane(navigator = this, onDisconnectCurrentUser = onDisconnectCurrentUser) },
     )
 }
 
