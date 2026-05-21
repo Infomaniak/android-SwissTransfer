@@ -72,6 +72,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
+import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
@@ -131,6 +132,7 @@ private fun ListPane(
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
     val userReportURL = stringResource(R.string.urlUserReport)
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     val scope = rememberCoroutineScope()
 
@@ -157,7 +159,7 @@ private fun ListPane(
                 is MyAccountSettingAction.SwitchAccount -> onSwitchUser(action.userId)
                 is MyAccountSettingAction.Navigation -> {
                     // Navigate to the detail pane with the passed action
-                    scope.launch { navigator.selectItem(context, action.destination) }
+                    scope.launch { navigator.selectItem(context, windowAdaptiveInfo, action.destination) }
                 }
             }
         },

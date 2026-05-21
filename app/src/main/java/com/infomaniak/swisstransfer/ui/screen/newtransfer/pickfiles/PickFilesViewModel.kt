@@ -495,7 +495,7 @@ private fun PickedFile.toFileUiModel(): FileUi {
         isFolder = false,
         fileSize = size,
         mimeType = mimeType,
-        localPath = null,
+        localPath = uriString,
         thumbnailPath = uriString
     )
 }

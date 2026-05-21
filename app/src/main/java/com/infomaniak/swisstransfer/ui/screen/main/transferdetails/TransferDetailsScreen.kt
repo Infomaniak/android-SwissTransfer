@@ -373,7 +373,7 @@ private fun ColumnScope.FilesList(
             .padding(horizontal = Margin.Medium),
         snackbarHostState = snackbarHostState,
         files = getTransfer().files,
-        isDownloadButtonVisible = true,
+        isNewTransfer = false,
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
         isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
