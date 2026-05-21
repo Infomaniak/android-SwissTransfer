@@ -97,7 +97,7 @@ fun MyAccountScreenWrapper(myAccountViewModel: MyAccountViewModel = hiltViewMode
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun MyAccountScreenWrapper(
+private fun MyAccountScreenWrapper(
     users: () -> List<User>,
     onDisconnectCurrentUser: () -> Unit,
     onSwitchUser: (userId: Int) -> Unit,
