@@ -38,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowLeft
 import com.infomaniak.swisstransfer.ui.images.icons.Cross
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.sharedTransitionAppBar
 
 @Composable
 fun SwissTransferTopAppBar(
@@ -57,7 +58,6 @@ fun SwissTransferTopAppBar(
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
-        modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
             titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
@@ -67,6 +67,7 @@ fun SwissTransferTopAppBar(
         title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
         navigationIcon = navigationIcon,
         actions = actions,
+        modifier = modifier.sharedTransitionAppBar(),
     )
 }
 

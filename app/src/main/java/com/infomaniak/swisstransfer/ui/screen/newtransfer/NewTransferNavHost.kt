@@ -17,12 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer
 
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
@@ -37,6 +38,9 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesVie
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessViewModel
+import com.infomaniak.swisstransfer.ui.utils.LocalSharedTransitionScope
+import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
+import com.infomaniak.swisstransfer.ui.utils.animatedComposable
 
 @Composable
 fun NewTransferNavHost(
@@ -47,50 +51,63 @@ fun NewTransferNavHost(
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     cancelUploadNotification: () -> Unit,
 ) {
-
-    NavHost(navController, startDestination) {
-        composable<PickFilesDestination> {
-            cancelUploadNotification()
-            PickFilesScreen(
-                pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
-                notificationPermissionManager = notificationPermissionManager,
-                exitNewTransfer = { closeActivity(true) },
-                navigateToUploadProgress = { navController.navigate(UploadDestination) },
-                navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
-            )
-        }
-        composable<UploadDestination> {
-            UploadScreen(
-                inAppReviewManager = inAppReviewManager,
-                navigateBackToPickFiles = { navController.popBackStack(route = PickFilesDestination, inclusive = false) },
-                exitNewTransfer = { closeActivity(true) },
-            )
-        }
-        composable<UploadSuccessDestination> {
-            // The transfer has succeeded so we decrement the review countdown
-            inAppReviewManager.decrementAppReviewCountdown()
-
-            val args = it.toRoute<UploadSuccessDestination>()
-            val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
-            UploadSuccessScreen(
-                transferType = args.transferType,
-                transferUuid = args.transferUuid,
-                transferUrl = args.transferUrl,
-                dismissCompleteUpload = {
-                    uploadSuccessViewModel.dismissCompleteUpload()
-                    closeActivity(true)
+    SharedTransitionLayout {
+        CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
+            NavHost(
+                navController = navController,
+                startDestination = startDestination,
+                enterTransition = { SwissTransferTransition.enterTransition },
+                exitTransition = { SwissTransferTransition.exitTransition },
+            ) {
+                animatedComposable<PickFilesDestination> {
+                    cancelUploadNotification()
+                    PickFilesScreen(
+                        pickFilesViewModel = hiltViewModel<PickFilesViewModel>(it),
+                        notificationPermissionManager = notificationPermissionManager,
+                        exitNewTransfer = { closeActivity(true) },
+                        navigateToUploadProgress = { navController.navigate(UploadDestination) },
+                        navigateToFilesDetails = { navController.navigate(NewTransferFilesDetailsDestination) },
+                    )
                 }
-            )
-        }
-        composable<NewTransferFilesDetailsDestination> {
-            val backStackEntry = remember(it) { navController.getBackStackEntry(PickFilesDestination) }
-            NewTransferFilesDetailsScreen(
-                pickFilesViewModel = hiltViewModel<PickFilesViewModel>(backStackEntry),
-                withFilesSize = true,
-                withSpaceLeft = true,
-                withFileDelete = true,
-                navigateBack = { navController.navigateUp() },
-            )
+                animatedComposable<UploadDestination> {
+                    UploadScreen(
+                        inAppReviewManager = inAppReviewManager,
+                        navigateBackToPickFiles = {
+                            navController.popBackStack(
+                                route = PickFilesDestination,
+                                inclusive = false,
+                            )
+                        },
+                        exitNewTransfer = { closeActivity(true) },
+                    )
+                }
+                animatedComposable<UploadSuccessDestination> {
+                    // The transfer has succeeded so we decrement the review countdown
+                    inAppReviewManager.decrementAppReviewCountdown()
+
+                    val args = it.toRoute<UploadSuccessDestination>()
+                    val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
+                    UploadSuccessScreen(
+                        transferType = args.transferType,
+                        transferUuid = args.transferUuid,
+                        transferUrl = args.transferUrl,
+                        dismissCompleteUpload = {
+                            uploadSuccessViewModel.dismissCompleteUpload()
+                            closeActivity(true)
+                        }
+                    )
+                }
+                animatedComposable<NewTransferFilesDetailsDestination> {
+                    val backStackEntry = remember(it) { navController.getBackStackEntry(PickFilesDestination) }
+                    NewTransferFilesDetailsScreen(
+                        pickFilesViewModel = hiltViewModel<PickFilesViewModel>(backStackEntry),
+                        withFilesSize = true,
+                        withSpaceLeft = true,
+                        withFileDelete = true,
+                        navigateBack = { navController.navigateUp() },
+                    )
+                }
+            }
         }
     }
 }

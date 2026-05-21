@@ -19,17 +19,20 @@ package com.infomaniak.swisstransfer.ui.components
 
 import android.content.Context
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldDestinationItem
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,6 +41,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
+import com.infomaniak.swisstransfer.ui.utils.LocalAnimatedPaneVisibilityScope
+import com.infomaniak.swisstransfer.ui.utils.LocalCurrentTopBarKey
+import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
+import com.infomaniak.swisstransfer.ui.utils.TopBarKey
+import com.infomaniak.swisstransfer.ui.utils.isAnimating
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.isWindowMedium
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
@@ -85,10 +93,58 @@ fun <T> TwoPaneScaffold(
     ListDetailPaneScaffold(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
-        listPane = { AnimatedPane { navigator.listPane() } },
-        detailPane = { AnimatedPane { navigator.detailPane() } },
+        listPane = {
+            AnimatedPane(
+                enterTransition = SwissTransferTransition.enterTransition,
+                exitTransition = SwissTransferTransition.exitTransition,
+            ) {
+                CompositionLocalProvider(
+                    LocalAnimatedPaneVisibilityScope provides this@AnimatedPane,
+                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.ListPane),
+                ) {
+                    navigator.listPane()
+                }
+            }
+        },
+        detailPane = {
+            AnimatedPane(
+                enterTransition = SwissTransferTransition.enterTransition,
+                exitTransition = SwissTransferTransition.exitTransition,
+            ) {
+                CompositionLocalProvider(
+                    LocalAnimatedPaneVisibilityScope provides this@AnimatedPane,
+                    LocalCurrentTopBarKey provides navigator.getTopAppBarKey(dualPaneKey = TopBarKey.DetailPane),
+                ) {
+                    navigator.detailPane()
+                }
+            }
+        },
         modifier = modifier,
     )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun <T> ThreePaneScaffoldNavigator<T>.getTopAppBarKey(dualPaneKey: TopBarKey): TopBarKey {
+    return if (isInSinglePaneMode(this)) TopBarKey.SinglePane else dualPaneKey
+}
+
+@Composable
+fun <T> AnimatedContentDetailPane(
+    destinationContent: T,
+    content: @Composable (T) -> Unit,
+) {
+    AnimatedContent(
+        targetState = destinationContent,
+        transitionSpec = { SwissTransferTransition.transitionSpec },
+    ) { targetDestination ->
+        val activeScope = LocalAnimatedPaneVisibilityScope.current?.let { paneScope ->
+            if (paneScope.isAnimating()) paneScope else this@AnimatedContent
+        }
+
+        CompositionLocalProvider(LocalAnimatedPaneVisibilityScope provides activeScope) {
+            content(targetDestination)
+        }
+    }
 }
 
 /**
@@ -120,4 +176,11 @@ suspend fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
 suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
     if (windowAdaptiveInfo.isWindowMedium(context) || windowAdaptiveInfo.isWindowLarge(context)) navigateBack()
     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun <T> isInSinglePaneMode(navigator: ThreePaneScaffoldNavigator<T>): Boolean {
+    val isListPaneVisible = navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
+    val isDetailPaneVisible = navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
+    return !isListPaneVisible || !isDetailPaneVisible
 }

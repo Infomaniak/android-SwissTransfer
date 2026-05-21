@@ -43,6 +43,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.components.AnimatedContentDetailPane
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TwoPaneScaffold
@@ -71,11 +72,11 @@ fun TransfersScreenWrapper(
     direction: TransferDirection,
     hideBottomBar: MutableState<Boolean>,
     transferUuid: String? = null,
-    isApiV2Deeplink: Boolean? = null
+    isApiV2Deeplink: Boolean? = null,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    TwoPaneScaffold<DestinationContent>(
+    TwoPaneScaffold(
         listPane = {
             val transfersViewModel = hiltViewModel<TransfersViewModel>()
             val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
@@ -204,38 +205,40 @@ private fun DetailPane(
         scope.launch { ScreenWrapperUtils.getBackNavigation(navigator)?.invoke() }
     }
 
-    when (destinationContent) {
-        null -> {
-            NoSelectionEmptyState(hasTransfer())
-        }
-        is DestinationContent.RootLevel -> {
-            TransferDetailsScreen(
-                transferUuid = destinationContent.transferUuid,
-                direction = destinationContent.direction,
-                isApiV2Deeplink = isApiV2Deeplink.takeIf { destinationContent.isDeeplinkNavigation },
-                navigateBack = navigateBack,
-                navigateToFolder = { selectedFolderUuid ->
-                    scope.launch {
-                        navigator.navigateToFolder(
-                            destinationContent.direction,
-                            destinationContent.transferUuid,
-                            selectedFolderUuid,
-                        )
-                    }
-                },
-                onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
-            )
-        }
-        is DestinationContent.FolderLevel -> {
-            val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+    AnimatedContentDetailPane(destinationContent = destinationContent) { targetDestination ->
+        when (targetDestination) {
+            null -> {
+                NoSelectionEmptyState(hasTransfer())
+            }
+            is DestinationContent.RootLevel -> {
+                TransferDetailsScreen(
+                    transferUuid = targetDestination.transferUuid,
+                    direction = targetDestination.direction,
+                    isApiV2Deeplink = isApiV2Deeplink.takeIf { targetDestination.isDeeplinkNavigation },
+                    navigateBack = navigateBack,
+                    navigateToFolder = { selectedFolderUuid ->
+                        scope.launch {
+                            navigator.navigateToFolder(
+                                targetDestination.direction,
+                                targetDestination.transferUuid,
+                                selectedFolderUuid,
+                            )
+                        }
+                    },
+                    onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } },
+                )
+            }
+            is DestinationContent.FolderLevel -> {
+                val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
-            ExistingTransferFilesDetails(
-                navigator,
-                destinationContent.folderUuid,
-                destinationContent.direction,
-                destinationContent.transferUuid,
-                windowAdaptiveInfo,
-            )
+                ExistingTransferFilesDetails(
+                    navigator = navigator,
+                    folderUuid = targetDestination.folderUuid,
+                    transferDirection = targetDestination.direction,
+                    transferUuid = targetDestination.transferUuid,
+                    windowAdaptiveInfo = windowAdaptiveInfo,
+                )
+            }
         }
     }
 }

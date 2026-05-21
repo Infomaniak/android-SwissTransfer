@@ -30,7 +30,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -54,9 +53,9 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun ReceivedScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     hasTransfer: (Boolean) -> Unit,
     onDeleteTransfer: () -> Unit,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
 
     val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
@@ -100,43 +99,30 @@ private fun ReceivedScreen(
             if (isWindowSmall()) ReceivedEmptyFab(isMessageVisible = { isFirstTransfer() })
         },
     ) {
-        if (uiState() is TransferUiState.Success) {
-            ReceivedContent(
-                transfers = (uiState() as TransferUiState.Success).data,
+        (uiState() as? TransferUiState.Success)?.let { transferUiStateSuccess ->
+            TransferItemList(
+                modifier = Modifier.fillMaxHeight(),
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferUuid = getSelectedTransferUuid,
+                getTransfers = { transferUiStateSuccess.data },
                 onDeleteTransfer = onDeleteTransfer,
+                title = stringResource(R.string.receivedFilesTitle),
+                emptyState = { ReceivedEmptyScreen() },
             )
         }
     }
 }
 
 @Composable
-private fun ReceivedContent(
-    transfers: GroupedTransfers,
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
-    onDeleteTransfer: (String) -> Unit,
-) {
-    if (transfers.isEmpty()) {
-        val shouldDisplayIcon = isWindowSmall()
-        EmptyState(
-            content = if (shouldDisplayIcon) {
-                { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) }
-            } else null,
-            titleRes = R.string.noTransferReceivedTitle,
-            descriptionRes = R.string.noTransferReceivedDescription,
-        )
-    } else {
-        TransferItemList(
-            modifier = Modifier.fillMaxHeight(),
-            direction = TransferDirection.RECEIVED,
-            navigateToDetails = navigateToDetails,
-            getSelectedTransferUuid = getSelectedTransferUuid,
-            getTransfers = { transfers },
-            onDeleteTransfer = onDeleteTransfer,
-        )
-    }
+private fun ReceivedEmptyScreen() {
+    val shouldDisplayIcon = isWindowSmall()
+    EmptyState(
+        content = if (shouldDisplayIcon) {
+            { Image(imageVector = AppIllus.MascotSearching.image(), contentDescription = null) }
+        } else null,
+        titleRes = R.string.noTransferReceivedTitle,
+        descriptionRes = R.string.noTransferReceivedDescription,
+    )
 }
 
 @PreviewAllWindows

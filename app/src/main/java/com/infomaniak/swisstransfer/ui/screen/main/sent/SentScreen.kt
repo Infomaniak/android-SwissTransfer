@@ -31,7 +31,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
-import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
@@ -53,9 +52,9 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun SentScreen(
     navigateToDetails: (transferUuid: String) -> Unit,
     getSelectedTransferUuid: () -> String?,
-    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     hasTransfer: (Boolean) -> Unit,
     onDeleteTransfer: () -> Unit,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
 ) {
 
     val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
@@ -103,35 +102,17 @@ private fun SentScreen(
             }
         },
     ) {
-        if (uiState() is TransferUiState.Success) {
-            SentContent(
-                transfers = (uiState() as TransferUiState.Success).data,
+        (uiState() as? TransferUiState.Success)?.let { transferUiStateSuccess ->
+            TransferItemList(
+                modifier = Modifier.fillMaxHeight(),
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferUuid = getSelectedTransferUuid,
                 onDeleteTransfer = onDeleteTransfer,
+                getTransfers = { transferUiStateSuccess.data },
+                title = stringResource(R.string.sentFilesTitle),
+                emptyState = { SentEmptyScreen() },
             )
         }
-    }
-}
-
-@Composable
-private fun SentContent(
-    transfers: GroupedTransfers,
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
-    onDeleteTransfer: (String) -> Unit
-) {
-    if (transfers.isEmpty()) {
-        SentEmptyScreen()
-    } else {
-        TransferItemList(
-            modifier = Modifier.fillMaxHeight(),
-            direction = TransferDirection.SENT,
-            navigateToDetails = navigateToDetails,
-            getSelectedTransferUuid = getSelectedTransferUuid,
-            getTransfers = { transfers },
-            onDeleteTransfer = onDeleteTransfer,
-        )
     }
 }
 

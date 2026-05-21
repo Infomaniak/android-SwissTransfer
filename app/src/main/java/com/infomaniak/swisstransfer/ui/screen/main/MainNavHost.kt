@@ -17,13 +17,12 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation
@@ -34,6 +33,9 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.SentDestination.Companion.sentDestination
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountScreenWrapper
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.TransfersScreenWrapper
+import com.infomaniak.swisstransfer.ui.utils.LocalSharedTransitionScope
+import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
+import com.infomaniak.swisstransfer.ui.utils.animatedComposable
 
 @Composable
 fun MainNavHost(
@@ -48,25 +50,35 @@ fun MainNavHost(
         else -> MainNavigation.startDestination
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-    ) {
-        sentDestination {
-            val args = it.toRoute<SentDestination>()
-            TransfersScreenWrapper(TransferDirection.SENT, transferUuid = args.transferUuid, hideBottomBar = hideBottomBar)
+    SharedTransitionLayout {
+        CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
+            NavHost(
+                navController = navController,
+                startDestination = startDestination,
+                enterTransition = { SwissTransferTransition.enterTransition },
+                exitTransition = { SwissTransferTransition.exitTransition },
+            ) {
+                sentDestination {
+                    val args = it.toRoute<SentDestination>()
+                    TransfersScreenWrapper(
+                        direction = TransferDirection.SENT,
+                        transferUuid = args.transferUuid,
+                        hideBottomBar = hideBottomBar,
+                    )
+                }
+                receivedDestination {
+                    val args = it.toRoute<ReceivedDestination>()
+                    TransfersScreenWrapper(
+                        direction = TransferDirection.RECEIVED,
+                        transferUuid = args.transferUuid,
+                        isApiV2Deeplink = args.isApiV2,
+                        hideBottomBar = hideBottomBar,
+                    )
+                }
+                animatedComposable<MyAccountDestination> {
+                    MyAccountScreenWrapper()
+                }
+            }
         }
-        receivedDestination {
-            val args = it.toRoute<ReceivedDestination>()
-            TransfersScreenWrapper(
-                direction = TransferDirection.RECEIVED,
-                transferUuid = args.transferUuid,
-                isApiV2Deeplink = args.isApiV2,
-                hideBottomBar = hideBottomBar,
-            )
-        }
-        composable<MyAccountDestination> { MyAccountScreenWrapper() }
     }
 }
