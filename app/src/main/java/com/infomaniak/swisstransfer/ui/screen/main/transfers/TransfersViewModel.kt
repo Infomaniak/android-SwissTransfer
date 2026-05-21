@@ -17,8 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.main.transfers
 
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.cancellable
@@ -32,6 +30,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -54,11 +53,16 @@ class TransfersViewModel @Inject constructor(
         .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
-    val sentTransfersAreEmpty: StateFlow<Boolean> = transferManager.getTransfersCount(TransferDirection.SENT)
-        .map { it == 0L }
-        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = false)
-
-    val selectedTransferUuids: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+    val allTransfersAreEmpty: StateFlow<Boolean> = combine(
+        transferManager.getTransfersCount(TransferDirection.RECEIVED),
+        transferManager.getTransfersCount(TransferDirection.SENT),
+    ) { receivedCount, sentCount ->
+        receivedCount + sentCount == 0L
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = false,
+    )
 
     fun fetchPendingTransfers() {
         viewModelScope.launch(ioDispatcher) {

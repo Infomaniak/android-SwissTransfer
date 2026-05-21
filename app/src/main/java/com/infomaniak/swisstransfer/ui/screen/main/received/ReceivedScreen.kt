@@ -59,7 +59,7 @@ fun ReceivedScreen(
 ) {
 
     val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
-    val sentTransfersAreEmpty by transfersViewModel.sentTransfersAreEmpty.collectAsStateWithLifecycle()
+    val hasNoTransfers by transfersViewModel.allTransfersAreEmpty.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 
@@ -67,7 +67,7 @@ fun ReceivedScreen(
 
     ReceivedScreen(
         uiState = { uiState },
-        isFirstTransfer = { sentTransfersAreEmpty },
+        isFirstTransfer = { hasNoTransfers },
         navigateToDetails = navigateToDetails,
         getSelectedTransferUuid = getSelectedTransferUuid,
         onDeleteTransfer = { transferUuid ->
