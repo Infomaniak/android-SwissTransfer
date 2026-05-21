@@ -116,7 +116,7 @@ suspend fun <T> ThreePaneScaffoldNavigator<T>.popBackStack(): Boolean {
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, item: T) {
-    if (isWindowMedium(context) || isWindowLarge(context)) navigateBack()
+suspend fun <T> ThreePaneScaffoldNavigator<T>.selectItem(context: Context, windowAdaptiveInfo: WindowAdaptiveInfo, item: T) {
+    if (windowAdaptiveInfo.isWindowMedium(context) || windowAdaptiveInfo.isWindowLarge(context)) navigateBack()
     navigateTo(ListDetailPaneScaffoldRole.Detail, item)
 }
