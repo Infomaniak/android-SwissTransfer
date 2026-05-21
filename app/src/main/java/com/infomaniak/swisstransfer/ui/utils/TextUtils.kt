@@ -23,22 +23,38 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import java.util.IllegalFormatException
 
 object TextUtils {
     @Composable
-    fun assembleWithBoldArgument(template: String, argument: String): AnnotatedString {
-        val description = String.format(template, argument)
-
-        val startIndex = description.indexOf(argument)
-        val endIndex = startIndex + argument.length
+    fun assembleWithBoldArgument(template: String, vararg arguments: String): AnnotatedString {
+        val description = try {
+            String.format(template, *arguments)
+        } catch (exception: IllegalFormatException) {
+            template
+        }
 
         return buildAnnotatedString {
             append(description)
-            addStyle(
-                style = SpanStyle(fontWeight = FontWeight.Bold, color = SwissTransferTheme.colors.primaryTextColor),
-                start = startIndex,
-                end = endIndex,
-            )
+
+            arguments.forEach { argument ->
+                if (argument.isBlank()) return@forEach
+
+                var startIndex = description.indexOf(argument)
+
+                while (startIndex != -1) {
+                    addStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = SwissTransferTheme.colors.primaryTextColor
+                        ),
+                        start = startIndex,
+                        end = startIndex + argument.length
+                    )
+
+                    startIndex = description.indexOf(argument, startIndex + argument.length)
+                }
+            }
         }
     }
 }

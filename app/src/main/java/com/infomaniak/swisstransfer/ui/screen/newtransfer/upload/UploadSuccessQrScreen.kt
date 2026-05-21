@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import android.app.Activity.ScreenCaptureCallback
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,11 +34,18 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.infomaniak.core.common.extensions.findActivity
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
@@ -48,6 +57,7 @@ import com.infomaniak.swisstransfer.ui.components.QrCode
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.beers.Beers
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ScreenshotBottomSheet
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components.ShareAndCopyButtons
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -55,6 +65,20 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val activity = LocalContext.current.findActivity()
+    var showScreenshotBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && activity != null) {
+        DisposableEffect(activity) {
+            val callback = ScreenCaptureCallback { showScreenshotBottomSheet = true }
+            activity.registerScreenCaptureCallback(activity.mainExecutor, callback)
+
+            onDispose {
+                activity.unregisterScreenCaptureCallback(callback)
+            }
+        }
+    }
 
     BottomStickyButtonScaffold(
         snackbarHostState = snackbarHostState,
@@ -77,6 +101,13 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
                 snackbarHostState = snackbarHostState,
             )
         }
+    }
+
+    if (showScreenshotBottomSheet) {
+        ScreenshotBottomSheet(
+            onDismissRequest = { showScreenshotBottomSheet = false },
+            transferLink = transferUrl,
+        )
     }
 }
 
