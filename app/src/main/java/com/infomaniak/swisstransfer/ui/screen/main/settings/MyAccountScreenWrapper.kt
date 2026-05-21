@@ -152,6 +152,7 @@ private fun ListPane(
     val context = LocalContext.current
     val aboutURL = stringResource(R.string.urlAbout)
     val userReportURL = stringResource(R.string.urlUserReport)
+    val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
     val scope = rememberCoroutineScope()
 
