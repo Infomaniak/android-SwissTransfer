@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,22 +30,6 @@ import androidx.window.core.layout.WindowWidthSizeClass.Companion.COMPACT
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.EXPANDED
 import androidx.window.core.layout.WindowWidthSizeClass.Companion.MEDIUM
 import androidx.window.layout.WindowMetricsCalculator
-
-/**
- * Custom window width classification based on Material 3 breakpoints.
- * Uses [WindowMetricsCalculator] to read the real window size in dp.
- */
-private enum class CustomWindowWidthClass(val minWidthDp: Int) {
-    SMALL(0),
-    MEDIUM(600),
-    LARGE(1080),
-}
-
-private enum class CustomWindowHeightClass(val minHeightDp: Int) {
-    COMPACT(0),
-    MEDIUM(480),
-    EXPANDED(900),
-}
 
 /**
  * Determines if the current window is classified as a large window suitable for tablet devices.
