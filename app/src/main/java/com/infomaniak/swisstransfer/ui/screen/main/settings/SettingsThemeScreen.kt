@@ -42,18 +42,18 @@ fun SettingsThemeScreen(
     navigateBack: (() -> Unit),
     myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
-    val theme = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null).value?.theme
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     SettingsThemeScreen(
         navigateBack = navigateBack,
-        theme = theme,
+        selectedThemePosition = { appSettings.value?.theme?.ordinal },
         onThemeUpdate = { myAccountViewModel.setTheme(it) },
     )
 }
 
 @Composable
 private fun SettingsThemeScreen(
-    theme: Theme?,
+    selectedThemePosition: () -> Int?,
     navigateBack: (() -> Unit),
     onThemeUpdate: (Theme) -> Unit,
 ) {
@@ -61,7 +61,7 @@ private fun SettingsThemeScreen(
         topAppBarTitleRes = R.string.settingsOptionTheme,
         optionTitleRes = R.string.settingsThemeTitle,
         enumEntries = ThemeOption.entries,
-        selectedSettingOptionPosition = theme?.ordinal,
+        selectedSettingOptionPosition = selectedThemePosition,
         matomoValue = MatomoScreen.ThemeSetting,
         setSelectedSettingOptionPosition = { position ->
             MatomoSwissTransfer.trackSettingsGlobalThemeEvent(ThemeOption.entries[position].matomoName)
@@ -87,7 +87,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen(theme = Theme.SYSTEM, navigateBack = {}, onThemeUpdate = {})
+            SettingsThemeScreen(selectedThemePosition = { Theme.SYSTEM.ordinal }, navigateBack = {}, onThemeUpdate = {})
         }
     }
 }

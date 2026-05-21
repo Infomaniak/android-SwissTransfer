@@ -38,10 +38,10 @@ fun SettingsValidityPeriodScreen(
     navigateBack: (() -> Unit),
     myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
-    val validityPeriod = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null).value?.validityPeriod
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     SettingsValidityPeriodScreen(
-        validityPeriod = validityPeriod,
+        selectedValidityPeriodPosition = { appSettings.value?.validityPeriod?.ordinal },
         navigateBack = navigateBack,
         onValidityPeriodChange = { myAccountViewModel.setValidityPeriod(it) },
     )
@@ -49,7 +49,7 @@ fun SettingsValidityPeriodScreen(
 
 @Composable
 private fun SettingsValidityPeriodScreen(
-    validityPeriod: ValidityPeriod?,
+    selectedValidityPeriodPosition: () -> Int?,
     navigateBack: (() -> Unit),
     onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
@@ -57,7 +57,7 @@ private fun SettingsValidityPeriodScreen(
         topAppBarTitleRes = R.string.settingsOptionValidityPeriod,
         optionTitleRes = R.string.settingsValidityPeriodTitle,
         enumEntries = ValidityPeriodOption.entries,
-        selectedSettingOptionPosition = validityPeriod?.ordinal,
+        selectedSettingOptionPosition = selectedValidityPeriodPosition,
         matomoValue = MatomoScreen.ValidityPeriodSetting,
         setSelectedSettingOptionPosition = { position ->
             val option = ValidityPeriodOption.entries[position]
@@ -103,7 +103,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsValidityPeriodScreen(
-                validityPeriod = ValidityPeriod.THIRTY,
+                selectedValidityPeriodPosition = { ValidityPeriod.THIRTY.ordinal },
                 navigateBack = {},
                 onValidityPeriodChange = {},
             )

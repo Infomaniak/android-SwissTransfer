@@ -32,11 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.appSettings.AppSettings
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferType
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -75,6 +77,25 @@ fun SettingsScreen(
     getSelectedSetting: () -> SettingsOptionScreens?,
     myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
+    SettingsScreen(
+        isAccountDeletable = isAccountDeletable,
+        onItemClick = onItemClick,
+        navigateBack = navigateBack,
+        getSelectedSetting = getSelectedSetting,
+        appSettings = appSettings.value,
+    )
+}
+
+@Composable
+private fun SettingsScreen(
+    isAccountDeletable: () -> Boolean,
+    onItemClick: (SettingsOptionScreens) -> Unit,
+    navigateBack: () -> Unit,
+    getSelectedSetting: () -> SettingsOptionScreens?,
+    appSettings: AppSettings?,
+) {
     val selectedSetting = getSelectedSetting()
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.Settings) }
@@ -94,9 +115,7 @@ fun SettingsScreen(
         ) {
             SettingTitle(R.string.settingsCategoryGeneral)
 
-            val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
-
-            appSettings.value?.let { securedAppSettings ->
+            appSettings?.let { securedAppSettings ->
                 if (SDK_INT >= 29) {
                     SettingItem(
                         titleRes = R.string.settingsOptionTheme,
@@ -217,6 +236,16 @@ enum class SettingsOptionScreens {
 @PreviewAllWindows
 @Composable
 private fun SettingsScreenPreview() {
+    data class AppSettingsPreview(
+        override val downloadLimit: DownloadLimit = DownloadLimit.TWO_HUNDRED_FIFTY,
+        override val emailLanguage: EmailLanguage = EmailLanguage.FRENCH,
+        override val idOfAccountWithGuestData: Long? = null,
+        override val lastAuthorEmail: String? = null,
+        override val lastTransferType: TransferType = TransferType.LINK,
+        override val theme: Theme = Theme.SYSTEM,
+        override val validityPeriod: ValidityPeriod = ValidityPeriod.THIRTY,
+    ) : AppSettings
+
     SwissTransferTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingsScreen(
@@ -224,6 +253,7 @@ private fun SettingsScreenPreview() {
                 onItemClick = {},
                 navigateBack = {},
                 getSelectedSetting = { null },
+                appSettings = AppSettingsPreview()
             )
         }
     }

@@ -39,7 +39,7 @@ fun OptionScaffold(
     @StringRes topAppBarTitleRes: Int,
     @StringRes optionTitleRes: Int,
     enumEntries: List<SettingOption>,
-    selectedSettingOptionPosition: Int?,
+    selectedSettingOptionPosition: () -> Int?,
     matomoValue: MatomoScreen,
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit),
@@ -59,7 +59,7 @@ fun OptionScaffold(
 
             SingleSelectOptions(
                 items = enumEntries,
-                selectedItem = { selectedSettingOptionPosition },
+                selectedItem = selectedSettingOptionPosition,
                 setSelectedItem = { position ->
                     setSelectedSettingOptionPosition(position)
                 },
@@ -76,7 +76,7 @@ private fun Preview() {
             topAppBarTitleRes = R.string.settingsOptionTheme,
             optionTitleRes = R.string.settingsThemeTitle,
             enumEntries = ThemeOption.entries,
-            selectedSettingOptionPosition = 0,
+            selectedSettingOptionPosition = { 0 },
             matomoValue = MatomoScreen.Sent,
             setSelectedSettingOptionPosition = {},
             navigateBack = {},
