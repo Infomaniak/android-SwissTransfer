@@ -27,7 +27,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.sentry.Sentry
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 import io.sentry.protocol.User as SentryUser
@@ -60,10 +59,8 @@ class AccountUtils @Inject constructor(
     }
 
     override suspend fun removeUser(userId: Int) {
+        accountManager.logoutCurrentUser(newSTUser = null)
         super.removeUser(userId)
-        accountManager.logoutCurrentUser(newSTUser = userDao.getFirst().toStUser())
-
-        if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
     private fun User?.toStUser(): STUser = when (this) {
