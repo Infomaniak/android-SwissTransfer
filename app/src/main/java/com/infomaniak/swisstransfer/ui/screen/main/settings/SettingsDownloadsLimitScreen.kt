@@ -37,10 +37,10 @@ fun SettingsDownloadsLimitScreen(
     navigateBack: (() -> Unit),
     myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
-    val downloadLimit = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null).value?.downloadLimit
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     SettingsDownloadsLimitScreen(
-        downloadLimit = downloadLimit,
+        selectedDownloadLimitPosition = { appSettings.value?.downloadLimit?.ordinal },
         navigateBack = navigateBack,
         onDownloadLimitChange = { myAccountViewModel.setDownloadLimit(it) },
     )
@@ -48,7 +48,7 @@ fun SettingsDownloadsLimitScreen(
 
 @Composable
 private fun SettingsDownloadsLimitScreen(
-    downloadLimit: DownloadLimit?,
+    selectedDownloadLimitPosition: () -> Int?,
     navigateBack: (() -> Unit),
     onDownloadLimitChange: (DownloadLimit) -> Unit,
 ) {
@@ -56,7 +56,7 @@ private fun SettingsDownloadsLimitScreen(
         topAppBarTitleRes = R.string.settingsOptionDownloadLimit,
         optionTitleRes = R.string.settingsDownloadsLimitTitle,
         enumEntries = DownloadLimitOption.entries,
-        selectedSettingOptionPosition = downloadLimit?.ordinal,
+        selectedSettingOptionPosition = selectedDownloadLimitPosition,
         matomoValue = MatomoScreen.DownloadLimitSetting,
         setSelectedSettingOptionPosition = { position ->
             MatomoSwissTransfer.trackSettingsGlobalDownloadLimitEvent(DownloadLimitOption.entries[position].matomoName)
@@ -95,7 +95,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsDownloadsLimitScreen(
-                downloadLimit = DownloadLimit.TWO_HUNDRED_FIFTY,
+                selectedDownloadLimitPosition = { DownloadLimit.TWO_HUNDRED_FIFTY.ordinal },
                 navigateBack = {},
                 onDownloadLimitChange = {},
             )

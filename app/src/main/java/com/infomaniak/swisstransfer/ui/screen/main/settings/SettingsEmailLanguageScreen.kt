@@ -37,10 +37,10 @@ fun SettingsEmailLanguageScreen(
     navigateBack: (() -> Unit),
     myAccountViewModel: MyAccountViewModel = hiltViewModel(),
 ) {
-    val emailLanguage = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null).value?.emailLanguage
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     SettingsEmailLanguageScreen(
-        emailLanguage = emailLanguage,
+        selectedEmailLanguagePosition = { appSettings.value?.emailLanguage?.ordinal },
         navigateBack = navigateBack,
         onEmailLanguageChange = { myAccountViewModel.setEmailLanguage(it) },
     )
@@ -48,7 +48,7 @@ fun SettingsEmailLanguageScreen(
 
 @Composable
 private fun SettingsEmailLanguageScreen(
-    emailLanguage: EmailLanguage?,
+    selectedEmailLanguagePosition: () -> Int?,
     navigateBack: (() -> Unit),
     onEmailLanguageChange: (EmailLanguage) -> Unit,
 ) {
@@ -56,7 +56,7 @@ private fun SettingsEmailLanguageScreen(
         topAppBarTitleRes = R.string.settingsOptionEmailLanguage,
         optionTitleRes = R.string.settingsEmailLanguageTitle,
         enumEntries = EmailLanguageOption.entries,
-        selectedSettingOptionPosition = emailLanguage?.ordinal,
+        selectedSettingOptionPosition = selectedEmailLanguagePosition,
         matomoValue = MatomoScreen.EmailLanguageSetting,
         setSelectedSettingOptionPosition = { position ->
             MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguage.entries[position].value)
@@ -115,7 +115,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsEmailLanguageScreen(
-                emailLanguage = EmailLanguage.FRENCH,
+                selectedEmailLanguagePosition = { EmailLanguage.FRENCH.ordinal },
                 navigateBack = {},
                 onEmailLanguageChange = {},
             )
