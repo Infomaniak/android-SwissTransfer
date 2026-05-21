@@ -21,6 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -37,7 +39,21 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SettingsThemeScreen(
-    theme: Theme,
+    navigateBack: (() -> Unit),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
+) {
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
+    SettingsThemeScreen(
+        navigateBack = navigateBack,
+        selectedThemePosition = { appSettings.value?.theme?.ordinal },
+        onThemeUpdate = { myAccountViewModel.setTheme(it) },
+    )
+}
+
+@Composable
+private fun SettingsThemeScreen(
+    selectedThemePosition: () -> Int?,
     navigateBack: (() -> Unit),
     onThemeUpdate: (Theme) -> Unit,
 ) {
@@ -45,7 +61,7 @@ fun SettingsThemeScreen(
         topAppBarTitleRes = R.string.settingsOptionTheme,
         optionTitleRes = R.string.settingsThemeTitle,
         enumEntries = ThemeOption.entries,
-        selectedSettingOptionPosition = theme.ordinal,
+        selectedSettingOptionPosition = selectedThemePosition,
         matomoValue = MatomoScreen.ThemeSetting,
         setSelectedSettingOptionPosition = { position ->
             MatomoSwissTransfer.trackSettingsGlobalThemeEvent(ThemeOption.entries[position].matomoName)
@@ -71,7 +87,7 @@ enum class ThemeOption(
 private fun SettingsThemeScreenPreview() {
     SwissTransferTheme {
         Surface {
-            SettingsThemeScreen(theme = Theme.SYSTEM, navigateBack = {}, onThemeUpdate = {})
+            SettingsThemeScreen(selectedThemePosition = { Theme.SYSTEM.ordinal }, navigateBack = {}, onThemeUpdate = {})
         }
     }
 }

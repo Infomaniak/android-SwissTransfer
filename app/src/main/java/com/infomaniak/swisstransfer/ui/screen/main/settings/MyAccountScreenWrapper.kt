@@ -48,10 +48,6 @@ import com.infomaniak.core.network.TERMINATE_ACCOUNT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.core.webview.ui.WebViewActivity
-import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
-import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
-import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
-import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
@@ -78,7 +74,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
-import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import com.infomaniak.swisstransfer.ui.utils.ScreenWrapperUtils
 import com.infomaniak.swisstransfer.ui.utils.openAppNotificationSettings
 import com.infomaniak.swisstransfer.ui.utils.safeStartActivity
@@ -91,50 +86,27 @@ private const val URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION = "login.infomaniak.c
 
 @Composable
 fun MyAccountScreenWrapper(myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>()) {
-    val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
     val users by myAccountViewModel.users.collectAsStateWithLifecycle(emptyList())
 
-    appSettings?.let { safeAppSettings ->
-        val theme = GetSetCallbacks(get = { safeAppSettings.theme }, set = { myAccountViewModel.setTheme(it) })
-        val validityPeriod =
-            GetSetCallbacks(get = { safeAppSettings.validityPeriod }, set = { myAccountViewModel.setValidityPeriod(it) })
-        val downloadLimit =
-            GetSetCallbacks(get = { safeAppSettings.downloadLimit }, set = { myAccountViewModel.setDownloadLimit(it) })
-        val emailLanguage =
-            GetSetCallbacks(get = { safeAppSettings.emailLanguage }, set = { myAccountViewModel.setEmailLanguage(it) })
-
-        MyAccountScreenWrapper(
-            theme = theme,
-            users = { users },
-            validityPeriod = validityPeriod,
-            downloadLimit = downloadLimit,
-            emailLanguage = emailLanguage,
-            onDisconnectCurrentUser = myAccountViewModel::disconnectCurrentUser,
-            onSwitchUser = myAccountViewModel::switchUser,
-        )
-    }
+    MyAccountScreenWrapper(
+        users = { users },
+        onDisconnectCurrentUser = myAccountViewModel::disconnectCurrentUser,
+        onSwitchUser = myAccountViewModel::switchUser,
+    )
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun MyAccountScreenWrapper(
-    theme: GetSetCallbacks<Theme>,
+private fun MyAccountScreenWrapper(
     users: () -> List<User>,
-    validityPeriod: GetSetCallbacks<ValidityPeriod>,
-    downloadLimit: GetSetCallbacks<DownloadLimit>,
-    emailLanguage: GetSetCallbacks<EmailLanguage>,
     onDisconnectCurrentUser: () -> Unit,
     onSwitchUser: (userId: Int) -> Unit,
 ) {
-    TwoPaneScaffold<SettingsOptionScreens>(
+    TwoPaneScaffold(
         listPane = { ListPane(navigator = this, users, onDisconnectCurrentUser, onSwitchUser) },
         detailPane = {
             DetailPane(
                 navigator = this,
-                theme = theme,
-                validityPeriod = validityPeriod,
-                downloadLimit = downloadLimit,
-                emailLanguage = emailLanguage,
                 onDisconnectCurrentUser = onDisconnectCurrentUser
             )
         },
@@ -191,10 +163,6 @@ private fun ListPane(
 @Composable
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
-    theme: GetSetCallbacks<Theme>,
-    validityPeriod: GetSetCallbacks<ValidityPeriod>,
-    downloadLimit: GetSetCallbacks<DownloadLimit>,
-    emailLanguage: GetSetCallbacks<EmailLanguage>,
     onDisconnectCurrentUser: () -> Unit,
 ) {
 
@@ -215,11 +183,7 @@ private fun DetailPane(
             val context = LocalContext.current
 
             SettingsScreen(
-                theme = theme,
                 isAccountDeletable = { user != null },
-                validityPeriod = validityPeriod,
-                downloadLimit = downloadLimit,
-                emailLanguage = emailLanguage,
                 onItemClick = { item ->
                     handleSettingsItemClick(item, context, user, accountDeletionActivityResultLauncher, scope, navigator)
                 },
@@ -227,26 +191,10 @@ private fun DetailPane(
                 getSelectedSetting = { navigator.currentDestination?.contentKey },
             )
         }
-        THEME -> SettingsThemeScreen(
-            theme = theme.get(),
-            navigateBack = navigateBack,
-            onThemeUpdate = { theme.set(it) },
-        )
-        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(
-            validityPeriod = validityPeriod.get(),
-            navigateBack = navigateBack,
-            onValidityPeriodChange = { validityPeriod.set(it) },
-        )
-        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(
-            downloadLimit = downloadLimit.get(),
-            navigateBack = navigateBack,
-            onDownloadLimitChange = { downloadLimit.set(it) },
-        )
-        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(
-            emailLanguage = emailLanguage.get(),
-            navigateBack = navigateBack,
-            onEmailLanguageChange = { emailLanguage.set(it) },
-        )
+        THEME -> SettingsThemeScreen(navigateBack = navigateBack)
+        VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
+        DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
+        EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
         DATA_MANAGEMENT -> SettingsDataManagementScreen(
             navigateBack = navigateBack,
             onItemClick = { item ->
@@ -255,9 +203,7 @@ private fun DetailPane(
         )
         DATA_MANAGEMENT_MATOMO -> SettingsDataManagementMatomoScreen(navigateBack)
         DATA_MANAGEMENT_SENTRY -> SettingsDataManagementSentryScreen(navigateBack)
-        NOTIFICATIONS,
-        DELETE_MY_ACCOUNT,
-        null -> NoSelectionEmptyState()
+        NOTIFICATIONS, DELETE_MY_ACCOUNT, null -> NoSelectionEmptyState()
     }
 }
 
@@ -304,11 +250,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
         CompositionLocalProvider(LocalUser provides users.first()) {
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreenWrapper(
-                    theme = GetSetCallbacks(get = { Theme.SYSTEM }, set = {}),
                     users = { users },
-                    validityPeriod = GetSetCallbacks(get = { ValidityPeriod.THIRTY }, set = {}),
-                    downloadLimit = GetSetCallbacks(get = { DownloadLimit.TWO_HUNDRED_FIFTY }, set = {}),
-                    emailLanguage = GetSetCallbacks(get = { EmailLanguage.ENGLISH }, set = {}),
                     onDisconnectCurrentUser = {},
                     onSwitchUser = {},
                 )

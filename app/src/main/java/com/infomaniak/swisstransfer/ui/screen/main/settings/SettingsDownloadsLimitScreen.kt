@@ -20,6 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -32,7 +34,21 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SettingsDownloadsLimitScreen(
-    downloadLimit: DownloadLimit,
+    navigateBack: (() -> Unit),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
+) {
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
+    SettingsDownloadsLimitScreen(
+        selectedDownloadLimitPosition = { appSettings.value?.downloadLimit?.ordinal },
+        navigateBack = navigateBack,
+        onDownloadLimitChange = { myAccountViewModel.setDownloadLimit(it) },
+    )
+}
+
+@Composable
+private fun SettingsDownloadsLimitScreen(
+    selectedDownloadLimitPosition: () -> Int?,
     navigateBack: (() -> Unit),
     onDownloadLimitChange: (DownloadLimit) -> Unit,
 ) {
@@ -40,7 +56,7 @@ fun SettingsDownloadsLimitScreen(
         topAppBarTitleRes = R.string.settingsOptionDownloadLimit,
         optionTitleRes = R.string.settingsDownloadsLimitTitle,
         enumEntries = DownloadLimitOption.entries,
-        selectedSettingOptionPosition = downloadLimit.ordinal,
+        selectedSettingOptionPosition = selectedDownloadLimitPosition,
         matomoValue = MatomoScreen.DownloadLimitSetting,
         setSelectedSettingOptionPosition = { position ->
             MatomoSwissTransfer.trackSettingsGlobalDownloadLimitEvent(DownloadLimitOption.entries[position].matomoName)
@@ -79,7 +95,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsDownloadsLimitScreen(
-                downloadLimit = DownloadLimit.TWO_HUNDRED_FIFTY,
+                selectedDownloadLimitPosition = { DownloadLimit.TWO_HUNDRED_FIFTY.ordinal },
                 navigateBack = {},
                 onDownloadLimitChange = {},
             )

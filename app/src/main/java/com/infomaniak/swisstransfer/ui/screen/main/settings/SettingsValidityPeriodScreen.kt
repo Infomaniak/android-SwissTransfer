@@ -21,6 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -33,7 +35,21 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SettingsValidityPeriodScreen(
-    validityPeriod: ValidityPeriod,
+    navigateBack: (() -> Unit),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
+) {
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
+    SettingsValidityPeriodScreen(
+        selectedValidityPeriodPosition = { appSettings.value?.validityPeriod?.ordinal },
+        navigateBack = navigateBack,
+        onValidityPeriodChange = { myAccountViewModel.setValidityPeriod(it) },
+    )
+}
+
+@Composable
+private fun SettingsValidityPeriodScreen(
+    selectedValidityPeriodPosition: () -> Int?,
     navigateBack: (() -> Unit),
     onValidityPeriodChange: (ValidityPeriod) -> Unit,
 ) {
@@ -41,7 +57,7 @@ fun SettingsValidityPeriodScreen(
         topAppBarTitleRes = R.string.settingsOptionValidityPeriod,
         optionTitleRes = R.string.settingsValidityPeriodTitle,
         enumEntries = ValidityPeriodOption.entries,
-        selectedSettingOptionPosition = validityPeriod.ordinal,
+        selectedSettingOptionPosition = selectedValidityPeriodPosition,
         matomoValue = MatomoScreen.ValidityPeriodSetting,
         setSelectedSettingOptionPosition = { position ->
             val option = ValidityPeriodOption.entries[position]
@@ -87,7 +103,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsValidityPeriodScreen(
-                validityPeriod = ValidityPeriod.THIRTY,
+                selectedValidityPeriodPosition = { ValidityPeriod.THIRTY.ordinal },
                 navigateBack = {},
                 onValidityPeriodChange = {},
             )

@@ -21,6 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
@@ -32,7 +34,21 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SettingsEmailLanguageScreen(
-    emailLanguage: EmailLanguage,
+    navigateBack: (() -> Unit),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
+) {
+    val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
+
+    SettingsEmailLanguageScreen(
+        selectedEmailLanguagePosition = { appSettings.value?.emailLanguage?.ordinal },
+        navigateBack = navigateBack,
+        onEmailLanguageChange = { myAccountViewModel.setEmailLanguage(it) },
+    )
+}
+
+@Composable
+private fun SettingsEmailLanguageScreen(
+    selectedEmailLanguagePosition: () -> Int?,
     navigateBack: (() -> Unit),
     onEmailLanguageChange: (EmailLanguage) -> Unit,
 ) {
@@ -40,7 +56,7 @@ fun SettingsEmailLanguageScreen(
         topAppBarTitleRes = R.string.settingsOptionEmailLanguage,
         optionTitleRes = R.string.settingsEmailLanguageTitle,
         enumEntries = EmailLanguageOption.entries,
-        selectedSettingOptionPosition = emailLanguage.ordinal,
+        selectedSettingOptionPosition = selectedEmailLanguagePosition,
         matomoValue = MatomoScreen.EmailLanguageSetting,
         setSelectedSettingOptionPosition = { position ->
             MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguage.entries[position].value)
@@ -99,7 +115,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsEmailLanguageScreen(
-                emailLanguage = EmailLanguage.FRENCH,
+                selectedEmailLanguagePosition = { EmailLanguage.FRENCH.ordinal },
                 navigateBack = {},
                 onEmailLanguageChange = {},
             )

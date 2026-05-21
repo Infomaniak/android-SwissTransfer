@@ -65,7 +65,7 @@ fun SettingsDataManagementSentryScreen(
 }
 
 @Composable
-fun SettingsDataManagementSentryScreen(
+private fun SettingsDataManagementSentryScreen(
     navigateBack: (() -> Unit)?,
     isSentryAuthorized: () -> Boolean,
     setSentryAuthorization: (Boolean) -> Unit,

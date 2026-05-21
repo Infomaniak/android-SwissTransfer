@@ -23,10 +23,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -43,7 +39,7 @@ fun OptionScaffold(
     @StringRes topAppBarTitleRes: Int,
     @StringRes optionTitleRes: Int,
     enumEntries: List<SettingOption>,
-    selectedSettingOptionPosition: Int,
+    selectedSettingOptionPosition: () -> Int?,
     matomoValue: MatomoScreen,
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit),
@@ -61,12 +57,10 @@ fun OptionScaffold(
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             OptionTitle(titleRes = optionTitleRes)
 
-            var selectedItem by rememberSaveable { mutableIntStateOf(selectedSettingOptionPosition) }
             SingleSelectOptions(
                 items = enumEntries,
-                selectedItem = { selectedItem },
+                selectedItem = selectedSettingOptionPosition,
                 setSelectedItem = { position ->
-                    selectedItem = position
                     setSelectedSettingOptionPosition(position)
                 },
             )
@@ -82,7 +76,7 @@ private fun Preview() {
             topAppBarTitleRes = R.string.settingsOptionTheme,
             optionTitleRes = R.string.settingsThemeTitle,
             enumEntries = ThemeOption.entries,
-            selectedSettingOptionPosition = 0,
+            selectedSettingOptionPosition = { 0 },
             matomoValue = MatomoScreen.Sent,
             setSelectedSettingOptionPosition = {},
             navigateBack = {},
