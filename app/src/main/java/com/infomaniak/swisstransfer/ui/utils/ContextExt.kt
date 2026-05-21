@@ -111,13 +111,7 @@ suspend fun Context.openFile(uri: Uri) {
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    try {
-        startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
-        @OptIn(UnreliableToastApi::class)
-        toast(msgResId = R.string.startActivityCantHandleAction)
-        // TODO: Offer the share action as a fallback.
-    }
+    safeStartActivity(intent)
 }
 
 fun Context.safeStartActivity(intent: Intent) {

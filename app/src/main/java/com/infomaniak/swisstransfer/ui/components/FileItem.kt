@@ -58,10 +58,10 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils
 
 @Composable
 fun FileItem(
-    modifier: Modifier = Modifier,
     file: FileUi,
     isRemoveButtonVisible: Boolean,
     isCheckboxVisible: Boolean,
+    modifier: Modifier = Modifier,
     isChecked: () -> Boolean = { false },
     onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
@@ -101,15 +101,15 @@ private fun getDescription(file: FileUi): String {
 
 @Composable
 private fun FileItemContent(
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
     isCheckboxVisible: Boolean,
     isChecked: () -> Boolean,
     isRemoveButtonVisible: Boolean,
-    onRemove: (() -> Unit)?,
     title: String,
     description: String,
-    content: @Composable BoxScope.() -> Unit,
+    onRemove: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit
 ) {
     Card(
         modifier = modifier.then(getCardModifier(onClick)),
