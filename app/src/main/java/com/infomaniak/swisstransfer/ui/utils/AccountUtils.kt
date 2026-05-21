@@ -60,10 +60,10 @@ class AccountUtils @Inject constructor(
     }
 
     override suspend fun removeUser(userId: Int) {
+        if (currentUserIdFlow.first() == userId) {
+            accountManager.logoutCurrentUser(newSTUser = null)
+        }
         super.removeUser(userId)
-        accountManager.logoutCurrentUser(newSTUser = userDao.getFirst().toStUser())
-
-        if (currentUserIdFlow.first() == null) loginGuestUser()
     }
 
     private fun User?.toStUser(): STUser = when (this) {
