@@ -3,7 +3,7 @@ accompanistPermissions = "0.37.3"
 constraintlayoutCompose = "1.1.1"
 coreSplashscreen = "1.2.0"
 desugarJDK = "2.1.5"
-qrose = "1.0.1"
+qrose = "1.1.2"
 room = "2.8.4"
 swisstransfer = "10.1.0"
 
