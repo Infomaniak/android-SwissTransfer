@@ -41,8 +41,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -87,7 +85,7 @@ fun TransferItem(
     val cardContentDescription = stringResource(R.string.contentDescriptionViewTransferDetails)
 
     Card(
-        modifier = Modifier.semantics{
+        modifier = Modifier.semantics {
             role = Role.Button
             onClick(cardContentDescription, null)
         },
