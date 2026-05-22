@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.navigation
 
+import android.os.Parcelable
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
@@ -29,6 +30,7 @@ import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestin
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.animatedComposable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 /**
@@ -73,6 +75,15 @@ sealed class MainNavigation : NavigationDestination() {
                 )
             }
         }
+    }
+
+    sealed interface TransferIdType : Parcelable {
+        @JvmInline
+        @Parcelize
+        value class TransferId(val value: String) : TransferIdType
+        @JvmInline
+        @Parcelize
+        value class LinkId(val value: String) : TransferIdType
     }
 
     @Serializable
