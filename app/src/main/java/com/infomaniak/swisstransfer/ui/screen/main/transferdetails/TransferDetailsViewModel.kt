@@ -43,6 +43,9 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType.LinkId
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType.TransferId
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Loading
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.Success
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.TransferDetailsUiState.TransferError.Expired.ByDate
@@ -112,26 +115,24 @@ class TransferDetailsViewModel @Inject constructor(
     )
     //endregion
 
-    fun loadTransfer(transferUuid: String, isApiV2Deeplink: Boolean?) {
+    fun loadTransfer(transferIdType: TransferIdType) {
         viewModelScope.launch {
             runCatching {
                 _isWrongDeeplinkPassword.emit(false)
-                val transfer = when {
-                    isApiV2Deeplink == true -> transferManager.getTransferByLinkId(transferUuid)
-                    else -> transferManager.getTransferFlow(transferUuid).first()
+
+                val transfer = when (transferIdType) {
+                    is LinkId -> transferManager.getTransferByLinkId(transferIdType.value)
+                    is TransferId -> transferManager.getTransferFlow(transferIdType.value).first()
                 }
 
                 when {
-                    transfer == null && isApiV2Deeplink != null -> {
-                        val transferId = handleTransferDeeplink(transferUuid, _deeplinkPassword, isApiV2Deeplink)
+                    transfer == null -> {
+                        val transferId = handleTransferDeeplink(transferIdType, _deeplinkPassword)
                         _transferSourceFlow.emit(TransferSource.Local(transferId))
                     }
-                    transfer != null -> {
+                    else -> {
                         _transferSourceFlow.emit(TransferSource.Local(transfer.uuid))
                         transferManager.fetchTransfer(transfer.uuid)
-                    }
-                    else -> {
-                        error("No transfer found for uuid=$transferUuid outside of deeplink context.")
                     }
                 }
             }.cancellable().onFailure { exception ->
@@ -194,11 +195,11 @@ class TransferDetailsViewModel @Inject constructor(
     }
 
     @OptIn(UnreliableToastApi::class)
-    private suspend fun handleTransferDeeplink(transferUuid: String, password: String, isApiV2Deeplink: Boolean): String {
+    private suspend fun handleTransferDeeplink(transferIdType: TransferIdType, password: String): String {
         return runCatching {
-            val transferId = when {
-                isApiV2Deeplink -> transferManager.addTransferByLinkIdApiV2(linkId = transferUuid, password = password)
-                else -> transferManager.addTransferByLinkUUIDApiV1(transferUuid, password)
+            val transferId = when (transferIdType) {
+                is LinkId -> transferManager.addTransferByLinkIdApiV2(linkId = transferIdType.value, password = password)
+                is TransferId -> transferManager.addTransferByLinkUUIDApiV1(transferUuid = transferIdType.value, password)
             }
 
             _isWrongDeeplinkPassword.emit(false)
@@ -221,8 +222,10 @@ class TransferDetailsViewModel @Inject constructor(
         }.getOrThrow()
     }
 
-    fun deleteTransfer(transferUuid: String) {
-        deleteTransfer(transferUuid, viewModelScope)
+    fun deleteTransfer(transferIdType: TransferIdType) {
+        viewModelScope.launch {
+            deleteTransfer.delete(transferIdType)
+        }
     }
 
     private fun TransferUi?.toUiState(isInLocal: Boolean): TransferDetailsUiState = when (this?.transferStatus) {

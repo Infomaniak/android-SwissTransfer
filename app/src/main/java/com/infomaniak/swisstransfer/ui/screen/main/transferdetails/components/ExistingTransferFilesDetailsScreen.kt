@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.FilesDetailsViewModel
 import com.infomaniak.swisstransfer.ui.utils.openFile
@@ -35,7 +36,7 @@ import com.infomaniak.swisstransfer.ui.utils.openFile
 @Composable
 fun ExistingTransferFilesDetailsScreen(
     folderUuid: String,
-    transferUuid: String,
+    transferIdType: TransferIdType,
     navigateToFolder: (String) -> Unit,
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
@@ -63,7 +64,7 @@ fun ExistingTransferFilesDetailsScreen(
                 snackbarHostState = snackbarHostState,
                 files = it,
                 navigateToFolder = navigateToFolder,
-                transferFlow = filesDetailsViewModel.transferFlow(transferUuid),
+                transferFlow = filesDetailsViewModel.transferFlow(transferIdType),
                 runDownloadUi = { ui, transfer, file ->
                     filesDetailsViewModel.handleTransferDownload(
                         ui = ui,

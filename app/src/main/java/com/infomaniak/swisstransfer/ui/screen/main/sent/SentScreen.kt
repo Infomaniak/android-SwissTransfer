@@ -38,6 +38,7 @@ import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
@@ -50,8 +51,8 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 
 @Composable
 fun SentScreen(
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
+    navigateToDetails: (transferIdType: TransferIdType) -> Unit,
+    getSelectedTransferIdType: () -> TransferIdType?,
     hasTransfer: (Boolean) -> Unit,
     onDeleteTransfer: () -> Unit,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
@@ -70,7 +71,7 @@ fun SentScreen(
     SentScreen(
         uiState = { uiState },
         navigateToDetails = navigateToDetails,
-        getSelectedTransferUuid = getSelectedTransferUuid,
+        getSelectedTransferIdType = getSelectedTransferIdType,
         onDeleteTransfer = { transferUuid ->
             transfersViewModel.deleteTransfer(transferUuid)
             onDeleteTransfer()
@@ -81,8 +82,8 @@ fun SentScreen(
 @Composable
 private fun SentScreen(
     uiState: () -> TransferUiState,
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
+    navigateToDetails: (transferIdType: TransferIdType) -> Unit,
+    getSelectedTransferIdType: () -> TransferIdType?,
     onDeleteTransfer: (String) -> Unit,
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
@@ -106,7 +107,7 @@ private fun SentScreen(
             TransferItemList(
                 modifier = Modifier.fillMaxHeight(),
                 navigateToDetails = navigateToDetails,
-                getSelectedTransferUuid = getSelectedTransferUuid,
+                getSelectedTransferIdType = getSelectedTransferIdType,
                 onDeleteTransfer = onDeleteTransfer,
                 getTransfers = { transferUiStateSuccess.data },
                 title = stringResource(R.string.sentFilesTitle),
@@ -124,7 +125,7 @@ private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::
             SentScreen(
                 uiState = { TransferUiState.Success(transfers) },
                 navigateToDetails = {},
-                getSelectedTransferUuid = { null },
+                getSelectedTransferIdType = { null },
                 onDeleteTransfer = {},
             )
         }

@@ -62,7 +62,7 @@ fun MainNavHost(
                     val args = it.toRoute<SentDestination>()
                     TransfersScreenWrapper(
                         direction = TransferDirection.SENT,
-                        transferUuid = args.transferUuid,
+                        transferIdType = args.toTransferIdType(),
                         hideBottomBar = hideBottomBar,
                     )
                 }
@@ -70,8 +70,7 @@ fun MainNavHost(
                     val args = it.toRoute<ReceivedDestination>()
                     TransfersScreenWrapper(
                         direction = TransferDirection.RECEIVED,
-                        transferUuid = args.transferUuid,
-                        isApiV2Deeplink = args.isApiV2,
+                        transferIdType = args.toTransferIdType(),
                         hideBottomBar = hideBottomBar,
                     )
                 }

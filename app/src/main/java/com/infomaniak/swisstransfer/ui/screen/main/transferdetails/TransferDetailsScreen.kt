@@ -89,6 +89,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
 import com.infomaniak.swisstransfer.ui.images.icons.QrCode
 import com.infomaniak.swisstransfer.ui.images.icons.Share
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.previewparameter.TransferUiListPreviewParameter
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetailsViewModel.DeletableFromHistory
@@ -111,20 +112,19 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun TransferDetailsScreen(
-    transferUuid: String,
+    transferIdType: TransferIdType,
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     navigateToFolder: (folderUuid: String) -> Unit,
     onDeleteTransfer: () -> Unit,
-    isApiV2Deeplink: Boolean? = null,
     transferDetailsViewModel: TransferDetailsViewModel = hiltViewModel<TransferDetailsViewModel>(),
 ) {
     val uiState by transferDetailsViewModel.uiState.collectAsStateWithLifecycle()
     val isDeeplinkPasswordNeeded by transferDetailsViewModel.isDeeplinkNeedingPassword.collectAsStateWithLifecycle()
     val isWrongDeeplinkPassword by transferDetailsViewModel.isWrongDeeplinkPassword.collectAsStateWithLifecycle()
 
-    LaunchedEffect(transferUuid) {
-        transferDetailsViewModel.loadTransfer(transferUuid, isApiV2Deeplink)
+    LaunchedEffect(transferIdType) {
+        transferDetailsViewModel.loadTransfer(transferIdType)
     }
 
     val context = LocalContext.current
@@ -166,7 +166,7 @@ fun TransferDetailsScreen(
                     null
                 },
                 onDeleteTransferClicked = { transferError ->
-                    transferDetailsViewModel.deleteTransfer(transferUuid)
+                    transferDetailsViewModel.deleteTransfer(transferIdType)
                     matomoTrackDeleteTransfer(transferError)
                     onDeleteTransfer()
                 }
@@ -181,7 +181,7 @@ fun TransferDetailsScreen(
                 transferDetailsViewModel.resetIsDeeplinkNeedingPassword()
                 navigateBack?.invoke()
             },
-            onConfirmation = { transferDetailsViewModel.loadTransfer(transferUuid, isApiV2Deeplink) },
+            onConfirmation = { transferDetailsViewModel.loadTransfer(transferIdType) },
             isError = { isWrongDeeplinkPassword },
         )
     }

@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.navigation
 
+import android.os.Parcelable
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
@@ -26,9 +27,12 @@ import androidx.navigation.toRoute
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination.getDeeplinkDirection
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.LINK_ID_TYPE
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.TRANSFER_ID_TYPE
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.animatedComposable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 /**
@@ -40,39 +44,77 @@ sealed class MainNavigation : NavigationDestination() {
     protected inline fun <reified T : MainNavigation> NavGraphBuilder.getDeeplinkDirection(
         noinline content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit),
         transferUuidName: String,
+        idTypeName: String = "",
         suffix: String = "",
     ) {
-        val basePath = "${BuildConfig.BASE_URL}/d/{$transferUuidName}$suffix"
-        val basePathForV2 = "${BuildConfig.BASE_URL_V2}/dl/{$transferUuidName}$suffix"
+        val basePath = "${BuildConfig.BASE_URL}/d/{$transferUuidName}/{$idTypeName}$suffix"
+        val basePathForV2 = "${BuildConfig.BASE_URL_V2}/dl/{$transferUuidName}/{$idTypeName}$suffix"
         val deeplinks = listOf(navDeepLink<T>(basePath), navDeepLink<T>(basePathForV2))
 
         animatedComposable<T>(deepLinks = deeplinks, content = content)
     }
 
+    protected fun toTransferIdType(id: String, idType: String): TransferIdType? {
+        return when (idType) {
+            LINK_ID_TYPE -> TransferIdType.LinkId(id)
+            else -> TransferIdType.TransferId(id)
+        }
+    }
+
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class SentDestination(val transferUuid: String? = null) : MainNavigation() {
+    data class SentDestination(
+        private val transferUuid: String? = null,
+        private val idType: String = TRANSFER_ID_TYPE,
+    ) : MainNavigation() {
+
+        fun toTransferIdType(): TransferIdType? {
+            val value = transferUuid ?: return null
+            return toTransferIdType(id = value, idType)
+        }
 
         companion object {
             fun NavGraphBuilder.sentDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
-                getDeeplinkDirection<SentDestination>(content, SentDestination::transferUuid.name, SENT_DEEPLINK_SUFFIX)
+                getDeeplinkDirection<SentDestination>(
+                    content = content,
+                    transferUuidName = SentDestination::transferUuid.name,
+                    idTypeName = SentDestination::idType.name,
+                    suffix = SENT_DEEPLINK_SUFFIX,
+                )
             }
         }
     }
 
     // If it has to be renamed, don't forget to rename `*DestinationName` in the companion object too.
     @Serializable
-    data class ReceivedDestination(val transferUuid: String? = null, val isApiV2: Boolean? = null) : MainNavigation() {
+    data class ReceivedDestination(
+        private val transferUuid: String? = null,
+        private val idType: String = TRANSFER_ID_TYPE,
+    ) : MainNavigation() {
+
+        fun toTransferIdType(): TransferIdType? {
+            val value = transferUuid ?: return null
+            return toTransferIdType(id = value, idType)
+        }
 
         companion object {
             fun NavGraphBuilder.receivedDestination(content: @Composable (AnimatedContentScope.(NavBackStackEntry) -> Unit)) {
                 getDeeplinkDirection<ReceivedDestination>(
                     content = content,
                     transferUuidName = ReceivedDestination::transferUuid.name,
-                    suffix = "/{${ReceivedDestination::isApiV2.name}}",
+                    idTypeName = ReceivedDestination::idType.name,
                 )
             }
         }
+    }
+
+    sealed interface TransferIdType : Parcelable {
+        @JvmInline
+        @Parcelize
+        value class TransferId(val value: String) : TransferIdType
+        @JvmInline
+        @Parcelize
+        value class LinkId(val value: String) : TransferIdType
     }
 
     @Serializable

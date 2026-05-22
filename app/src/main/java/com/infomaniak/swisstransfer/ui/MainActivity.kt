@@ -51,7 +51,9 @@ import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.dialog.ReviewAlertDialog
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.LINK_ID_TYPE
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.TRANSFER_ID_TYPE
 import com.infomaniak.swisstransfer.ui.screen.main.MainScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.MyAccountViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTransferDialog
@@ -104,15 +106,17 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     intent.setData(null)
                 }
                 is DeepLinkType.OpenTransfer -> {
+                    val isApiV2 = ApiUrlMatcher.isV2Url(deeplinkUrl)
                     deeplinkTransferDirection = deeplinkViewModel.getDeeplinkTransferDirection(
                         transferIdOrLinkId = deepLinkTypeFromURL.uuid,
-                        isApiV2 = ApiUrlMatcher.isV2Url(deeplinkUrl),
+                        isApiV2 = isApiV2,
                     ) ?: TransferDirection.RECEIVED
+                    val idType = if (isApiV2) LINK_ID_TYPE else TRANSFER_ID_TYPE
                     if (deeplinkTransferDirection == TransferDirection.SENT) {
                         // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                        intent.setData((deeplinkUrl + SENT_DEEPLINK_SUFFIX).toUri())
+                        intent.setData(("$deeplinkUrl/$idType$SENT_DEEPLINK_SUFFIX").toUri())
                     } else if (deeplinkTransferDirection == TransferDirection.RECEIVED) {
-                        intent.setData((deeplinkUrl + "/${deeplinkUrl.contains("/dl/")}").toUri())
+                        intent.setData(("$deeplinkUrl/$idType").toUri())
                     }
                 }
                 else -> Unit

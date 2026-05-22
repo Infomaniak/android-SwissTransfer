@@ -46,6 +46,8 @@ class DeeplinkViewModel @Inject constructor(
     companion object {
 
         const val SENT_DEEPLINK_SUFFIX = "/sent"
+        const val LINK_ID_TYPE = "linkId"
+        const val TRANSFER_ID_TYPE = "transferId"
 
         private const val IS_DEEPLINK_CONSUMED_KEY = "isDeepLinkConsumed"
     }

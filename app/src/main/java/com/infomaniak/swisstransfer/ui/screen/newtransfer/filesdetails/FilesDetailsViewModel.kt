@@ -26,6 +26,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
@@ -49,7 +50,12 @@ class FilesDetailsViewModel @Inject constructor(
         return fileManager.getFilesFromTransfer(folderUuid)
     }
 
-    fun transferFlow(transferUuid: String): Flow<TransferUi> = transferManager.getTransferFlow(transferUuid).filterNotNull()
+    fun transferFlow(transferIdType: TransferIdType): Flow<TransferUi> {
+        return when (transferIdType) {
+            is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).filterNotNull()
+            is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).filterNotNull()
+        }
+    }
 
     fun previewUriForFile(transfer: TransferUi, file: FileUi): Flow<Uri?> {
         return transferManager.previewUriForFile(
