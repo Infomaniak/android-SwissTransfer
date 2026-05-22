@@ -40,6 +40,7 @@ import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SmallOrMediumWindowScreenTitle
 import com.infomaniak.swisstransfer.ui.components.SwipeToDismissComponent
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
@@ -48,8 +49,8 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun TransferItemList(
     title: String,
-    navigateToDetails: (transferUuid: String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
+    navigateToDetails: (transferIdType: TransferIdType) -> Unit,
+    getSelectedTransferIdType: () -> TransferIdType?,
     getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
     emptyState: @Composable () -> Unit,
@@ -65,7 +66,7 @@ fun TransferItemList(
             TransferItemList(
                 title = title,
                 navigateToDetails = navigateToDetails,
-                getSelectedTransferUuid = getSelectedTransferUuid,
+                getSelectedTransferIdType = getSelectedTransferIdType,
                 onDeleteTransfer = onDeleteTransfer,
                 modifier = modifier,
                 getTransfers = getTransfers,
@@ -77,13 +78,13 @@ fun TransferItemList(
 @Composable
 private fun TransferItemList(
     title: String,
-    navigateToDetails: (String) -> Unit,
-    getSelectedTransferUuid: () -> String?,
+    navigateToDetails: (TransferIdType) -> Unit,
+    getSelectedTransferIdType: () -> TransferIdType?,
     getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val selectedTransferUuid = getSelectedTransferUuid()
+    val selectedTransferIdType = getSelectedTransferIdType()
     val itemShape = CustomShapes.SMALL
     // stickyHeader seems to over-remember, causing theme to not be applied.
     // Hoisting it outside of the LazyColumn fixes it.
@@ -132,8 +133,14 @@ private fun TransferItemList(
                         TransferItem(
                             transfer = transfer,
                             shape = itemShape,
-                            isSelected = { selectedTransferUuid == transfer.uuid },
-                            onClick = { navigateToDetails(transfer.uuid) },
+                            isSelected = {
+                                when (selectedTransferIdType) {
+                                    is TransferIdType.TransferId -> selectedTransferIdType.value == transfer.uuid
+                                    is TransferIdType.LinkId -> selectedTransferIdType.value == transfer.linkId
+                                    else -> false
+                                }
+                            },
+                            onClick = { navigateToDetails(TransferIdType.TransferId(transfer.uuid)) },
                         )
                     }
                 },
@@ -150,8 +157,8 @@ private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::
             TransferItemList(
                 title = stringResource(R.string.sentFilesTitle),
                 navigateToDetails = {},
+                getSelectedTransferIdType = { null },
                 getTransfers = { transfers },
-                getSelectedTransferUuid = { null },
                 onDeleteTransfer = {},
                 emptyState = {},
             )

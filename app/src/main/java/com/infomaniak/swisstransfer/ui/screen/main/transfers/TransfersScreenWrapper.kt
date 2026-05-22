@@ -52,6 +52,7 @@ import com.infomaniak.swisstransfer.ui.components.safeCurrentContent
 import com.infomaniak.swisstransfer.ui.components.selectItem
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotWithMagnifyingGlass.MascotWithMagnifyingGlass
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.received.ReceivedScreen
@@ -71,8 +72,7 @@ import kotlinx.parcelize.Parcelize
 fun TransfersScreenWrapper(
     direction: TransferDirection,
     hideBottomBar: MutableState<Boolean>,
-    transferUuid: String? = null,
-    isApiV2Deeplink: Boolean? = null,
+    transferIdType: TransferIdType? = null,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -85,7 +85,7 @@ fun TransfersScreenWrapper(
             val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
 
             HandleDeepLink(
-                transferUuid = transferUuid,
+                transferIdType = transferIdType,
                 isDeepLinkConsumed = { isDeepLinkConsumed },
                 consumeDeepLink = deeplinkViewModel::consumeDeepLink,
                 direction = direction,
@@ -101,7 +101,6 @@ fun TransfersScreenWrapper(
             DetailPane(
                 navigator = this,
                 hasTransfer = { hasTransfer },
-                isApiV2Deeplink = isApiV2Deeplink,
             )
         },
     )
@@ -110,17 +109,18 @@ fun TransfersScreenWrapper(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
-    transferUuid: String?,
+    transferIdType: TransferIdType?,
     isDeepLinkConsumed: () -> Boolean,
     consumeDeepLink: () -> Unit,
     direction: TransferDirection,
 ) {
-    if (transferUuid != null && !isDeepLinkConsumed()) {
+    if (transferIdType != null && !isDeepLinkConsumed()) {
         consumeDeepLink()
         val context = LocalContext.current
         val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
+
         LaunchedEffect(Unit) {
-            navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid, isDeeplinkNavigation = true)
+            navigateToDetails(context, windowAdaptiveInfo, direction, transferIdType)
         }
     }
 }
@@ -139,19 +139,19 @@ private fun ListPane(
     val scope = rememberCoroutineScope()
     when (direction) {
         TransferDirection.SENT -> SentScreen(
-            navigateToDetails = { transferUuid ->
-                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid) }
+            navigateToDetails = { transferIdType ->
+                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferIdType) }
             },
-            getSelectedTransferUuid = navigator::getSelectedTransferUuid,
+            getSelectedTransferIdType = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
             onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
         )
         TransferDirection.RECEIVED -> ReceivedScreen(
-            navigateToDetails = { transferUuid ->
-                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferUuid) }
+            navigateToDetails = { transferIdType ->
+                scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferIdType) }
             },
-            getSelectedTransferUuid = navigator::getSelectedTransferUuid,
+            getSelectedTransferIdType = navigator::getSelectedTransferUuid,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
             onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
@@ -164,31 +164,30 @@ private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToDet
     context: Context,
     windowAdaptiveInfo: WindowAdaptiveInfo,
     direction: TransferDirection,
-    transferUuid: String,
-    isDeeplinkNavigation: Boolean = false,
+    transferIdType: TransferIdType,
 ) {
     val matomoScreen = when (direction) {
         TransferDirection.SENT -> MatomoScreen.SentTransferDetails
         TransferDirection.RECEIVED -> MatomoScreen.ReceivedTransferDetails
     }
     MatomoSwissTransfer.trackScreen(matomoScreen)
-    val item = DestinationContent.RootLevel(direction, transferUuid, isDeeplinkNavigation)
+    val item = DestinationContent.RootLevel(direction, transferIdType)
     selectItem(context, windowAdaptiveInfo, item)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFolder(
     direction: TransferDirection,
-    transferUuid: String,
+    transferIdType: TransferIdType,
     folderUuid: String,
 ) {
     MatomoSwissTransfer.trackScreen(MatomoScreen.TransferDetailsFileList)
-    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent.FolderLevel(direction, transferUuid, folderUuid))
+    navigateTo(ListDetailPaneScaffoldRole.Detail, DestinationContent.FolderLevel(direction, transferIdType, folderUuid))
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUuid(): String? {
-    return currentDestination?.contentKey?.transferUuid
+private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUuid(): TransferIdType? {
+    return currentDestination?.contentKey?.transferIdType
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -196,7 +195,6 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUu
 private fun DetailPane(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     hasTransfer: () -> Boolean,
-    isApiV2Deeplink: Boolean? = null,
 ) {
     val isWindowLarge = LocalWindowAdaptiveInfo.current.isWindowLarge()
     val destinationContent = if (isWindowLarge) navigator.currentDestination?.contentKey else navigator.safeCurrentContent()
@@ -212,15 +210,14 @@ private fun DetailPane(
             }
             is DestinationContent.RootLevel -> {
                 TransferDetailsScreen(
-                    transferUuid = targetDestination.transferUuid,
+                    transferIdType = targetDestination.transferIdType,
                     direction = targetDestination.direction,
-                    isApiV2Deeplink = isApiV2Deeplink.takeIf { targetDestination.isDeeplinkNavigation },
                     navigateBack = navigateBack,
                     navigateToFolder = { selectedFolderUuid ->
                         scope.launch {
                             navigator.navigateToFolder(
                                 targetDestination.direction,
-                                targetDestination.transferUuid,
+                                targetDestination.transferIdType,
                                 selectedFolderUuid,
                             )
                         }
@@ -235,7 +232,7 @@ private fun DetailPane(
                     navigator = navigator,
                     folderUuid = targetDestination.folderUuid,
                     transferDirection = targetDestination.direction,
-                    transferUuid = targetDestination.transferUuid,
+                    transferIdType = targetDestination.transferIdType,
                     windowAdaptiveInfo = windowAdaptiveInfo,
                 )
             }
@@ -249,17 +246,17 @@ private fun ExistingTransferFilesDetails(
     navigator: ThreePaneScaffoldNavigator<DestinationContent>,
     folderUuid: String,
     transferDirection: TransferDirection,
-    transferUuid: String,
+    transferIdType: TransferIdType,
     windowAdaptiveInfo: WindowAdaptiveInfo,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     ExistingTransferFilesDetailsScreen(
         folderUuid = folderUuid,
-        transferUuid = transferUuid,
+        transferIdType = transferIdType,
         navigateToFolder = { selectedFolderUuid ->
             scope.launch {
-                navigator.navigateToFolder(transferDirection, transferUuid, selectedFolderUuid)
+                navigator.navigateToFolder(transferDirection, transferIdType, selectedFolderUuid)
             }
         },
         withFilesSize = false,
@@ -271,7 +268,7 @@ private fun ExistingTransferFilesDetails(
         // the FilesDetailsScreen's
         scope.launch {
             if (isWindowSmall(context)) navigator.navigateBack()
-            navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferUuid)
+            navigator.navigateToDetails(context, windowAdaptiveInfo, transferDirection, transferIdType)
         }
     }
 }
@@ -298,19 +295,18 @@ fun NoSelectionEmptyState(hasTransfers: Boolean) {
 @Parcelize
 private sealed interface DestinationContent : Parcelable {
     val direction: TransferDirection
-    val transferUuid: String
+    val transferIdType: TransferIdType
 
     @Parcelize
     data class RootLevel(
         override val direction: TransferDirection,
-        override val transferUuid: String,
-        val isDeeplinkNavigation: Boolean,
+        override val transferIdType: TransferIdType,
     ) : DestinationContent
 
     @Parcelize
     data class FolderLevel(
         override val direction: TransferDirection,
-        override val transferUuid: String,
+        override val transferIdType: TransferIdType,
         val folderUuid: String,
     ) : DestinationContent
 }
@@ -322,7 +318,7 @@ private fun Preview() {
         Surface(color = MaterialTheme.colorScheme.background) {
             TransfersScreenWrapper(
                 TransferDirection.RECEIVED,
-                transferUuid = null,
+                transferIdType = null,
                 hideBottomBar = remember { mutableStateOf(false) },
             )
         }
