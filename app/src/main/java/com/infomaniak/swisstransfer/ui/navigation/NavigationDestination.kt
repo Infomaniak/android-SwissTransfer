@@ -29,6 +29,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.MyAccountDestination.getDeeplinkDirection
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.LINK_ID_TYPE
 import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.SENT_DEEPLINK_SUFFIX
+import com.infomaniak.swisstransfer.ui.screen.main.DeeplinkViewModel.Companion.TRANSFER_ID_TYPE
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.animatedComposable
 import kotlinx.parcelize.Parcelize
@@ -64,7 +65,7 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data class SentDestination(
         private val transferUuid: String? = null,
-        private val idType: String = "transferId",
+        private val idType: String = TRANSFER_ID_TYPE,
     ) : MainNavigation() {
 
         fun toTransferIdType(): TransferIdType? {
@@ -78,7 +79,7 @@ sealed class MainNavigation : NavigationDestination() {
                     content = content,
                     transferUuidName = SentDestination::transferUuid.name,
                     idTypeName = SentDestination::idType.name,
-                    suffix = SENT_DEEPLINK_SUFFIX
+                    suffix = SENT_DEEPLINK_SUFFIX,
                 )
             }
         }
@@ -88,7 +89,7 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data class ReceivedDestination(
         private val transferUuid: String? = null,
-        private val idType: String = "transferId",
+        private val idType: String = TRANSFER_ID_TYPE,
     ) : MainNavigation() {
 
         fun toTransferIdType(): TransferIdType? {
