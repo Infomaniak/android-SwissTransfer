@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
                     val idType = if (isApiV2) LINK_ID_TYPE else TRANSFER_ID_TYPE
                     if (deeplinkTransferDirection == TransferDirection.SENT) {
                         // Modify the intent to avoid conflict between the `Sent` and `Received` deeplinks
-                        intent.setData((deeplinkUrl + "/${idType}${SENT_DEEPLINK_SUFFIX}").toUri())
+                        intent.setData(("$deeplinkUrl/$idType$SENT_DEEPLINK_SUFFIX").toUri())
                     } else if (deeplinkTransferDirection == TransferDirection.RECEIVED) {
                         intent.setData(("$deeplinkUrl/$idType").toUri())
                     }
