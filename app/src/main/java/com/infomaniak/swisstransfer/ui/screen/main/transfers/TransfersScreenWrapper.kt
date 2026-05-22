@@ -142,7 +142,7 @@ private fun ListPane(
             navigateToDetails = { transferIdType ->
                 scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferIdType) }
             },
-            getSelectedTransferIdType = navigator::getSelectedTransferUuid,
+            getSelectedTransferIdType = navigator::getSelectedTransferIdType,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
             onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
@@ -151,7 +151,7 @@ private fun ListPane(
             navigateToDetails = { transferIdType ->
                 scope.launch { navigator.navigateToDetails(context, windowAdaptiveInfo, direction, transferIdType) }
             },
-            getSelectedTransferIdType = navigator::getSelectedTransferUuid,
+            getSelectedTransferIdType = navigator::getSelectedTransferIdType,
             transfersViewModel = transfersViewModel,
             hasTransfer = updateHasTransfer,
             onDeleteTransfer = { if (isWindowLarge) scope.launch { navigator.popBackStack() } }
@@ -186,7 +186,7 @@ private suspend fun ThreePaneScaffoldNavigator<DestinationContent>.navigateToFol
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferUuid(): TransferIdType? {
+private fun ThreePaneScaffoldNavigator<DestinationContent>.getSelectedTransferIdType(): TransferIdType? {
     return currentDestination?.contentKey?.transferIdType
 }
 
