@@ -21,6 +21,7 @@ import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
+import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -32,11 +33,27 @@ class DeleteTransferUseCase @Inject constructor(
 ) {
     operator fun invoke(transferUuid: String, coroutineScope: CoroutineScope) {
         coroutineScope.launch(ioDispatcher) {
-            runCatching {
-                transferManager.deleteTransfer(transferUuid)
-            }.cancellable().onFailure {
-                SentryLog.e(TAG, "Failure for deleteTransfer", it)
-            }
+            delete(transferUuid)
+        }
+    }
+
+    suspend fun delete(transferIdType: TransferIdType) {
+        val transferId = when (transferIdType) {
+            is TransferIdType.TransferId -> transferIdType.value
+            is TransferIdType.LinkId -> transferManager.getTransferByLinkId(transferIdType.value)?.uuid
+        }
+        if (transferId == null) {
+            SentryLog.wtf(TAG, "The transferId cannot be null")
+        } else {
+            delete(transferId)
+        }
+    }
+
+    private suspend fun delete(transferUuid: String) {
+        runCatching {
+            transferManager.deleteTransfer(transferUuid)
+        }.cancellable().onFailure {
+            SentryLog.e(TAG, "Failure for deleteTransfer", it)
         }
     }
 
