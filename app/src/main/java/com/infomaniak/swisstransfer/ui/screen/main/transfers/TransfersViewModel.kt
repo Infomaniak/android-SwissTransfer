@@ -57,12 +57,8 @@ class TransfersViewModel @Inject constructor(
         transferManager.getTransfersCount(TransferDirection.RECEIVED),
         transferManager.getTransfersCount(TransferDirection.SENT),
     ) { receivedCount, sentCount ->
-        receivedCount + sentCount == 0L
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = false,
-    )
+        receivedCount == 0L && sentCount == 0L
+    }.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = false)
 
     fun fetchPendingTransfers() {
         viewModelScope.launch(ioDispatcher) {
