@@ -53,7 +53,7 @@ fun TransferManager.previewUriForFile(
     fileUid = file.uid,
 ).transformLatest { uniqueDownloadId ->
     suspend fun isThumbnailExists() = withContext(Dispatchers.IO) {
-        file.thumbnailPath?.toUri()?.toFile()?.exists() ?: false
+        runCatching { file.thumbnailPath?.toUri()?.toFile()?.exists() ?: false }.getOrDefault(false)
     }
     if (file.thumbnailPath != null && isThumbnailExists()) {
         emit(file.thumbnailPath!!.toUri())
