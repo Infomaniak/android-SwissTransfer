@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
 import android.net.Uri
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.infomaniak.core.common.DownloadStatus
 import com.infomaniak.core.common.downloadStatusFlow
@@ -28,13 +29,16 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.isV1
 import com.infomaniak.swisstransfer.ui.utils.isV2
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.withContext
 import splitties.systemservices.downloadManager
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,7 +52,10 @@ fun TransferManager.previewUriForFile(
     transfer = transfer,
     fileUid = file.uid,
 ).transformLatest { uniqueDownloadId ->
-    if (file.thumbnailPath != null) {
+    suspend fun isThumbnailExists() = withContext(Dispatchers.IO) {
+        runCatching { file.thumbnailPath?.toUri()?.toFile()?.exists() ?: false }.getOrDefault(false)
+    }
+    if (file.thumbnailPath != null && isThumbnailExists()) {
         emit(file.thumbnailPath!!.toUri())
         return@transformLatest
     }
@@ -71,8 +78,8 @@ fun TransferManager.previewUriForFile(
         }
 
         val uri = when {
-            transfer.isV2() -> AppDownloadManager.uriFor(transfer, file)
-            else -> downloadManager.uriFor(uniqueDownloadId)
+            transfer.isV1() -> downloadManager.uriFor(uniqueDownloadId)
+            else -> downloadManager.uriFor(uniqueDownloadId) ?: AppDownloadManager.uriFor(transfer, file)
         }
 
         file.mimeType?.let { mimeType ->
