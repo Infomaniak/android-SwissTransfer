@@ -29,6 +29,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.isV1
 import com.infomaniak.swisstransfer.ui.utils.isV2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -77,8 +78,8 @@ fun TransferManager.previewUriForFile(
         }
 
         val uri = when {
-            transfer.isV2() -> AppDownloadManager.uriFor(transfer, file)
-            else -> downloadManager.uriFor(uniqueDownloadId)
+            transfer.isV1() -> downloadManager.uriFor(uniqueDownloadId)
+            else -> downloadManager.uriFor(uniqueDownloadId) ?: AppDownloadManager.uriFor(transfer, file)
         }
 
         file.mimeType?.let { mimeType ->
