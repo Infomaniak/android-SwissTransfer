@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -427,7 +427,7 @@ private fun TransferDetailsScreen(
 }
 
 @Composable
-private fun getBottomBarPadding(): PaddingValues {
+fun getBottomBarPadding(): PaddingValues {
     return if (isWindowSmall()) {
         WindowInsets.navigationBars.asPaddingValues()
     } else {
