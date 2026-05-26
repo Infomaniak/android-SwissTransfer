@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.UniqueDownloadId
 import com.infomaniak.core.common.doesFileExist
+import com.infomaniak.core.common.startDownloadingFile
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -33,6 +34,7 @@ import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.buildDownloadRequest
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
@@ -105,16 +107,21 @@ class FilesDetailsViewModel @Inject constructor(
             val selectedFiles = selectedFileUids.mapNotNull { fileManager.getFileUi(it) }
             if (selectedFiles.isEmpty()) return@launch
 
-            when {
-                transfer.isV2() && selectedFiles.size > 1 -> downloadWorkerScheduler.scheduleFileSelectionWork(
-                    transferId = transfer.uuid,
-                    fileIds = selectedFiles.map { it.uid },
-                )
-                transfer.isV2() -> _fileDownloadRequests.emit(selectedFiles.single().uid)
-                else -> selectedFiles.forEach { file ->
+            selectedFiles.forEach { file ->
+                if (transfer.isV2() && file.isFolder) {
+                    downloadWorkerScheduler.scheduleWork(
+                        transferId = transfer.uuid,
+                        folderId = file.uid,
+                    )
+                } else {
                     val downloadId = transferManager.downloadManagerIdFor(transfer, file.uid).first()
-                    if (downloadId != null && downloadManager.doesFileExist(UniqueDownloadId(downloadId))) return@forEach
-                    _fileDownloadRequests.emit(file.uid)
+                    if (downloadId != null && downloadManager.doesFileExist(UniqueDownloadId(downloadId))) {
+                        val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
+                            ?: return@forEach
+                        downloadManager.startDownloadingFile(request)
+                    } else {
+                        _fileDownloadRequests.emit(file.uid)
+                    }
                 }
             }
         }

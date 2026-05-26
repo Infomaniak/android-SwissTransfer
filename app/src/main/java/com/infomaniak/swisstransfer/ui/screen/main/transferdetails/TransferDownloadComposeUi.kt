@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,7 +201,7 @@ class TransferDownloadComposeUi(
             }
         } else {
             val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
-            val btnData =  if (isSelection) ButtonData.downloadSelected else ButtonData.download
+            val btnData = if (isSelection) ButtonData.downloadSelected else ButtonData.download
             BottomBarButton(
                 icon = btnData.icon,
                 labelResId = btnData.labelResId,

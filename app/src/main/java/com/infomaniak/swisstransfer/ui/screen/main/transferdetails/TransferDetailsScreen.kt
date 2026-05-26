@@ -361,11 +361,7 @@ private fun TransferDetailsScreen(
                         labelResId = R.string.buttonDownloadSelected,
                         enabled = selectedUids.isNotEmpty(),
                         onClick = writeExternalStoragePermissionManager.dropIfDenied {
-                            if (isAllSelected) {
-                                downloadUi.onFileClick()
-                            } else {
-                                onDownloadSelection(selectedUids)
-                            }
+                            onDownloadSelection(selectedUids)
                             clearCheckedFiles()
                             isMultiselectOn = false
                         },

@@ -96,7 +96,7 @@ suspend fun handleTransferDownload(
 ).collectLatest { id ->
     val needsDownloadWorker = when (downloadTarget) {
         is DownloadTarget.SingleFile -> transfer.isV2() && downloadTarget.file.isFolder
-        is DownloadTarget.FileSelection -> transfer.isV2() && downloadTarget.files.size > 1
+        is DownloadTarget.FileSelection -> false
         is DownloadTarget.EntireTransfer -> transfer.isV2()
     }
 
@@ -268,12 +268,12 @@ private suspend fun getNewDownloadId(
     ui.awaitDownloadRequest()
     val newId = when (downloadTarget) {
         is DownloadTarget.FileSelection -> handleFileSelectionDownload(
-            transfer,
-            downloadTarget,
-            apiUrlCreator,
-            downloadWorkerScheduler,
-            userAgent,
-            direction,
+            downloadWorkerScheduler = downloadWorkerScheduler,
+            transferManager = transferManager,
+            transfer = transfer,
+            downloadTarget = downloadTarget,
+            apiUrlCreator = apiUrlCreator,
+            userAgent = userAgent,
         )
         is DownloadTarget.SingleFile -> when {
             transfer.isV2() && downloadTarget.file.isFolder -> downloadWorkerScheduler.scheduleWork(
@@ -315,39 +315,49 @@ private suspend fun getNewDownloadId(
  * transfers within a second because of the time it takes to navigate back and forth.
  */
 private suspend fun handleFileSelectionDownload(
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
+    transferManager: TransferManager,
     transfer: TransferUi,
     downloadTarget: DownloadTarget.FileSelection,
     apiUrlCreator: SharedApiUrlCreator,
-    downloadWorkerScheduler: DownloadWorker.Scheduler,
     userAgent: String,
-    direction: TransferDirection?,
 ): UniqueDownloadId {
-    return when {
-        transfer.isV2() && downloadTarget.files.size > 1 -> {
-            downloadWorkerScheduler.scheduleFileSelectionWork(
-                transferId = transfer.uuid,
-                fileIds = downloadTarget.files.map { it.uid },
+    val folderUids = downloadTarget.files.filter { it.isFolder }.map { it.uid }
+    val filesToDownload = downloadTarget.files.filterNot { it.isFolder }
+
+    // Start folder downloads via worker
+    folderUids.forEach { folderId ->
+        downloadWorkerScheduler.scheduleWork(transfer.uuid, folderId)
+    }
+
+    if (filesToDownload.isEmpty()) {
+        return downloadWorkerScheduler.scheduleWork(transfer.uuid, null)
+    }
+
+    val downloadIds = mutableListOf<UniqueDownloadId>()
+
+    if (transfer.isV2()) {
+        val fileIds = filesToDownload.map { it.uid }
+        downloadIds += downloadWorkerScheduler.scheduleFileSelectionWork(transfer.uuid, fileIds)
+    } else {
+        val filesAndRequests = filesToDownload.mapNotNull { file ->
+            val request = buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, null) ?: return@mapNotNull null
+            file to request
+        }
+        val ids = filesAndRequests.map { (file, request) ->
+            downloadManager.startDownloadingFile(request) to file
+        }
+        ids.forEach { (id, file) ->
+            transferManager.writeDownloadManagerId(
+                transfer = transfer,
+                fileUid = file.uid,
+                uniqueDownloadManagerId = id?.value,
             )
         }
-        transfer.isV2() -> {
-            val file = downloadTarget.files.single()
-            val request = buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, direction)
-                ?: return UniqueDownloadId(0L)
-            downloadManager.startDownloadingFile(request) ?: UniqueDownloadId(0L)
-        }
-        else -> {
-            // V1: Download files one by one using DownloadManager
-            val requests = downloadTarget.files.map { file ->
-                buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, direction)
-                    ?: return@map null
-            }
-            val ids = requests.filterNotNull().map { request ->
-                downloadManager.startDownloadingFile(request)
-            }
-            // Return the first ID as the representative one
-            ids.firstOrNull() ?: UniqueDownloadId(0L)
-        }
+        ids.firstOrNull()?.first?.let { downloadIds += it }
     }
+
+    return downloadIds.first()
 }
 
 @SuppressLint("SimpleDateFormat")
@@ -357,7 +367,7 @@ private fun currentDateTimeWithSecondsString(): String {
     return dateFormatWithSeconds.format(Date())
 }
 
-private suspend fun buildDownloadRequest(
+internal suspend fun buildDownloadRequest(
     transfer: TransferUi,
     targetFile: FileUi?,
     apiUrlCreator: SharedApiUrlCreator,
