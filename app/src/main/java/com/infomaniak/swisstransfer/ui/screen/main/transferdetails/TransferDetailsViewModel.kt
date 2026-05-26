@@ -118,10 +118,11 @@ class TransferDetailsViewModel @Inject constructor(
             if (selectedFiles.isEmpty()) return@launch
 
             when {
-                transfer.isV2() -> downloadWorkerScheduler.scheduleFileSelectionWork(
+                transfer.isV2() && selectedFiles.size > 1 -> downloadWorkerScheduler.scheduleFileSelectionWork(
                     transferId = transfer.uuid,
                     fileIds = selectedFiles.map { it.uid },
                 )
+                transfer.isV2() -> _fileDownloadRequests.emit(selectedFiles.single().uid)
                 else -> selectedFiles.forEach { file -> _fileDownloadRequests.emit(file.uid) }
             }
         }

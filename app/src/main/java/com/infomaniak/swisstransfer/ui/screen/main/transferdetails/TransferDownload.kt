@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ suspend fun handleTransferDownload(
 ).collectLatest { id ->
     val needsDownloadWorker = when (downloadTarget) {
         is DownloadTarget.SingleFile -> transfer.isV2() && downloadTarget.file.isFolder
-        is DownloadTarget.FileSelection -> transfer.isV2()
+        is DownloadTarget.FileSelection -> transfer.isV2() && downloadTarget.files.size > 1
         is DownloadTarget.EntireTransfer -> transfer.isV2()
     }
 
@@ -199,7 +199,6 @@ private fun currentOrNewDownloadManagerId(
         return@mapLatest getNewDownloadId(
             ui = ui,
             apiUrlCreator = apiUrlCreator,
-            appDownloadManager = appDownloadManager,
             downloadWorkerScheduler = downloadWorkerScheduler,
             transferManager = transferManager,
             userAgent = userAgent,
@@ -259,7 +258,6 @@ private suspend fun isFileDeleted(id: UniqueDownloadId, transfer: TransferUi, do
 private suspend fun getNewDownloadId(
     ui: TransferDownloadUi,
     apiUrlCreator: SharedApiUrlCreator,
-    appDownloadManager: AppDownloadManager,
     downloadWorkerScheduler: DownloadWorker.Scheduler,
     transferManager: TransferManager,
     userAgent: String,
@@ -273,7 +271,6 @@ private suspend fun getNewDownloadId(
             transfer,
             downloadTarget,
             apiUrlCreator,
-            appDownloadManager,
             downloadWorkerScheduler,
             userAgent,
             direction,
@@ -321,17 +318,22 @@ private suspend fun handleFileSelectionDownload(
     transfer: TransferUi,
     downloadTarget: DownloadTarget.FileSelection,
     apiUrlCreator: SharedApiUrlCreator,
-    appDownloadManager: AppDownloadManager,
     downloadWorkerScheduler: DownloadWorker.Scheduler,
     userAgent: String,
     direction: TransferDirection?,
 ): UniqueDownloadId {
     return when {
-        transfer.isV2() -> {
+        transfer.isV2() && downloadTarget.files.size > 1 -> {
             downloadWorkerScheduler.scheduleFileSelectionWork(
                 transferId = transfer.uuid,
                 fileIds = downloadTarget.files.map { it.uid },
             )
+        }
+        transfer.isV2() -> {
+            val file = downloadTarget.files.single()
+            val request = buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, direction)
+                ?: return UniqueDownloadId(0L)
+            downloadManager.startDownloadingFile(request) ?: UniqueDownloadId(0L)
         }
         else -> {
             // V1: Download files one by one using DownloadManager
