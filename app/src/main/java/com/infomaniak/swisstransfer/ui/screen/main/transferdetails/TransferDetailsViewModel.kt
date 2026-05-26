@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.common.UniqueDownloadId
 import com.infomaniak.core.common.cancellable
-import com.infomaniak.core.common.doesFileExist
+import com.infomaniak.core.common.startDownloadingFile
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -120,16 +119,16 @@ class TransferDetailsViewModel @Inject constructor(
             val selectedFiles = transfer.files.filter { it.uid in selectedUids }
             if (selectedFiles.isEmpty()) return@launch
 
-            when {
-                transfer.isV2() && selectedFiles.size > 1 -> downloadWorkerScheduler.scheduleFileSelectionWork(
-                    transferId = transfer.uuid,
-                    fileIds = selectedFiles.map { it.uid },
-                )
-                transfer.isV2() -> _fileDownloadRequests.emit(selectedFiles.single().uid)
-                else -> selectedFiles.forEach { file ->
-                    val downloadId = transferManager.downloadManagerIdFor(transfer, file.uid).first()
-                    if (downloadId != null && downloadManager.doesFileExist(UniqueDownloadId(downloadId))) return@forEach
-                    _fileDownloadRequests.emit(file.uid)
+            selectedFiles.forEach { file ->
+                if (transfer.isV2() && file.isFolder) {
+                    downloadWorkerScheduler.scheduleWork(
+                        transferId = transfer.uuid,
+                        folderId = file.uid,
+                    )
+                } else {
+                    val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
+                        ?: return@forEach
+                    downloadManager.startDownloadingFile(request)
                 }
             }
         }

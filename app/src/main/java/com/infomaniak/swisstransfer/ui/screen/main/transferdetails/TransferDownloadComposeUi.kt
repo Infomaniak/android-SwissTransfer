@@ -201,7 +201,7 @@ class TransferDownloadComposeUi(
             }
         } else {
             val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
-            val btnData =  if (isSelection) ButtonData.downloadSelected else ButtonData.download
+            val btnData = if (isSelection) ButtonData.downloadSelected else ButtonData.download
             BottomBarButton(
                 icon = btnData.icon,
                 labelResId = btnData.labelResId,
