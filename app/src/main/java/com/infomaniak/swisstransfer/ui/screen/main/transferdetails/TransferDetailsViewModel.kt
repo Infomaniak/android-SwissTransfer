@@ -26,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.common.UniqueDownloadId
 import com.infomaniak.core.common.cancellable
+import com.infomaniak.core.common.doesFileExist
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -74,6 +76,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import splitties.systemservices.downloadManager
 import splitties.toast.UnreliableToastApi
 import javax.inject.Inject
 
@@ -123,7 +126,11 @@ class TransferDetailsViewModel @Inject constructor(
                     fileIds = selectedFiles.map { it.uid },
                 )
                 transfer.isV2() -> _fileDownloadRequests.emit(selectedFiles.single().uid)
-                else -> selectedFiles.forEach { file -> _fileDownloadRequests.emit(file.uid) }
+                else -> selectedFiles.forEach { file ->
+                    val downloadId = transferManager.downloadManagerIdFor(transfer, file.uid).first()
+                    if (downloadId != null && downloadManager.doesFileExist(UniqueDownloadId(downloadId))) return@forEach
+                    _fileDownloadRequests.emit(file.uid)
+                }
             }
         }
     }
