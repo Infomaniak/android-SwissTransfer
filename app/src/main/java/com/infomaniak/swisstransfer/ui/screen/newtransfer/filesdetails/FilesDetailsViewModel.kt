@@ -20,6 +20,8 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.infomaniak.core.common.UniqueDownloadId
+import com.infomaniak.core.common.doesFileExist
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -43,6 +45,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import splitties.systemservices.downloadManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -108,7 +111,11 @@ class FilesDetailsViewModel @Inject constructor(
                     fileIds = selectedFiles.map { it.uid },
                 )
                 transfer.isV2() -> _fileDownloadRequests.emit(selectedFiles.single().uid)
-                else -> selectedFiles.forEach { file -> _fileDownloadRequests.emit(file.uid) }
+                else -> selectedFiles.forEach { file ->
+                    val downloadId = transferManager.downloadManagerIdFor(transfer, file.uid).first()
+                    if (downloadId != null && downloadManager.doesFileExist(UniqueDownloadId(downloadId))) return@forEach
+                    _fileDownloadRequests.emit(file.uid)
+                }
             }
         }
     }
