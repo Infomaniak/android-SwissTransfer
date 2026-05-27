@@ -101,9 +101,12 @@ class FilesDetailsViewModel @Inject constructor(
         openFile = openFile,
     )
 
-    fun scheduleFileSelectionDownload(transferUuid: String, selectedFileUids: List<String>) {
+    fun scheduleFileSelectionDownload(transferIdType: TransferIdType, selectedFileUids: List<String>) {
         viewModelScope.launch {
-            val transfer = transferManager.getTransferFlow(transferUuid).first() ?: return@launch
+            val transfer = when (transferIdType) {
+                is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).first()
+                is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).first()
+            } ?: return@launch
             val selectedFiles = selectedFileUids.mapNotNull { fileManager.getFileUi(it) }
             if (selectedFiles.isEmpty()) return@launch
 

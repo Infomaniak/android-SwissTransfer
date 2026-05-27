@@ -155,7 +155,7 @@ fun ExistingTransferFilesDetailsScreen(
                     previewUriForFile = { transfer, file -> filesDetailsViewModel.previewUriForFile(transfer, file) },
                     withFileSize = withFilesSize,
                     withSpaceLeft = withSpaceLeft,
-                    isDownloadButtonVisible = !isMultiselectOn,
+                    isNewTransfer = false,
                     isCheckboxVisible = { isMultiselectOn },
                     isUidChecked = { uid -> checkedFiles[uid] ?: false },
                     setUidCheckStatus = { uid, checked -> checkedFiles[uid] = checked },
