@@ -20,8 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.common.UniqueDownloadId
-import com.infomaniak.core.common.doesFileExist
 import com.infomaniak.core.common.startDownloadingFile
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -117,14 +115,14 @@ class FilesDetailsViewModel @Inject constructor(
                         folderId = file.uid,
                     )
                 } else {
-                    val downloadId = transferManager.downloadManagerIdFor(transfer, file.uid).first()
-                    if (downloadId != null && downloadManager.doesFileExist(UniqueDownloadId(downloadId))) {
-                        val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
-                            ?: return@forEach
-                        downloadManager.startDownloadingFile(request)
-                    } else {
-                        _fileDownloadRequests.emit(file.uid)
-                    }
+                    val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
+                        ?: return@forEach
+                    val newId = downloadManager.startDownloadingFile(request)
+                    transferManager.writeDownloadManagerId(
+                        transfer = transfer,
+                        fileUid = file.uid,
+                        uniqueDownloadManagerId = newId?.value,
+                    )
                 }
             }
         }
