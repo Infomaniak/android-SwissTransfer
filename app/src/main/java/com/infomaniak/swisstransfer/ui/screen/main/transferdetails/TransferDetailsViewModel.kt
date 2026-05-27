@@ -128,7 +128,12 @@ class TransferDetailsViewModel @Inject constructor(
                 } else {
                     val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
                         ?: return@forEach
-                    downloadManager.startDownloadingFile(request)
+                    val newId = downloadManager.startDownloadingFile(request)
+                    transferManager.writeDownloadManagerId(
+                        transfer = transfer,
+                        fileUid = file.uid,
+                        uniqueDownloadManagerId = newId?.value,
+                    )
                 }
             }
         }
