@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,6 @@ fun FilesDetailsScreen(
     files: List<FileUi>,
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
-    isDownloadButtonVisible: Boolean,
     isNewTransfer: Boolean,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(0.dp),
@@ -110,7 +109,6 @@ private fun Preview(@PreviewParameter(FileUiListPreviewParameter::class) files: 
             FilesDetailsScreen(
                 paddingValues = PaddingValues(0.dp),
                 snackbarHostState = remember { SnackbarHostState() },
-                isDownloadButtonVisible = false,
                 isNewTransfer = false,
                 files = files,
                 navigateToFolder = {},
