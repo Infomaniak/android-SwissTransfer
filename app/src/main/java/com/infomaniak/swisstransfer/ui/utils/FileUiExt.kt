@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ val FileUi.fileType: FileType
     get() = if (isFolder) {
         FileType.FOLDER
     } else {
-        mimeType?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
+        mimeType?.takeIf { it.isNotBlank() }?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
     }
 
 val FileUi.hasPreview: Boolean
