@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.extractExtensionOrFallback
 import com.infomaniak.swisstransfer.upload.TransferUploaderV1.ChunkUploadStatus.DefinitelyComplete
 import com.infomaniak.swisstransfer.upload.TransferUploaderV1.ChunkUploadStatus.StartedOrComplete
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
@@ -168,11 +169,12 @@ class TransferUploaderV1(
         val fileUUID: String = metadata.uuid
         SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
 
-        if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
+        if (!metadata.thumbnailSaved) {
+            val extension = targetFileUri.getMimeType().extractExtensionOrFallback(fallback = metadata.pickedFile.name)
             thumbnailsLocalStorage.generateThumbnailFor(
                 fileUri = targetFileUri,
                 fileName = fileUUID,
-                extension = mimeType.substring(mimeType.indexOfLast { it == '/' }),
+                extension = extension,
             )
             metadata.thumbnailSaved = true
         }

@@ -30,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.models.upload.request.
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
+import com.infomaniak.swisstransfer.ui.utils.extractExtensionOrFallback
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import io.ktor.http.content.OutgoingContent
 import kotlinx.coroutines.Dispatchers
@@ -141,12 +142,12 @@ class TransferUploaderV2(
         val targetFileUri: Uri = metadata.pickedFile.uri
         val fileUUID: String = metadata.uuid
         SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
-
-        if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
+        if (!metadata.thumbnailSaved) {
+            val extension = targetFileUri.getMimeType().extractExtensionOrFallback(fallback = metadata.pickedFile.name)
             thumbnailsLocalStorage.generateThumbnailFor(
                 fileUri = targetFileUri,
                 fileName = fileUUID,
-                extension = mimeType.substringAfterLast('/'),
+                extension = extension,
             )
             metadata.thumbnailSaved = true
         }
