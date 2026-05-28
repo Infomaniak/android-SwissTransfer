@@ -225,7 +225,7 @@ private fun TransferDetailsScreen(
     val context = LocalContext.current
     val transferRecipients: Set<String> = getTransfer().recipientsEmails
 
-    var isMultiselectOn: Boolean by remember { mutableStateOf(false) }
+    var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
     val checkedFiles = getCheckedFiles()
     LaunchedEffect(checkedFiles) {
         snapshotFlow { checkedFiles.values.any { it } }
