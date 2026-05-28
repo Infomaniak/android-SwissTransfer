@@ -18,10 +18,8 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.infomaniak.core.common.startDownloadingFile
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
@@ -32,17 +30,15 @@ import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.buildDownloadRequest
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.downloadSelectedFiles
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
-import com.infomaniak.swisstransfer.ui.utils.isV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import splitties.systemservices.downloadManager
 import javax.inject.Inject
 
 @HiltViewModel
@@ -99,23 +95,14 @@ class FilesDetailsViewModel @Inject constructor(
             } ?: return@launch
             if (selectedFiles.isEmpty()) return@launch
 
-            selectedFiles.forEach { file ->
-                if (transfer.isV2() && file.isFolder) {
-                    downloadWorkerScheduler.scheduleWork(
-                        transferId = transfer.uuid,
-                        folderId = file.uid,
-                    )
-                } else {
-                    val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
-                        ?: return@forEach
-                    val newId = downloadManager.startDownloadingFile(request)
-                    transferManager.writeDownloadManagerId(
-                        transfer = transfer,
-                        fileUid = file.uid,
-                        uniqueDownloadManagerId = newId?.value,
-                    )
-                }
-            }
+            downloadSelectedFiles(
+                transfer = transfer,
+                files = selectedFiles,
+                downloadWorkerScheduler = downloadWorkerScheduler,
+                transferManager = transferManager,
+                apiUrlCreator = sharedApiUrlCreator,
+                userAgent = userAgent,
+            )
         }
     }
 }

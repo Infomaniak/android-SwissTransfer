@@ -58,7 +58,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDetai
 import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCase
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.isV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -106,23 +105,14 @@ class TransferDetailsViewModel @Inject constructor(
             val selectedFiles = transfer.files.filter { it.uid in selectedUids }
             if (selectedFiles.isEmpty()) return@launch
 
-            selectedFiles.forEach { file ->
-                if (transfer.isV2() && file.isFolder) {
-                    downloadWorkerScheduler.scheduleWork(
-                        transferId = transfer.uuid,
-                        folderId = file.uid,
-                    )
-                } else {
-                    val request = buildDownloadRequest(transfer, file, sharedApiUrlCreator, userAgent, null)
-                        ?: return@forEach
-                    val newId = downloadManager.startDownloadingFile(request)
-                    transferManager.writeDownloadManagerId(
-                        transfer = transfer,
-                        fileUid = file.uid,
-                        uniqueDownloadManagerId = newId?.value,
-                    )
-                }
-            }
+            downloadSelectedFiles(
+                transfer = transfer,
+                files = selectedFiles,
+                downloadWorkerScheduler = downloadWorkerScheduler,
+                transferManager = transferManager,
+                apiUrlCreator = sharedApiUrlCreator,
+                userAgent = userAgent,
+            )
         }
     }
 
