@@ -364,6 +364,33 @@ private fun currentDateTimeWithSecondsString(): String {
     return dateFormatWithSeconds.format(Date())
 }
 
+suspend fun downloadSelectedFiles(
+    transfer: TransferUi,
+    files: List<FileUi>,
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
+    transferManager: TransferManager,
+    apiUrlCreator: SharedApiUrlCreator,
+    userAgent: String,
+) {
+    files.forEach { file ->
+        if (transfer.isV2() && file.isFolder) {
+            downloadWorkerScheduler.scheduleWork(
+                transferId = transfer.uuid,
+                folderId = file.uid,
+            )
+        } else {
+            val request = buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, null)
+                ?: return@forEach
+            val newId = downloadManager.startDownloadingFile(request)
+            transferManager.writeDownloadManagerId(
+                transfer = transfer,
+                fileUid = file.uid,
+                uniqueDownloadManagerId = newId?.value,
+            )
+        }
+    }
+}
+
 internal suspend fun buildDownloadRequest(
     transfer: TransferUi,
     targetFile: FileUi?,
