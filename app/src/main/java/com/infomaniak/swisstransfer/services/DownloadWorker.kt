@@ -84,7 +84,6 @@ class DownloadWorker @AssistedInject constructor(
             return Result.failure()
         }
         val folderId = inputData.getString(FOLDER_ID_KEY)
-        val fileIds = inputData.getStringArray(FILE_IDS_KEY)
 
         val transferUi = transferManager.getTransferFlow(transferId).first() ?: run {
             SentryLog.wtf(TAG, "Finish with failure because transferUi is null")
@@ -92,10 +91,9 @@ class DownloadWorker @AssistedInject constructor(
         }
 
         runCatching {
-            when {
-                folderId != null -> downloadFolder(folderId, transferUi)
-                fileIds != null -> downloadFileSelection(transferUi, fileIds.toList())
-                else -> downloadTransfer(transferUi)
+            when (folderId) {
+                null -> downloadTransfer(transferUi)
+                else -> downloadFolder(folderId, transferUi)
             }
         }.getOrElse { exception ->
             return when (exception) {
@@ -139,29 +137,6 @@ class DownloadWorker @AssistedInject constructor(
         }
 
         notificationsUtils.downloadSucceeded(tag = uniqueWorkName(transferUi.uuid, folderId), title)
-        return Result.success()
-    }
-
-    private suspend fun downloadFileSelection(transferUi: TransferUi, fileIds: List<String>): Result {
-        val selectedFiles = fileIds.mapNotNull { fileManager.getFileUi(it) }
-        if (selectedFiles.isEmpty()) {
-            SentryLog.w(TAG, "Finish with failure because no files found for selection")
-            return Result.failure()
-        }
-        
-        val totalSize = selectedFiles.sumOf { it.fileSize }
-        if (hasAvailableSpace(totalSize).not()) {
-            SentryLog.w(TAG, "Finish with failure because not enough space to download file selection")
-            return Result.failure(workDataOf(FAILURE_REASON_KEY to FailureReason.InsufficientAvailableSpace))
-        }
-        val title = transferUi.displayTitle
-        setForegroundAsync(getForegroundInfoForDownload(title, downloadedBytes = 0, totalBytes = 0))
-
-        appDownloadManager.downloadFilesSelectionToPublicDownload(transferUi, selectedFiles) { downloadedBytes, totalBytes ->
-            updateForegroundNotificationIfNeeded(title, downloadedBytes, totalBytes)
-        }
-
-        notificationsUtils.downloadSucceeded(tag = uniqueWorkNameForSelection(transferUi.uuid), title)
         return Result.success()
     }
 
@@ -249,43 +224,6 @@ class DownloadWorker @AssistedInject constructor(
             return UniqueDownloadId(DOWNLOAD_WORKER_DOWNLOAD_ID)
         }
 
-        fun scheduleFileSelectionWork(transferId: String, fileIds: List<String>): UniqueDownloadId {
-            val uniqueWorkName = uniqueWorkNameForSelection(transferId)
-            val constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresStorageNotLow(true)
-                .build()
-            val inputData = workDataOf(TRANSFER_ID_KEY to transferId, FILE_IDS_KEY to fileIds.toTypedArray())
-            val workRequest = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
-                .setInputData(inputData)
-                .setConstraints(constraints)
-                .build()
-            workManager.enqueueUniqueWork(uniqueWorkName, ExistingWorkPolicy.REPLACE, workRequest)
-            return UniqueDownloadId(DOWNLOAD_WORKER_DOWNLOAD_ID)
-        }
-
-        fun cancelFileSelectionWork(transferId: String) {
-            workManager.cancelUniqueWork(uniqueWorkNameForSelection(transferId))
-        }
-
-        @OptIn(ExperimentalCoroutinesApi::class)
-        fun downloadStatusFlowForSelection(transferId: String): Flow<DownloadStatus> {
-            fun WorkInfo.isPending() = state == WorkInfo.State.ENQUEUED || state == WorkInfo.State.BLOCKED
-            val workQuery = WorkQuery.Builder
-                .fromUniqueWorkNames(listOf(uniqueWorkNameForSelection(transferId)))
-                .build()
-
-            return workManager.getWorkInfosFlow(workQuery).mapLatest { workInfos ->
-                val workInfo = workInfos.firstOrNull()
-                if (workInfo == null) {
-                    DownloadStatus.Complete
-                } else if (workInfo.isPending() && isNetworkAvailableFlow.first().not()) {
-                    DownloadStatus.Paused(DownloadStatus.Paused.Reason.WaitingForNetwork)
-                } else {
-                    workInfo.toDownloadStatus()
-                }
-            }
-        }
 
         @OptIn(ExperimentalCoroutinesApi::class)
         fun downloadStatusFlow(transferId: String, folderId: String?): Flow<DownloadStatus> {
@@ -347,7 +285,6 @@ class DownloadWorker @AssistedInject constructor(
 
         private const val TRANSFER_ID_KEY = "transferId"
         private const val FOLDER_ID_KEY = "filePath"
-        private const val FILE_IDS_KEY = "fileIds"
         private const val DOWNLOADED_BYTES_KEY = "downloaded_bytes_key"
         private const val TOTAL_SIZE_IN_BYTES_KEY = "total_size_in_bytes"
         private const val FAILURE_REASON_KEY = "reason"
@@ -356,10 +293,6 @@ class DownloadWorker @AssistedInject constructor(
 
         private fun uniqueWorkName(transferId: String, folderId: String?): String {
             return "DownloadWorker_${transferId}_${folderId ?: "all"}"
-        }
-
-        private fun uniqueWorkNameForSelection(transferId: String): String {
-            return "DownloadWorker_${transferId}_selection"
         }
     }
 }
