@@ -104,7 +104,7 @@ fun ExistingTransferFilesDetailsScreen(
                                 checkedFiles.clear()
                             }
                         ) {
-                            Text(text = stringResource(R.string.contentDescriptionButtonClose))
+                            Text(text = stringResource(R.string.buttonCancel))
                         }
                     },
                     actions = {
