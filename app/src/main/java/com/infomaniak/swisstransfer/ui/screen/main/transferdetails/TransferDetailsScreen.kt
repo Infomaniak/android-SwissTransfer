@@ -160,7 +160,6 @@ fun TransferDetailsScreen(
                     transferDetailsViewModel.checkedFiles[fileUid] = isChecked
                 },
                 navigateToFolder = navigateToFolder,
-                downloadRequestFlow = transferDetailsViewModel.fileDownloadRequests,
                 onDownloadSelection = { selectedUids ->
                     transferDetailsViewModel.triggerFileSelectionDownload(selectedUids)
                 }
@@ -220,7 +219,6 @@ private fun TransferDetailsScreen(
     setFileCheckStatus: (String, Boolean) -> Unit,
     navigateToFolder: (folderUuid: String) -> Unit,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    downloadRequestFlow: Flow<String> = emptyFlow(),
     onDownloadSelection: (List<String>) -> Unit = {},
 ) {
 
@@ -337,7 +335,6 @@ private fun TransferDetailsScreen(
                 runDownloadUi = runDownloadUi,
                 previewUriForFile = previewUriForFile,
                 direction = direction,
-                downloadRequestFlow = downloadRequestFlow,
                 onLongPress = { uid ->
                     if (!isMultiselectOn) {
                         isMultiselectOn = true
@@ -445,7 +442,6 @@ private fun ColumnScope.FilesList(
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Nothing,
     navigateToFolder: ((folderUuid: String) -> Unit)? = null,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    downloadRequestFlow: Flow<String> = emptyFlow(),
     onLongPress: ((String) -> Unit)? = null,
 ) {
 
@@ -482,7 +478,6 @@ private fun ColumnScope.FilesList(
         runDownloadUi = runDownloadUi,
         previewUriForFile = previewUriForFile,
         direction = direction,
-        downloadRequestFlow = downloadRequestFlow,
         onLongPress = onLongPress,
     )
 }

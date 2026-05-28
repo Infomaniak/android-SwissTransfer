@@ -69,7 +69,6 @@ fun FilesDetailsScreen(
     isCheckboxVisible: () -> Boolean = { false },
     isUidChecked: (String) -> Boolean = { false },
     setUidCheckStatus: (String, Boolean) -> Unit = { _, _ -> },
-    downloadRequestFlow: Flow<String> = emptyFlow(),
     onLongPress: ((String) -> Unit)? = null
 ) {
     Column(
@@ -95,7 +94,6 @@ fun FilesDetailsScreen(
             runDownloadUi = runDownloadUi,
             previewUriForFile = previewUriForFile,
             direction = direction,
-            downloadRequestFlow = downloadRequestFlow,
             onLongPress = onLongPress,
         )
     }

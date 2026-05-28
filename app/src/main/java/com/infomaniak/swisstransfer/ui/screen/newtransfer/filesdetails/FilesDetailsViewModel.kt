@@ -39,9 +39,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.isV2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -57,9 +54,6 @@ class FilesDetailsViewModel @Inject constructor(
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
-
-    private val _fileDownloadRequests = MutableSharedFlow<String>()
-    val fileDownloadRequests: SharedFlow<String> = _fileDownloadRequests.asSharedFlow()
 
     fun filesFlow(folderUuid: String): Flow<List<FileUi>> {
         return fileManager.getFilesFromTransfer(folderUuid)

@@ -64,10 +64,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -101,15 +99,6 @@ class TransferDetailsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
-
-    private val _fileDownloadRequests = MutableSharedFlow<String>()
-    val fileDownloadRequests: SharedFlow<String> = _fileDownloadRequests.asSharedFlow()
-
-    fun triggerFileDownload(fileUid: String) {
-        viewModelScope.launch {
-            _fileDownloadRequests.emit(fileUid)
-        }
-    }
 
     fun triggerFileSelectionDownload(selectedUids: List<String>) {
         viewModelScope.launch {

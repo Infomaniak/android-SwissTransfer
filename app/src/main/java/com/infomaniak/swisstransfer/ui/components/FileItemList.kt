@@ -58,7 +58,6 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -78,7 +77,6 @@ fun FileItemList(
     navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
-    downloadRequestFlow: Flow<String> = emptyFlow(),
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
@@ -123,12 +121,6 @@ fun FileItemList(
             }
 
             val onDownloadFile = writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
-
-            LaunchedEffect(Unit) {
-                downloadRequestFlow.filter { it == file.uid }.collect {
-                    onDownloadFile()
-                }
-            }
 
             FileItem(
                 modifier = Modifier.animateItem(),
