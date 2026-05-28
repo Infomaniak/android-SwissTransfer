@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,12 +82,17 @@ fun TransferManager.previewUriForFile(
             else -> downloadManager.uriFor(uniqueDownloadId) ?: AppDownloadManager.uriFor(transfer, file)
         }
 
-        file.mimeType?.let { mimeType ->
+        val extension = file.mimeType?.takeIf { it.isNotBlank() }?.let { mimeType ->
+            val slashIndex = mimeType.indexOfLast { it == '/' }
+            if (slashIndex != -1) mimeType.substring(slashIndex) else null
+        } ?: file.fileName
+
+        if (extension.isNotBlank() && uri != null) {
             thumbnailsLocalStorage.generateThumbnailFor(
                 transferUuid = transfer.uuid,
-                fileUri = uri ?: return@let,
+                fileUri = uri,
                 fileName = file.uid,
-                extension = mimeType.substring(mimeType.indexOfLast { it == '/' })
+                extension = extension,
             )
 
             updateTransferFilesThumbnails(
