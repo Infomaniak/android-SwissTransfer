@@ -159,7 +159,6 @@ fun ExistingTransferFilesDetailsScreen(
                     isCheckboxVisible = { isMultiselectOn },
                     isUidChecked = { uid -> checkedFiles[uid] ?: false },
                     setUidCheckStatus = { uid, checked -> checkedFiles[uid] = checked },
-                    downloadRequestFlow = filesDetailsViewModel.fileDownloadRequests,
                     onLongPress = { uid ->
                         if (!isMultiselectOn) {
                             isMultiselectOn = true
