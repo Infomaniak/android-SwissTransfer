@@ -30,6 +30,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.extractExtensionOrFallback
 import com.infomaniak.swisstransfer.ui.utils.isV1
 import com.infomaniak.swisstransfer.ui.utils.isV2
 import kotlinx.coroutines.Dispatchers
@@ -90,10 +91,7 @@ private suspend fun existingThumbnail(file: FileUi): Uri? {
 }
 
 private fun extractExtension(file: FileUi): String {
-    return file.mimeType?.takeIf { it.isNotBlank() }?.let { mimeType ->
-        val slashIndex = mimeType.indexOfLast { it == '/' }
-        if (slashIndex != -1) mimeType.substring(slashIndex) else null
-    } ?: file.fileName
+    return file.mimeType.extractExtensionOrFallback(fallback = file.fileName)
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
