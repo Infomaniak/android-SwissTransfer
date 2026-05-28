@@ -128,7 +128,7 @@ class MainApplication : Application(), Configuration.Provider {
             appId = ConfigUtils.safePackage,
             appVersionName = BuildConfig.VERSION_NAME,
             appVersionCode = BuildConfig.VERSION_CODE,
-            apiEnvironment = ApiEnvironment.PreProd
+            apiEnvironment = if (BuildConfig.FLAVOR == "preprod") ApiEnvironment.PreProd else ApiEnvironment.Prod
         )
     }
 
