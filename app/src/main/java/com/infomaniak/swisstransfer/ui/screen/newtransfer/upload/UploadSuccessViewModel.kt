@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +41,7 @@ class UploadSuccessViewModel @Inject constructor(
 
     fun dismissCompleteUpload(): Unit = UploadForegroundService.dismissCompleteUpload()
 
-    private val _transferUuidFlow = MutableSharedFlow<String>()
+    private val _transferUuidFlow = MutableSharedFlow<String>(extraBufferCapacity = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val recipientsEmails = _transferUuidFlow.flatMapLatest { transferUuid ->
@@ -54,6 +53,6 @@ class UploadSuccessViewModel @Inject constructor(
     )
 
     fun fetchTransfer(transferUuid: String) {
-        viewModelScope.launch(ioDispatcher) { _transferUuidFlow.emit(transferUuid) }
+        _transferUuidFlow.tryEmit(transferUuid)
     }
 }
