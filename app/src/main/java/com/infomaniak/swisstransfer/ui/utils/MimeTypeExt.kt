@@ -20,6 +20,10 @@ package com.infomaniak.swisstransfer.ui.utils
 fun String?.extractExtensionOrFallback(fallback: String): String {
     return this?.takeIf { it.isNotBlank() }?.let { mimeType ->
         val slashIndex = mimeType.indexOfLast { it == '/' }
-        if (slashIndex != -1) mimeType.substring(slashIndex + 1) else null
+        if (slashIndex != -1) {
+            mimeType.substring(slashIndex + 1).takeIf { it.isNotBlank() }
+        } else {
+            null
+        }
     } ?: fallback
 }
