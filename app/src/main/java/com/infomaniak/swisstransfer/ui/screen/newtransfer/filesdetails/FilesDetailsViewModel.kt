@@ -27,7 +27,6 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
-import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
@@ -55,7 +54,6 @@ class FilesDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
-    private val appDownloadManager: AppDownloadManager,
     @UserAgent private val userAgent: String,
 ) : ViewModel() {
 
@@ -91,7 +89,6 @@ class FilesDetailsViewModel @Inject constructor(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
-        appDownloadManager = appDownloadManager,
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,

@@ -43,7 +43,6 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
 import com.infomaniak.swisstransfer.di.UserAgent
-import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType.LinkId
@@ -84,7 +83,6 @@ class TransferDetailsViewModel @Inject constructor(
     private val transferManager: TransferManager,
     private val deleteTransfer: DeleteTransferUseCase,
     private val downloadWorkerScheduler: DownloadWorker.Scheduler,
-    private val appDownloadManager: AppDownloadManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
@@ -224,7 +222,6 @@ class TransferDetailsViewModel @Inject constructor(
         ui = ui,
         transferManager = transferManager,
         apiUrlCreator = sharedApiUrlCreator,
-        appDownloadManager = appDownloadManager,
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
