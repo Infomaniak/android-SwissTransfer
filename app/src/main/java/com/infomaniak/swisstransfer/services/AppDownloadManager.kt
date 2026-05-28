@@ -89,8 +89,18 @@ class AppDownloadManager @Inject constructor(
         selectedFiles: List<FileUi>,
         onProgress: suspend (downloadedBytes: Long, totalBytes: Long) -> Unit,
     ) {
-        val totalBytes = selectedFiles.sumOf { it.fileSize }
-        downloadFilesToPublicDownload(transferUi, selectedFiles, totalBytes, onProgress)
+        val expandedFiles = selectedFiles.flatMap { file ->
+            if (file.isFolder) {
+                // Folders should have been filtered out upstream (handleFileSelectionDownload
+                // splits folders into separate scheduleWork calls). We expand them defensively
+                // here in case a future change violates that invariant.
+                fileManager.getFilesUnderPath(transferUi.uuid, file.path ?: "")
+            } else {
+                listOf(file)
+            }
+        }
+        val totalBytes = expandedFiles.sumOf { it.fileSize }
+        downloadFilesToPublicDownload(transferUi, expandedFiles, totalBytes, onProgress)
     }
 
     @OptIn(ExperimentalAtomicApi::class)
