@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.startDownloadingFile
@@ -28,8 +29,8 @@ import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
-import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.buildDownloadRequest
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
@@ -96,13 +97,12 @@ class FilesDetailsViewModel @Inject constructor(
         openFile = openFile,
     )
 
-    fun scheduleFileSelectionDownload(transferIdType: TransferIdType, selectedFileUids: List<String>) {
+    fun scheduleFileSelectionDownload(transferIdType: TransferIdType, selectedFiles: List<FileUi>) {
         viewModelScope.launch {
             val transfer = when (transferIdType) {
                 is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).first()
                 is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).first()
             } ?: return@launch
-            val selectedFiles = selectedFileUids.mapNotNull { fileManager.getFileUi(it) }
             if (selectedFiles.isEmpty()) return@launch
 
             selectedFiles.forEach { file ->

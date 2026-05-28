@@ -170,15 +170,16 @@ fun ExistingTransferFilesDetailsScreen(
                 )
 
                 if (isMultiselectOn) {
-                    val selectedUids = checkedFiles.filterValues { it }.keys.toList()
+                    val selectedUids = checkedFiles.filterValues { it }.keys
+                    val selectedFiles = fileList.filter { it.uid in selectedUids }
                     val writePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
                     BottomBar(getBottomBarPadding()) {
                         BottomBarButton(
                             icon = AppIcons.ArrowDownBar,
                             labelResId = R.string.buttonDownloadSelected,
-                            enabled = selectedUids.isNotEmpty(),
+                            enabled = selectedFiles.isNotEmpty(),
                             onClick = writePermissionManager.dropIfDenied {
-                                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedUids)
+                                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedFiles)
                                 checkedFiles.clear()
                                 isMultiselectOn = false
                             },
