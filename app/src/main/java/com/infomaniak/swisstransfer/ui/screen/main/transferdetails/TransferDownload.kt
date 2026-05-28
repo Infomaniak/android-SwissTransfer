@@ -94,6 +94,8 @@ suspend fun handleTransferDownload(
 ).collectLatest { id ->
     val needsDownloadWorker = when (downloadTarget) {
         is DownloadTarget.SingleFile -> transfer.isV2() && downloadTarget.file.isFolder
+        // FileSelection has no global UI status (it shows per-item progress only).
+        // The download proceeds in background via DM (V1) or workers (V2) and survives screen rotation.
         is DownloadTarget.FileSelection -> false
         is DownloadTarget.EntireTransfer -> transfer.isV2()
     }
@@ -328,6 +330,9 @@ private suspend fun handleFileSelectionDownload(
     }
 
     if (filesToDownload.isEmpty()) {
+        // Only folders are selected — schedule a placeholder worker to obtain a dummy id
+        // so the caller has something to return. The real downloads are the per-folder workers
+        // scheduled above and run independently in background.
         return downloadWorkerScheduler.scheduleWork(transfer.uuid, null)
     }
 
