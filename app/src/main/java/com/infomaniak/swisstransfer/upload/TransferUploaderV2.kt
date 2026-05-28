@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import android.content.ContentResolver
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.v2.Transfer
@@ -30,7 +28,6 @@ import com.infomaniak.multiplatform_swisstransfer.network.models.upload.request.
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status
-import com.infomaniak.swisstransfer.ui.utils.extractExtensionOrFallback
 import com.infomaniak.swisstransfer.workers.FileChunkSizeManager
 import io.ktor.http.content.OutgoingContent
 import kotlinx.coroutines.Dispatchers
@@ -142,26 +139,17 @@ class TransferUploaderV2(
         val targetFileUri: Uri = metadata.pickedFile.uri
         val fileUUID: String = metadata.uuid
         SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
-        if (!metadata.thumbnailSaved) {
-            val extension = targetFileUri.getMimeType().extractExtensionOrFallback(fallback = metadata.pickedFile.name)
-            thumbnailsLocalStorage.generateThumbnailFor(
-                fileUri = targetFileUri,
-                fileName = fileUUID,
-                extension = extension,
-            )
-            metadata.thumbnailSaved = true
-        }
-        uploadFileInChunks(metadata = metadata)
-    }
 
-    private fun Uri.getMimeType(): String? {
-        return when (scheme) {
-            ContentResolver.SCHEME_CONTENT -> contentResolver.getType(this)
-            ContentResolver.SCHEME_FILE -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                MimeTypeMap.getFileExtensionFromUrl(toString()).lowercase()
-            )
-            else -> null
-        }
+        generateThumbnailIfNeeded(
+            fileUri = targetFileUri,
+            fileName = fileUUID,
+            pickedFileName = metadata.pickedFile.name,
+            thumbnailSaved = metadata.thumbnailSaved,
+            thumbnailsLocalStorage = thumbnailsLocalStorage,
+            contentResolver = contentResolver,
+            onThumbnailGenerated = { metadata.thumbnailSaved = true },
+        )
+        uploadFileInChunks(metadata = metadata)
     }
 
     private suspend fun uploadFileInChunks(metadata: FileToUploadMetaData) = Dispatchers.IO {
