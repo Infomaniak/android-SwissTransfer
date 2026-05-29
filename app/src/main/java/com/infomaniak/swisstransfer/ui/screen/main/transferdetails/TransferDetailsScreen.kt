@@ -222,9 +222,14 @@ private fun TransferDetailsScreen(
 
     val context = LocalContext.current
     val transferRecipients: Set<String> = getTransfer().recipientsEmails
+    val transferUuid = getTransfer().uuid
 
-    var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
+    var isMultiselectOn: Boolean by rememberSaveable(transferUuid) { mutableStateOf(false) }
     val checkedFiles = getCheckedFiles()
+    LaunchedEffect(transferUuid) {
+        clearCheckedFiles()
+        isMultiselectOn = false
+    }
     LaunchedEffect(checkedFiles) {
         snapshotFlow { checkedFiles.values.any { it } }
             .collectLatest { hasSelection ->
