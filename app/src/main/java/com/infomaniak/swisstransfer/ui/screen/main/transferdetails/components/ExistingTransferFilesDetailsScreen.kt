@@ -70,8 +70,8 @@ fun ExistingTransferFilesDetailsScreen(
     }.collectAsStateWithLifecycle(initialValue = null)
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var isMultiselectOn by remember { mutableStateOf(false) }
-    val checkedFiles = remember { mutableStateMapOf<String, Boolean>() }
+    var isMultiselectOn by remember(folderUuid) { mutableStateOf(false) }
+    val checkedFiles = remember(folderUuid) { mutableStateMapOf<String, Boolean>() }
     LaunchedEffect(checkedFiles) {
         snapshotFlow { checkedFiles.values.any { it } }
             .collectLatest { hasSelection ->
