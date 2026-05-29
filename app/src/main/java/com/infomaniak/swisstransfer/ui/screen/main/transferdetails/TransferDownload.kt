@@ -334,11 +334,11 @@ private suspend fun getNewDownloadId(
     return newId
 }
 
-private suspend fun scheduleSelectedFilesDownload(
-    downloadWorkerScheduler: DownloadWorker.Scheduler,
-    transferManager: TransferManager,
+suspend fun downloadSelectedFiles(
     transfer: TransferUi,
     files: List<FileUi>,
+    downloadWorkerScheduler: DownloadWorker.Scheduler,
+    transferManager: TransferManager,
     apiUrlCreator: SharedApiUrlCreator,
     userAgent: String,
 ) {
@@ -367,24 +367,6 @@ private val dateFormatWithSeconds = SimpleDateFormat("yyyy-MM-dd_HHmmss")
 
 private fun currentDateTimeWithSecondsString(): String {
     return dateFormatWithSeconds.format(Date())
-}
-
-suspend fun downloadSelectedFiles(
-    transfer: TransferUi,
-    files: List<FileUi>,
-    downloadWorkerScheduler: DownloadWorker.Scheduler,
-    transferManager: TransferManager,
-    apiUrlCreator: SharedApiUrlCreator,
-    userAgent: String,
-) {
-    scheduleSelectedFilesDownload(
-        downloadWorkerScheduler = downloadWorkerScheduler,
-        transferManager = transferManager,
-        transfer = transfer,
-        files = files,
-        apiUrlCreator = apiUrlCreator,
-        userAgent = userAgent,
-    )
 }
 
 internal suspend fun buildDownloadRequest(
