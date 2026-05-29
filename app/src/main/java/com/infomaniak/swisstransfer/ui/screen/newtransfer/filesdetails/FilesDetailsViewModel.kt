@@ -89,11 +89,11 @@ class FilesDetailsViewModel @Inject constructor(
 
     fun scheduleFileSelectionDownload(transferIdType: TransferIdType, selectedFiles: List<FileUi>) {
         viewModelScope.launch {
-            val transfer = when (transferIdType) {
-                is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).first()
-                is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).first()
-            } ?: return@launch
             if (selectedFiles.isEmpty()) return@launch
+            val transfer = when (transferIdType) {
+                is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).filterNotNull().first()
+                is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).filterNotNull().first()
+            }
 
             downloadSelectedFiles(
                 transfer = transfer,
