@@ -289,7 +289,7 @@ class DownloadWorker @AssistedInject constructor(
         private const val TOTAL_SIZE_IN_BYTES_KEY = "total_size_in_bytes"
         private const val FAILURE_REASON_KEY = "reason"
 
-        // Sentinel value used for all DownloadWorker id's. The returned id is never fed to
+        // Sentinel value used for all DownloadWorker IDs. The returned ID is never fed to
         // Android's DownloadManager; it's just stored and read back by our own worker-status flow.
         private const val DOWNLOAD_WORKER_DOWNLOAD_ID = -1L
 
