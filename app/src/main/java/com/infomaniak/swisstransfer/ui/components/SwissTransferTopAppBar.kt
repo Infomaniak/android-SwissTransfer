@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,11 +77,13 @@ fun SwissTransferTopAppBar(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SwissTransferCenterTopAppBar(
+    modifier: Modifier = Modifier,
     title: String = "",
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier.sharedTransitionAppBar(),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
             titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
