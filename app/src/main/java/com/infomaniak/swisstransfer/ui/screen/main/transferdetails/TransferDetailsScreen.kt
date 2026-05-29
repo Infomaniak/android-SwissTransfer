@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +70,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.common.utils.FORMAT_DATE_FULL
 import com.infomaniak.core.common.utils.format
+import com.infomaniak.core.permissionmanager.PermissionType
+import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.ext.toDateFromSeconds
@@ -84,6 +87,7 @@ import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.components.TransferFilesSelectionTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
@@ -139,11 +143,11 @@ fun TransferDetailsScreen(
                 direction = direction,
                 navigateBack = navigateBack,
                 getTransfer = { success.transfer },
-                runDownloadUi = { ui, transfer, file ->
+                runDownloadUi = { ui, transfer, downloadTarget ->
                     transferDetailsViewModel.handleTransferDownload(
                         ui = ui,
                         transfer = transfer,
-                        targetFile = file,
+                        downloadTarget = downloadTarget,
                         openFile = { uri -> context.openFile(uri) },
                         direction = direction,
                     )
@@ -155,6 +159,9 @@ fun TransferDetailsScreen(
                     transferDetailsViewModel.checkedFiles[fileUid] = isChecked
                 },
                 navigateToFolder = navigateToFolder,
+                onDownloadSelection = { selectedUids ->
+                    transferDetailsViewModel.triggerFileSelectionDownload(selectedUids, direction)
+                }
             )
         }
         is TransferError -> {
@@ -205,18 +212,32 @@ private fun TransferDetailsScreen(
     direction: TransferDirection,
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
-    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi?) -> Nothing,
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Nothing,
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
-    clearCheckedFiles: () -> Unit, // TODO: Unused for now, to be implemented or deleted someday
+    clearCheckedFiles: () -> Unit,
     setFileCheckStatus: (String, Boolean) -> Unit,
     navigateToFolder: (folderUuid: String) -> Unit,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    onDownloadSelection: (Set<String>) -> Unit = {},
 ) {
 
     val context = LocalContext.current
     val transferRecipients: Set<String> = getTransfer().recipientsEmails
+    val transferUuid = getTransfer().uuid
 
-    var isMultiselectOn: Boolean by rememberSaveable { mutableStateOf(false) }
+    var isMultiselectOn: Boolean by rememberSaveable(transferUuid) { mutableStateOf(false) }
+    val checkedFiles = getCheckedFiles()
+    val selectedCount by remember { derivedStateOf { checkedFiles.values.count { it } } }
+    LaunchedEffect(transferUuid) {
+        clearCheckedFiles()
+        isMultiselectOn = false
+    }
+    LaunchedEffect(selectedCount) {
+        if (isMultiselectOn && selectedCount == 0) {
+            isMultiselectOn = false
+            clearCheckedFiles()
+        }
+    }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -228,28 +249,60 @@ private fun TransferDetailsScreen(
     val transferFlow = remember { snapshotFlow { getTransfer() } }
     LaunchedEffect(Unit) {
         transferFlow.collectLatest { transfer ->
-            val singleFileOrNull = transfer.files.singleOrNull()
-            runDownloadUi(downloadUi, transfer, singleFileOrNull)
+            val target = when (val singleFile = transfer.files.singleOrNull()) {
+                null -> DownloadTarget.EntireTransfer
+                else -> DownloadTarget.SingleFile(singleFile)
+            }
+            runDownloadUi(downloadUi, transfer, target)
         }
     }
 
-    val title = getTransfer().title ?: getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL)
+    val title = if (isMultiselectOn) {
+        pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount)
+    } else {
+        getTransfer().title ?: getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL)
+    }
 
     SwissTransferScaffold(
         topBar = {
-            SwissTransferTopAppBar(
-                title = title,
-                navigationIcon = { if (isWindowSmall()) TopAppBarButtons.Back(onClick = navigateBack ?: {}) },
-                actions = {
-                    when (direction) {
-                        TransferDirection.SENT -> downloadUi.TopAppBarButton()
-                        TransferDirection.RECEIVED -> TopAppBarButtons.QrCode {
-                            MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.ShowQRCode)
-                            showQrCodeBottomSheet = true
+            if (isMultiselectOn) {
+                TransferFilesSelectionTopAppBar(
+                    selectedCount = selectedCount,
+                    filesCount = getTransfer().files.size,
+                    onCancelSelection = {
+                        isMultiselectOn = false
+                        clearCheckedFiles()
+                    },
+                    onToggleAllSelection = {
+                        val allFiles = getTransfer().files
+                        if (selectedCount == allFiles.size) {
+                            clearCheckedFiles()
+                        } else {
+                            allFiles.forEach { file ->
+                                setFileCheckStatus(file.uid, true)
+                            }
                         }
-                    }
-                }
-            )
+                    },
+                )
+            } else {
+                SwissTransferTopAppBar(
+                    title = title,
+                    navigationIcon = {
+                        if (isWindowSmall()) {
+                            TopAppBarButtons.Back(onClick = navigateBack ?: {})
+                        }
+                    },
+                    actions = {
+                        when (direction) {
+                            TransferDirection.SENT -> downloadUi.TopAppBarButton()
+                            TransferDirection.RECEIVED -> TopAppBarButtons.QrCode {
+                                MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.ShowQRCode)
+                                showQrCodeBottomSheet = true
+                            }
+                        }
+                    },
+                )
+            }
         },
         snackbarHost = {
             // Modifier.navigationBarsPadding() wouldn't work here, but this does.
@@ -270,19 +323,32 @@ private fun TransferDetailsScreen(
                 runDownloadUi = runDownloadUi,
                 previewUriForFile = previewUriForFile,
                 direction = direction,
+                onLongPress = { uid ->
+                    if (!isMultiselectOn) {
+                        isMultiselectOn = true
+                        clearCheckedFiles()
+                        setFileCheckStatus(uid, true)
+                    }
+                }
             )
 
             BottomBar(getBottomBarPadding()) {
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
+                    val selectedUids = getCheckedFiles().filterValues { it }.keys.toSet()
+                    val writeExternalStoragePermissionManager =
+                        rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+
                     BottomBarButton(
                         icon = AppIcons.ArrowDownBar,
                         labelResId = R.string.buttonDownloadSelected,
-                        onClick = {
-                            // TODO: Move the multiselect elsewhere, and implement this feature
-                            // clearCheckedFiles() // Disabled for now because it's not the correct spot to do this
-                            // isMultiselectOn = false // Disabled for now because it's not the correct spot to do this
-                        }
+                        enabled = selectedUids.isNotEmpty(),
+                        onClick = writeExternalStoragePermissionManager.dropIfDenied {
+                            onDownloadSelection(selectedUids)
+                            clearCheckedFiles()
+                            isMultiselectOn = false
+                        },
+                        modifier = buttonsModifier,
                     )
                 } else {
                     BottomBarButton(
@@ -340,7 +406,7 @@ private fun TransferDetailsScreen(
 }
 
 @Composable
-private fun getBottomBarPadding(): PaddingValues {
+fun getBottomBarPadding(): PaddingValues {
     return if (isWindowSmall()) {
         WindowInsets.navigationBars.asPaddingValues()
     } else {
@@ -358,10 +424,11 @@ private fun ColumnScope.FilesList(
     getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
     setFileCheckStatus: (String, Boolean) -> Unit,
     transferFlow: Flow<TransferUi>,
-    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Nothing,
     direction: TransferDirection,
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Nothing,
     navigateToFolder: ((folderUuid: String) -> Unit)? = null,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
+    onLongPress: ((String) -> Unit)? = null,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -397,6 +464,7 @@ private fun ColumnScope.FilesList(
         runDownloadUi = runDownloadUi,
         previewUriForFile = previewUriForFile,
         direction = direction,
+        onLongPress = onLongPress,
     )
 }
 
@@ -439,7 +507,7 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-private fun BottomBar(paddingValues: PaddingValues, content: @Composable (RowScope.() -> Unit)) {
+fun BottomBar(paddingValues: PaddingValues, content: @Composable (RowScope.() -> Unit)) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

@@ -262,6 +262,7 @@ private fun ExistingTransferFilesDetails(
         withFilesSize = false,
         withSpaceLeft = false,
         navigateBack = { scope.launch { navigator.popBackStack() } },
+        transferDirection = transferDirection,
     ) {
         // Because on phones, if we navigateToDetails, we arrive on the TransferDetailsScreen but
         // the FilesDetailsScreen is displayed again when we press back. We need to first navigateBack again to dismiss all

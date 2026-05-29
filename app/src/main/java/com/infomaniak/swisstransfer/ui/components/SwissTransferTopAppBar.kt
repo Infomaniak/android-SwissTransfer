@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,18 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
@@ -72,6 +75,28 @@ fun SwissTransferTopAppBar(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun SwissTransferCenterTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String = "",
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    CenterAlignedTopAppBar(
+        modifier = modifier.sharedTransitionAppBar(),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = SwissTransferTheme.materialColors.tertiary,
+            titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
+            actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
+            navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
+        ),
+        title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
+        navigationIcon = navigationIcon,
+        actions = actions,
+    )
+}
+
+@Composable
 fun TopAppBarButton(
     icon: ImageVector,
     @StringRes contentDescResId: Int,
@@ -81,6 +106,29 @@ fun TopAppBarButton(
     IconButton(onClick = onClick, enabled = enabled) {
         Icon(imageVector = icon, contentDescription = stringResource(contentDescResId))
     }
+}
+
+@Composable
+fun TransferFilesSelectionTopAppBar(
+    selectedCount: Int,
+    filesCount: Int,
+    onCancelSelection: () -> Unit,
+    onToggleAllSelection: () -> Unit,
+) {
+    SwissTransferCenterTopAppBar(
+        title = pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount),
+        navigationIcon = {
+            TextButton(onClick = onCancelSelection) {
+                Text(text = stringResource(R.string.buttonCancel))
+            }
+        },
+        actions = {
+            val textRes = if (selectedCount == filesCount) R.string.settingsOptionNone else R.string.buttonAll
+            TextButton(onClick = onToggleAllSelection) {
+                Text(text = stringResource(textRes))
+            }
+        },
+    )
 }
 
 object TopAppBarButtons {
@@ -133,3 +181,21 @@ private fun SwissTransferTopAppBarPreview() {
         )
     }
 }
+
+@PreviewLightAndDark
+@Composable
+private fun SwissTransferCenterTopAppBarPreview() {
+    SwissTransferTheme {
+        SwissTransferCenterTopAppBar(
+            title = stringResource(R.string.appName),
+            navigationIcon = { TopAppBarButtons.Back {} },
+            actions = {
+                TopAppBarButton(AppIcons.Add, R.string.appName, onClick = {})
+                TopAppBarButtons.Close {}
+                TopAppBarButtons.QrCode {}
+                TopAppBarButtons.Download(onClick = {})
+            }
+        )
+    }
+}
+

@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadComposeUi
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -71,14 +72,15 @@ fun FileItemList(
     setUidCheckStatus: (String, Boolean) -> Unit,
     direction: TransferDirection?,
     modifier: Modifier = Modifier,
+    onLongPress: ((String) -> Unit)? = null,
     onRemoveUid: ((String) -> Unit)? = null,
     navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
-    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, file: FileUi) -> Unit = { _, _, _ ->
+    runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Unit = { _, _, _ ->
         awaitCancellation()
     },
-    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() }
+    previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
 ) {
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -108,12 +110,18 @@ fun FileItemList(
 
             if (downloadUi != null) {
                 LaunchedEffect(file.uid) {
-                    transferFlow.collect { transfer ->
-                        runDownloadUi(downloadUi, transfer, file)
+                    transferFlow.collectLatest { transfer ->
+                        runDownloadUi(
+                            downloadUi,
+                            transfer,
+                            DownloadTarget.SingleFile(file)
+                        )
                     }
                 }
             }
-            
+
+            val onDownloadFile = writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
+
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -130,8 +138,9 @@ fun FileItemList(
                             }
                         }
                     }
-                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
+                    else -> onDownloadFile
                 },
+                onLongPress = onLongPress?.let { callback -> { callback(file.uid) } },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
                         previewUriForFile(transfer, file).collect { uri: Uri? ->
@@ -141,13 +150,15 @@ fun FileItemList(
                 },
                 onRemove = { onRemoveUid?.invoke(file.uid) },
                 previewOverlay = {
-                    downloadUi?.run {
-                        CardCornerButton(modifier = Modifier.align(Alignment.TopEnd))
-                        CardProgressBar(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .fillMaxWidth()
-                        )
+                    if (!isCheckboxVisible()) {
+                        downloadUi?.run {
+                            CardCornerButton(modifier = Modifier.align(Alignment.TopEnd))
+                            CardProgressBar(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .fillMaxWidth()
+                            )
+                        }
                     }
                 },
             )

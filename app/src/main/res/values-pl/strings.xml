@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Ustawienia zaawansowane</string>
     <string name="awaitingNetwork">Oczekiwanie na sieć</string>
+    <string name="buttonAll">Wszystkie</string>
+    <string name="buttonCancel">Anuluj</string>
     <string name="buttonCancelTransfer">Anuluj transfer</string>
     <string name="buttonCloseAndContinue">Zamknij i kontynuuj</string>
     <string name="buttonConfirm">Potwierdź</string>
@@ -72,6 +74,12 @@
     <string name="importFilesScreenTitle">Pliki do transferu</string>
     <string name="invalidAddress">Nieprawidłowy adres</string>
     <string name="messageHeader">Wiadomość:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d zaznaczony</item>
+        <item quantity="few">%d zaznaczone</item>
+        <item quantity="many">%d zaznaczonych</item>
+        <item quantity="other">%d zaznaczone</item>
+    </plurals>
     <string name="myFilesTitle">Moje pliki</string>
     <string name="networkUnavailable">Sieć niedostępna</string>
     <string name="newTransferConfirmLeavingDialogTitle">Ups, czy naprawdę chcesz anulować?</string>

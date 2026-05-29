@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ class UploadSuccessViewModel @Inject constructor(
 
     fun dismissCompleteUpload(): Unit = UploadForegroundService.dismissCompleteUpload()
 
-    private val _transferUuidFlow = MutableSharedFlow<String>()
+    private val _transferUuidFlow = MutableSharedFlow<String>(replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val recipientsEmails = _transferUuidFlow.flatMapLatest { transferUuid ->
@@ -54,6 +54,8 @@ class UploadSuccessViewModel @Inject constructor(
     )
 
     fun fetchTransfer(transferUuid: String) {
-        viewModelScope.launch(ioDispatcher) { _transferUuidFlow.emit(transferUuid) }
+        viewModelScope.launch {
+            _transferUuidFlow.emit(transferUuid)
+        }
     }
 }

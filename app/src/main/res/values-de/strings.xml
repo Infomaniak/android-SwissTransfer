@@ -18,6 +18,8 @@
 <resources>
     <string name="advancedSettingsTitle">Erweiterte Einstellungen</string>
     <string name="awaitingNetwork">Auf Netzwerk warten</string>
+    <string name="buttonAll">Alle</string>
+    <string name="buttonCancel">Abbrechen</string>
     <string name="buttonCancelTransfer">Übertragung abbrechen</string>
     <string name="buttonCloseAndContinue">Schliessen und weiter</string>
     <string name="buttonConfirm">Bestätigen</string>
@@ -70,6 +72,10 @@
     <string name="importFilesScreenTitle">Zu übertragende Dateien</string>
     <string name="invalidAddress">Ungültige Adresse</string>
     <string name="messageHeader">Nachricht:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d ausgewählt</item>
+        <item quantity="other">%d ausgewählt</item>
+    </plurals>
     <string name="myFilesTitle">Meine Dateien</string>
     <string name="networkUnavailable">Netzwerk nicht verfügbar</string>
     <string name="newTransferConfirmLeavingDialogTitle">Ups, willst du wirklich abbrechen?</string>

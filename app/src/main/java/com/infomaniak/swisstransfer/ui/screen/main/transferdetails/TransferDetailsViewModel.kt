@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCa
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -96,6 +97,24 @@ class TransferDetailsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, Loading)
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+
+    fun triggerFileSelectionDownload(selectedUids: Set<String>, direction: TransferDirection) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val transfer = (uiState.value as? Success)?.transfer ?: return@launch
+            val selectedFiles = transfer.files.filter { it.uid in selectedUids }
+            if (selectedFiles.isEmpty()) return@launch
+
+            downloadSelectedFiles(
+                transfer = transfer,
+                files = selectedFiles,
+                downloadWorkerScheduler = downloadWorkerScheduler,
+                transferManager = transferManager,
+                apiUrlCreator = sharedApiUrlCreator,
+                userAgent = userAgent,
+                direction = direction,
+            )
+        }
+    }
 
     //region Deeplink Password
     private val _isDeeplinkNeedingPassword = MutableStateFlow(false)
@@ -175,7 +194,7 @@ class TransferDetailsViewModel @Inject constructor(
     suspend fun handleTransferDownload(
         ui: TransferDownloadUi,
         transfer: TransferUi,
-        targetFile: FileUi?,
+        downloadTarget: DownloadTarget,
         openFile: suspend (Uri) -> Unit,
         direction: TransferDirection,
     ): Nothing = handleTransferDownload(
@@ -185,7 +204,7 @@ class TransferDetailsViewModel @Inject constructor(
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
-        targetFile = targetFile,
+        downloadTarget = downloadTarget,
         openFile = openFile,
         direction = direction,
     )
