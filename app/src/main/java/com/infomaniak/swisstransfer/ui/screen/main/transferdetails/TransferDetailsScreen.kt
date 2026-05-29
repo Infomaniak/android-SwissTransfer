@@ -43,7 +43,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -85,9 +84,9 @@ import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.EmailsFlowRow
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.components.SwissTransferCard
-import com.infomaniak.swisstransfer.ui.components.SwissTransferCenterTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.components.TransferFilesSelectionTopAppBar
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
 import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
@@ -265,32 +264,22 @@ private fun TransferDetailsScreen(
     SwissTransferScaffold(
         topBar = {
             if (isMultiselectOn) {
-                SwissTransferCenterTopAppBar(
-                    title = title,
-                    navigationIcon = {
-                        TextButton(
-                            onClick = {
-                                isMultiselectOn = false
-                                clearCheckedFiles()
-                            }) {
-                            Text(text = stringResource(R.string.buttonCancel))
-                        }
+                TransferFilesSelectionTopAppBar(
+                    selectedCount = getCheckedFiles().values.count { it },
+                    filesCount = getTransfer().files.size,
+                    onCancelSelection = {
+                        isMultiselectOn = false
+                        clearCheckedFiles()
                     },
-                    actions = {
+                    onToggleAllSelection = {
                         val allFiles = getTransfer().files
                         val checkedCount = getCheckedFiles().values.count { it }
-                        val textRes = if (checkedCount == allFiles.size) R.string.settingsOptionNone else R.string.buttonAll
-                        TextButton(
-                            onClick = {
-                                if (checkedCount == allFiles.size) {
-                                    clearCheckedFiles()
-                                } else {
-                                    allFiles.forEach { file ->
-                                        setFileCheckStatus(file.uid, true)
-                                    }
-                                }
-                            }) {
-                            Text(text = stringResource(textRes))
+                        if (checkedCount == allFiles.size) {
+                            clearCheckedFiles()
+                        } else {
+                            allFiles.forEach { file ->
+                                setFileCheckStatus(file.uid, true)
+                            }
                         }
                     },
                 )

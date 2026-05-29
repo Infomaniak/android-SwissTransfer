@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,17 +31,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.permissionmanager.PermissionType
 import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.components.SwissTransferCenterTopAppBar
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
+import com.infomaniak.swisstransfer.ui.components.TransferFilesSelectionTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.FilesDetailsScreen
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownBar
@@ -85,47 +81,27 @@ fun ExistingTransferFilesDetailsScreen(
             }
     }
 
-    val topBarTitle = if (isMultiselectOn) {
-        val selectedCount = checkedFiles.values.count { it }
-        pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount)
-    } else {
-        ""
-    }
-
     SwissTransferScaffold(
         topBar = {
             if (isMultiselectOn) {
-                SwissTransferCenterTopAppBar(
-                    title = topBarTitle,
-                    navigationIcon = {
-                        TextButton(
-                            onClick = {
-                                isMultiselectOn = false
-                                checkedFiles.clear()
-                            }
-                        ) {
-                            Text(text = stringResource(R.string.buttonCancel))
-                        }
+                TransferFilesSelectionTopAppBar(
+                    selectedCount = checkedFiles.values.count { it },
+                    filesCount = files?.size ?: 0,
+                    onCancelSelection = {
+                        isMultiselectOn = false
+                        checkedFiles.clear()
                     },
-                    actions = {
+                    onToggleAllSelection = {
                         val checkedCount = checkedFiles.values.count { it }
-                        val textRes = if (checkedCount == files?.size) R.string.settingsOptionNone else R.string.buttonAll
-                        TextButton(
-                            onClick = {
-                                if (checkedCount == files?.size) {
-                                    checkedFiles.clear()
-                                } else {
-                                    files?.forEach { file -> checkedFiles[file.uid] = true }
-                                }
-                            }
-                        ) {
-                            Text(text = stringResource(textRes))
+                        if (checkedCount == files?.size) {
+                            checkedFiles.clear()
+                        } else {
+                            files?.forEach { file -> checkedFiles[file.uid] = true }
                         }
                     },
                 )
             } else {
                 SwissTransferTopAppBar(
-                    title = topBarTitle,
                     navigationIcon = {
                         TopAppBarButtons.Back(onClick = navigateBack)
                     },
