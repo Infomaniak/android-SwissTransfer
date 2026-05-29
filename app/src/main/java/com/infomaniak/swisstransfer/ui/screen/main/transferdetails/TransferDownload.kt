@@ -344,9 +344,14 @@ suspend fun downloadSelectedFiles(
 ) {
     files.forEach { file ->
         if (transfer.isV2() && file.isFolder) {
-            downloadWorkerScheduler.scheduleWork(
+            val newId = downloadWorkerScheduler.scheduleWork(
                 transferId = transfer.uuid,
                 folderId = file.uid,
+            )
+            transferManager.writeDownloadManagerId(
+                transfer = transfer,
+                fileUid = file.uid,
+                uniqueDownloadManagerId = newId.value,
             )
             return@forEach
         }
