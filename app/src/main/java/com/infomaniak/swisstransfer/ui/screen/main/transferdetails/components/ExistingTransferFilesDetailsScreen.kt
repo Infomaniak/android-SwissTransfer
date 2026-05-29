@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.permissionmanager.PermissionType
 import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
+import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -81,33 +82,39 @@ fun ExistingTransferFilesDetailsScreen(
             }
     }
 
+    val onCancelSelection = {
+        isMultiselectOn = false
+        checkedFiles.clear()
+    }
+
+    val onToggleAllSelection: () -> Unit = {
+        val checkedCount = checkedFiles.values.count { it }
+        if (checkedCount == files?.size) {
+            checkedFiles.clear()
+        } else {
+            files?.forEach { file -> checkedFiles[file.uid] = true }
+        }
+    }
+
+    val onLongPress = { uid: String ->
+        if (!isMultiselectOn) {
+            isMultiselectOn = true
+            checkedFiles.clear()
+            checkedFiles[uid] = true
+        }
+    }
+
     SwissTransferScaffold(
         topBar = {
-            if (isMultiselectOn) {
-                TransferFilesSelectionTopAppBar(
-                    selectedCount = checkedFiles.values.count { it },
-                    filesCount = files?.size ?: 0,
-                    onCancelSelection = {
-                        isMultiselectOn = false
-                        checkedFiles.clear()
-                    },
-                    onToggleAllSelection = {
-                        val checkedCount = checkedFiles.values.count { it }
-                        if (checkedCount == files?.size) {
-                            checkedFiles.clear()
-                        } else {
-                            files?.forEach { file -> checkedFiles[file.uid] = true }
-                        }
-                    },
-                )
-            } else {
-                SwissTransferTopAppBar(
-                    navigationIcon = {
-                        TopAppBarButtons.Back(onClick = navigateBack)
-                    },
-                    actions = { TopAppBarButtons.Close(close) },
-                )
-            }
+            ExistingTransferFilesDetailsTopBar(
+                isMultiselectOn = isMultiselectOn,
+                selectedCount = { checkedFiles.values.count { it } },
+                filesCount = { files?.size ?: 0 },
+                onCancelSelection = onCancelSelection,
+                onToggleAllSelection = onToggleAllSelection,
+                navigateBack = navigateBack,
+                close = close,
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
@@ -135,34 +142,70 @@ fun ExistingTransferFilesDetailsScreen(
                     isCheckboxVisible = { isMultiselectOn },
                     isUidChecked = { uid -> checkedFiles[uid] ?: false },
                     setUidCheckStatus = { uid, checked -> checkedFiles[uid] = checked },
-                    onLongPress = { uid ->
-                        if (!isMultiselectOn) {
-                            isMultiselectOn = true
-                            checkedFiles.clear()
-                            checkedFiles[uid] = true
-                        }
-                    },
+                    onLongPress = onLongPress,
                 )
 
                 if (isMultiselectOn) {
                     val selectedUids = checkedFiles.filterValues { it }.keys
                     val selectedFiles = fileList.filter { it.uid in selectedUids }
-                    val writePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
-                    BottomBar(getBottomBarPadding()) {
-                        BottomBarButton(
-                            icon = AppIcons.ArrowDownBar,
-                            labelResId = R.string.buttonDownloadSelected,
-                            enabled = selectedFiles.isNotEmpty(),
-                            onClick = writePermissionManager.dropIfDenied {
-                                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedFiles)
-                                checkedFiles.clear()
-                                isMultiselectOn = false
-                            },
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
+                    ExistingTransferFilesDetailsBottomBar(
+                        selectedFiles = selectedFiles,
+                        transferIdType = transferIdType,
+                        filesDetailsViewModel = filesDetailsViewModel,
+                        onCancelSelection = onCancelSelection,
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ExistingTransferFilesDetailsTopBar(
+    isMultiselectOn: Boolean,
+    selectedCount: () -> Int,
+    filesCount: () -> Int,
+    onCancelSelection: () -> Unit,
+    onToggleAllSelection: () -> Unit,
+    navigateBack: () -> Unit,
+    close: () -> Unit,
+) {
+    if (isMultiselectOn) {
+        TransferFilesSelectionTopAppBar(
+            selectedCount = selectedCount(),
+            filesCount = filesCount(),
+            onCancelSelection = onCancelSelection,
+            onToggleAllSelection = onToggleAllSelection,
+        )
+    } else {
+        SwissTransferTopAppBar(
+            navigationIcon = {
+                TopAppBarButtons.Back(onClick = navigateBack)
+            },
+            actions = { TopAppBarButtons.Close(close) },
+        )
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun ExistingTransferFilesDetailsBottomBar(
+    selectedFiles: List<FileUi>,
+    transferIdType: TransferIdType,
+    filesDetailsViewModel: FilesDetailsViewModel,
+    onCancelSelection: () -> Unit,
+) {
+    val writePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+    BottomBar(getBottomBarPadding()) {
+        BottomBarButton(
+            icon = AppIcons.ArrowDownBar,
+            labelResId = R.string.buttonDownloadSelected,
+            enabled = selectedFiles.isNotEmpty(),
+            onClick = writePermissionManager.dropIfDenied {
+                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedFiles)
+                onCancelSelection()
+            },
+            modifier = Modifier.weight(1f),
+        )
     }
 }
