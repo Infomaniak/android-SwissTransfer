@@ -110,7 +110,7 @@ fun FileItemList(
 
             if (downloadUi != null) {
                 LaunchedEffect(file.uid) {
-                    transferFlow.collect { transfer ->
+                    transferFlow.collectLatest { transfer ->
                         runDownloadUi(
                             downloadUi,
                             transfer,
