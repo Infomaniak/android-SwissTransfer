@@ -24,11 +24,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
@@ -102,6 +104,29 @@ fun TopAppBarButton(
     IconButton(onClick = onClick, enabled = enabled) {
         Icon(imageVector = icon, contentDescription = stringResource(contentDescResId))
     }
+}
+
+@Composable
+fun TransferFilesSelectionTopAppBar(
+    selectedCount: Int,
+    filesCount: Int,
+    onCancelSelection: () -> Unit,
+    onToggleAllSelection: () -> Unit,
+) {
+    SwissTransferCenterTopAppBar(
+        title = pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount),
+        navigationIcon = {
+            TextButton(onClick = onCancelSelection) {
+                Text(text = stringResource(R.string.buttonCancel))
+            }
+        },
+        actions = {
+            val textRes = if (selectedCount == filesCount) R.string.settingsOptionNone else R.string.buttonAll
+            TextButton(onClick = onToggleAllSelection) {
+                Text(text = stringResource(textRes))
+            }
+        },
+    )
 }
 
 object TopAppBarButtons {
