@@ -425,7 +425,7 @@ private fun currentDateTimeWithSecondsString(): String {
     return dateFormatWithSeconds.format(Date())
 }
 
-internal suspend fun buildDownloadRequest(
+private suspend fun buildDownloadRequest(
     transfer: TransferUi,
     targetFile: FileUi?,
     apiUrlCreator: SharedApiUrlCreator,
