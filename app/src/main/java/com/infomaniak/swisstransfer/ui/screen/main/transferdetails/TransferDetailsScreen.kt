@@ -218,7 +218,7 @@ private fun TransferDetailsScreen(
     setFileCheckStatus: (String, Boolean) -> Unit,
     navigateToFolder: (folderUuid: String) -> Unit,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    onDownloadSelection: (List<String>) -> Unit = {},
+    onDownloadSelection: (Set<String>) -> Unit = {},
 ) {
 
     val context = LocalContext.current
@@ -335,7 +335,7 @@ private fun TransferDetailsScreen(
             BottomBar(getBottomBarPadding()) {
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
-                    val selectedUids = getCheckedFiles().filterValues { it }.keys.toList()
+                    val selectedUids = getCheckedFiles().filterValues { it }.keys.toSet()
                     val writeExternalStoragePermissionManager =
                         rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
