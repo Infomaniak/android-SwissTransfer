@@ -45,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -226,18 +227,16 @@ private fun TransferDetailsScreen(
 
     var isMultiselectOn: Boolean by rememberSaveable(transferUuid) { mutableStateOf(false) }
     val checkedFiles = getCheckedFiles()
+    val selectedCount by remember { derivedStateOf { checkedFiles.values.count { it } } }
     LaunchedEffect(transferUuid) {
         clearCheckedFiles()
         isMultiselectOn = false
     }
-    LaunchedEffect(checkedFiles) {
-        snapshotFlow { checkedFiles.values.any { it } }
-            .collectLatest { hasSelection ->
-                if (isMultiselectOn && !hasSelection) {
-                    isMultiselectOn = false
-                    clearCheckedFiles()
-                }
-            }
+    LaunchedEffect(selectedCount) {
+        if (isMultiselectOn && selectedCount == 0) {
+            isMultiselectOn = false
+            clearCheckedFiles()
+        }
     }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -259,7 +258,6 @@ private fun TransferDetailsScreen(
     }
 
     val title = if (isMultiselectOn) {
-        val selectedCount = getCheckedFiles().values.count { it }
         pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount)
     } else {
         getTransfer().title ?: getTransfer().createdDateTimestamp.toDateFromSeconds().format(FORMAT_DATE_FULL)
@@ -269,7 +267,7 @@ private fun TransferDetailsScreen(
         topBar = {
             if (isMultiselectOn) {
                 TransferFilesSelectionTopAppBar(
-                    selectedCount = getCheckedFiles().values.count { it },
+                    selectedCount = selectedCount,
                     filesCount = getTransfer().files.size,
                     onCancelSelection = {
                         isMultiselectOn = false
@@ -277,8 +275,7 @@ private fun TransferDetailsScreen(
                     },
                     onToggleAllSelection = {
                         val allFiles = getTransfer().files
-                        val checkedCount = getCheckedFiles().values.count { it }
-                        if (checkedCount == allFiles.size) {
+                        if (selectedCount == allFiles.size) {
                             clearCheckedFiles()
                         } else {
                             allFiles.forEach { file ->

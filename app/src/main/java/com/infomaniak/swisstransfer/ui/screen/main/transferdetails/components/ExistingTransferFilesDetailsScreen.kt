@@ -23,12 +23,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -52,7 +52,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.BottomBarButt
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.getBottomBarPadding
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.FilesDetailsViewModel
 import com.infomaniak.swisstransfer.ui.utils.openFile
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -74,14 +73,12 @@ fun ExistingTransferFilesDetailsScreen(
 
     var isMultiselectOn by remember(folderUuid) { mutableStateOf(false) }
     val checkedFiles = remember(folderUuid) { mutableStateMapOf<String, Boolean>() }
-    LaunchedEffect(checkedFiles) {
-        snapshotFlow { checkedFiles.values.any { it } }
-            .collectLatest { hasSelection ->
-                if (isMultiselectOn && !hasSelection) {
-                    isMultiselectOn = false
-                    checkedFiles.clear()
-                }
-            }
+    val selectedCount by remember(folderUuid) { derivedStateOf { checkedFiles.values.count { it } } }
+    LaunchedEffect(selectedCount) {
+        if (isMultiselectOn && selectedCount == 0) {
+            isMultiselectOn = false
+            checkedFiles.clear()
+        }
     }
 
     val onCancelSelection = {
@@ -90,8 +87,7 @@ fun ExistingTransferFilesDetailsScreen(
     }
 
     val onToggleAllSelection: () -> Unit = {
-        val checkedCount = checkedFiles.values.count { it }
-        if (checkedCount == files?.size) {
+        if (selectedCount == files?.size) {
             checkedFiles.clear()
         } else {
             files?.forEach { file -> checkedFiles[file.uid] = true }
@@ -110,7 +106,7 @@ fun ExistingTransferFilesDetailsScreen(
         topBar = {
             ExistingTransferFilesDetailsTopBar(
                 isMultiselectOn = isMultiselectOn,
-                selectedCount = { checkedFiles.values.count { it } },
+                selectedCount = selectedCount,
                 filesCount = { files?.size ?: 0 },
                 onCancelSelection = onCancelSelection,
                 onToggleAllSelection = onToggleAllSelection,
@@ -166,7 +162,7 @@ fun ExistingTransferFilesDetailsScreen(
 @Composable
 private fun ExistingTransferFilesDetailsTopBar(
     isMultiselectOn: Boolean,
-    selectedCount: () -> Int,
+    selectedCount: Int,
     filesCount: () -> Int,
     onCancelSelection: () -> Unit,
     onToggleAllSelection: () -> Unit,
@@ -175,7 +171,7 @@ private fun ExistingTransferFilesDetailsTopBar(
 ) {
     if (isMultiselectOn) {
         TransferFilesSelectionTopAppBar(
-            selectedCount = selectedCount(),
+            selectedCount = selectedCount,
             filesCount = filesCount(),
             onCancelSelection = onCancelSelection,
             onToggleAllSelection = onToggleAllSelection,
