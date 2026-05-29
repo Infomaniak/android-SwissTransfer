@@ -176,11 +176,13 @@ private fun createDownloadStatusFlow(
     downloadTarget: DownloadTarget,
     id: UniqueDownloadId,
 ): Flow<DownloadStatus?> = when {
-    needsDownloadWorker -> when (downloadTarget) {
-        is DownloadTarget.SingleFile -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, downloadTarget.file.uid)
-        is DownloadTarget.EntireTransfer -> downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, null)
-        is DownloadTarget.FileSelection -> error("Handled above")
+    needsDownloadWorker && downloadTarget is DownloadTarget.SingleFile -> {
+        downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, downloadTarget.file.uid)
     }
+    needsDownloadWorker && downloadTarget is DownloadTarget.EntireTransfer -> {
+        downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, null)
+    }
+    needsDownloadWorker && downloadTarget is DownloadTarget.FileSelection -> error("Handled above")
     else -> downloadManager.downloadStatusFlow(id)
 }
 
@@ -345,30 +347,31 @@ private suspend fun getNewDownloadId(
     direction: TransferDirection?,
 ): UniqueDownloadId? {
     ui.awaitDownloadRequest()
-    val newId = when (downloadTarget) {
-        is DownloadTarget.FileSelection -> error("FileSelection is handled separately")
-        is DownloadTarget.SingleFile -> when {
-            transfer.isV2() && downloadTarget.file.isFolder -> downloadWorkerScheduler.scheduleWork(
+    val newId = when {
+        downloadTarget is DownloadTarget.FileSelection -> error("FileSelection is handled separately")
+        downloadTarget is DownloadTarget.SingleFile && transfer.isV2() && downloadTarget.file.isFolder -> {
+            downloadWorkerScheduler.scheduleWork(
                 transferId = transfer.uuid,
                 folderId = downloadTarget.file.uid,
             )
-            else -> {
-                val request = buildDownloadRequest(transfer, downloadTarget.file, apiUrlCreator, userAgent, direction)
-                    ?: return null
-                downloadManager.startDownloadingFile(request)
-            }
         }
-        is DownloadTarget.EntireTransfer -> when {
-            transfer.isV2() -> downloadWorkerScheduler.scheduleWork(
+        downloadTarget is DownloadTarget.EntireTransfer && transfer.isV2() -> {
+            downloadWorkerScheduler.scheduleWork(
                 transferId = transfer.uuid,
                 folderId = null,
             )
-            else -> {
-                val request = buildDownloadRequest(transfer, null, apiUrlCreator, userAgent, direction)
-                    ?: return null
-                downloadManager.startDownloadingFile(request)
-            }
         }
+        downloadTarget is DownloadTarget.SingleFile -> {
+            val request = buildDownloadRequest(transfer, downloadTarget.file, apiUrlCreator, userAgent, direction)
+                ?: return null
+            downloadManager.startDownloadingFile(request)
+        }
+        downloadTarget is DownloadTarget.EntireTransfer -> {
+            val request = buildDownloadRequest(transfer, null, apiUrlCreator, userAgent, direction)
+                ?: return null
+            downloadManager.startDownloadingFile(request)
+        }
+        else -> error("Unreachable")
     }
 
     val fileUid = downloadTarget.fileOrNull?.uid
