@@ -105,7 +105,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.components.Tr
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.emptystate.EmptyStateScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.DeeplinkPasswordAlertDialog
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.isV1
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import com.infomaniak.swisstransfer.ui.utils.openFile
 import com.infomaniak.swisstransfer.ui.utils.shareText
@@ -293,9 +292,7 @@ private fun TransferDetailsScreen(
                     },
                     actions = {
                         when (direction) {
-                            TransferDirection.SENT -> {
-                                if (getTransfer().isV1()) downloadUi.TopAppBarButton()
-                            }
+                            TransferDirection.SENT -> downloadUi.TopAppBarButton()
                             TransferDirection.RECEIVED -> TopAppBarButtons.QrCode {
                                 MatomoSwissTransfer.trackReceivedTransferEvent(MatomoName.ShowQRCode)
                                 showQrCodeBottomSheet = true
