@@ -159,7 +159,7 @@ fun TransferDetailsScreen(
                 },
                 navigateToFolder = navigateToFolder,
                 onDownloadSelection = { selectedUids ->
-                    transferDetailsViewModel.triggerFileSelectionDownload(selectedUids)
+                    transferDetailsViewModel.triggerFileSelectionDownload(selectedUids, direction)
                 }
             )
         }

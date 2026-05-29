@@ -37,6 +37,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.permissionmanager.PermissionType
 import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -62,6 +63,7 @@ fun ExistingTransferFilesDetailsScreen(
     withFilesSize: Boolean,
     withSpaceLeft: Boolean,
     navigateBack: () -> Unit,
+    transferDirection: TransferDirection,
     filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
     close: () -> Unit
 ) {
@@ -153,6 +155,7 @@ fun ExistingTransferFilesDetailsScreen(
                         transferIdType = transferIdType,
                         filesDetailsViewModel = filesDetailsViewModel,
                         onCancelSelection = onCancelSelection,
+                        direction = transferDirection,
                     )
                 }
             }
@@ -192,6 +195,7 @@ private fun ExistingTransferFilesDetailsTopBar(
 private fun ExistingTransferFilesDetailsBottomBar(
     selectedFiles: List<FileUi>,
     transferIdType: TransferIdType,
+    direction: TransferDirection,
     filesDetailsViewModel: FilesDetailsViewModel,
     onCancelSelection: () -> Unit,
 ) {
@@ -202,7 +206,7 @@ private fun ExistingTransferFilesDetailsBottomBar(
             labelResId = R.string.buttonDownloadSelected,
             enabled = selectedFiles.isNotEmpty(),
             onClick = writePermissionManager.dropIfDenied {
-                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedFiles)
+                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedFiles, direction)
                 onCancelSelection()
             },
             modifier = Modifier.weight(1f),

@@ -224,7 +224,6 @@ class DownloadWorker @AssistedInject constructor(
             return UniqueDownloadId(DOWNLOAD_WORKER_DOWNLOAD_ID)
         }
 
-
         @OptIn(ExperimentalCoroutinesApi::class)
         fun downloadStatusFlow(transferId: String, folderId: String?): Flow<DownloadStatus> {
             fun WorkInfo.isPending() = state == WorkInfo.State.ENQUEUED || state == WorkInfo.State.BLOCKED
