@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,6 +54,8 @@ class UploadSuccessViewModel @Inject constructor(
     )
 
     fun fetchTransfer(transferUuid: String) {
-        _transferUuidFlow.tryEmit(transferUuid)
+        viewModelScope.launch {
+            _transferUuidFlow.emit(transferUuid)
+        }
     }
 }
