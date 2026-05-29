@@ -47,7 +47,7 @@ import com.infomaniak.core.crossapplogin.back.ExternalAccount
 import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
-import com.infomaniak.lib.login.InfomaniakLogin
+import com.infomaniak.core.login.InfomaniakLogin
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackAccountEvent
 import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
