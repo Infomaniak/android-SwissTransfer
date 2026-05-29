@@ -41,7 +41,7 @@ class UploadSuccessViewModel @Inject constructor(
 
     fun dismissCompleteUpload(): Unit = UploadForegroundService.dismissCompleteUpload()
 
-    private val _transferUuidFlow = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    private val _transferUuidFlow = MutableSharedFlow<String>(replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val recipientsEmails = _transferUuidFlow.flatMapLatest { transferUuid ->
