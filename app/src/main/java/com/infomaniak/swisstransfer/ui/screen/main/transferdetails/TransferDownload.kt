@@ -72,6 +72,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.time.Duration.Companion.seconds
 
+private const val HANDLED_ABOVE = "FileSelection should never reach this branch as it's handled separately"
+
 suspend fun handleTransferDownload(
     ui: TransferDownloadUi,
     transferManager: TransferManager,
@@ -166,7 +168,7 @@ private suspend fun handleSingleDownload(
 private fun DownloadTarget.needsDownloadWorker(transfer: TransferUi): Boolean = when (this) {
     is DownloadTarget.SingleFile -> transfer.isV2() && file.isFolder
     is DownloadTarget.EntireTransfer -> transfer.isV2()
-    is DownloadTarget.FileSelection -> error("Handled above")
+    is DownloadTarget.FileSelection -> error(HANDLED_ABOVE)
 }
 
 private fun createDownloadStatusFlow(
@@ -182,7 +184,7 @@ private fun createDownloadStatusFlow(
     needsDownloadWorker && downloadTarget is DownloadTarget.EntireTransfer -> {
         downloadWorkerScheduler.downloadStatusFlow(transfer.uuid, null)
     }
-    needsDownloadWorker && downloadTarget is DownloadTarget.FileSelection -> error("Handled above")
+    needsDownloadWorker && downloadTarget is DownloadTarget.FileSelection -> error(HANDLED_ABOVE)
     else -> downloadManager.downloadStatusFlow(id)
 }
 
@@ -197,7 +199,7 @@ private suspend fun cancelDownload(
         when (downloadTarget) {
             is DownloadTarget.SingleFile -> downloadWorkerScheduler.cancelWork(transfer.uuid, downloadTarget.file.uid)
             is DownloadTarget.EntireTransfer -> downloadWorkerScheduler.cancelWork(transfer.uuid, null)
-            is DownloadTarget.FileSelection -> error("Handled above")
+            is DownloadTarget.FileSelection -> error(HANDLED_ABOVE)
         }
     } else {
         downloadManager.cancelAndRemove(id)
