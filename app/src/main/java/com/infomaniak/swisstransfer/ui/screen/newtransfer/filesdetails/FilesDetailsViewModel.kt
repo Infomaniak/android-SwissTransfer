@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.di.UserAgent
@@ -88,7 +89,11 @@ class FilesDetailsViewModel @Inject constructor(
         openFile = openFile,
     )
 
-    fun scheduleFileSelectionDownload(transferIdType: TransferIdType, selectedFiles: List<FileUi>) {
+    fun scheduleFileSelectionDownload(
+        transferIdType: TransferIdType,
+        selectedFiles: List<FileUi>,
+        direction: TransferDirection,
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             if (selectedFiles.isEmpty()) return@launch
             val transfer = when (transferIdType) {
@@ -103,6 +108,7 @@ class FilesDetailsViewModel @Inject constructor(
                 transferManager = transferManager,
                 apiUrlCreator = sharedApiUrlCreator,
                 userAgent = userAgent,
+                direction = direction,
             )
         }
     }

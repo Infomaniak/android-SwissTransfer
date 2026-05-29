@@ -93,6 +93,7 @@ suspend fun handleTransferDownload(
         userAgent = userAgent,
         transfer = transfer,
         downloadTarget = downloadTarget,
+        direction = direction ?: TransferDirection.RECEIVED,
     )
 } else {
     currentOrNewDownloadManagerId(
@@ -214,6 +215,7 @@ private suspend fun handleFileSelectionDownloadRequests(
     userAgent: String,
     transfer: TransferUi,
     downloadTarget: DownloadTarget.FileSelection,
+    direction: TransferDirection,
 ): Nothing = repeatWhileActive {
     ui.awaitDownloadRequest()
     downloadSelectedFiles(
@@ -223,6 +225,7 @@ private suspend fun handleFileSelectionDownloadRequests(
         transferManager = transferManager,
         apiUrlCreator = apiUrlCreator,
         userAgent = userAgent,
+        direction = direction,
     )
 }
 
@@ -392,6 +395,7 @@ suspend fun downloadSelectedFiles(
     transferManager: TransferManager,
     apiUrlCreator: SharedApiUrlCreator,
     userAgent: String,
+    direction: TransferDirection,
 ) {
     files.forEach { file ->
         if (transfer.isV2() && file.isFolder) {
@@ -407,7 +411,7 @@ suspend fun downloadSelectedFiles(
             return@forEach
         }
 
-        val request = buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, null)
+        val request = buildDownloadRequest(transfer, file, apiUrlCreator, userAgent, direction)
             ?: return@forEach
         val newId = downloadManager.startDownloadingFile(request)
         transferManager.writeDownloadManagerId(
