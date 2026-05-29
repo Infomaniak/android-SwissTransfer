@@ -337,8 +337,6 @@ private fun TransferDetailsScreen(
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
                     val selectedUids = getCheckedFiles().filterValues { it }.keys.toList()
-                    val allFiles = getTransfer().files
-                    val isAllSelected = selectedUids.size == allFiles.size
                     val writeExternalStoragePermissionManager =
                         rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
