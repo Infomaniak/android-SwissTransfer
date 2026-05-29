@@ -23,14 +23,12 @@ import android.webkit.MimeTypeMap
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.extractExtensionOrFallback
 
-fun Uri.getMimeType(contentResolver: ContentResolver): String? {
-    return when (scheme) {
-        ContentResolver.SCHEME_CONTENT -> contentResolver.getType(this)
-        ContentResolver.SCHEME_FILE -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-            MimeTypeMap.getFileExtensionFromUrl(toString()).lowercase()
-        )
-        else -> null
-    }
+fun Uri.getMimeType(contentResolver: ContentResolver): String? = when (scheme) {
+    ContentResolver.SCHEME_CONTENT -> contentResolver.getType(this)
+    ContentResolver.SCHEME_FILE -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+        MimeTypeMap.getFileExtensionFromUrl(toString()).lowercase()
+    )
+    else -> null
 }
 
 suspend inline fun generateThumbnailIfNeeded(
