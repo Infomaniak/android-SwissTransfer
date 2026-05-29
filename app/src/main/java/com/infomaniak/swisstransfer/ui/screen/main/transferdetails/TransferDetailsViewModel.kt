@@ -58,6 +58,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCa
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -98,7 +99,7 @@ class TransferDetailsViewModel @Inject constructor(
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
     fun triggerFileSelectionDownload(selectedUids: List<String>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val transfer = (uiState.value as? Success)?.transfer ?: return@launch
             val selectedFiles = transfer.files.filter { it.uid in selectedUids }
             if (selectedFiles.isEmpty()) return@launch
