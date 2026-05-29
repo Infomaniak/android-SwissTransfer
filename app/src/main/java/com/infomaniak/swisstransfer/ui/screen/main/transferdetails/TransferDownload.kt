@@ -19,7 +19,6 @@
 
 package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 
-import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.net.Uri
 import androidx.lifecycle.Lifecycle
@@ -70,6 +69,7 @@ import splitties.systemservices.downloadManager
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 suspend fun handleTransferDownload(
@@ -362,8 +362,7 @@ private suspend fun scheduleSelectedFilesDownload(
     }
 }
 
-@SuppressLint("SimpleDateFormat")
-private val dateFormatWithSeconds = SimpleDateFormat("yyyy-mm-dd_hhmmss")
+private val dateFormatWithSeconds = SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US)
 
 private fun currentDateTimeWithSecondsString(): String {
     return dateFormatWithSeconds.format(Date())
