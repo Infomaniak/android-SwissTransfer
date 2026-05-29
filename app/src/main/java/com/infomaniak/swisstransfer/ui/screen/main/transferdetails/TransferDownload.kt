@@ -363,7 +363,7 @@ private suspend fun scheduleSelectedFilesDownload(
 }
 
 @SuppressLint("SimpleDateFormat")
-private val dateFormatWithSeconds = SimpleDateFormat("yyyy-mm-dd_hhmmss")
+private val dateFormatWithSeconds = SimpleDateFormat("yyyy-MM-dd_HHmmss")
 
 private fun currentDateTimeWithSecondsString(): String {
     return dateFormatWithSeconds.format(Date())
