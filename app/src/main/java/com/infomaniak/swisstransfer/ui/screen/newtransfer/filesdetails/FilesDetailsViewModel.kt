@@ -35,6 +35,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransfe
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -88,7 +89,7 @@ class FilesDetailsViewModel @Inject constructor(
     )
 
     fun scheduleFileSelectionDownload(transferIdType: TransferIdType, selectedFiles: List<FileUi>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (selectedFiles.isEmpty()) return@launch
             val transfer = when (transferIdType) {
                 is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).filterNotNull().first()
