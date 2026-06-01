@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.infomaniak.core.common.DownloadStatus
+import com.infomaniak.core.common.UniqueDownloadId
+import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.downloadStatusFlow
 import com.infomaniak.core.common.uriFor
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -29,6 +31,7 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.swisstransfer.services.AppDownloadManager
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
+import com.infomaniak.swisstransfer.ui.utils.extractExtensionOrFallback
 import com.infomaniak.swisstransfer.ui.utils.isV1
 import com.infomaniak.swisstransfer.ui.utils.isV2
 import kotlinx.coroutines.Dispatchers
@@ -52,11 +55,8 @@ fun TransferManager.previewUriForFile(
     transfer = transfer,
     fileUid = file.uid,
 ).transformLatest { uniqueDownloadId ->
-    suspend fun isThumbnailExists() = withContext(Dispatchers.IO) {
-        runCatching { file.thumbnailPath?.toUri()?.toFile()?.exists() ?: false }.getOrDefault(false)
-    }
-    if (file.thumbnailPath != null && isThumbnailExists()) {
-        emit(file.thumbnailPath!!.toUri())
+    getThumbnailUri(file)?.let {
+        emit(it)
         return@transformLatest
     }
 
@@ -64,6 +64,7 @@ fun TransferManager.previewUriForFile(
         emit(null)
         return@transformLatest
     }
+
     val downloadStatusFlow = when {
         transfer.isV2() && file.isFolder -> downloadWorkerScheduler.downloadStatusFlow(
             transferId = transfer.uuid,
@@ -71,32 +72,62 @@ fun TransferManager.previewUriForFile(
         )
         else -> downloadManager.downloadStatusFlow(uniqueDownloadId)
     }
-    val uriFlow = downloadStatusFlow.transformLatest { status ->
-        if (status !is DownloadStatus.Complete) {
-            emit(null)
-            awaitCancellation()
-        }
-
-        val uri = when {
-            transfer.isV1() -> downloadManager.uriFor(uniqueDownloadId)
-            else -> downloadManager.uriFor(uniqueDownloadId) ?: AppDownloadManager.uriFor(transfer, file)
-        }
-
-        file.mimeType?.let { mimeType ->
-            thumbnailsLocalStorage.generateThumbnailFor(
-                transferUuid = transfer.uuid,
-                fileUri = uri ?: return@let,
-                fileName = file.uid,
-                extension = mimeType.substring(mimeType.indexOfLast { it == '/' })
-            )
-
-            updateTransferFilesThumbnails(
-                transferUUID = transfer.uuid,
-                thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transfer.uuid).toString(),
-            )
-        }
-
-        emit(uri)
-    }
-    emitAll(uriFlow)
+    emitAll(
+        downloadStatusFlow.toPreviewUriFlow(
+            transfer = transfer,
+            file = file,
+            uniqueDownloadId = uniqueDownloadId,
+            thumbnailsLocalStorage = thumbnailsLocalStorage,
+            transferManager = this@previewUriForFile,
+        )
+    )
 }.distinctUntilChanged()
+
+private suspend fun getThumbnailUri(file: FileUi): Uri? {
+    val thumbnailPath = file.thumbnailPath ?: return null
+    val exists = withContext(Dispatchers.IO) {
+        runCatching { thumbnailPath.toUri().toFile().exists() }.cancellable().getOrDefault(false)
+    }
+    return if (exists) thumbnailPath.toUri() else null
+}
+
+private fun extractExtension(file: FileUi): String {
+    return file.mimeType.extractExtensionOrFallback(fallback = file.fileName)
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+private fun Flow<DownloadStatus?>.toPreviewUriFlow(
+    transfer: TransferUi,
+    file: FileUi,
+    uniqueDownloadId: UniqueDownloadId,
+    thumbnailsLocalStorage: ThumbnailsLocalStorage,
+    transferManager: TransferManager,
+): Flow<Uri?> = transformLatest { status ->
+    if (status !is DownloadStatus.Complete) {
+        emit(null)
+        awaitCancellation()
+    }
+
+    val uri = when {
+        transfer.isV1() -> downloadManager.uriFor(uniqueDownloadId)
+        else -> downloadManager.uriFor(uniqueDownloadId) ?: AppDownloadManager.uriFor(transfer, file)
+    }
+
+    val extension = extractExtension(file)
+
+    if (extension.isNotBlank() && uri != null) {
+        thumbnailsLocalStorage.generateThumbnailFor(
+            transferUuid = transfer.uuid,
+            fileUri = uri,
+            fileName = file.uid,
+            extension = extension,
+        )
+
+        transferManager.updateTransferFilesThumbnails(
+            transferUUID = transfer.uuid,
+            thumbnailRootPath = thumbnailsLocalStorage.getThumbnailsFolderFor(transfer.uuid).toString(),
+        )
+    }
+
+    emit(uri)
+}

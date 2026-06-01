@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2026 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,18 +17,13 @@
  */
 package com.infomaniak.swisstransfer.ui.utils
 
-import com.infomaniak.core.filetypes.FileType
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
-
-val FileUi.fileType: FileType
-    get() = if (isFolder) {
-        FileType.FOLDER
-    } else {
-        mimeType?.takeIf { it.isNotBlank() }?.let { FileType.guessFromMimeType(it) } ?: FileType.guessFromFileName(fileName)
-    }
-
-val FileUi.hasPreview: Boolean
-    get() = when (fileType) {
-        FileType.IMAGE, FileType.VIDEO -> true
-        else -> false
-    }
+fun String?.extractExtensionOrFallback(fallback: String): String {
+    return this?.takeIf { it.isNotBlank() }?.let { mimeType ->
+        val slashIndex = mimeType.indexOfLast { it == '/' }
+        if (slashIndex != -1) {
+            mimeType.substring(slashIndex + 1).takeIf { it.isNotBlank() }
+        } else {
+            null
+        }
+    } ?: fallback
+}
