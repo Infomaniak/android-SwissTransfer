@@ -64,34 +64,36 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
     val sizeUploaded by remember { derivedStateOf { getTransfer().sizeUploaded } }
     val direction by remember { derivedStateOf { getTransfer().direction } }
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = AppIcons.FileZip,
-            tint = SwissTransferTheme.materialColors.primary,
-            contentDescription = null,
-        )
-        Spacer(Modifier.width(Margin.Mini))
-        TextDotText(
-            firstText = { Text(pluralStringResource(R.plurals.filesCount, filesCount, filesCount)) },
-            secondText = { Text(HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded)) },
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-    }
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = AppIcons.FileZip,
+                tint = SwissTransferTheme.materialColors.primary,
+                contentDescription = null,
+            )
+            Spacer(Modifier.width(Margin.Mini))
+            TextDotText(
+                firstText = { Text(pluralStringResource(R.plurals.filesCount, filesCount, filesCount)) },
+                secondText = { Text(HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded)) },
+                color = SwissTransferTheme.colors.primaryTextColor,
+            )
+        }
 
-    HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
-
-    IconText(
-        icon = AppIcons.Clock,
-        text = getTransfer().getWholeDate(),
-    )
-
-    if (direction == TransferDirection.SENT && getTransfer().isV1()) {
         HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
 
         IconText(
-            icon = AppIcons.ArrowDownFile,
-            text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
+            icon = AppIcons.Clock,
+            text = getTransfer().getWholeDate(),
         )
+
+        if (direction == TransferDirection.SENT && getTransfer().isV1()) {
+            HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
+
+            IconText(
+                icon = AppIcons.ArrowDownFile,
+                text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
+            )
+        }
     }
 }
 

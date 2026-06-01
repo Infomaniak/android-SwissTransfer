@@ -20,7 +20,6 @@ package com.infomaniak.swisstransfer.ui.screen.main
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.toRoute
@@ -41,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.utils.animatedComposable
 fun MainNavHost(
     navController: NavHostController,
     deeplinkTransferDirection: TransferDirection?,
-    hideBottomBar: MutableState<Boolean>,
+    onHideBottomBarChange: (Boolean) -> Unit,
 ) {
 
     val startDestination = when (deeplinkTransferDirection) {
@@ -63,7 +62,7 @@ fun MainNavHost(
                     TransfersScreenWrapper(
                         direction = TransferDirection.SENT,
                         transferIdType = args.toTransferIdType(),
-                        hideBottomBar = hideBottomBar,
+                        onHideBottomBarChange = onHideBottomBarChange,
                     )
                 }
                 receivedDestination {
@@ -71,7 +70,7 @@ fun MainNavHost(
                     TransfersScreenWrapper(
                         direction = TransferDirection.RECEIVED,
                         transferIdType = args.toTransferIdType(),
-                        hideBottomBar = hideBottomBar,
+                        onHideBottomBarChange = onHideBottomBarChange,
                     )
                 }
                 animatedComposable<MyAccountDestination> {

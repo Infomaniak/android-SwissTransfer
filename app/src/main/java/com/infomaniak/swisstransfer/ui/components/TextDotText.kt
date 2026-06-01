@@ -37,8 +37,8 @@ import kotlin.experimental.ExperimentalTypeInference
 @Composable
 fun TextDotText(
     firstText: @Composable () -> Unit,
-    secondText: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
+    secondText: (@Composable () -> Unit)? = null,
     color: Color = SwissTransferTheme.colors.secondaryTextColor,
     style: TextStyle = SwissTransferTheme.typography.bodySmallRegular,
 ) = Row(modifier) {

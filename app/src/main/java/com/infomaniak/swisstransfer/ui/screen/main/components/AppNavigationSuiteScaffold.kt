@@ -48,7 +48,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -97,7 +96,7 @@ fun AppNavigationSuiteScaffold(
     layoutType: NavigationSuiteType,
     navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
-    hideBottomBar: MutableState<Boolean>,
+    hideBottomBar: Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -107,7 +106,7 @@ fun AppNavigationSuiteScaffold(
                 when (layoutType) {
                     NavigationSuiteType.None -> Unit
                     NavigationSuiteType.NavigationBar -> {
-                        if (!hideBottomBar.value) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
+                        if (!hideBottomBar) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
                     NavigationSuiteType.NavigationRail -> AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
                     else -> AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)

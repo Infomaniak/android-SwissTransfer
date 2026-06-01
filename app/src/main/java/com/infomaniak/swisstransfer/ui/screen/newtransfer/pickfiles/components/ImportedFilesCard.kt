@@ -71,11 +71,11 @@ import kotlinx.parcelize.Parcelize
 
 @Composable
 fun ImportedFilesCard(
-    modifier: Modifier = Modifier,
     files: () -> List<FileUi>,
     canSendStatus: () -> CanSendStatus,
     pickFiles: () -> Unit,
     navigateToFilesDetails: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     SwissTransferCard(
