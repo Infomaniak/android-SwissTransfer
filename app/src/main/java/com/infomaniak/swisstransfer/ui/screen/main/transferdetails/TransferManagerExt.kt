@@ -22,6 +22,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.infomaniak.core.common.DownloadStatus
 import com.infomaniak.core.common.UniqueDownloadId
+import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.downloadStatusFlow
 import com.infomaniak.core.common.uriFor
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -85,7 +86,7 @@ fun TransferManager.previewUriForFile(
 private suspend fun getThumbnailUri(file: FileUi): Uri? {
     val thumbnailPath = file.thumbnailPath ?: return null
     val exists = withContext(Dispatchers.IO) {
-        runCatching { thumbnailPath.toUri().toFile().exists() }.getOrDefault(false)
+        runCatching { thumbnailPath.toUri().toFile().exists() }.cancellable().getOrDefault(false)
     }
     return if (exists) thumbnailPath.toUri() else null
 }
