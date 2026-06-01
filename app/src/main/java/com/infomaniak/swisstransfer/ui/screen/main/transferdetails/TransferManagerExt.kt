@@ -54,7 +54,7 @@ fun TransferManager.previewUriForFile(
     transfer = transfer,
     fileUid = file.uid,
 ).transformLatest { uniqueDownloadId ->
-    existingThumbnail(file)?.let {
+    getThumbnailUri(file)?.let {
         emit(it)
         return@transformLatest
     }
@@ -82,7 +82,7 @@ fun TransferManager.previewUriForFile(
     )
 }.distinctUntilChanged()
 
-private suspend fun existingThumbnail(file: FileUi): Uri? {
+private suspend fun getThumbnailUri(file: FileUi): Uri? {
     val thumbnailPath = file.thumbnailPath ?: return null
     val exists = withContext(Dispatchers.IO) {
         runCatching { thumbnailPath.toUri().toFile().exists() }.getOrDefault(false)
