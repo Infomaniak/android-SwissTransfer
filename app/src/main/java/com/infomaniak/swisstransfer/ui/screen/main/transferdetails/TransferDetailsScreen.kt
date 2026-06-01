@@ -402,30 +402,34 @@ private fun ColumnScope.FilesList(
 
 @Composable
 private fun TransferRecipients(recipients: Set<String>) {
-    Text(
-        text = pluralStringResource(R.plurals.recipientHeader, recipients.count()),
-        style = SwissTransferTheme.typography.bodySmallRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
-    Spacer(Modifier.height(Margin.Mini))
-    EmailsFlowRow(recipients.toList())
+    Column {
+        Text(
+            text = pluralStringResource(R.plurals.recipientHeader, recipients.count()),
+            style = SwissTransferTheme.typography.bodySmallRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+        )
+        Spacer(Modifier.height(Margin.Mini))
+        EmailsFlowRow(recipients.toList())
+    }
 }
 
 @Composable
 private fun TransferMessage(transferMessage: String) {
-    Text(
-        text = stringResource(R.string.messageHeader),
-        style = SwissTransferTheme.typography.bodySmallRegular,
-        color = SwissTransferTheme.colors.secondaryTextColor,
-    )
-    Spacer(Modifier.height(Margin.Medium))
-    SwissTransferCard {
+    Column {
         Text(
-            text = transferMessage,
+            text = stringResource(R.string.messageHeader),
             style = SwissTransferTheme.typography.bodySmallRegular,
-            color = SwissTransferTheme.colors.primaryTextColor,
-            modifier = Modifier.padding(all = Margin.Large),
+            color = SwissTransferTheme.colors.secondaryTextColor,
         )
+        Spacer(Modifier.height(Margin.Medium))
+        SwissTransferCard {
+            Text(
+                text = transferMessage,
+                style = SwissTransferTheme.typography.bodySmallRegular,
+                color = SwissTransferTheme.colors.primaryTextColor,
+                modifier = Modifier.padding(all = Margin.Large),
+            )
+        }
     }
 }
 

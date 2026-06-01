@@ -52,11 +52,11 @@ fun EmptyStateScreen(
         bottomButton = { modifier ->
             if (transferError is DeletableFromHistory && transferError.isInLocal) {
                 DeleteButton(
-                    modifier,
                     onClick = {
                         onDeleteTransferClicked(transferError)
                         onCloseClicked?.invoke()
                     },
+                    modifier = modifier,
                 )
             }
         },
@@ -72,8 +72,8 @@ fun EmptyStateScreen(
 
 @Composable
 fun DeleteButton(
-    modifier: Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LargeButton(
         modifier = modifier,

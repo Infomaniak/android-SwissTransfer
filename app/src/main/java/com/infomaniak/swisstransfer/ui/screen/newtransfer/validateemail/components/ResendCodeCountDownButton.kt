@@ -48,7 +48,7 @@ import kotlin.time.ExperimentalTime
 private val RESEND_EMAIL_CODE_COOLDOWN = 30.seconds
 
 @Composable
-fun ResendCodeCountDownButton(modifier: Modifier = Modifier, onResendEmailCode: () -> Unit, enabled: () -> Boolean) {
+fun ResendCodeCountDownButton(onResendEmailCode: () -> Unit, enabled: () -> Boolean, modifier: Modifier = Modifier) {
     var timeLeft by rememberSaveable { mutableIntStateOf(0) }
     var plannedEnd by rememberSaveable { mutableLongStateOf(0) }
     var isRunning by rememberSaveable { mutableStateOf(false) }

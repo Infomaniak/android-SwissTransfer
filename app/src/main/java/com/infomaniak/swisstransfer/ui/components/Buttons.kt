@@ -51,24 +51,24 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 @Composable
 fun LargeButton(
     title: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
-    onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
     CoreButton(
-        title,
-        modifier,
-        ButtonSize.LARGE,
-        style,
-        enabled,
-        showIndeterminateProgress,
-        progress,
-        onClick,
-        imageVector,
+        title = title,
+        onClick = onClick,
+        buttonSize = ButtonSize.LARGE,
+        modifier = modifier,
+        style = style,
+        enabled = enabled,
+        showIndeterminateProgress = showIndeterminateProgress,
+        progress = progress,
+        imageVector = imageVector,
     )
 }
 
@@ -78,38 +78,38 @@ fun LargeButton(
 @Composable
 fun SmallButton(
     title: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     style: ButtonType = ButtonType.Primary,
     enabled: () -> Boolean = { true },
     showIndeterminateProgress: () -> Boolean = { false },
     progress: (() -> Float)? = null,
-    onClick: () -> Unit,
     imageVector: ImageVector? = null,
 ) {
     CoreButton(
-        title,
-        modifier,
-        ButtonSize.SMALL,
-        style,
-        enabled,
-        showIndeterminateProgress,
-        progress,
-        onClick,
-        imageVector,
+        title = title,
+        onClick = onClick,
+        buttonSize = ButtonSize.SMALL,
+        modifier = modifier,
+        style = style,
+        enabled = enabled,
+        showIndeterminateProgress = showIndeterminateProgress,
+        progress = progress,
+        imageVector = imageVector,
     )
 }
 
 @Composable
 private fun CoreButton(
     title: String,
-    modifier: Modifier,
-    buttonSize: ButtonSize,
-    style: ButtonType,
-    enabled: () -> Boolean,
-    showIndeterminateProgress: () -> Boolean,
-    progress: (() -> Float)?,
     onClick: () -> Unit,
-    imageVector: ImageVector?,
+    buttonSize: ButtonSize,
+    modifier: Modifier = Modifier,
+    style: ButtonType = ButtonType.Primary,
+    enabled: () -> Boolean = { true },
+    showIndeterminateProgress: () -> Boolean = { false },
+    progress: (() -> Float)? = null,
+    imageVector: ImageVector? = null,
 ) {
     BasicButton(
         onClick = onClick,

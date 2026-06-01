@@ -65,8 +65,8 @@ import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
 @Composable
 fun TransferItem(
     transfer: TransferUi,
-    shape: Shape = CustomShapes.SMALL,
     isSelected: () -> Boolean,
+    shape: Shape = CustomShapes.SMALL,
     onClick: () -> Unit,
 ) {
 

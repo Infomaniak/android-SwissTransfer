@@ -297,8 +297,8 @@ private fun ArrowCanvas(
     offsetY: Dp,
     contentColor: Color,
     direction: ArrowDirection,
-    modifier: Modifier = Modifier,
     strokeWidth: Dp,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier

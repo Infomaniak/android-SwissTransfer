@@ -63,11 +63,11 @@ fun SwissTransferSuggestionChip(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun SwissTransferInputChip(
-    modifier: Modifier = Modifier,
     text: String,
     isSelected: () -> Boolean,
     onClick: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     InputChip(
         modifier = modifier.widthIn(min = Dimens.InputChipMinWidth),

@@ -37,7 +37,6 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesScr
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessViewModel
 import com.infomaniak.swisstransfer.ui.utils.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.utils.animatedComposable
@@ -86,15 +85,11 @@ fun NewTransferNavHost(
                     inAppReviewManager.decrementAppReviewCountdown()
 
                     val args = it.toRoute<UploadSuccessDestination>()
-                    val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
                     UploadSuccessScreen(
                         transferType = args.transferType,
                         transferUuid = args.transferUuid,
                         transferUrl = args.transferUrl,
-                        dismissCompleteUpload = {
-                            uploadSuccessViewModel.dismissCompleteUpload()
-                            closeActivity(true)
-                        }
+                        closeActivity = { closeActivity(true) },
                     )
                 }
                 animatedComposable<NewTransferFilesDetailsDestination> {
