@@ -24,8 +24,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -45,7 +43,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    hideBottomBar: MutableState<Boolean>,
+    hideBottomBar: Boolean,
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
@@ -62,7 +60,7 @@ fun MainScaffold(
 private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
-    hideBottomBar: MutableState<Boolean>,
+    hideBottomBar: Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -143,7 +141,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            hideBottomBar = remember { mutableStateOf(false) },
+            hideBottomBar = false,
             content = {},
         )
     }
@@ -157,7 +155,7 @@ private fun NavigationMediumWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            hideBottomBar = remember { mutableStateOf(false) },
+            hideBottomBar = false,
             content = {},
         )
     }
@@ -171,7 +169,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationDrawer,
-            hideBottomBar = remember { mutableStateOf(false) },
+            hideBottomBar = false,
             content = {},
         )
     }

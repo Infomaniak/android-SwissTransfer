@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
@@ -35,7 +36,8 @@ fun UploadSuccessScreen(
     transferType: TransferTypeUi,
     transferUuid: String,
     transferUrl: String,
-    dismissCompleteUpload: () -> Unit,
+    closeActivity: () -> Unit,
+    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
 ) {
     val context = LocalContext.current
 
@@ -45,6 +47,11 @@ fun UploadSuccessScreen(
     LaunchedEffect(Unit) {
         context.lastTransferDataStore.edit { it.clear() }
         MatomoSwissTransfer.trackScreen(MatomoScreen.UploadSuccess)
+    }
+
+    val dismissCompleteUpload: () -> Unit = {
+        uploadSuccessViewModel.dismissCompleteUpload()
+        closeActivity()
     }
 
     BackHandler(onBack = dismissCompleteUpload)
@@ -65,7 +72,7 @@ private fun UploadSuccessScreenPreview() {
                 transferType = TransferTypeUi.Link,
                 transferUuid = "",
                 transferUrl = "https://chk.me/83azQOl",
-                dismissCompleteUpload = {},
+                closeActivity = {},
             )
         }
     }

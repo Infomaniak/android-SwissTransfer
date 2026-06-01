@@ -32,8 +32,8 @@ import com.infomaniak.swisstransfer.ui.utils.launchActivity
 
 @Composable
 fun NewTransferFab(
+    newTransferFabType: NewTransferFabType,
     modifier: Modifier = Modifier,
-    newTransferFabType: NewTransferFabType
 ) {
     val context = LocalContext.current
 

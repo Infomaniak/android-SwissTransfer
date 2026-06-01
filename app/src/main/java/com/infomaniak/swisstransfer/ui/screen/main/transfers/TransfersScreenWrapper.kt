@@ -28,10 +28,8 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -71,30 +69,18 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     direction: TransferDirection,
-    hideBottomBar: MutableState<Boolean>,
+    onHideBottomBarChange: (Boolean) -> Unit,
     transferIdType: TransferIdType? = null,
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold(
         listPane = {
-            val transfersViewModel = hiltViewModel<TransfersViewModel>()
-            val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
-            hideBottomBar.value = currentDestination?.contentKey != null
-
-            val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
-
-            HandleDeepLink(
+            TransfersListPane(
+                direction = direction,
                 transferIdType = transferIdType,
-                isDeepLinkConsumed = { isDeepLinkConsumed },
-                consumeDeepLink = deeplinkViewModel::consumeDeepLink,
-                direction = direction,
-            )
-            ListPane(
-                direction = direction,
-                navigator = this,
-                updateHasTransfer = { hasTransfer = it },
-                transfersViewModel = transfersViewModel,
+                hasTransfer = { hasTransfer = it },
+                onHideBottomBarChange = onHideBottomBarChange,
             )
         },
         detailPane = {
@@ -103,6 +89,34 @@ fun TransfersScreenWrapper(
                 hasTransfer = { hasTransfer },
             )
         },
+    )
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun ThreePaneScaffoldNavigator<DestinationContent>.TransfersListPane(
+    direction: TransferDirection,
+    transferIdType: TransferIdType?,
+    hasTransfer: (Boolean) -> Unit,
+    onHideBottomBarChange: (Boolean) -> Unit,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
+    deeplinkViewModel: DeeplinkViewModel = hiltViewModel<DeeplinkViewModel>(),
+) {
+    onHideBottomBarChange(currentDestination?.contentKey != null)
+
+    val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
+
+    HandleDeepLink(
+        transferIdType = transferIdType,
+        isDeepLinkConsumed = { isDeepLinkConsumed },
+        consumeDeepLink = deeplinkViewModel::consumeDeepLink,
+        direction = direction,
+    )
+    ListPane(
+        direction = direction,
+        navigator = this,
+        updateHasTransfer = hasTransfer,
+        transfersViewModel = transfersViewModel,
     )
 }
 
@@ -320,7 +334,7 @@ private fun Preview() {
             TransfersScreenWrapper(
                 TransferDirection.RECEIVED,
                 transferIdType = null,
-                hideBottomBar = remember { mutableStateOf(false) },
+                onHideBottomBarChange = {},
             )
         }
     }

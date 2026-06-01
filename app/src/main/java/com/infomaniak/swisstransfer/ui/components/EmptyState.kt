@@ -38,18 +38,23 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun EmptyState(
-    content: (@Composable () -> Unit)? = null,
+    modifier: Modifier = Modifier,
     @StringRes titleRes: Int? = null,
     @StringRes descriptionRes: Int? = null,
-    modifier: Modifier = Modifier,
-) = EmptyState(content, titleRes?.let { stringResource(it) }, descriptionRes?.let { stringResource(it) }, modifier)
+    content: (@Composable () -> Unit)? = null,
+) = EmptyState(
+    modifier = modifier,
+    title = titleRes?.let { stringResource(it) },
+    description = descriptionRes?.let { stringResource(it) },
+    content = content,
+)
 
 @Composable
 fun EmptyState(
-    content: (@Composable () -> Unit)? = null,
     title: String?,
     description: String?,
     modifier: Modifier = Modifier,
+    content: (@Composable () -> Unit)? = null,
 ) {
     Box(
         modifier = Modifier
