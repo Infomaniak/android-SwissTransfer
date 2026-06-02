@@ -17,14 +17,23 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.appintegrity.IntegrityDialogResponse
+import com.infomaniak.core.common.cancellable
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
@@ -54,6 +63,39 @@ fun UploadRetryScreen(
         is UploadState.Retry.EmailValidationRequired -> ValidateUserEmailScreen(editTransfer = edit, state = error)
         is UploadState.Retry.NetworkIssue -> UploadRetryScreen(retry = retry, edit = edit)
         is UploadState.Retry.OtherIssue -> UploadRetryScreen(retry = retry, edit = edit)
+        is UploadState.Retry.AppIntegrityRecoverable -> UploadRetryScreen(retry = retry, edit = edit)
+        is UploadState.Retry.AppIntegrityRemediable -> AppIntegrityRemediationLauncher(error, retry, edit)
+    }
+}
+
+@Composable
+private fun AppIntegrityRemediationLauncher(
+    state: UploadState.Retry.AppIntegrityRemediable,
+    retry: CallableState<Unit>,
+    edit: CallableState<Unit>,
+) {
+    val activity = LocalActivity.current
+
+    LaunchedEffect(state) {
+        val currentActivity = activity ?: run {
+            edit()
+            return@LaunchedEffect
+        }
+        // Showing the dialog can throw (e.g. the dialog Task fails); don't let it crash the UI, fall back to a manual retry.
+        val response = runCatching {
+            state.showRemediationDialog(currentActivity)
+        }.cancellable().getOrElse { throwable ->
+            SentryLog.w(APP_INTEGRITY_REMEDIATION_TAG, "App Integrity remediation dialog failed", throwable)
+            IntegrityDialogResponse.Failed
+        }
+        when (response) {
+            IntegrityDialogResponse.Successful -> retry()
+            else -> edit()
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
     }
 }
 
@@ -110,3 +152,5 @@ private fun UploadRetryScreenPreview() {
         }
     }
 }
+
+private const val APP_INTEGRITY_REMEDIATION_TAG = "AppIntegrityRemediation"

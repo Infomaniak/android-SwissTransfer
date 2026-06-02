@@ -290,6 +290,8 @@ class UploadSessionManager @Inject constructor(
             is UploadSessionStarter.Result.Success -> return result
             UploadSessionStarter.Result.EmailValidationRequired -> Retry.EmailValidationRequired(info)
             UploadSessionStarter.Result.AppIntegrityIssue -> UploadState.Failure.AppIntegrityIssue
+            is UploadSessionStarter.Result.AppIntegrityRemediable -> Retry.AppIntegrityRemediable(info, result.showRemediationDialog)
+            UploadSessionStarter.Result.AppIntegrityRecoverable -> Retry.AppIntegrityRecoverable(info)
             UploadSessionStarter.Result.NetworkIssue -> Retry.NetworkIssue(info)
             is UploadSessionStarter.Result.OtherIssue -> Retry.OtherIssue(info, result.t)
             UploadSessionStarter.Result.RestrictedLocation -> UploadState.Failure.RestrictedLocation

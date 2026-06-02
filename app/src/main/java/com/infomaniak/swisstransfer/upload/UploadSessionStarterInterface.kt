@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.app.Activity
+import com.infomaniak.core.appintegrity.IntegrityDialogResponse
 import com.infomaniak.core.common.Xor
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.v2.Transfer
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
@@ -45,6 +47,11 @@ abstract class UploadSessionStarter {
         sealed interface Issue : Result
         data object RestrictedLocation : Issue
         data object AppIntegrityIssue : Issue
+        data class AppIntegrityRemediable(
+            val showRemediationDialog: suspend (Activity) -> IntegrityDialogResponse,
+        ) : Issue
+        /** App Integrity issue that isn't fixable through a dialog but can be retried (transient/recoverable errors). */
+        data object AppIntegrityRecoverable : Issue
         data object NetworkIssue : Issue
         data class OtherIssue(val t: Throwable) : Issue
     }

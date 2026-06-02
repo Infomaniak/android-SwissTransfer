@@ -17,7 +17,9 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.app.Activity
 import androidx.compose.runtime.LongState
+import com.infomaniak.core.appintegrity.IntegrityDialogResponse
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 
 sealed interface UploadState {
@@ -63,6 +65,11 @@ sealed interface UploadState {
         data class EmailValidationRequired(override val info: Ongoing.TransferInfo) : Retry
         data class NetworkIssue(override val info: Ongoing.TransferInfo) : Retry
         data class OtherIssue(override val info: Ongoing.TransferInfo, val t: Throwable) : Retry
+        data class AppIntegrityRemediable(
+            override val info: Ongoing.TransferInfo,
+            val showRemediationDialog: suspend (Activity) -> IntegrityDialogResponse,
+        ) : Retry
+        data class AppIntegrityRecoverable(override val info: Ongoing.TransferInfo) : Retry
     }
 
     sealed interface Failure : UploadState {

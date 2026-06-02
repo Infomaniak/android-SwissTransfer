@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@ package com.infomaniak.swisstransfer.upload
 
 import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
-import com.infomaniak.core.appintegrity.exceptions.IntegrityException
-import com.infomaniak.core.appintegrity.exceptions.NetworkException
+import com.infomaniak.core.appintegrity.exceptions.AppIntegrityException
+import com.infomaniak.core.appintegrity.isRecoverable
 import com.infomaniak.core.common.Xor
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.sentry.SentryLog
@@ -47,8 +47,14 @@ class UploadSessionStarterV1(
     }.cancellable().getOrElse { t ->
         SentryLog.w(TAG, "Throwable while trying to start the upload session", t)
         when (t) {
-            is NetworkException, is KmpNetworkException -> Result.NetworkIssue
-            is IntegrityException -> Result.AppIntegrityIssue
+            is com.infomaniak.core.appintegrity.exceptions.NetworkException, is KmpNetworkException -> Result.NetworkIssue
+            is AppIntegrityException -> when {
+                // Remediable through Play's Integrity dialog (fixed automatically or by guiding the user).
+                t.showRemediationDialog != null -> Result.AppIntegrityRemediable(t.showRemediationDialog!!)
+                // Not dialog-remediable, but transient/recoverable (network, Google server down, etc.): let the user retry.
+                t.issue.isRecoverable() -> Result.AppIntegrityRecoverable
+                else -> Result.AppIntegrityIssue
+            }
             is ContainerErrorsException.EmailValidationRequired -> Result.EmailValidationRequired
             is ContainerErrorsException.DomainBlockedException -> Result.RestrictedLocation
             else -> {
@@ -59,20 +65,15 @@ class UploadSessionStarterV1(
     }
 
     //region App Integrity
-    @Throws(IntegrityException::class)
-    private suspend inline fun fetchNewAttestationToken(): String {
+    @Throws(AppIntegrityException::class)
+    private suspend fun fetchNewAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
-
-        val appIntegrityToken = appIntegrityManager.requestClassicIntegrityVerdictToken(challenge)
-        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful")
-
-        val attestationToken = appIntegrityManager.getApiIntegrityVerdict(
-            integrityToken = appIntegrityToken,
+        val attestationToken = appIntegrityManager.requestAttestationToken(
+            challenge = challenge,
             packageName = BuildConfig.APPLICATION_ID,
             targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
         )
-        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Successful API verdict")
-
+        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Successful attestation token")
         return attestationToken
     }
     //endregion
