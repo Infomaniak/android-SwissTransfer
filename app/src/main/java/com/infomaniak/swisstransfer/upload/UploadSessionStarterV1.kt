@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.util.Log
 import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
 import com.infomaniak.core.appintegrity.exceptions.AppIntegrityException
@@ -46,6 +47,14 @@ class UploadSessionStarterV1(
         Result.Success(sessionRequest, Xor.First(destination))
     }.cancellable().getOrElse { t ->
         SentryLog.w(TAG, "Throwable while trying to start the upload session", t)
+        if (t is AppIntegrityException) {
+            Log.d("aymeric", "App Integrity issue while trying to start the upload session", t)
+            Log.d("aymeric", "tryStarting - t.showRemediationDialog != null : ${t.showRemediationDialog != null}")
+            Log.d("aymeric", "tryStarting - t.issue : ${t.issue}")
+            Log.d("aymeric", "tryStarting - t.issue.isRecoverable() : ${t.issue.isRecoverable()}")
+            Log.d("aymeric", "tryStarting - t.message : ${t.message}")
+            Log.d("aymeric", "tryStarting - t.cause : ${t.cause}")
+        }
         when (t) {
             is com.infomaniak.core.appintegrity.exceptions.NetworkException, is KmpNetworkException -> Result.NetworkIssue
             is AppIntegrityException -> when {
