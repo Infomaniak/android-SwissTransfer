@@ -112,19 +112,18 @@ fun TopAppBarButton(
 fun TransferFilesSelectionTopAppBar(
     selectedCount: Int,
     filesCount: Int,
-    onCancelSelection: () -> Unit,
-    onToggleAllSelection: () -> Unit,
+    onToggleSelection: (selectAll: Boolean) -> Unit,
 ) {
     SwissTransferCenterTopAppBar(
         title = pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount),
         navigationIcon = {
-            TextButton(onClick = onCancelSelection) {
+            TextButton(onClick = { onToggleSelection(false) }) {
                 Text(text = stringResource(R.string.buttonCancel))
             }
         },
         actions = {
             val textRes = if (selectedCount == filesCount) R.string.settingsOptionNone else R.string.buttonAll
-            TextButton(onClick = onToggleAllSelection) {
+            TextButton(onClick = { onToggleSelection(selectedCount != filesCount) }) {
                 Text(text = stringResource(textRes))
             }
         },

@@ -269,17 +269,18 @@ private fun TransferDetailsScreen(
                 TransferFilesSelectionTopAppBar(
                     selectedCount = selectedCount,
                     filesCount = getTransfer().files.size,
-                    onCancelSelection = {
-                        isMultiselectOn = false
-                        clearCheckedFiles()
-                    },
-                    onToggleAllSelection = {
-                        val allFiles = getTransfer().files
-                        if (selectedCount == allFiles.size) {
+                    onToggleSelection = { selectAll ->
+                        if (!selectAll) {
+                            isMultiselectOn = false
                             clearCheckedFiles()
                         } else {
-                            allFiles.forEach { file ->
-                                setFileCheckStatus(file.uid, true)
+                            val allFiles = getTransfer().files
+                            if (selectedCount == allFiles.size) {
+                                clearCheckedFiles()
+                            } else {
+                                allFiles.forEach { file ->
+                                    setFileCheckStatus(file.uid, true)
+                                }
                             }
                         }
                     },

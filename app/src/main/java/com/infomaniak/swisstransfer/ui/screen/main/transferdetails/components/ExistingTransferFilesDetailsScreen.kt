@@ -81,16 +81,16 @@ fun ExistingTransferFilesDetailsScreen(
         }
     }
 
-    val onCancelSelection = {
-        isMultiselectOn = false
-        checkedFiles.clear()
-    }
-
-    val onToggleAllSelection: () -> Unit = {
-        if (selectedCount == files?.size) {
+    val onToggleSelection: (Boolean) -> Unit = { selectAll ->
+        if (!selectAll) {
+            isMultiselectOn = false
             checkedFiles.clear()
         } else {
-            files?.forEach { file -> checkedFiles[file.uid] = true }
+            if (selectedCount == files?.size) {
+                checkedFiles.clear()
+            } else {
+                files?.forEach { file -> checkedFiles[file.uid] = true }
+            }
         }
     }
 
@@ -108,8 +108,7 @@ fun ExistingTransferFilesDetailsScreen(
                 isMultiselectOn = isMultiselectOn,
                 selectedCount = selectedCount,
                 filesCount = { files?.size ?: 0 },
-                onCancelSelection = onCancelSelection,
-                onToggleAllSelection = onToggleAllSelection,
+                onToggleSelection = onToggleSelection,
                 navigateBack = navigateBack,
                 close = close,
             )
@@ -150,7 +149,7 @@ fun ExistingTransferFilesDetailsScreen(
                         selectedFiles = selectedFiles,
                         transferIdType = transferIdType,
                         filesDetailsViewModel = filesDetailsViewModel,
-                        onCancelSelection = onCancelSelection,
+                        onCancelSelection = { onToggleSelection(false) },
                         direction = transferDirection,
                     )
                 }
@@ -164,8 +163,7 @@ private fun ExistingTransferFilesDetailsTopBar(
     isMultiselectOn: Boolean,
     selectedCount: Int,
     filesCount: () -> Int,
-    onCancelSelection: () -> Unit,
-    onToggleAllSelection: () -> Unit,
+    onToggleSelection: (Boolean) -> Unit,
     navigateBack: () -> Unit,
     close: () -> Unit,
 ) {
@@ -173,8 +171,7 @@ private fun ExistingTransferFilesDetailsTopBar(
         TransferFilesSelectionTopAppBar(
             selectedCount = selectedCount,
             filesCount = filesCount(),
-            onCancelSelection = onCancelSelection,
-            onToggleAllSelection = onToggleAllSelection,
+            onToggleSelection = onToggleSelection,
         )
     } else {
         SwissTransferTopAppBar(
