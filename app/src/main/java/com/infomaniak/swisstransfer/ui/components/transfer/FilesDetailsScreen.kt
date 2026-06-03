@@ -69,7 +69,7 @@ fun FilesDetailsScreen(
     isCheckboxVisible: () -> Boolean = { false },
     isUidChecked: (String) -> Boolean = { false },
     setUidCheckStatus: (String, Boolean) -> Unit = { _, _ -> },
-    onLongPress: ((String) -> Unit)? = null
+    onLongClick: ((String) -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -94,7 +94,7 @@ fun FilesDetailsScreen(
             runDownloadUi = runDownloadUi,
             previewUriForFile = previewUriForFile,
             direction = direction,
-            onLongPress = onLongPress,
+            onLongClick = onLongClick,
         )
     }
 }

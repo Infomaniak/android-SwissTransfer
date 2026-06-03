@@ -72,7 +72,7 @@ fun FileItemList(
     setUidCheckStatus: (String, Boolean) -> Unit,
     direction: TransferDirection?,
     modifier: Modifier = Modifier,
-    onLongPress: ((String) -> Unit)? = null,
+    onLongClick: ((String) -> Unit)? = null,
     onRemoveUid: ((String) -> Unit)? = null,
     navigateToFolder: ((uid: String) -> Unit)? = null,
     header: (@Composable LazyGridItemScope.() -> Unit)? = null,
@@ -140,7 +140,7 @@ fun FileItemList(
                     }
                     else -> onDownloadFile
                 },
-                onLongPress = onLongPress?.let { callback -> { callback(file.uid) } },
+                onLongClick = onLongClick?.let { callback -> { callback(file.uid) } },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
                     transferFlow.collectLatest { transfer ->
                         previewUriForFile(transfer, file).collect { uri: Uri? ->

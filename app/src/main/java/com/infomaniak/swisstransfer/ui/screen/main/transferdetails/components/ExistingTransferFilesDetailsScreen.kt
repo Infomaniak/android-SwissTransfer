@@ -94,7 +94,7 @@ fun ExistingTransferFilesDetailsScreen(
         }
     }
 
-    val onLongPress = { uid: String ->
+    val onLongClick = { uid: String ->
         if (!isMultiselectOn) {
             isMultiselectOn = true
             checkedFiles.clear()
@@ -140,7 +140,7 @@ fun ExistingTransferFilesDetailsScreen(
                     isCheckboxVisible = { isMultiselectOn },
                     isUidChecked = { uid -> checkedFiles[uid] ?: false },
                     setUidCheckStatus = { uid, checked -> checkedFiles[uid] = checked },
-                    onLongPress = onLongPress,
+                    onLongClick = onLongClick,
                 )
 
                 if (isMultiselectOn) {

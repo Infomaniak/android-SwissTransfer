@@ -323,7 +323,7 @@ private fun TransferDetailsScreen(
                 runDownloadUi = runDownloadUi,
                 previewUriForFile = previewUriForFile,
                 direction = direction,
-                onLongPress = { uid ->
+                onLongClick = { uid ->
                     if (!isMultiselectOn) {
                         isMultiselectOn = true
                         clearCheckedFiles()
@@ -428,7 +428,7 @@ private fun ColumnScope.FilesList(
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Nothing,
     navigateToFolder: ((folderUuid: String) -> Unit)? = null,
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
-    onLongPress: ((String) -> Unit)? = null,
+    onLongClick: ((String) -> Unit)? = null,
 ) {
 
     val shouldDisplayRecipients = transferRecipients.isNotEmpty()
@@ -464,7 +464,7 @@ private fun ColumnScope.FilesList(
         runDownloadUi = runDownloadUi,
         previewUriForFile = previewUriForFile,
         direction = direction,
-        onLongPress = onLongPress,
+        onLongClick = onLongClick,
     )
 }
 

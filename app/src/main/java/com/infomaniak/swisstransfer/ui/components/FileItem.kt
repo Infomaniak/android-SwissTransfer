@@ -64,7 +64,7 @@ fun FileItem(
     modifier: Modifier = Modifier,
     isChecked: () -> Boolean = { false },
     onClick: (() -> Unit)? = null,
-    onLongPress: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
     previewUriForFile: State<String?> = rememberUpdatedState(file.thumbnailPath),
     previewOverlay: @Composable BoxScope.() -> Unit = {}
@@ -72,7 +72,7 @@ fun FileItem(
     FileItemContent(
         modifier = modifier,
         onClick = onClick,
-        onLongPress = onLongPress,
+        onLongClick = onLongClick,
         isCheckboxVisible = isCheckboxVisible,
         isChecked = isChecked,
         isRemoveButtonVisible = isRemoveButtonVisible,
@@ -111,12 +111,11 @@ private fun FileItemContent(
     onRemove: (() -> Unit)?,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    onLongPress: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
     Card(
-        modifier = modifier
-            .then(getCardModifier(onClick, onLongPress)),
+        modifier = modifier.then(getCardModifier(onClick, onLongClick)),
         colors = CardDefaults.cardColors(containerColor = SwissTransferTheme.materialColors.background),
         shape = CustomShapes.SMALL,
         border = BorderStroke(width = Dimens.BorderWidth, color = SwissTransferTheme.materialColors.outlineVariant),
@@ -161,14 +160,14 @@ private fun FileItemContent(
     }
 }
 
-private fun getCardModifier(onClick: (() -> Unit)? = null, onLongPress: (() -> Unit)? = null): Modifier {
+private fun getCardModifier(onClick: (() -> Unit)? = null, onLongClick: (() -> Unit)? = null): Modifier {
     return Modifier
         .aspectRatio(164.0f / 152.0f)
         .then(
-            if (onClick != null || onLongPress != null) {
+            if (onClick != null || onLongClick != null) {
                 Modifier.combinedClickable(
                     onClick = onClick ?: {},
-                    onLongClick = onLongPress
+                    onLongClick = onLongClick
                 )
             } else {
                 Modifier
