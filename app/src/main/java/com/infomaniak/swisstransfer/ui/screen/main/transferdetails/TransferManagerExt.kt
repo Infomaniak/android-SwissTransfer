@@ -85,10 +85,11 @@ fun TransferManager.previewUriForFile(
 
 private suspend fun getThumbnailUri(file: FileUi): Uri? {
     val thumbnailPath = file.thumbnailPath ?: return null
+    val thumbnailUri = thumbnailPath.toUri()
     val exists = withContext(Dispatchers.IO) {
-        runCatching { thumbnailPath.toUri().toFile().exists() }.cancellable().getOrDefault(false)
+        runCatching { thumbnailUri.toFile().exists() }.cancellable().getOrDefault(false)
     }
-    return if (exists) thumbnailPath.toUri() else null
+    return if (exists) thumbnailUri else null
 }
 
 private fun extractExtension(file: FileUi): String {
