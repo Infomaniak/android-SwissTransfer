@@ -83,16 +83,16 @@ fun SwissTransferCenterTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
+        title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
         modifier = modifier.sharedTransitionAppBar(),
+        navigationIcon = navigationIcon,
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = SwissTransferTheme.materialColors.tertiary,
             titleContentColor = SwissTransferTheme.colors.toolbarTextColor,
             actionIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
             navigationIconContentColor = SwissTransferTheme.colors.toolbarIconColor,
         ),
-        title = { Text(text = title, style = SwissTransferTheme.typography.h2) },
-        navigationIcon = navigationIcon,
-        actions = actions,
     )
 }
 

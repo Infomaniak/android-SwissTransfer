@@ -120,8 +120,6 @@ fun FileItemList(
                 }
             }
 
-            val onDownloadFile = writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
-
             FileItem(
                 modifier = Modifier.animateItem(),
                 file = file,
@@ -138,7 +136,7 @@ fun FileItemList(
                             }
                         }
                     }
-                    else -> onDownloadFile
+                    else -> writeExternalStoragePermissionManager.dropIfDenied { downloadUi?.onFileClick() }
                 },
                 onLongClick = onLongClick?.let { callback -> { callback(file.uid) } },
                 previewUriForFile = produceState(file.thumbnailPath ?: file.localPath) {
