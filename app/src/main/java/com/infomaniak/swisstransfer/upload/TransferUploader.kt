@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import android.content.ContentResolver
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.RemoteUploadFile
@@ -33,7 +31,6 @@ import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
-import com.infomaniak.swisstransfer.upload.generateThumbnailIfNeeded
 import com.infomaniak.swisstransfer.upload.TransferUploaderV1.ChunkUploadStatus.DefinitelyComplete
 import com.infomaniak.swisstransfer.upload.TransferUploaderV1.ChunkUploadStatus.StartedOrComplete
 import com.infomaniak.swisstransfer.upload.UploadState.Ongoing.Uploading.Status

@@ -38,7 +38,7 @@ suspend inline fun generateThumbnailIfNeeded(
     thumbnailSaved: Boolean,
     thumbnailsLocalStorage: ThumbnailsLocalStorage,
     contentResolver: ContentResolver,
-    crossinline onThumbnailGenerated: () -> Unit,
+    onThumbnailGenerated: () -> Unit,
 ) {
     if (!thumbnailSaved) {
         val extension = fileUri.getMimeType(contentResolver)
