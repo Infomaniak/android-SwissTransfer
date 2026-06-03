@@ -73,7 +73,7 @@ fun ExistingTransferFilesDetailsScreen(
 
     var isMultiselectOn by remember(folderUuid) { mutableStateOf(false) }
     val checkedFiles = remember(folderUuid) { mutableStateMapOf<String, Boolean>() }
-    val selectedCount by remember(folderUuid) { derivedStateOf { checkedFiles.values.count { it } } }
+    val selectedCount = checkedFiles.values.count { it }
     LaunchedEffect(selectedCount) {
         if (isMultiselectOn && selectedCount == 0) {
             isMultiselectOn = false

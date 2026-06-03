@@ -227,11 +227,12 @@ private fun TransferDetailsScreen(
 
     var isMultiselectOn: Boolean by rememberSaveable(transferUuid) { mutableStateOf(false) }
     val checkedFiles = getCheckedFiles()
-    val selectedCount by remember { derivedStateOf { checkedFiles.values.count { it } } }
     LaunchedEffect(transferUuid) {
         clearCheckedFiles()
         isMultiselectOn = false
     }
+
+    val selectedCount = checkedFiles.values.count { it }
     LaunchedEffect(selectedCount) {
         if (isMultiselectOn && selectedCount == 0) {
             isMultiselectOn = false
