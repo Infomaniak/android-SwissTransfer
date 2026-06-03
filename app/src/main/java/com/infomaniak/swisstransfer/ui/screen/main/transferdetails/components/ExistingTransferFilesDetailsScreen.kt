@@ -199,7 +199,7 @@ private fun ExistingTransferFilesDetailsBottomBar(
             labelResId = R.string.buttonDownloadSelected,
             enabled = selectedFiles.isNotEmpty(),
             onClick = writePermissionManager.dropIfDenied {
-                filesDetailsViewModel.scheduleFileSelectionDownload(transferIdType, selectedFiles, direction)
+                filesDetailsViewModel.triggerFilesSelectionDownload(transferIdType, selectedFiles, direction)
                 onCancelSelection()
             },
             modifier = Modifier.weight(1f),

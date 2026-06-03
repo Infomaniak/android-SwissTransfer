@@ -89,7 +89,7 @@ class FilesDetailsViewModel @Inject constructor(
         openFile = openFile,
     )
 
-    fun scheduleFileSelectionDownload(
+    fun triggerFilesSelectionDownload(
         transferIdType: TransferIdType,
         selectedFiles: List<FileUi>,
         direction: TransferDirection,

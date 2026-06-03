@@ -98,7 +98,7 @@ class TransferDetailsViewModel @Inject constructor(
 
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
-    fun triggerFileSelectionDownload(selectedUids: Set<String>, direction: TransferDirection) {
+    fun triggerFilesSelectionDownload(selectedUids: Set<String>, direction: TransferDirection) {
         viewModelScope.launch(Dispatchers.IO) {
             val transfer = (uiState.value as? Success)?.transfer ?: return@launch
             val selectedFiles = transfer.files.filter { it.uid in selectedUids }
