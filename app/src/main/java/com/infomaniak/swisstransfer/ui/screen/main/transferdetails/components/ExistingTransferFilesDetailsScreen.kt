@@ -23,7 +23,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -85,12 +84,10 @@ fun ExistingTransferFilesDetailsScreen(
         if (!selectAll) {
             isMultiselectOn = false
             checkedFiles.clear()
+        } else if (selectedCount == files?.size) {
+            checkedFiles.clear()
         } else {
-            if (selectedCount == files?.size) {
-                checkedFiles.clear()
-            } else {
-                files?.forEach { file -> checkedFiles[file.uid] = true }
-            }
+            files?.forEach { file -> checkedFiles[file.uid] = true }
         }
     }
 
@@ -178,7 +175,9 @@ private fun ExistingTransferFilesDetailsTopBar(
             navigationIcon = {
                 TopAppBarButtons.Back(onClick = navigateBack)
             },
-            actions = { TopAppBarButtons.Close(close) },
+            actions = {
+                TopAppBarButtons.Close(close)
+            },
         )
     }
 }
