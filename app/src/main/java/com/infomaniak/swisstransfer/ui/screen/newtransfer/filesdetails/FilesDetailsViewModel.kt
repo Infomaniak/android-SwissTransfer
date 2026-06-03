@@ -94,8 +94,8 @@ class FilesDetailsViewModel @Inject constructor(
         selectedFiles: List<FileUi>,
         direction: TransferDirection,
     ) {
+        if (selectedFiles.isEmpty()) return
         viewModelScope.launch(Dispatchers.IO) {
-            if (selectedFiles.isEmpty()) return@launch
             val transfer = when (transferIdType) {
                 is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).filterNotNull().first()
                 is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).filterNotNull().first()
