@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -72,23 +72,23 @@ fun ExistingTransferFilesDetailsScreen(
 
     var isMultiselectOn by remember(folderUuid) { mutableStateOf(false) }
     val checkedFiles = remember(folderUuid) { mutableStateMapOf<String, Boolean>() }
-    val selectedCount = checkedFiles.values.count { it }
-    LaunchedEffect(selectedCount) {
-        if (isMultiselectOn && selectedCount == 0) {
-            isMultiselectOn = false
-            checkedFiles.clear()
-        }
+    val selectedCount by remember(folderUuid, checkedFiles) {
+        derivedStateOf { checkedFiles.count { it.value } }
     }
 
     val onToggleSelection: (Boolean) -> Unit = { selectAll ->
         if (!selectAll) {
-            isMultiselectOn = false
             checkedFiles.clear()
         } else if (selectedCount == files?.size) {
             checkedFiles.clear()
         } else {
             files?.forEach { file -> checkedFiles[file.uid] = true }
         }
+    }
+
+    val onCancelSelection = {
+        isMultiselectOn = false
+        checkedFiles.clear()
     }
 
     val onLongClick = { uid: String ->
@@ -106,6 +106,7 @@ fun ExistingTransferFilesDetailsScreen(
                 selectedCount = selectedCount,
                 filesCount = { files?.size ?: 0 },
                 onToggleSelection = onToggleSelection,
+                onCancelSelection = onCancelSelection,
                 navigateBack = navigateBack,
                 close = close,
             )
@@ -135,7 +136,16 @@ fun ExistingTransferFilesDetailsScreen(
                     isNewTransfer = false,
                     isCheckboxVisible = { isMultiselectOn },
                     isUidChecked = { uid -> checkedFiles[uid] ?: false },
-                    setUidCheckStatus = { uid, checked -> checkedFiles[uid] = checked },
+                    setUidCheckStatus = { uid, checked ->
+                        if (!checked && selectedCount <= 1) {
+                            isMultiselectOn = false
+                            checkedFiles.clear()
+                        } else if (checked) {
+                            checkedFiles[uid] = true
+                        } else {
+                            checkedFiles.remove(uid)
+                        }
+                    },
                     onLongClick = onLongClick,
                 )
 
@@ -161,6 +171,7 @@ private fun ExistingTransferFilesDetailsTopBar(
     selectedCount: Int,
     filesCount: () -> Int,
     onToggleSelection: (Boolean) -> Unit,
+    onCancelSelection: () -> Unit,
     navigateBack: () -> Unit,
     close: () -> Unit,
 ) {
@@ -169,6 +180,7 @@ private fun ExistingTransferFilesDetailsTopBar(
             selectedCount = selectedCount,
             filesCount = filesCount(),
             onToggleSelection = onToggleSelection,
+            onCancelSelection = onCancelSelection,
         )
     } else {
         SwissTransferTopAppBar(

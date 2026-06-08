@@ -232,12 +232,6 @@ private fun TransferDetailsScreen(
     }
 
     val selectedCount = checkedFiles.values.count { it }
-    LaunchedEffect(selectedCount) {
-        if (isMultiselectOn && selectedCount == 0) {
-            isMultiselectOn = false
-            clearCheckedFiles()
-        }
-    }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -257,6 +251,8 @@ private fun TransferDetailsScreen(
         }
     }
 
+    val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
+
     val title = if (isMultiselectOn) {
         pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount)
     } else {
@@ -271,7 +267,6 @@ private fun TransferDetailsScreen(
                     filesCount = getTransfer().files.size,
                     onToggleSelection = { selectAll ->
                         if (!selectAll) {
-                            isMultiselectOn = false
                             clearCheckedFiles()
                         } else {
                             val allFiles = getTransfer().files
@@ -283,6 +278,10 @@ private fun TransferDetailsScreen(
                                 }
                             }
                         }
+                    },
+                    onCancelSelection = {
+                        isMultiselectOn = false
+                        clearCheckedFiles()
                     },
                 )
             } else {
@@ -318,7 +317,12 @@ private fun TransferDetailsScreen(
                 transferRecipients = transferRecipients,
                 isMultiselectOn = isMultiselectOn,
                 getCheckedFiles = getCheckedFiles,
-                setFileCheckStatus = setFileCheckStatus,
+                setFileCheckStatus = { fileUid, isChecked ->
+                    if (!isChecked && getCheckedFiles().values.count { it } <= 1) {
+                        isMultiselectOn = false
+                    }
+                    setFileCheckStatus(fileUid, isChecked)
+                },
                 navigateToFolder = navigateToFolder,
                 transferFlow = transferFlow,
                 runDownloadUi = runDownloadUi,
@@ -337,8 +341,6 @@ private fun TransferDetailsScreen(
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
                     val selectedUids = getCheckedFiles().filterValues { it }.keys
-                    val writeExternalStoragePermissionManager =
-                        rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
                     BottomBarButton(
                         icon = AppIcons.ArrowDownBar,

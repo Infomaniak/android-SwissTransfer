@@ -19,10 +19,12 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -113,17 +115,19 @@ fun TransferFilesSelectionTopAppBar(
     selectedCount: Int,
     filesCount: Int,
     onToggleSelection: (selectAll: Boolean) -> Unit,
+    onCancelSelection: () -> Unit,
 ) {
-    SwissTransferCenterTopAppBar(
+    SwissTransferTopAppBar(
         title = pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount),
         navigationIcon = {
-            TextButton(onClick = { onToggleSelection(false) }) {
-                Text(text = stringResource(R.string.buttonCancel))
-            }
+            TopAppBarButtons.Back(onClick = onCancelSelection)
         },
         actions = {
             val textRes = if (selectedCount == filesCount) R.string.settingsOptionNone else R.string.buttonAll
-            TextButton(onClick = { onToggleSelection(selectedCount != filesCount) }) {
+            TextButton(
+                onClick = { onToggleSelection(selectedCount != filesCount) },
+                colors = ButtonDefaults.textButtonColors(contentColor = LocalContentColor.current)
+            ) {
                 Text(text = stringResource(textRes))
             }
         },
