@@ -19,7 +19,6 @@
     <string name="advancedSettingsTitle">Paramètres avancés</string>
     <string name="awaitingNetwork">En attente de réseau</string>
     <string name="buttonAll">Tout</string>
-    <string name="buttonCancel">Annuler</string>
     <string name="buttonCancelTransfer">Annuler le transfert</string>
     <string name="buttonCloseAndContinue">Fermer et continuer</string>
     <string name="buttonConfirm">Confirmer</string>

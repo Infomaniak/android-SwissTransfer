@@ -24,7 +24,6 @@
     <string name="advancedSettingsTitle">Advanced settings</string>
     <string name="awaitingNetwork">Waiting for network</string>
     <string name="buttonAll">All</string>
-    <string name="buttonCancel">Cancel</string>
     <string name="buttonCancelTransfer">Cancel the transfer</string>
     <string name="buttonCloseAndContinue">Close and continue</string>
     <string name="buttonConfirm">Confirm</string>
