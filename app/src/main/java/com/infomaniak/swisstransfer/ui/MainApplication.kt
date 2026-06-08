@@ -142,7 +142,7 @@ class MainApplication : Application(), Configuration.Provider {
     private fun configureSentry() {
         this.configureSentry(
             isDebug = BuildConfig.DEBUG,
-            isSentryTrackingEnabled = dataManagementDataStore.getPreference(IsSentryAuthorized),
+            isSentryTrackingEnabled = { dataManagementDataStore.getPreference(IsSentryAuthorized) },
             isFilteredException = { exception -> exception is KmpNetworkException },
         )
     }
