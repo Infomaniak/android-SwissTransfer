@@ -54,7 +54,7 @@ class UploadSuccessViewModel @Inject constructor(
     )
 
     fun fetchTransfer(transferUuid: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             _transferUuidFlow.emit(transferUuid)
         }
     }
