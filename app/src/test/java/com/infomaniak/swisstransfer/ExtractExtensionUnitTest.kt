@@ -23,49 +23,51 @@ import org.junit.Test
 
 class ExtractExtensionUnitTest {
 
-    private val fallback = "bin"
-
     @Test
     fun nullMimeType_returnsFallback() {
         val result: String? = null
-        assertEquals(fallback, result.extractExtensionOrFallback(fallback = fallback))
+        assertEquals(FALLBACK, result.extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun blankMimeType_returnsFallback() {
-        assertEquals(fallback, "  ".extractExtensionOrFallback(fallback = fallback))
+        assertEquals(FALLBACK, "  ".extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun emptyMimeType_returnsFallback() {
-        assertEquals(fallback, "".extractExtensionOrFallback(fallback = fallback))
+        assertEquals(FALLBACK, "".extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun mimeTypeWithoutSlash_returnsFallback() {
-        assertEquals(fallback, "png".extractExtensionOrFallback(fallback = fallback))
+        assertEquals(FALLBACK, "png".extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun mimeTypeWithSlashButBlankAfter_returnsFallback() {
-        assertEquals(fallback, "image/".extractExtensionOrFallback(fallback = fallback))
+        assertEquals(FALLBACK, "image/".extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun validImagePng_returnsPng() {
-        assertEquals("png", "image/png".extractExtensionOrFallback(fallback = fallback))
+        assertEquals("png", "image/png".extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun validApplicationJson_returnsJson() {
-        assertEquals("json", "application/json".extractExtensionOrFallback(fallback = fallback))
+        assertEquals("json", "application/json".extractExtensionOrFallback(fallback = FALLBACK))
     }
 
     @Test
     fun validVndType_returnsLastSegment() {
         assertEquals(
             "vnd.android.package-archive",
-            "application/vnd.android.package-archive".extractExtensionOrFallback(fallback = fallback)
+            "application/vnd.android.package-archive".extractExtensionOrFallback(fallback = FALLBACK)
         )
+    }
+
+    companion object {
+        private const val FALLBACK = "bin"
     }
 }
