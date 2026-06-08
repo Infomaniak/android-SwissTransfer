@@ -26,6 +26,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferU
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
@@ -36,7 +37,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransfe
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -51,6 +52,7 @@ class FilesDetailsViewModel @Inject constructor(
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     fun filesFlow(folderUuid: String): Flow<List<FileUi>> {
@@ -95,7 +97,7 @@ class FilesDetailsViewModel @Inject constructor(
         direction: TransferDirection,
     ) {
         if (selectedFiles.isEmpty()) return
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val transfer = when (transferIdType) {
                 is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).filterNotNull().first()
                 is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).filterNotNull().first()

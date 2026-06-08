@@ -41,6 +41,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusCheckFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
@@ -58,7 +59,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCa
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -82,6 +83,7 @@ class TransferDetailsViewModel @Inject constructor(
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _transferSourceFlow = MutableSharedFlow<TransferSource>(replay = 1)
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -99,7 +101,7 @@ class TransferDetailsViewModel @Inject constructor(
     val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
 
     fun triggerFilesSelectionDownload(selectedUids: Set<String>, direction: TransferDirection) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val transfer = (uiState.value as? Success)?.transfer ?: return@launch
             val selectedFiles = transfer.files.filter { it.uid in selectedUids }
             if (selectedFiles.isEmpty()) return@launch
