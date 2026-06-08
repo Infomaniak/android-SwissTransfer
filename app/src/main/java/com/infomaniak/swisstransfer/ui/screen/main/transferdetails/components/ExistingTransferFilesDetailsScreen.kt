@@ -156,7 +156,7 @@ fun ExistingTransferFilesDetailsScreen(
                         selectedFiles = selectedFiles,
                         transferIdType = transferIdType,
                         filesDetailsViewModel = filesDetailsViewModel,
-                        onCancelSelection = { onToggleSelection(false) },
+                        onCancelSelection = onCancelSelection,
                         direction = transferDirection,
                     )
                 }
