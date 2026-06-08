@@ -45,6 +45,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -231,7 +232,7 @@ private fun TransferDetailsScreen(
         isMultiselectOn = false
     }
 
-    val selectedCount = checkedFiles.values.count { it }
+    val selectedCount by remember { derivedStateOf { checkedFiles.values.count { it } } }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -318,7 +319,7 @@ private fun TransferDetailsScreen(
                 isMultiselectOn = isMultiselectOn,
                 getCheckedFiles = getCheckedFiles,
                 setFileCheckStatus = { fileUid, isChecked ->
-                    if (!isChecked && getCheckedFiles().values.count { it } <= 1) {
+                    if (!isChecked && selectedCount <= 1) {
                         isMultiselectOn = false
                         clearCheckedFiles()
                     } else {
