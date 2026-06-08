@@ -320,8 +320,10 @@ private fun TransferDetailsScreen(
                 setFileCheckStatus = { fileUid, isChecked ->
                     if (!isChecked && getCheckedFiles().values.count { it } <= 1) {
                         isMultiselectOn = false
+                        clearCheckedFiles()
+                    } else {
+                        setFileCheckStatus(fileUid, isChecked)
                     }
-                    setFileCheckStatus(fileUid, isChecked)
                 },
                 navigateToFolder = navigateToFolder,
                 transferFlow = transferFlow,
