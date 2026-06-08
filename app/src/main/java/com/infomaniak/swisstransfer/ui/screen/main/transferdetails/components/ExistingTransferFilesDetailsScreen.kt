@@ -24,8 +24,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -71,33 +71,13 @@ fun ExistingTransferFilesDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var isMultiselectOn by remember(folderUuid) { mutableStateOf(false) }
-    val checkedFiles = remember(folderUuid) { mutableStateMapOf<String, Boolean>() }
-    val selectedCount by remember(folderUuid, checkedFiles) {
-        derivedStateOf { checkedFiles.count { it.value } }
-    }
+    val selectedUids = remember(folderUuid) { mutableStateSetOf<String>() }
+    val selectedCount by remember(selectedUids) { derivedStateOf { selectedUids.size } }
 
-    val onToggleSelection: (Boolean) -> Unit = { selectAll ->
-        if (!selectAll) {
-            checkedFiles.clear()
-        } else if (selectedCount == files?.size) {
-            checkedFiles.clear()
-        } else {
-            files?.forEach { file -> checkedFiles[file.uid] = true }
-        }
-    }
-
-    val onCancelSelection = {
-        isMultiselectOn = false
-        checkedFiles.clear()
-    }
-
-    val onLongClick = { uid: String ->
-        if (!isMultiselectOn) {
-            isMultiselectOn = true
-            checkedFiles.clear()
-            checkedFiles[uid] = true
-        }
-    }
+    val onToggleSelection = createOnToggleSelection(files, selectedUids)
+    val onCancelSelection = createOnCancelSelection({ isMultiselectOn = false }, selectedUids)
+    val onLongClick = createOnLongClick(isMultiselectOn, { isMultiselectOn = true }, selectedUids)
+    val onToggleUid = createOnToggleUid({ isMultiselectOn = false }, selectedUids)
 
     SwissTransferScaffold(
         topBar = {
@@ -115,6 +95,7 @@ fun ExistingTransferFilesDetailsScreen(
     ) {
         files?.let { fileList ->
             val context = LocalContext.current
+
             Column(modifier = Modifier.fillMaxSize()) {
                 FilesDetailsScreen(
                     modifier = Modifier.weight(1f),
@@ -135,25 +116,15 @@ fun ExistingTransferFilesDetailsScreen(
                     withSpaceLeft = withSpaceLeft,
                     isNewTransfer = false,
                     isCheckboxVisible = { isMultiselectOn },
-                    isUidChecked = { uid -> checkedFiles[uid] ?: false },
-                    setUidCheckStatus = { uid, checked ->
-                        if (!checked && selectedCount <= 1) {
-                            isMultiselectOn = false
-                            checkedFiles.clear()
-                        } else if (checked) {
-                            checkedFiles[uid] = true
-                        } else {
-                            checkedFiles.remove(uid)
-                        }
-                    },
+                    isUidChecked = { selectedUids.contains(it) },
+                    setUidCheckStatus = onToggleUid,
                     onLongClick = onLongClick,
                 )
 
                 if (isMultiselectOn) {
-                    val selectedUids = checkedFiles.filterValues { it }.keys
                     val selectedFiles = fileList.filter { it.uid in selectedUids }
                     ExistingTransferFilesDetailsBottomBar(
-                        selectedFiles = selectedFiles,
+                        selectedFiles = { selectedFiles },
                         transferIdType = transferIdType,
                         filesDetailsViewModel = filesDetailsViewModel,
                         onCancelSelection = onCancelSelection,
@@ -162,6 +133,52 @@ fun ExistingTransferFilesDetailsScreen(
                 }
             }
         }
+    }
+}
+
+private fun createOnToggleSelection(
+    files: List<FileUi>?,
+    selectedUids: MutableSet<String>,
+): (Boolean) -> Unit = { selectAll ->
+    if (!selectAll) {
+        selectedUids.clear()
+    } else if (selectedUids.size == files?.size) {
+        selectedUids.clear()
+    } else {
+        files?.forEach { selectedUids.add(it.uid) }
+    }
+}
+
+private fun createOnCancelSelection(
+    setMultiselectOn: (Boolean) -> Unit,
+    selectedUids: MutableSet<String>,
+): () -> Unit = {
+    setMultiselectOn(false)
+    selectedUids.clear()
+}
+
+private fun createOnLongClick(
+    isMultiselectOn: Boolean,
+    setMultiselectOn: (Boolean) -> Unit,
+    selectedUids: MutableSet<String>,
+): (String) -> Unit = { uid ->
+    if (!isMultiselectOn) {
+        setMultiselectOn(true)
+        selectedUids.add(uid)
+    }
+}
+
+private fun createOnToggleUid(
+    setMultiselectOn: (Boolean) -> Unit,
+    selectedUids: MutableSet<String>,
+): (String, Boolean) -> Unit = { uid, checked ->
+    when {
+        !checked && selectedUids.size <= 1 -> {
+            setMultiselectOn(false)
+            selectedUids.clear()
+        }
+        checked -> selectedUids.add(uid)
+        else -> selectedUids.remove(uid)
     }
 }
 
@@ -197,7 +214,7 @@ private fun ExistingTransferFilesDetailsTopBar(
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun ExistingTransferFilesDetailsBottomBar(
-    selectedFiles: List<FileUi>,
+    selectedFiles: () -> List<FileUi>,
     transferIdType: TransferIdType,
     direction: TransferDirection,
     filesDetailsViewModel: FilesDetailsViewModel,
@@ -208,9 +225,9 @@ private fun ExistingTransferFilesDetailsBottomBar(
         BottomBarButton(
             icon = AppIcons.ArrowDownBar,
             labelResId = R.string.buttonDownloadSelected,
-            enabled = selectedFiles.isNotEmpty(),
+            enabled = selectedFiles().isNotEmpty(),
             onClick = writePermissionManager.dropIfDenied {
-                filesDetailsViewModel.triggerFilesSelectionDownload(transferIdType, selectedFiles, direction)
+                filesDetailsViewModel.triggerFilesSelectionDownload(transferIdType, selectedFiles(), direction)
                 onCancelSelection()
             },
             modifier = Modifier.weight(1f),
