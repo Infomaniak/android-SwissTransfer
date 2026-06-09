@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,19 +44,20 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 fun EmptyStateScreen(
     transferError: TransferError,
     onDeleteTransferClicked: (DeletableFromHistory) -> Unit,
-    onCloseClicked: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    onCloseClicked: (() -> Unit)? = null
 ) {
     BottomStickyButtonScaffold(
         topBar = { SwissTransferTopAppBar(navigationIcon = { onCloseClicked?.let { TopAppBarButtons.Close(onClick = it) } }) },
-        modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
-        bottomButton = { modifier ->
+        modifier = modifier.padding(WindowInsets.navigationBars.asPaddingValues()),
+        bottomButton = { buttonModifier ->
             if (transferError is DeletableFromHistory && transferError.isInLocal) {
                 DeleteButton(
                     onClick = {
                         onDeleteTransferClicked(transferError)
                         onCloseClicked?.invoke()
                     },
-                    modifier = modifier,
+                    modifier = buttonModifier,
                 )
             }
         },

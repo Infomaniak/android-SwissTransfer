@@ -42,8 +42,8 @@ import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.formatSpaceL
 import com.infomaniak.swisstransfer.ui.utils.HumanReadableSizeUtils.getSpaceLeft
 
 @Composable
-fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolean) {
-    Row(modifier = Modifier.padding(vertical = Margin.Medium)) {
+fun FilesSize(files: List<FileUi>, withFilesSize: Boolean, withSpaceLeft: Boolean, modifier: Modifier = Modifier) {
+    Row(modifier = modifier.padding(vertical = Margin.Medium)) {
         val filesInfo = getFilesInfo(files, withFilesSize)
         TextDotText(
             firstText = { Text(filesInfo.filesCountText) },
