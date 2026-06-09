@@ -96,7 +96,7 @@ fun AppNavigationSuiteScaffold(
     layoutType: NavigationSuiteType,
     navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
-    hideBottomBar: Boolean,
+    hideBottomBar: () -> Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -106,7 +106,7 @@ fun AppNavigationSuiteScaffold(
                 when (layoutType) {
                     NavigationSuiteType.None -> Unit
                     NavigationSuiteType.NavigationBar -> {
-                        if (!hideBottomBar) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
+                        if (!hideBottomBar()) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
                     NavigationSuiteType.NavigationRail -> AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
                     else -> AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)
