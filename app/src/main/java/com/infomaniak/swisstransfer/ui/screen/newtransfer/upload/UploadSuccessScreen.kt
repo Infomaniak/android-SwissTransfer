@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,16 @@ fun UploadSuccessScreen(
         closeActivity()
     }
 
+    UploadSuccessScreen(transferType, transferUuid, transferUrl, dismissCompleteUpload)
+}
+
+@Composable
+private fun UploadSuccessScreen(
+    transferType: TransferTypeUi,
+    transferUuid: String,
+    transferUrl: String,
+    dismissCompleteUpload: () -> Unit,
+) {
     BackHandler(onBack = dismissCompleteUpload)
 
     if (transferType == TransferTypeUi.Mail) {
@@ -72,7 +82,7 @@ private fun UploadSuccessScreenPreview() {
                 transferType = TransferTypeUi.Link,
                 transferUuid = "",
                 transferUrl = "https://chk.me/83azQOl",
-                closeActivity = {},
+                dismissCompleteUpload = {},
             )
         }
     }
