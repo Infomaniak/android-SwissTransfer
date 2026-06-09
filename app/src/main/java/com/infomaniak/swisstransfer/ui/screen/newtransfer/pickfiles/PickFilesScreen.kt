@@ -277,7 +277,7 @@ private fun PickFilesScreen(
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                     selectContact = selectContact,
                     snackbarHostState = snackbarHostState,
-                    horizontalPaddingModifier = horizontalPaddingModifier,
+                    modifier = horizontalPaddingModifier,
                 )
                 TransferOptions(transferOptionsCallbacks, horizontalPaddingModifier)
             }
@@ -313,11 +313,11 @@ private fun ImportTextFields(
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
     selectContact: (Uri) -> Unit,
-    horizontalPaddingModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
 ) {
     val textFieldSpacing = Margin.Medium
     Column(
-        modifier = horizontalPaddingModifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(textFieldSpacing),
     ) {
         if (LocalUser.current.isApiV2()) {
@@ -452,10 +452,8 @@ private fun getEmailError(isError: Boolean): @Composable (() -> Unit)? {
 
 @Composable
 private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        PickFilesTitle(R.string.transferTypeTitle)
-        TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
-    }
+    PickFilesTitle(R.string.transferTypeTitle, modifier)
+    TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
 @Composable

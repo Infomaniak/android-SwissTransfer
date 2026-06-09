@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    hideBottomBar: Boolean,
+    hideBottomBar: () -> Boolean,
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
@@ -60,7 +60,7 @@ fun MainScaffold(
 private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
-    hideBottomBar: Boolean,
+    hideBottomBar: () -> Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -141,7 +141,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            hideBottomBar = false,
+            hideBottomBar = { false },
             content = {},
         )
     }
@@ -155,7 +155,7 @@ private fun NavigationMediumWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            hideBottomBar = false,
+            hideBottomBar = { false },
             content = {},
         )
     }
@@ -169,7 +169,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationDrawer,
-            hideBottomBar = false,
+            hideBottomBar = { false },
             content = {},
         )
     }

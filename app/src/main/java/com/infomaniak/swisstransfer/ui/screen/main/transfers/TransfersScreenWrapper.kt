@@ -71,16 +71,28 @@ fun TransfersScreenWrapper(
     direction: TransferDirection,
     onHideBottomBarChange: (Boolean) -> Unit,
     transferIdType: TransferIdType? = null,
+    transfersViewModel: TransfersViewModel = hiltViewModel(),
+    deeplinkViewModel: DeeplinkViewModel = hiltViewModel(),
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold(
         listPane = {
-            TransfersListPane(
-                direction = direction,
+            onHideBottomBarChange(currentDestination?.contentKey != null)
+
+            val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
+
+            HandleDeepLink(
                 transferIdType = transferIdType,
-                hasTransfer = { hasTransfer = it },
-                onHideBottomBarChange = onHideBottomBarChange,
+                isDeepLinkConsumed = { isDeepLinkConsumed },
+                consumeDeepLink = deeplinkViewModel::consumeDeepLink,
+                direction = direction,
+            )
+            ListPane(
+                direction = direction,
+                navigator = this,
+                updateHasTransfer = { hasTransfer = it },
+                transfersViewModel = transfersViewModel,
             )
         },
         detailPane = {
@@ -92,33 +104,6 @@ fun TransfersScreenWrapper(
     )
 }
 
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-private fun ThreePaneScaffoldNavigator<DestinationContent>.TransfersListPane(
-    direction: TransferDirection,
-    transferIdType: TransferIdType?,
-    hasTransfer: (Boolean) -> Unit,
-    onHideBottomBarChange: (Boolean) -> Unit,
-    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
-    deeplinkViewModel: DeeplinkViewModel = hiltViewModel<DeeplinkViewModel>(),
-) {
-    onHideBottomBarChange(currentDestination?.contentKey != null)
-
-    val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
-
-    HandleDeepLink(
-        transferIdType = transferIdType,
-        isDeepLinkConsumed = { isDeepLinkConsumed },
-        consumeDeepLink = deeplinkViewModel::consumeDeepLink,
-        direction = direction,
-    )
-    ListPane(
-        direction = direction,
-        navigator = this,
-        updateHasTransfer = hasTransfer,
-        transfersViewModel = transfersViewModel,
-    )
-}
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
