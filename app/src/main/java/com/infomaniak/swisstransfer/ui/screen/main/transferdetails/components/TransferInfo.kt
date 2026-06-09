@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ import com.infomaniak.swisstransfer.ui.utils.getWholeDate
 import com.infomaniak.swisstransfer.ui.utils.isV1
 
 @Composable
-fun TransferInfo(getTransfer: () -> TransferUi) {
+fun TransferInfo(getTransfer: () -> TransferUi, modifier: Modifier = Modifier) {
 
     val filesCount by remember { derivedStateOf { getTransfer().files.count() } }
     val downloadedCount by remember { derivedStateOf { getTransfer().downloadLimit - getTransfer().downloadLeft } }
@@ -64,7 +64,7 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
     val sizeUploaded by remember { derivedStateOf { getTransfer().sizeUploaded } }
     val direction by remember { derivedStateOf { getTransfer().direction } }
 
-    Column {
+    Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = AppIcons.FileZip,
@@ -121,7 +121,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             Column {
-                TransferInfo { transfers.first() }
+                TransferInfo(getTransfer = { transfers.first() })
             }
         }
     }
