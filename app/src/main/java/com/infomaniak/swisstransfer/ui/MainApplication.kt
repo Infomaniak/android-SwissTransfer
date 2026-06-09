@@ -35,16 +35,20 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences.IsSentryAuthorized
+import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferencesDefaults
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
-import com.infomaniak.swisstransfer.ui.utils.getPreference
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import splitties.init.injectAsAppCtx
 import javax.inject.Inject
@@ -140,9 +144,15 @@ class MainApplication : Application(), Configuration.Provider {
      *   and we don't want to send them to Sentry
      */
     private fun configureSentry() {
+        val isSentryEnabled: StateFlow<Boolean> = dataManagementDataStore.data
+            .map { prefs ->
+                prefs[IsSentryAuthorized.dataStoreKey] ?: DataManagementPreferencesDefaults.IsSentryAuthorizedDefault
+            }
+            .stateIn(applicationScope, SharingStarted.Eagerly, initialValue = false)
+
         this.configureSentry(
             isDebug = BuildConfig.DEBUG,
-            isSentryTrackingEnabled = { dataManagementDataStore.getPreference(IsSentryAuthorized) },
+            isSentryTrackingEnabled = { isSentryEnabled.value },
             isFilteredException = { exception -> exception is KmpNetworkException },
         )
     }

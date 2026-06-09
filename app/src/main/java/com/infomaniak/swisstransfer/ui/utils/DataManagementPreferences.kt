@@ -26,5 +26,12 @@ import androidx.datastore.preferences.preferencesDataStore
 val Context.dataManagementDataStore: DataStore<Preferences> by preferencesDataStore(name = "DataManagementPreferences")
 
 object DataManagementPreferences {
-    data object IsSentryAuthorized : DataStorePreference<Boolean>(booleanPreferencesKey("IsSentryAuthorized"), true)
+    data object IsSentryAuthorized : DataStorePreference<Boolean>(
+        booleanPreferencesKey("IsSentryAuthorized"),
+        DataManagementPreferencesDefaults.IsSentryAuthorizedDefault,
+    )
+}
+
+object DataManagementPreferencesDefaults {
+    val IsSentryAuthorizedDefault = true
 }
