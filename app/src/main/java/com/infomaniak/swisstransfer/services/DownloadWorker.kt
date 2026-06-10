@@ -91,9 +91,9 @@ class DownloadWorker @AssistedInject constructor(
         }
 
         runCatching {
-            when {
-                folderId != null -> downloadFolder(folderId, transferUi)
-                else -> downloadTransfer(transferUi)
+            when (folderId) {
+                null -> downloadTransfer(transferUi)
+                else -> downloadFolder(folderId, transferUi)
             }
         }.getOrElse { exception ->
             return when (exception) {

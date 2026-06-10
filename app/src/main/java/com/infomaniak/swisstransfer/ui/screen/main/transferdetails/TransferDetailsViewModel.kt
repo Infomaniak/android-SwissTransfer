@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.cancellable
@@ -41,6 +41,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusCheckFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
@@ -58,6 +59,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.DeleteTransferUseCa
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -81,6 +83,7 @@ class TransferDetailsViewModel @Inject constructor(
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _transferSourceFlow = MutableSharedFlow<TransferSource>(replay = 1)
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -95,7 +98,25 @@ class TransferDetailsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, Loading)
 
-    val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+    val checkedFiles: SnapshotStateSet<String> = mutableStateSetOf()
+
+    fun triggerFilesSelectionDownload(selectedUids: Set<String>, direction: TransferDirection) {
+        viewModelScope.launch(ioDispatcher) {
+            val transfer = (uiState.value as? Success)?.transfer ?: return@launch
+            val selectedFiles = transfer.files.filter { it.uid in selectedUids }
+            if (selectedFiles.isEmpty()) return@launch
+
+            downloadSelectedFiles(
+                transfer = transfer,
+                files = selectedFiles,
+                downloadWorkerScheduler = downloadWorkerScheduler,
+                transferManager = transferManager,
+                apiUrlCreator = sharedApiUrlCreator,
+                userAgent = userAgent,
+                direction = direction,
+            )
+        }
+    }
 
     //region Deeplink Password
     private val _isDeeplinkNeedingPassword = MutableStateFlow(false)
@@ -175,7 +196,7 @@ class TransferDetailsViewModel @Inject constructor(
     suspend fun handleTransferDownload(
         ui: TransferDownloadUi,
         transfer: TransferUi,
-        targetFile: FileUi?,
+        downloadTarget: DownloadTarget,
         openFile: suspend (Uri) -> Unit,
         direction: TransferDirection,
     ): Nothing = handleTransferDownload(
@@ -185,7 +206,7 @@ class TransferDetailsViewModel @Inject constructor(
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
-        targetFile = targetFile,
+        downloadTarget = downloadTarget,
         openFile = openFile,
         direction = direction,
     )

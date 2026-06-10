@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,21 +19,29 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.TransferUi
+import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
+import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.downloadSelectedFiles
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.handleTransferDownload
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.previewUriForFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,6 +52,7 @@ class FilesDetailsViewModel @Inject constructor(
     private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
     @UserAgent private val userAgent: String,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     fun filesFlow(folderUuid: String): Flow<List<FileUi>> {
@@ -69,7 +78,7 @@ class FilesDetailsViewModel @Inject constructor(
     suspend fun handleTransferDownload(
         ui: TransferDownloadUi,
         transfer: TransferUi,
-        targetFile: FileUi?,
+        downloadTarget: DownloadTarget,
         openFile: suspend (Uri) -> Unit,
     ): Nothing = handleTransferDownload(
         ui = ui,
@@ -78,7 +87,31 @@ class FilesDetailsViewModel @Inject constructor(
         downloadWorkerScheduler = downloadWorkerScheduler,
         userAgent = userAgent,
         transfer = transfer,
-        targetFile = targetFile,
+        downloadTarget = downloadTarget,
         openFile = openFile,
     )
+
+    fun triggerFilesSelectionDownload(
+        transferIdType: TransferIdType,
+        selectedFiles: List<FileUi>,
+        direction: TransferDirection,
+    ) {
+        if (selectedFiles.isEmpty()) return
+        viewModelScope.launch(ioDispatcher) {
+            val transfer = when (transferIdType) {
+                is TransferIdType.TransferId -> transferManager.getTransferFlow(transferIdType.value).filterNotNull().first()
+                is TransferIdType.LinkId -> transferManager.getTransferByLinkIdFlow(transferIdType.value).filterNotNull().first()
+            }
+
+            downloadSelectedFiles(
+                transfer = transfer,
+                files = selectedFiles,
+                downloadWorkerScheduler = downloadWorkerScheduler,
+                transferManager = transferManager,
+                apiUrlCreator = sharedApiUrlCreator,
+                userAgent = userAgent,
+                direction = direction,
+            )
+        }
+    }
 }

@@ -18,6 +18,7 @@
 <resources>
     <string name="advancedSettingsTitle">Lisäasetukset</string>
     <string name="awaitingNetwork">Odotetaan verkkoa</string>
+    <string name="buttonAll">Kaikki</string>
     <string name="buttonCancelTransfer">Peruuta siirto</string>
     <string name="buttonCloseAndContinue">Sulje ja jatka</string>
     <string name="buttonConfirm">Vahvista</string>
@@ -70,6 +71,10 @@
     <string name="importFilesScreenTitle">Siirrettävät tiedostot</string>
     <string name="invalidAddress">Virheellinen osoite</string>
     <string name="messageHeader">Viesti:</string>
+    <plurals name="multipleSelectionTitle">
+        <item quantity="one">%d valittu</item>
+        <item quantity="other">%d valittu</item>
+    </plurals>
     <string name="myFilesTitle">Omat tiedostot</string>
     <string name="networkUnavailable">Verkko ei saatavilla</string>
     <string name="newTransferConfirmLeavingDialogTitle">Hups, haluatko todella peruuttaa?</string>

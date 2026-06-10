@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirectio
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.FileItemList
 import com.infomaniak.swisstransfer.ui.previewparameter.FileUiListPreviewParameter
+import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.DownloadTarget
 import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.TransferDownloadUi
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.components.FilesSize
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -53,20 +54,25 @@ fun FilesDetailsScreen(
     withFileSize: Boolean,
     withSpaceLeft: Boolean,
     isNewTransfer: Boolean,
+    modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(0.dp),
     navigateToFolder: ((String) -> Unit)? = null,
     transferFlow: Flow<TransferUi> = emptyFlow(),
     runDownloadUi: suspend (
         ui: TransferDownloadUi,
         transfer: TransferUi,
-        file: FileUi
+        downloadTarget: DownloadTarget
     ) -> Nothing = { _, _, _ -> awaitCancellation() },
     previewUriForFile: (transfer: TransferUi, file: FileUi) -> Flow<Uri?> = { _, _ -> emptyFlow() },
     onFileRemoved: ((uuid: String) -> Unit)? = null,
-    direction: TransferDirection? = null
+    direction: TransferDirection? = null,
+    isCheckboxVisible: () -> Boolean = { false },
+    isUidChecked: (String) -> Boolean = { false },
+    setUidCheckStatus: (String, Boolean) -> Unit = { _, _ -> },
+    onLongClick: ((String) -> Unit)? = null
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(paddingValues)
             .padding(horizontal = Margin.Medium)
     ) {
@@ -76,9 +82,9 @@ fun FilesDetailsScreen(
             files = files,
             isNewTransfer = isNewTransfer,
             isRemoveButtonVisible = onFileRemoved != null,
-            isCheckboxVisible = { false },
-            isUidChecked = { false },
-            setUidCheckStatus = { _, _ -> },
+            isCheckboxVisible = isCheckboxVisible,
+            isUidChecked = isUidChecked,
+            setUidCheckStatus = setUidCheckStatus,
             onRemoveUid = {
                 MatomoSwissTransfer.trackNewTransferEvent(MatomoName.DeleteFile)
                 onFileRemoved?.invoke(it)
@@ -88,6 +94,7 @@ fun FilesDetailsScreen(
             runDownloadUi = runDownloadUi,
             previewUriForFile = previewUriForFile,
             direction = direction,
+            onLongClick = onLongClick,
         )
     }
 }
