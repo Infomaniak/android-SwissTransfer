@@ -47,14 +47,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -153,10 +153,11 @@ fun TransferDetailsScreen(
                     )
                 },
                 previewUriForFile = { transfer, file -> transferDetailsViewModel.previewUriForFile(transfer, file) },
-                getCheckedFiles = { transferDetailsViewModel.checkedFiles },
+                checkedFiles = transferDetailsViewModel.checkedFiles,
                 clearCheckedFiles = { transferDetailsViewModel.checkedFiles.clear() },
                 setFileCheckStatus = { fileUid, isChecked ->
-                    transferDetailsViewModel.checkedFiles[fileUid] = isChecked
+                    if (isChecked) transferDetailsViewModel.checkedFiles.add(fileUid)
+                    else transferDetailsViewModel.checkedFiles.remove(fileUid)
                 },
                 navigateToFolder = navigateToFolder,
                 onDownloadSelection = { selectedUids ->
@@ -213,7 +214,7 @@ private fun TransferDetailsScreen(
     navigateBack: (() -> Unit)?,
     getTransfer: () -> TransferUi,
     runDownloadUi: suspend (ui: TransferDownloadUi, transfer: TransferUi, downloadTarget: DownloadTarget) -> Nothing,
-    getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
+    checkedFiles: SnapshotStateSet<String>,
     clearCheckedFiles: () -> Unit,
     setFileCheckStatus: (String, Boolean) -> Unit,
     navigateToFolder: (folderUuid: String) -> Unit,
@@ -226,13 +227,12 @@ private fun TransferDetailsScreen(
     val transferUuid = getTransfer().uuid
 
     var isMultiselectOn: Boolean by rememberSaveable(transferUuid) { mutableStateOf(false) }
-    val checkedFiles = getCheckedFiles()
     LaunchedEffect(transferUuid) {
         clearCheckedFiles()
         isMultiselectOn = false
     }
 
-    val selectedCount by remember { derivedStateOf { checkedFiles.values.count { it } } }
+    val selectedCount by remember { derivedStateOf { checkedFiles.count() } }
     var showQrCodeBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
     var showPasswordBottomSheet: Boolean by rememberSaveable { mutableStateOf(false) }
 
@@ -317,7 +317,7 @@ private fun TransferDetailsScreen(
                 getTransfer = getTransfer,
                 transferRecipients = transferRecipients,
                 isMultiselectOn = isMultiselectOn,
-                getCheckedFiles = getCheckedFiles,
+                checkedFiles = checkedFiles,
                 setFileCheckStatus = { fileUid, isChecked ->
                     if (!isChecked && selectedCount <= 1) {
                         isMultiselectOn = false
@@ -343,7 +343,7 @@ private fun TransferDetailsScreen(
             BottomBar(getBottomBarPadding()) {
                 val buttonsModifier = Modifier.weight(1f)
                 if (isMultiselectOn) {
-                    val selectedUids = getCheckedFiles().filterValues { it }.keys
+                    val selectedUids = checkedFiles.toSet()
 
                     BottomBarButton(
                         icon = AppIcons.ArrowDownBar,
@@ -427,7 +427,7 @@ private fun ColumnScope.FilesList(
     getTransfer: () -> TransferUi,
     transferRecipients: Set<String>,
     isMultiselectOn: Boolean,
-    getCheckedFiles: () -> SnapshotStateMap<String, Boolean>,
+    checkedFiles: SnapshotStateSet<String>,
     setFileCheckStatus: (String, Boolean) -> Unit,
     transferFlow: Flow<TransferUi>,
     direction: TransferDirection,
@@ -449,7 +449,7 @@ private fun ColumnScope.FilesList(
         isNewTransfer = false,
         isRemoveButtonVisible = false,
         isCheckboxVisible = { isMultiselectOn },
-        isUidChecked = { fileUid -> getCheckedFiles()[fileUid] ?: false },
+        isUidChecked = { fileUid -> fileUid in checkedFiles },
         setUidCheckStatus = { fileUid, isChecked -> setFileCheckStatus(fileUid, isChecked) },
         navigateToFolder = { fileUuid ->
             navigateToFolder?.invoke(fileUuid)
@@ -573,7 +573,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
                 navigateBack = null,
                 getTransfer = { transfers.first() },
                 runDownloadUi = { _, _, _ -> awaitCancellation() },
-                getCheckedFiles = { mutableStateMapOf() },
+                checkedFiles = remember { mutableStateSetOf() },
                 clearCheckedFiles = {},
                 setFileCheckStatus = { _, _ -> },
                 navigateToFolder = { _ -> },

@@ -20,10 +20,10 @@ package com.infomaniak.swisstransfer.ui.screen.main.transferdetails
 import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.snapshots.SnapshotStateSet
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.cancellable
@@ -98,7 +98,7 @@ class TransferDetailsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, Loading)
 
-    val checkedFiles: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+    val checkedFiles: SnapshotStateSet<String> = mutableStateSetOf()
 
     fun triggerFilesSelectionDownload(selectedUids: Set<String>, direction: TransferDirection) {
         viewModelScope.launch(ioDispatcher) {
