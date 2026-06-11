@@ -17,9 +17,7 @@
  */
 package com.infomaniak.swisstransfer.upload
 
-import android.content.ContentResolver
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.v2.Transfer
@@ -142,25 +140,16 @@ class TransferUploaderV2(
         val fileUUID: String = metadata.uuid
         SentryLog.i(TAG, "start upload file $fileUUID, with size ${metadata.pickedFile.size}")
 
-        if (metadata.thumbnailSaved.not()) targetFileUri.getMimeType()?.let { mimeType ->
-            thumbnailsLocalStorage.generateThumbnailFor(
-                fileUri = targetFileUri,
-                fileName = fileUUID,
-                extension = mimeType.substringAfterLast('/'),
-            )
-            metadata.thumbnailSaved = true
-        }
+        generateThumbnailIfNeeded(
+            fileUri = targetFileUri,
+            fileName = fileUUID,
+            pickedFileName = metadata.pickedFile.name,
+            thumbnailSaved = metadata.thumbnailSaved,
+            thumbnailsLocalStorage = thumbnailsLocalStorage,
+            contentResolver = contentResolver,
+            onThumbnailGenerated = { metadata.thumbnailSaved = true },
+        )
         uploadFileInChunks(metadata = metadata)
-    }
-
-    private fun Uri.getMimeType(): String? {
-        return when (scheme) {
-            ContentResolver.SCHEME_CONTENT -> contentResolver.getType(this)
-            ContentResolver.SCHEME_FILE -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                MimeTypeMap.getFileExtensionFromUrl(toString()).lowercase()
-            )
-            else -> null
-        }
     }
 
     private suspend fun uploadFileInChunks(metadata: FileToUploadMetaData) = Dispatchers.IO {
