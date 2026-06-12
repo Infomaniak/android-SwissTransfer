@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,14 @@ fun MainScreen(deeplinkTransferDirection: TransferDirection? = null) {
     MainScaffold(
         navController = navController,
         currentDestination = currentDestination,
-        hideBottomBar = hideBottomBar,
-        content = { MainNavHost(navController, deeplinkTransferDirection, hideBottomBar) },
+        isBottomBarHidden = { hideBottomBar.value },
+        content = {
+            MainNavHost(
+                navController = navController,
+                deeplinkTransferDirection = deeplinkTransferDirection,
+                onHideBottomBarChange = { hideBottomBar.value = it },
+            )
+        },
     )
 }
 

@@ -74,9 +74,9 @@ fun UploadFailureScreen(
 @Composable
 private fun UploadFailureScreen(
     exitNewTransfer: () -> Unit,
+    desc: String,
     illustration: ThemedImage = AppIllus.GhostScrollCrossPointing,
     title: String = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
-    desc: String
 ) {
     BackHandler { exitNewTransfer() }
 

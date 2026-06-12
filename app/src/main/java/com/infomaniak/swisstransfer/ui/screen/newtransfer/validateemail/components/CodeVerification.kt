@@ -44,11 +44,11 @@ private const val OPT_LENGTH = 6
 
 @Composable
 fun ColumnScope.CodeVerification(
-    modifier: Modifier = Modifier,
     otpCode: () -> String,
     updateOtpCode: (String, Boolean) -> Unit,
     isLoading: () -> Boolean,
     isInvalidVerificationCode: () -> Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(Modifier.align(Alignment.CenterHorizontally)) {
         Box(contentAlignment = Alignment.Center) {

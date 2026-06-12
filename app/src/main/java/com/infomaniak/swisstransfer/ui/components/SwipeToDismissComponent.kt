@@ -55,8 +55,8 @@ private const val SWIPED_ELEVATION = 4
 
 @Composable
 fun SwipeToDismissComponent(
-    modifier: Modifier = Modifier,
     contentShape: Shape,
+    modifier: Modifier = Modifier,
     onSwiped: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {

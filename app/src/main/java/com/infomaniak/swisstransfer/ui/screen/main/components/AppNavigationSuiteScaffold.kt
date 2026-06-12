@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -97,19 +96,27 @@ fun AppNavigationSuiteScaffold(
     layoutType: NavigationSuiteType,
     navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
-    hideBottomBar: MutableState<Boolean>,
+    isBottomBarHidden: () -> Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
-    content: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
-    Surface(color = SwissTransferTheme.materialColors.background) {
+    Surface(
+        modifier = modifier,
+        color = SwissTransferTheme.materialColors.background
+    ) {
         NavigationSuiteScaffoldLayout(
             navigationSuite = {
                 when (layoutType) {
                     NavigationSuiteType.None -> Unit
                     NavigationSuiteType.NavigationBar -> {
-                        if (!hideBottomBar.value) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
+                        if (!isBottomBarHidden()) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
-                    NavigationSuiteType.NavigationRail -> AppNavigationRail(navigationItems, currentDestination, navigateToSelectedItem)
+                    NavigationSuiteType.NavigationRail -> AppNavigationRail(
+                        navigationItems,
+                        currentDestination,
+                        navigateToSelectedItem
+                    )
                     else -> AppNavigationDrawer(navigationItems, currentDestination, navigateToSelectedItem)
                 }
             },

@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -45,14 +43,14 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    hideBottomBar: MutableState<Boolean>,
+    isBottomBarHidden: () -> Boolean,
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
     MainScaffold(
         navType = navType,
         currentDestination = currentDestination,
-        hideBottomBar = hideBottomBar,
+        isBottomBarHidden = isBottomBarHidden,
         navigateToSelectedItem = navController::navigateToSelectedItem,
         content = content,
     )
@@ -62,7 +60,7 @@ fun MainScaffold(
 private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
-    hideBottomBar: MutableState<Boolean>,
+    isBottomBarHidden: () -> Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -71,7 +69,7 @@ private fun MainScaffold(
             layoutType = navType,
             navigationItems = NavigationItem.entries,
             currentDestination = currentDestination,
-            hideBottomBar = hideBottomBar,
+            isBottomBarHidden = isBottomBarHidden,
             navigateToSelectedItem = navigateToSelectedItem,
         ) {
             if (isWindowSmall()) {
@@ -143,7 +141,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            hideBottomBar = remember { mutableStateOf(false) },
+            isBottomBarHidden = { false },
             content = {},
         )
     }
@@ -157,7 +155,7 @@ private fun NavigationMediumWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            hideBottomBar = remember { mutableStateOf(false) },
+            isBottomBarHidden = { false },
             content = {},
         )
     }
@@ -171,7 +169,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationDrawer,
-            hideBottomBar = remember { mutableStateOf(false) },
+            isBottomBarHidden = { false },
             content = {},
         )
     }

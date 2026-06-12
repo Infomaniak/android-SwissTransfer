@@ -53,8 +53,8 @@ fun TransferItemList(
     getSelectedTransferIdType: () -> TransferIdType?,
     getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
-    emptyState: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    emptyState: @Composable () -> Unit,
 ) {
     AnimatedContent(
         targetState = getTransfers().isEmpty(),

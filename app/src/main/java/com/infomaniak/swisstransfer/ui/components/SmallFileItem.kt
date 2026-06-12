@@ -42,9 +42,9 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SmallFileItem(
-    modifier: Modifier = Modifier,
     file: FileUi,
     smallFileTileSize: SmallFileTileSize,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier
