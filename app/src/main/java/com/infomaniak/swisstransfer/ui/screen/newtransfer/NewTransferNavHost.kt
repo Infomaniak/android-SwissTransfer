@@ -37,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesScr
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PickFilesViewModel
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadScreen
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessScreen
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.UploadSuccessViewModel
 import com.infomaniak.swisstransfer.ui.utils.LocalSharedTransitionScope
 import com.infomaniak.swisstransfer.ui.utils.SwissTransferTransition
 import com.infomaniak.swisstransfer.ui.utils.animatedComposable
@@ -49,6 +50,7 @@ fun NewTransferNavHost(
     notificationPermissionManager: RationalePermissionManagerState,
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     cancelUploadNotification: () -> Unit,
+    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel(),
 ) {
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
@@ -89,7 +91,10 @@ fun NewTransferNavHost(
                         transferType = args.transferType,
                         transferUuid = args.transferUuid,
                         transferUrl = args.transferUrl,
-                        dismissCompleteUpload = { closeActivity(true) },
+                        dismissCompleteUpload = {
+                            uploadSuccessViewModel.dismissCompleteUpload()
+                            closeActivity(true)
+                        },
                     )
                 }
                 animatedComposable<NewTransferFilesDetailsDestination> {
