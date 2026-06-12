@@ -89,7 +89,7 @@ fun NewTransferNavHost(
                         transferType = args.transferType,
                         transferUuid = args.transferUuid,
                         transferUrl = args.transferUrl,
-                        closeActivity = { closeActivity(true) },
+                        dismissCompleteUpload = { closeActivity(true) },
                     )
                 }
                 animatedComposable<NewTransferFilesDetailsDestination> {

@@ -55,6 +55,7 @@ fun UploadScreen(
     navigateBackToPickFiles: () -> Unit,
     exitNewTransfer: () -> Unit,
     uploadViewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
+    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel(),
 ) {
     val uploadState: UploadState? by uploadViewModel.stateFlow.collectAsStateWithLifecycle()
 
@@ -106,7 +107,7 @@ fun UploadScreen(
                 transferType = state.transferType,
                 transferUuid = state.transferUuid,
                 transferUrl = state.transferUrl,
-                closeActivity = {},
+                dismissCompleteUpload = { uploadSuccessViewModel.dismissCompleteUpload() },
             )
         }
     }
