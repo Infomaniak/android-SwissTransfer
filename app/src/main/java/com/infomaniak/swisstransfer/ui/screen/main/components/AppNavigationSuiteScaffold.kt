@@ -96,7 +96,7 @@ fun AppNavigationSuiteScaffold(
     layoutType: NavigationSuiteType,
     navigationItems: List<NavigationItem>,
     currentDestination: MainNavigation,
-    hideBottomBar: () -> Boolean,
+    isBottomBarHidden: () -> Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -110,7 +110,7 @@ fun AppNavigationSuiteScaffold(
                 when (layoutType) {
                     NavigationSuiteType.None -> Unit
                     NavigationSuiteType.NavigationBar -> {
-                        if (!hideBottomBar()) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
+                        if (!isBottomBarHidden()) AppNavigationBar(navigationItems, currentDestination, navigateToSelectedItem)
                     }
                     NavigationSuiteType.NavigationRail -> AppNavigationRail(
                         navigationItems,
