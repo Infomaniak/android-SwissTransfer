@@ -43,14 +43,14 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 fun MainScaffold(
     navController: NavHostController,
     currentDestination: MainNavigation,
-    hideBottomBar: () -> Boolean,
+    isBottomBarHidden: () -> Boolean,
     content: @Composable () -> Unit = {},
 ) {
     val navType = rememberNavType(currentDestination)
     MainScaffold(
         navType = navType,
         currentDestination = currentDestination,
-        hideBottomBar = hideBottomBar,
+        isBottomBarHidden = isBottomBarHidden,
         navigateToSelectedItem = navController::navigateToSelectedItem,
         content = content,
     )
@@ -60,7 +60,7 @@ fun MainScaffold(
 private fun MainScaffold(
     navType: NavigationSuiteType,
     currentDestination: MainNavigation,
-    hideBottomBar: () -> Boolean,
+    isBottomBarHidden: () -> Boolean,
     navigateToSelectedItem: (MainNavigation) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -69,7 +69,7 @@ private fun MainScaffold(
             layoutType = navType,
             navigationItems = NavigationItem.entries,
             currentDestination = currentDestination,
-            hideBottomBar = hideBottomBar,
+            isBottomBarHidden = isBottomBarHidden,
             navigateToSelectedItem = navigateToSelectedItem,
         ) {
             if (isWindowSmall()) {
@@ -141,7 +141,7 @@ private fun NavigationSmallWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationBar,
-            hideBottomBar = { false },
+            isBottomBarHidden = { false },
             content = {},
         )
     }
@@ -155,7 +155,7 @@ private fun NavigationMediumWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationRail,
-            hideBottomBar = { false },
+            isBottomBarHidden = { false },
             content = {},
         )
     }
@@ -169,7 +169,7 @@ private fun NavigationLargeWindowPreview() {
             currentDestination = MainNavigation.SentDestination(),
             navigateToSelectedItem = {},
             navType = NavigationSuiteType.NavigationDrawer,
-            hideBottomBar = { false },
+            isBottomBarHidden = { false },
             content = {},
         )
     }
