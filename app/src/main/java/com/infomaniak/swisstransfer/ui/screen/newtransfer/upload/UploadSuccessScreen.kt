@@ -36,8 +36,7 @@ fun UploadSuccessScreen(
     transferType: TransferTypeUi,
     transferUuid: String,
     transferUrl: String,
-    closeActivity: () -> Unit,
-    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel<UploadSuccessViewModel>(),
+    dismissCompleteUpload: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -49,21 +48,6 @@ fun UploadSuccessScreen(
         MatomoSwissTransfer.trackScreen(MatomoScreen.UploadSuccess)
     }
 
-    val dismissCompleteUpload: () -> Unit = {
-        uploadSuccessViewModel.dismissCompleteUpload()
-        closeActivity()
-    }
-
-    UploadSuccessScreen(transferType, transferUuid, transferUrl, dismissCompleteUpload)
-}
-
-@Composable
-private fun UploadSuccessScreen(
-    transferType: TransferTypeUi,
-    transferUuid: String,
-    transferUrl: String,
-    dismissCompleteUpload: () -> Unit,
-) {
     BackHandler(onBack = dismissCompleteUpload)
 
     if (transferType == TransferTypeUi.Mail) {
