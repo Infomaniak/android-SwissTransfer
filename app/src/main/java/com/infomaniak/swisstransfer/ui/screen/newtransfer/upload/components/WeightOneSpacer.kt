@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -26,12 +27,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 
+@SuppressLint("ComposeModifierMissing")
 @Composable
 fun ColumnScope.WeightOneSpacer(minHeight: Dp) {
     Spacer(Modifier.height(minHeight))
     Spacer(Modifier.weight(1.0f))
 }
 
+@SuppressLint("ComposeModifierMissing")
 @Composable
 fun RowScope.WeightOneSpacer(minWidth: Dp) {
     Spacer(Modifier.width(minWidth))

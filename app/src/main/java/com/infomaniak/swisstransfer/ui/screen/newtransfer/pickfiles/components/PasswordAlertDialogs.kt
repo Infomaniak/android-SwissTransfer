@@ -106,6 +106,7 @@ fun PasswordOptionAlertDialog(
     closeAlertDialog: () -> Unit,
     onConfirmation: (PasswordTransferOption) -> Unit,
     isPasswordValid: () -> Boolean,
+    modifier: Modifier = Modifier,
 ) {
 
     var isPasswordActivated by rememberSaveable { mutableStateOf(password.get().isNotEmpty()) }
@@ -130,6 +131,7 @@ fun PasswordOptionAlertDialog(
     }
 
     SwissTransferAlertDialog(
+        modifier = modifier,
         title = stringResource(R.string.settingsOptionPassword),
         description = stringResource(R.string.settingsPasswordDescription),
         positiveButton = {

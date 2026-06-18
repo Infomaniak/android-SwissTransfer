@@ -48,9 +48,9 @@ private val BOTTOM_SHEET_ITEM_HEIGHT = 56.dp
 // Unused for now, but this is still the official component with the appropriate style of a bottom sheet item so this needs to be
 // used if we ever create a new bottom sheet
 @Composable
-fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, onClick: () -> Unit) {
+fun BottomSheetItem(imageVector: ImageVector, @StringRes titleRes: Int, modifier: Modifier = Modifier, onClick: () -> Unit) {
     SharpRippleButton(
-        modifier = Modifier
+        modifier = modifier
             .height(BOTTOM_SHEET_ITEM_HEIGHT)
             .fillMaxWidth(),
         onClick = onClick,

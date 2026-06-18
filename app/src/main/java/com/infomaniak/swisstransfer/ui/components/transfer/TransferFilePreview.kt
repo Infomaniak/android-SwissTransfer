@@ -42,8 +42,8 @@ import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferFilePreview(file: FileUi? = null, remainingFilesCount: Int? = null) {
-    Row {
+fun TransferFilePreview(modifier: Modifier = Modifier, file: FileUi? = null, remainingFilesCount: Int? = null) {
+    Row(modifier = modifier) {
         if (file == null) {
             Box(
                 contentAlignment = Alignment.Center,

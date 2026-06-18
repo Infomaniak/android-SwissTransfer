@@ -27,9 +27,9 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun SettingDivider() {
+fun SettingDivider(modifier: Modifier = Modifier) {
     HorizontalDivider(
-        modifier = Modifier.padding(
+        modifier = modifier.padding(
             horizontal = Dimens.SettingHorizontalMargin,
             vertical = Dimens.SettingVerticalMargin,
         ),

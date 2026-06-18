@@ -36,6 +36,7 @@ fun <T> BringIntoViewRow(
     horizontalPadding: Dp,
     spaceBy: Dp,
     items: List<T>,
+    modifier: Modifier = Modifier,
     itemContent: @Composable (T, BringIntoViewRequester) -> Unit,
 ) {
 
@@ -45,7 +46,7 @@ fun <T> BringIntoViewRow(
     val computedNegativeSpaceBy = -(2 * horizontalPadding - spaceBy)
 
     Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        modifier = modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(computedNegativeSpaceBy),
     ) {
         items.forEach {

@@ -111,6 +111,7 @@ fun MyAccountScreen(
     users: () -> List<User>,
     onAction: (MyAccountSettingAction) -> Unit,
     getSelectedSetting: () -> MyAccountSettingAction?,
+    modifier: Modifier = Modifier,
 ) {
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
@@ -121,6 +122,7 @@ fun MyAccountScreen(
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.MyAccount) }
 
     SwissTransferScaffold(
+        modifier = modifier,
         topBar = {
             if (windowAdaptiveInfo.isWindowLarge()) {
                 SwissTransferTopAppBar(title = pluralStringResource(RCore.plurals.myAccount, 1))
