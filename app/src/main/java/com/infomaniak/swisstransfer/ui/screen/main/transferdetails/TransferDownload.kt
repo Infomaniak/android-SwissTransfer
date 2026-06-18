@@ -245,7 +245,7 @@ private suspend fun handleOpenRequests(
     transfer: TransferUi,
     downloadTarget: DownloadTarget,
     openFile: suspend (Uri) -> Unit,
-) = downloadStatusFlow.collectLatest { status ->
+): Nothing = downloadStatusFlow.collectLatest { status ->
     if (status !is DownloadStatus.Complete) return@collectLatest
     val uri = when {
         transfer.isV1() -> downloadManager.uriFor(id)
