@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 /**
@@ -126,10 +127,6 @@ android {
         targetCompatibility = javaVersion
     }
 
-    kotlinOptions {
-        jvmTarget = javaVersion.toString()
-    }
-
     buildFeatures {
         compose = true
     }
@@ -147,6 +144,12 @@ android {
 
 kapt {
     correctErrorTypes = true
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.valueOf("JVM_${javaVersion.name.substringAfter("VERSION_")}")
+    }
 }
 
 val isRelease = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
