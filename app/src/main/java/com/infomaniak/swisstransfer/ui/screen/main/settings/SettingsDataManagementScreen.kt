@@ -55,11 +55,13 @@ import com.infomaniak.core.common.R as RCore
 fun SettingsDataManagementScreen(
     navigateBack: (() -> Unit),
     onItemClick: (SettingsOptionScreens) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     val context = LocalContext.current
 
     SwissTransferScaffold(
+        modifier = modifier,
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = RCore.string.trackingManagementTitle,

@@ -103,9 +103,10 @@ fun TopAppBarButton(
     icon: ImageVector,
     @StringRes contentDescResId: Int,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    IconButton(onClick = onClick, enabled = enabled) {
+    IconButton(onClick = onClick, modifier = modifier, enabled = enabled) {
         Icon(imageVector = icon, contentDescription = stringResource(contentDescResId))
     }
 }
@@ -116,8 +117,10 @@ fun TransferFilesSelectionTopAppBar(
     filesCount: Int,
     onToggleSelection: (selectAll: Boolean) -> Unit,
     onCancelSelection: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     SwissTransferTopAppBar(
+        modifier = modifier,
         title = pluralStringResource(R.plurals.multipleSelectionTitle, selectedCount, selectedCount),
         navigationIcon = {
             TopAppBarButtons.Back(onClick = onCancelSelection)
@@ -159,9 +162,11 @@ object TopAppBarButtons {
     @Composable
     fun Download(
         onClick: () -> Unit,
+        modifier: Modifier = Modifier,
         enabled: Boolean = true,
     ) = TopAppBarButton(
         icon = AppIcons.ArrowDownBar,
+        modifier = modifier,
         enabled = enabled,
         contentDescResId = R.string.buttonDownload,
         onClick = onClick,

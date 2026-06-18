@@ -66,6 +66,7 @@ import com.infomaniak.swisstransfer.ui.utils.getFormattedExpiry
 fun TransferItem(
     transfer: TransferUi,
     isSelected: () -> Boolean,
+    modifier: Modifier = Modifier,
     shape: Shape = CustomShapes.SMALL,
     onClick: () -> Unit,
 ) {
@@ -85,7 +86,7 @@ fun TransferItem(
     val cardContentDescription = stringResource(R.string.contentDescriptionViewTransferDetails)
 
     Card(
-        modifier = Modifier.semantics {
+        modifier = modifier.semantics {
             role = Role.Button
             onClick(cardContentDescription, null)
         },

@@ -38,7 +38,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottomSheet: () -> Unit) {
+fun QrCodeBottomSheet(
+    isVisible: () -> Boolean,
+    transferUrl: String,
+    closeBottomSheet: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
 
     if (!isVisible()) return
 
@@ -47,6 +52,7 @@ fun QrCodeBottomSheet(isVisible: () -> Boolean, transferUrl: String, closeBottom
 
     SwissTransferBottomSheet(
         onDismissRequest = closeBottomSheet,
+        modifier = modifier,
         bottomButton = {
             LargeButton(
                 modifier = it,

@@ -50,9 +50,9 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType) {
+fun ColumnScope.AdHeader(adScreenType: UploadProgressAdType, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .weight(1.0f)
             .verticalScroll(rememberScrollState()),

@@ -42,8 +42,13 @@ fun TransferOptionType(
     transferOptionType: TransferOptionType,
     selectedSetting: () -> SettingOption?,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    SharpRippleButton(onClick = onClick, contentPadding = PaddingValues(horizontal = Margin.Large, vertical = Margin.Medium)) {
+    SharpRippleButton(
+        modifier = modifier,
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = Margin.Large, vertical = Margin.Medium),
+    ) {
         Icon(
             modifier = Modifier.size(Dimens.SmallIconSize),
             imageVector = transferOptionType.buttonIcon,

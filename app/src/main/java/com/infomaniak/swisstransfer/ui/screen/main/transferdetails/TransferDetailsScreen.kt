@@ -578,9 +578,9 @@ private fun TransferContentHeader() {
 }
 
 @Composable
-fun BottomBar(paddingValues: PaddingValues, content: @Composable (RowScope.() -> Unit)) {
+fun BottomBar(paddingValues: PaddingValues, modifier: Modifier = Modifier, content: @Composable (RowScope.() -> Unit)) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(SwissTransferTheme.colors.navigationItemBackground)
             .wrapContentHeight(),

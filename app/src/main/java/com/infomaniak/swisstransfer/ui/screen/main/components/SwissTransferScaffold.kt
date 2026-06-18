@@ -25,12 +25,14 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun SwissTransferScaffold(
+    modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = { topBar() },
         snackbarHost = snackbarHost,
         floatingActionButton = floatingActionButton,
