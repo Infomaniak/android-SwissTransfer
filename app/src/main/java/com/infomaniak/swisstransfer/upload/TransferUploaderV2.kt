@@ -20,10 +20,10 @@ package com.infomaniak.swisstransfer.upload
 import android.net.Uri
 import com.infomaniak.core.common.autoCancelScope
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.transfers.v2.Transfer
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
+import com.infomaniak.multiplatform_swisstransfer.network.models.transfer.v2.TransferApi
 import com.infomaniak.multiplatform_swisstransfer.network.models.upload.request.v2.ChunkEtag
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.ThumbnailsLocalStorage
@@ -55,7 +55,7 @@ class TransferUploaderV2(
     private val uploadManager: UploadV2Manager,
     private val transferManager: TransferManager,
     private val fileChunkSizeManager: FileChunkSizeManager,
-    private val transfer: Transfer,
+    private val transfer: TransferApi,
     private val thumbnailsLocalStorage: ThumbnailsLocalStorage,
 ) : TransferUploader {
 
