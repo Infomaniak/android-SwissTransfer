@@ -33,6 +33,7 @@
     <string name="buttonOpenMailApp">Avaa sähköpostisovellus</string>
     <string name="buttonShare">Jaa</string>
     <string name="buttonStart">Aloita</string>
+    <string name="cannotOpenFile">Tätä tiedostoa ei voi avata sovelluksesta.</string>
     <string name="cantImportFileX">Tiedostoa %s ei voi tuoda</string>
     <string name="checkingFiles">Tarkistetaan tiedostoja…</string>
     <string name="confirmLogoutDescription">Haluatko varmasti kirjautua ulos tililtä %s?</string>

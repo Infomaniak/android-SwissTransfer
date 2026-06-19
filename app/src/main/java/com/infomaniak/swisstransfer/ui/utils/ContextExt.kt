@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -32,8 +31,6 @@ import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.swisstransfer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
-import splitties.toast.UnreliableToastApi
-import splitties.toast.toast
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -110,7 +107,7 @@ suspend fun Context.openFile(uri: Uri) {
     }
 
     if (type == APK_MIME_TYPE) {
-        showToast(R.string.startActivityCantHandleAction)
+        showToast(R.string.cannotOpenFile)
         return
     }
 

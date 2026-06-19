@@ -33,6 +33,7 @@
     <string name="buttonOpenMailApp">Otwórz aplikację pocztową</string>
     <string name="buttonShare">Udostępnij</string>
     <string name="buttonStart">Rozpocznij</string>
+    <string name="cannotOpenFile">Nie można otworzyć tego pliku z aplikacji.</string>
     <string name="cantImportFileX">Nie można zaimportować pliku %s</string>
     <string name="checkingFiles">Sprawdzanie plików…</string>
     <string name="confirmLogoutDescription">Czy na pewno chcesz się wylogować z %s?</string>

@@ -33,6 +33,7 @@
     <string name="buttonOpenMailApp">Άνοιγμα εφαρμογής email</string>
     <string name="buttonShare">Κοινοποίηση</string>
     <string name="buttonStart">Έναρξη</string>
+    <string name="cannotOpenFile">Αυτό το αρχείο δεν μπορεί να ανοιχτεί από την εφαρμογή.</string>
     <string name="cantImportFileX">Δεν είναι δυνατή η εισαγωγή του αρχείου %s</string>
     <string name="checkingFiles">Έλεγχος αρχείων…</string>
     <string name="confirmLogoutDescription">Είσαι σίγουρος ότι θέλεις να αποσυνδεθείς από %s;</string>
