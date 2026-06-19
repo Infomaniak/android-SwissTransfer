@@ -102,11 +102,19 @@ fun Context.shareText(text: String) {
     safeStartActivity(Intent.createChooser(intent, null))
 }
 
+private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
+
 suspend fun Context.openFile(uri: Uri) {
+    val type = Dispatchers.IO { contentResolver.getType(uri) } ?: uri.lastPathSegment?.let { name ->
+        FileType.guessMimeTypeFromFileName(name)
+    }
+
+    if (type == APK_MIME_TYPE) {
+        showToast(R.string.startActivityCantHandleAction)
+        return
+    }
+
     val intent = Intent(Intent.ACTION_VIEW).also {
-        val type = Dispatchers.IO { contentResolver.getType(uri) } ?: uri.lastPathSegment?.let { name ->
-            FileType.guessMimeTypeFromFileName(name)
-        }
         it.setDataAndType(uri, type)
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
