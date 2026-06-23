@@ -33,8 +33,8 @@
     <string name="buttonOpenMailApp">Apri l’app di posta elettronica</string>
     <string name="buttonShare">Condividi</string>
     <string name="buttonStart">Inizio</string>
-    <string name="cannotOpenFile">Questo file non può essere aperto dall’app.</string>
     <string name="cantImportFileX">Impossibile importare il file %s</string>
+    <string name="cantOpenFile">Questo file non può essere aperto dall’app.</string>
     <string name="checkingFiles">Controllo dei file…</string>
     <string name="confirmLogoutDescription">Sei sicuro di volerti disconnettere da %s?</string>
     <string name="contentDescriptionButtonBack">Indietro</string>

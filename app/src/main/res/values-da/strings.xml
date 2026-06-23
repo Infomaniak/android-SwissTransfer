@@ -33,8 +33,8 @@
     <string name="buttonOpenMailApp">Åbn mail-appen</string>
     <string name="buttonShare">Del</string>
     <string name="buttonStart">Start</string>
-    <string name="cannotOpenFile">Denne fil kan ikke åbnes fra appen.</string>
     <string name="cantImportFileX">Kan ikke importere filen %s</string>
+    <string name="cantOpenFile">Denne fil kan ikke åbnes fra appen.</string>
     <string name="checkingFiles">Kontrollerer filer…</string>
     <string name="confirmLogoutDescription">Er du sikker på, at du vil logge ud fra %s?</string>
     <string name="contentDescriptionButtonBack">Tilbage</string>

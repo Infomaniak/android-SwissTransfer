@@ -109,7 +109,7 @@ suspend fun Context.openFile(uri: Uri) {
 
     if (type == APK_MIME_TYPE) {
         withContext(Dispatchers.Main) {
-            showToast(R.string.cannotOpenFile)
+            showToast(R.string.cantOpenFile)
         }
         return
     }
