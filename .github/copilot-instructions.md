@@ -16,7 +16,7 @@ Missing `env.properties` → Gradle config phase fails.
 ## Build & Test (CI: `.github/workflows/android.yml`)
 ```bash
 ./gradlew clean
-./gradlew assembleDebug          # or assembleProdDebug / assemblePreprodDebug
+./gradlew assembleDebug
 ./gradlew lint
 ./gradlew testProdDebugUnitTest --stacktrace
 ```
@@ -28,18 +28,18 @@ app/
 ├── src/
 │   ├── main/java/com/infomaniak/swisstransfer/
 │   │   ├── di/            # Hilt modules
-│   │   ├── ui/            # Compose screens (upload, download, settings, transfers list)
+│   │   ├── ui/            # Compose screens
 │   │   └── workers/       # WorkManager (upload chunking)
-│   ├── prod/              # Prod-flavor sources (API endpoints, app ID)
+│   ├── prod/              # Prod-flavor sources
 │   └── preprod/           # Preprod-flavor overrides
 Core/                       # Git submodule — Infomaniak Core
 gradle/libs.versions.toml
-settings.gradle.kts         # includes Core/build-logic
 ```
 
-## Key Rules
-- All networking/business logic lives in `multiplatform-SwissTransfer` (KMP) — Android layer is UI + DI only.
-- `prod` is the default/release flavor; `preprod` points to staging servers.
-- No Firebase or Google services — app is distributed on both Google Play and F-Droid.
-- All user-visible strings in `res/values/strings.xml`.
+## PR Review Instructions
+
+- Ensure strings are localized via `strings.xml` resources.
+- Ensure UI is written in Jetpack Compose using Material3 components — this is a pure Compose app, do not introduce XML layouts.
+- All networking and business logic lives in the `multiplatform-SwissTransfer` KMP library — the Android layer is UI + DI only. Avoid duplicating logic in the Android layer.
+- `prod` is the default/release flavor; `preprod` points to staging servers — ensure flavor-specific code stays in the correct source sets.
 - When adding/removing a runtime dependency, update `LICENSES.md` at the repo root.
