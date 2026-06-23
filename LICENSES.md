@@ -1,6 +1,6 @@
 # Open Source Licenses
 
-SwissTransfer for Android includes the following notable open source libraries (runtime dependencies; test-only dependencies are excluded). This list may not be exhaustive.
+SwissTransfer for Android uses various open source libraries. This is an informational, non-exhaustive list of notable runtime dependencies and links to their licenses; it is not a substitute for including any required license/notice texts in distributions.
 
 | Library | License |
 |---------|---------|
