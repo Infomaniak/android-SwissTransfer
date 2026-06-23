@@ -31,6 +31,7 @@ import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.swisstransfer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -107,7 +108,9 @@ suspend fun Context.openFile(uri: Uri) {
     }
 
     if (type == APK_MIME_TYPE) {
-        showToast(R.string.cannotOpenFile)
+        withContext(Dispatchers.Main) {
+            showToast(R.string.cannotOpenFile)
+        }
         return
     }
 
@@ -116,7 +119,9 @@ suspend fun Context.openFile(uri: Uri) {
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    safeStartActivity(intent)
+    withContext(Dispatchers.Main) {
+        safeStartActivity(intent)
+    }
 }
 
 fun Context.safeStartActivity(intent: Intent) {
