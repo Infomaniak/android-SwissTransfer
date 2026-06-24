@@ -8,7 +8,7 @@ SwissTransfer for Android — secure file transfer up to 50 GB. Pure Kotlin + Je
 ## One-Time Environment Setup
 ```bash
 git submodule update --init --recursive   # Core submodule — required for Gradle settings plugin
-echo "sentryAuthToken=DummyToken" > env.properties   # only required for release builds; debug builds work without it
+cp env.example.properties env.properties  # only required for release builds; debug builds work without it
 ```
 Missing `Core/` submodule → Gradle config phase fails. Missing `env.properties` only blocks *release* tasks (requires `sentryAuthToken`); debug builds work without it.
 
