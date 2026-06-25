@@ -41,6 +41,7 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransf
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusCheckFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.VirusDetectedFetchTransferException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.FetchTransferException.WrongPasswordFetchTransferException
+import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.di.UserAgent
 import com.infomaniak.swisstransfer.services.DownloadWorker
@@ -153,7 +154,15 @@ class TransferDetailsViewModel @Inject constructor(
                     }
                     else -> {
                         _transferSourceFlow.emit(TransferSource.Local(transfer.uuid))
-                        transferManager.fetchTransfer(transfer.uuid)
+                        runCatching {
+                            transferManager.fetchTransfer(transfer.uuid)
+                        }.cancellable().onFailure { exception ->
+                            if (exception is NetworkException) {
+                                SentryLog.i(TAG, "fetchTransfer failed (network/timeout), keeping cached transfer", exception)
+                            } else {
+                                throw exception
+                            }
+                        }
                     }
                 }
             }.cancellable().onFailure { exception ->
