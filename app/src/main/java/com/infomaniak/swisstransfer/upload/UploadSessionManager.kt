@@ -217,7 +217,10 @@ class UploadSessionManager @Inject constructor(
                 transferUrl = url,
             )
         } else {
-            SentryLog.w(TAG, "Abandoned transfer detected (state=${uploadState.value?.javaClass?.simpleName})")
+            SentryLog.e(
+                TAG,
+                "Abandoned transfer detected (state=${uploadState.value?.javaClass?.simpleName})"
+            ) // Error log is temporary, to help detect abandoned transfers in the wild. it will be pass to a warning log once we are confident that the issue is fixed.
             when (destination) {
                 is Xor.First -> {
                     AbandonedTransferCleanupWorker.schedule(workManager, destination.value.container.uuid).onFailure {
