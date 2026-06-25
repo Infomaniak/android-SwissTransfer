@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.mapSync
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import com.infomaniak.swisstransfer.upload.UploadState
@@ -64,6 +65,7 @@ class UploadViewModel @Inject constructor() : ViewModel() {
             { retryRequest.awaitOneCall(); true },
             { editRequest.awaitOneCall(); false },
         )
+        SentryLog.w("UploadViewModel", "Handle retry request: $shouldRetry")
         when (shouldRetry) {
             true -> UploadForegroundService.retry()
             false -> UploadForegroundService.giveUp()
