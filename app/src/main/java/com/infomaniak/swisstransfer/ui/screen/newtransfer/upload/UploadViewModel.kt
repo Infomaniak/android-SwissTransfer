@@ -65,7 +65,7 @@ class UploadViewModel @Inject constructor() : ViewModel() {
             { retryRequest.awaitOneCall(); true },
             { editRequest.awaitOneCall(); false },
         )
-        SentryLog.w("UploadViewModel", "Handle retry request : $shouldRetry")
+        SentryLog.w("UploadViewModel", "Handle retry request: $shouldRetry")
         when (shouldRetry) {
             true -> UploadForegroundService.retry()
             false -> UploadForegroundService.giveUp()
