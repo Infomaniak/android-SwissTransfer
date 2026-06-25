@@ -305,6 +305,7 @@ class TransferUploaderV1(
                 }
             )
         } catch (t: Throwable) {
+            SentryLog.w(TAG, "Chunk upload failed for chunk #$chunkIndex of $fileUUID", t)
             uploadedBytes -= oldBytesSentTotal
             uploadedBytesUpdates.tryEmit(Unit)
             throw t

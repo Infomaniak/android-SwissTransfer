@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,6 +217,7 @@ class UploadSessionManager @Inject constructor(
                 transferUrl = url,
             )
         } else {
+            SentryLog.w(TAG, "Abandoned transfer detected. Upload State : ${uploadState.value}")
             when (destination) {
                 is Xor.First -> {
                     AbandonedTransferCleanupWorker.schedule(workManager, destination.value.container.uuid).onFailure {

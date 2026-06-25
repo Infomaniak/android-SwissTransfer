@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.SystemClock
 import com.infomaniak.core.common.ForegroundService
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -143,6 +144,7 @@ class UploadForegroundService : ForegroundService(Companion, redeliverIntentIfKi
         }
 
         suspend fun cancelUpload() {
+            SentryLog.w("UploadForegroundService", "cancelUpload() called")
             cancelTransferSignals.send(Unit)
         }
 
