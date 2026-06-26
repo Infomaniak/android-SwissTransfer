@@ -151,8 +151,10 @@ class PickFilesViewModel @Inject constructor(
 
     //region Recipient Email
     private var recipientEmail by mutableStateOf("")
-    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.isEmailRfc5321Compliant() }
+    private val isRecipientEmailInvalid by derivedStateOf { !recipientEmail.trim().isEmailRfc5321Compliant() }
     private var validatedRecipientsEmails by mutableStateOf<Set<String>>(emptySet())
+
+    private fun String.isValidEmail(): Boolean = isNotEmpty() && isEmailRfc5321Compliant()
     //endregion
 
     //region Transfer title
@@ -246,7 +248,8 @@ class PickFilesViewModel @Inject constructor(
                 if (transferType == TransferTypeUi.Mail) {
                     if (transferAuthorEmail.isEmpty()) add(Issue.Email.AuthorUnspecified)
                     if (isAuthorEmailInvalid) add(Issue.Email.AuthorInvalid)
-                    if (validatedRecipientsEmails.isEmpty()) add(Issue.Email.NoValidatedRecipients)
+                    val hasValidRecipient = validatedRecipientsEmails.isNotEmpty() || recipientEmail.trim().isValidEmail()
+                    if (!hasValidRecipient) add(Issue.Email.NoValidatedRecipients)
                 }
             }
             if (issues.isEmpty()) CanSendStatus.Yes else CanSendStatus.No(issues)
@@ -270,10 +273,20 @@ class PickFilesViewModel @Inject constructor(
         canSendStatusFlow.map { it == CanSendStatus.Yes }.tryCompletingWhileTrue {
             repeatWhileActive {
                 sendRequest.awaitOneCall()
+                validateCurrentRecipientEmail()
                 val newTransferParams = extractNewTransferParams()
                 appSettingsManager.setLastAuthorEmail(newTransferParams.authorEmail)
                 UploadForegroundService.commitUploadSession(newTransferParams)
             }
+        }
+    }
+
+    private fun validateCurrentRecipientEmail() {
+        if (selectedTransferTypeFlow.value != TransferTypeUi.Mail) return
+        val trimmedText = recipientEmail.trim()
+        if (trimmedText.isValidEmail()) {
+            validatedRecipientsEmails = validatedRecipientsEmails + trimmedText
+            recipientEmail = ""
         }
     }
 
@@ -422,7 +435,7 @@ class PickFilesViewModel @Inject constructor(
         val contacts = queryContacts(pickedContactUri, context)
         val newEmails = contacts.values.flatMapTo(mutableSetOf()) { contact ->
             contact.emails.mapNotNull { email ->
-                email.trim().takeIf { it.isNotEmpty() && it.isEmailRfc5321Compliant() }
+                email.trim().takeIf { it.isValidEmail() }
             }
         }
 
