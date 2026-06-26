@@ -47,7 +47,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -196,7 +195,7 @@ fun PickFilesScreen(
     PickFilesScreen(
         files = { files },
         canSendStatus = { canSendStatus },
-        transferTitleState = pickFilesViewModel.transferTitleState,
+        onTransferTitleChange = { pickFilesViewModel.transferTitleState.value = it },
         emailTextFieldCallbacks = emailTextFieldCallbacks,
         transferMessageCallbacks = pickFilesViewModel.transferMessageCallbacks,
         selectedTransferType = GetSetCallbacks(
@@ -233,7 +232,7 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 private fun PickFilesScreen(
     files: () -> List<FileUi>,
     canSendStatus: () -> CanSendStatus,
-    transferTitleState: MutableState<String>,
+    onTransferTitleChange: (String) -> Unit,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     selectedTransferType: GetSetCallbacks<TransferTypeUi>,
@@ -259,28 +258,28 @@ private fun PickFilesScreen(
         },
         topButton = { modifier ->
             SendButton(
-                modifier = modifier,
                 canSendStatus = canSendStatus,
                 expectsClick = isAwaitingSend,
                 onClick = onSendButtonClick,
+                modifier = modifier,
             )
         },
         content = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                val modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
-                SendByOptions(modifier, selectedTransferType)
-                FilesToImport(modifier, files, canSendStatus, navigateToFilesDetails, pickFiles)
+                val horizontalPaddingModifier = Modifier.padding(horizontal = HORIZONTAL_PADDING)
+                SendByOptions(selectedTransferType, horizontalPaddingModifier)
+                FilesToImport(files, canSendStatus, navigateToFilesDetails, pickFiles, horizontalPaddingModifier)
                 Spacer(Modifier.height(Margin.Medium))
                 ImportTextFields(
-                    horizontalPaddingModifier = modifier,
-                    transferTitleState = transferTitleState,
+                    onTransferTitleChange = onTransferTitleChange,
                     emailTextFieldCallbacks = emailTextFieldCallbacks,
                     transferMessageCallbacks = transferMessageCallbacks,
                     shouldShowEmailAddressesFields = { shouldShowEmailAddressesFields },
                     selectContact = selectContact,
-                    snackbarHostState = snackbarHostState
+                    snackbarHostState = snackbarHostState,
+                    modifier = horizontalPaddingModifier,
                 )
-                TransferOptions(modifier, transferOptionsCallbacks)
+                TransferOptions(transferOptionsCallbacks, horizontalPaddingModifier)
             }
         },
         snackbarHostState = snackbarHostState,
@@ -289,43 +288,45 @@ private fun PickFilesScreen(
 
 @Composable
 private fun FilesToImport(
-    modifier: Modifier,
     files: () -> List<FileUi>,
     canSendStatus: () -> CanSendStatus,
     navigateToFilesDetails: () -> Unit,
     pickFiles: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    PickFilesTitle(modifier, R.string.myFilesTitle)
-    ImportedFilesCard(
-        modifier,
-        files,
-        canSendStatus,
-        pickFiles,
-        navigateToFilesDetails,
-    )
+    Column(modifier = modifier) {
+        PickFilesTitle(R.string.myFilesTitle)
+        ImportedFilesCard(
+            files = files,
+            canSendStatus = canSendStatus,
+            pickFiles = pickFiles,
+            navigateToFilesDetails = navigateToFilesDetails,
+        )
+    }
 }
 
 @Composable
 private fun ImportTextFields(
-    horizontalPaddingModifier: Modifier,
-    transferTitleState: MutableState<String>,
+    onTransferTitleChange: (String) -> Unit,
     snackbarHostState: SnackbarHostState,
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
     transferMessageCallbacks: GetSetCallbacks<String>,
     shouldShowEmailAddressesFields: () -> Boolean,
     selectContact: (Uri) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val modifier = horizontalPaddingModifier.fillMaxWidth()
-
     val textFieldSpacing = Margin.Medium
-    Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(textFieldSpacing),
+    ) {
         if (LocalUser.current.isApiV2()) {
             SwissTransferTextField(
-                modifier = modifier,
+                modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferTitlePlaceholder),
                 isRequired = false,
                 maxLineNumber = 1,
-                onValueChange = { transferTitleState.value = it },
+                onValueChange = onTransferTitleChange,
             )
         }
 
@@ -335,11 +336,11 @@ private fun ImportTextFields(
             textFieldSpacing = textFieldSpacing,
             selectContact = selectContact,
             snackbarHostState = snackbarHostState,
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         SwissTransferTextField(
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(),
             label = stringResource(R.string.transferMessagePlaceholder),
             isRequired = false,
             minLineNumber = 3,
@@ -450,13 +451,13 @@ private fun getEmailError(isError: Boolean): @Composable (() -> Unit)? {
 }
 
 @Composable
-private fun SendByOptions(modifier: Modifier, selectedTransferType: GetSetCallbacks<TransferTypeUi>) {
-    PickFilesTitle(modifier, R.string.transferTypeTitle)
+private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>, modifier: Modifier = Modifier) {
+    PickFilesTitle(R.string.transferTypeTitle, modifier)
     TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
 @Composable
-private fun TransferOptions(modifier: Modifier, transferOptionsCallbacks: TransferOptionsCallbacks) {
+private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks, modifier: Modifier = Modifier) {
 
     var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
 
@@ -464,13 +465,14 @@ private fun TransferOptions(modifier: Modifier, transferOptionsCallbacks: Transf
         showTransferOption = null
     }
 
-    PickFilesTitle(modifier, R.string.advancedSettingsTitle)
-    TransferOptionsTypes(
-        modifier = modifier,
-        transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
-        onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
-    )
-    TransferOptionsDialogs({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
+    Column(modifier = modifier) {
+        PickFilesTitle(R.string.advancedSettingsTitle)
+        TransferOptionsTypes(
+            transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
+            onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
+        )
+        TransferOptionsDialogs({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
+    }
 }
 
 @Composable
@@ -509,7 +511,7 @@ private fun TransferOptionsDialogs(
 }
 
 @Composable
-private fun PickFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: Int) {
+private fun PickFilesTitle(@StringRes titleRes: Int, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.padding(vertical = Margin.Medium),
         style = SwissTransferTheme.typography.bodySmallRegular,
@@ -519,18 +521,18 @@ private fun PickFilesTitle(modifier: Modifier = Modifier, @StringRes titleRes: I
 
 @Composable
 private fun SendButton(
-    modifier: Modifier,
     canSendStatus: () -> CanSendStatus,
     expectsClick: () -> Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LargeButton(
-        modifier = modifier,
         title = stringResource(R.string.transferSendButton),
+        onClick = onClick,
+        modifier = modifier,
         style = ButtonType.Primary,
         showIndeterminateProgress = { canSendStatus().hasIssue(CanSendStatus.Issue.Files.Processing) },
         enabled = expectsClick,
-        onClick = onClick,
     )
 }
 
@@ -615,7 +617,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
             PickFilesScreen(
                 files = { files },
                 canSendStatus = { CanSendStatus.Yes },
-                transferTitleState = remember { mutableStateOf("") },
+                onTransferTitleChange = {},
                 emailTextFieldCallbacks = emailTextFieldCallbacks,
                 transferMessageCallbacks = GetSetCallbacks(get = { "" }, set = {}),
                 selectedTransferType = GetSetCallbacks(get = { TransferTypeUi.Mail }, set = {}),

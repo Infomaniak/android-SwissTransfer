@@ -32,23 +32,23 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun SettingTitle(@StringRes titleRes: Int) {
+fun SettingTitle(@StringRes titleRes: Int, modifier: Modifier = Modifier) {
     UnpaddedTitle(
-        modifier = Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
+        modifier = modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Dimens.SettingVerticalMargin),
         titleRes = titleRes,
     )
 }
 
 @Composable
-fun OptionTitle(@StringRes titleRes: Int) {
+fun OptionTitle(@StringRes titleRes: Int, modifier: Modifier = Modifier) {
     UnpaddedTitle(
-        modifier = Modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Margin.Large),
+        modifier = modifier.padding(horizontal = Dimens.SettingHorizontalMargin, vertical = Margin.Large),
         titleRes = titleRes,
     )
 }
 
 @Composable
-private fun UnpaddedTitle(modifier: Modifier, titleRes: Int) {
+private fun UnpaddedTitle(titleRes: Int, modifier: Modifier = Modifier) {
     Text(
         text = stringResource(id = titleRes),
         style = SwissTransferTheme.typography.bodySmallRegular,

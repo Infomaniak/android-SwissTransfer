@@ -50,6 +50,7 @@ fun NewTransferNavHost(
     notificationPermissionManager: RationalePermissionManagerState,
     closeActivity: (startMainActivityIfTaskIsEmpty: Boolean) -> Unit,
     cancelUploadNotification: () -> Unit,
+    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel(),
 ) {
     SharedTransitionLayout {
         CompositionLocalProvider(LocalSharedTransitionScope provides this@SharedTransitionLayout) {
@@ -86,7 +87,6 @@ fun NewTransferNavHost(
                     inAppReviewManager.decrementAppReviewCountdown()
 
                     val args = it.toRoute<UploadSuccessDestination>()
-                    val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
                     UploadSuccessScreen(
                         transferType = args.transferType,
                         transferUuid = args.transferUuid,
@@ -94,7 +94,7 @@ fun NewTransferNavHost(
                         dismissCompleteUpload = {
                             uploadSuccessViewModel.dismissCompleteUpload()
                             closeActivity(true)
-                        }
+                        },
                     )
                 }
                 animatedComposable<NewTransferFilesDetailsDestination> {

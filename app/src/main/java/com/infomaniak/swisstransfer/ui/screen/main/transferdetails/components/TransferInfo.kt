@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ import com.infomaniak.swisstransfer.ui.utils.getWholeDate
 import com.infomaniak.swisstransfer.ui.utils.isV1
 
 @Composable
-fun TransferInfo(getTransfer: () -> TransferUi) {
+fun TransferInfo(getTransfer: () -> TransferUi, modifier: Modifier = Modifier) {
 
     val filesCount by remember { derivedStateOf { getTransfer().files.count() } }
     val downloadedCount by remember { derivedStateOf { getTransfer().downloadLimit - getTransfer().downloadLeft } }
@@ -64,34 +64,36 @@ fun TransferInfo(getTransfer: () -> TransferUi) {
     val sizeUploaded by remember { derivedStateOf { getTransfer().sizeUploaded } }
     val direction by remember { derivedStateOf { getTransfer().direction } }
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = AppIcons.FileZip,
-            tint = SwissTransferTheme.materialColors.primary,
-            contentDescription = null,
-        )
-        Spacer(Modifier.width(Margin.Mini))
-        TextDotText(
-            firstText = { Text(pluralStringResource(R.plurals.filesCount, filesCount, filesCount)) },
-            secondText = { Text(HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded)) },
-            color = SwissTransferTheme.colors.primaryTextColor,
-        )
-    }
+    Column(modifier = modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = AppIcons.FileZip,
+                tint = SwissTransferTheme.materialColors.primary,
+                contentDescription = null,
+            )
+            Spacer(Modifier.width(Margin.Mini))
+            TextDotText(
+                firstText = { Text(pluralStringResource(R.plurals.filesCount, filesCount, filesCount)) },
+                secondText = { Text(HumanReadableSizeUtils.getHumanReadableSize(LocalContext.current, sizeUploaded)) },
+                color = SwissTransferTheme.colors.primaryTextColor,
+            )
+        }
 
-    HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
-
-    IconText(
-        icon = AppIcons.Clock,
-        text = getTransfer().getWholeDate(),
-    )
-
-    if (direction == TransferDirection.SENT && getTransfer().isV1()) {
         HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
 
         IconText(
-            icon = AppIcons.ArrowDownFile,
-            text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
+            icon = AppIcons.Clock,
+            text = getTransfer().getWholeDate(),
         )
+
+        if (direction == TransferDirection.SENT && getTransfer().isV1()) {
+            HorizontalDivider(modifier = Modifier.padding(vertical = Margin.Medium))
+
+            IconText(
+                icon = AppIcons.ArrowDownFile,
+                text = stringResource(R.string.downloadedTransferLabel, downloadedCount, downloadLimit),
+            )
+        }
     }
 }
 
@@ -119,7 +121,7 @@ private fun Preview(@PreviewParameter(TransferUiListPreviewParameter::class) tra
     SwissTransferTheme {
         Surface {
             Column {
-                TransferInfo { transfers.first() }
+                TransferInfo(getTransfer = { transfers.first() })
             }
         }
     }

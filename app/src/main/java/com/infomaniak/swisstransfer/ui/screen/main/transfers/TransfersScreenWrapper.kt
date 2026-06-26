@@ -28,13 +28,12 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -71,16 +70,16 @@ import kotlinx.parcelize.Parcelize
 @Composable
 fun TransfersScreenWrapper(
     direction: TransferDirection,
-    hideBottomBar: MutableState<Boolean>,
+    onHideBottomBarChange: (Boolean) -> Unit,
     transferIdType: TransferIdType? = null,
+    transfersViewModel: TransfersViewModel = hiltViewModel(),
+    deeplinkViewModel: DeeplinkViewModel = hiltViewModel(),
 ) {
     var hasTransfer: Boolean by rememberSaveable { mutableStateOf(false) }
 
     TwoPaneScaffold(
         listPane = {
-            val transfersViewModel = hiltViewModel<TransfersViewModel>()
-            val deeplinkViewModel = hiltViewModel<DeeplinkViewModel>()
-            hideBottomBar.value = currentDestination?.contentKey != null
+            onHideBottomBarChange(currentDestination?.contentKey != null)
 
             val isDeepLinkConsumed by deeplinkViewModel.isDeeplinkConsumed.collectAsStateWithLifecycle()
 
@@ -105,6 +104,7 @@ fun TransfersScreenWrapper(
         },
     )
 }
+
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -275,7 +275,7 @@ private fun ExistingTransferFilesDetails(
 }
 
 @Composable
-fun NoSelectionEmptyState(hasTransfers: Boolean) {
+fun NoSelectionEmptyState(hasTransfers: Boolean, modifier: Modifier = Modifier) {
     val (titleRes, descriptionRes) = if (hasTransfers) {
         R.string.noTransferSelectedTitle to R.string.noTransferSelectedDescription
     } else {
@@ -283,6 +283,7 @@ fun NoSelectionEmptyState(hasTransfers: Boolean) {
     }
 
     SwissTransferScaffold(
+        modifier = modifier,
         topBar = { SwissTransferTopAppBar(title = "") }
     ) {
         EmptyState(
@@ -320,7 +321,7 @@ private fun Preview() {
             TransfersScreenWrapper(
                 TransferDirection.RECEIVED,
                 transferIdType = null,
-                hideBottomBar = remember { mutableStateOf(false) },
+                onHideBottomBarChange = {},
             )
         }
     }

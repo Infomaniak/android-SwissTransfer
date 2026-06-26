@@ -61,7 +61,7 @@ import com.infomaniak.swisstransfer.ui.utils.shareText
 import kotlinx.coroutines.launch
 
 @Composable
-fun ColumnScope.ShareAndCopyButtons(modifier: Modifier = Modifier, transferLink: String, snackbarHostState: SnackbarHostState) {
+fun ColumnScope.ShareAndCopyButtons(transferLink: String, snackbarHostState: SnackbarHostState, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 

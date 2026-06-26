@@ -62,6 +62,7 @@ fun ExistingTransferFilesDetailsScreen(
     withSpaceLeft: Boolean,
     navigateBack: () -> Unit,
     transferDirection: TransferDirection,
+    modifier: Modifier = Modifier,
     filesDetailsViewModel: FilesDetailsViewModel = hiltViewModel<FilesDetailsViewModel>(),
     close: () -> Unit
 ) {
@@ -80,6 +81,7 @@ fun ExistingTransferFilesDetailsScreen(
     val onToggleUid = createOnToggleUid({ isMultiselectOn = false }, selectedUids)
 
     SwissTransferScaffold(
+        modifier = modifier,
         topBar = {
             ExistingTransferFilesDetailsTopBar(
                 isMultiselectOn = isMultiselectOn,

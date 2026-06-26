@@ -56,26 +56,27 @@ private val ITEM_MIN_HEIGHT = 56.dp
 fun SettingItem(
     @StringRes titleRes: Int,
     isSelected: () -> Boolean,
+    modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     description: String? = null,
     endIcon: EndIconType? = null,
     shouldTintIcon: Boolean = true,
     onClick: (() -> Unit)?,
 ) {
-    val modifier = Modifier
+    val itemModifier = modifier
         .fillMaxWidth()
         .heightIn(min = ITEM_MIN_HEIGHT)
 
     onClick?.let {
         SharpRippleButton(
-            modifier = modifier,
+            modifier = itemModifier,
             isSelected = isSelected,
             onClick = it,
         ) {
             SettingItemContent(icon, titleRes, description, endIcon, shouldTintIcon)
         }
     } ?: run {
-        Box(modifier = modifier, contentAlignment = Alignment.CenterStart) {
+        Box(modifier = itemModifier, contentAlignment = Alignment.CenterStart) {
             SettingItemContent(icon, titleRes, description, endIcon, shouldTintIcon)
         }
     }
@@ -130,8 +131,8 @@ private fun Preview() {
         Surface {
             Column(modifier = Modifier.selectableGroup()) {
                 SettingTitle(R.string.appName)
-                SettingItem(R.string.appName, isSelected = { true }, AppIcons.Add, "Clair", EndIconType.CHEVRON) {}
-                SettingItem(R.string.appName, isSelected = { false }, AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
+                SettingItem(R.string.appName, isSelected = { true }, icon = AppIcons.Add, description = "Clair", endIcon = EndIconType.CHEVRON) {}
+                SettingItem(R.string.appName, isSelected = { false }, icon = AppIcons.Folder, endIcon = EndIconType.OPEN_OUTSIDE) {}
                 SettingItem(R.string.appName, isSelected = { false }, description = "1.1.2") {}
                 SettingItem(R.string.appName, isSelected = { false }) {}
                 SettingDivider()

@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -39,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import java.util.Date
 
 @Composable
-fun ExpiredTransferContent(transferErrorType: Expired) {
+fun ExpiredTransferContent(transferErrorType: Expired, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
         MatomoSwissTransfer.trackScreen(
             when (transferErrorType) {
@@ -50,6 +51,7 @@ fun ExpiredTransferContent(transferErrorType: Expired) {
     }
 
     EmptyState(
+        modifier = modifier,
         content = { Image(imageVector = AppIllus.MascotDead.image(), contentDescription = null) },
         title = stringResource(R.string.transferExpiredTitle),
         description = when (transferErrorType) {

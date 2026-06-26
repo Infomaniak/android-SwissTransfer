@@ -39,8 +39,8 @@ import com.infomaniak.swisstransfer.ui.images.illus.ArrowRightCurved
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun ReceivedEmptyFab(isMessageVisible: () -> Boolean) {
-    ConstraintLayout {
+fun ReceivedEmptyFab(isMessageVisible: () -> Boolean, modifier: Modifier = Modifier) {
+    ConstraintLayout(modifier = modifier) {
         val (text, icon, fab) = createRefs()
 
         if (isMessageVisible()) {

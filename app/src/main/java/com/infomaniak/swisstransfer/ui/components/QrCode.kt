@@ -34,7 +34,7 @@ import io.github.alexzhirkevich.qrose.options.solid
 import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @Composable
-fun QrCode(transferUrl: String) {
+fun QrCode(transferUrl: String, modifier: Modifier = Modifier) {
 
     val centralIcon = rememberVectorPainter(AppIcons.QrInfomaniak.image())
     val darkPixelsColor = QrBrush.solid(SwissTransferTheme.colors.qrCodeDarkPixels)
@@ -52,7 +52,7 @@ fun QrCode(transferUrl: String) {
     }
 
     Image(
-        modifier = Modifier.size(160.dp),
+        modifier = modifier.size(160.dp),
         painter = painter,
         contentDescription = null,
     )

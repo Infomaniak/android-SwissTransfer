@@ -40,7 +40,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun TransferTypeButton(transferType: TransferTypeUi, isActive: () -> Boolean, onClick: () -> Unit) {
+fun TransferTypeButton(transferType: TransferTypeUi, isActive: () -> Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
 
     val (borderColor, contentColor) = if (isActive()) {
         SwissTransferTheme.materialColors.primary to SwissTransferTheme.materialColors.primary
@@ -49,7 +49,7 @@ fun TransferTypeButton(transferType: TransferTypeUi, isActive: () -> Boolean, on
     }
 
     Button(
-        modifier = Modifier
+        modifier = modifier
             .height(Dimens.LargeButtonHeight)
             .border(width = Dimens.BorderWidth, color = borderColor, shape = CustomShapes.EXTRA_SMALL),
         shape = CustomShapes.SMALL,
