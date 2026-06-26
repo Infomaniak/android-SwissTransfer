@@ -246,7 +246,9 @@ class PickFilesViewModel @Inject constructor(
                 if (transferType == TransferTypeUi.Mail) {
                     if (transferAuthorEmail.isEmpty()) add(Issue.Email.AuthorUnspecified)
                     if (isAuthorEmailInvalid) add(Issue.Email.AuthorInvalid)
-                    if (validatedRecipientsEmails.isEmpty()) add(Issue.Email.NoValidatedRecipients)
+                    val hasValidRecipient =
+                        validatedRecipientsEmails.isNotEmpty() || (recipientEmail.isNotEmpty() && !isRecipientEmailInvalid)
+                    if (!hasValidRecipient) add(Issue.Email.NoValidatedRecipients)
                 }
             }
             if (issues.isEmpty()) CanSendStatus.Yes else CanSendStatus.No(issues)
@@ -270,10 +272,20 @@ class PickFilesViewModel @Inject constructor(
         canSendStatusFlow.map { it == CanSendStatus.Yes }.tryCompletingWhileTrue {
             repeatWhileActive {
                 sendRequest.awaitOneCall()
+                validateCurrentRecipientEmail()
                 val newTransferParams = extractNewTransferParams()
                 appSettingsManager.setLastAuthorEmail(newTransferParams.authorEmail)
                 UploadForegroundService.commitUploadSession(newTransferParams)
             }
+        }
+    }
+
+    private fun validateCurrentRecipientEmail() {
+        if (selectedTransferTypeFlow.value != TransferTypeUi.Mail) return
+        val trimmedText = recipientEmail.trim()
+        if (trimmedText.isNotEmpty() && trimmedText.isEmailRfc5321Compliant()) {
+            validatedRecipientsEmails = validatedRecipientsEmails + trimmedText
+            recipientEmail = ""
         }
     }
 
@@ -310,7 +322,15 @@ class PickFilesViewModel @Inject constructor(
         message = transferMessage,
         downloadCountLimit = selectedDownloadLimitOption.value.apiValue,
         languageCode = selectedLanguageOption.value.apiValue,
-        recipientsEmails = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
+        recipientsEmails = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) {
+            buildSet {
+                addAll(validatedRecipientsEmails)
+                val currentRecipientEmail = recipientEmail.trim()
+                if (currentRecipientEmail.isNotEmpty() && currentRecipientEmail.isEmailRfc5321Compliant()) {
+                    add(currentRecipientEmail)
+                }
+            }
+        } else emptySet(),
         type = selectedTransferTypeFlow.value
     )
 
