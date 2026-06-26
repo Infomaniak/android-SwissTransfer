@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -32,8 +31,7 @@ import com.infomaniak.core.filetypes.FileType
 import com.infomaniak.swisstransfer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
-import splitties.toast.UnreliableToastApi
-import splitties.toast.toast
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -102,16 +100,28 @@ fun Context.shareText(text: String) {
     safeStartActivity(Intent.createChooser(intent, null))
 }
 
+private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
+
 suspend fun Context.openFile(uri: Uri) {
-    val intent = Intent(Intent.ACTION_VIEW).also {
-        val type = Dispatchers.IO { contentResolver.getType(uri) } ?: uri.lastPathSegment?.let { name ->
-            FileType.guessMimeTypeFromFileName(name)
+    val type = Dispatchers.IO { contentResolver.getType(uri) } ?: uri.lastPathSegment?.let { name ->
+        FileType.guessMimeTypeFromFileName(name)
+    }
+
+    if (type == APK_MIME_TYPE) {
+        withContext(Dispatchers.Main) {
+            showToast(R.string.cantOpenFile)
         }
+        return
+    }
+
+    val intent = Intent(Intent.ACTION_VIEW).also {
         it.setDataAndType(uri, type)
         it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    safeStartActivity(intent)
+    withContext(Dispatchers.Main) {
+        safeStartActivity(intent)
+    }
 }
 
 fun Context.safeStartActivity(intent: Intent) {

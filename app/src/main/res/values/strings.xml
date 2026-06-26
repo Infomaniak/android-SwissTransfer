@@ -39,6 +39,7 @@
     <string name="buttonShare">Share</string>
     <string name="buttonStart">Start</string>
     <string name="cantImportFileX">Can’t import the file %s</string>
+    <string name="cantOpenFile">This file can’t be opened from the app.</string>
     <string name="checkingFiles">Checking files…</string>
     <string name="confirmLogoutDescription">Are you sure you want to log out from %s?</string>
     <string name="contentDescriptionButtonBack">Back</string>
