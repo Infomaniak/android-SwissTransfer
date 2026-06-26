@@ -22,16 +22,19 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -134,4 +137,13 @@ fun Context.safeStartActivity(intent: Intent) {
 
 fun Context.showToast(title: Int, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this, title, duration).show()
+}
+
+fun Context.wrapWithLocaleFallback(tag: String): Context {
+    val baseConfig = resources.configuration
+    if (!baseConfig.locales.isEmpty) return this
+    val defaultLocale = Locale.getDefault()
+    SentryLog.i(tag, "Configuration locales are empty, falling back to $defaultLocale")
+    val config = Configuration(baseConfig).apply { setLocale(defaultLocale) }
+    return createConfigurationContext(config)
 }

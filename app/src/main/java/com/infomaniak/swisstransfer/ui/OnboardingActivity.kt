@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build.VERSION.SDK_INT
@@ -44,10 +45,10 @@ import com.infomaniak.core.common.observe
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
 import com.infomaniak.core.crossapplogin.back.CrossAppLoginFacade
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.login.InfomaniakLogin
 import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
-import com.infomaniak.core.login.InfomaniakLogin
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackAccountEvent
 import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
@@ -56,6 +57,7 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.AccountPreferences
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
+import com.infomaniak.swisstransfer.ui.utils.wrapWithLocaleFallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -75,6 +77,10 @@ class OnboardingActivity : ComponentActivity() {
 
     @Inject
     lateinit var infomaniakLogin: InfomaniakLogin
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.wrapWithLocaleFallback(javaClass.simpleName))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
