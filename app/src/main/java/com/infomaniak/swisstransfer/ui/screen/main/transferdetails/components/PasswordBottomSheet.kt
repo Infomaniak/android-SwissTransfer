@@ -43,7 +43,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String?, closeBottomSheet: () -> Unit) {
+fun PasswordBottomSheet(
+    isVisible: () -> Boolean,
+    transferPassword: () -> String?,
+    closeBottomSheet: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
 
     val password = transferPassword()
 
@@ -55,6 +60,7 @@ fun PasswordBottomSheet(isVisible: () -> Boolean, transferPassword: () -> String
 
     SwissTransferBottomSheet(
         onDismissRequest = closeBottomSheet,
+        modifier = modifier,
         topButton = {
             LargeButton(
                 modifier = it,

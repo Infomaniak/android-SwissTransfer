@@ -21,6 +21,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.preview.PreviewSmallWindow
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -32,10 +33,11 @@ import com.infomaniak.swisstransfer.ui.images.illus.ghostScanningSquare.GhostSca
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun VirusCheckContent() {
+fun VirusCheckContent(modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.VirusCheck) }
 
     EmptyState(
+        modifier = modifier,
         content = { Image(imageVector = AppIllus.GhostScanningSquare.image(), contentDescription = null) },
         title = stringResource(R.string.transferVirusCheckTitle),
         description = stringResource(R.string.transferVirusCheckDescription),

@@ -43,10 +43,12 @@ fun OptionScaffold(
     matomoValue: MatomoScreen,
     setSelectedSettingOptionPosition: (Int) -> Unit,
     navigateBack: (() -> Unit),
+    modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(matomoValue) }
 
     SwissTransferScaffold(
+        modifier = modifier,
         topBar = {
             SwissTransferTopAppBar(
                 titleRes = topAppBarTitleRes,

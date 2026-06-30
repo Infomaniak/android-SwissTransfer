@@ -64,11 +64,11 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
  */
 @Composable
 fun OtpTextField(
-    modifier: Modifier = Modifier,
     otpText: String,
     otpLength: Int,
     horizontalArrangement: Arrangement.Horizontal,
     onOtpTextChange: (String, Boolean) -> Unit,
+    modifier: Modifier = Modifier,
     isCharacterValid: ((Char) -> Boolean)? = null,
     otpTextFieldStyle: OtpTextFieldStyle = OtpTextFieldStyle.default(),
     isError: () -> Boolean = { false },

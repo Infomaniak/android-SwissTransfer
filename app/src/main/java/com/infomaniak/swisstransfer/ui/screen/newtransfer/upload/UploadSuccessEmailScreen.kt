@@ -67,8 +67,9 @@ fun UploadSuccessEmailScreen(
 }
 
 @Composable
-fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, exitNewTransfer: () -> Unit) {
+fun UploadSuccessEmailScreen(recipientsEmails: () -> Set<String>, exitNewTransfer: () -> Unit, modifier: Modifier = Modifier) {
     BottomStickyButtonScaffold(
+        modifier = modifier,
         topBar = { BrandTopAppBar() },
         bottomButton = {
             LargeButton(

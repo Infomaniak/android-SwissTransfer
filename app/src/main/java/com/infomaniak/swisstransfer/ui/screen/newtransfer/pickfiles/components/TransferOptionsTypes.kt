@@ -44,9 +44,9 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun TransferOptionsTypes(
-    modifier: Modifier = Modifier,
     transferOptionsStates: () -> List<TransferOptionState>,
     onClick: (TransferOptionType) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     // TODO: Animate the addition or removal when the list of transferOptionsStates changes
     SwissTransferCard(modifier = modifier) {

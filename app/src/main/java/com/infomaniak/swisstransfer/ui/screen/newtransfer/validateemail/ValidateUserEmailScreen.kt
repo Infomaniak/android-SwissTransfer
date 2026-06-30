@@ -88,6 +88,7 @@ fun ValidateUserEmailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val codeResentFeedback = stringResource(R.string.validateMailCodeResentFeedback, emailToValidate)
 
     var otpCode by rememberSaveable { mutableStateOf("") }
     var isFirstResumed by rememberSaveable { mutableStateOf(true) }
@@ -132,9 +133,7 @@ fun ValidateUserEmailScreen(
         navigateBack = editTransfer,
         onResendEmailCode = {
             scope.launch {
-                snackbarHostState.showSnackbar(
-                    context.getString(R.string.validateMailCodeResentFeedback, emailToValidate)
-                )
+                snackbarHostState.showSnackbar(codeResentFeedback)
             }
             validateUserEmailViewModel.resendEmailReq(emailToValidate)
         },
@@ -147,16 +146,17 @@ fun ValidateUserEmailScreen(
 
 @Composable
 fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHostState: SnackbarHostState) {
-    val context = LocalContext.current
+    val unknownErrorMessage = stringResource(R.string.validateMailUnknownError)
+    val networkUnavailableMessage = stringResource(R.string.networkUnavailable)
 
-    LaunchedEffect(uiState(), context) {
+    LaunchedEffect(uiState(), unknownErrorMessage, networkUnavailableMessage) {
         when (uiState()) {
             ValidateEmailUiState.UnknownError -> {
                 SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
-                snackbarHostState.showSnackbar(context.getString(R.string.validateMailUnknownError))
+                snackbarHostState.showSnackbar(unknownErrorMessage)
             }
             ValidateEmailUiState.NoNetwork -> {
-                snackbarHostState.showSnackbar(context.getString(R.string.networkUnavailable))
+                snackbarHostState.showSnackbar(networkUnavailableMessage)
             }
             ValidateEmailUiState.Default,
             ValidateEmailUiState.Loading,
@@ -197,7 +197,7 @@ private fun ValidateUserEmailScreen(
                 enabled = { !isLoading() })
         },
         bottomButton = { modifier ->
-            ResendCodeCountDownButton(modifier, onResendEmailCode, enabled = { !isLoading() })
+            ResendCodeCountDownButton(onResendEmailCode, enabled = { !isLoading() }, modifier = modifier)
         },
     ) {
         val layoutStyle = LayoutStyle.getCurrentLayoutStyle()

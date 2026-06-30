@@ -55,8 +55,8 @@ fun ReceivedScreen(
     navigateToDetails: (transferIdType: TransferIdType) -> Unit,
     getSelectedTransferIdType: () -> TransferIdType?,
     hasTransfer: (Boolean) -> Unit,
-    onDeleteTransfer: () -> Unit,
     transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
+    onDeleteTransfer: () -> Unit,
 ) {
 
     val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()

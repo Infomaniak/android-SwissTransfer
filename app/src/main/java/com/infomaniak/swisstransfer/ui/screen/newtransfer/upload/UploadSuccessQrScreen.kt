@@ -63,7 +63,7 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
-fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit) {
+fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exitNewTransfer: () -> Unit, modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     val activity = LocalContext.current.findActivity()
@@ -81,6 +81,7 @@ fun UploadSuccessQrScreen(transferType: TransferTypeUi, transferUrl: String, exi
     }
 
     BottomStickyButtonScaffold(
+        modifier = modifier,
         snackbarHostState = snackbarHostState,
         topBar = { BrandTopAppBar() },
         bottomButton = {

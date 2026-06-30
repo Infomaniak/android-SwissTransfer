@@ -55,6 +55,7 @@ fun UploadScreen(
     navigateBackToPickFiles: () -> Unit,
     exitNewTransfer: () -> Unit,
     uploadViewModel: UploadViewModel = hiltViewModel<UploadViewModel>(),
+    uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel(),
 ) {
     val uploadState: UploadState? by uploadViewModel.stateFlow.collectAsStateWithLifecycle()
 
@@ -101,13 +102,12 @@ fun UploadScreen(
         )
         is UploadState.Complete -> {
             showCancelBottomSheet = false // Ensure we dismiss any pending cancel attempt.
-            val uploadSuccessViewModel: UploadSuccessViewModel = hiltViewModel()
             inAppReviewManager.decrementAppReviewCountdown()
             UploadSuccessScreen(
                 transferType = state.transferType,
                 transferUuid = state.transferUuid,
                 transferUrl = state.transferUrl,
-                dismissCompleteUpload = { uploadSuccessViewModel.dismissCompleteUpload() }
+                dismissCompleteUpload = { uploadSuccessViewModel.dismissCompleteUpload() },
             )
         }
     }

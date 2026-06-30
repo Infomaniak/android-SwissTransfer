@@ -48,12 +48,12 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun BoxScope.CrossCircleButton(onClick: (() -> Unit)?, size: Dp = 48.dp) {
+fun BoxScope.CrossCircleButton(onClick: (() -> Unit)?, modifier: Modifier = Modifier, size: Dp = 48.dp) {
     val buttonPadding = ((size - 24.dp) / 2f).coerceAtLeast(0.dp)
 
     CompositionLocalProvider(LocalRippleConfiguration provides RippleConfiguration(color = Color.White)) {
         Button(
-            modifier = Modifier
+            modifier = modifier
                 .size(size)
                 .padding(buttonPadding)
                 .align(Alignment.TopEnd),

@@ -163,10 +163,10 @@ class TransferDownloadComposeUi(
     }
 
     @Composable
-    fun TopAppBarButton() {
+    fun TopAppBarButton(modifier: Modifier = Modifier) {
         if (removalRequest.isAwaitingCall) {
             DownloadStatus { btnData, action, progressIndicator ->
-                Box(contentAlignment = Alignment.Center) {
+                Box(modifier = modifier, contentAlignment = Alignment.Center) {
                     progressIndicator()
                     TopAppBarButton(
                         icon = btnData.icon,
@@ -180,6 +180,7 @@ class TransferDownloadComposeUi(
             val writeExternalStoragePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
 
             TopAppBarButtons.Download(
+                modifier = modifier,
                 enabled = downloadRequest.isAwaitingCall,
                 onClick = writeExternalStoragePermissionManager.dropIfDenied { downloadRequest() },
             )

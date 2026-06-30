@@ -66,12 +66,14 @@ fun UploadOngoingScreen(
     progressState: State<Ongoing>,
     adScreenType: UploadProgressAdType,
     onCancelClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.UploadProgress) }
 
     val progress by progressState
     BottomStickyButtonScaffold(
+        modifier = modifier,
         topBar = { BrandTopAppBar() },
         bottomButton = {
             LargeButton(stringResource(RCore.string.buttonCancel), modifier = it, onClick = onCancelClick)

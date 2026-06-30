@@ -30,9 +30,9 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
 fun SharpRippleButton(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isSelected: () -> Boolean = { false },
-    onClick: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     content: @Composable RowScope.() -> Unit,
 ) {
