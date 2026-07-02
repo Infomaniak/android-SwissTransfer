@@ -17,15 +17,18 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.upload
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import com.infomaniak.core.appintegrity.IntegrityDialogResponse
 import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.basics.rememberCallableState
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.theme.ThemedImage
@@ -34,6 +37,7 @@ import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
@@ -42,6 +46,7 @@ import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearch
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.upload.UploadState
 import com.infomaniak.core.appintegrity.R as RAppIntegrity
+import com.infomaniak.core.common.R as RCore
 
 @Composable
 fun UploadFailureScreen(
@@ -51,11 +56,12 @@ fun UploadFailureScreen(
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.UploadError) }
 
-    val failure: UploadState.Failure by failureState
+    val failure: UploadState.Failure = failureState.value
     when (failure) {
-        UploadState.Failure.AppIntegrityIssue -> UploadFailureScreen(
+        is UploadState.Failure.AppIntegrityIssue -> UploadFailureScreen(
             exitNewTransfer = cancel,
-            desc = stringResource(RAppIntegrity.string.errorAppIntegrity)
+            desc = stringResource(RAppIntegrity.string.errorAppIntegrity),
+            showRemediationDialog = failure.showRemediationDialog
         )
         UploadState.Failure.SizeExceeded -> UploadFailureScreen(
             exitNewTransfer = cancel,
@@ -77,11 +83,31 @@ private fun UploadFailureScreen(
     desc: String,
     illustration: ThemedImage = AppIllus.GhostScrollCrossPointing,
     title: String = stringResource(R.string.uploadErrorTitle) + if (BuildConfig.DEBUG) " Feur" else "",
+    showRemediationDialog: (suspend (Activity) -> IntegrityDialogResponse)? = null,
 ) {
     BackHandler { exitNewTransfer() }
 
+    val activity = LocalActivity.current
+    val tryRemediationOnce = rememberCallableState<Unit>()
+
+    LaunchedEffect(Unit) {
+        if (showRemediationDialog == null || activity == null) return@LaunchedEffect
+        tryRemediationOnce.awaitOneCall()
+        showRemediationDialog(activity)
+    }
+
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
+        topButton = if (tryRemediationOnce.isAwaitingCall) {
+            {
+                LargeButton(
+                    modifier = it,
+                    style = ButtonType.Secondary,
+                    title = stringResource(RCore.string.buttonRetry),
+                    onClick = tryRemediationOnce,
+                )
+            }
+        } else null,
         bottomButton = {
             LargeButton(
                 modifier = it,

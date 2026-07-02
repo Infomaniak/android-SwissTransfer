@@ -17,7 +17,9 @@
  */
 package com.infomaniak.swisstransfer.upload
 
+import android.app.Activity
 import androidx.compose.runtime.LongState
+import com.infomaniak.core.appintegrity.IntegrityDialogResponse
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi
 
 sealed interface UploadState {
@@ -67,7 +69,7 @@ sealed interface UploadState {
 
     sealed interface Failure : UploadState {
         data object RestrictedLocation : Failure
-        data object AppIntegrityIssue : Failure
+        data class AppIntegrityIssue(val showRemediationDialog: (suspend (Activity) -> IntegrityDialogResponse)?) : Failure
         data object SizeExceeded : Failure
     }
 }

@@ -19,7 +19,7 @@ package com.infomaniak.swisstransfer.upload
 
 import com.infomaniak.core.appintegrity.AppIntegrityManager
 import com.infomaniak.core.appintegrity.AppIntegrityManager.Companion.APP_INTEGRITY_MANAGER_TAG
-import com.infomaniak.core.appintegrity.exceptions.IntegrityException
+import com.infomaniak.core.appintegrity.exceptions.AppIntegrityException
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
 import com.infomaniak.core.common.Xor
 import com.infomaniak.core.common.cancellable
@@ -48,7 +48,7 @@ class UploadSessionStarterV1(
         SentryLog.w(TAG, "Throwable while trying to start the upload session", t)
         when (t) {
             is NetworkException, is KmpNetworkException -> Result.NetworkIssue
-            is IntegrityException -> Result.AppIntegrityIssue
+            is AppIntegrityException -> Result.AppIntegrityIssue(t.showRemediationDialog)
             is ContainerErrorsException.EmailValidationRequired -> Result.EmailValidationRequired
             is ContainerErrorsException.DomainBlockedException -> Result.RestrictedLocation
             else -> {
@@ -59,15 +59,12 @@ class UploadSessionStarterV1(
     }
 
     //region App Integrity
-    @Throws(IntegrityException::class)
+    @Throws(AppIntegrityException::class)
     private suspend inline fun fetchNewAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
 
-        val appIntegrityToken = appIntegrityManager.requestClassicIntegrityVerdictToken(challenge)
-        SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "request for app integrity token successful")
-
-        val attestationToken = appIntegrityManager.getApiIntegrityVerdict(
-            integrityToken = appIntegrityToken,
+        val attestationToken = appIntegrityManager.requestAttestationToken(
+            challenge = challenge,
             packageName = BuildConfig.APPLICATION_ID,
             targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
         )

@@ -293,7 +293,7 @@ class UploadSessionManager @Inject constructor(
         val newState: UploadState = when (val result = uploadSessionStarter.tryStarting(startRequest)) {
             is UploadSessionStarter.Result.Success -> return result
             UploadSessionStarter.Result.EmailValidationRequired -> Retry.EmailValidationRequired(info)
-            UploadSessionStarter.Result.AppIntegrityIssue -> UploadState.Failure.AppIntegrityIssue
+            is UploadSessionStarter.Result.AppIntegrityIssue -> UploadState.Failure.AppIntegrityIssue(result.showRemediationDialog)
             UploadSessionStarter.Result.NetworkIssue -> Retry.NetworkIssue(info)
             is UploadSessionStarter.Result.OtherIssue -> Retry.OtherIssue(info, result.t)
             UploadSessionStarter.Result.RestrictedLocation -> UploadState.Failure.RestrictedLocation
