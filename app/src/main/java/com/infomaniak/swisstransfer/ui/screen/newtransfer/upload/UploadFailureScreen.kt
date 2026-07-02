@@ -25,10 +25,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.appintegrity.IntegrityDialogResponse
 import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.core.ui.compose.basics.rememberCallableState
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.theme.ThemedImage
@@ -45,6 +46,8 @@ import com.infomaniak.swisstransfer.ui.images.illus.appIntegrity.GhostScrollCros
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.upload.UploadState
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
 import com.infomaniak.core.appintegrity.R as RAppIntegrity
 import com.infomaniak.core.common.R as RCore
 
@@ -88,23 +91,25 @@ private fun UploadFailureScreen(
     BackHandler { exitNewTransfer() }
 
     val activity = LocalActivity.current
-    val tryRemediationOnce = rememberCallableState<Unit>()
+    val remediationRequest: CompletableJob = Job()
 
-    LaunchedEffect(Unit) {
-        if (showRemediationDialog == null || activity == null) return@LaunchedEffect
-        tryRemediationOnce.awaitOneCall()
+    val canShowRemediationDialog by produceState(initialValue = false) {
+        if (showRemediationDialog == null || activity == null) return@produceState
+        value = true
+        remediationRequest.join()
+        value = false
         showRemediationDialog(activity)
     }
 
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
-        topButton = if (tryRemediationOnce.isAwaitingCall) {
+        topButton = if (canShowRemediationDialog) {
             {
                 LargeButton(
                     modifier = it,
                     style = ButtonType.Secondary,
                     title = stringResource(RCore.string.buttonRetry),
-                    onClick = tryRemediationOnce,
+                    onClick = { remediationRequest.complete() },
                 )
             }
         } else null,
