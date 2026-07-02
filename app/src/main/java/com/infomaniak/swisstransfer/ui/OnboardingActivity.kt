@@ -44,10 +44,10 @@ import com.infomaniak.core.common.observe
 import com.infomaniak.core.crossapplogin.back.BaseCrossAppLoginViewModel
 import com.infomaniak.core.crossapplogin.back.CrossAppLoginFacade
 import com.infomaniak.core.crossapplogin.back.ExternalAccount
+import com.infomaniak.core.login.InfomaniakLogin
 import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.LockScreenOrientation
-import com.infomaniak.core.login.InfomaniakLogin
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackAccountEvent
 import com.infomaniak.swisstransfer.ui.screen.onboarding.CrossAppLoginViewModel
@@ -97,15 +97,16 @@ class OnboardingActivity : ComponentActivity() {
                 val loginFlowController = LoginUtils.rememberLoginFlowController(
                     infomaniakLogin = infomaniakLogin,
                     userExistenceChecker = accountUtils,
-                ) { userLoginResult ->
-                    when (userLoginResult) {
-                        is UserLoginResult.Success -> loginUsersIntoTheApp(listOf(userLoginResult.user))
-                        is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
-                        null -> Unit
-                    }
+                    { userLoginResult ->
+                        when (userLoginResult) {
+                            is UserLoginResult.Success -> loginUsersIntoTheApp(listOf(userLoginResult.user))
+                            is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
+                            null -> Unit
+                        }
 
-                    if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
-                }
+                        if (userLoginResult !is UserLoginResult.Success) stopLoadingLoginButtons()
+                    },
+                )
 
                 Surface {
                     OnboardingScreen(

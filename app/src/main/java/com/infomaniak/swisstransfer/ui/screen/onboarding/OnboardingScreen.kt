@@ -137,7 +137,7 @@ private fun getNoCrossAppLoginAccountContent(
     onCreateAccount: () -> Unit,
     areLoginButtonsLoading: () -> Boolean,
     connectAsGuest: () -> Unit
-): @Composable ((Modifier, CrossLoginCustomization) -> Unit) = if (shouldDisplayRequiredLogin) {
+): @Composable ((Modifier, Modifier, CrossLoginCustomization) -> Unit) = if (shouldDisplayRequiredLogin) {
     NoCrossAppLoginAccountsContent.accountRequired(
         onLogin = { onLoginRequest(emptyList()) },
         onCreateAccount = onCreateAccount,
