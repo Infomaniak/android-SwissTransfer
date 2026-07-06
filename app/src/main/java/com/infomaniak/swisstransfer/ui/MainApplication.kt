@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import com.infomaniak.core.crossapplogin.back.internal.deviceinfo.DeviceInfoUpda
 import com.infomaniak.core.network.ApiEnvironment
 import com.infomaniak.core.network.NetworkConfiguration
 import com.infomaniak.core.sentry.SentryConfig.configureSentry
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -38,6 +39,7 @@ import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferences.IsSentryA
 import com.infomaniak.swisstransfer.ui.utils.DataManagementPreferencesDefaults
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.ui.utils.dataManagementDataStore
+import com.infomaniak.swisstransfer.upload.UploadState
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -155,6 +157,8 @@ class MainApplication : Application(), Configuration.Provider {
             isSentryTrackingEnabled = { isSentryEnabled.value },
             isFilteredException = { exception -> exception is KmpNetworkException },
         )
+
+        SentryLog.e("MainApplication", "Sentry test : ${UploadState.Failure.RestrictedLocation.javaClass.simpleName}}")
     }
 
     companion object {
