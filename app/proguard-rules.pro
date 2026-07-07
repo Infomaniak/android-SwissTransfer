@@ -24,5 +24,5 @@
 -keep class com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi{*;}
 
 # Preserve all UploadState sealed classes and subclasses for proper Sentry error logging despite minification
--keep class com.infomaniak.swisstransfer.upload.UploadState {*;}
--keep class com.infomaniak.swisstransfer.upload.UploadState$** {*;}
+-keepnames class com.infomaniak.swisstransfer.upload.UploadState {*;}
+-keepnames class com.infomaniak.swisstransfer.upload.UploadState$** {*;}

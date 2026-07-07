@@ -158,7 +158,6 @@ class MainApplication : Application(), Configuration.Provider {
             isFilteredException = { exception -> exception is KmpNetworkException },
         )
 
-        SentryLog.e("MainApplication", "Sentry test : ${UploadState.Failure.RestrictedLocation.javaClass.simpleName}}")
     }
 
     companion object {
