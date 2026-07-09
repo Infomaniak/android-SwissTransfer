@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
+import android.app.LocaleConfig
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -26,6 +27,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.Settings
 import android.widget.Toast
 import com.infomaniak.core.filetypes.FileType
@@ -139,11 +141,38 @@ fun Context.showToast(title: Int, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this, title, duration).show()
 }
 
+fun LocaleList?.toList(): List<Locale> {
+    return if (this == null) emptyList() else List(size()) { get(it) }
+}
+
+/**
+ * This is used to prevent a crash that happens on Android 15+ (API 35+) in the wild
+ * with plural strings. (Unsupported locales cause some wrong multiple etc)
+ */
 fun Context.wrapWithLocaleFallback(tag: String): Context {
+    if (SDK_INT < 35) return this
+
     val baseConfig = resources.configuration
-    if (!baseConfig.locales.isEmpty) return this
-    val defaultLocale = Locale.getDefault()
-    SentryLog.i(tag, "Configuration locales are empty, falling back to $defaultLocale")
-    val config = Configuration(baseConfig).apply { setLocale(defaultLocale) }
+    val deviceLocales = baseConfig.locales.toList()
+    SentryLog.i(tag, "Device locales : $deviceLocales")
+
+    var config = Configuration(baseConfig)
+
+    val supportedLocales = LocaleConfig(this).supportedLocales.toList()
+    SentryLog.i(tag, "App supported locales : $supportedLocales")
+
+    val hasSupportedLocale = deviceLocales.any { deviceLocale ->
+        supportedLocales.any { supportedLocale ->
+            deviceLocale.language == supportedLocale.language
+        }
+    }
+
+
+    if (!hasSupportedLocale) {
+        val defaultLocale = Locale.ENGLISH
+        SentryLog.i(tag, "No supported locale found, falling back to $defaultLocale")
+        config = Configuration(baseConfig).apply { setLocale(defaultLocale) }
+    }
+
     return createConfigurationContext(config)
 }
