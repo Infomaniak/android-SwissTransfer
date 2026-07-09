@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
     override val inAppUpdateManager by lazy { InAppUpdateManager(this) }
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(newBase.wrapWithLocaleFallback(javaClass.simpleName))
+        super.attachBaseContext(newBase.wrapWithLocaleFallback())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

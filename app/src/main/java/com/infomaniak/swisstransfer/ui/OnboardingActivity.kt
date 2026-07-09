@@ -79,7 +79,7 @@ class OnboardingActivity : ComponentActivity() {
     lateinit var infomaniakLogin: InfomaniakLogin
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(newBase.wrapWithLocaleFallback(javaClass.simpleName))
+        super.attachBaseContext(newBase.wrapWithLocaleFallback())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

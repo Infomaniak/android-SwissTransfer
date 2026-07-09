@@ -72,7 +72,7 @@ class NewTransferActivity : ComponentActivity(), AppReviewManageable {
     private val myAccountViewModel: MyAccountViewModel by viewModels()
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(newBase.wrapWithLocaleFallback(javaClass.simpleName))
+        super.attachBaseContext(newBase.wrapWithLocaleFallback())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
