@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -60,6 +61,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.components.DeleteTr
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.isDarkTheme
+import com.infomaniak.swisstransfer.ui.utils.wrapWithLocaleFallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -79,6 +81,10 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
 
     override val inAppReviewManager by lazy { InAppReviewManager(this) }
     override val inAppUpdateManager by lazy { InAppUpdateManager(this) }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.wrapWithLocaleFallback())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))

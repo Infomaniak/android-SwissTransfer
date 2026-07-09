@@ -18,20 +18,25 @@
 package com.infomaniak.swisstransfer.ui.utils
 
 import android.app.Activity
+import android.app.LocaleConfig
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.Settings
 import android.widget.Toast
 import com.infomaniak.core.filetypes.FileType
+import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.swisstransfer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import kotlin.reflect.KClass
 
 fun <T : Activity> Context.launchActivity(kClass: KClass<T>, options: Bundle? = null) {
@@ -134,4 +139,36 @@ fun Context.safeStartActivity(intent: Intent) {
 
 fun Context.showToast(title: Int, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this, title, duration).show()
+}
+
+fun LocaleList?.toList(): List<Locale> {
+    return if (this == null) emptyList() else List(size()) { get(it) }
+}
+
+/**
+ * This is used for two things when no device locale is supported:
+ *  - Prevent a random crash that happens on Android 15+ (API 35+) in the wild.
+ *  - Correct plural handling.
+ */
+fun Context.wrapWithLocaleFallback(): Context {
+    if (SDK_INT < 33) return this
+
+    val baseConfig = resources.configuration
+    val deviceLocales = baseConfig.locales.toList()
+    val supportedLocales = LocaleConfig(this).supportedLocales.toList()
+
+    val hasSupportedLocale = deviceLocales.any { deviceLocale ->
+        supportedLocales.any { supportedLocale ->
+            deviceLocale.language == supportedLocale.language
+        }
+    }
+    if (hasSupportedLocale) return this
+
+    val defaultLocale = Locale.ENGLISH
+    val tag = "wrapWithLocaleFallback"
+    SentryLog.i(tag, "Device locales : $deviceLocales")
+    SentryLog.i(tag, "App supported locales : $supportedLocales")
+    SentryLog.i(tag, "No supported locale found, falling back to $defaultLocale")
+    return createConfigurationContext(Configuration(baseConfig).apply { setLocale(defaultLocale) })
+
 }

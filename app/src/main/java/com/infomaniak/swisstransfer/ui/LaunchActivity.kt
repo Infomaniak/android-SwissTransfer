@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.navigation.ExternalNavigation
 import com.infomaniak.swisstransfer.ui.utils.AccountPreferences
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.hasValidTransferDeeplink
+import com.infomaniak.swisstransfer.ui.utils.wrapWithLocaleFallback
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -48,6 +50,10 @@ class LaunchActivity : ComponentActivity() {
 
     @Inject
     lateinit var sharedApiUrlCreator: SharedApiUrlCreator
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.wrapWithLocaleFallback())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
