@@ -56,7 +56,7 @@
     <string name="errorIncorrectPassword">Falsches Kennwort</string>
     <string name="errorTransferPasswordLength">Das Passwort muss zwischen 6 und 25 Zeichen lang sein</string>
     <string name="expired">Abgelaufen</string>
-    <string name="expiresAt">Läuft ab bei %s</string>
+    <string name="expiresAt">Läuft ab um %s Uhr</string>
     <string name="expiresIn">Verfällt in %d Tagen</string>
     <string name="expiresOn">Läuft am %s um %s</string>
     <string name="expiresTomorrow">Läuft morgen ab</string>
