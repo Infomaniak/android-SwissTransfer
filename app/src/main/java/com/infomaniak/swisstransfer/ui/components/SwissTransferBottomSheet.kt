@@ -131,7 +131,9 @@ private fun BottomSheetContent(
 
         content?.let {
             it()
-            Spacer(Modifier.height(Margin.Large))
+            if (topButton != null || bottomButton != null) {
+                Spacer(Modifier.height(Margin.Large))
+            }
         }
 
         DoubleStackedButtonScaffold(

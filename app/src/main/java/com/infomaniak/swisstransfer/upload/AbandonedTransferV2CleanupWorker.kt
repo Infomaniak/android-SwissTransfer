@@ -52,6 +52,7 @@ class AbandonedTransferV2CleanupWorker @AssistedInject constructor(
     private object DataKeys {
         const val TRANSFER_ID = "transfer_id"
         const val USER_ID = "user_id"
+        const val ORGANIZATION_ACCOUNT_ID = "organization_account_id"
         const val FAILED = "failed"
         const val REQUEST_UTC_TIMESTAMP_MILLIS = "request_utc_timestamp_millis"
     }
@@ -70,9 +71,14 @@ class AbandonedTransferV2CleanupWorker @AssistedInject constructor(
         }
 
         val transferId = inputData.getString(DataKeys.TRANSFER_ID)!!
+        val organizationAccountId = inputData.getLong(DataKeys.ORGANIZATION_ACCOUNT_ID, -1L).takeIf { it != -1L }
         val failed = inputData.getBoolean(DataKeys.FAILED, defaultValue = false)
         return runCatching {
-            uploadManager.cancelTransfer(transferId = transferId, failed = failed)
+            uploadManager.cancelTransfer(
+                transferId = transferId,
+                organizationAccountId = organizationAccountId,
+                failed = failed,
+            )
             Result.success()
         }.cancellable().getOrElse { t ->
             when (t) {
@@ -91,11 +97,13 @@ class AbandonedTransferV2CleanupWorker @AssistedInject constructor(
             workManager: WorkManager,
             userId: Long,
             transferId: String,
+            organizationAccountId: Long?,
             failed: Boolean
         ): kotlin.Result<Unit> = runCatching {
             val inputData = Data.Builder()
                 .putLong(DataKeys.USER_ID, userId)
                 .putString(DataKeys.TRANSFER_ID, transferId)
+                .putLong(DataKeys.ORGANIZATION_ACCOUNT_ID, organizationAccountId ?: -1L)
                 .putBoolean(DataKeys.FAILED, failed)
                 .putLong(DataKeys.REQUEST_UTC_TIMESTAMP_MILLIS, System.currentTimeMillis())
                 .build()

@@ -40,6 +40,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -86,6 +87,7 @@ import javax.inject.Inject
 class PickFilesViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val accountUtils: AccountUtils,
+    private val accountManager: AccountManager,
     private val appSettingsManager: AppSettingsManager,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val savedStateHandle: SavedStateHandle,
@@ -315,7 +317,7 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    private fun extractNewTransferParams() = NewTransferParams(
+    private suspend fun extractNewTransferParams() = NewTransferParams(
         validityPeriod = selectedValidityPeriodOption.value.apiValue,
         authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
@@ -324,7 +326,8 @@ class PickFilesViewModel @Inject constructor(
         downloadCountLimit = selectedDownloadLimitOption.value.apiValue,
         languageCode = selectedLanguageOption.value.apiValue,
         recipientsEmails = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
-        type = selectedTransferTypeFlow.value
+        type = selectedTransferTypeFlow.value,
+        organizationAccountId = accountManager.selectedOrganizationAccount().first()?.id,
     )
 
     //region Transfer Type
