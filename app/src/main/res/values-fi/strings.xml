@@ -159,6 +159,7 @@
     <string name="settingsPasswordToggleDescription">Aktivoi suojaus</string>
     <string name="settingsSignIn">Kirjaudu sisään</string>
     <string name="settingsSwitchAccount">Vaihda tiliä</string>
+    <string name="settingsSwitchOrganization">Vaihda organisaatiota</string>
     <string name="settingsThemeTitle">Valitse teema</string>
     <string name="settingsTitle">Asetukset</string>
     <string name="settingsValidityPeriodTitle">Aseta oletusarvoinen voimassaoloaika siirroillesi</string>

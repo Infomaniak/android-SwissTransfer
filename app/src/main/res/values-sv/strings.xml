@@ -159,6 +159,7 @@
     <string name="settingsPasswordToggleDescription">Aktivera skydd</string>
     <string name="settingsSignIn">Logga in</string>
     <string name="settingsSwitchAccount">Byt konto</string>
+    <string name="settingsSwitchOrganization">Byt organisation</string>
     <string name="settingsThemeTitle">Välj ett tema</string>
     <string name="settingsTitle">Inställningar</string>
     <string name="settingsValidityPeriodTitle">Ange en standardgiltighetstid för dina överföringar</string>

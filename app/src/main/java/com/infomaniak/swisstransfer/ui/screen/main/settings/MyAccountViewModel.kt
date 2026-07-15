@@ -23,12 +23,18 @@ import com.infomaniak.multiplatform_swisstransfer.common.models.DownloadLimit
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.multiplatform_swisstransfer.common.models.Theme
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
+import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.swisstransfer.di.IoDispatcher
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,11 +42,23 @@ import javax.inject.Inject
 class MyAccountViewModel @Inject constructor(
     private val appSettingsManager: AppSettingsManager,
     private val accountUtils: AccountUtils,
+    private val accountManager: AccountManager,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     val appSettingsFlow = appSettingsManager.appSettings
     val users = accountUtils.users
+
+    val selectedOrganization: StateFlow<OrganizationAccount?> = accountManager.selectedOrganizationAccount()
+        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = null)
+
+    val organizations: StateFlow<List<OrganizationAccount>> = accountManager.currentUserFlow
+        .map { user -> user?.let { accountManager.organizationAccountsForUser(it.id) } ?: emptyList() }
+        .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = emptyList())
+
+    fun switchToOrganization(organizationAccountId: Long) = viewModelScope.launch(ioDispatcher) {
+        accountManager.switchToOrganization(organizationAccountId)
+    }
 
     fun setTheme(theme: Theme) = viewModelScope.launch(ioDispatcher) {
         appSettingsManager.setTheme(theme)

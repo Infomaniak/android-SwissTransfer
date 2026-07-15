@@ -165,6 +165,7 @@
     <string name="settingsPasswordToggleDescription">Włącz ochronę</string>
     <string name="settingsSignIn">Zaloguj się</string>
     <string name="settingsSwitchAccount">Przełącz konto</string>
+    <string name="settingsSwitchOrganization">Przełącz organizację</string>
     <string name="settingsThemeTitle">Wybierz motyw</string>
     <string name="settingsTitle">Ustawienia</string>
     <string name="settingsValidityPeriodTitle">Ustaw domyślny okres ważności dla swoich transferów</string>

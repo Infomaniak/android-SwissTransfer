@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -53,12 +52,9 @@ class TransfersViewModel @Inject constructor(
         .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
-    val allTransfersAreEmpty: StateFlow<Boolean> = combine(
-        transferManager.getTransfersCount(TransferDirection.RECEIVED),
-        transferManager.getTransfersCount(TransferDirection.SENT),
-    ) { receivedCount, sentCount ->
-        receivedCount == 0L && sentCount == 0L
-    }.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = false)
+    val allTransfersAreEmpty: StateFlow<Boolean> = transferManager.hasAnyTransferFlow()
+        .map { hasAnyTransfer -> !hasAnyTransfer }
+        .stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = false)
 
     fun fetchPendingTransfers() {
         viewModelScope.launch(ioDispatcher) {

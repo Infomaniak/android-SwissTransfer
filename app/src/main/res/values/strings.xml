@@ -164,6 +164,7 @@
     <string name="settingsPasswordToggleDescription">Activate protection</string>
     <string name="settingsSignIn">Sign in</string>
     <string name="settingsSwitchAccount">Switch account</string>
+    <string name="settingsSwitchOrganization">Switch organization</string>
     <string name="settingsThemeTitle">Select a theme</string>
     <string name="settingsTitle">Settings</string>
     <string name="settingsValidityPeriodTitle">Set a default validity period for your transfers</string>

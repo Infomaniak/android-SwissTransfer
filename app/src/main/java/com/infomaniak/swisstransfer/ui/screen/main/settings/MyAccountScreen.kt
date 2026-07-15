@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
+import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
@@ -73,6 +74,8 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackSwitchUserBottomSheet
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcher
+import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcherBottomSheet
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
@@ -109,7 +112,11 @@ private val AVATAR_SHAPE = CircleShape
 @Composable
 fun MyAccountScreen(
     users: () -> List<User>,
+    selectedOrganization: () -> OrganizationAccount?,
+    organizations: () -> List<OrganizationAccount>,
+    onSwitchOrganization: (organizationAccountId: Long) -> Unit,
     onAction: (MyAccountSettingAction) -> Unit,
+    modifier: Modifier = Modifier,
     getSelectedSetting: () -> MyAccountSettingAction?,
     modifier: Modifier = Modifier,
 ) {
@@ -118,6 +125,7 @@ fun MyAccountScreen(
     val scope = rememberCoroutineScope()
 
     var showAccountSwitchBottomSheet by remember { mutableStateOf(false) }
+    var showOrganizationSwitchBottomSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { MatomoSwissTransfer.trackScreen(MatomoScreen.MyAccount) }
 
@@ -129,11 +137,31 @@ fun MyAccountScreen(
             } else {
                 BrandTopAppBar()
             }
-        }
+        },
     ) {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Profile(modifier = Modifier.padding(vertical = Margin.Large))
+        Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+            Profile(
+                selectedOrganizationName = { selectedOrganization()?.name },
+                canSwitchOrganization = { organizations().size > 1 },
+                onSwitchOrganizationClick = { showOrganizationSwitchBottomSheet = true },
+                modifier = Modifier.padding(vertical = Margin.Large),
+            )
             SettingsItems(selectedSetting, onAction, showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true })
+        }
+
+        if (showOrganizationSwitchBottomSheet) {
+            val sheetState = rememberModalBottomSheetState()
+
+            OrganizationSwitcherBottomSheet(
+                onDismissRequest = { showOrganizationSwitchBottomSheet = false },
+                organizations = organizations(),
+                selectedOrganizationId = selectedOrganization()?.id,
+                onOrganizationClicked = { organization ->
+                    onSwitchOrganization(organization.id)
+                    sheetState.dismissGracefully(scope, onDismissRequest = { showOrganizationSwitchBottomSheet = false })
+                },
+                sheetState = sheetState,
+            )
         }
 
         val selectedUserId = LocalUser.current?.id
@@ -171,7 +199,12 @@ fun MyAccountScreen(
 }
 
 @Composable
-private fun Profile(modifier: Modifier = Modifier) {
+private fun Profile(
+    selectedOrganizationName: () -> String?,
+    canSwitchOrganization: () -> Boolean,
+    onSwitchOrganizationClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     AnimatedContent(
         targetState = LocalUser.current,
         transitionSpec = { fadeIn() togetherWith fadeOut() },
@@ -187,6 +220,13 @@ private fun Profile(modifier: Modifier = Modifier) {
             } else {
                 Avatar(AvatarType.fromUser(user), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
                 TitleAndDescription(user.displayName.toString(), user.email, modifier = Modifier.fillMaxWidth())
+                selectedOrganizationName()?.let { name ->
+                    OrganizationSwitcher(
+                        organizationName = name,
+                        onClick = onSwitchOrganizationClick,
+                        disabled = !canSwitchOrganization()
+                    )
+                }
             }
         }
     }
@@ -378,11 +418,18 @@ sealed class MyAccountSettingAction(val matomoValue: MatomoName?) {
 @PreviewAllWindows
 @Composable
 private fun SettingsScreenPreview(@PreviewParameter(UserListPreviewParameterProvider::class) users: List<User>) {
+    val previewOrganizations = listOf(
+        previewOrganizationAccount(id = 1L, name = "Infomaniak"),
+        previewOrganizationAccount(id = 2L, name = "The ethical Cloud"),
+    )
     SwissTransferTheme {
         CompositionLocalProvider(LocalUser provides users.first()) {
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreen(
                     users = { users },
+                    selectedOrganization = { previewOrganizations.first() },
+                    organizations = { previewOrganizations },
+                    onSwitchOrganization = {},
                     onAction = {},
                     getSelectedSetting = { null },
                 )
@@ -390,3 +437,13 @@ private fun SettingsScreenPreview(@PreviewParameter(UserListPreviewParameterProv
         }
     }
 }
+
+private fun previewOrganizationAccount(id: Long, name: String) = OrganizationAccount(
+    id = id,
+    userId = 0L,
+    name = name,
+    type = "",
+    pack = "",
+    isInKSuite = false,
+    limits = OrganizationAccount.Limits(transferTotalSize = 0L),
+)

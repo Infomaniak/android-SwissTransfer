@@ -159,6 +159,7 @@
     <string name="settingsPasswordToggleDescription">Ενεργοποίηση προστασίας</string>
     <string name="settingsSignIn">Σύνδεση</string>
     <string name="settingsSwitchAccount">Εναλλαγή λογαριασμού</string>
+    <string name="settingsSwitchOrganization">Εναλλαγή οργανισμού</string>
     <string name="settingsThemeTitle">Επίλεξε θέμα</string>
     <string name="settingsTitle">Ρυθμίσεις</string>
     <string name="settingsValidityPeriodTitle">Όρισε μια προεπιλεγμένη περίοδο ισχύος για τις μεταφορές σου</string>
