@@ -17,14 +17,14 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
@@ -34,18 +34,23 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.infomaniak.core.avatar.components.Avatar
+import com.infomaniak.core.avatar.models.AvatarColors
+import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
-import com.infomaniak.swisstransfer.ui.images.icons.Organization
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.avatarType
+import com.infomaniak.core.ui.compose.basics.Dimens as CoreDimens
 
 private val ORGANIZATION_ITEM_HEIGHT = 56.dp
 
@@ -73,6 +78,7 @@ fun OrganizationSwitcherBottomSheet(
                 organizations.forEach { organization ->
                     OrganizationItem(
                         organizationName = organization.name,
+                        organizationAvatar = organization.avatarType(),
                         isSelected = organization.id == selectedOrganizationId,
                         onClick = { onOrganizationClicked(organization) },
                     )
@@ -83,7 +89,12 @@ fun OrganizationSwitcherBottomSheet(
 }
 
 @Composable
-private fun OrganizationItem(organizationName: String, isSelected: Boolean, onClick: () -> Unit) {
+private fun OrganizationItem(
+    organizationName: String,
+    organizationAvatar: AvatarType,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+) {
     SharpRippleButton(
         modifier = Modifier
             .height(ORGANIZATION_ITEM_HEIGHT)
@@ -95,14 +106,13 @@ private fun OrganizationItem(organizationName: String, isSelected: Boolean, onCl
                 .fillMaxWidth()
                 .padding(horizontal = Margin.Large),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
         ) {
-            Icon(
-                modifier = Modifier.size(Dimens.IconSize),
-                imageVector = AppIcons.Organization,
-                contentDescription = null,
-                tint = SwissTransferTheme.materialColors.primary,
+            Avatar(
+                avatarType = organizationAvatar,
+                modifier = Modifier.size(CoreDimens.bigAvatarSize),
+                shape = RoundedCornerShape(2.dp)
             )
-            Spacer(Modifier.width(Margin.Large))
             Text(
                 text = organizationName,
                 style = SwissTransferTheme.typography.bodyRegular,
@@ -111,7 +121,6 @@ private fun OrganizationItem(organizationName: String, isSelected: Boolean, onCl
                 modifier = Modifier.weight(1.0f),
             )
             if (isSelected) {
-                Spacer(Modifier.width(Margin.Medium))
                 Icon(
                     modifier = Modifier.size(Dimens.SmallIconSize),
                     imageVector = AppIcons.Checkmark,
@@ -123,14 +132,29 @@ private fun OrganizationItem(organizationName: String, isSelected: Boolean, onCl
     }
 }
 
+private fun previewAvatar(initials: String) = AvatarType.WithInitials.Initials(
+    initials = initials,
+    colors = AvatarColors(containerColor = Color(0xFF3CB572), contentColor = Color.White),
+)
+
 @PreviewLightAndDark
 @Composable
 private fun OrganizationItemPreview() {
     SwissTransferTheme {
         Surface {
             Column {
-                OrganizationItem(organizationName = "Westworld", isSelected = true, onClick = {})
-                OrganizationItem(organizationName = "Infomaniak", isSelected = false, onClick = {})
+                OrganizationItem(
+                    organizationName = "Westworld",
+                    organizationAvatar = previewAvatar("W"),
+                    isSelected = true,
+                    onClick = {},
+                )
+                OrganizationItem(
+                    organizationName = "Infomaniak Group",
+                    organizationAvatar = previewAvatar("IG"),
+                    isSelected = false,
+                    onClick = {},
+                )
             }
         }
     }
@@ -147,6 +171,7 @@ private fun OrganizationBottomSheetPreview() {
                 OrganizationAccount(
                     id = 1,
                     name = "Westworld",
+                    logoUrl = null,
                     userId = 1,
                     type = "",
                     pack = "",
@@ -155,7 +180,8 @@ private fun OrganizationBottomSheetPreview() {
                 ),
                 OrganizationAccount(
                     id = 2,
-                    name = "Infomaniak",
+                    name = "Infomaniak Group",
+                    logoUrl = null,
                     userId = 2,
                     type = "",
                     pack = "",
