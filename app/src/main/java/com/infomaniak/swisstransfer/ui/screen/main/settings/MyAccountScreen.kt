@@ -74,7 +74,6 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackSwitchUserBottomSheet
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
-import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcher
 import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcherBottomSheet
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.SmallButton
@@ -85,6 +84,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Cog
 import com.infomaniak.swisstransfer.ui.images.icons.DoorRectangleArrowRight
 import com.infomaniak.swisstransfer.ui.images.icons.HeadphoneMicrophone
+import com.infomaniak.swisstransfer.ui.images.icons.Organization
 import com.infomaniak.swisstransfer.ui.images.icons.Person
 import com.infomaniak.swisstransfer.ui.images.icons.PersonCircularArrowsCounterClockwise
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -142,13 +142,15 @@ fun MyAccountScreen(
         },
     ) {
         Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-            Profile(
-                selectedOrganizationName = { selectedOrganization()?.name },
-                canSwitchOrganization = { organizations().size > 1 },
-                onSwitchOrganizationClick = { showOrganizationSwitchBottomSheet = true },
-                modifier = Modifier.padding(vertical = Margin.Large),
+            Profile(modifier = Modifier.padding(vertical = Margin.Large))
+            SettingsItems(
+                selectedSetting = selectedSetting,
+                onAction = onAction,
+                organizations = organizations,
+                selectedOrganization = selectedOrganization,
+                showOrganizationSwitchBottomSheet = { showOrganizationSwitchBottomSheet = true },
+                showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true },
             )
-            SettingsItems(selectedSetting, onAction, showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true })
         }
 
         if (showOrganizationSwitchBottomSheet) {
@@ -201,12 +203,7 @@ fun MyAccountScreen(
 }
 
 @Composable
-private fun Profile(
-    selectedOrganizationName: () -> String?,
-    canSwitchOrganization: () -> Boolean,
-    onSwitchOrganizationClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun Profile(modifier: Modifier = Modifier) {
     AnimatedContent(
         targetState = LocalUser.current,
         transitionSpec = { fadeIn() togetherWith fadeOut() },
@@ -222,13 +219,6 @@ private fun Profile(
             } else {
                 Avatar(AvatarType.fromUser(user), Modifier.size(AVATAR_SIZE), shape = AVATAR_SHAPE)
                 TitleAndDescription(user.displayName.toString(), user.email, modifier = Modifier.fillMaxWidth())
-                selectedOrganizationName()?.let { name ->
-                    OrganizationSwitcher(
-                        organizationName = name,
-                        onClick = onSwitchOrganizationClick,
-                        disabled = !canSwitchOrganization()
-                    )
-                }
             }
         }
     }
@@ -271,6 +261,9 @@ private fun SettingsItems(
     selectedSetting: MyAccountSettingAction?,
     onAction: (MyAccountSettingAction) -> Unit,
     showAccountSwitchBottomSheet: () -> Unit,
+    showOrganizationSwitchBottomSheet: () -> Unit,
+    organizations: () -> List<OrganizationAccount>,
+    selectedOrganization: () -> OrganizationAccount?,
 ) {
     val currentUser = LocalUser.current
 
@@ -299,6 +292,17 @@ private fun SettingsItems(
                     showAccountSwitchBottomSheet()
                 },
             )
+
+            if (organizations().size > 1) {
+                SettingItem(
+                    titleRes = R.string.settingsSwitchOrganization,
+                    description = selectedOrganization()?.name,
+                    isSelected = { false },
+                    icon = AppIcons.Organization,
+                    endIcon = EndIconType.CHEVRON,
+                    onClick = { showOrganizationSwitchBottomSheet() },
+                )
+            }
         }
 
         SettingItem(
@@ -448,6 +452,7 @@ private fun previewOrganizationAccount(id: Long, name: String) = OrganizationAcc
     id = id,
     userId = 0L,
     name = name,
+    logoUrl = null,
     type = "",
     pack = "",
     isInKSuite = false,
