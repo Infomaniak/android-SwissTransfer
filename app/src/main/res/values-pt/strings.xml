@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Dá a tua opinião</string>
     <string name="settingsOptionNone">Nenhum</string>
     <string name="settingsOptionNotifications">Notificações</string>
+    <string name="settingsOptionOrganization">Enviar com</string>
     <string name="settingsOptionPassword">Palavra-passe</string>
     <string name="settingsOptionShareIdeas">Partilhar as tuas ideias</string>
     <string name="settingsOptionTermsAndConditions">Termos e Condições</string>
@@ -159,7 +160,6 @@
     <string name="settingsPasswordToggleDescription">Ativar proteção</string>
     <string name="settingsSignIn">Iniciar sessão</string>
     <string name="settingsSwitchAccount">Mudar de conta</string>
-    <string name="settingsSwitchOrganization">Mudar de organização</string>
     <string name="settingsThemeTitle">Selecionar um tema</string>
     <string name="settingsTitle">Definições</string>
     <string name="settingsValidityPeriodTitle">Define um período de validade padrão para as tuas transferências</string>

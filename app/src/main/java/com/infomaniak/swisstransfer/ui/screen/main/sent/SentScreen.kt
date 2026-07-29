@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.NewTransferFab
 import com.infomaniak.swisstransfer.ui.components.NewTransferFabType
+import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcher
+import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcherViewModel
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
@@ -54,11 +56,14 @@ fun SentScreen(
     navigateToDetails: (transferIdType: TransferIdType) -> Unit,
     getSelectedTransferIdType: () -> TransferIdType?,
     hasTransfer: (Boolean) -> Unit,
-    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
     onDeleteTransfer: () -> Unit,
+    transfersViewModel: TransfersViewModel = hiltViewModel<TransfersViewModel>(),
+    organizationSwitcherViewModel: OrganizationSwitcherViewModel = hiltViewModel<OrganizationSwitcherViewModel>(),
 ) {
 
     val uiState by transfersViewModel.sentTransfersUiState.collectAsStateWithLifecycle()
+    val accountTransfersAreEmpty by transfersViewModel.accountTransfersAreEmpty.collectAsStateWithLifecycle()
+    val organizations by organizationSwitcherViewModel.organizations.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 
@@ -76,6 +81,7 @@ fun SentScreen(
             transfersViewModel.deleteTransfer(transferUuid)
             onDeleteTransfer()
         },
+        shouldShowHeaderWhenEmpty = { organizations.size > 1 && !accountTransfersAreEmpty },
     )
 }
 
@@ -85,6 +91,8 @@ private fun SentScreen(
     navigateToDetails: (transferIdType: TransferIdType) -> Unit,
     getSelectedTransferIdType: () -> TransferIdType?,
     onDeleteTransfer: (String) -> Unit,
+    shouldShowHeaderWhenEmpty: () -> Boolean = { false },
+    organizationSwitcher: @Composable () -> Unit = { OrganizationSwitcher() },
 ) {
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
 
@@ -112,6 +120,8 @@ private fun SentScreen(
                 getTransfers = { transferUiStateSuccess.data },
                 title = stringResource(R.string.sentFilesTitle),
                 emptyState = { SentEmptyScreen() },
+                belowTitle = organizationSwitcher,
+                shouldShowHeaderWhenEmpty = shouldShowHeaderWhenEmpty,
             )
         }
     }
@@ -127,6 +137,7 @@ private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::
                 navigateToDetails = {},
                 getSelectedTransferIdType = { null },
                 onDeleteTransfer = {},
+                organizationSwitcher = {},
             )
         }
     }

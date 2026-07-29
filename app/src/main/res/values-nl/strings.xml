@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Geef je mening</string>
     <string name="settingsOptionNone">Geen</string>
     <string name="settingsOptionNotifications">Meldingen</string>
+    <string name="settingsOptionOrganization">Versturen met</string>
     <string name="settingsOptionPassword">Wachtwoord</string>
     <string name="settingsOptionShareIdeas">Deel je ideeën</string>
     <string name="settingsOptionTermsAndConditions">Algemene voorwaarden</string>
@@ -159,7 +160,6 @@
     <string name="settingsPasswordToggleDescription">Bescherming activeren</string>
     <string name="settingsSignIn">Inloggen</string>
     <string name="settingsSwitchAccount">Van account wisselen</string>
-    <string name="settingsSwitchOrganization">Wissel van organisatie</string>
     <string name="settingsThemeTitle">Selecteer een thema</string>
     <string name="settingsTitle">Instellingen</string>
     <string name="settingsValidityPeriodTitle">Stel een standaard geldigheidsperiode in voor je overdrachten</string>

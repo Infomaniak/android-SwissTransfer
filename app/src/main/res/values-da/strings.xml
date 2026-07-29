@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Giv din mening</string>
     <string name="settingsOptionNone">Ingen</string>
     <string name="settingsOptionNotifications">Notifikationer</string>
+    <string name="settingsOptionOrganization">Send med</string>
     <string name="settingsOptionPassword">Adgangskode</string>
     <string name="settingsOptionShareIdeas">Del dine idéer</string>
     <string name="settingsOptionTermsAndConditions">Vilkår og betingelser</string>
@@ -159,7 +160,6 @@
     <string name="settingsPasswordToggleDescription">Aktiver beskyttelse</string>
     <string name="settingsSignIn">Log ind</string>
     <string name="settingsSwitchAccount">Skift konto</string>
-    <string name="settingsSwitchOrganization">Skift organisation</string>
     <string name="settingsThemeTitle">Vælg et tema</string>
     <string name="settingsTitle">Indstillinger</string>
     <string name="settingsValidityPeriodTitle">Angiv en standardgyldighedsperiode for dine overføringer</string>

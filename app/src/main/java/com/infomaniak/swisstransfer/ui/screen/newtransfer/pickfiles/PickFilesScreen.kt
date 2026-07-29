@@ -17,6 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -64,6 +65,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.auth.models.user.User
@@ -75,11 +77,14 @@ import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
+import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.ButtonType
 import com.infomaniak.swisstransfer.ui.components.LargeButton
+import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcherBottomSheet
+import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcherViewModel
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTextField
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
@@ -118,6 +123,7 @@ fun PickFilesScreen(
     navigateToUploadProgress: () -> Unit,
     navigateToFilesDetails: () -> Unit,
     notificationPermissionManager: RationalePermissionManagerState,
+    organizationSwitcherViewModel: OrganizationSwitcherViewModel = hiltViewModel<OrganizationSwitcherViewModel>(),
 ) {
     val context = LocalContext.current
 
@@ -125,6 +131,9 @@ fun PickFilesScreen(
     val canSendStatus: CanSendStatus by pickFilesViewModel.canSendStatusFlow.collectAsState()
 
     val selectedTransferType: TransferTypeUi by pickFilesViewModel.selectedTransferTypeFlow.collectAsStateWithLifecycle()
+
+    val selectedOrganization by organizationSwitcherViewModel.selectedOrganization.collectAsStateWithLifecycle()
+    val organizations by organizationSwitcherViewModel.organizations.collectAsStateWithLifecycle()
 
     val validityPeriod: ValidityPeriodOption by pickFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
     val downloadLimit: DownloadLimitOption by pickFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
@@ -169,6 +178,12 @@ fun PickFilesScreen(
     val transferOptionsCallbacks: TransferOptionsCallbacks = pickFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
             buildList {
+                if (organizations.size > 1) {
+                    this += TransferOptionState(
+                        transferOptionType = TransferOptionType.SEND_WITH,
+                        settingState = { selectedOrganization?.let(::OrganizationTransferOption) },
+                    )
+                }
                 this += TransferOptionState(
                     transferOptionType = TransferOptionType.VALIDITY_DURATION,
                     settingState = { validityPeriod },
@@ -206,6 +221,14 @@ fun PickFilesScreen(
             },
         ),
         transferOptionsCallbacks = transferOptionsCallbacks,
+        organizationSwitcherBottomSheet = { closeBottomSheet ->
+            OrganizationSwitcherBottomSheet(
+                onOrganizationClicked = { organization -> organizationSwitcherViewModel.switchToOrganization(organization.id) },
+                closeBottomSheet = closeBottomSheet,
+                organizations = organizations,
+                selectedOrganizationId = selectedOrganization?.id,
+            )
+        },
         pickFiles = ::pickFiles,
         selectContact = pickFilesViewModel::processContactPickerResultUri,
         exitNewTransfer = { exit() },
@@ -244,6 +267,7 @@ private fun PickFilesScreen(
     onSendButtonClick: () -> Unit,
     snackbarHostState: SnackbarHostState,
     navigateToFilesDetails: () -> Unit,
+    organizationSwitcherBottomSheet: @Composable (closeBottomSheet: () -> Unit) -> Unit = {},
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.Mail } }
@@ -258,10 +282,10 @@ private fun PickFilesScreen(
         },
         topButton = { modifier ->
             SendButton(
+                modifier = modifier,
                 canSendStatus = canSendStatus,
                 expectsClick = isAwaitingSend,
                 onClick = onSendButtonClick,
-                modifier = modifier,
             )
         },
         content = {
@@ -279,7 +303,7 @@ private fun PickFilesScreen(
                     snackbarHostState = snackbarHostState,
                     modifier = horizontalPaddingModifier,
                 )
-                TransferOptions(transferOptionsCallbacks, horizontalPaddingModifier)
+                TransferOptions(transferOptionsCallbacks, organizationSwitcherBottomSheet, horizontalPaddingModifier)
             }
         },
         snackbarHostState = snackbarHostState,
@@ -294,15 +318,14 @@ private fun FilesToImport(
     pickFiles: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
-        PickFilesTitle(R.string.myFilesTitle)
-        ImportedFilesCard(
-            files = files,
-            canSendStatus = canSendStatus,
-            pickFiles = pickFiles,
-            navigateToFilesDetails = navigateToFilesDetails,
-        )
-    }
+    PickFilesTitle(R.string.myFilesTitle, modifier)
+    ImportedFilesCard(
+        files,
+        canSendStatus,
+        pickFiles,
+        navigateToFilesDetails,
+        modifier,
+    )
 }
 
 @Composable
@@ -456,8 +479,13 @@ private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
+@SuppressLint("ComposeMultipleContentEmitters")
 @Composable
-private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks, modifier: Modifier = Modifier) {
+private fun TransferOptions(
+    transferOptionsCallbacks: TransferOptionsCallbacks,
+    organizationSwitcherBottomSheet: @Composable (closeBottomSheet: () -> Unit) -> Unit,
+    modifier: Modifier = Modifier,
+) {
 
     var showTransferOption by rememberSaveable { mutableStateOf<TransferOptionType?>(null) }
 
@@ -471,7 +499,12 @@ private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks, 
             transferOptionsStates = transferOptionsCallbacks.transferOptionsStates,
             onClick = { selectedOptionType -> showTransferOption = selectedOptionType },
         )
-        TransferOptionsDialogs({ showTransferOption }, transferOptionsCallbacks, ::closeTransferOption)
+        TransferOptionsDialogs(
+            { showTransferOption },
+            transferOptionsCallbacks,
+            organizationSwitcherBottomSheet,
+            ::closeTransferOption,
+        )
     }
 }
 
@@ -479,18 +512,20 @@ private fun TransferOptions(transferOptionsCallbacks: TransferOptionsCallbacks, 
 private fun TransferOptionsDialogs(
     selectedOptionType: () -> TransferOptionType?,
     transferOptionsCallbacks: TransferOptionsCallbacks,
+    organizationSwitcherBottomSheet: @Composable (closeBottomSheet: () -> Unit) -> Unit,
     closeTransferOption: () -> Unit,
 ) {
     when (selectedOptionType()) {
+        TransferOptionType.SEND_WITH -> organizationSwitcherBottomSheet(closeTransferOption)
         TransferOptionType.VALIDITY_DURATION -> ValidityPeriodBottomSheet(
             onOptionClicked = { transferOptionsCallbacks.onTransferOptionValueSelected(it) },
             closeBottomSheet = closeTransferOption,
-            initialValue = transferOptionsCallbacks.transferOptionsStates()[0].settingState(),
+            initialValue = transferOptionsCallbacks.settingStateOf(TransferOptionType.VALIDITY_DURATION),
         )
         TransferOptionType.DOWNLOAD_NUMBER_LIMIT -> DownloadLimitBottomSheet(
             onOptionClicked = { transferOptionsCallbacks.onTransferOptionValueSelected(it) },
             closeBottomSheet = closeTransferOption,
-            initialValue = transferOptionsCallbacks.transferOptionsStates()[1].settingState(),
+            initialValue = transferOptionsCallbacks.settingStateOf(TransferOptionType.DOWNLOAD_NUMBER_LIMIT),
         )
         TransferOptionType.PASSWORD -> PasswordOptionAlertDialog(
             password = transferOptionsCallbacks.password,
@@ -504,10 +539,14 @@ private fun TransferOptionsDialogs(
         TransferOptionType.LANGUAGE -> EmailLanguageBottomSheet(
             onOptionClicked = { transferOptionsCallbacks.onTransferOptionValueSelected(it) },
             closeBottomSheet = closeTransferOption,
-            initialValue = transferOptionsCallbacks.transferOptionsStates()[3].settingState(),
+            initialValue = transferOptionsCallbacks.settingStateOf(TransferOptionType.LANGUAGE),
         )
         null -> Unit
     }
+}
+
+private fun TransferOptionsCallbacks.settingStateOf(transferOptionType: TransferOptionType): SettingOption? {
+    return transferOptionsStates().firstOrNull { it.transferOptionType == transferOptionType }?.settingState?.invoke()
 }
 
 @Composable
@@ -521,18 +560,18 @@ private fun PickFilesTitle(@StringRes titleRes: Int, modifier: Modifier = Modifi
 
 @Composable
 private fun SendButton(
+    modifier: Modifier,
     canSendStatus: () -> CanSendStatus,
     expectsClick: () -> Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     LargeButton(
-        title = stringResource(R.string.transferSendButton),
-        onClick = onClick,
         modifier = modifier,
+        title = stringResource(R.string.transferSendButton),
         style = ButtonType.Primary,
         showIndeterminateProgress = { canSendStatus().hasIssue(CanSendStatus.Issue.Files.Processing) },
         enabled = expectsClick,
+        onClick = onClick,
     )
 }
 
@@ -564,6 +603,12 @@ data class TransferOptionState(
     val transferOptionType: TransferOptionType,
     val settingState: () -> SettingOption?,
 )
+
+data class OrganizationTransferOption(val organization: OrganizationAccount) : SettingOption {
+    override val title: @Composable () -> String = { organization.name }
+    override val imageVector: ImageVector? = null
+    override val imageVectorResId: Int? = null
+}
 
 enum class PasswordTransferOption(
     override val title: @Composable () -> String,

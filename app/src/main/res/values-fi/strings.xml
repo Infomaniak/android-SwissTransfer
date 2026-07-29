@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Anna palautetta</string>
     <string name="settingsOptionNone">Ei mitään</string>
     <string name="settingsOptionNotifications">Ilmoitukset</string>
+    <string name="settingsOptionOrganization">Lähetä käyttäen</string>
     <string name="settingsOptionPassword">Salasana</string>
     <string name="settingsOptionShareIdeas">Jaa ideasi</string>
     <string name="settingsOptionTermsAndConditions">Käyttöehdot</string>
@@ -159,7 +160,6 @@
     <string name="settingsPasswordToggleDescription">Aktivoi suojaus</string>
     <string name="settingsSignIn">Kirjaudu sisään</string>
     <string name="settingsSwitchAccount">Vaihda tiliä</string>
-    <string name="settingsSwitchOrganization">Vaihda organisaatiota</string>
     <string name="settingsThemeTitle">Valitse teema</string>
     <string name="settingsTitle">Asetukset</string>
     <string name="settingsValidityPeriodTitle">Aseta oletusarvoinen voimassaoloaika siirroillesi</string>

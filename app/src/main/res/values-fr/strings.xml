@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Infomaniak SwissTransfer - Android
-  ~ Copyright (C) 2024 Infomaniak Network SA
+  ~ Copyright (C) 2024-2026 Infomaniak Network SA
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Donne ton avis</string>
     <string name="settingsOptionNone">Aucun</string>
     <string name="settingsOptionNotifications">Notifications</string>
+    <string name="settingsOptionOrganization">Envoyer avec</string>
     <string name="settingsOptionPassword">Mot de passe</string>
     <string name="settingsOptionShareIdeas">Partage tes idées</string>
     <string name="settingsOptionTermsAndConditions">Conditions générales</string>
@@ -159,7 +160,6 @@
     <string name="settingsPasswordToggleDescription">Activer la protection</string>
     <string name="settingsSignIn">Connexion</string>
     <string name="settingsSwitchAccount">Changer de compte</string>
-    <string name="settingsSwitchOrganization">Changer d’organisation</string>
     <string name="settingsThemeTitle">Sélectionne un thème</string>
     <string name="settingsTitle">Paramètres</string>
     <string name="settingsValidityPeriodTitle">Défini une durée de validité par défaut pour tes transferts</string>

@@ -153,6 +153,7 @@
     <string name="settingsOptionGiveFeedback">Podziel się opinią</string>
     <string name="settingsOptionNone">Brak</string>
     <string name="settingsOptionNotifications">Powiadomienia</string>
+    <string name="settingsOptionOrganization">Wyślij przez</string>
     <string name="settingsOptionPassword">Hasło</string>
     <string name="settingsOptionShareIdeas">Podziel się swoimi pomysłami</string>
     <string name="settingsOptionTermsAndConditions">Regulamin</string>
@@ -165,7 +166,6 @@
     <string name="settingsPasswordToggleDescription">Włącz ochronę</string>
     <string name="settingsSignIn">Zaloguj się</string>
     <string name="settingsSwitchAccount">Przełącz konto</string>
-    <string name="settingsSwitchOrganization">Przełącz organizację</string>
     <string name="settingsThemeTitle">Wybierz motyw</string>
     <string name="settingsTitle">Ustawienia</string>
     <string name="settingsValidityPeriodTitle">Ustaw domyślny okres ważności dla swoich transferów</string>

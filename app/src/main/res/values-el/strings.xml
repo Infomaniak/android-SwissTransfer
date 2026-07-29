@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Δώσε τη γνώμη σου</string>
     <string name="settingsOptionNone">Κανένα</string>
     <string name="settingsOptionNotifications">Ειδοποιήσεις</string>
+    <string name="settingsOptionOrganization">Αποστολή με</string>
     <string name="settingsOptionPassword">Κωδικός πρόσβασης</string>
     <string name="settingsOptionShareIdeas">Μοιράσου τις ιδέες σου</string>
     <string name="settingsOptionTermsAndConditions">Όροι και προϋποθέσεις</string>
@@ -159,7 +160,6 @@
     <string name="settingsPasswordToggleDescription">Ενεργοποίηση προστασίας</string>
     <string name="settingsSignIn">Σύνδεση</string>
     <string name="settingsSwitchAccount">Εναλλαγή λογαριασμού</string>
-    <string name="settingsSwitchOrganization">Εναλλαγή οργανισμού</string>
     <string name="settingsThemeTitle">Επίλεξε θέμα</string>
     <string name="settingsTitle">Ρυθμίσεις</string>
     <string name="settingsValidityPeriodTitle">Όρισε μια προεπιλεγμένη περίοδο ισχύος για τις μεταφορές σου</string>

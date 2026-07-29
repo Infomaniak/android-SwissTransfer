@@ -52,8 +52,8 @@ class TransfersViewModel @Inject constructor(
         .map { TransferUiState.Success(it.groupBySection()) }
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = TransferUiState.Loading)
 
-    val allTransfersAreEmpty: StateFlow<Boolean> = transferManager.hasAnyTransferFlow()
-        .map { hasAnyTransfer -> !hasAnyTransfer }
+    val accountTransfersAreEmpty: StateFlow<Boolean> = transferManager.hasAccountTransferFlow()
+        .map { hasAccountTransfer -> !hasAccountTransfer }
         .stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = false)
 
     fun fetchPendingTransfers() {
