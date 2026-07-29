@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -81,7 +83,11 @@ fun OrganizationSwitcherBottomSheet(
         sheetState = sheetState,
         title = stringResource(R.string.settingsOptionOrganization),
         content = {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .selectableGroup(),
+            ) {
                 organizations.forEachIndexed { index, organization ->
                     if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = Margin.Large))
                     OrganizationItem(
@@ -107,7 +113,8 @@ private fun OrganizationItem(
     SharpRippleButton(
         modifier = Modifier
             .height(ORGANIZATION_ITEM_HEIGHT)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .selectable(selected = isSelected, onClick = onClick),
         onClick = onClick,
     ) {
         Row(

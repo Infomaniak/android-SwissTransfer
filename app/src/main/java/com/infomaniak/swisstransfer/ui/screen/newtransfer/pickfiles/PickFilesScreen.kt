@@ -17,7 +17,6 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -318,14 +317,15 @@ private fun FilesToImport(
     pickFiles: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    PickFilesTitle(R.string.myFilesTitle, modifier)
-    ImportedFilesCard(
-        files,
-        canSendStatus,
-        pickFiles,
-        navigateToFilesDetails,
-        modifier,
-    )
+    Column(modifier = modifier) {
+        PickFilesTitle(R.string.myFilesTitle)
+        ImportedFilesCard(
+            files,
+            canSendStatus,
+            pickFiles,
+            navigateToFilesDetails,
+        )
+    }
 }
 
 @Composable
@@ -479,7 +479,6 @@ private fun SendByOptions(selectedTransferType: GetSetCallbacks<TransferTypeUi>,
     TransferTypeButtons(HORIZONTAL_PADDING, selectedTransferType)
 }
 
-@SuppressLint("ComposeMultipleContentEmitters")
 @Composable
 private fun TransferOptions(
     transferOptionsCallbacks: TransferOptionsCallbacks,
@@ -560,10 +559,10 @@ private fun PickFilesTitle(@StringRes titleRes: Int, modifier: Modifier = Modifi
 
 @Composable
 private fun SendButton(
-    modifier: Modifier,
     canSendStatus: () -> CanSendStatus,
     expectsClick: () -> Boolean,
-    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     LargeButton(
         modifier = modifier,
