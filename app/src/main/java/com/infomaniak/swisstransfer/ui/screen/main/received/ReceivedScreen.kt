@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
 import com.infomaniak.swisstransfer.ui.components.EmptyState
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferListHeader
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIllus
 import com.infomaniak.swisstransfer.ui.images.illus.mascotSearching.MascotSearching
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
@@ -107,7 +108,7 @@ private fun ReceivedScreen(
                 getSelectedTransferIdType = getSelectedTransferIdType,
                 getTransfers = { transferUiStateSuccess.data },
                 onDeleteTransfer = onDeleteTransfer,
-                title = stringResource(R.string.receivedFilesTitle),
+                header = TransferListHeader(title = stringResource(R.string.receivedFilesTitle)),
                 emptyState = { ReceivedEmptyScreen() },
             )
         }

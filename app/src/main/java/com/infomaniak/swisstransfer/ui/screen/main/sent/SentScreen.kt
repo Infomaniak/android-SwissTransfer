@@ -40,6 +40,7 @@ import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcher
 import com.infomaniak.swisstransfer.ui.components.OrganizationSwitcherViewModel
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.transfer.TransferItemList
+import com.infomaniak.swisstransfer.ui.components.transfer.TransferListHeader
 import com.infomaniak.swisstransfer.ui.navigation.MainNavigation.TransferIdType
 import com.infomaniak.swisstransfer.ui.previewparameter.GroupedTransfersPreviewParameterProvider
 import com.infomaniak.swisstransfer.ui.screen.main.components.SwissTransferScaffold
@@ -118,10 +119,12 @@ private fun SentScreen(
                 getSelectedTransferIdType = getSelectedTransferIdType,
                 onDeleteTransfer = onDeleteTransfer,
                 getTransfers = { transferUiStateSuccess.data },
-                title = stringResource(R.string.sentFilesTitle),
+                header = TransferListHeader(
+                    title = stringResource(R.string.sentFilesTitle),
+                    belowTitle = organizationSwitcher,
+                    showWhenEmpty = shouldShowHeaderWhenEmpty,
+                ),
                 emptyState = { SentEmptyScreen() },
-                belowTitle = organizationSwitcher,
-                shouldShowHeaderWhenEmpty = shouldShowHeaderWhenEmpty,
             )
         }
     }

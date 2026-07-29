@@ -48,22 +48,26 @@ import com.infomaniak.swisstransfer.ui.screen.main.transfers.GroupedTransfers
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
+data class TransferListHeader(
+    val title: String,
+    val belowTitle: @Composable () -> Unit = {},
+    val showWhenEmpty: () -> Boolean = { false },
+)
+
 @Composable
 fun TransferItemList(
-    title: String,
+    header: TransferListHeader,
     navigateToDetails: (transferIdType: TransferIdType) -> Unit,
     getSelectedTransferIdType: () -> TransferIdType?,
     getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
     emptyState: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    belowTitle: @Composable () -> Unit = {},
-    shouldShowHeaderWhenEmpty: () -> Boolean = { false },
 ) {
-    val header = @Composable {
-        Column {
-            SmallOrMediumWindowScreenTitle(title = title)
-            belowTitle()
+    val headerContent = @Composable {
+        Column(verticalArrangement = Arrangement.spacedBy(Margin.Mini)) {
+            SmallOrMediumWindowScreenTitle(title = header.title)
+            header.belowTitle()
         }
     }
 
@@ -72,9 +76,9 @@ fun TransferItemList(
         transitionSpec = { fadeIn() togetherWith fadeOut() },
     ) { isEmpty ->
         if (isEmpty) {
-            if (shouldShowHeaderWhenEmpty()) {
+            if (header.showWhenEmpty()) {
                 Column(modifier = Modifier.fillMaxHeight()) {
-                    Box(modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) { header() }
+                    Box(modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) { headerContent() }
                     Box(modifier = Modifier.weight(1.0f)) { emptyState() }
                 }
             } else {
@@ -82,7 +86,7 @@ fun TransferItemList(
             }
         } else {
             TransferItemList(
-                header = header,
+                header = headerContent,
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferIdType = getSelectedTransferIdType,
                 onDeleteTransfer = onDeleteTransfer,
@@ -173,7 +177,7 @@ private fun Preview(@PreviewParameter(GroupedTransfersPreviewParameterProvider::
     SwissTransferTheme {
         Surface {
             TransferItemList(
-                title = stringResource(R.string.sentFilesTitle),
+                header = TransferListHeader(title = stringResource(R.string.sentFilesTitle)),
                 navigateToDetails = {},
                 getSelectedTransferIdType = { null },
                 getTransfers = { transfers },
