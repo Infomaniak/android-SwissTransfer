@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,9 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
@@ -53,18 +55,34 @@ fun TransferItemList(
     getSelectedTransferIdType: () -> TransferIdType?,
     getTransfers: () -> GroupedTransfers,
     onDeleteTransfer: (String) -> Unit,
-    modifier: Modifier = Modifier,
     emptyState: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    belowTitle: @Composable () -> Unit = {},
+    shouldShowHeaderWhenEmpty: () -> Boolean = { false },
 ) {
+    val header = @Composable {
+        Column {
+            SmallOrMediumWindowScreenTitle(title = title)
+            belowTitle()
+        }
+    }
+
     AnimatedContent(
         targetState = getTransfers().isEmpty(),
         transitionSpec = { fadeIn() togetherWith fadeOut() },
     ) { isEmpty ->
         if (isEmpty) {
-            emptyState()
+            if (shouldShowHeaderWhenEmpty()) {
+                Column(modifier = Modifier.fillMaxHeight()) {
+                    Box(modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) { header() }
+                    Box(modifier = Modifier.weight(1.0f)) { emptyState() }
+                }
+            } else {
+                emptyState()
+            }
         } else {
             TransferItemList(
-                title = title,
+                header = header,
                 navigateToDetails = navigateToDetails,
                 getSelectedTransferIdType = getSelectedTransferIdType,
                 onDeleteTransfer = onDeleteTransfer,
@@ -77,7 +95,7 @@ fun TransferItemList(
 
 @Composable
 private fun TransferItemList(
-    title: String,
+    header: @Composable () -> Unit,
     navigateToDetails: (TransferIdType) -> Unit,
     getSelectedTransferIdType: () -> TransferIdType?,
     getTransfers: () -> GroupedTransfers,
@@ -96,7 +114,7 @@ private fun TransferItemList(
         contentPadding = PaddingValues(top = Margin.Large, bottom = Margin.Medium, start = Margin.Medium, end = Margin.Medium),
     ) {
 
-        item { SmallOrMediumWindowScreenTitle(title = title) }
+        item { header() }
 
         getTransfers().forEach { (section, transfers) ->
             stickyHeader(key = section.uid) {

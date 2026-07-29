@@ -48,7 +48,6 @@ import com.infomaniak.core.network.TERMINATE_ACCOUNT_URL
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.preview.previewparameter.UserListPreviewParameterProvider
 import com.infomaniak.core.webview.ui.WebViewActivity
-import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.swisstransfer.BuildConfig
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.LocalUser
@@ -89,14 +88,9 @@ private const val URL_REDIRECT_SUCCESSFUL_ACCOUNT_DELETION = "login.infomaniak.c
 @Composable
 fun MyAccountScreenWrapper(myAccountViewModel: MyAccountViewModel = hiltViewModel<MyAccountViewModel>()) {
     val users by myAccountViewModel.users.collectAsStateWithLifecycle(emptyList())
-    val selectedOrganization by myAccountViewModel.selectedOrganization.collectAsStateWithLifecycle()
-    val organizations by myAccountViewModel.organizations.collectAsStateWithLifecycle()
 
     MyAccountScreenWrapper(
         users = { users },
-        selectedOrganization = { selectedOrganization },
-        organizations = { organizations },
-        onSwitchOrganization = { organizationAccountId -> myAccountViewModel.switchToOrganization(organizationAccountId) },
         onDisconnectCurrentUser = myAccountViewModel::disconnectCurrentUser,
         onSwitchUser = myAccountViewModel::switchUser,
     )
@@ -106,9 +100,6 @@ fun MyAccountScreenWrapper(myAccountViewModel: MyAccountViewModel = hiltViewMode
 @Composable
 private fun MyAccountScreenWrapper(
     users: () -> List<User>,
-    selectedOrganization: () -> OrganizationAccount?,
-    organizations: () -> List<OrganizationAccount>,
-    onSwitchOrganization: (organizationAccountId: Long) -> Unit,
     onDisconnectCurrentUser: () -> Unit,
     onSwitchUser: (userId: Int) -> Unit,
 ) {
@@ -117,9 +108,6 @@ private fun MyAccountScreenWrapper(
             ListPane(
                 navigator = this,
                 users = users,
-                selectedOrganization = selectedOrganization,
-                organizations = organizations,
-                onSwitchOrganization = onSwitchOrganization,
                 onDisconnectCurrentUser = onDisconnectCurrentUser,
                 onSwitchUser = onSwitchUser,
             )
@@ -133,9 +121,6 @@ private fun MyAccountScreenWrapper(
 private fun ListPane(
     navigator: ThreePaneScaffoldNavigator<SettingsOptionScreens>,
     users: () -> List<User>,
-    selectedOrganization: () -> OrganizationAccount?,
-    organizations: () -> List<OrganizationAccount>,
-    onSwitchOrganization: (organizationAccountId: Long) -> Unit,
     onDisconnectCurrentUser: () -> Unit,
     onSwitchUser: (userId: Int) -> Unit,
 ) {
@@ -148,9 +133,6 @@ private fun ListPane(
 
     MyAccountScreen(
         users = users,
-        selectedOrganization = selectedOrganization,
-        organizations = organizations,
-        onSwitchOrganization = onSwitchOrganization,
         onAction = { action ->
             when (action) {
                 MyAccountSettingAction.Login -> {
@@ -273,9 +255,6 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
             Surface(color = MaterialTheme.colorScheme.background) {
                 MyAccountScreenWrapper(
                     users = { users },
-                    selectedOrganization = { null },
-                    organizations = { emptyList() },
-                    onSwitchOrganization = {},
                     onDisconnectCurrentUser = {},
                     onSwitchUser = {},
                 )

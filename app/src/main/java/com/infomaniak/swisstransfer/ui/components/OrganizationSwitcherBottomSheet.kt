@@ -17,6 +17,8 @@
  */
 package com.infomaniak.swisstransfer.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,32 +26,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.infomaniak.core.avatar.components.Avatar
-import com.infomaniak.core.avatar.models.AvatarColors
-import com.infomaniak.core.avatar.models.AvatarType
+import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
+import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.avatarType
+import com.infomaniak.swisstransfer.ui.utils.myKSuiteTier
+import java.util.Locale
 import com.infomaniak.core.ui.compose.basics.Dimens as CoreDimens
 
 private val ORGANIZATION_ITEM_HEIGHT = 56.dp
@@ -61,26 +66,31 @@ private val ORGANIZATION_ITEM_HEIGHT = 56.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrganizationSwitcherBottomSheet(
-    onDismissRequest: () -> Unit,
+    onOrganizationClicked: (OrganizationAccount) -> Unit,
+    closeBottomSheet: () -> Unit,
     organizations: List<OrganizationAccount>,
     selectedOrganizationId: Long?,
-    onOrganizationClicked: (OrganizationAccount) -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
     SwissTransferBottomSheet(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = closeBottomSheet,
         modifier = modifier,
         sheetState = sheetState,
-        title = stringResource(R.string.settingsSwitchOrganization),
+        title = stringResource(R.string.settingsOptionOrganization),
         content = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                organizations.forEach { organization ->
+                organizations.forEachIndexed { index, organization ->
+                    if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = Margin.Large))
                     OrganizationItem(
-                        organizationName = organization.name,
-                        organizationAvatar = organization.avatarType(),
+                        organization = organization,
                         isSelected = organization.id == selectedOrganizationId,
-                        onClick = { onOrganizationClicked(organization) },
+                        onClick = {
+                            onOrganizationClicked(organization)
+                            sheetState.dismissGracefully(scope, onDismissRequest = { closeBottomSheet() })
+                        },
                     )
                 }
             }
@@ -90,8 +100,7 @@ fun OrganizationSwitcherBottomSheet(
 
 @Composable
 private fun OrganizationItem(
-    organizationName: String,
-    organizationAvatar: AvatarType,
+    organization: OrganizationAccount,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -109,17 +118,40 @@ private fun OrganizationItem(
             horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
         ) {
             Avatar(
-                avatarType = organizationAvatar,
-                modifier = Modifier.size(CoreDimens.bigAvatarSize),
-                shape = RoundedCornerShape(2.dp)
+                avatarType = organization.avatarType(),
+                modifier = Modifier
+                    .size(CoreDimens.bigAvatarSize)
+                    .border(Dimens.BorderWidth, SwissTransferTheme.materialColors.outline, CustomShapes.EXTRA_SMALL),
+                shape = CustomShapes.EXTRA_SMALL,
             )
-            Text(
-                text = organizationName,
-                style = SwissTransferTheme.typography.bodyRegular,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1.0f),
-            )
+            Column(modifier = Modifier.weight(1.0f)) {
+                val organizationPack = organization.pack
+                val myKSuiteTier = organization.myKSuiteTier
+
+                Text(
+                    text = organization.name,
+                    style = SwissTransferTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                when {
+                    myKSuiteTier != null -> {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = myKSuiteTier.iconRes),
+                            contentDescription = stringResource(myKSuiteTier.descriptionName),
+                        )
+                    }
+                    organizationPack.isNotBlank() -> {
+                        Text(
+                            text = organizationPack.replaceFirstChar { it.titlecase(Locale.getDefault()) },
+                            style = SwissTransferTheme.typography.bodyRegular,
+                            color = SwissTransferTheme.colors.secondaryTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+            }
             if (isSelected) {
                 Icon(
                     modifier = Modifier.size(Dimens.SmallIconSize),
@@ -132,11 +164,6 @@ private fun OrganizationItem(
     }
 }
 
-private fun previewAvatar(initials: String) = AvatarType.WithInitials.Initials(
-    initials = initials,
-    colors = AvatarColors(containerColor = Color(0xFF3CB572), contentColor = Color.White),
-)
-
 @PreviewLightAndDark
 @Composable
 private fun OrganizationItemPreview() {
@@ -144,53 +171,41 @@ private fun OrganizationItemPreview() {
         Surface {
             Column {
                 OrganizationItem(
-                    organizationName = "Westworld",
-                    organizationAvatar = previewAvatar("W"),
+                    organization = previewOrganizationAccount(
+                        id = 1L,
+                        name = "Westworld",
+                        type = "ksuite",
+                        pack = "Entreprise",
+                    ),
                     isSelected = true,
                     onClick = {},
                 )
                 OrganizationItem(
-                    organizationName = "Infomaniak Group",
-                    organizationAvatar = previewAvatar("IG"),
+                    organization = previewOrganizationAccount(
+                        id = 2L,
+                        name = "Infomaniak Group",
+                        type = "my_ksuite",
+                        pack = "Particulier",
+                    ),
+                    isSelected = false,
+                    onClick = {},
+                )
+                OrganizationItem(
+                    organization = previewOrganizationAccount(
+                        id = 3L,
+                        name = "pedro.perso@ik.me",
+                        type = "my_ksuite",
+                        pack = "my_ksuite_plus",
+                    ),
+                    isSelected = false,
+                    onClick = {},
+                )
+                OrganizationItem(
+                    organization = previewOrganizationAccount(id = 4L, name = "pedro.perso@ik.me", type = "Particulier"),
                     isSelected = false,
                     onClick = {},
                 )
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewLightAndDark
-@Composable
-private fun OrganizationBottomSheetPreview() {
-    SwissTransferTheme {
-        OrganizationSwitcherBottomSheet(
-            onDismissRequest = {},
-            organizations = listOf(
-                OrganizationAccount(
-                    id = 1,
-                    name = "Westworld",
-                    logoUrl = null,
-                    userId = 1,
-                    type = "",
-                    pack = "",
-                    isInKSuite = true,
-                    limits = OrganizationAccount.Limits(-1L)
-                ),
-                OrganizationAccount(
-                    id = 2,
-                    name = "Infomaniak Group",
-                    logoUrl = null,
-                    userId = 2,
-                    type = "",
-                    pack = "",
-                    isInKSuite = true,
-                    limits = OrganizationAccount.Limits(-1L)
-                )
-            ),
-            selectedOrganizationId = 1,
-            onOrganizationClicked = {}
-        )
     }
 }

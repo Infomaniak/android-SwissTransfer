@@ -60,7 +60,7 @@ fun ReceivedScreen(
 ) {
 
     val uiState by transfersViewModel.receivedTransfersUiState.collectAsStateWithLifecycle()
-    val hasNoTransfers by transfersViewModel.allTransfersAreEmpty.collectAsStateWithLifecycle()
+    val hasNoTransfers by transfersViewModel.accountTransfersAreEmpty.collectAsStateWithLifecycle()
 
     hasTransfer((uiState as? TransferUiState.Success)?.data?.isNotEmpty() == true)
 

@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024-2025 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.infomaniak.core.ui.compose.margin.Margin
@@ -34,6 +32,7 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Clock
 import com.infomaniak.swisstransfer.ui.images.icons.LockedTextField
+import com.infomaniak.swisstransfer.ui.images.icons.Organization
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
@@ -51,13 +50,15 @@ fun TransferOptionsTypes(
     // TODO: Animate the addition or removal when the list of transferOptionsStates changes
     SwissTransferCard(modifier = modifier) {
         transferOptionsStates().forEach {
-            val title by remember { derivedStateOf { it.settingState } }
-            TransferOptionType(it.transferOptionType, title, onClick = { onClick(it.transferOptionType) })
+            key(it.transferOptionType) {
+                TransferOptionType(it.transferOptionType, it.settingState, onClick = { onClick(it.transferOptionType) })
+            }
         }
     }
 }
 
 enum class TransferOptionType(val buttonIcon: ImageVector, @StringRes val buttonText: Int) {
+    SEND_WITH(buttonIcon = AppIcons.Organization, buttonText = R.string.settingsOptionOrganization),
     VALIDITY_DURATION(buttonIcon = AppIcons.Clock, buttonText = R.string.settingsOptionValidityPeriod),
     DOWNLOAD_NUMBER_LIMIT(buttonIcon = AppIcons.ArrowDownFile, buttonText = R.string.settingsOptionDownloadLimit),
     PASSWORD(buttonIcon = AppIcons.LockedTextField, buttonText = R.string.settingsOptionPassword),

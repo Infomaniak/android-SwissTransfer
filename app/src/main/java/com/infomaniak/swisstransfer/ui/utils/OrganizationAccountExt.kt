@@ -25,9 +25,19 @@ import com.infomaniak.core.avatar.getBackgroundColorResBasedOnId
 import com.infomaniak.core.avatar.models.AvatarColors
 import com.infomaniak.core.avatar.models.AvatarType
 import com.infomaniak.core.avatar.models.AvatarUrlData
+import com.infomaniak.core.ksuite.myksuite.ui.components.MyKSuiteTier
 import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 
 private const val MAX_INITIALS_COUNT = 2
+private const val MY_KSUITE_TYPE = "my_ksuite"
+private const val MY_KSUITE_PLUS_PACK = "my_ksuite_plus"
+
+val OrganizationAccount.myKSuiteTier: MyKSuiteTier?
+    get() = when {
+        type != MY_KSUITE_TYPE -> null
+        pack == MY_KSUITE_PLUS_PACK -> MyKSuiteTier.Plus
+        else -> MyKSuiteTier.Free
+    }
 
 @Composable
 fun OrganizationAccount.avatarType(): AvatarType.WithInitials {
