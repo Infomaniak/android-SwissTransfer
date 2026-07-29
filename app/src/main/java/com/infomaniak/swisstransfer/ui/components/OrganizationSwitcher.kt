@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -82,9 +83,10 @@ private fun OrganizationSwitcher(
 
     Row(
         modifier = modifier
+            .offset(x = -Margin.Mini)
             .clip(CustomShapes.SMALL)
             .clickable { showBottomSheet = true }
-            .padding(vertical = Margin.Mini),
+            .padding(Margin.Mini),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
     ) {
