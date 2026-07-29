@@ -176,33 +176,17 @@ fun PickFilesScreen(
 
     val transferOptionsCallbacks: TransferOptionsCallbacks = pickFilesViewModel.getTransferOptionsCallbacks(
         transferOptionsStates = {
-            buildList {
-                if (organizations.size > 1) {
-                    this += TransferOptionState(
-                        transferOptionType = TransferOptionType.SEND_WITH,
-                        settingState = { selectedOrganization?.let(::OrganizationTransferOption) },
-                    )
-                }
-                this += TransferOptionState(
-                    transferOptionType = TransferOptionType.VALIDITY_DURATION,
-                    settingState = { validityPeriod },
-                )
-                this += TransferOptionState(
-                    transferOptionType = TransferOptionType.DOWNLOAD_NUMBER_LIMIT,
-                    settingState = { downloadLimit },
-                )
-                this += TransferOptionState(
-                    transferOptionType = TransferOptionType.PASSWORD,
-                    settingState = { passwordOption },
-                )
-
-                if (selectedTransferType == TransferTypeUi.Mail) {
-                    this += TransferOptionState(
-                        transferOptionType = TransferOptionType.LANGUAGE,
-                        settingState = { emailLanguage },
-                    )
-                }
-            }
+            listOfNotNull(
+                transferOptionState(TransferOptionType.SEND_WITH, isDisplayed = organizations.size > 1) {
+                    selectedOrganization?.let(::OrganizationTransferOption)
+                },
+                transferOptionState(TransferOptionType.VALIDITY_DURATION) { validityPeriod },
+                transferOptionState(TransferOptionType.DOWNLOAD_NUMBER_LIMIT) { downloadLimit },
+                transferOptionState(TransferOptionType.PASSWORD) { passwordOption },
+                transferOptionState(TransferOptionType.LANGUAGE, isDisplayed = selectedTransferType == TransferTypeUi.Mail) {
+                    emailLanguage
+                },
+            )
         },
     )
 
@@ -602,6 +586,12 @@ data class TransferOptionState(
     val transferOptionType: TransferOptionType,
     val settingState: () -> SettingOption?,
 )
+
+private fun transferOptionState(
+    transferOptionType: TransferOptionType,
+    isDisplayed: Boolean = true,
+    settingState: () -> SettingOption?,
+): TransferOptionState? = if (isDisplayed) TransferOptionState(transferOptionType, settingState) else null
 
 data class OrganizationTransferOption(val organization: OrganizationAccount) : SettingOption {
     override val title: @Composable () -> String = { organization.name }
