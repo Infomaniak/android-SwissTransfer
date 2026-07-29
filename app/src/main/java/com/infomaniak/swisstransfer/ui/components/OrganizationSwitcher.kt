@@ -50,7 +50,6 @@ import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.avatarType
 
 private val AVATAR_SIZE = 24.dp
-private val NAME_MAX_WIDTH = 240.dp
 private const val CHEVRON_DOWN_ROTATION = 90.0f
 
 @Composable
@@ -95,6 +94,7 @@ private fun OrganizationSwitcher(
             shape = CustomShapes.EXTRA_SMALL,
         )
         Text(
+            modifier = Modifier.weight(1.0f, fill = false),
             text = organization.name,
             style = SwissTransferTheme.typography.bodyRegular,
             maxLines = 1,
