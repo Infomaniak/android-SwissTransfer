@@ -26,7 +26,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,8 +39,7 @@ class OrganizationSwitcherViewModel @Inject constructor(
     val selectedOrganization: StateFlow<OrganizationAccount?> = accountManager.selectedOrganizationAccount()
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = null)
 
-    val organizations: StateFlow<List<OrganizationAccount>> = accountManager.currentUserFlow
-        .map { user -> user?.let { accountManager.organizationAccountsForUser(it.id) } ?: emptyList() }
+    val organizations: StateFlow<List<OrganizationAccount>> = accountManager.organizationAccountsForCurrentUser()
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = emptyList())
 
     fun switchToOrganization(organizationAccountId: Long) = viewModelScope.launch(ioDispatcher) {
