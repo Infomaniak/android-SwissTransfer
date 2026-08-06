@@ -19,38 +19,29 @@ package com.infomaniak.swisstransfer.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.swisstransfer.R
-import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
-import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -58,8 +49,6 @@ import com.infomaniak.swisstransfer.ui.utils.avatarType
 import com.infomaniak.swisstransfer.ui.utils.myKSuiteTier
 import java.util.Locale
 import com.infomaniak.core.ui.compose.basics.Dimens as CoreDimens
-
-private val ORGANIZATION_ITEM_HEIGHT = 56.dp
 
 /**
  * A bottom sheet that lists the organizations the current user belongs to, and lets him switch between them.
@@ -110,20 +99,10 @@ private fun OrganizationItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    SharpRippleButton(
-        modifier = Modifier
-            .height(ORGANIZATION_ITEM_HEIGHT)
-            .fillMaxWidth()
-            .selectable(selected = isSelected, onClick = onClick),
+    BottomSheetItem(
         onClick = onClick,
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Margin.Large),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Margin.Medium)
-        ) {
+        isSelected = isSelected,
+        leading = {
             Avatar(
                 avatarType = organization.avatarType(),
                 modifier = Modifier
@@ -131,6 +110,8 @@ private fun OrganizationItem(
                     .border(Dimens.BorderWidth, SwissTransferTheme.materialColors.outline, CustomShapes.EXTRA_SMALL),
                 shape = CustomShapes.EXTRA_SMALL,
             )
+        },
+        content = {
             Column(modifier = Modifier.weight(1.0f)) {
                 val organizationPack = organization.pack
                 val myKSuiteTier = organization.myKSuiteTier
@@ -159,16 +140,8 @@ private fun OrganizationItem(
                     }
                 }
             }
-            if (isSelected) {
-                Icon(
-                    modifier = Modifier.size(Dimens.SmallIconSize),
-                    imageVector = AppIcons.Checkmark,
-                    contentDescription = null,
-                    tint = SwissTransferTheme.materialColors.primary,
-                )
-            }
-        }
-    }
+        },
+    )
 }
 
 @PreviewLightAndDark
