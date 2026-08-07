@@ -206,7 +206,10 @@ fun PickFilesScreen(
         transferOptionsCallbacks = transferOptionsCallbacks,
         organizationSwitcherBottomSheet = { closeBottomSheet ->
             OrganizationSwitcherBottomSheet(
-                onOrganizationClicked = { organization -> organizationSwitcherViewModel.switchToOrganization(organization.id) },
+                onOrganizationClicked = { organization ->
+                    pickFilesViewModel.selectOrganizationAccount(organization.id)
+                    organizationSwitcherViewModel.switchToOrganization(organization.id)
+                },
                 closeBottomSheet = closeBottomSheet,
                 organizations = organizations,
                 selectedOrganizationId = selectedOrganization?.id,

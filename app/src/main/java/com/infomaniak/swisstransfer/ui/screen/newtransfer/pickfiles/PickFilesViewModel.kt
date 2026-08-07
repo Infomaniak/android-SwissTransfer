@@ -327,7 +327,7 @@ class PickFilesViewModel @Inject constructor(
         languageCode = selectedLanguageOption.value.apiValue,
         recipientsEmails = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
         type = selectedTransferTypeFlow.value,
-        organizationAccountId = accountManager.selectedOrganizationAccount().first()?.id,
+        organizationAccountId = selectedOrganizationAccountId.value ?: accountManager.selectedOrganizationAccount().first()?.id,
     )
 
     //region Transfer Type
@@ -339,6 +339,11 @@ class PickFilesViewModel @Inject constructor(
 //endregion
 
     //region Transfer Options
+    val selectedOrganizationAccountId: StateFlow<Long?> = savedStateHandle.getStateFlow(
+        key = SELECTED_ORGANIZATION_ACCOUNT_KEY,
+        initialValue = null,
+    )
+
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
         key = SELECTED_VALIDITY_PERIOD_KEY, initialValue = ValidityPeriodOption.THIRTY
     )
@@ -357,6 +362,10 @@ class PickFilesViewModel @Inject constructor(
         key = SELECTED_LANGUAGE_KEY,
         initialValue = EmailLanguageOption.FRENCH,
     )
+
+    fun selectOrganizationAccount(organizationAccountId: Long) {
+        savedStateHandle[SELECTED_ORGANIZATION_ACCOUNT_KEY] = organizationAccountId
+    }
 
     private fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
         savedStateHandle[SELECTED_VALIDITY_PERIOD_KEY] = validityPeriodOption
@@ -389,6 +398,8 @@ class PickFilesViewModel @Inject constructor(
 
     private fun initTransferOptionsValues() {
         viewModelScope.launch(ioDispatcher) {
+            accountManager.selectedOrganizationAccount().first()?.id?.let(::selectOrganizationAccount)
+
             appSettingsManager.getAppSettings()?.let {
                 selectTransferValidityPeriod(it.validityPeriod.toTransferOption())
                 selectTransferDownloadLimit(it.downloadLimit.toTransferOption())
@@ -490,6 +501,7 @@ class PickFilesViewModel @Inject constructor(
         private const val SELECTED_DOWNLOAD_LIMIT_KEY = "SELECTED_DOWNLOAD_LIMIT_KEY"
         private const val SELECTED_PASSWORD_OPTION_KEY = "SELECTED_PASSWORD_OPTION_KEY"
         private const val SELECTED_LANGUAGE_KEY = "SELECTED_TRANSFER_LANGUAGE_KEY"
+        private const val SELECTED_ORGANIZATION_ACCOUNT_KEY = "SELECTED_ORGANIZATION_ACCOUNT_KEY"
 
         private const val NO_PASSWORD = ""
     }
