@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2025 Infomaniak Network SA
+ * Copyright (C) 2025-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.Uploa
 import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.ContainerErrorsException
 import com.infomaniak.swisstransfer.BuildConfig
+import kotlin.uuid.ExperimentalUuidApi
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException as KmpNetworkException
 
 class UploadSessionStarterV1(
@@ -59,6 +60,7 @@ class UploadSessionStarterV1(
     }
 
     //region App Integrity
+    @OptIn(ExperimentalUuidApi::class)
     @Throws(AppIntegrityException::class)
     private suspend inline fun fetchNewAttestationToken(): String {
         val challenge = appIntegrityManager.getChallenge()
