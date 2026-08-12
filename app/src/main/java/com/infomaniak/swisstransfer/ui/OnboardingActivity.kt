@@ -103,7 +103,7 @@ class OnboardingActivity : ComponentActivity() {
                 val loginFlowController = LoginUtils.rememberLoginFlowController(
                     infomaniakLogin = infomaniakLogin,
                     userExistenceChecker = accountUtils,
-                    { userLoginResult ->
+                    onLoginResult = { userLoginResult ->
                         when (userLoginResult) {
                             is UserLoginResult.Success -> loginUsersIntoTheApp(listOf(userLoginResult.user))
                             is UserLoginResult.Failure -> scope.launch { snackbarHostState.showSnackbar(userLoginResult.errorMessage) }
