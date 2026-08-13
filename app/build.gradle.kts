@@ -210,7 +210,7 @@ dependencies {
     implementation(core.infomaniak.core.sentry)
     implementation(core.infomaniak.core.sharedvalues)
     implementation(core.infomaniak.core.thumbnails)
-    implementation(core.infomaniak.core.twofactorauth.back)
+    implementation(core.infomaniak.core.twofactorauth.back.withuserdb)
     implementation(core.infomaniak.core.twofactorauth.front)
     implementation(core.infomaniak.core.ui.compose.accountbottomsheet)
     implementation(core.infomaniak.core.ui.compose.basicbutton)
