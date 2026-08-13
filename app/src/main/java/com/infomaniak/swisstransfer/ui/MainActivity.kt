@@ -134,13 +134,14 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             }
 
             setContent {
-                TwoFactorAuthApprovalAutoManagedBottomSheet(twoFactorAuthManager)
+                val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+                val isInDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })
+
+                TwoFactorAuthApprovalAutoManagedBottomSheet(twoFactorAuthManager, isInDarkTheme = isInDarkTheme)
 
                 val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
                 CompositionLocalProvider(LocalUser provides user) {
-                    val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
-
-                    SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
+                    SwissTransferTheme(isDarkTheme = isInDarkTheme) {
                         MainContent(deepLinkTypeFromURL, deeplinkTransferDirection)
                     }
                 }
