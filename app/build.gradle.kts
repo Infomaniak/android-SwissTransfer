@@ -244,6 +244,7 @@ dependencies {
 
     implementation(libs.swisstransfer.core)
     implementation(libs.swisstransfer.network)
+    implementation(libs.swisstransfer.database)
 
     implementation(core.coil.compose)
     implementation(core.coil.video)

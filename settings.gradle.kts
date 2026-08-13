@@ -35,10 +35,8 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         google()
-        mavenCentral()
-        maven {
-            url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-            content { includeGroup("com.infomaniak.multiplatform_swisstransfer") }
+        mavenCentral {
+            content { excludeGroup("com.infomaniak.multiplatform_swisstransfer") }
         }
         maven {
             url = uri("https://jitpack.io")
@@ -48,6 +46,16 @@ dependencyResolutionManagement {
                 includeModule("com.github.matomo-org", "matomo-sdk-android")
                 includeModule("com.github.AppDevNext.Logcat", "LogcatCoreLib")
             }
+        }
+        maven {
+            name = "infomaniakReposiliteRepositorySnapshots"
+            url = uri("https://maven.infomaniak.app/snapshots")
+            content { includeGroup("com.infomaniak.multiplatform_swisstransfer") }
+        }
+        maven {
+            name = "infomaniakReposiliteRepository"
+            url = uri("https://maven.infomaniak.app/releases")
+            content { includeGroup("com.infomaniak.multiplatform_swisstransfer") }
         }
         // mavenLocal() // Do not put this in production
     }

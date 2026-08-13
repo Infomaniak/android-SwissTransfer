@@ -5,7 +5,7 @@ coreSplashscreen = "1.2.0"
 desugarJDK = "2.1.5"
 qrose = "1.1.2"
 room = "2.8.4"
-swisstransfer = "10.1.0"
+swisstransfer = "10.1.2"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -18,3 +18,4 @@ qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 room-processing = { module = "androidx.room:room-compiler-processing", version.ref = "room" }
 swisstransfer-core = { module = "com.infomaniak.multiplatform_swisstransfer:STCore", version.ref = "swisstransfer" }
 swisstransfer-network = { module = "com.infomaniak.multiplatform_swisstransfer:STNetwork", version.ref = "swisstransfer" }
+swisstransfer-database = { module = "com.infomaniak.multiplatform_swisstransfer:STDatabase", version.ref = "swisstransfer" }
