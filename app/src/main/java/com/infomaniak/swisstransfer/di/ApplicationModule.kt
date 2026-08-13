@@ -75,7 +75,7 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun providesTwoFactorAuthManager(accountUtils: AccountUtils): TwoFactorAuthManager {
-        return TwoFactorAuthManager { accountUtils.getHttpClient(it) }
+        return TwoFactorAuthManager { userId -> accountUtils.getHttpClient(userId) }
     }
 
     @Provides
