@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,14 +47,19 @@ sealed class MainNavigation : NavigationDestination() {
         idTypeName: String = "",
         suffix: String = "",
     ) {
-        val basePath = "${BuildConfig.BASE_URL}/d/{$transferUuidName}/{$idTypeName}$suffix"
-        val basePathForV2 = "${BuildConfig.BASE_URL_V2}/dl/{$transferUuidName}/{$idTypeName}$suffix"
-        val deeplinks = listOf(navDeepLink<T>(basePath), navDeepLink<T>(basePathForV2))
+        val hostsAndPathPrefixes = listOf(
+            BuildConfig.BASE_URL to "d",
+            BuildConfig.BASE_URL to "dl",
+            BuildConfig.BASE_URL_V2 to "dl",
+        )
+        val deeplinkPaths = hostsAndPathPrefixes.map { (baseUrl, pathPrefix) ->
+            "$baseUrl/$pathPrefix/{$transferUuidName}/{$idTypeName}$suffix"
+        }
 
-        animatedComposable<T>(deepLinks = deeplinks, content = content)
+        animatedComposable<T>(deepLinks = deeplinkPaths.map { navDeepLink<T>(it) }, content = content)
     }
 
-    protected fun toTransferIdType(id: String, idType: String): TransferIdType? {
+    protected fun toTransferIdType(id: String, idType: String): TransferIdType {
         return when (idType) {
             LINK_ID_TYPE -> TransferIdType.LinkId(id)
             else -> TransferIdType.TransferId(id)
