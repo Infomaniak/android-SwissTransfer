@@ -548,8 +548,8 @@ private fun PickFilesTitle(@StringRes titleRes: Int, modifier: Modifier = Modifi
 private fun SendButton(
     canSendStatus: () -> CanSendStatus,
     expectsClick: () -> Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
 ) {
     LargeButton(
         modifier = modifier,

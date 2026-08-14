@@ -21,9 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.multiplatform_swisstransfer.database.models.OrganizationAccount
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
-import com.infomaniak.swisstransfer.di.IoDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -33,7 +31,6 @@ import javax.inject.Inject
 @HiltViewModel
 class OrganizationSwitcherViewModel @Inject constructor(
     private val accountManager: AccountManager,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     val selectedOrganization: StateFlow<OrganizationAccount?> = accountManager.selectedOrganizationAccount()
@@ -42,7 +39,7 @@ class OrganizationSwitcherViewModel @Inject constructor(
     val organizations: StateFlow<List<OrganizationAccount>> = accountManager.organizationAccountsForCurrentUser()
         .stateIn(viewModelScope, SharingStarted.Lazily, initialValue = emptyList())
 
-    fun switchToOrganization(organizationAccountId: Long) = viewModelScope.launch(ioDispatcher) {
+    fun switchToOrganization(organizationAccountId: Long) = viewModelScope.launch {
         accountManager.switchToOrganization(organizationAccountId)
     }
 }
