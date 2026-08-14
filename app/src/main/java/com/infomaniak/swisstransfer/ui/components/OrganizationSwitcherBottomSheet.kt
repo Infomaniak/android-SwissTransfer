@@ -71,26 +71,25 @@ fun OrganizationSwitcherBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         title = stringResource(R.string.settingsOptionOrganization),
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .selectableGroup(),
-            ) {
-                organizations.forEachIndexed { index, organization ->
-                    if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = Margin.Large))
-                    OrganizationItem(
-                        organization = organization,
-                        isSelected = organization.id == selectedOrganizationId,
-                        onClick = {
-                            onOrganizationClicked(organization)
-                            sheetState.dismissGracefully(scope, onDismissRequest = { closeBottomSheet() })
-                        },
-                    )
-                }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .selectableGroup(),
+        ) {
+            organizations.forEachIndexed { index, organization ->
+                if (index > 0) HorizontalDivider(modifier = Modifier.padding(horizontal = Margin.Large))
+                OrganizationItem(
+                    organization = organization,
+                    isSelected = organization.id == selectedOrganizationId,
+                    onClick = {
+                        onOrganizationClicked(organization)
+                        sheetState.dismissGracefully(scope, onDismissRequest = { closeBottomSheet() })
+                    },
+                )
             }
-        },
-    )
+        }
+    }
 }
 
 @Composable
@@ -111,37 +110,36 @@ private fun OrganizationItem(
                 shape = CustomShapes.EXTRA_SMALL,
             )
         },
-        content = {
-            Column(modifier = Modifier.weight(1.0f)) {
-                val organizationPack = organization.pack
-                val myKSuiteTier = organization.myKSuiteTier
+    ) {
+        Column(modifier = Modifier.weight(1.0f)) {
+            val organizationPack = organization.pack
+            val myKSuiteTier = organization.myKSuiteTier
 
-                Text(
-                    text = organization.name,
-                    style = SwissTransferTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                when {
-                    myKSuiteTier != null -> {
-                        Image(
-                            imageVector = ImageVector.vectorResource(id = myKSuiteTier.iconRes),
-                            contentDescription = stringResource(myKSuiteTier.descriptionName),
-                        )
-                    }
-                    organizationPack.isNotBlank() -> {
-                        Text(
-                            text = organizationPack.replaceFirstChar { it.titlecase(Locale.getDefault()) },
-                            style = SwissTransferTheme.typography.bodyRegular,
-                            color = SwissTransferTheme.colors.secondaryTextColor,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
+            Text(
+                text = organization.name,
+                style = SwissTransferTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            when {
+                myKSuiteTier != null -> {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = myKSuiteTier.iconRes),
+                        contentDescription = stringResource(myKSuiteTier.descriptionName),
+                    )
+                }
+                organizationPack.isNotBlank() -> {
+                    Text(
+                        text = organizationPack.replaceFirstChar { it.titlecase(Locale.getDefault()) },
+                        style = SwissTransferTheme.typography.bodyRegular,
+                        color = SwissTransferTheme.colors.secondaryTextColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
-        },
-    )
+        }
+    }
 }
 
 @PreviewLightAndDark

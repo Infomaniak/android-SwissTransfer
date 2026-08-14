@@ -57,11 +57,11 @@ private val BOTTOM_SHEET_ITEM_HEIGHT = 56.dp
 @Composable
 fun BottomSheetItem(
     onClick: () -> Unit,
-    content: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     leading: (@Composable RowScope.() -> Unit)? = null,
     trailing: (@Composable RowScope.() -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit,
 ) {
     SharpRippleButton(
         modifier = modifier
