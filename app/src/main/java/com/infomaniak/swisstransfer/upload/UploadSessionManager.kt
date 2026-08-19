@@ -330,7 +330,7 @@ class UploadSessionManager @Inject constructor(
         valueIfCancelled
     })
 
-    private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability().isNetworkAvailable
+    private val isInternetConnectedFlow: SharedFlow<Boolean> = NetworkAvailability.isNetworkAvailable
         .conflate()
         .distinctUntilChanged()
         .shareIn(
