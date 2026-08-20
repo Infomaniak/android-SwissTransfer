@@ -206,8 +206,7 @@ class DownloadWorker @AssistedInject constructor(
     @Singleton
     class Scheduler @Inject constructor(@param:ApplicationContext private val appContext: Context) {
         private val workManager: WorkManager by lazy { WorkManager.getInstance(appContext) }
-        private val networkAvailability = NetworkAvailability()
-        private val isNetworkAvailableFlow get() = networkAvailability.isNetworkAvailable
+        private val isNetworkAvailableFlow get() = NetworkAvailability.isNetworkAvailable
 
         fun scheduleWork(transferId: String, folderId: String?): UniqueDownloadId {
             val uniqueWorkName = uniqueWorkName(transferId, folderId)
