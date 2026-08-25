@@ -25,8 +25,7 @@ plugins {
     alias(core.plugins.android.application)
     alias(core.plugins.dagger.hilt)
     alias(core.plugins.compose.compiler)
-    alias(core.plugins.kapt)
-    alias(core.plugins.kotlin.android)
+    alias(core.plugins.ksp)
     alias(core.plugins.sentry.plugin)
     kotlin("plugin.parcelize")
     kotlin("plugin.serialization") version core.versions.kotlin
@@ -52,8 +51,6 @@ android {
         targetSdk = appCompileSdk
         versionCode = 2_00_002_01
         versionName = "2.0.2"
-
-        setProperty("archivesBaseName", "swisstransfer-$versionName ($versionCode)")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -129,6 +126,7 @@ android {
 
     buildFeatures {
         compose = true
+        resValues = true
     }
 
     packaging {
@@ -138,14 +136,15 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-}
 
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.valueOf("JVM_${javaVersion.name.substringAfter("VERSION_")}")
     }
+}
+
+base {
+    archivesName = "swisstransfer-${android.defaultConfig.versionName} (${android.defaultConfig.versionCode})"
 }
 
 val isRelease = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
@@ -257,9 +256,8 @@ dependencies {
     // Hilt
     implementation(core.hilt.android)
     implementation(core.hilt.work)
-    kapt(core.hilt.compiler)
-    kapt(core.hilt.androidx.compiler)
-    kapt(libs.room.processing) // TODO[workaround]: Remove when https://github.com/google/dagger/issues/4693 is fixed.
+    ksp(core.hilt.compiler)
+    ksp(core.hilt.androidx.compiler)
     implementation(core.hilt.navigation.compose)
 
     // Others
