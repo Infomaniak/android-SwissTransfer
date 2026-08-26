@@ -159,7 +159,7 @@
     <string name="settingsPasswordToggleDescription">Schutz aktivieren</string>
     <string name="settingsSignIn">Anmelden</string>
     <string name="settingsSwitchAccount">Konto wechseln</string>
-    <string name="settingsThemeTitle">Wähle ein Thema aus</string>
+    <string name="settingsThemeTitle">Wähle ein Design aus</string>
     <string name="settingsTitle">Einstellungen</string>
     <string name="settingsValidityPeriodTitle">Legt eine Standardgültigkeitsdauer für deine Transfers fest</string>
     <plurals name="settingsValidityPeriodValue">
