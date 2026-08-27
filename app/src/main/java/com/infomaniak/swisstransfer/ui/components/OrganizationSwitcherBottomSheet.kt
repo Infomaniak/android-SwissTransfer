@@ -95,8 +95,8 @@ fun OrganizationSwitcherBottomSheet(
 @Composable
 private fun OrganizationItem(
     organization: OrganizationAccount,
-    isSelected: Boolean,
     onClick: () -> Unit,
+    isSelected: Boolean,
 ) {
     BottomSheetItem(
         onClick = onClick,
