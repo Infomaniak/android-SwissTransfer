@@ -83,7 +83,7 @@ private fun OrganizationSwitcher(
 
     Row(
         modifier = modifier
-            .offset(x = -Margin.Mini)
+            .offset(x = -Margin.Mini) // Helps to align the org avatar without cutting the touch feedback off.
             .clip(CustomShapes.SMALL)
             .clickable { showBottomSheet = true }
             .padding(Margin.Mini),
