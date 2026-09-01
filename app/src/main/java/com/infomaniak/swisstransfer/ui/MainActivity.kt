@@ -28,6 +28,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -183,6 +184,9 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
 
         if (shouldDisplayReviewDialog && shouldDisplayUpdateRequiredScreen.not()) {
             val feedbackUrl = stringResource(R.string.urlUserReport)
+            LaunchedEffect(Unit) {
+                inAppReviewManager.onReviewDialogShown()
+            }
             ReviewAlertDialog(
                 onUserWantsToReview = inAppReviewManager::onUserWantsToReview,
                 onUserWantsToGiveFeedback = { inAppReviewManager.onUserWantsToGiveFeedback(feedbackUrl) },
