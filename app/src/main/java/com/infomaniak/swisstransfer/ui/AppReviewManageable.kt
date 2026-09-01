@@ -27,11 +27,9 @@ interface AppReviewManageable {
     fun initAppReviewManager() = inAppReviewManager.init(
         countdownBehavior = Behavior.Manual,
         appReviewThreshold = APP_REVIEW_THRESHOLD,
-        maxAppReviewThreshold = MAX_APP_REVIEW_THRESHOLD,
     )
 
     companion object {
         private const val APP_REVIEW_THRESHOLD = 2
-        private const val MAX_APP_REVIEW_THRESHOLD = 10
     }
 }
