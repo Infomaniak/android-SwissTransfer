@@ -26,7 +26,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.infomaniak.core.network.networking.HttpClient
+import com.infomaniak.core.network.networking.DefaultHttpClientProvider
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -64,7 +64,7 @@ class AppDownloadManager @Inject constructor(
     private val fileManager: FileManager,
     private val sharedApiUrlCreator: SharedApiUrlCreator,
 ) {
-    private val httpClient = createHttpClient(HttpClient.okHttpClient)
+    private val httpClient = createHttpClient(DefaultHttpClientProvider.okHttpClient)
 
     suspend fun downloadFolderToPublicDownload(
         transferUi: TransferUi,
