@@ -279,7 +279,7 @@ private fun SettingsItems(
 
         AnimatedVisibility(currentUser != null) {
             LogoutItem(
-                currentUserEmail = currentUser?.email,
+                currentUserDisplayName = currentUser?.displayName,
                 isSelected = { selectedSetting == Logout },
                 onConfirmClick = { onActionAndMatomo(Logout) },
             )
@@ -321,13 +321,13 @@ private fun SettingsItems(
 }
 
 @Composable
-private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onConfirmClick: () -> Unit) {
+private fun LogoutItem(currentUserDisplayName: String?, isSelected: () -> Boolean, onConfirmClick: () -> Unit) {
     var shouldDisplayLogoutDialog by rememberSaveable { mutableStateOf(false) }
 
-    if (shouldDisplayLogoutDialog && currentUserEmail != null) {
+    if (shouldDisplayLogoutDialog && currentUserDisplayName != null) {
         SwissTransferAlertDialog(
             title = stringResource(RCore.string.confirmLogoutTitle),
-            description = stringResource(RCore.string.confirmLogoutDescription, currentUserEmail),
+            description = stringResource(RCore.string.confirmLogoutDescription, currentUserDisplayName),
             onDismiss = {
                 shouldDisplayLogoutDialog = false
             },
