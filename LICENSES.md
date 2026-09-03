@@ -21,6 +21,7 @@ SwissTransfer for Android uses various open source libraries. This is an informa
 | [Google Material Components for Android](https://github.com/material-components/material-components-android) | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | [Google Play App Update](https://developer.android.com/guide/playcore/in-app-updates) | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | [Google Play Review](https://developer.android.com/guide/playcore/in-app-review) | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
+| [Infomaniak Core](https://github.com/Infomaniak/android-Core) | [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) |
 | [Jetpack Compose](https://developer.android.com/jetpack/compose) | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | [Kotlin Standard Library](https://kotlinlang.org/) | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
 | [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines) | [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) |

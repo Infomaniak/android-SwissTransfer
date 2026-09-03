@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Infomaniak SwissTransfer - Android
-  ~ Copyright (C) 2024 Infomaniak Network SA
+  ~ Copyright (C) 2024-2026 Infomaniak Network SA
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Di’ la tua</string>
     <string name="settingsOptionNone">Nessuno</string>
     <string name="settingsOptionNotifications">Notifiche</string>
+    <string name="settingsOptionOrganization">Invia con</string>
     <string name="settingsOptionPassword">Password</string>
     <string name="settingsOptionShareIdeas">Condividi le tue idee</string>
     <string name="settingsOptionTermsAndConditions">Termini e condizioni</string>

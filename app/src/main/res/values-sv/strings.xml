@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Ge din åsikt</string>
     <string name="settingsOptionNone">Ingen</string>
     <string name="settingsOptionNotifications">Aviseringar</string>
+    <string name="settingsOptionOrganization">Skicka med</string>
     <string name="settingsOptionPassword">Lösenord</string>
     <string name="settingsOptionShareIdeas">Dela dina idéer</string>
     <string name="settingsOptionTermsAndConditions">Villkor</string>

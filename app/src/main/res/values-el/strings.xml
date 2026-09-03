@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Δώσε τη γνώμη σου</string>
     <string name="settingsOptionNone">Κανένα</string>
     <string name="settingsOptionNotifications">Ειδοποιήσεις</string>
+    <string name="settingsOptionOrganization">Αποστολή με</string>
     <string name="settingsOptionPassword">Κωδικός πρόσβασης</string>
     <string name="settingsOptionShareIdeas">Μοιράσου τις ιδέες σου</string>
     <string name="settingsOptionTermsAndConditions">Όροι και προϋποθέσεις</string>

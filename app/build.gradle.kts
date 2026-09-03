@@ -200,6 +200,7 @@ dependencies {
     implementation(core.infomaniak.core.filetypes)
     implementation(core.infomaniak.core.inappreview)
     implementation(core.infomaniak.core.inappupdate)
+    implementation(core.infomaniak.core.ksuite.myksuite)
     implementation(core.infomaniak.core.matomo)
     implementation(core.infomaniak.core.network)
     implementation(core.infomaniak.core.network.ktor)

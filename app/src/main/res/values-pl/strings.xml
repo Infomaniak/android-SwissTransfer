@@ -153,6 +153,7 @@
     <string name="settingsOptionGiveFeedback">Podziel się opinią</string>
     <string name="settingsOptionNone">Brak</string>
     <string name="settingsOptionNotifications">Powiadomienia</string>
+    <string name="settingsOptionOrganization">Wyślij przez</string>
     <string name="settingsOptionPassword">Hasło</string>
     <string name="settingsOptionShareIdeas">Podziel się swoimi pomysłami</string>
     <string name="settingsOptionTermsAndConditions">Regulamin</string>

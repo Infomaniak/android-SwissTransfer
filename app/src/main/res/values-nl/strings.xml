@@ -147,6 +147,7 @@
     <string name="settingsOptionGiveFeedback">Geef je mening</string>
     <string name="settingsOptionNone">Geen</string>
     <string name="settingsOptionNotifications">Meldingen</string>
+    <string name="settingsOptionOrganization">Versturen met</string>
     <string name="settingsOptionPassword">Wachtwoord</string>
     <string name="settingsOptionShareIdeas">Deel je ideeën</string>
     <string name="settingsOptionTermsAndConditions">Algemene voorwaarden</string>

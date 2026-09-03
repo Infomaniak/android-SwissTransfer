@@ -1,6 +1,6 @@
 /*
  * Infomaniak SwissTransfer - Android
- * Copyright (C) 2024 Infomaniak Network SA
+ * Copyright (C) 2024-2026 Infomaniak Network SA
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,8 +110,8 @@ private val AVATAR_SHAPE = CircleShape
 fun MyAccountScreen(
     users: () -> List<User>,
     onAction: (MyAccountSettingAction) -> Unit,
-    getSelectedSetting: () -> MyAccountSettingAction?,
     modifier: Modifier = Modifier,
+    getSelectedSetting: () -> MyAccountSettingAction?,
 ) {
     val selectedSetting = getSelectedSetting()
     val windowAdaptiveInfo = LocalWindowAdaptiveInfo.current
@@ -129,11 +129,15 @@ fun MyAccountScreen(
             } else {
                 BrandTopAppBar()
             }
-        }
+        },
     ) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Profile(modifier = Modifier.padding(vertical = Margin.Large))
-            SettingsItems(selectedSetting, onAction, showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true })
+            SettingsItems(
+                selectedSetting = selectedSetting,
+                onAction = onAction,
+                showAccountSwitchBottomSheet = { showAccountSwitchBottomSheet = true },
+            )
         }
 
         val selectedUserId = LocalUser.current?.id
