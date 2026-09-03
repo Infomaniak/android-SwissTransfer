@@ -73,6 +73,8 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackSwitchUserBottomSheet
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
@@ -330,10 +332,14 @@ private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onC
                 shouldDisplayLogoutDialog = false
             },
             positiveButton = {
-                SwissTransferAlertDialogDefaults.ConfirmButton {
-                    onConfirmClick()
-                    shouldDisplayLogoutDialog = false
-                }
+                SmallButton(
+                    stringResource(RCore.string.buttonLogOut),
+                    onClick = {
+                        onConfirmClick()
+                        shouldDisplayLogoutDialog = false
+                    },
+                    style = ButtonType.Destructive,
+                )
             },
             negativeButton = {
                 SwissTransferAlertDialogDefaults.CancelButton {
