@@ -36,7 +36,7 @@ import io.sentry.protocol.User as SentryUser
 class AccountUtils @Inject constructor(
     private val accountManager: AccountManager,
     @ApplicationContext context: Context,
-) : PersistedCurrentUserAccountUtils(context, MainApplication.userDataCleanableList) {
+) : PersistedCurrentUserAccountUtils(context, { MainApplication.userDataCleanableList }) {
 
     suspend fun activate(): Nothing {
 
