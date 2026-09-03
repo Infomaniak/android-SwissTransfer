@@ -36,7 +36,6 @@
     <string name="cantImportFileX">Kan het bestand %s niet importeren</string>
     <string name="cantOpenFile">Dit bestand kan niet vanuit de app worden geopend.</string>
     <string name="checkingFiles">Bestanden controleren…</string>
-    <string name="confirmLogoutDescription">Weet je zeker dat je wilt uitloggen van %s?</string>
     <string name="contentDescriptionButtonBack">Terug</string>
     <string name="contentDescriptionButtonClose">Sluiten</string>
     <string name="contentDescriptionButtonHidePassword">Wachtwoord verbergen</string>
@@ -137,7 +136,6 @@
     <string name="settingsEmailLanguageValueItalian">Italiaans</string>
     <string name="settingsEmailLanguageValueSpanish">Spaans</string>
     <string name="settingsHelpAndSupport">Hulp &amp; Ondersteuning</string>
-    <string name="settingsLogOut">Uitloggen</string>
     <string name="settingsMatomoDescription">Matomo is een analysetool die uitsluitend door Infomaniak wordt gehost en beheerd om te begrijpen hoe de applicatie wordt gebruikt.\n\nDoor deze gegevens te bestuderen, kan ons team de interface van de applicatie voortdurend verbeteren.</string>
     <string name="settingsNotificationsTitle">Selecteer een voorkeur</string>
     <string name="settingsOptionActivated">Geactiveerd</string>

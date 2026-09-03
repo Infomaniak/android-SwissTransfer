@@ -73,6 +73,8 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackMyAccount
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer.trackSwitchUserBottomSheet
 import com.infomaniak.swisstransfer.ui.components.BrandTopAppBar
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
 import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
@@ -277,7 +279,7 @@ private fun SettingsItems(
 
         AnimatedVisibility(currentUser != null) {
             LogoutItem(
-                currentUserEmail = currentUser?.email,
+                currentUserDisplayName = currentUser?.displayName,
                 isSelected = { selectedSetting == Logout },
                 onConfirmClick = { onActionAndMatomo(Logout) },
             )
@@ -319,21 +321,25 @@ private fun SettingsItems(
 }
 
 @Composable
-private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onConfirmClick: () -> Unit) {
+private fun LogoutItem(currentUserDisplayName: String?, isSelected: () -> Boolean, onConfirmClick: () -> Unit) {
     var shouldDisplayLogoutDialog by rememberSaveable { mutableStateOf(false) }
 
-    if (shouldDisplayLogoutDialog && currentUserEmail != null) {
+    if (shouldDisplayLogoutDialog && currentUserDisplayName != null) {
         SwissTransferAlertDialog(
-            title = stringResource(R.string.settingsLogOut),
-            description = stringResource(R.string.confirmLogoutDescription, currentUserEmail),
+            title = stringResource(RCore.string.confirmLogoutTitle),
+            description = stringResource(RCore.string.confirmLogoutDescription, currentUserDisplayName),
             onDismiss = {
                 shouldDisplayLogoutDialog = false
             },
             positiveButton = {
-                SwissTransferAlertDialogDefaults.ConfirmButton {
-                    onConfirmClick()
-                    shouldDisplayLogoutDialog = false
-                }
+                SmallButton(
+                    stringResource(RCore.string.buttonLogOut),
+                    onClick = {
+                        onConfirmClick()
+                        shouldDisplayLogoutDialog = false
+                    },
+                    style = ButtonType.Destructive,
+                )
             },
             negativeButton = {
                 SwissTransferAlertDialogDefaults.CancelButton {
@@ -344,7 +350,7 @@ private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onC
     }
 
     SettingItem(
-        titleRes = R.string.settingsLogOut,
+        titleRes = RCore.string.buttonLogOut,
         isSelected = isSelected,
         icon = AppIcons.DoorRectangleArrowRight,
         onClick = { shouldDisplayLogoutDialog = true },

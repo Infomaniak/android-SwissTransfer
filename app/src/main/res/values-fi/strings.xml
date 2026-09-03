@@ -36,7 +36,6 @@
     <string name="cantImportFileX">Tiedostoa %s ei voi tuoda</string>
     <string name="cantOpenFile">Tätä tiedostoa ei voi avata sovelluksesta.</string>
     <string name="checkingFiles">Tarkistetaan tiedostoja…</string>
-    <string name="confirmLogoutDescription">Haluatko varmasti kirjautua ulos tililtä %s?</string>
     <string name="contentDescriptionButtonBack">Takaisin</string>
     <string name="contentDescriptionButtonClose">Sulje</string>
     <string name="contentDescriptionButtonHidePassword">Piilota salasana</string>
@@ -137,7 +136,6 @@
     <string name="settingsEmailLanguageValueItalian">Italia</string>
     <string name="settingsEmailLanguageValueSpanish">Espanja</string>
     <string name="settingsHelpAndSupport">Ohje &amp; Tuki</string>
-    <string name="settingsLogOut">Kirjaudu ulos</string>
     <string name="settingsMatomoDescription">Matomo on analyysityökalu, jota Infomaniak isännöi ja hallinnoi yksinomaan ymmärtääkseen kuinka sovellusta käytetään.\n\nTutkimalla näitä tietoja tiimimme pystyy jatkuvasti parantamaan sovelluksen käyttöliittymää.</string>
     <string name="settingsNotificationsTitle">Valitse asetus</string>
     <string name="settingsOptionActivated">Aktivoitu</string>
