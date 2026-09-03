@@ -41,7 +41,6 @@
     <string name="cantImportFileX">Can’t import the file %s</string>
     <string name="cantOpenFile">This file can’t be opened from the app.</string>
     <string name="checkingFiles">Checking files…</string>
-    <string name="confirmLogoutDescription">Are you sure you want to log out from %s?</string>
     <string name="contentDescriptionButtonBack">Back</string>
     <string name="contentDescriptionButtonClose">Close</string>
     <string name="contentDescriptionButtonHidePassword">Hide password</string>
@@ -142,7 +141,6 @@
     <string name="settingsEmailLanguageValueItalian">Italian</string>
     <string name="settingsEmailLanguageValueSpanish">Spanish</string>
     <string name="settingsHelpAndSupport">Help &amp; Support</string>
-    <string name="settingsLogOut">Log out</string>
     <string name="settingsMatomoDescription">Matomo is an analysis tool hosted and managed exclusively by Infomaniak to understand how the application is used.\n\nBy studying this data, our team is able to continually improve the application’s interface.</string>
     <string name="settingsNotificationsTitle">Select a preference</string>
     <string name="settingsOptionActivated">Activated</string>

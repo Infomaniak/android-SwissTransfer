@@ -36,7 +36,6 @@
     <string name="cantImportFileX">Impossibile importare il file %s</string>
     <string name="cantOpenFile">Questo file non può essere aperto dall’app.</string>
     <string name="checkingFiles">Controllo dei file…</string>
-    <string name="confirmLogoutDescription">Sei sicuro di volerti disconnettere da %s?</string>
     <string name="contentDescriptionButtonBack">Indietro</string>
     <string name="contentDescriptionButtonClose">Chiudi</string>
     <string name="contentDescriptionButtonHidePassword">Nascondere la password</string>
@@ -137,7 +136,6 @@
     <string name="settingsEmailLanguageValueItalian">Italiano</string>
     <string name="settingsEmailLanguageValueSpanish">Spagnolo</string>
     <string name="settingsHelpAndSupport">Aiuto e supporto</string>
-    <string name="settingsLogOut">Disconnettersi</string>
     <string name="settingsMatomoDescription">Matomo è uno strumento di analisi ospitato e gestito esclusivamente da Infomaniak per capire come viene utilizzata l’applicazione.\n\nStudiando questi dati, il nostro team è in grado di migliorare continuamente l’interfaccia dell’applicazione.</string>
     <string name="settingsNotificationsTitle">Seleziona una preferenza</string>
     <string name="settingsOptionActivated">Attivato</string>

@@ -36,7 +36,6 @@
     <string name="cantImportFileX">Não é possível importar o ficheiro %s</string>
     <string name="cantOpenFile">Não é possível abrir este ficheiro a partir da aplicação.</string>
     <string name="checkingFiles">A verificar ficheiros…</string>
-    <string name="confirmLogoutDescription">Tens a certeza de que queres terminar a sessão de %s?</string>
     <string name="contentDescriptionButtonBack">Voltar</string>
     <string name="contentDescriptionButtonClose">Fechar</string>
     <string name="contentDescriptionButtonHidePassword">Ocultar palavra-passe</string>
@@ -137,7 +136,6 @@
     <string name="settingsEmailLanguageValueItalian">Italiano</string>
     <string name="settingsEmailLanguageValueSpanish">Espanhol</string>
     <string name="settingsHelpAndSupport">Ajuda &amp; Suporte</string>
-    <string name="settingsLogOut">Terminar sessão</string>
     <string name="settingsMatomoDescription">O Matomo é uma ferramenta de análise alojada e gerida exclusivamente pela Infomaniak para compreender como a aplicação é utilizada.\n\nAo estudar estes dados, a nossa equipa consegue melhorar continuamente a interface da aplicação.</string>
     <string name="settingsNotificationsTitle">Selecionar uma preferência</string>
     <string name="settingsOptionActivated">Ativado</string>

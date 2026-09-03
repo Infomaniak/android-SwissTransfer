@@ -324,8 +324,8 @@ private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onC
 
     if (shouldDisplayLogoutDialog && currentUserEmail != null) {
         SwissTransferAlertDialog(
-            title = stringResource(R.string.settingsLogOut),
-            description = stringResource(R.string.confirmLogoutDescription, currentUserEmail),
+            title = stringResource(RCore.string.confirmLogoutTitle),
+            description = stringResource(RCore.string.confirmLogoutDescription, currentUserEmail),
             onDismiss = {
                 shouldDisplayLogoutDialog = false
             },
@@ -344,7 +344,7 @@ private fun LogoutItem(currentUserEmail: String?, isSelected: () -> Boolean, onC
     }
 
     SettingItem(
-        titleRes = R.string.settingsLogOut,
+        titleRes = RCore.string.buttonLogOut,
         isSelected = isSelected,
         icon = AppIcons.DoorRectangleArrowRight,
         onClick = { shouldDisplayLogoutDialog = true },
