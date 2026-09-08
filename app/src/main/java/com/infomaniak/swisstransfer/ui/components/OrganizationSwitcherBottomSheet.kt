@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import com.infomaniak.core.avatar.components.Avatar
 import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
@@ -47,7 +48,6 @@ import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.avatarType
 import com.infomaniak.swisstransfer.ui.utils.myKSuiteTier
-import java.util.Locale
 import com.infomaniak.core.ui.compose.basics.Dimens as CoreDimens
 
 /**
@@ -129,8 +129,9 @@ private fun OrganizationItem(
                     )
                 }
                 organizationPack.isNotBlank() -> {
+                    val locale = Locale.current.platformLocale
                     Text(
-                        text = organizationPack.replaceFirstChar { it.titlecase(Locale.getDefault()) },
+                        text = organizationPack.replaceFirstChar { it.titlecase(locale) },
                         style = SwissTransferTheme.typography.bodyRegular,
                         color = SwissTransferTheme.colors.secondaryTextColor,
                         maxLines = 1,
