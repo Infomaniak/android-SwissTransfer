@@ -40,6 +40,7 @@ import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
+import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.utils.FileUtils
 import com.infomaniak.swisstransfer.di.IoDispatcher
@@ -86,6 +87,7 @@ import javax.inject.Inject
 class PickFilesViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val accountUtils: AccountUtils,
+    private val accountManager: AccountManager,
     private val appSettingsManager: AppSettingsManager,
     private val newTransferOpenManager: NewTransferOpenManager,
     private val savedStateHandle: SavedStateHandle,
@@ -315,7 +317,7 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
-    private fun extractNewTransferParams() = NewTransferParams(
+    private suspend fun extractNewTransferParams() = NewTransferParams(
         validityPeriod = selectedValidityPeriodOption.value.apiValue,
         authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
@@ -324,7 +326,8 @@ class PickFilesViewModel @Inject constructor(
         downloadCountLimit = selectedDownloadLimitOption.value.apiValue,
         languageCode = selectedLanguageOption.value.apiValue,
         recipientsEmails = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) validatedRecipientsEmails else emptySet(),
-        type = selectedTransferTypeFlow.value
+        type = selectedTransferTypeFlow.value,
+        organizationAccountId = selectedOrganizationAccountId.value ?: accountManager.selectedOrganizationAccount().first()?.id,
     )
 
     //region Transfer Type
@@ -336,6 +339,11 @@ class PickFilesViewModel @Inject constructor(
 //endregion
 
     //region Transfer Options
+    val selectedOrganizationAccountId: StateFlow<Long?> = savedStateHandle.getStateFlow(
+        key = SELECTED_ORGANIZATION_ACCOUNT_KEY,
+        initialValue = null,
+    )
+
     val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
         key = SELECTED_VALIDITY_PERIOD_KEY, initialValue = ValidityPeriodOption.THIRTY
     )
@@ -354,6 +362,10 @@ class PickFilesViewModel @Inject constructor(
         key = SELECTED_LANGUAGE_KEY,
         initialValue = EmailLanguageOption.FRENCH,
     )
+
+    fun selectOrganizationAccount(organizationAccountId: Long) {
+        savedStateHandle[SELECTED_ORGANIZATION_ACCOUNT_KEY] = organizationAccountId
+    }
 
     private fun selectTransferValidityPeriod(validityPeriodOption: ValidityPeriodOption) {
         savedStateHandle[SELECTED_VALIDITY_PERIOD_KEY] = validityPeriodOption
@@ -386,6 +398,8 @@ class PickFilesViewModel @Inject constructor(
 
     private fun initTransferOptionsValues() {
         viewModelScope.launch(ioDispatcher) {
+            accountManager.selectedOrganizationAccount().first()?.id?.let(::selectOrganizationAccount)
+
             appSettingsManager.getAppSettings()?.let {
                 selectTransferValidityPeriod(it.validityPeriod.toTransferOption())
                 selectTransferDownloadLimit(it.downloadLimit.toTransferOption())
@@ -487,6 +501,7 @@ class PickFilesViewModel @Inject constructor(
         private const val SELECTED_DOWNLOAD_LIMIT_KEY = "SELECTED_DOWNLOAD_LIMIT_KEY"
         private const val SELECTED_PASSWORD_OPTION_KEY = "SELECTED_PASSWORD_OPTION_KEY"
         private const val SELECTED_LANGUAGE_KEY = "SELECTED_TRANSFER_LANGUAGE_KEY"
+        private const val SELECTED_ORGANIZATION_ACCOUNT_KEY = "SELECTED_ORGANIZATION_ACCOUNT_KEY"
 
         private const val NO_PASSWORD = ""
     }

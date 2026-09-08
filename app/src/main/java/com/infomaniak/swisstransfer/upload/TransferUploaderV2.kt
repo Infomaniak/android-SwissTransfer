@@ -110,7 +110,10 @@ class TransferUploaderV2(
 
     private suspend fun uploadRemainderOrThrow(): TransferUploader.UploadResult {
         uploadFiles()
-        val linkId = uploadManager.finalizeTransferAndGetLinkUuid(transferId = transfer.id)
+        val linkId = uploadManager.finalizeTransferAndGetLinkUuid(
+            transferId = transfer.id,
+            organizationAccountId = startRequest.params.organizationAccountId,
+        )
         val transferUuid = transfer.id
 
         thumbnailsLocalStorage.renameOngoingThumbnailsFolderWith(transfer.id)

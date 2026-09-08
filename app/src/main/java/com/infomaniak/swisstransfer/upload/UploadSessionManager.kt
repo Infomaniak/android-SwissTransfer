@@ -232,6 +232,7 @@ class UploadSessionManager @Inject constructor(
                         workManager = workManager,
                         userId = currentUser!!.id,
                         transferId = destination.value.id,
+                        organizationAccountId = request.organizationAccountId,
                         failed = false
                     ).onFailure {
                         SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferV2CleanupWorker!", it)
