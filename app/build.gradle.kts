@@ -23,6 +23,7 @@ import java.util.Properties
  */
 plugins {
     alias(core.plugins.android.application)
+    alias(core.plugins.infomaniak.android.debug.signing)
     alias(core.plugins.dagger.hilt)
     alias(core.plugins.compose.compiler)
     alias(core.plugins.ksp)
@@ -73,10 +74,6 @@ android {
         }
     }
 
-    val debugSigningConfig = signingConfigs.getByName("debug") {
-        storeFile = rootProject.file("debug.keystore")
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -85,7 +82,6 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
-            signingConfig = debugSigningConfig
         }
     }
     androidComponents.onVariants { variant ->
