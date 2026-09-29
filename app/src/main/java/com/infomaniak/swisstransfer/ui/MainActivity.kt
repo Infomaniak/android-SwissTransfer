@@ -44,6 +44,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.infomaniak.core.inappreview.reviewmanagers.InAppReviewManager
 import com.infomaniak.core.inappupdate.ui.composable.UpdateRequiredScreen
 import com.infomaniak.core.inappupdate.updatemanagers.InAppUpdateManager
+import com.infomaniak.core.twofactorauth.back.TwoFactorAuthManager
+import com.infomaniak.core.twofactorauth.front.TwoFactorAuthApprovalAutoManagedBottomSheet
 import com.infomaniak.multiplatform_swisstransfer.common.models.TransferDirection
 import com.infomaniak.multiplatform_swisstransfer.data.DeepLinkType
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
@@ -76,6 +78,9 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
 
     @Inject
     lateinit var transferManager: TransferManager
+
+    @Inject
+    lateinit var twoFactorAuthManager: TwoFactorAuthManager
 
     @Inject
     lateinit var accountUtils: AccountUtils
@@ -130,11 +135,14 @@ class MainActivity : ComponentActivity(), AppReviewManageable, AppUpdateManageab
             }
 
             setContent {
+                val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
+                val isInDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })
+
+                TwoFactorAuthApprovalAutoManagedBottomSheet(twoFactorAuthManager, isInDarkTheme = isInDarkTheme)
+
                 val user by accountUtils.currentUserFlow.collectAsStateWithLifecycle(initialValue = null)
                 CompositionLocalProvider(LocalUser provides user) {
-                    val appSettings by myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(initialValue = null)
-
-                    SwissTransferTheme(isDarkTheme = isDarkTheme(getTheme = { appSettings?.theme })) {
+                    SwissTransferTheme(isDarkTheme = isInDarkTheme) {
                         MainContent(deepLinkTypeFromURL, deeplinkTransferDirection)
                     }
                 }
