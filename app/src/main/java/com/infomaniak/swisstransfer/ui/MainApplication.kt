@@ -18,6 +18,8 @@
 package com.infomaniak.swisstransfer.ui
 
 import android.app.Application
+import android.app.backup.BackupAgent
+import android.content.Context
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.infomaniak.core.common.AssociatedUserDataCleanable
@@ -93,8 +95,6 @@ class MainApplication : Application(), Configuration.Provider {
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
-    private val applicationScope = CoroutineScope(Dispatchers.Default + CoroutineName("MainApplication"))
-
     override fun onCreate() {
         super.onCreate()
 
@@ -136,30 +136,37 @@ class MainApplication : Application(), Configuration.Provider {
         )
     }
 
-    /**
-     * Reasons to discard Sentry events :
-     * - Application is in Debug mode
-     * - User deactivated Sentry tracking in DataManagement settings
-     * - The exception was a NetworkException or a [CancellationException] or a [KmpNetworkException],
-     *   and we don't want to send them to Sentry
-     */
-    private fun configureSentry() {
-        val isSentryEnabled: StateFlow<Boolean> = dataManagementDataStore.data
-            .map { prefs ->
-                prefs[IsSentryAuthorized.dataStoreKey] ?: DataManagementPreferencesDefaults.IsSentryAuthorizedDefault
-            }
-            .stateIn(applicationScope, SharingStarted.Eagerly, initialValue = false)
-
-        this.configureSentry(
-            isDebug = BuildConfig.DEBUG,
-            isSentryTrackingEnabled = { isSentryEnabled.value },
-            isFilteredException = { exception -> exception is KmpNetworkException },
-        )
-    }
-
     companion object {
         @JvmStatic
         var userDataCleanableList: List<AssociatedUserDataCleanable> = emptyList()
             private set
+
+        private val applicationScope = CoroutineScope(Dispatchers.Default + CoroutineName("MainApplication"))
+
+        context(context: BackupAgent)
+        fun configureSentry() {
+            context.configureSentry()
+        }
+
+        /**
+         * Reasons to discard Sentry events :
+         * - Application is in Debug mode
+         * - User deactivated Sentry tracking in DataManagement settings
+         * - The exception was a NetworkException or a [CancellationException] or a [KmpNetworkException],
+         *   and we don't want to send them to Sentry
+         */
+        private fun Context.configureSentry() {
+            val isSentryEnabled: StateFlow<Boolean> = dataManagementDataStore.data
+                .map { prefs ->
+                    prefs[IsSentryAuthorized.dataStoreKey] ?: DataManagementPreferencesDefaults.IsSentryAuthorizedDefault
+                }
+                .stateIn(applicationScope, SharingStarted.Eagerly, initialValue = false)
+
+            configureSentry(
+                isDebug = BuildConfig.DEBUG,
+                isSentryTrackingEnabled = { isSentryEnabled.value },
+                isFilteredException = { exception -> exception is KmpNetworkException },
+            )
+        }
     }
 }

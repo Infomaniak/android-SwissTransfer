@@ -23,22 +23,36 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <include domain="root" path="." />
-        <include domain="file" path="." />
-        <include domain="sharedpref" path="." />
-        <include domain="external" path="." />
-        <include domain="database" path="." />
+        <include domain="sharedpref" path="AccountPreferences" />
 
-        <exclude domain="database" path="user_database" />
-        <exclude domain="database" path="user_database-shm" />
-        <exclude domain="database" path="user_database-wal" />
+        <include domain="database" path="user_database" />
+        <include domain="database" path="swisstransfer" />
+
+        <include domain="sharedpref" path="AccountPreferences" />
+
+        <include domain="file" path="AppSettings.realm" />
+        <include domain="file" path="AppSettings.realm.management/" />
+
+        <!-- Actual user id for this Realm DB is always -1. -->
+        <include domain="file" path="Transfers--1.realm" />
+        <include domain="file" path="Transfers--1.realm.management/" />
     </cloud-backup>
 
     <device-transfer>
-        <include domain="root" path="." />
-        <include domain="file" path="." />
+        <include domain="file" path="thumbnails" />
+
         <include domain="database" path="." />
-        <include domain="sharedpref" path="." />
-        <include domain="external" path="." />
+
+        <include domain="sharedpref" path="AccountPreferences" />
+
+        <include domain="file" path="AppSettings.realm" />
+        <include domain="file" path="AppSettings.realm.management/" />
+
+        <include domain="file" path="AppSettings.realm" />
+        <include domain="file" path="AppSettings.realm.management/" />
+
+        <!-- Actual user id for this Realm DB is always -1. -->
+        <include domain="file" path="Transfers--1.realm" />
+        <include domain="file" path="Transfers--1.realm.management/" />
     </device-transfer>
 </data-extraction-rules>
