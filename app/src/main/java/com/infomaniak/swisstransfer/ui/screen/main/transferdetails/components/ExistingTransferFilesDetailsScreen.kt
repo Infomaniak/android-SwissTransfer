@@ -127,10 +127,14 @@ fun ExistingTransferFilesDetailsScreen(
                     val selectedFiles = fileList.filter { it.uid in selectedUids }
                     ExistingTransferFilesDetailsBottomBar(
                         selectedFiles = { selectedFiles },
-                        transferIdType = transferIdType,
-                        filesDetailsViewModel = filesDetailsViewModel,
+                        onDownloadSelectionClick = {
+                            filesDetailsViewModel.triggerFilesSelectionDownload(
+                                transferIdType = transferIdType,
+                                selectedFiles = selectedFiles,
+                                direction = transferDirection
+                            )
+                        },
                         onCancelSelection = onCancelSelection,
-                        direction = transferDirection,
                     )
                 }
             }
@@ -217,9 +221,7 @@ private fun ExistingTransferFilesDetailsTopBar(
 @Composable
 private fun ExistingTransferFilesDetailsBottomBar(
     selectedFiles: () -> List<FileUi>,
-    transferIdType: TransferIdType,
-    direction: TransferDirection,
-    filesDetailsViewModel: FilesDetailsViewModel,
+    onDownloadSelectionClick: () -> Unit,
     onCancelSelection: () -> Unit,
 ) {
     val writePermissionManager = rememberPermissionManagerState(PermissionType.WriteExternalStorage)
@@ -229,7 +231,7 @@ private fun ExistingTransferFilesDetailsBottomBar(
             labelResId = R.string.buttonDownloadSelected,
             enabled = selectedFiles().isNotEmpty(),
             onClick = writePermissionManager.dropIfDenied {
-                filesDetailsViewModel.triggerFilesSelectionDownload(transferIdType, selectedFiles(), direction)
+                onDownloadSelectionClick()
                 onCancelSelection()
             },
             modifier = Modifier.weight(1f),

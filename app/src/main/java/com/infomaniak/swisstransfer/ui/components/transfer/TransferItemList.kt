@@ -32,6 +32,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -64,6 +66,7 @@ fun TransferItemList(
     emptyState: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val movableEmptyState = remember(emptyState) { movableContentOf { emptyState() } }
     val headerContent = @Composable {
         Column(verticalArrangement = Arrangement.spacedBy(Margin.Mini)) {
             SmallOrMediumWindowScreenTitle(title = header.title)
@@ -79,10 +82,10 @@ fun TransferItemList(
             if (header.showWhenEmpty()) {
                 Column(modifier = Modifier.fillMaxHeight()) {
                     Box(modifier = Modifier.padding(horizontal = Margin.Medium, vertical = Margin.Large)) { headerContent() }
-                    Box(modifier = Modifier.weight(1.0f)) { emptyState() }
+                    Box(modifier = Modifier.weight(1.0f)) { movableEmptyState() }
                 }
             } else {
-                emptyState()
+                movableEmptyState()
             }
         } else {
             TransferItemList(

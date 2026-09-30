@@ -66,6 +66,7 @@ import com.infomaniak.swisstransfer.ui.utils.isWindowSmall
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
+@Suppress("ComposeViewModelForwarding")
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun TransfersScreenWrapper(
@@ -125,6 +126,7 @@ private fun ThreePaneScaffoldNavigator<DestinationContent>.HandleDeepLink(
     }
 }
 
+@Suppress("ComposeViewModelForwarding")
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun ListPane(
