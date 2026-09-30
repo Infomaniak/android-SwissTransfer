@@ -67,6 +67,7 @@ fun SettingItem(
         .fillMaxWidth()
         .heightIn(min = ITEM_MIN_HEIGHT)
 
+    @Suppress("ComposeModifierReused") // Fine because it's only used once at a time.
     onClick?.let {
         SharpRippleButton(
             modifier = itemModifier,

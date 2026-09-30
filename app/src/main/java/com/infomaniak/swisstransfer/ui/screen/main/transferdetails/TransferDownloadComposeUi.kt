@@ -289,6 +289,7 @@ class TransferDownloadComposeUi(
 
     @Composable
     private fun DownloadStatus(
+        @Suppress("SlotReused") // Irrelevant for our use case where the parameters change on each when branch.
         button: @Composable (
             data: ButtonData,
             action: CallableState<Unit>,
