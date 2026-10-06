@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import io.sentry.android.gradle.extensions.InstrumentationFeature
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
+import kotlin.enums.enumEntries
 
 /**
  * Don't change the order in this `plugins` block, it will mess things up.
@@ -167,6 +169,11 @@ configurations.configureEach {
 
 sentry {
     autoInstallation.sentryVersion.set(core.versions.sentry)
+    tracingInstrumentation {
+        // Sentry SQLite integration is incompatible with Room 2.7 / BundledSQLiteConnection prepared statement caching,
+        // plus we are not using it.
+        features.set(enumEntries<InstrumentationFeature>() - InstrumentationFeature.DATABASE)
+    }
     org = "sentry"
     projectName = "swisstransfer-android"
     authToken = sentryAuthToken
