@@ -29,7 +29,7 @@ class SwissTransferFullBackupAgent : FullBackupAgent(RestorationPolicy.AllBacked
         MainApplication.configureSentry()
     }
 
-    override fun onFullBackup(data: FullBackupDataOutput) = withBlockStoreCredentialsBackup {
+    override fun onFullBackup(data: FullBackupDataOutput) = withBlockStoreCredentialsBackup(data) {
         super.onFullBackup(data)
     }
 }
