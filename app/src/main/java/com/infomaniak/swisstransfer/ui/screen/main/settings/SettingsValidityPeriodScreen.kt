@@ -77,6 +77,7 @@ enum class ValidityPeriodOption(
     THIRTY(apiValue = ValidityPeriod.THIRTY, matomoName = MatomoName.ThirtyDays),
     FIFTEEN(apiValue = ValidityPeriod.FIFTEEN, matomoName = MatomoName.FifteenDays),
     SEVEN(apiValue = ValidityPeriod.SEVEN, matomoName = MatomoName.SevenDays),
+    THREE(apiValue = ValidityPeriod.THREE, matomoName = MatomoName.ThreeDays),
     ONE(apiValue = ValidityPeriod.ONE, matomoName = MatomoName.OneDay);
 
     override val title: @Composable () -> String = { getValidityPeriodTitle(apiValue) }
@@ -86,6 +87,7 @@ enum class ValidityPeriodOption(
             ValidityPeriod.THIRTY -> THIRTY
             ValidityPeriod.FIFTEEN -> FIFTEEN
             ValidityPeriod.SEVEN -> SEVEN
+            ValidityPeriod.THREE -> THREE
             ValidityPeriod.ONE -> ONE
         }
     }
