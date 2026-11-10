@@ -26,18 +26,24 @@ sealed interface ValidateEmailUiStatus {
      */
     data class WaitingForCode(
         val onValidationRequest: (otp: String) -> Unit,
-        val onCodeResendRequest: () -> Unit,
+        val resendCode: suspend () -> Boolean,
         val lastSentCodeExpiration: TimeMark?,
-        val lastIssue: Issue?
+        val lastIssue: DismissableIssue?
     ) : ValidateEmailUiStatus
 
     data object SendingCode : ValidateEmailUiStatus
 
-    sealed interface Issue {
-        data object UnknownError : Issue
-        data object NoNetwork : Issue
-        data object InvalidVerificationCode : Issue
-        data object VerificationCodeExpired : Issue
-        data object TooManyAttempts : Issue
+    data class DismissableIssue(
+        val cause: Cause,
+        val dismiss: () -> Unit,
+    ) {
+        sealed interface Cause {
+            data object UnknownError : Cause
+            data object NoNetwork : Cause
+            data object InvalidVerificationCode : Cause
+            data object VerificationCodeExpired : Cause
+            data object TooManyAttempts : Cause
+        }
     }
+
 }

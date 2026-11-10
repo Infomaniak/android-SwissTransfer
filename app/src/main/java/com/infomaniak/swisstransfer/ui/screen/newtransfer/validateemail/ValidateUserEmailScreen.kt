@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,8 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.currentStateAsState
+import com.infomaniak.core.common.firstIsInstance
+import com.infomaniak.core.common.safeCast
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
 import com.infomaniak.core.ui.compose.margin.Margin
@@ -58,8 +60,7 @@ import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
 import com.infomaniak.swisstransfer.ui.components.LargeButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferTopAppBar
 import com.infomaniak.swisstransfer.ui.components.TopAppBarButtons
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidateEmailUiState
-import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateUserEmailViewModel.ValidationRequest
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateEmailUiStatus.DismissableIssue
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.CodeVerification
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components.ResendCodeCountDownButton
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
@@ -68,7 +69,11 @@ import com.infomaniak.swisstransfer.ui.utils.TextUtils
 import com.infomaniak.swisstransfer.ui.utils.isWindowLarge
 import com.infomaniak.swisstransfer.ui.utils.openMailApp
 import com.infomaniak.swisstransfer.upload.UploadState
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 private val MIMETYPE_TEXT = "text/*"
@@ -81,10 +86,15 @@ fun ValidateUserEmailScreen(
 ) {
 
     val emailToValidate = state.info.authorEmail
-    val uiState by validateUserEmailViewModel.uiState.collectAsStateWithLifecycle()
-    val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiState.Loading } }
-    val isInvalidVerificationCode by remember { derivedStateOf { uiState == ValidateEmailUiState.InvalidVerificationCode } }
-
+    val validationStatusFlow = validateUserEmailViewModel.validationStatus(emailToValidate)
+    val uiState: ValidateEmailUiStatus? by validationStatusFlow.collectAsState(null)
+    val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiStatus.SendingCode } }
+    val isInvalidVerificationCode by remember {
+        derivedStateOf {
+            uiState.safeCast<ValidateEmailUiStatus.WaitingForCode>()
+                ?.lastIssue?.cause == DismissableIssue.Cause.InvalidVerificationCode
+        }
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -113,29 +123,36 @@ fun ValidateUserEmailScreen(
         val clipBoardContent = clipBoardManager.getFirstText() ?: return@LaunchedEffect
         if (Regex("[0-9]{6}").matches(clipBoardContent)) {
             otpCode = clipBoardContent
-            validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, otpCode))
+            validationStatusFlow.firstIsInstance<ValidateEmailUiStatus.WaitingForCode>().onValidationRequest(otpCode)
         }
     }
 
     BackHandler { editTransfer() }
 
-    HandleUnknownValidationError({ uiState }, snackbarHostState)
+    HandleUnknownValidationError({ uiState.safeCast<ValidateEmailUiStatus.WaitingForCode>()?.lastIssue?.cause }, snackbarHostState)
 
     ValidateUserEmailScreen(
         emailToValidate = emailToValidate,
         validateEmailWithOtpCode = { code ->
-            validateUserEmailViewModel.validationRequests(ValidationRequest(emailToValidate, code))
+            scope.launch {
+              validationStatusFlow.firstIsInstance<ValidateEmailUiStatus.WaitingForCode>().onValidationRequest(code)
+            }
         },
-        resetErrorState = validateUserEmailViewModel.resetErrorReq,
+        resetErrorState = {
+            scope.launch {
+                validationStatusFlow.first().safeCast<ValidateEmailUiStatus.WaitingForCode>()?.lastIssue?.dismiss()
+            }
+        },
         isLoading = { isLoading },
         isInvalidVerificationCode = { isInvalidVerificationCode },
         snackbarHostState = snackbarHostState,
         navigateBack = editTransfer,
+        currentCodeExpiration = { uiState.safeCast<ValidateEmailUiStatus.WaitingForCode>()?.lastSentCodeExpiration },
         onResendEmailCode = {
             scope.launch {
-                snackbarHostState.showSnackbar(codeResentFeedback)
+                val sent = validationStatusFlow.first().safeCast<ValidateEmailUiStatus.WaitingForCode>()?.resendCode() == true
+                if (sent) snackbarHostState.showSnackbar(codeResentFeedback)
             }
-            validateUserEmailViewModel.resendEmailReq(emailToValidate)
         },
         otpCode = { otpCode },
         updateOtpCode = { code ->
@@ -145,22 +162,21 @@ fun ValidateUserEmailScreen(
 }
 
 @Composable
-fun HandleUnknownValidationError(uiState: () -> ValidateEmailUiState, snackbarHostState: SnackbarHostState) {
+fun HandleUnknownValidationError(cause: () -> DismissableIssue.Cause?, snackbarHostState: SnackbarHostState) {
     val unknownErrorMessage = stringResource(R.string.validateMailUnknownError)
     val networkUnavailableMessage = stringResource(R.string.networkUnavailable)
 
-    LaunchedEffect(uiState(), unknownErrorMessage, networkUnavailableMessage) {
-        when (uiState()) {
-            ValidateEmailUiState.UnknownError -> {
+    val issue = cause()
+    LaunchedEffect(issue, unknownErrorMessage, networkUnavailableMessage) {
+        when (issue) {
+            DismissableIssue.Cause.UnknownError -> {
                 SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
                 snackbarHostState.showSnackbar(unknownErrorMessage)
             }
-            ValidateEmailUiState.NoNetwork -> {
-                snackbarHostState.showSnackbar(networkUnavailableMessage)
-            }
-            ValidateEmailUiState.Default,
-            ValidateEmailUiState.Loading,
-            ValidateEmailUiState.InvalidVerificationCode -> Unit
+            DismissableIssue.Cause.NoNetwork -> snackbarHostState.showSnackbar(networkUnavailableMessage)
+            DismissableIssue.Cause.TooManyAttempts,
+            DismissableIssue.Cause.InvalidVerificationCode,
+            DismissableIssue.Cause.VerificationCodeExpired, null -> Unit
         }
     }
 }
@@ -174,6 +190,7 @@ private fun ValidateUserEmailScreen(
     isInvalidVerificationCode: () -> Boolean,
     snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
+    currentCodeExpiration: () -> TimeMark?,
     onResendEmailCode: () -> Unit,
     otpCode: () -> String,
     updateOtpCode: (String) -> Unit,
@@ -197,7 +214,12 @@ private fun ValidateUserEmailScreen(
                 enabled = { !isLoading() })
         },
         bottomButton = { modifier ->
-            ResendCodeCountDownButton(onResendEmailCode, enabled = { !isLoading() }, modifier = modifier)
+            ResendCodeCountDownButton(
+                resendEmailCode = onResendEmailCode,
+                enabled = { !isLoading() },
+                currentCodeExpiration = currentCodeExpiration(),
+                modifier = modifier
+            )
         },
     ) {
         val layoutStyle = LayoutStyle.getCurrentLayoutStyle()
@@ -305,6 +327,7 @@ private fun Preview() {
                 isInvalidVerificationCode = { false },
                 snackbarHostState = remember { SnackbarHostState() },
                 navigateBack = {},
+                currentCodeExpiration = { TimeSource.Monotonic.markNow() + 13.seconds },
                 onResendEmailCode = {},
                 otpCode = { "" },
                 updateOtpCode = {},
