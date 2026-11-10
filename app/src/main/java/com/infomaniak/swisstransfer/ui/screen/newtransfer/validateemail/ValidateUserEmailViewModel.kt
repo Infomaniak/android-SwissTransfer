@@ -15,102 +15,129 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@file:OptIn(ExperimentalSplittiesApi::class)
+@file:OptIn(ExperimentalSplittiesApi::class, ExperimentalCoroutinesApi::class)
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.cancellable
-import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
+import com.infomaniak.core.common.dynamicLazyMapOfSharedFlow
+import com.infomaniak.core.common.flowForKey
+import com.infomaniak.multiplatform_swisstransfer.data.EmailValidation
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transformLatest
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
-    private val uploadManager: InMemoryUploadManager
+    private val uploadManager: UploadV2Manager
 ) : ViewModel() {
 
-    val validationRequests = CallableState<ValidationRequest>()
-    val resendEmailReq = CallableState<String>()
-    val resetErrorReq = CallableState<Unit>()
+    fun validationStatus(email: String): Flow<ValidateEmailUiStatus> = validationStatuses.flowForKey(email)
 
-    private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
-    val uiState: StateFlow<ValidateEmailUiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch { run() }
+    val validationStatuses = viewModelScope.dynamicLazyMapOfSharedFlow(
+        cacheManager = { _, _ -> delay(5.seconds) }
+    ) { email: String ->
+        validationStatusFor(email = email)
     }
 
-    private fun updateState(newState: ValidateEmailUiState) {
-        _uiState.value = newState
+    private fun EmailValidation.lastSentCodeExpiration(): TimeMark? {
+        val expirationSeconds = lastSentCodeExpirationTimestampSeconds ?: return null
+        return Instant.fromEpochSeconds(expirationSeconds).toTimeMark()
     }
 
-    private suspend fun run() {
-        var lastIssue: Result.Issue? = null
-        repeatWhileActive {
-            val request: ValidationRequest = raceOf({
-                validationRequests.awaitOneCall()
-            }, {
-                repeatWhileActive {
-                    val email = resendEmailReq.awaitOneCall()
-                    uploadManager.resendEmailCode(email)
-                }
-            }, {
-                lastIssue ?: awaitCancellation()
-                resetErrorReq.awaitOneCall()
-                updateState(ValidateEmailUiState.Default)
-                awaitCancellation()
-            })
-            updateState(ValidateEmailUiState.Loading)
-            val result = tryValidating(email = request.email, otpCode = request.otpCode)
-            val newState: ValidateEmailUiState = when (result) {
-                Result.InvalidVerificationCode -> ValidateEmailUiState.InvalidVerificationCode
-                Result.NoNetwork -> ValidateEmailUiState.NoNetwork
-                Result.UnknownError -> ValidateEmailUiState.UnknownError
-                Result.Success -> awaitCancellation()
+    private fun Instant.toTimeMark(): TimeMark {
+        val nowInstant = Clock.System.now()
+        val nowTimeMark = TimeSource.Monotonic.markNow()
+        val timeFromNow = this - nowInstant
+        return nowTimeMark + timeFromNow
+    }
+
+    private fun validationStatusFor(email: String): Flow<ValidateEmailUiStatus>  {
+        var lastIssue: ValidateEmailUiStatus.Issue? = null
+        return uploadManager.emailValidationStatus(email = email).transformLatest { validationStatus ->
+            if (validationStatus == null) {
+                return@transformLatest // Should not happen since the email validation request shall be created before.
             }
-            lastIssue = result as? Result.Issue
-            updateState(newState)
+            val lastSentCodeExpiration = validationStatus.lastSentCodeExpiration()
+                ?: return@transformLatest // Already validated. Should exit.
+
+            repeatWhileActive {
+                val otpAsync = CompletableDeferred<String>()
+                val codeResendRequests = Channel<Unit>()
+                val waitingForCode = ValidateEmailUiStatus.WaitingForCode(
+                    onValidationRequest = otpAsync::complete,
+                    onCodeResendRequest = { codeResendRequests.trySend(Unit) },
+                    lastSentCodeExpiration = lastSentCodeExpiration,
+                    lastIssue = lastIssue
+                )
+                emit(waitingForCode)
+                val otp: String = raceOf(
+                    { otpAsync.await() },
+                    {
+                        while (true) {
+                            codeResendRequests.receive() // It's UI responsibility to respect the timer.
+                            if (lastSentCodeExpiration.hasPassedNow()) break // Last code expired, accept re-sending.
+                        }
+                        null
+                    }
+                ) ?: return@repeatWhileActive run {
+                    runCatching {
+                        lastIssue = null
+                        emit(waitingForCode.copy(lastSentCodeExpiration = null, onCodeResendRequest = {}, lastIssue = null))
+                        val alreadyValidated = !uploadManager.resendValidationEmail(validationId = validationStatus.id)
+                        if (alreadyValidated) return@transformLatest
+                    }.cancellable().onFailure {
+
+                    }
+                }
+                emit(ValidateEmailUiStatus.SendingCode)
+                lastIssue = tryValidating(email = email, otpCode = otp) ?: return@transformLatest
+            }
         }
     }
 
     enum class ValidateEmailUiState {
-        Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
+        Default,
+        Loading,
+        InvalidVerificationCode,
+        TooManyVerificationAttempts,
+        VerificationCodeExpired,
+        UnknownError,
+        NoNetwork
     }
 
     data class ValidationRequest(val email: String, val otpCode: String)
 
-    private sealed interface Result {
-        data object Success : Result
-        sealed interface Issue : Result
-        data object UnknownError : Issue
-        data object NoNetwork : Issue
-        data object InvalidVerificationCode : Issue
-    }
-
-    private suspend fun tryValidating(email: String, otpCode: String): Result = runCatching {
-        val token = uploadManager.verifyEmailCode(otpCode, email)
-        uploadManager.saveAuthorEmailToken(authorEmail = email, emailToken = token.token)
+    private suspend fun tryValidating(email: String, otpCode: String): ValidateEmailUiStatus.Issue? = runCatching {
+        uploadManager.validateEmailWithCode(email = email, code = otpCode)
         UploadForegroundService.retry()
-        Result.Success
+        null
     }.cancellable().getOrElse { t ->
         when (t) {
-            is EmailValidationException.InvalidPasswordException -> Result.InvalidVerificationCode
-            is NetworkException -> Result.NoNetwork
-            else -> Result.UnknownError
+            is EmailValidationException.InvalidCode -> ValidateEmailUiStatus.Issue.InvalidVerificationCode
+            is EmailValidationException.CodeExpired -> ValidateEmailUiStatus.Issue.VerificationCodeExpired
+            is EmailValidationException.TooManyAttempts -> ValidateEmailUiStatus.Issue.TooManyAttempts
+            is NetworkException -> ValidateEmailUiStatus.Issue.NoNetwork
+            else -> ValidateEmailUiStatus.Issue.UnknownError
         }
     }
 }
