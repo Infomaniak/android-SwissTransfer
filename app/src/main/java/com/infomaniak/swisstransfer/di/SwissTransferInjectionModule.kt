@@ -30,7 +30,6 @@ import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadSessionStarter
-import com.infomaniak.swisstransfer.upload.UploadSessionStarterV1
 import com.infomaniak.swisstransfer.upload.UploadSessionStarterV2
 import dagger.Lazy
 import dagger.Module
@@ -71,19 +70,10 @@ object SwissTransferInjectionModule {
 
     @Provides
     fun provideUploadSessionStarter(
-        sti: SwissTransferInjection,
         appIntegrityManager: AppIntegrityManager,
         sharedApiUrlCreator: SharedApiUrlCreator,
-        legacyUploadManager: InMemoryUploadManager,
         uploadManager: UploadV2Manager,
-    ): UploadSessionStarter = when {
-        sti.accountManager.shouldUseV1Api -> UploadSessionStarterV1(
-            appIntegrityManager = appIntegrityManager,
-            sharedApiUrlCreator = sharedApiUrlCreator,
-            uploadManager = legacyUploadManager,
-        )
-        else -> UploadSessionStarterV2(uploadManager)
-    }
+    ): UploadSessionStarter = UploadSessionStarterV2(appIntegrityManager, sharedApiUrlCreator, uploadManager)
 
     @Provides
     @Singleton

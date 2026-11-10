@@ -23,14 +23,12 @@ import androidx.compose.runtime.LongState
 import androidx.compose.runtime.MutableLongState
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.work.WorkManager
-import com.infomaniak.core.common.Xor
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.withPartialWakeLock
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
-import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
@@ -73,7 +71,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 class UploadSessionManager @Inject constructor(
-    private val legacyUploadManager: InMemoryUploadManager,
     private val uploadManager: UploadV2Manager,
     accountManager: AccountManager,
     private val transferManager: TransferManager,
@@ -171,25 +168,14 @@ class UploadSessionManager @Inject constructor(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
             valueIfCancelled = null
         ) {
-            val uploader: TransferUploader = when (destination) {
-                is Xor.First -> TransferUploaderV1(
-                    startRequest = startRequest,
-                    uploadManager = legacyUploadManager,
-                    transferManager = transferManager,
-                    fileChunkSizeManager = fileChunkSizeManager,
-                    request = request,
-                    destination = destination.value,
-                    thumbnailsLocalStorage = thumbnailsLocalStorage,
-                )
-                is Xor.Second -> TransferUploaderV2(
-                    startRequest = startRequest,
-                    uploadManager = uploadManager,
-                    transferManager = transferManager,
-                    fileChunkSizeManager = fileChunkSizeManager,
-                    transfer = destination.value,
-                    thumbnailsLocalStorage = thumbnailsLocalStorage,
-                )
-            }
+            val uploader: TransferUploader = TransferUploaderV2(
+                startRequest = startRequest,
+                uploadManager = uploadManager,
+                transferManager = transferManager,
+                fileChunkSizeManager = fileChunkSizeManager,
+                transfer = destination,
+                thumbnailsLocalStorage = thumbnailsLocalStorage,
+            )
             uploader.getUuidFromUploadWithRetries(
                 uploadState = uploadState,
                 shouldRetry = ::shouldRetry,
@@ -197,10 +183,7 @@ class UploadSessionManager @Inject constructor(
         }
 
         currentState = if (uploadResult != null) {
-            val url = when (destination) {
-                is Xor.First -> sharedApiUrlCreator.shareTransferUrl(transferUUID = uploadResult.transferId)
-                is Xor.Second -> sharedApiUrlCreator.shareTransferV2Url(linkUUID = uploadResult.linkId!!)
-            }
+            val url = sharedApiUrlCreator.shareTransferV2Url(linkUUID = uploadResult.linkId!!)
             val transferType = startRequest.info.type
 
             removeAllFiles()
@@ -221,23 +204,14 @@ class UploadSessionManager @Inject constructor(
                 TAG,
                 "Abandoned transfer detected (state=${uploadState.value?.javaClass?.simpleName})"
             ) // Error log is temporary, to help detect abandoned transfers in the wild. it will be pass to a warning log once we are confident that the issue is fixed.
-            when (destination) {
-                is Xor.First -> {
-                    AbandonedTransferCleanupWorker.schedule(workManager, destination.value.container.uuid).onFailure {
-                        SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferCleanupWorker!", it)
-                    }
-                }
-                is Xor.Second -> {
-                    AbandonedTransferV2CleanupWorker.schedule(
-                        workManager = workManager,
-                        userId = currentUser!!.id,
-                        transferId = destination.value.id,
-                        organizationAccountId = request.organizationAccountId,
-                        failed = false
-                    ).onFailure {
-                        SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferV2CleanupWorker!", it)
-                    }
-                }
+            AbandonedTransferV2CleanupWorker.schedule(
+                workManager = workManager,
+                userId = currentUser!!.id,
+                transferId = destination.id,
+                organizationAccountId = request.organizationAccountId,
+                failed = false
+            ).onFailure {
+                SentryLog.wtf(TAG, "Failed to schedule AbandonedTransferV2CleanupWorker!", it)
             }
             null
         }
