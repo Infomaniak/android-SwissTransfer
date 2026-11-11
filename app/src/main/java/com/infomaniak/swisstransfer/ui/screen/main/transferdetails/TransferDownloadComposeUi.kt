@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,7 +57,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.common.DownloadStatus
 import com.infomaniak.core.common.DownloadStatus.InProgress
 import com.infomaniak.core.common.autoCancelScope
@@ -94,7 +92,6 @@ import splitties.init.appCtx
 import kotlin.time.Duration.Companion.seconds
 import com.infomaniak.core.common.R as RCore
 
-@OptIn(ExperimentalPermissionsApi::class)
 class TransferDownloadComposeUi(
     override val lifecycle: Lifecycle,
     private val snackbarHostState: SnackbarHostState,
@@ -238,7 +235,6 @@ class TransferDownloadComposeUi(
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CardCornerButton(
         icon: ImageVector,
@@ -360,7 +356,6 @@ private fun InProgress.getProgress(): Float {
     return (if (totalSizeInBytes == 0L) 0 else downloadedBytes.toDouble() / totalSizeInBytes).toFloat()
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @PreviewLightDark
 @Composable
 private fun Preview() = SwissTransferTheme {
