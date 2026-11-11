@@ -145,7 +145,7 @@ fun PickFilesScreen(
     fun pickFiles() {
         try {
             filePickerLauncher.launch(arrayOf("*/*"))
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             context.showToast(R.string.startActivityCantHandleAction)
         }
     }
