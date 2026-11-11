@@ -102,7 +102,7 @@ fun OtpTextField(
                     }
                 },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.NumberPassword,
+                    keyboardType = KeyboardType.PasswordVisible,
                     imeAction = ImeAction.Done,
                 ),
                 decorationBox = { innerTextField ->
@@ -224,14 +224,14 @@ private fun Preview() {
         Surface {
             Column(verticalArrangement = Arrangement.spacedBy(Margin.Medium)) {
                 OtpTextField(
-                    otpText = "123",
+                    otpText = "1B3",
                     otpLength = 6,
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                     onOtpTextChange = { _, _ -> },
                 )
 
                 OtpTextField(
-                    otpText = "123456",
+                    otpText = "A2C4E6",
                     otpLength = 6,
                     horizontalArrangement = Arrangement.spacedBy(Margin.Mini),
                     onOtpTextChange = { _, _ -> },
