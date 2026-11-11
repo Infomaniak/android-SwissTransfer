@@ -130,10 +130,12 @@
     <string name="settingsDeleteMyAccount">Supprimer mon compte</string>
     <string name="settingsDownloadsLimitTitle">Défini une limite de téléchargements par défaut pour tes transferts</string>
     <string name="settingsEmailLanguageTitle">Défini une langue par défaut pour tes transferts par e-mail</string>
+    <string name="settingsEmailLanguageValueDutch">Néerlandais</string>
     <string name="settingsEmailLanguageValueEnglish">Anglais</string>
     <string name="settingsEmailLanguageValueFrench">Francais</string>
     <string name="settingsEmailLanguageValueGerman">Allemand</string>
     <string name="settingsEmailLanguageValueItalian">Italien</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugais</string>
     <string name="settingsEmailLanguageValueSpanish">Espagnol</string>
     <string name="settingsHelpAndSupport">Aide et support</string>
     <string name="settingsMatomoDescription">Matomo est un outil d’analyse hébergé et géré exclusivement par Infomaniak pour comprendre comment l’application est utilisée.\n\nL’étude de ces données permet à notre équipe d’améliorer en continue l’interface de l’application.</string>

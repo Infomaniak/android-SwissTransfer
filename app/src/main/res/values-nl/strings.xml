@@ -130,10 +130,12 @@
     <string name="settingsDeleteMyAccount">Mijn account verwijderen</string>
     <string name="settingsDownloadsLimitTitle">Stel een standaard downloadlimiet in voor je overdrachten</string>
     <string name="settingsEmailLanguageTitle">Stel een standaardtaal in voor je e-mailoverdrachten</string>
+    <string name="settingsEmailLanguageValueDutch">Nederlands</string>
     <string name="settingsEmailLanguageValueEnglish">Engels</string>
     <string name="settingsEmailLanguageValueFrench">Frans</string>
     <string name="settingsEmailLanguageValueGerman">Duits</string>
     <string name="settingsEmailLanguageValueItalian">Italiaans</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugees</string>
     <string name="settingsEmailLanguageValueSpanish">Spaans</string>
     <string name="settingsHelpAndSupport">Hulp &amp; Ondersteuning</string>
     <string name="settingsMatomoDescription">Matomo is een analysetool die uitsluitend door Infomaniak wordt gehost en beheerd om te begrijpen hoe de applicatie wordt gebruikt.\n\nDoor deze gegevens te bestuderen, kan ons team de interface van de applicatie voortdurend verbeteren.</string>

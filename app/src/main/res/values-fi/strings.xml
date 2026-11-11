@@ -130,10 +130,12 @@
     <string name="settingsDeleteMyAccount">Poista tilini</string>
     <string name="settingsDownloadsLimitTitle">Aseta oletusarvoinen latausraja siirroillesi</string>
     <string name="settingsEmailLanguageTitle">Aseta oletuskieli sähköpostilähetyksillesi</string>
+    <string name="settingsEmailLanguageValueDutch">Hollanti</string>
     <string name="settingsEmailLanguageValueEnglish">Englanti</string>
     <string name="settingsEmailLanguageValueFrench">Ranska</string>
     <string name="settingsEmailLanguageValueGerman">Saksa</string>
     <string name="settingsEmailLanguageValueItalian">Italia</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugali</string>
     <string name="settingsEmailLanguageValueSpanish">Espanja</string>
     <string name="settingsHelpAndSupport">Ohje &amp; Tuki</string>
     <string name="settingsMatomoDescription">Matomo on analyysityökalu, jota Infomaniak isännöi ja hallinnoi yksinomaan ymmärtääkseen kuinka sovellusta käytetään.\n\nTutkimalla näitä tietoja tiimimme pystyy jatkuvasti parantamaan sovelluksen käyttöliittymää.</string>

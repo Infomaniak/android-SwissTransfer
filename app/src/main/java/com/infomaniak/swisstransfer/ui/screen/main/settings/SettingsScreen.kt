@@ -228,6 +228,8 @@ private fun EmailLanguage?.getString(): String {
         EmailLanguage.GERMAN -> stringResource(R.string.settingsEmailLanguageValueGerman)
         EmailLanguage.ITALIAN -> stringResource(R.string.settingsEmailLanguageValueItalian)
         EmailLanguage.SPANISH -> stringResource(R.string.settingsEmailLanguageValueSpanish)
+        EmailLanguage.PORTUGUESE -> stringResource(R.string.settingsEmailLanguageValuePortuguese)
+        EmailLanguage.DUTCH -> stringResource(R.string.settingsEmailLanguageValueDutch)
         else -> ""
     }
 }
