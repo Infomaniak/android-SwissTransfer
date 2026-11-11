@@ -130,10 +130,12 @@
     <string name="settingsDeleteMyAccount">Slett kontoen min</string>
     <string name="settingsDownloadsLimitTitle">Angi en standard nedlastingsgrense for overføringene dine</string>
     <string name="settingsEmailLanguageTitle">Angi et standardspråk for e-postoverføringene dine</string>
+    <string name="settingsEmailLanguageValueDutch">Nederlandsk</string>
     <string name="settingsEmailLanguageValueEnglish">Engelsk</string>
     <string name="settingsEmailLanguageValueFrench">Fransk</string>
     <string name="settingsEmailLanguageValueGerman">Tysk</string>
     <string name="settingsEmailLanguageValueItalian">Italiensk</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugisisk</string>
     <string name="settingsEmailLanguageValueSpanish">Spansk</string>
     <string name="settingsHelpAndSupport">Hjelp &amp; Støtte</string>
     <string name="settingsMatomoDescription">Matomo er et analyseverktøy som utelukkende driftes og administreres av Infomaniak for å forstå hvordan applikasjonen brukes.\n\nVed å studere disse dataene er teamet vårt i stand til å kontinuerlig forbedre applikasjonens grensesnitt.</string>

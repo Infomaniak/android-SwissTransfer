@@ -96,7 +96,18 @@ enum class EmailLanguageOption(
         { stringResource(R.string.settingsEmailLanguageValueSpanish) },
         imageVectorResId = R.drawable.flag_es,
         apiValue = EmailLanguage.SPANISH,
-    );
+    ),
+    PORTUGUESE(
+        { stringResource(R.string.settingsEmailLanguageValuePortuguese) },
+        imageVectorResId = R.drawable.flag_pt,
+        apiValue = EmailLanguage.PORTUGUESE,
+    ),
+    DUTCH(
+        { stringResource(R.string.settingsEmailLanguageValueDutch) },
+        imageVectorResId = R.drawable.flag_nl,
+        apiValue = EmailLanguage.DUTCH,
+    ),
+    ;
 
     companion object {
         fun EmailLanguage.toTransferOption() = when (this) {
@@ -105,6 +116,8 @@ enum class EmailLanguageOption(
             EmailLanguage.GERMAN -> GERMAN
             EmailLanguage.ITALIAN -> ITALIAN
             EmailLanguage.SPANISH -> SPANISH
+            EmailLanguage.PORTUGUESE -> PORTUGUESE
+            EmailLanguage.DUTCH -> DUTCH
         }
     }
 }
