@@ -24,7 +24,6 @@ import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
-import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
@@ -90,10 +89,6 @@ object SwissTransferInjectionModule {
     @Provides
     @Singleton
     fun provideAccountManager(sti: SwissTransferInjection): AccountManager = sti.accountManager
-
-    @Provides
-    @Singleton
-    fun provideV1UploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
 
     @Provides
     @Singleton
