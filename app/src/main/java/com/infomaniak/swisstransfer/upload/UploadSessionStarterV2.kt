@@ -49,7 +49,7 @@ class UploadSessionStarterV2(
             is AppIntegrityException -> Result.AppIntegrityIssue(t.showRemediationDialog)
             is UploadErrorsException.InvalidAttestationTokenException -> Result.AppIntegrityIssue(showRemediationDialog = null)
             is UploadErrorsException.EmailValidationRequired -> {
-                uploadManager.createEmailValidationRequest(sessionRequest.authorEmail)
+                uploadManager.prepareEmailValidationRequest(sessionRequest.authorEmail)
                 Result.EmailValidationRequired
             }
             is UploadErrorsException.CountryBlocked -> Result.RestrictedLocation
