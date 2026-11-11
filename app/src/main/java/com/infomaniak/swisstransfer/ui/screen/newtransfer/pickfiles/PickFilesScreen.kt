@@ -369,7 +369,7 @@ private fun EmailAddressesTextFields(
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val contactRetreivalError = stringResource(R.string.errorContactPicker)
+    val contactRetrievalError = stringResource(R.string.errorContactPicker)
 
     fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -377,7 +377,7 @@ private fun EmailAddressesTextFields(
 
     fun handlePickedContacts(result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK || result.data == null) {
-            scope.launch { snackbarHostState.showSnackbar(contactRetreivalError) }
+            scope.launch { snackbarHostState.showSnackbar(contactRetrievalError) }
             return
         }
         val dataIntent = result.data ?: return
