@@ -66,7 +66,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
@@ -114,7 +113,6 @@ import kotlinx.coroutines.launch
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PickFilesScreen(
     pickFilesViewModel: PickFilesViewModel,
