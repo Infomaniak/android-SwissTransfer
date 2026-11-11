@@ -38,6 +38,7 @@ import com.infomaniak.core.common.tryCompletingWhileTrue
 import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.CallableState
+import com.infomaniak.core.ui.compose.basics.collectAsState
 import com.infomaniak.core.ui.compose.basics.collectAsStateIn
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
@@ -60,6 +61,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.isGuest
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -82,6 +84,7 @@ import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
@@ -147,6 +150,7 @@ class PickFilesViewModel @Inject constructor(
     }
 
     //region Transfer Author Email
+    private val isGuestUser: Boolean by accountUtils.currentUserFlow.map { it.isGuest() }.collectAsState(initialValue = false)
     private var transferAuthorEmail by mutableStateOf("")
     private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isEmailRfc5321Compliant() }
     //endregion
@@ -199,7 +203,7 @@ class PickFilesViewModel @Inject constructor(
         )
 
         @OptIn(FlowPreview::class)
-        importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
+        importedFilesDebounced = pickedFilesFlow.debounce(50.milliseconds).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList(),
@@ -243,13 +247,16 @@ class PickFilesViewModel @Inject constructor(
         val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsStateIn(viewModelScope)
         val pickedFilesIssues by pickedFilesIssues().collectAsStateIn(viewModelScope)
         return snapshotFlow {
-            val issues = buildSet<Issue> {
+            val issues: Set<Issue> = buildSet {
                 if (uploadOngoing) add(Issue.UploadOngoing)
                 if (isHandlingPickedFiles) add(Issue.Files.Processing)
                 addAll(pickedFilesIssues)
-                if (transferType == TransferTypeUi.Mail) {
+                val isAuthorEmailRequired = isGuestUser || transferType == TransferTypeUi.Mail
+                if (isAuthorEmailRequired) {
                     if (transferAuthorEmail.isEmpty()) add(Issue.Email.AuthorUnspecified)
                     if (isAuthorEmailInvalid) add(Issue.Email.AuthorInvalid)
+                }
+                if (transferType == TransferTypeUi.Mail) {
                     val hasValidRecipient = validatedRecipientsEmails.isNotEmpty() || recipientEmail.trim().isValidEmail()
                     if (!hasValidRecipient) add(Issue.Email.NoValidatedRecipients)
                 }
@@ -319,7 +326,7 @@ class PickFilesViewModel @Inject constructor(
 
     private suspend fun extractNewTransferParams() = NewTransferParams(
         validityPeriod = selectedValidityPeriodOption.value.apiValue,
-        authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
+        authorEmail = if (isGuestUser || selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
         title = transferTitle,
         message = transferMessage,

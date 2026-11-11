@@ -104,7 +104,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.isApiV2
+import com.infomaniak.swisstransfer.ui.utils.hasAccount
+import com.infomaniak.swisstransfer.ui.utils.isGuest
 import com.infomaniak.swisstransfer.ui.utils.showToast
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -328,19 +329,17 @@ private fun ImportTextFields(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(textFieldSpacing),
     ) {
-        if (LocalUser.current.isApiV2()) {
-            SwissTransferTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = stringResource(R.string.transferTitlePlaceholder),
-                isRequired = false,
-                maxLineNumber = 1,
-                onValueChange = onTransferTitleChange,
-            )
-        }
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferTitlePlaceholder),
+            isRequired = false,
+            maxLineNumber = 1,
+            onValueChange = onTransferTitleChange,
+        )
 
         EmailAddressesTextFields(
             emailTextFieldCallbacks = emailTextFieldCallbacks,
-            shouldShowEmailAddressesFields = shouldShowEmailAddressesFields,
+            shouldShowRecipientsField = shouldShowEmailAddressesFields,
             textFieldSpacing = textFieldSpacing,
             selectContact = selectContact,
             snackbarHostState = snackbarHostState,
@@ -361,7 +360,7 @@ private fun ImportTextFields(
 @Composable
 private fun EmailAddressesTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
-    shouldShowEmailAddressesFields: () -> Boolean,
+    shouldShowRecipientsField: () -> Boolean,
     textFieldSpacing: Dp,
     selectContact: (Uri) -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -402,7 +401,9 @@ private fun EmailAddressesTextFields(
         onResult = ::handlePickedContacts,
     )
 
-    AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
+    val showRecipientsField = shouldShowRecipientsField()
+    val shouldShowEmailAddressField = LocalUser.current.isGuest() || showRecipientsField
+    AnimatedVisibility(visible = shouldShowEmailAddressField, modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
             val isAuthorError = checkEmailError(isAuthor = true)
             val isRecipientError = checkEmailError(isAuthor = false)
@@ -415,12 +416,12 @@ private fun EmailAddressesTextFields(
                 maxLineNumber = 1,
                 imeAction = ImeAction.Next,
                 isError = isAuthorError,
-                isReadOnly = LocalUser.current.isApiV2(),
+                isReadOnly = LocalUser.current.hasAccount(),
                 supportingText = getEmailError(isAuthorError),
                 onValueChange = transferAuthorEmail.set,
             )
 
-            EmailAddressTextField(
+            if (showRecipientsField) EmailAddressTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferRecipientAddressPlaceholder),
                 initialValue = recipientEmail.get(),
