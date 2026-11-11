@@ -108,6 +108,9 @@ private fun ApiEnvironment.toKmpApiEnvironment(): KmpApiEnvironement {
     return when (this) {
         ApiEnvironment.PreProd -> KmpApiEnvironement.Preprod
         ApiEnvironment.Prod -> KmpApiEnvironement.Prod
-        is ApiEnvironment.Custom -> error("Custom api environment is not handled by the kmp lib")
+        is ApiEnvironment.Custom -> KmpApiEnvironement.Custom(
+            url = KmpApiEnvironement.Prod.baseUrl,
+            urlV2 = "https://swisstransfer.$host"
+        )
     }
 }
