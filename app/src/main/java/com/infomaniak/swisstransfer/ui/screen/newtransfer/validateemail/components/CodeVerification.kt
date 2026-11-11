@@ -39,7 +39,11 @@ import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.theme.CustomShapes
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
-private val VALID_CHARACTERS = '0'..'9'
+private val VALID_CHARACTERS: Set<Char> = buildSet {
+    for (c in '0'..'9') add(c)
+    for (c in 'A'..'Z') add(c)
+}
+
 private const val OPT_LENGTH = 6
 
 @Composable
@@ -92,19 +96,19 @@ private fun Preview() {
         Surface {
             Column(verticalArrangement = Arrangement.spacedBy(Margin.Medium)) {
                 CodeVerification(
-                    otpCode = { "123" },
+                    otpCode = { "1B3" },
                     updateOtpCode = { _, _ -> },
                     isLoading = { false },
                     isInvalidVerificationCode = { false },
                 )
                 CodeVerification(
-                    otpCode = { "123456" },
+                    otpCode = { "A2C4E6" },
                     updateOtpCode = { _, _ -> },
                     isLoading = { true },
                     isInvalidVerificationCode = { false },
                 )
                 CodeVerification(
-                    otpCode = { "111111" },
+                    otpCode = { "A1A1A1" },
                     updateOtpCode = { _, _ -> },
                     isLoading = { false },
                     isInvalidVerificationCode = { true },
