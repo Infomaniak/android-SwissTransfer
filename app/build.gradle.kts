@@ -204,6 +204,7 @@ dependencies {
     implementation(core.infomaniak.core.common)
     implementation(core.infomaniak.core.crossapplogin.front)
     implementation(core.infomaniak.core.filetypes)
+    implementation(core.infomaniak.core.file)
     implementation(core.infomaniak.core.inappreview)
     implementation(core.infomaniak.core.inappupdate)
     implementation(core.infomaniak.core.ksuite.myksuite)
