@@ -70,9 +70,8 @@ object SwissTransferInjectionModule {
     @Provides
     fun provideUploadSessionStarter(
         appIntegrityManager: AppIntegrityManager,
-        sharedApiUrlCreator: SharedApiUrlCreator,
         uploadManager: UploadV2Manager,
-    ): UploadSessionStarter = UploadSessionStarterV2(appIntegrityManager, sharedApiUrlCreator, uploadManager)
+    ): UploadSessionStarter = UploadSessionStarterV2(appIntegrityManager, uploadManager)
 
     @Provides
     @Singleton

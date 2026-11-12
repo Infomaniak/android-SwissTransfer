@@ -23,7 +23,6 @@ import com.infomaniak.core.appintegrity.exceptions.AppIntegrityException
 import com.infomaniak.core.appintegrity.exceptions.NetworkException
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.sentry.SentryLog
-import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.UploadErrorsException
@@ -33,14 +32,13 @@ import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkExce
 
 class UploadSessionStarterV2(
     private val appIntegrityManager: AppIntegrityManager,
-    private val sharedApiUrlCreator: SharedApiUrlCreator,
     private val uploadManager: UploadV2Manager,
 ) : UploadSessionStarter() {
 
     override suspend fun tryStarting(sessionRequest: UploadSessionRequest): Result = runCatching {
         val transfer = uploadManager.prepareTransfer(
             request = sessionRequest,
-            attestationTokenGenerator = { fetchNewAttestationToken() }
+            attestationTokenGenerator = { targetUrl -> fetchNewAttestationToken(targetUrl) }
         )
         Result.Success(sessionRequest, transfer)
     }.cancellable().recoverCatching { t ->
@@ -69,13 +67,13 @@ class UploadSessionStarterV2(
     //region App Integrity
     @OptIn(ExperimentalUuidApi::class)
     @Throws(AppIntegrityException::class)
-    private suspend inline fun fetchNewAttestationToken(): String {
+    private suspend inline fun fetchNewAttestationToken(targetUrl: String): String {
         val challenge = appIntegrityManager.getChallenge()
 
         val attestationToken = appIntegrityManager.requestAttestationToken(
             challenge = challenge,
             packageName = BuildConfig.APPLICATION_ID,
-            targetUrl = sharedApiUrlCreator.createUploadContainerUrl,
+            targetUrl = targetUrl,
         )
         SentryLog.i(APP_INTEGRITY_MANAGER_TAG, "Successful API verdict")
 
