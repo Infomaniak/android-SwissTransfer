@@ -402,7 +402,8 @@ private fun EmailAddressesTextFields(
     )
 
     val showRecipientsField = shouldShowRecipientsField()
-    val shouldShowEmailAddressField = LocalUser.current.isGuest() || showRecipientsField
+    val user = LocalUser.current
+    val shouldShowEmailAddressField = user.isGuest() || showRecipientsField
     AnimatedVisibility(visible = shouldShowEmailAddressField, modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
             val isAuthorError = checkEmailError(isAuthor = true)
@@ -421,22 +422,26 @@ private fun EmailAddressesTextFields(
                 onValueChange = transferAuthorEmail.set,
             )
 
-            if (showRecipientsField) EmailAddressTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = stringResource(R.string.transferRecipientAddressPlaceholder),
-                initialValue = recipientEmail.get(),
-                validatedRecipientsEmails = validatedRecipientsEmails,
-                onValueChange = { recipientEmail.set(it.text) },
-                isError = isRecipientError,
-                supportingText = getEmailError(isRecipientError),
-                trailingIcon = {
-                    TrailingButton(
-                        appIcon = AppIcons.PersonsCircleAdd,
-                        onClick = { launchPickContactSafely(pickContactLauncher) },
-                        contentDescriptionRes = R.string.contentDescriptionButtonSelectContact
-                    )
-                },
-            )
+            AnimatedVisibility(
+                visible = user.hasAccount() || showRecipientsField // If user has an account, animated with parent.
+            ) {
+                EmailAddressTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(R.string.transferRecipientAddressPlaceholder),
+                    initialValue = recipientEmail.get(),
+                    validatedRecipientsEmails = validatedRecipientsEmails,
+                    onValueChange = { recipientEmail.set(it.text) },
+                    isError = isRecipientError,
+                    supportingText = getEmailError(isRecipientError),
+                    trailingIcon = {
+                        TrailingButton(
+                            appIcon = AppIcons.PersonsCircleAdd,
+                            onClick = { launchPickContactSafely(pickContactLauncher) },
+                            contentDescriptionRes = R.string.contentDescriptionButtonSelectContact
+                        )
+                    },
+                )
+            }
         }
     }
 }
