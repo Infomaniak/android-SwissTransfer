@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.work.WorkManager
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.withPartialWakeLock
+import com.infomaniak.core.file.InputStreamCounter
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
@@ -381,7 +382,7 @@ private suspend fun measureFilesSizesInParallel(
             var lastYield = TimeSource.Monotonic.markNow()
             val exactSize = counter.fileSizeFor(
                 uri = pickedFile.uri,
-                onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                onChunkRead = { skippedBytes, totalBytes ->
                     if (totalBytes > maxSize) {
                         throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
                     }
@@ -396,7 +397,7 @@ private suspend fun measureFilesSizesInParallel(
                         ensureActive()
                     }
                 }
-            )
+            )!!
             pickedFile.copy(size = exactSize)
         }
     }.awaitAll()
