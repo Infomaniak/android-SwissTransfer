@@ -37,6 +37,7 @@ import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
+import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.PasswordTransferOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.TransferOptionState
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -71,6 +72,10 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             val selectedOptionValues = listOf(
+                TransferOptionState(
+                    transferOptionType = TransferOptionType.SEND_WITH,
+                    settingState = { null },
+                ),
                 TransferOptionState(
                     transferOptionType = TransferOptionType.VALIDITY_DURATION,
                     settingState = { ValidityPeriodOption.THIRTY },
