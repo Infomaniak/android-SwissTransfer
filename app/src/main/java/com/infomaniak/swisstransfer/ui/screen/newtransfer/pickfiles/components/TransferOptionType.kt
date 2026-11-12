@@ -27,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
@@ -61,8 +63,8 @@ fun TransferOptionType(
             style = SwissTransferTheme.typography.bodySmallMedium,
             color = SwissTransferTheme.materialColors.primary,
         )
-        Spacer(Modifier.weight(1.0f))
-        SettingValue(selectedSetting)
+        Spacer(Modifier.width(Margin.Small))
+        SettingValue(selectedSetting, Modifier.weight(1f))
         Spacer(Modifier.width(Margin.Small))
         Icon(
             modifier = Modifier.size(Dimens.SmallIconSize),
@@ -74,11 +76,15 @@ fun TransferOptionType(
 }
 
 @Composable
-private fun SettingValue(selectedSetting: () -> SettingOption?) {
+private fun SettingValue(selectedSetting: () -> SettingOption?, modifier: Modifier = Modifier) {
     Text(
         text = selectedSetting()?.title?.invoke() ?: "",
+        modifier = modifier,
+        textAlign = TextAlign.End,
         style = SwissTransferTheme.typography.bodySmallRegular,
         color = SwissTransferTheme.colors.secondaryTextColor,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
     )
 }
 
