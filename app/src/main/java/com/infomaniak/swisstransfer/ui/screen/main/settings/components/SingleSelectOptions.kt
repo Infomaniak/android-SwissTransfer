@@ -84,11 +84,21 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
                 Spacer(Modifier.height(Margin.Large))
             }
 
-            Text(
-                text = item.title(),
-                style = SwissTransferTheme.typography.bodyRegular,
-                modifier = Modifier.weight(1.0f),
-            )
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = item.title(),
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                item.trailingIcon?.let {
+                    Icon(
+                        modifier = Modifier.padding(start = Margin.Small),
+                        imageVector = it,
+                        contentDescription = null,
+                        tint = SwissTransferTheme.materialColors.primary,
+                    )
+                }
+            }
 
             if (isSelected) Spacer(Modifier.width(Margin.Medium))
             AnimatedVisibility(
@@ -110,6 +120,7 @@ interface SettingOption {
     val title: @Composable () -> String
     val imageVector: ImageVector?
     val imageVectorResId: Int?
+    val trailingIcon: ImageVector? get() = null
 
     val icon: ImageVector?
         @Composable get() = imageVector ?: imageVectorResId?.let { ImageVector.vectorResource(it) }

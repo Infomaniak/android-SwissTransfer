@@ -71,7 +71,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.SETTINGS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.theme.LocalWindowAdaptiveInfo
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.ConfigUtils
@@ -195,7 +194,6 @@ private fun DetailPane(
                 )
             }
             THEME -> SettingsThemeScreen(navigateBack = navigateBack)
-            VALIDITY_PERIOD -> SettingsValidityPeriodScreen(navigateBack = navigateBack)
             DOWNLOAD_LIMIT -> SettingsDownloadsLimitScreen(navigateBack = navigateBack)
             EMAIL_LANGUAGE -> SettingsEmailLanguageScreen(navigateBack = navigateBack)
             DATA_MANAGEMENT -> SettingsDataManagementScreen(

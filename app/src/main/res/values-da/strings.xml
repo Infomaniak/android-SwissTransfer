@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Rediger min overføring</string>
     <string name="buttonFinished">Afslut</string>
     <string name="buttonOpenMailApp">Åbn mail-appen</string>
+    <string name="buttonSelect">Vælg</string>
     <string name="buttonShare">Del</string>
     <string name="buttonStart">Start</string>
     <string name="cantImportFileX">Kan ikke importere filen %s</string>
@@ -81,6 +82,7 @@
     <string name="newTransferLeavingDialogDescription">Din overføring er næsten klar. Er du sikker på, at du vil annullere den?</string>
     <string name="newTransferLeavingDialogNegativeButton">Nej, fortsæt</string>
     <string name="newTransferLeavingDialogPositiveButton">Ja, annuller</string>
+    <string name="newTransferValidityPeriodTitle">Overførsel tilgængelig i</string>
     <string name="noSettingsSelectedDescription">Vælg en parameter for at vise den</string>
     <string name="noTransferReceivedDescription">Alle overføringer du modtager i de seneste 30 dage vil vises her.</string>
     <string name="noTransferReceivedTitle">Ingen modtagne overføringer</string>
@@ -119,6 +121,8 @@
         <item quantity="one">Modtager:</item>
         <item quantity="other">Modtagere:</item>
     </plurals>
+    <string name="recommendedDurationsDescription" formatted="false">85 % af overførslerne downloades inden for 24 timer. Kortere tid på vores servere, mindre energiforbrug.</string>
+    <string name="recommendedDurationsTitle">Anbefalede varigheder</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer er ikke tilgængelig på din placering</string>
     <string name="sentEmptyTitle">Vores historie starter her</string>
     <string name="sentFilesTitle">Delte filer</string>
@@ -153,7 +157,7 @@
     <string name="settingsOptionThemeDark">Mørkt</string>
     <string name="settingsOptionThemeLight">Lyst</string>
     <string name="settingsOptionThemeSystem">System</string>
-    <string name="settingsOptionValidityPeriod">Gyldighedsperiode</string>
+    <string name="settingsOptionValidityPeriod">Tilgængelig i</string>
     <string name="settingsPasswordDescription">Dine modtagere skal indtaste adgangskoden for at downloade filerne.</string>
     <string name="settingsPasswordToggleDescription">Aktiver beskyttelse</string>
     <string name="settingsSignIn">Log ind</string>
@@ -177,6 +181,8 @@
     <string name="textFieldOptional">(Valgfrit)</string>
     <string name="tooLargeFilesDescription">Den maksimale overføringsstørrelse er overskredet.</string>
     <string name="tooLargeFilesTitle">Det er lidt for meget…</string>
+    <string name="transferAvailabilityAlertDescription">Dit link vil være aktivt de første 15 dage. Du modtager en e-mail med en invitation til at forlænge det med yderligere 15 dage.</string>
+    <string name="transferAvailabilityAlertTitle">Overførslens tilgængelighed</string>
     <string name="transferContentHeader">Overføringsindhold:</string>
     <string name="transferExpiredButton">Slet fra historik</string>
     <string name="transferExpiredDateReachedDescription">Beklager, denne overføring udløb den %s. Du kan ikke længere downloade eller se filerne.</string>

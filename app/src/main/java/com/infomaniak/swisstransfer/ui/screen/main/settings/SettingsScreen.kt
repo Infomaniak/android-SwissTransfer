@@ -27,7 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,7 +47,6 @@ import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ArrowDownFile
 import com.infomaniak.swisstransfer.ui.images.icons.Bell
 import com.infomaniak.swisstransfer.ui.images.icons.CircleCross
-import com.infomaniak.swisstransfer.ui.images.icons.Clock
 import com.infomaniak.swisstransfer.ui.images.icons.PaintbrushPalette
 import com.infomaniak.swisstransfer.ui.images.icons.Shield
 import com.infomaniak.swisstransfer.ui.images.icons.SpeechBubble
@@ -59,7 +57,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreen
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.EMAIL_LANGUAGE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.NOTIFICATIONS
 import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.THEME
-import com.infomaniak.swisstransfer.ui.screen.main.settings.SettingsOptionScreens.VALIDITY_PERIOD
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.CHEVRON
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.EndIconType.OPEN_OUTSIDE
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingDivider
@@ -152,14 +149,6 @@ private fun AppSettingsItems(
 
         SettingTitle(R.string.settingsCategoryDefaultSettings)
         SettingItem(
-            titleRes = R.string.settingsOptionValidityPeriod,
-            isSelected = { selectedSetting == VALIDITY_PERIOD },
-            icon = AppIcons.Clock,
-            description = securedAppSettings.validityPeriod.getString(),
-            endIcon = CHEVRON,
-            onClick = { onItemClick(VALIDITY_PERIOD) },
-        )
-        SettingItem(
             titleRes = R.string.settingsOptionDownloadLimit,
             isSelected = { selectedSetting == DOWNLOAD_LIMIT },
             icon = AppIcons.ArrowDownFile,
@@ -211,13 +200,6 @@ private fun Theme?.getString(): String {
 }
 
 @Composable
-private fun ValidityPeriod?.getString(): String {
-    return this?.days?.let {
-        pluralStringResource(R.plurals.settingsValidityPeriodValue, it, it)
-    } ?: ""
-}
-
-@Composable
 private fun DownloadLimit?.getString() = this?.value?.toString() ?: ""
 
 @Composable
@@ -235,7 +217,7 @@ private fun EmailLanguage?.getString(): String {
 enum class SettingsOptionScreens {
     SETTINGS,
     THEME, NOTIFICATIONS,
-    VALIDITY_PERIOD, DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
+    DOWNLOAD_LIMIT, EMAIL_LANGUAGE,
     DATA_MANAGEMENT, DATA_MANAGEMENT_MATOMO, DATA_MANAGEMENT_SENTRY,
     DELETE_MY_ACCOUNT;
 

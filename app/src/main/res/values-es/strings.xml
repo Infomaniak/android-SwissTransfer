@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Editar mi transferencia</string>
     <string name="buttonFinished">Acabado</string>
     <string name="buttonOpenMailApp">Abrir la aplicación de correo</string>
+    <string name="buttonSelect">Seleccionar</string>
     <string name="buttonShare">Compartir</string>
     <string name="buttonStart">Inicio</string>
     <string name="cantImportFileX">No se puede importar el archivo %s</string>
@@ -81,6 +82,7 @@
     <string name="newTransferLeavingDialogDescription">Tu traslado está casi listo. ¿Estás seguro de que quieres cancelarlo?</string>
     <string name="newTransferLeavingDialogNegativeButton">No, continúe</string>
     <string name="newTransferLeavingDialogPositiveButton">Sí, cancelar</string>
+    <string name="newTransferValidityPeriodTitle">Transferencia disponible durante</string>
     <string name="noSettingsSelectedDescription">Selecciona un parámetro para su visualización</string>
     <string name="noTransferReceivedDescription">Aquí aparecerán todas las transferencias recibidas en los últimos 30 días.</string>
     <string name="noTransferReceivedTitle">No se han recibido transferencias</string>
@@ -119,6 +121,8 @@
         <item quantity="one">Destinatario:</item>
         <item quantity="other">Para:</item>
     </plurals>
+    <string name="recommendedDurationsDescription" formatted="false">El 85 % de las transferencias se descargan en un plazo de 24 horas. Menos tiempo en nuestros servidores, menos energía consumida.</string>
+    <string name="recommendedDurationsTitle">Duraciones recomendadas</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer no está disponible en tu región</string>
     <string name="sentEmptyTitle">Nuestra historia comienza aquí</string>
     <string name="sentFilesTitle">Archivos compartidos</string>
@@ -153,7 +157,7 @@
     <string name="settingsOptionThemeDark">Oscuro</string>
     <string name="settingsOptionThemeLight">Claro</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
-    <string name="settingsOptionValidityPeriod">Periodo de validez</string>
+    <string name="settingsOptionValidityPeriod">Disponible durante</string>
     <string name="settingsPasswordDescription">Los destinatarios tendrán que introducir la contraseña para descargar los archivos.</string>
     <string name="settingsPasswordToggleDescription">Activar la protección</string>
     <string name="settingsSignIn">Iniciar sesión</string>
@@ -177,6 +181,8 @@
     <string name="textFieldOptional">(Opcional)</string>
     <string name="tooLargeFilesDescription">Se ha superado el tamaño máximo de transferencia.</string>
     <string name="tooLargeFilesTitle">Eso es demasiado…</string>
+    <string name="transferAvailabilityAlertDescription">Tu enlace permanecerá activo durante los primeros 15 días. Recibirás un correo electrónico que te invitará a prolongar su validez otros 15 días.</string>
+    <string name="transferAvailabilityAlertTitle">Disponibilidad de la transferencia</string>
     <string name="transferContentHeader">Contenido de la transferencia:</string>
     <string name="transferExpiredButton">Borrar del historial</string>
     <string name="transferExpiredDateReachedDescription">Lo sentimos, esta transferencia expiró el %s. Ya no puede descargar ni ver los archivos.</string>

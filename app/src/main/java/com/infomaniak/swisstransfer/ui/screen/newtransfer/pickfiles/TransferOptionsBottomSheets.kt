@@ -17,23 +17,45 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.ui.compose.basics.bottomsheet.dismissGracefully
+import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.swisstransfer.R
+import com.infomaniak.swisstransfer.ui.LocalUser
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.components.ButtonType
+import com.infomaniak.swisstransfer.ui.components.SmallButton
 import com.infomaniak.swisstransfer.ui.components.SwissTransferBottomSheet
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialog
+import com.infomaniak.swisstransfer.ui.components.dialog.SwissTransferAlertDialogDefaults
+import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
+import com.infomaniak.swisstransfer.ui.images.icons.Leaf
 import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
+import com.infomaniak.swisstransfer.ui.utils.isApiV2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,23 +95,98 @@ private fun TransferOptionBottomSheetScaffold(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ValidityPeriodBottomSheet(
     onOptionClicked: (ValidityPeriodOption) -> Unit,
     closeBottomSheet: () -> Unit,
     initialValue: SettingOption?,
+    confirmationButtonTitle: String = stringResource(R.string.buttonConfirm),
 ) {
-    TransferOptionBottomSheetScaffold(
-        closeBottomSheet = closeBottomSheet,
-        initialValue = initialValue,
-        title = stringResource(R.string.settingsOptionValidityPeriod),
-        optionEntries = ValidityPeriodOption.entries,
-        onOptionClicked = {
-            val option = it as ValidityPeriodOption
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+    val options = ValidityPeriodOption.entries.sortedBy { it.apiValue.days }
+    val isApiV2 = LocalUser.current.isApiV2()
+    var isShowingAvailabilityAlert by rememberSaveable { mutableStateOf(false) }
+
+    fun select(option: ValidityPeriodOption) {
+        state.dismissGracefully(scope, onDismissRequest = {
+            closeBottomSheet()
             MatomoSwissTransfer.trackSettingsLocalValidityPeriodEvent(option.matomoName)
             onOptionClicked(option)
+        })
+    }
+
+    SwissTransferBottomSheet(
+        onDismissRequest = closeBottomSheet,
+        sheetState = state,
+        title = stringResource(R.string.newTransferValidityPeriodTitle),
+        content = {
+            RecommendedDurations()
+            SingleSelectOptions(
+                items = options,
+                selectedItem = { options.indexOf(initialValue).takeIf { it >= 0 } },
+                setSelectedItem = { position ->
+                    val option = options[position]
+                    if (option == ValidityPeriodOption.THIRTY && isApiV2) {
+                        isShowingAvailabilityAlert = true
+                    } else {
+                        select(option)
+                    }
+                },
+            )
         },
     )
+
+    if (isShowingAvailabilityAlert) {
+        SwissTransferAlertDialog(
+            title = stringResource(R.string.transferAvailabilityAlertTitle),
+            description = stringResource(R.string.transferAvailabilityAlertDescription),
+            onDismiss = { isShowingAvailabilityAlert = false },
+            negativeButton = {
+                SwissTransferAlertDialogDefaults.CancelButton { isShowingAvailabilityAlert = false }
+            },
+            positiveButton = {
+                SmallButton(
+                    title = confirmationButtonTitle,
+                    style = ButtonType.Tertiary,
+                    onClick = {
+                        isShowingAvailabilityAlert = false
+                        select(ValidityPeriodOption.THIRTY)
+                    },
+                )
+            },
+        )
+    }
+}
+
+@Composable
+private fun RecommendedDurations() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(Margin.Medium),
+        verticalArrangement = Arrangement.spacedBy(Margin.Small),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Margin.Small),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = AppIcons.Leaf,
+                contentDescription = null,
+                tint = SwissTransferTheme.materialColors.primary,
+            )
+            Text(
+                text = stringResource(R.string.recommendedDurationsTitle),
+                style = SwissTransferTheme.typography.bodySmallMedium,
+                color = SwissTransferTheme.materialColors.primary,
+            )
+        }
+        Text(
+            text = stringResource(R.string.recommendedDurationsDescription),
+            style = SwissTransferTheme.typography.bodySmallRegular,
+            color = SwissTransferTheme.colors.secondaryTextColor,
+        )
+    }
 }
 
 @Composable
