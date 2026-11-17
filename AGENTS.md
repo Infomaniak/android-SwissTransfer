@@ -99,9 +99,7 @@ android-SwissTransfer/
 ### Upload pipeline
 
 - `UploadForegroundService` acts as the upload orchestrator and keeps process priority high while files are staged.
-- Two uploader implementations selected at DI time based on `accountManager.shouldUseV1Api`:
-    - `TransferUploaderV1` — legacy chunked upload with `InMemoryUploadManager`
-    - `TransferUploaderV2` — new API with `UploadV2Manager`
+- `TransferUploaderV2` performs the upload with the chunking logic, using the API exposed by `UploadV2Manager`
 - Chunk size and parallelism are computed by `FileChunkSizeManager`.
 
 ### Download pipeline
@@ -208,7 +206,7 @@ find app/src/androidTest -name "*.kt"
 
 ### Dependency injection
 
-- All KMP managers (`TransferManager`, `AccountManager`, `FileManager`, `InMemoryUploadManager`, `UploadV2Manager`,
+- All KMP managers (`TransferManager`, `AccountManager`, `FileManager`, `UploadV2Manager`,
   `SharedApiUrlCreator`) must come from Hilt injection — never instantiate `SwissTransferInjection` directly outside
   `SwissTransferInjectionModule`.
 - Use `dagger.Lazy<T>` to break circular DI initialisation (pattern used in `SwissTransferInjectionModule`).
