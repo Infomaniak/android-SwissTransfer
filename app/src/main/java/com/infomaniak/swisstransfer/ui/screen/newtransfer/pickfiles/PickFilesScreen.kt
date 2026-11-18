@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -412,14 +413,14 @@ private fun EmailAddressesTextFields(
             SwissTransferTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
-                initialValue = transferAuthorEmail.get(),
+                initialValue = transferAuthorEmail.value,
                 keyboardType = KeyboardType.Email,
                 maxLineNumber = 1,
                 imeAction = ImeAction.Next,
                 isError = isAuthorError,
                 isReadOnly = LocalUser.current.hasAccount(),
                 supportingText = getEmailError(isAuthorError),
-                onValueChange = transferAuthorEmail.set,
+                onValueChange = { transferAuthorEmail.value = it },
             )
 
             AnimatedVisibility(
@@ -566,7 +567,7 @@ private fun SendButton(
 }
 
 data class EmailTextFieldCallbacks(
-    val transferAuthorEmail: GetSetCallbacks<String>,
+    val transferAuthorEmail: MutableState<String>,
     val isAuthorEmailInvalid: () -> Boolean,
     val recipientEmail: GetSetCallbacks<String>,
     val isRecipientEmailInvalid: () -> Boolean,
@@ -575,7 +576,7 @@ data class EmailTextFieldCallbacks(
 
     fun checkEmailError(isAuthor: Boolean): Boolean {
         return if (isAuthor) {
-            isAuthorEmailInvalid() && transferAuthorEmail.get().isNotEmpty()
+            isAuthorEmailInvalid() && transferAuthorEmail.value.isNotEmpty()
         } else {
             isRecipientEmailInvalid() && recipientEmail.get().isNotEmpty()
         }
@@ -646,7 +647,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
     )
 
     val emailTextFieldCallbacks = EmailTextFieldCallbacks(
-        transferAuthorEmail = GetSetCallbacks(get = { "" }, set = {}),
+        transferAuthorEmail = remember { mutableStateOf("") },
         isAuthorEmailInvalid = { false },
         recipientEmail = GetSetCallbacks(get = { "test.test@ik me" }, set = {}),
         isRecipientEmailInvalid = { true },

@@ -151,7 +151,8 @@ class PickFilesViewModel @Inject constructor(
 
     //region Transfer Author Email
     private val isGuestUser: Boolean by accountUtils.currentUserFlow.map { it.isGuest() }.collectAsState(initialValue = false)
-    private var transferAuthorEmail by mutableStateOf("")
+    private val transferAuthorEmailState = mutableStateOf("")
+    private var transferAuthorEmail by transferAuthorEmailState
     private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isEmailRfc5321Compliant() }
     //endregion
 
@@ -392,7 +393,7 @@ class PickFilesViewModel @Inject constructor(
 
     fun getEmailTextFieldCallbacks(): EmailTextFieldCallbacks {
         return EmailTextFieldCallbacks(
-            transferAuthorEmail = GetSetCallbacks(get = { transferAuthorEmail }, set = { transferAuthorEmail = it }),
+            transferAuthorEmail = transferAuthorEmailState,
             isAuthorEmailInvalid = { isAuthorEmailInvalid },
             recipientEmail = GetSetCallbacks(get = { recipientEmail }, set = { recipientEmail = it }),
             isRecipientEmailInvalid = { isRecipientEmailInvalid },
