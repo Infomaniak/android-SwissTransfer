@@ -47,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
+import com.infomaniak.swisstransfer.ui.images.icons.Leaf
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -144,9 +145,17 @@ private fun Preview() {
                     override val imageVector = null
                     override val imageVectorResId = null
                 }
+                val textItemWithIcon = object : SettingOption {
+                    override val title: @Composable () -> String = { stringResource(R.string.appName) }
+                    override val imageVector = null
+                    override val imageVectorResId = null
+                    override val trailingIcon: ImageVector = AppIcons.Leaf
+                }
                 SettingOptionItem(item = iconItem, isSelected = true) {}
                 SettingOptionItem(item = iconItem, isSelected = false) {}
                 SettingOptionItem(item = textItem, isSelected = false) {}
+                SettingOptionItem(item = textItemWithIcon, isSelected = false) {}
+                SettingOptionItem(item = textItemWithIcon, isSelected = true) {}
             }
         }
     }
