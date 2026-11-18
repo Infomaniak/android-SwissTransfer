@@ -59,8 +59,8 @@ private fun SettingsEmailLanguageScreen(
         selectedSettingOptionPosition = selectedEmailLanguagePosition,
         matomoValue = MatomoScreen.EmailLanguageSetting,
         setSelectedSettingOptionPosition = { position ->
-            MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguage.entries[position].value)
-            onEmailLanguageChange(EmailLanguage.entries[position])
+            MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguageOption.entries[position].apiValue.value)
+            onEmailLanguageChange(EmailLanguageOption.entries[position].apiValue)
         },
         navigateBack = navigateBack,
     )
