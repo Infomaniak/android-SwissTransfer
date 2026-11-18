@@ -122,7 +122,7 @@
         <item quantity="one">Mottaker:</item>
         <item quantity="other">Mottakere:</item>
     </plurals>
-    <string name="recommendedDurationsDescription" formatted="false">85 % av overføringene lastes ned innen 24 timer. Kortere tid på serverne våre, lavere energiforbruk.</string>
+    <string name="recommendedDurationsDescription">85 %% av overføringene lastes ned innen 24 timer. Kortere tid på serverne våre, lavere energiforbruk.</string>
     <string name="recommendedDurationsTitle">Anbefalte varigheter</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer er ikke tilgjengelig på din plassering</string>
     <string name="sentEmptyTitle">Historien vår begynner her</string>

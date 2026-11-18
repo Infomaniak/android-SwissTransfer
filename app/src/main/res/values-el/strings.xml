@@ -122,7 +122,7 @@
         <item quantity="one">Παραλήπτης:</item>
         <item quantity="other">Παραλήπτες:</item>
     </plurals>
-    <string name="recommendedDurationsDescription" formatted="false">Το 85% των μεταφορών λαμβάνεται εντός 24 ωρών. Λιγότερος χρόνος στους διακομιστές μας, λιγότερη κατανάλωση ενέργειας.</string>
+    <string name="recommendedDurationsDescription">Το 85%% των μεταφορών λαμβάνεται εντός 24 ωρών. Λιγότερος χρόνος στους διακομιστές μας, λιγότερη κατανάλωση ενέργειας.</string>
     <string name="recommendedDurationsTitle">Προτεινόμενες διάρκειες</string>
     <string name="restrictedLocation">Το Infomaniak SwissTransfer δεν είναι διαθέσιμο στην τοποθεσία σου</string>
     <string name="sentEmptyTitle">Η ιστορία μας ξεκινά εδώ</string>

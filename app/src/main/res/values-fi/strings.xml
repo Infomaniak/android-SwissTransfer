@@ -122,7 +122,7 @@
         <item quantity="one">Vastaanottaja:</item>
         <item quantity="other">Vastaanottajat:</item>
     </plurals>
-    <string name="recommendedDurationsDescription" formatted="false">85 % siirroista ladataan 24 tunnin kuluessa. Vähemmän aikaa palvelimillamme, vähemmän energiankulutusta.</string>
+    <string name="recommendedDurationsDescription">85 %% siirroista ladataan 24 tunnin kuluessa. Vähemmän aikaa palvelimillamme, vähemmän energiankulutusta.</string>
     <string name="recommendedDurationsTitle">Suositellut kestot</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer ei ole saatavilla alueellasi</string>
     <string name="sentEmptyTitle">Tarinamme alkaa täältä</string>

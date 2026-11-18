@@ -127,7 +127,7 @@
         <item quantity="one">Recipient:</item>
         <item quantity="other">Recipients:</item>
     </plurals>
-    <string name="recommendedDurationsDescription" formatted="false">85% of transfers are downloaded within 24 hours. Less time on our servers, less energy used.</string>
+    <string name="recommendedDurationsDescription">85%% of transfers are downloaded within 24 hours. Less time on our servers, less energy used.</string>
     <string name="recommendedDurationsTitle">Recommended durations</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer is not available in your location</string>
     <string name="sentEmptyTitle">Our story begins here</string>

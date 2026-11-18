@@ -182,7 +182,7 @@ private fun RecommendedDurations() {
             )
         }
         Text(
-            text = stringResource(R.string.recommendedDurationsDescription),
+            text = stringResource(R.string.recommendedDurationsDescription).format(),
             style = SwissTransferTheme.typography.bodySmallRegular,
             color = SwissTransferTheme.colors.secondaryTextColor,
         )

@@ -122,7 +122,7 @@
         <item quantity="one">Destinatário:</item>
         <item quantity="other">Destinatários:</item>
     </plurals>
-    <string name="recommendedDurationsDescription" formatted="false">85% das transferências são descarregadas no prazo de 24 horas. Menos tempo nos nossos servidores, menos energia consumida.</string>
+    <string name="recommendedDurationsDescription">85%% das transferências são descarregadas no prazo de 24 horas. Menos tempo nos nossos servidores, menos energia consumida.</string>
     <string name="recommendedDurationsTitle">Durações recomendadas</string>
     <string name="restrictedLocation">O Infomaniak SwissTransfer não está disponível na tua localização</string>
     <string name="sentEmptyTitle">A nossa história começa aqui</string>

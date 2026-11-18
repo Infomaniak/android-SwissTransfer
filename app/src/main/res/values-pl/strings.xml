@@ -128,7 +128,7 @@
         <item quantity="many">Odbiorców:</item>
         <item quantity="other">Odbiorcy:</item>
     </plurals>
-    <string name="recommendedDurationsDescription" formatted="false">85% transferów jest pobieranych w ciągu 24 godzin. Mniej czasu na naszych serwerach, mniejsze zużycie energii.</string>
+    <string name="recommendedDurationsDescription">85%% transferów jest pobieranych w ciągu 24 godzin. Mniej czasu na naszych serwerach, mniejsze zużycie energii.</string>
     <string name="recommendedDurationsTitle">Zalecane okresy</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer nie jest dostępny w Twojej lokalizacji</string>
     <string name="sentEmptyTitle">Nasza historia zaczyna się tutaj</string>

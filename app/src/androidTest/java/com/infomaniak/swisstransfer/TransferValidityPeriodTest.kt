@@ -75,7 +75,8 @@ class TransferValidityPeriodTest {
         composeRule.onNodeWithText(context.getString(R.string.buttonSelect)).performScrollTo().assertIsDisplayed()
         clickSend()
 
-        composeRule.onNodeWithText(context.getString(R.string.recommendedDurationsDescription)).assertIsDisplayed()
+        val recommendation = context.getString(R.string.recommendedDurationsDescription).replace("%%", "%")
+        composeRule.onNodeWithText(recommendation).assertIsDisplayed()
         composeRule.onAllNodes(isSelected() and hasAnyAncestor(isDialog())).assertCountEquals(0)
         composeRule.runOnIdle { assertEquals(emptyList<ValidityPeriodOption?>(), sentPeriods) }
 
