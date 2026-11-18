@@ -59,6 +59,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.HideSele
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 /**
+ * Lowercase ASCII letters in user input are converted to uppercase before validation.
+ *
  * @throws IllegalStateException if the first otpText is bigger than the maximum specified number of characters specified by
  * [otpLength] or if it has invalid characters according to [isCharacterValid].
  */
@@ -90,7 +92,12 @@ fun OtpTextField(
                 modifier = modifier.onFocusChanged { isTextFieldFocused = it.isFocused },
                 value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
                 onValueChange = { textFieldValue ->
-                    val text = isCharacterValid?.let { textFieldValue.text.filter { char -> it(char) } } ?: textFieldValue.text
+                    val text = buildString {
+                        for (char in textFieldValue.text) {
+                            val normalizedChar = if (char in 'a'..'z') char.uppercaseChar() else char
+                            if (isCharacterValid == null || isCharacterValid(normalizedChar)) append(normalizedChar)
+                        }
+                    }
 
                     if (text.length <= otpLength) {
                         onOtpTextChange.invoke(text, text.length == otpLength)
