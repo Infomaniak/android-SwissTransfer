@@ -247,5 +247,7 @@
     <string name="validateMailResendCodeTemplate">Skicka en kod igen (%ds)</string>
     <string name="validateMailTitle">Kontrollera din e-post</string>
     <string name="validateMailUnknownError">Ett fel har inträffat. Försök igen om en stund.</string>
+    <string name="validateMailTooManyAttemptsError">För många försök. Försök igen senare.</string>
+    <string name="validateMailCodeExpiredError">Den här verifieringskoden har gått ut. Begär en ny.</string>
     <string name="version">Version</string>
 </resources>

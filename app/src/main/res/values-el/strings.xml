@@ -247,5 +247,7 @@
     <string name="validateMailResendCodeTemplate">Επαναποστολή κωδικού (%ds)</string>
     <string name="validateMailTitle">Έλεγξε το email σου</string>
     <string name="validateMailUnknownError">Παρουσιάστηκε σφάλμα. Δοκίμασε ξανά σε λίγα λεπτά.</string>
+    <string name="validateMailTooManyAttemptsError">Έγιναν πάρα πολλές προσπάθειες. Δοκίμασε ξανά αργότερα.</string>
+    <string name="validateMailCodeExpiredError">Αυτός ο κωδικός επαλήθευσης έχει λήξει. Ζήτησε έναν νέο.</string>
     <string name="version">Έκδοση</string>
 </resources>

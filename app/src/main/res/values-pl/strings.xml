@@ -261,5 +261,7 @@
     <string name="validateMailResendCodeTemplate">Wyślij kod ponownie (%ds)</string>
     <string name="validateMailTitle">Sprawdź swoją pocztę</string>
     <string name="validateMailUnknownError">Wystąpił błąd. Spróbuj ponownie za chwilę.</string>
+    <string name="validateMailTooManyAttemptsError">Zbyt wiele prób. Spróbuj ponownie później.</string>
+    <string name="validateMailCodeExpiredError">Ten kod weryfikacyjny wygasł. Poproś o nowy.</string>
     <string name="version">Wersja</string>
 </resources>

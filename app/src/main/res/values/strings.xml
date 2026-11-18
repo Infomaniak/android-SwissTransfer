@@ -252,5 +252,7 @@
     <string name="validateMailResendCodeTemplate">Resend a code (%ds)</string>
     <string name="validateMailTitle">Check your email</string>
     <string name="validateMailUnknownError">An error has occurred. Please try again in a few moments.</string>
+    <string name="validateMailTooManyAttemptsError">Too many attempts. Please try again later.</string>
+    <string name="validateMailCodeExpiredError">This verification code has expired. Please request a new one.</string>
     <string name="version">Version</string>
 </resources>
