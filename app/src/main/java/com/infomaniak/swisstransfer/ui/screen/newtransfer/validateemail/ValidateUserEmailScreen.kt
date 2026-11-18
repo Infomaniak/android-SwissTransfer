@@ -121,7 +121,7 @@ fun ValidateUserEmailScreen(
         if (!isTextPlain) return@LaunchedEffect
 
         val clipBoardContent = clipBoardManager.getFirstText() ?: return@LaunchedEffect
-        if (Regex("[0-9]{6}").matches(clipBoardContent)) {
+        if (Regex("[0-9A-Z]{6}").matches(clipBoardContent)) {
             otpCode = clipBoardContent
             validationStatusFlow.firstIsInstance<ValidateEmailUiStatus.WaitingForCode>().onValidationRequest(otpCode)
         }
