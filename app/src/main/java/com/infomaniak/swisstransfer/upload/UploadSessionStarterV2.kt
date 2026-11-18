@@ -54,7 +54,7 @@ class UploadSessionStarterV2(
             is UploadErrorsException.AccessDenied -> throw t // No special handling for now.
             else -> throw t
         }
-    }.getOrElse { t ->
+    }.cancellable().getOrElse { t ->
         when (t) {
             is NetworkException, is KmpNetworkException -> Result.NetworkIssue
             else -> {
