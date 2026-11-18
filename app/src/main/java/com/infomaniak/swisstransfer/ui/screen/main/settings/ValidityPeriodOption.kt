@@ -20,6 +20,7 @@ package com.infomaniak.swisstransfer.ui.screen.main.settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoName
 import com.infomaniak.multiplatform_swisstransfer.common.models.ValidityPeriod
 import com.infomaniak.swisstransfer.R
@@ -46,6 +47,9 @@ enum class ValidityPeriodOption(
             ONE, THREE -> AppIcons.Leaf
             else -> null
         }
+
+    override val trailingIconContentDescription: String?
+        @Composable get() = trailingIcon?.let { stringResource(R.string.contentDescriptionRecommendedDuration) }
 }
 
 @Composable

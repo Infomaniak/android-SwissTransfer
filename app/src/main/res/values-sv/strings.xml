@@ -45,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Öppna kontaktlistan</string>
     <string name="contentDescriptionButtonShowPassword">Visa lösenord</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny överföring</string>
+    <string name="contentDescriptionRecommendedDuration">Rekommenderad tidsperiod</string>
     <string name="contentDescriptionViewTransferDetails">Visa överföringsdetaljer</string>
     <string name="deeplinkPasswordDescription">Ange lösenordet du har fått för att ladda ner dessa filer.</string>
     <string name="deeplinkTransferExpired">Denna överföring har gått ut</string>

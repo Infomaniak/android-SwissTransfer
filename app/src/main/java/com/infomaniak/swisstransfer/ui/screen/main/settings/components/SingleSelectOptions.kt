@@ -94,7 +94,7 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
                     Icon(
                         modifier = Modifier.padding(start = Margin.Small),
                         imageVector = it,
-                        contentDescription = null,
+                        contentDescription = item.trailingIconContentDescription,
                         tint = SwissTransferTheme.materialColors.primary,
                     )
                 }
@@ -121,6 +121,8 @@ interface SettingOption {
     val imageVector: ImageVector?
     val imageVectorResId: Int?
     val trailingIcon: ImageVector? get() = null
+    val trailingIconContentDescription: String?
+        @Composable get() = null
 
     val icon: ImageVector?
         @Composable get() = imageVector ?: imageVectorResId?.let { ImageVector.vectorResource(it) }

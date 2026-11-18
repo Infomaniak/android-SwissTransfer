@@ -45,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Ouvrir la liste des contacts</string>
     <string name="contentDescriptionButtonShowPassword">Afficher le mot de passe</string>
     <string name="contentDescriptionCreateNewTransferButton">Nouveau transfert</string>
+    <string name="contentDescriptionRecommendedDuration">Durée recommandée</string>
     <string name="contentDescriptionViewTransferDetails">Voir les détails du transfert</string>
     <string name="deeplinkPasswordDescription">Saisis le mot de passe qui t’a été fourni pour télécharger ces fichiers.</string>
     <string name="deeplinkTransferExpired">Ce transfert a expiré</string>

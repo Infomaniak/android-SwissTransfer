@@ -45,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Apri l’elenco contatti</string>
     <string name="contentDescriptionButtonShowPassword">Mostra password</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
+    <string name="contentDescriptionRecommendedDuration">Durata consigliata</string>
     <string name="contentDescriptionViewTransferDetails">Vedi dettagli del trasferimento</string>
     <string name="deeplinkPasswordDescription">Inserite la password che vi è stata fornita per scaricare questi file.</string>
     <string name="deeplinkTransferExpired">Questo trasferimento è scaduto</string>

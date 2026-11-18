@@ -45,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Avaa yhteysluettelo</string>
     <string name="contentDescriptionButtonShowPassword">Näytä salasana</string>
     <string name="contentDescriptionCreateNewTransferButton">Uusi siirto</string>
+    <string name="contentDescriptionRecommendedDuration">Suositeltu kesto</string>
     <string name="contentDescriptionViewTransferDetails">Katso siirron tiedot</string>
     <string name="deeplinkPasswordDescription">Syötä saamasi salasana ladataksesi nämä tiedostot.</string>
     <string name="deeplinkTransferExpired">Tämä siirto on vanhentunut</string>

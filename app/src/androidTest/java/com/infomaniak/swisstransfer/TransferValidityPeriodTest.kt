@@ -25,13 +25,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.isSelected
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -79,6 +82,20 @@ class TransferValidityPeriodTest {
         selectDays(1)
 
         composeRule.runOnIdle { assertEquals(listOf(ValidityPeriodOption.ONE), sentPeriods) }
+    }
+
+    @Test
+    fun recommendedDurations_exposeAccessibilityLabelOnMatchingRows() {
+        showPickFiles()
+        clickSend()
+
+        val recommendation = context.getString(R.string.contentDescriptionRecommendedDuration)
+        listOf(1, 3, 7, 15, 30).forEach { days ->
+            val label = context.resources.getQuantityString(R.plurals.settingsValidityPeriodValue, days, days)
+            val matcher = hasContentDescription(recommendation)
+            composeRule.onNodeWithText(label).assert(if (days == 1 || days == 3) matcher else matcher.not())
+        }
+        composeRule.onAllNodesWithContentDescription(recommendation).assertCountEquals(2)
     }
 
     @Test
