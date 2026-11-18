@@ -75,18 +75,18 @@ class ValidateUserEmailViewModel @Inject constructor(
             val lastSentCodeExpiration = validationStatus.lastSentCodeExpiration()
                 ?: return@transformLatest // Already validated. Should exit.
 
+            val otpSubmissions = Channel<String>(capacity = 1)
             repeatWhileActive {
-                val otpAsync = CompletableDeferred<String>()
                 val codeResendRequests = Channel<CompletableDeferred<Boolean>>()
                 val waitingForCode = ValidateEmailUiStatus.WaitingForCode(
-                    onValidationRequest = otpAsync::complete,
+                    onValidationRequest = otpSubmissions::trySend,
                     resendCode = { waitForValue { codeResendRequests.trySend(it) } },
                     lastSentCodeExpiration = lastSentCodeExpiration,
                     lastIssue = lastIssue
                 )
                 emit(waitingForCode)
                 val action: UserAction = raceOf(
-                    { UserAction.ValidateWithOtp(otpAsync.await()) },
+                    { UserAction.ValidateWithOtp(otpSubmissions.receive()) },
                     {
                         var sentCompletable: CompletableDeferred<Boolean>
                         while (true) {
