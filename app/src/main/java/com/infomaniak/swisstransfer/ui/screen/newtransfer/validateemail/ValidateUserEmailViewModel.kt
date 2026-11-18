@@ -38,6 +38,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
@@ -68,7 +69,10 @@ class ValidateUserEmailViewModel @Inject constructor(
     private fun validationStatusFor(email: String): Flow<ValidateEmailUiStatus>  {
         var lastIssue: DismissableIssue? = null
         val issueDismissals = Channel<Unit>()
-        return uploadManager.emailValidationStatus(email = email).transformLatest { validationStatus ->
+        return uploadManager.emailValidationStatus(email = email).onEach {
+            val isEmailValidated = it != null && it.lastSentCodeExpirationTimestampSeconds == null
+            if (isEmailValidated) UploadForegroundService.retry()
+        }.transformLatest { validationStatus ->
             if (validationStatus == null) {
                 return@transformLatest // Should not happen since the email validation request shall be created before.
             }
@@ -137,7 +141,6 @@ class ValidateUserEmailViewModel @Inject constructor(
 
     private suspend fun tryValidating(email: String, otpCode: String): DismissableIssue.Cause? = runCatching {
         uploadManager.validateEmailWithCode(email = email, code = otpCode)
-        UploadForegroundService.retry()
         null
     }.cancellable().getOrElse { t -> t.toEmailValidationIssueCause() }
 
