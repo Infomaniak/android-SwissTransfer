@@ -240,5 +240,7 @@
     <string name="validateMailResendCodeTemplate">Send en kode på nytt (%ds)</string>
     <string name="validateMailTitle">Sjekk e-posten din</string>
     <string name="validateMailUnknownError">Det oppstod en feil. Prøv igjen om et øyeblikk.</string>
+    <string name="validateMailTooManyAttemptsError">For mange forsøk. Prøv igjen senere.</string>
+    <string name="validateMailCodeExpiredError">Denne bekreftelseskoden har utløpt. Be om en ny.</string>
     <string name="version">Versjon</string>
 </resources>

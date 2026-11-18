@@ -240,5 +240,7 @@
     <string name="validateMailResendCodeTemplate">Reenviar um código (%ds)</string>
     <string name="validateMailTitle">Verifica o teu e-mail</string>
     <string name="validateMailUnknownError">Ocorreu um erro. Tenta novamente dentro de alguns momentos.</string>
+    <string name="validateMailTooManyAttemptsError">Demasiadas tentativas. Tenta novamente mais tarde.</string>
+    <string name="validateMailCodeExpiredError">Este código de verificação expirou. Pede um novo.</string>
     <string name="version">Versão</string>
 </resources>

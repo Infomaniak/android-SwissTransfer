@@ -163,21 +163,21 @@ fun ValidateUserEmailScreen(
 
 @Composable
 fun HandleUnknownValidationError(cause: () -> DismissableIssue.Cause?, snackbarHostState: SnackbarHostState) {
-    val unknownErrorMessage = stringResource(R.string.validateMailUnknownError)
-    val networkUnavailableMessage = stringResource(R.string.networkUnavailable)
-
     val issue = cause()
-    LaunchedEffect(issue, unknownErrorMessage, networkUnavailableMessage) {
-        when (issue) {
-            DismissableIssue.Cause.UnknownError -> {
-                SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
-                snackbarHostState.showSnackbar(unknownErrorMessage)
-            }
-            DismissableIssue.Cause.NoNetwork -> snackbarHostState.showSnackbar(networkUnavailableMessage)
-            DismissableIssue.Cause.TooManyAttempts,
-            DismissableIssue.Cause.InvalidVerificationCode,
-            DismissableIssue.Cause.VerificationCodeExpired, null -> Unit
+    val errorMessageResId: Int = when (issue) {
+        DismissableIssue.Cause.UnknownError -> R.string.validateMailUnknownError
+        DismissableIssue.Cause.NoNetwork -> R.string.networkUnavailable
+        DismissableIssue.Cause.InvalidVerificationCode -> R.string.validateMailCodeIncorrectError
+        DismissableIssue.Cause.TooManyAttempts -> R.string.validateMailTooManyAttemptsError
+        DismissableIssue.Cause.VerificationCodeExpired -> R.string.validateMailCodeExpiredError
+        null -> return
+    }
+    val errorMessage = stringResource(errorMessageResId)
+    LaunchedEffect(issue, errorMessage) {
+        if (issue == DismissableIssue.Cause.UnknownError) {
+            SentryLog.e("Email validation", "An unknown API error has occurred when validating the OTP code")
         }
+        snackbarHostState.showSnackbar(errorMessage)
     }
 }
 

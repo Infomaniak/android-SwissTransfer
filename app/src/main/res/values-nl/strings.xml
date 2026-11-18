@@ -240,5 +240,7 @@
     <string name="validateMailResendCodeTemplate">Een code opnieuw verzenden (%ds)</string>
     <string name="validateMailTitle">Controleer je e-mail</string>
     <string name="validateMailUnknownError">Er is een fout opgetreden. Probeer het over een paar ogenblikken opnieuw.</string>
+    <string name="validateMailTooManyAttemptsError">Te veel pogingen. Probeer het later opnieuw.</string>
+    <string name="validateMailCodeExpiredError">Deze verificatiecode is verlopen. Vraag een nieuwe aan.</string>
     <string name="version">Versie</string>
 </resources>

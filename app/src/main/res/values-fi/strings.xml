@@ -240,5 +240,7 @@
     <string name="validateMailResendCodeTemplate">Lähetä koodi uudelleen (%ds)</string>
     <string name="validateMailTitle">Tarkista sähköpostisi</string>
     <string name="validateMailUnknownError">Tapahtui virhe. Yritä uudelleen hetken kuluttua.</string>
+    <string name="validateMailTooManyAttemptsError">Liian monta yritystä. Yritä myöhemmin uudelleen.</string>
+    <string name="validateMailCodeExpiredError">Tämä vahvistuskoodi on vanhentunut. Pyydä uusi koodi.</string>
     <string name="version">Versio</string>
 </resources>
