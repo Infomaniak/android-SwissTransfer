@@ -114,6 +114,7 @@ class ValidateUserEmailViewModel @Inject constructor(
                                 onSent = { emailWasSent -> action.onSent(emailWasSent) },
                             )
                         }.cancellable().onFailure {
+                            action.onSent(false)
                             lastIssue = DismissableIssue(
                                 cause = it.toEmailValidationIssueCause(),
                                 dismiss = { issueDismissals.trySend(Unit) }
