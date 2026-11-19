@@ -106,6 +106,7 @@ class ValidateUserEmailViewModel @Inject constructor(
                     }
                 )
                 when (action) {
+                    UserAction.DismissLastIssue -> return@repeatWhileActive run { lastIssue = null }
                     is UserAction.ResendCode -> return@repeatWhileActive runCatching {
                         lastIssue = null
                         emit(waitingForCode.copy(lastSentCodeExpiration = null, resendCode = { false }, lastIssue = null))
@@ -120,7 +121,6 @@ class ValidateUserEmailViewModel @Inject constructor(
                             dismiss = { issueDismissals.trySend(Unit) }
                         )
                     }
-                    UserAction.DismissLastIssue -> return@repeatWhileActive run { lastIssue = null }
                     is UserAction.ValidateWithOtp -> Unit
                 }
                 emit(ValidateEmailUiStatus.SendingCode)
