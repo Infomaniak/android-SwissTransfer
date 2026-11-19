@@ -106,21 +106,19 @@ class ValidateUserEmailViewModel @Inject constructor(
                     }
                 )
                 when (action) {
-                    is UserAction.ResendCode -> return@repeatWhileActive run {
-                        runCatching {
-                            lastIssue = null
-                            emit(waitingForCode.copy(lastSentCodeExpiration = null, resendCode = { false }, lastIssue = null))
-                            uploadManager.resendValidationEmail(
-                                validationId = validationStatus.id,
-                                onSent = { emailWasSent -> action.onSent(emailWasSent) },
-                            )
-                        }.cancellable().onFailure {
-                            action.onSent(false)
-                            lastIssue = DismissableIssue(
-                                cause = it.toEmailValidationIssueCause(),
-                                dismiss = { issueDismissals.trySend(Unit) }
-                            )
-                        }
+                    is UserAction.ResendCode -> return@repeatWhileActive runCatching {
+                        lastIssue = null
+                        emit(waitingForCode.copy(lastSentCodeExpiration = null, resendCode = { false }, lastIssue = null))
+                        uploadManager.resendValidationEmail(
+                            validationId = validationStatus.id,
+                            onSent = { emailWasSent -> action.onSent(emailWasSent) },
+                        )
+                    }.cancellable().getOrElse {
+                        action.onSent(false)
+                        lastIssue = DismissableIssue(
+                            cause = it.toEmailValidationIssueCause(),
+                            dismiss = { issueDismissals.trySend(Unit) }
+                        )
                     }
                     UserAction.DismissLastIssue -> return@repeatWhileActive run { lastIssue = null }
                     is UserAction.ValidateWithOtp -> Unit
