@@ -244,7 +244,7 @@
     <string name="validateMailDescription">Vi har sendt en kode til %s. Indtast den nedenfor for at verificere din e-mailadresse i appen:</string>
     <string name="validateMailInfo">Husk at tjekke spam-mappen for din e-mailadresse.</string>
     <string name="validateMailResendCode">Send en kode igen</string>
-    <string name="validateMailResendCodeTemplate">Send en kode igen (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Send en kode igen (%s)</string>
     <string name="validateMailTitle">Tjek din e-mail</string>
     <string name="validateMailUnknownError">Der opstod en fejl. Prøv venligst igen om et øjeblik.</string>
     <string name="validateMailTooManyAttemptsError">For mange forsøg. Prøv igen senere.</string>

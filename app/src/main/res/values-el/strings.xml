@@ -244,7 +244,7 @@
     <string name="validateMailDescription">Στείλαμε έναν κωδικό στο %s. Εισάγαλε τον παρακάτω για να επαληθευτεί η διεύθυνση email σου στην εφαρμογή:</string>
     <string name="validateMailInfo">Θυμήσου να ελέγξεις τον φάκελο ανεπιθύμητης αλληλογραφίας.</string>
     <string name="validateMailResendCode">Επαναποστολή κωδικού</string>
-    <string name="validateMailResendCodeTemplate">Επαναποστολή κωδικού (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Επαναποστολή κωδικού (%s)</string>
     <string name="validateMailTitle">Έλεγξε το email σου</string>
     <string name="validateMailUnknownError">Παρουσιάστηκε σφάλμα. Δοκίμασε ξανά σε λίγα λεπτά.</string>
     <string name="validateMailTooManyAttemptsError">Έγιναν πάρα πολλές προσπάθειες. Δοκίμασε ξανά αργότερα.</string>

@@ -249,7 +249,7 @@
     <string name="validateMailDescription">We’ve sent a code to %s. Enter it below to have your email address verified in the app:</string>
     <string name="validateMailInfo">Remember to check the spam folder of your email address.</string>
     <string name="validateMailResendCode">Resend a code</string>
-    <string name="validateMailResendCodeTemplate">Resend a code (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Resend a code (%s)</string>
     <string name="validateMailTitle">Check your email</string>
     <string name="validateMailUnknownError">An error has occurred. Please try again in a few moments.</string>
     <string name="validateMailTooManyAttemptsError">Too many attempts. Please try again later.</string>

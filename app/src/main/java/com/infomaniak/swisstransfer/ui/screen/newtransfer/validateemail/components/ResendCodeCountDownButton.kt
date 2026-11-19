@@ -19,6 +19,7 @@
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.components
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
@@ -85,7 +86,7 @@ fun ResendCodeCountDownButton(
         )
         else -> LargeButton(
             modifier = modifier,
-            title = stringResource(R.string.validateMailResendCodeTemplate, seconds),
+            title = stringResource(R.string.validateMailResendCodeTemplate, DateUtils.formatElapsedTime(seconds)),
             style = ButtonType.Tertiary,
             onClick = {},
             enabled = { false }

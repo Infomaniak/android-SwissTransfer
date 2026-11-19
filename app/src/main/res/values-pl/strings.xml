@@ -258,7 +258,7 @@
     <string name="validateMailDescription">Wysłaliśmy kod na adres %s. Wprowadź go poniżej, aby zweryfikować adres e-mail w aplikacji:</string>
     <string name="validateMailInfo">Pamiętaj o sprawdzeniu folderu spam na swoim koncie e-mail.</string>
     <string name="validateMailResendCode">Wyślij kod ponownie</string>
-    <string name="validateMailResendCodeTemplate">Wyślij kod ponownie (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Wyślij kod ponownie (%s)</string>
     <string name="validateMailTitle">Sprawdź swoją pocztę</string>
     <string name="validateMailUnknownError">Wystąpił błąd. Spróbuj ponownie za chwilę.</string>
     <string name="validateMailTooManyAttemptsError">Zbyt wiele prób. Spróbuj ponownie później.</string>
