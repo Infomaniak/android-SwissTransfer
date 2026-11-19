@@ -237,7 +237,7 @@
     <string name="validateMailDescription">Enviámos um código para %s. Introduz-o abaixo para verificar o teu endereço de e-mail na app:</string>
     <string name="validateMailInfo">Lembra-te de verificar a pasta de spam do teu endereço de e-mail.</string>
     <string name="validateMailResendCode">Reenviar um código</string>
-    <string name="validateMailResendCodeTemplate">Reenviar um código (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Reenviar um código (%s)</string>
     <string name="validateMailTitle">Verifica o teu e-mail</string>
     <string name="validateMailUnknownError">Ocorreu um erro. Tenta novamente dentro de alguns momentos.</string>
     <string name="validateMailTooManyAttemptsError">Demasiadas tentativas. Tenta novamente mais tarde.</string>

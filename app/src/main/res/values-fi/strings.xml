@@ -237,7 +237,7 @@
     <string name="validateMailDescription">Lähetimme koodin osoitteeseen %s. Syötä se alla vahvistaaksesi sähköpostiosoitteesi sovelluksessa:</string>
     <string name="validateMailInfo">Muista tarkistaa sähköpostisi roskapostikansio.</string>
     <string name="validateMailResendCode">Lähetä koodi uudelleen</string>
-    <string name="validateMailResendCodeTemplate">Lähetä koodi uudelleen (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Lähetä koodi uudelleen (%s)</string>
     <string name="validateMailTitle">Tarkista sähköpostisi</string>
     <string name="validateMailUnknownError">Tapahtui virhe. Yritä uudelleen hetken kuluttua.</string>
     <string name="validateMailTooManyAttemptsError">Liian monta yritystä. Yritä myöhemmin uudelleen.</string>

@@ -237,7 +237,7 @@
     <string name="validateMailDescription">We hebben een code gestuurd naar %s. Voer deze hieronder in om je e-mailadres in de app te verifiëren:</string>
     <string name="validateMailInfo">Vergeet niet de spammap van je e-mailadres te controleren.</string>
     <string name="validateMailResendCode">Een code opnieuw verzenden</string>
-    <string name="validateMailResendCodeTemplate">Een code opnieuw verzenden (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Een code opnieuw verzenden (%s)</string>
     <string name="validateMailTitle">Controleer je e-mail</string>
     <string name="validateMailUnknownError">Er is een fout opgetreden. Probeer het over een paar ogenblikken opnieuw.</string>
     <string name="validateMailTooManyAttemptsError">Te veel pogingen. Probeer het later opnieuw.</string>

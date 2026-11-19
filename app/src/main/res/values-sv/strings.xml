@@ -237,7 +237,7 @@
     <string name="validateMailDescription">Vi har skickat en kod till %s. Ange den nedan för att verifiera din e-postadress i appen:</string>
     <string name="validateMailInfo">Kom ihåg att kontrollera skräppostmappen för din e-postadress.</string>
     <string name="validateMailResendCode">Skicka en kod igen</string>
-    <string name="validateMailResendCodeTemplate">Skicka en kod igen (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Skicka en kod igen (%s)</string>
     <string name="validateMailTitle">Kontrollera din e-post</string>
     <string name="validateMailUnknownError">Ett fel har inträffat. Försök igen om en stund.</string>
     <string name="validateMailTooManyAttemptsError">För många försök. Försök igen senare.</string>

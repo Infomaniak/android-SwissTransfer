@@ -237,7 +237,7 @@
     <string name="validateMailDescription">Vi sendte en kode til %s. Skriv den inn nedenfor for å verifisere e-postadressen din i appen:</string>
     <string name="validateMailInfo">Husk å sjekke søppelpostmappen for e-postadressen din.</string>
     <string name="validateMailResendCode">Send en kode på nytt</string>
-    <string name="validateMailResendCodeTemplate">Send en kode på nytt (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Send en kode på nytt (%s)</string>
     <string name="validateMailTitle">Sjekk e-posten din</string>
     <string name="validateMailUnknownError">Det oppstod en feil. Prøv igjen om et øyeblikk.</string>
     <string name="validateMailTooManyAttemptsError">For mange forsøk. Prøv igjen senere.</string>
