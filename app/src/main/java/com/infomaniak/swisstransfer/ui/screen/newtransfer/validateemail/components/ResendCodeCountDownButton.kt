@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.infomaniak.core.common.isStartedFlow
 import com.infomaniak.core.common.time.timeOffFromWholeSeconds
+import com.infomaniak.core.common.toTimeMark
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.ButtonType
@@ -45,15 +46,15 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
+import kotlin.time.Instant
 
 @Composable
 fun ResendCodeCountDownButton(
     resendEmailCode: suspend () -> Unit,
     enabled: () -> Boolean,
-    currentCodeExpiration: TimeMark?,
+    currentCodeExpiration: Instant?,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -64,6 +65,7 @@ fun ResendCodeCountDownButton(
     ) {
         if (currentCodeExpiration != null) lifecycle.isStartedFlow().transformLatest { isStarted ->
             if (isStarted.not()) return@transformLatest
+            val currentCodeExpiration = currentCodeExpiration.toTimeMark()
             repeatWhileActive {
                 val timeUntilExpiration = -currentCodeExpiration.elapsedNow()
                 if (timeUntilExpiration.isNegative()) {
@@ -102,12 +104,12 @@ private fun Preview() {
             Column {
                 ResendCodeCountDownButton(
                     resendEmailCode = {},
-                    currentCodeExpiration = TimeSource.Monotonic.markNow() + 13.seconds,
+                    currentCodeExpiration = Clock.System.now() + 13.seconds,
                     enabled = { true }
                 )
                 ResendCodeCountDownButton(
                     resendEmailCode = {},
-                    currentCodeExpiration = TimeSource.Monotonic.markNow() - 1.seconds,
+                    currentCodeExpiration = Clock.System.now() - 1.seconds,
                     enabled = { true }
                 )
             }
