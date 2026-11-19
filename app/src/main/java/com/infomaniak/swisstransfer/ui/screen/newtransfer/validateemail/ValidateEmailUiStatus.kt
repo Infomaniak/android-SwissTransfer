@@ -17,7 +17,7 @@
  */
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
-import kotlin.time.TimeMark
+import kotlin.time.Instant
 
 sealed interface ValidateEmailUiStatus {
 
@@ -27,7 +27,7 @@ sealed interface ValidateEmailUiStatus {
     data class WaitingForCode(
         val onValidationRequest: (otp: String) -> Unit,
         val resendCode: suspend () -> Boolean,
-        val lastSentCodeExpiration: TimeMark?,
+        val lastSentCodeExpiration: Instant?,
         val lastIssue: DismissableIssue?
     ) : ValidateEmailUiStatus
 

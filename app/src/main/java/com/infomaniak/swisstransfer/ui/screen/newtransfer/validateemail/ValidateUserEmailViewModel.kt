@@ -46,7 +46,6 @@ import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
-import kotlin.time.TimeMark
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
@@ -61,9 +60,9 @@ class ValidateUserEmailViewModel @Inject constructor(
         validationStatusFor(email = email)
     }
 
-    private fun EmailValidation.lastSentCodeExpiration(): TimeMark? {
+    private fun EmailValidation.lastSentCodeExpiration(): Instant? {
         val expirationSeconds = lastSentCodeExpirationTimestampSeconds ?: return null
-        return Instant.fromEpochSeconds(expirationSeconds).toTimeMark()
+        return Instant.fromEpochSeconds(expirationSeconds)
     }
 
     private fun validationStatusFor(email: String): Flow<ValidateEmailUiStatus>  {
@@ -95,7 +94,9 @@ class ValidateUserEmailViewModel @Inject constructor(
                         var sentCompletable: CompletableDeferred<Boolean>
                         while (true) {
                             sentCompletable = codeResendRequests.receive() // It's UI responsibility to respect the timer.
-                            if (lastSentCodeExpiration.hasPassedNow()) break // Last code expired, accept re-sending user request.
+                            if (lastSentCodeExpiration.toTimeMark().hasPassedNow()) {
+                                break // Last code expired, accept re-sending user request.
+                            }
                         }
                         UserAction.ResendCode(onSent = { sentCompletable.complete(it) })
                     },

@@ -71,9 +71,9 @@ import com.infomaniak.swisstransfer.ui.utils.openMailApp
 import com.infomaniak.swisstransfer.upload.UploadState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
+import kotlin.time.Instant
 
 private val MAX_LAYOUT_WIDTH = 400.dp
 private val MIMETYPE_TEXT = "text/*"
@@ -190,7 +190,7 @@ private fun ValidateUserEmailScreen(
     isInvalidVerificationCode: () -> Boolean,
     snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
-    currentCodeExpiration: () -> TimeMark?,
+    currentCodeExpiration: () -> Instant?,
     onResendEmailCode: () -> Unit,
     otpCode: () -> String,
     updateOtpCode: (String) -> Unit,
@@ -327,7 +327,7 @@ private fun Preview() {
                 isInvalidVerificationCode = { false },
                 snackbarHostState = remember { SnackbarHostState() },
                 navigateBack = {},
-                currentCodeExpiration = { TimeSource.Monotonic.markNow() + 13.seconds },
+                currentCodeExpiration = { Clock.System.now() + 13.seconds },
                 onResendEmailCode = {},
                 otpCode = { "" },
                 updateOtpCode = {},
