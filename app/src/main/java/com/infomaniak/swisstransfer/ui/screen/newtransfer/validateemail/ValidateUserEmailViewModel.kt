@@ -109,11 +109,10 @@ class ValidateUserEmailViewModel @Inject constructor(
                         runCatching {
                             lastIssue = null
                             emit(waitingForCode.copy(lastSentCodeExpiration = null, resendCode = { false }, lastIssue = null))
-                            val alreadyValidated = !uploadManager.resendValidationEmail(validationId = validationStatus.id)
-                            if (alreadyValidated) return@transformLatest
-                            action.onSent(true)
-                        }.onFailure {
-                            action.onSent(false)
+                            uploadManager.resendValidationEmail(
+                                validationId = validationStatus.id,
+                                onSent = { emailWasSent -> action.onSent(emailWasSent) },
+                            )
                         }.cancellable().onFailure {
                             lastIssue = DismissableIssue(
                                 cause = it.toEmailValidationIssueCause(),
