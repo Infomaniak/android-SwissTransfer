@@ -136,10 +136,12 @@
     <string name="settingsDeleteMyAccount">Usuń moje konto</string>
     <string name="settingsDownloadsLimitTitle">Ustaw domyślny limit pobierań dla swoich transferów</string>
     <string name="settingsEmailLanguageTitle">Ustaw domyślny język dla swoich transferów e-mailowych</string>
+    <string name="settingsEmailLanguageValueDutch">Niderlandzki</string>
     <string name="settingsEmailLanguageValueEnglish">Angielski</string>
     <string name="settingsEmailLanguageValueFrench">Francuski</string>
     <string name="settingsEmailLanguageValueGerman">Niemiecki</string>
     <string name="settingsEmailLanguageValueItalian">Włoski</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugalski</string>
     <string name="settingsEmailLanguageValueSpanish">Hiszpański</string>
     <string name="settingsHelpAndSupport">Pomoc &amp; Wsparcie</string>
     <string name="settingsMatomoDescription">Matomo to narzędzie analityczne hostowane i zarządzane wyłącznie przez Infomaniak, służące do zrozumienia sposobu korzystania z aplikacji.\n\nAnalizując te dane, nasz zespół jest w stanie stale poprawiać interfejs aplikacji.</string>
@@ -249,8 +251,10 @@
     <string name="validateMailDescription">Wysłaliśmy kod na adres %s. Wprowadź go poniżej, aby zweryfikować adres e-mail w aplikacji:</string>
     <string name="validateMailInfo">Pamiętaj o sprawdzeniu folderu spam na swoim koncie e-mail.</string>
     <string name="validateMailResendCode">Wyślij kod ponownie</string>
-    <string name="validateMailResendCodeTemplate">Wyślij kod ponownie (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Wyślij kod ponownie (%s)</string>
     <string name="validateMailTitle">Sprawdź swoją pocztę</string>
     <string name="validateMailUnknownError">Wystąpił błąd. Spróbuj ponownie za chwilę.</string>
+    <string name="validateMailTooManyAttemptsError">Zbyt wiele prób. Spróbuj ponownie później.</string>
+    <string name="validateMailCodeExpiredError">Ten kod weryfikacyjny wygasł. Poproś o nowy.</string>
     <string name="version">Wersja</string>
 </resources>

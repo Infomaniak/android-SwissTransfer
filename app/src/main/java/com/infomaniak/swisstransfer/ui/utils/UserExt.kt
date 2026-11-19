@@ -19,4 +19,5 @@ package com.infomaniak.swisstransfer.ui.utils
 
 import com.infomaniak.core.auth.models.user.User
 
-fun User?.isApiV2() = this != null
+fun User?.hasAccount() = this != null
+fun User?.isGuest() = this == null

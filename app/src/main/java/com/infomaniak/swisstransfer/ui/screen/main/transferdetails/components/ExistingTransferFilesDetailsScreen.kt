@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.permissionmanager.PermissionType
 import com.infomaniak.core.permissionmanager.rememberPermissionManagerState
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
@@ -52,7 +51,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.transferdetails.getBottomBarP
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.filesdetails.FilesDetailsViewModel
 import com.infomaniak.swisstransfer.ui.utils.openFile
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ExistingTransferFilesDetailsScreen(
     folderUuid: String,
@@ -217,7 +215,6 @@ private fun ExistingTransferFilesDetailsTopBar(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun ExistingTransferFilesDetailsBottomBar(
     selectedFiles: () -> List<FileUi>,

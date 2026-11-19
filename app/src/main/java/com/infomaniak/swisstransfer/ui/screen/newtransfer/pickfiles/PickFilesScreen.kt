@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -66,7 +67,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
@@ -105,7 +105,8 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.theme.Dimens
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
-import com.infomaniak.swisstransfer.ui.utils.isApiV2
+import com.infomaniak.swisstransfer.ui.utils.hasAccount
+import com.infomaniak.swisstransfer.ui.utils.isGuest
 import com.infomaniak.swisstransfer.ui.utils.showToast
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -114,7 +115,6 @@ import kotlinx.coroutines.launch
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PickFilesScreen(
     pickFilesViewModel: PickFilesViewModel,
@@ -147,7 +147,7 @@ fun PickFilesScreen(
     fun pickFiles() {
         try {
             filePickerLauncher.launch(arrayOf("*/*"))
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             context.showToast(R.string.startActivityCantHandleAction)
         }
     }
@@ -330,19 +330,17 @@ private fun ImportTextFields(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(textFieldSpacing),
     ) {
-        if (LocalUser.current.isApiV2()) {
-            SwissTransferTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = stringResource(R.string.transferTitlePlaceholder),
-                isRequired = false,
-                maxLineNumber = 1,
-                onValueChange = onTransferTitleChange,
-            )
-        }
+        SwissTransferTextField(
+            modifier = Modifier.fillMaxWidth(),
+            label = stringResource(R.string.transferTitlePlaceholder),
+            isRequired = false,
+            maxLineNumber = 1,
+            onValueChange = onTransferTitleChange,
+        )
 
         EmailAddressesTextFields(
             emailTextFieldCallbacks = emailTextFieldCallbacks,
-            shouldShowEmailAddressesFields = shouldShowEmailAddressesFields,
+            shouldShowRecipientsField = shouldShowEmailAddressesFields,
             textFieldSpacing = textFieldSpacing,
             selectContact = selectContact,
             snackbarHostState = snackbarHostState,
@@ -363,7 +361,7 @@ private fun ImportTextFields(
 @Composable
 private fun EmailAddressesTextFields(
     emailTextFieldCallbacks: EmailTextFieldCallbacks,
-    shouldShowEmailAddressesFields: () -> Boolean,
+    shouldShowRecipientsField: () -> Boolean,
     textFieldSpacing: Dp,
     selectContact: (Uri) -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -371,7 +369,7 @@ private fun EmailAddressesTextFields(
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val contactRetreivalError = stringResource(R.string.errorContactPicker)
+    val contactRetrievalError = stringResource(R.string.errorContactPicker)
 
     fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -379,7 +377,7 @@ private fun EmailAddressesTextFields(
 
     fun handlePickedContacts(result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK || result.data == null) {
-            scope.launch { snackbarHostState.showSnackbar(contactRetreivalError) }
+            scope.launch { snackbarHostState.showSnackbar(contactRetrievalError) }
             return
         }
         val dataIntent = result.data ?: return
@@ -404,7 +402,10 @@ private fun EmailAddressesTextFields(
         onResult = ::handlePickedContacts,
     )
 
-    AnimatedVisibility(visible = shouldShowEmailAddressesFields(), modifier = modifier) {
+    val showRecipientsField = shouldShowRecipientsField()
+    val user = LocalUser.current
+    val shouldShowEmailAddressField = user.isGuest() || showRecipientsField
+    AnimatedVisibility(visible = shouldShowEmailAddressField, modifier = modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(textFieldSpacing)) {
             val isAuthorError = checkEmailError(isAuthor = true)
             val isRecipientError = checkEmailError(isAuthor = false)
@@ -412,32 +413,36 @@ private fun EmailAddressesTextFields(
             SwissTransferTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = stringResource(R.string.transferSenderAddressPlaceholder),
-                initialValue = transferAuthorEmail.get(),
+                initialValue = transferAuthorEmail.value,
                 keyboardType = KeyboardType.Email,
                 maxLineNumber = 1,
                 imeAction = ImeAction.Next,
                 isError = isAuthorError,
-                isReadOnly = LocalUser.current.isApiV2(),
+                isReadOnly = LocalUser.current.hasAccount(),
                 supportingText = getEmailError(isAuthorError),
-                onValueChange = transferAuthorEmail.set,
+                onValueChange = { transferAuthorEmail.value = it },
             )
 
-            EmailAddressTextField(
-                modifier = Modifier.fillMaxWidth(),
-                label = stringResource(R.string.transferRecipientAddressPlaceholder),
-                initialValue = recipientEmail.get(),
-                validatedRecipientsEmails = validatedRecipientsEmails,
-                onValueChange = { recipientEmail.set(it.text) },
-                isError = isRecipientError,
-                supportingText = getEmailError(isRecipientError),
-                trailingIcon = {
-                    TrailingButton(
-                        appIcon = AppIcons.PersonsCircleAdd,
-                        onClick = { launchPickContactSafely(pickContactLauncher) },
-                        contentDescriptionRes = R.string.contentDescriptionButtonSelectContact
-                    )
-                },
-            )
+            AnimatedVisibility(
+                visible = user.hasAccount() || showRecipientsField // If user has an account, animated with parent.
+            ) {
+                EmailAddressTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = stringResource(R.string.transferRecipientAddressPlaceholder),
+                    initialValue = recipientEmail.get(),
+                    validatedRecipientsEmails = validatedRecipientsEmails,
+                    onValueChange = { recipientEmail.set(it.text) },
+                    isError = isRecipientError,
+                    supportingText = getEmailError(isRecipientError),
+                    trailingIcon = {
+                        TrailingButton(
+                            appIcon = AppIcons.PersonsCircleAdd,
+                            onClick = { launchPickContactSafely(pickContactLauncher) },
+                            contentDescriptionRes = R.string.contentDescriptionButtonSelectContact
+                        )
+                    },
+                )
+            }
         }
     }
 }
@@ -562,7 +567,7 @@ private fun SendButton(
 }
 
 data class EmailTextFieldCallbacks(
-    val transferAuthorEmail: GetSetCallbacks<String>,
+    val transferAuthorEmail: MutableState<String>,
     val isAuthorEmailInvalid: () -> Boolean,
     val recipientEmail: GetSetCallbacks<String>,
     val isRecipientEmailInvalid: () -> Boolean,
@@ -571,7 +576,7 @@ data class EmailTextFieldCallbacks(
 
     fun checkEmailError(isAuthor: Boolean): Boolean {
         return if (isAuthor) {
-            isAuthorEmailInvalid() && transferAuthorEmail.get().isNotEmpty()
+            isAuthorEmailInvalid() && transferAuthorEmail.value.isNotEmpty()
         } else {
             isRecipientEmailInvalid() && recipientEmail.get().isNotEmpty()
         }
@@ -642,7 +647,7 @@ private fun Preview(@PreviewParameter(UserListPreviewParameterProvider::class) u
     )
 
     val emailTextFieldCallbacks = EmailTextFieldCallbacks(
-        transferAuthorEmail = GetSetCallbacks(get = { "" }, set = {}),
+        transferAuthorEmail = remember { mutableStateOf("") },
         isAuthorEmailInvalid = { false },
         recipientEmail = GetSetCallbacks(get = { "test.test@ik me" }, set = {}),
         isRecipientEmailInvalid = { true },

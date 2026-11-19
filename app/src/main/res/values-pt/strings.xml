@@ -130,10 +130,12 @@
     <string name="settingsDeleteMyAccount">Eliminar a minha conta</string>
     <string name="settingsDownloadsLimitTitle">Define um limite de transferências padrão para as tuas transferências</string>
     <string name="settingsEmailLanguageTitle">Define um idioma padrão para as tuas transferências por e-mail</string>
+    <string name="settingsEmailLanguageValueDutch">Holandês</string>
     <string name="settingsEmailLanguageValueEnglish">Inglês</string>
     <string name="settingsEmailLanguageValueFrench">Francês</string>
     <string name="settingsEmailLanguageValueGerman">Alemão</string>
     <string name="settingsEmailLanguageValueItalian">Italiano</string>
+    <string name="settingsEmailLanguageValuePortuguese">Português</string>
     <string name="settingsEmailLanguageValueSpanish">Espanhol</string>
     <string name="settingsHelpAndSupport">Ajuda &amp; Suporte</string>
     <string name="settingsMatomoDescription">O Matomo é uma ferramenta de análise alojada e gerida exclusivamente pela Infomaniak para compreender como a aplicação é utilizada.\n\nAo estudar estes dados, a nossa equipa consegue melhorar continuamente a interface da aplicação.</string>
@@ -235,8 +237,10 @@
     <string name="validateMailDescription">Enviámos um código para %s. Introduz-o abaixo para verificar o teu endereço de e-mail na app:</string>
     <string name="validateMailInfo">Lembra-te de verificar a pasta de spam do teu endereço de e-mail.</string>
     <string name="validateMailResendCode">Reenviar um código</string>
-    <string name="validateMailResendCodeTemplate">Reenviar um código (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Reenviar um código (%s)</string>
     <string name="validateMailTitle">Verifica o teu e-mail</string>
     <string name="validateMailUnknownError">Ocorreu um erro. Tenta novamente dentro de alguns momentos.</string>
+    <string name="validateMailTooManyAttemptsError">Demasiadas tentativas. Tenta novamente mais tarde.</string>
+    <string name="validateMailCodeExpiredError">Este código de verificação expirou. Pede um novo.</string>
     <string name="version">Versão</string>
 </resources>

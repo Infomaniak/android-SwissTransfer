@@ -130,10 +130,12 @@
     <string name="settingsDeleteMyAccount">Supprimer mon compte</string>
     <string name="settingsDownloadsLimitTitle">Défini une limite de téléchargements par défaut pour tes transferts</string>
     <string name="settingsEmailLanguageTitle">Défini une langue par défaut pour tes transferts par e-mail</string>
+    <string name="settingsEmailLanguageValueDutch">Néerlandais</string>
     <string name="settingsEmailLanguageValueEnglish">Anglais</string>
     <string name="settingsEmailLanguageValueFrench">Francais</string>
     <string name="settingsEmailLanguageValueGerman">Allemand</string>
     <string name="settingsEmailLanguageValueItalian">Italien</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugais</string>
     <string name="settingsEmailLanguageValueSpanish">Espagnol</string>
     <string name="settingsHelpAndSupport">Aide et support</string>
     <string name="settingsMatomoDescription">Matomo est un outil d’analyse hébergé et géré exclusivement par Infomaniak pour comprendre comment l’application est utilisée.\n\nL’étude de ces données permet à notre équipe d’améliorer en continue l’interface de l’application.</string>
@@ -235,8 +237,10 @@
     <string name="validateMailDescription">On a envoyé un code à %s. Saisis le ci-dessous pour faire vérifier ton adresse mail dans l’app :</string>
     <string name="validateMailInfo">Pense à vérifier le dossier spam de ton adresse mail.</string>
     <string name="validateMailResendCode">Renvoyer un code</string>
-    <string name="validateMailResendCodeTemplate">Renvoyer un code (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Renvoyer un code (%s)</string>
     <string name="validateMailTitle">Vérifie ton e-mail</string>
     <string name="validateMailUnknownError">Une erreur s’est produite. Retente ta chance dans quelques instants.</string>
+    <string name="validateMailTooManyAttemptsError">Trop de tentatives. Réessaie plus tard.</string>
+    <string name="validateMailCodeExpiredError">Ce code de vérification a expiré. Demande-en un nouveau.</string>
     <string name="version">Version</string>
 </resources>

@@ -15,102 +15,139 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@file:OptIn(ExperimentalSplittiesApi::class)
+@file:OptIn(ExperimentalSplittiesApi::class, ExperimentalCoroutinesApi::class)
 
 package com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.infomaniak.core.common.cancellable
-import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
+import com.infomaniak.core.common.dynamicLazyMapOfSharedFlow
+import com.infomaniak.core.common.flowForKey
+import com.infomaniak.core.common.toTimeMark
+import com.infomaniak.core.common.waitForValue
+import com.infomaniak.multiplatform_swisstransfer.data.EmailValidation
+import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.EmailValidationException
 import com.infomaniak.multiplatform_swisstransfer.network.exceptions.NetworkException
+import com.infomaniak.swisstransfer.ui.screen.newtransfer.validateemail.ValidateEmailUiStatus.DismissableIssue
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transformLatest
 import splitties.coroutines.raceOf
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 @HiltViewModel
 class ValidateUserEmailViewModel @Inject constructor(
-    private val uploadManager: InMemoryUploadManager
+    private val uploadManager: UploadV2Manager
 ) : ViewModel() {
 
-    val validationRequests = CallableState<ValidationRequest>()
-    val resendEmailReq = CallableState<String>()
-    val resetErrorReq = CallableState<Unit>()
+    fun validationStatus(email: String): Flow<ValidateEmailUiStatus> = validationStatuses.flowForKey(email)
 
-    private val _uiState = MutableStateFlow(ValidateEmailUiState.Default)
-    val uiState: StateFlow<ValidateEmailUiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch { run() }
+    val validationStatuses = viewModelScope.dynamicLazyMapOfSharedFlow(
+        cacheManager = { _, _ -> delay(5.seconds) }
+    ) { email: String ->
+        validationStatusFor(email = email)
     }
 
-    private fun updateState(newState: ValidateEmailUiState) {
-        _uiState.value = newState
+    private fun EmailValidation.lastSentCodeExpiration(): Instant? {
+        val expirationSeconds = lastSentCodeExpirationTimestampSeconds ?: return null
+        return Instant.fromEpochSeconds(expirationSeconds)
     }
 
-    private suspend fun run() {
-        var lastIssue: Result.Issue? = null
-        repeatWhileActive {
-            val request: ValidationRequest = raceOf({
-                validationRequests.awaitOneCall()
-            }, {
-                repeatWhileActive {
-                    val email = resendEmailReq.awaitOneCall()
-                    uploadManager.resendEmailCode(email)
-                }
-            }, {
-                lastIssue ?: awaitCancellation()
-                resetErrorReq.awaitOneCall()
-                updateState(ValidateEmailUiState.Default)
-                awaitCancellation()
-            })
-            updateState(ValidateEmailUiState.Loading)
-            val result = tryValidating(email = request.email, otpCode = request.otpCode)
-            val newState: ValidateEmailUiState = when (result) {
-                Result.InvalidVerificationCode -> ValidateEmailUiState.InvalidVerificationCode
-                Result.NoNetwork -> ValidateEmailUiState.NoNetwork
-                Result.UnknownError -> ValidateEmailUiState.UnknownError
-                Result.Success -> awaitCancellation()
+    private fun validationStatusFor(email: String): Flow<ValidateEmailUiStatus>  {
+        var lastIssue: DismissableIssue? = null
+        val issueDismissals = Channel<Unit>()
+        return uploadManager.emailValidationStatus(email = email).onEach {
+            val isEmailValidated = it != null && it.lastSentCodeExpirationTimestampSeconds == null
+            if (isEmailValidated) UploadForegroundService.retry()
+        }.transformLatest { validationStatus ->
+            if (validationStatus == null) {
+                return@transformLatest // Should not happen since the email validation request shall be created before.
             }
-            lastIssue = result as? Result.Issue
-            updateState(newState)
+            val lastSentCodeExpiration = validationStatus.lastSentCodeExpiration()
+                ?: return@transformLatest // Already validated. Should exit.
+
+            val otpSubmissions = Channel<String>(capacity = 1)
+            repeatWhileActive {
+                val codeResendRequests = Channel<CompletableDeferred<Boolean>>()
+                val waitingForCode = ValidateEmailUiStatus.WaitingForCode(
+                    onValidationRequest = otpSubmissions::trySend,
+                    resendCode = { waitForValue { codeResendRequests.trySend(it) } },
+                    lastSentCodeExpiration = lastSentCodeExpiration,
+                    lastIssue = lastIssue
+                )
+                emit(waitingForCode)
+                val action: UserAction = raceOf(
+                    { UserAction.ValidateWithOtp(otpSubmissions.receive()) },
+                    {
+                        var sentCompletable: CompletableDeferred<Boolean>
+                        while (true) {
+                            sentCompletable = codeResendRequests.receive() // It's UI responsibility to respect the timer.
+                            if (lastSentCodeExpiration.toTimeMark().hasPassedNow()) {
+                                break // Last code expired, accept re-sending user request.
+                            }
+                        }
+                        UserAction.ResendCode(onSent = { sentCompletable.complete(it) })
+                    },
+                    {
+                        issueDismissals.receive()
+                        UserAction.DismissLastIssue
+                    }
+                )
+                when (action) {
+                    UserAction.DismissLastIssue -> return@repeatWhileActive run { lastIssue = null }
+                    is UserAction.ResendCode -> return@repeatWhileActive runCatching {
+                        lastIssue = null
+                        emit(waitingForCode.copy(lastSentCodeExpiration = null, resendCode = { false }, lastIssue = null))
+                        uploadManager.resendValidationEmail(
+                            validationId = validationStatus.id,
+                            onSent = { emailWasSent -> action.onSent(emailWasSent) },
+                        )
+                    }.cancellable().getOrElse {
+                        action.onSent(false)
+                        lastIssue = DismissableIssue(
+                            cause = it.toEmailValidationIssueCause(),
+                            dismiss = { issueDismissals.trySend(Unit) }
+                        )
+                    }
+                    is UserAction.ValidateWithOtp -> Unit
+                }
+                emit(ValidateEmailUiStatus.SendingCode)
+                lastIssue = DismissableIssue(
+                    cause = tryValidating(email = email, otpCode = action.otpCode) ?: return@transformLatest,
+                    dismiss = { issueDismissals.trySend(Unit) }
+                )
+            }
         }
     }
 
-    enum class ValidateEmailUiState {
-        Default, Loading, InvalidVerificationCode, UnknownError, NoNetwork
+    private sealed interface UserAction {
+        data class ValidateWithOtp(val otpCode: String) : UserAction
+        data class ResendCode(val onSent: (succeeded: Boolean) -> Unit) : UserAction
+        data object DismissLastIssue : UserAction
     }
 
-    data class ValidationRequest(val email: String, val otpCode: String)
+    private suspend fun tryValidating(email: String, otpCode: String): DismissableIssue.Cause? = runCatching {
+        uploadManager.validateEmailWithCode(email = email, code = otpCode)
+        null
+    }.cancellable().getOrElse { t -> t.toEmailValidationIssueCause() }
 
-    private sealed interface Result {
-        data object Success : Result
-        sealed interface Issue : Result
-        data object UnknownError : Issue
-        data object NoNetwork : Issue
-        data object InvalidVerificationCode : Issue
-    }
-
-    private suspend fun tryValidating(email: String, otpCode: String): Result = runCatching {
-        val token = uploadManager.verifyEmailCode(otpCode, email)
-        uploadManager.saveAuthorEmailToken(authorEmail = email, emailToken = token.token)
-        UploadForegroundService.retry()
-        Result.Success
-    }.cancellable().getOrElse { t ->
-        when (t) {
-            is EmailValidationException.InvalidPasswordException -> Result.InvalidVerificationCode
-            is NetworkException -> Result.NoNetwork
-            else -> Result.UnknownError
-        }
+    private fun Throwable.toEmailValidationIssueCause(): DismissableIssue.Cause = when (this) {
+        is EmailValidationException.InvalidCode -> DismissableIssue.Cause.InvalidVerificationCode
+        is EmailValidationException.CodeExpired -> DismissableIssue.Cause.VerificationCodeExpired
+        is EmailValidationException.TooManyAttempts -> DismissableIssue.Cause.TooManyAttempts
+        is NetworkException -> DismissableIssue.Cause.NoNetwork
+        else -> DismissableIssue.Cause.UnknownError
     }
 }
