@@ -49,7 +49,6 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.DownloadLimitOption.
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
-import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.NewTransferOpenManager
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.PickedFile
@@ -318,7 +317,9 @@ class PickFilesViewModel @Inject constructor(
     }
 
     private suspend fun extractNewTransferParams() = NewTransferParams(
-        validityPeriod = selectedValidityPeriodOption.value.apiValue,
+        validityPeriod = checkNotNull(selectedValidityPeriodOption.value) {
+            "A transfer duration must be selected before sending"
+        }.apiValue,
         authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
         title = transferTitle,
@@ -344,8 +345,9 @@ class PickFilesViewModel @Inject constructor(
         initialValue = null,
     )
 
-    val selectedValidityPeriodOption = savedStateHandle.getStateFlow(
-        key = SELECTED_VALIDITY_PERIOD_KEY, initialValue = ValidityPeriodOption.THIRTY
+    val selectedValidityPeriodOption = savedStateHandle.getStateFlow<ValidityPeriodOption?>(
+        key = SELECTED_VALIDITY_PERIOD_KEY,
+        initialValue = null,
     )
 
     val selectedDownloadLimitOption = savedStateHandle.getStateFlow(
@@ -401,13 +403,11 @@ class PickFilesViewModel @Inject constructor(
             accountManager.selectedOrganizationAccount().first()?.id?.let(::selectOrganizationAccount)
 
             appSettingsManager.getAppSettings()?.let {
-                selectTransferValidityPeriod(it.validityPeriod.toTransferOption())
                 selectTransferDownloadLimit(it.downloadLimit.toTransferOption())
                 selectTransferLanguage(it.emailLanguage.toTransferOption())
                 selectTransferType(it.lastTransferType.toTransferTypeUi())
             } ?: run {
                 SentryLog.e(TAG, "AppSettings is null in ImportFilesScreen, it should not happened")
-                selectTransferValidityPeriod(ValidityPeriodOption.THIRTY)
                 selectTransferDownloadLimit(DownloadLimitOption.TWO_HUNDRED_FIFTY)
                 selectTransferLanguage(EmailLanguageOption.FRENCH)
             }

@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Mijn overdracht bewerken</string>
     <string name="buttonFinished">Voltooien</string>
     <string name="buttonOpenMailApp">E-mailapp openen</string>
+    <string name="buttonSelect">Selecteren</string>
     <string name="buttonShare">Delen</string>
     <string name="buttonStart">Starten</string>
     <string name="cantImportFileX">Kan het bestand %s niet importeren</string>
@@ -44,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Contactenlijst openen</string>
     <string name="contentDescriptionButtonShowPassword">Wachtwoord weergeven</string>
     <string name="contentDescriptionCreateNewTransferButton">Nieuwe overdracht</string>
+    <string name="contentDescriptionRecommendedDuration">Aanbevolen tijdsduur</string>
     <string name="contentDescriptionViewTransferDetails">Overdrachtsdetails bekijken</string>
     <string name="deeplinkPasswordDescription">Voer het wachtwoord in dat je hebt ontvangen om deze bestanden te downloaden.</string>
     <string name="deeplinkTransferExpired">Deze overdracht is verlopen</string>
@@ -81,6 +83,7 @@
     <string name="newTransferLeavingDialogDescription">Je overdracht is bijna klaar. Weet je zeker dat je het wilt annuleren?</string>
     <string name="newTransferLeavingDialogNegativeButton">Nee, doorgaan</string>
     <string name="newTransferLeavingDialogPositiveButton">Ja, annuleren</string>
+    <string name="newTransferValidityPeriodTitle">Overdracht beschikbaar gedurende</string>
     <string name="noSettingsSelectedDescription">Selecteer een parameter om het weer te geven</string>
     <string name="noTransferReceivedDescription">Alle overdrachten die je de afgelopen 30 dagen ontvangt, verschijnen hier.</string>
     <string name="noTransferReceivedTitle">Geen ontvangen overdrachten</string>
@@ -119,6 +122,8 @@
         <item quantity="one">Ontvanger:</item>
         <item quantity="other">Ontvangers:</item>
     </plurals>
+    <string name="recommendedDurationsDescription">85%% van de overdrachten wordt binnen 24 uur gedownload. Minder tijd op onze servers, minder energieverbruik.</string>
+    <string name="recommendedDurationsTitle">Aanbevolen tijdsduren</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer is niet beschikbaar op jouw locatie</string>
     <string name="sentEmptyTitle">Ons verhaal begint hier</string>
     <string name="sentFilesTitle">Gedeelde bestanden</string>
@@ -153,7 +158,7 @@
     <string name="settingsOptionThemeDark">Donker</string>
     <string name="settingsOptionThemeLight">Licht</string>
     <string name="settingsOptionThemeSystem">Systeem</string>
-    <string name="settingsOptionValidityPeriod">Geldigheidsperiode</string>
+    <string name="settingsOptionValidityPeriod">Beschikbaar gedurende</string>
     <string name="settingsPasswordDescription">Je ontvangers moeten het wachtwoord invoeren om de bestanden te downloaden.</string>
     <string name="settingsPasswordToggleDescription">Bescherming activeren</string>
     <string name="settingsSignIn">Inloggen</string>
@@ -177,6 +182,8 @@
     <string name="textFieldOptional">(Optioneel)</string>
     <string name="tooLargeFilesDescription">De maximale overdrachtsgrootte is overschreden.</string>
     <string name="tooLargeFilesTitle">Dat is een beetje veel…</string>
+    <string name="transferAvailabilityAlertDescription">Je link blijft de eerste 15 dagen actief. Je ontvangt een e-mail met een uitnodiging om de geldigheid met nog eens 15 dagen te verlengen.</string>
+    <string name="transferAvailabilityAlertTitle">Beschikbaarheid van de overdracht</string>
     <string name="transferContentHeader">Inhoud van de overdracht:</string>
     <string name="transferExpiredButton">Uit geschiedenis verwijderen</string>
     <string name="transferExpiredDateReachedDescription">Sorry, deze overdracht is verlopen op %s. Je kunt de bestanden niet meer downloaden of bekijken.</string>

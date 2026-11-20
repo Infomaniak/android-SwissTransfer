@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Muokkaa siirtoani</string>
     <string name="buttonFinished">Valmis</string>
     <string name="buttonOpenMailApp">Avaa sähköpostisovellus</string>
+    <string name="buttonSelect">Valitse</string>
     <string name="buttonShare">Jaa</string>
     <string name="buttonStart">Aloita</string>
     <string name="cantImportFileX">Tiedostoa %s ei voi tuoda</string>
@@ -44,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Avaa yhteysluettelo</string>
     <string name="contentDescriptionButtonShowPassword">Näytä salasana</string>
     <string name="contentDescriptionCreateNewTransferButton">Uusi siirto</string>
+    <string name="contentDescriptionRecommendedDuration">Suositeltu kesto</string>
     <string name="contentDescriptionViewTransferDetails">Katso siirron tiedot</string>
     <string name="deeplinkPasswordDescription">Syötä saamasi salasana ladataksesi nämä tiedostot.</string>
     <string name="deeplinkTransferExpired">Tämä siirto on vanhentunut</string>
@@ -81,6 +83,7 @@
     <string name="newTransferLeavingDialogDescription">Siirtosi on melkein valmis. Haluatko varmasti peruuttaa sen?</string>
     <string name="newTransferLeavingDialogNegativeButton">Ei, jatka</string>
     <string name="newTransferLeavingDialogPositiveButton">Kyllä, peruuta</string>
+    <string name="newTransferValidityPeriodTitle">Siirto saatavilla ajan</string>
     <string name="noSettingsSelectedDescription">Valitse parametri näyttääksesi sen</string>
     <string name="noTransferReceivedDescription">Kaikki viimeisen 30 päivän aikana vastaanottamasi siirrot näkyvät täällä.</string>
     <string name="noTransferReceivedTitle">Ei vastaanotettuja siirtoja</string>
@@ -119,6 +122,8 @@
         <item quantity="one">Vastaanottaja:</item>
         <item quantity="other">Vastaanottajat:</item>
     </plurals>
+    <string name="recommendedDurationsDescription">85 %% siirroista ladataan 24 tunnin kuluessa. Vähemmän aikaa palvelimillamme, vähemmän energiankulutusta.</string>
+    <string name="recommendedDurationsTitle">Suositellut kestot</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer ei ole saatavilla alueellasi</string>
     <string name="sentEmptyTitle">Tarinamme alkaa täältä</string>
     <string name="sentFilesTitle">Jaetut tiedostot</string>
@@ -153,7 +158,7 @@
     <string name="settingsOptionThemeDark">Tumma</string>
     <string name="settingsOptionThemeLight">Vaalea</string>
     <string name="settingsOptionThemeSystem">Järjestelmä</string>
-    <string name="settingsOptionValidityPeriod">Voimassaoloaika</string>
+    <string name="settingsOptionValidityPeriod">Saatavilla ajan</string>
     <string name="settingsPasswordDescription">Vastaanottajien täytyy syöttää salasana ladatakseen tiedostot.</string>
     <string name="settingsPasswordToggleDescription">Aktivoi suojaus</string>
     <string name="settingsSignIn">Kirjaudu sisään</string>
@@ -177,6 +182,8 @@
     <string name="textFieldOptional">(Valinnainen)</string>
     <string name="tooLargeFilesDescription">Siirron enimmäiskoko on ylitetty.</string>
     <string name="tooLargeFilesTitle">Se on hieman paljon…</string>
+    <string name="transferAvailabilityAlertDescription">Linkkisi pysyy aktiivisena ensimmäiset 15 päivää. Saat sähköpostiviestin, jossa sinua kehotetaan jatkamaan sen voimassaoloa vielä 15 päivällä.</string>
+    <string name="transferAvailabilityAlertTitle">Siirron saatavuus</string>
     <string name="transferContentHeader">Siirron sisältö:</string>
     <string name="transferExpiredButton">Poista historiasta</string>
     <string name="transferExpiredDateReachedDescription">Pahoittelut, tämä siirto vanheni %s. Et voi enää ladata tai tarkastella tiedostoja.</string>

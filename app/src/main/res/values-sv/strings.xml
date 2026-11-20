@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Redigera min överföring</string>
     <string name="buttonFinished">Klar</string>
     <string name="buttonOpenMailApp">Öppna e-postappen</string>
+    <string name="buttonSelect">Välj</string>
     <string name="buttonShare">Dela</string>
     <string name="buttonStart">Starta</string>
     <string name="cantImportFileX">Det går inte att importera filen %s</string>
@@ -44,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Öppna kontaktlistan</string>
     <string name="contentDescriptionButtonShowPassword">Visa lösenord</string>
     <string name="contentDescriptionCreateNewTransferButton">Ny överföring</string>
+    <string name="contentDescriptionRecommendedDuration">Rekommenderad tidsperiod</string>
     <string name="contentDescriptionViewTransferDetails">Visa överföringsdetaljer</string>
     <string name="deeplinkPasswordDescription">Ange lösenordet du har fått för att ladda ner dessa filer.</string>
     <string name="deeplinkTransferExpired">Denna överföring har gått ut</string>
@@ -81,6 +83,7 @@
     <string name="newTransferLeavingDialogDescription">Din överföring är nästan klar. Är du säker på att du vill avbryta den?</string>
     <string name="newTransferLeavingDialogNegativeButton">Nej, fortsätt</string>
     <string name="newTransferLeavingDialogPositiveButton">Ja, avbryt</string>
+    <string name="newTransferValidityPeriodTitle">Överföring tillgänglig i</string>
     <string name="noSettingsSelectedDescription">Välj en parameter för att visa den</string>
     <string name="noTransferReceivedDescription">Alla överföringar du tar emot under de senaste 30 dagarna visas här.</string>
     <string name="noTransferReceivedTitle">Inga mottagna överföringar</string>
@@ -119,6 +122,8 @@
         <item quantity="one">Mottagare:</item>
         <item quantity="other">Mottagare:</item>
     </plurals>
+    <string name="recommendedDurationsDescription">85 %% av överföringarna laddas ner inom 24 timmar. Kortare tid på våra servrar, lägre energiförbrukning.</string>
+    <string name="recommendedDurationsTitle">Rekommenderade tidsperioder</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer är inte tillgänglig på din plats</string>
     <string name="sentEmptyTitle">Vår historia börjar här</string>
     <string name="sentFilesTitle">Delade filer</string>
@@ -153,7 +158,7 @@
     <string name="settingsOptionThemeDark">Mörkt</string>
     <string name="settingsOptionThemeLight">Ljust</string>
     <string name="settingsOptionThemeSystem">System</string>
-    <string name="settingsOptionValidityPeriod">Giltighetstid</string>
+    <string name="settingsOptionValidityPeriod">Tillgänglig i</string>
     <string name="settingsPasswordDescription">Dina mottagare behöver ange lösenordet för att ladda ner filerna.</string>
     <string name="settingsPasswordToggleDescription">Aktivera skydd</string>
     <string name="settingsSignIn">Logga in</string>
@@ -177,6 +182,8 @@
     <string name="textFieldOptional">(Valfritt)</string>
     <string name="tooLargeFilesDescription">Den maximala överföringsstorleken har överskridits.</string>
     <string name="tooLargeFilesTitle">Det är lite för mycket…</string>
+    <string name="transferAvailabilityAlertDescription">Din länk förblir aktiv under de första 15 dagarna. Du får ett e-postmeddelande med en inbjudan att förlänga giltighetstiden med ytterligare 15 dagar.</string>
+    <string name="transferAvailabilityAlertTitle">Överföringens tillgänglighet</string>
     <string name="transferContentHeader">Överföringsinnehåll:</string>
     <string name="transferExpiredButton">Ta bort från historik</string>
     <string name="transferExpiredDateReachedDescription">Tyvärr gick denna överföring ut den %s. Du kan inte längre ladda ner eller visa filerna.</string>

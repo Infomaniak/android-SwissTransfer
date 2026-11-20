@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewLightAndDark
+import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.ChevronRightThick
@@ -78,7 +79,7 @@ fun TransferOptionType(
 @Composable
 private fun SettingValue(selectedSetting: () -> SettingOption?, modifier: Modifier = Modifier) {
     Text(
-        text = selectedSetting()?.title?.invoke() ?: "",
+        text = selectedSetting()?.title?.invoke() ?: stringResource(R.string.buttonSelect),
         modifier = modifier,
         textAlign = TextAlign.End,
         style = SwissTransferTheme.typography.bodySmallRegular,

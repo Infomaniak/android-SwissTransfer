@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Modifica mio trasferimento</string>
     <string name="buttonFinished">Finisci</string>
     <string name="buttonOpenMailApp">Apri l’app di posta elettronica</string>
+    <string name="buttonSelect">Seleziona</string>
     <string name="buttonShare">Condividi</string>
     <string name="buttonStart">Inizio</string>
     <string name="cantImportFileX">Impossibile importare il file %s</string>
@@ -44,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Apri l’elenco contatti</string>
     <string name="contentDescriptionButtonShowPassword">Mostra password</string>
     <string name="contentDescriptionCreateNewTransferButton">Nuovo trasferimento</string>
+    <string name="contentDescriptionRecommendedDuration">Durata consigliata</string>
     <string name="contentDescriptionViewTransferDetails">Vedi dettagli del trasferimento</string>
     <string name="deeplinkPasswordDescription">Inserite la password che vi è stata fornita per scaricare questi file.</string>
     <string name="deeplinkTransferExpired">Questo trasferimento è scaduto</string>
@@ -81,6 +83,7 @@
     <string name="newTransferLeavingDialogDescription">Il trasferimento è quasi pronto. Sei sicuro di volerlo annullare?</string>
     <string name="newTransferLeavingDialogNegativeButton">No, continua</string>
     <string name="newTransferLeavingDialogPositiveButton">Sì, annulla</string>
+    <string name="newTransferValidityPeriodTitle">Trasferimento disponibile per</string>
     <string name="noSettingsSelectedDescription">Seleziona un parametro da visualizzare</string>
     <string name="noTransferReceivedDescription">Qui appariranno tutti i trasferimenti ricevuti negli ultimi 30 giorni.</string>
     <string name="noTransferReceivedTitle">Nessun trasferimento ricevuto</string>
@@ -119,6 +122,8 @@
         <item quantity="one">A:</item>
         <item quantity="other">A:</item>
     </plurals>
+    <string name="recommendedDurationsDescription">L’85%% dei trasferimenti viene scaricato entro 24 ore. Meno tempo sui nostri server, meno energia consumata.</string>
+    <string name="recommendedDurationsTitle">Durate consigliate</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer non è disponibile nella tua località</string>
     <string name="sentEmptyTitle">La nostra storia inizia qui</string>
     <string name="sentFilesTitle">File condivisi</string>
@@ -153,7 +158,7 @@
     <string name="settingsOptionThemeDark">Scuro</string>
     <string name="settingsOptionThemeLight">Chiaro</string>
     <string name="settingsOptionThemeSystem">Sistema</string>
-    <string name="settingsOptionValidityPeriod">Periodo di validità</string>
+    <string name="settingsOptionValidityPeriod">Disponibile per</string>
     <string name="settingsPasswordDescription">I destinatari dovranno inserire la password per scaricare i file.</string>
     <string name="settingsPasswordToggleDescription">Attivare la protezione</string>
     <string name="settingsSignIn">Accedi</string>
@@ -177,6 +182,8 @@
     <string name="textFieldOptional">(Opzionale)</string>
     <string name="tooLargeFilesDescription">È stata superata la dimensione massima di trasferimento.</string>
     <string name="tooLargeFilesTitle">È un po’ troppo…</string>
+    <string name="transferAvailabilityAlertDescription">Il tuo link rimarrà attivo per i primi 15 giorni. Un’email ti inviterà a prolungarne la validità di altri 15 giorni.</string>
+    <string name="transferAvailabilityAlertTitle">Disponibilità del trasferimento</string>
     <string name="transferContentHeader">Contenuto del trasferimento:</string>
     <string name="transferExpiredButton">Cancellare dalla cronologia</string>
     <string name="transferExpiredDateReachedDescription">Spiacente, questo trasferimento è scaduto il %s. Non è più possibile scaricare o visualizzare i file.</string>

@@ -31,6 +31,7 @@
     <string name="buttonEditTransfer">Επεξεργασία της μεταφοράς μου</string>
     <string name="buttonFinished">Τέλος</string>
     <string name="buttonOpenMailApp">Άνοιγμα εφαρμογής email</string>
+    <string name="buttonSelect">Επιλογή</string>
     <string name="buttonShare">Κοινοποίηση</string>
     <string name="buttonStart">Έναρξη</string>
     <string name="cantImportFileX">Δεν είναι δυνατή η εισαγωγή του αρχείου %s</string>
@@ -44,6 +45,7 @@
     <string name="contentDescriptionButtonSelectContact">Άνοιγμα λίστας επαφών</string>
     <string name="contentDescriptionButtonShowPassword">Εμφάνιση κωδικού πρόσβασης</string>
     <string name="contentDescriptionCreateNewTransferButton">Νέα μεταφορά</string>
+    <string name="contentDescriptionRecommendedDuration">Προτεινόμενη διάρκεια</string>
     <string name="contentDescriptionViewTransferDetails">Προβολή λεπτομερειών μεταφοράς</string>
     <string name="deeplinkPasswordDescription">Εισάγαλε τον κωδικό πρόσβασης που σου δόθηκε για να κατεβάσεις αυτά τα αρχεία.</string>
     <string name="deeplinkTransferExpired">Αυτή η μεταφορά έχει λήξει</string>
@@ -81,6 +83,7 @@
     <string name="newTransferLeavingDialogDescription">Η μεταφορά σου είναι σχεδόν έτοιμη. Είσαι σίγουρος ότι θέλεις να την ακυρώσεις;</string>
     <string name="newTransferLeavingDialogNegativeButton">Όχι, συνέχεια</string>
     <string name="newTransferLeavingDialogPositiveButton">Ναι, ακύρωση</string>
+    <string name="newTransferValidityPeriodTitle">Μεταφορά διαθέσιμη για</string>
     <string name="noSettingsSelectedDescription">Επίλεξε μια παράμετρο για να την εμφανίσεις</string>
     <string name="noTransferReceivedDescription">Όλες οι μεταφορές που λαμβάνεις τις τελευταίες 30 ημέρες θα εμφανίζονται εδώ.</string>
     <string name="noTransferReceivedTitle">Δεν ελήφθησαν μεταφορές</string>
@@ -119,6 +122,8 @@
         <item quantity="one">Παραλήπτης:</item>
         <item quantity="other">Παραλήπτες:</item>
     </plurals>
+    <string name="recommendedDurationsDescription">Το 85%% των μεταφορών λαμβάνεται εντός 24 ωρών. Λιγότερος χρόνος στους διακομιστές μας, λιγότερη κατανάλωση ενέργειας.</string>
+    <string name="recommendedDurationsTitle">Προτεινόμενες διάρκειες</string>
     <string name="restrictedLocation">Το Infomaniak SwissTransfer δεν είναι διαθέσιμο στην τοποθεσία σου</string>
     <string name="sentEmptyTitle">Η ιστορία μας ξεκινά εδώ</string>
     <string name="sentFilesTitle">Κοινόχρηστα αρχεία</string>
@@ -153,7 +158,7 @@
     <string name="settingsOptionThemeDark">Σκοτεινό</string>
     <string name="settingsOptionThemeLight">Ανοιχτό</string>
     <string name="settingsOptionThemeSystem">Σύστημα</string>
-    <string name="settingsOptionValidityPeriod">Περίοδος ισχύος</string>
+    <string name="settingsOptionValidityPeriod">Διαθέσιμη για</string>
     <string name="settingsPasswordDescription">Οι παραλήπτες σου θα πρέπει να εισάγουν τον κωδικό πρόσβασης για να κατεβάσουν τα αρχεία.</string>
     <string name="settingsPasswordToggleDescription">Ενεργοποίηση προστασίας</string>
     <string name="settingsSignIn">Σύνδεση</string>
@@ -177,6 +182,8 @@
     <string name="textFieldOptional">(Προαιρετικό)</string>
     <string name="tooLargeFilesDescription">Το μέγιστο μέγεθος μεταφοράς έχει υπερβληθεί.</string>
     <string name="tooLargeFilesTitle">Αυτό είναι λίγο πολύ…</string>
+    <string name="transferAvailabilityAlertDescription">Ο σύνδεσμός σας θα παραμείνει ενεργός για τις πρώτες 15 ημέρες. Θα λάβετε ένα email που θα σας προσκαλεί να παρατείνετε την ισχύ του για άλλες 15 ημέρες.</string>
+    <string name="transferAvailabilityAlertTitle">Διαθεσιμότητα μεταφοράς</string>
     <string name="transferContentHeader">Περιεχόμενο μεταφοράς:</string>
     <string name="transferExpiredButton">Διαγραφή από το ιστορικό</string>
     <string name="transferExpiredDateReachedDescription">Λυπούμαστε, αυτή η μεταφορά έληξε στις %s. Δεν μπορείς πλέον να κατεβάσεις ή να δεις τα αρχεία.</string>

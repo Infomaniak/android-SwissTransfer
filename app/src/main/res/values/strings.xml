@@ -36,6 +36,7 @@
     <string name="buttonEditTransfer">Edit my transfer</string>
     <string name="buttonFinished">Finish</string>
     <string name="buttonOpenMailApp">Open the mail app</string>
+    <string name="buttonSelect">Select</string>
     <string name="buttonShare">Share</string>
     <string name="buttonStart">Start</string>
     <string name="cantImportFileX">Can’t import the file %s</string>
@@ -49,6 +50,7 @@
     <string name="contentDescriptionButtonSelectContact">Open the contacts list</string>
     <string name="contentDescriptionButtonShowPassword">Show password</string>
     <string name="contentDescriptionCreateNewTransferButton">New transfer</string>
+    <string name="contentDescriptionRecommendedDuration">Recommended duration</string>
     <string name="contentDescriptionViewTransferDetails">View transfer details</string>
     <string name="deeplinkPasswordDescription">Enter the password you have been given to download these files.</string>
     <string name="deeplinkTransferExpired">This transfer has expired</string>
@@ -86,6 +88,7 @@
     <string name="newTransferLeavingDialogDescription">Your transfer is almost ready. Are you sure you want to cancel it?</string>
     <string name="newTransferLeavingDialogNegativeButton">No, continue</string>
     <string name="newTransferLeavingDialogPositiveButton">Yes, cancel</string>
+    <string name="newTransferValidityPeriodTitle">Transfer available for</string>
     <string name="noSettingsSelectedDescription">Select a parameter to display it</string>
     <string name="noTransferReceivedDescription">All transfers you receive over the last 30 days will appear here.</string>
     <string name="noTransferReceivedTitle">No transfers received</string>
@@ -124,6 +127,8 @@
         <item quantity="one">Recipient:</item>
         <item quantity="other">Recipients:</item>
     </plurals>
+    <string name="recommendedDurationsDescription">85%% of transfers are downloaded within 24 hours. Less time on our servers, less energy used.</string>
+    <string name="recommendedDurationsTitle">Recommended durations</string>
     <string name="restrictedLocation">Infomaniak SwissTransfer is not available in your location</string>
     <string name="sentEmptyTitle">Our story begins here</string>
     <string name="sentFilesTitle">Shared files</string>
@@ -158,7 +163,7 @@
     <string name="settingsOptionThemeDark">Dark</string>
     <string name="settingsOptionThemeLight">Light</string>
     <string name="settingsOptionThemeSystem">System</string>
-    <string name="settingsOptionValidityPeriod">Validity period</string>
+    <string name="settingsOptionValidityPeriod">Available for</string>
     <string name="settingsPasswordDescription">Your recipients will need to enter the password to download the files.</string>
     <string name="settingsPasswordToggleDescription">Activate protection</string>
     <string name="settingsSignIn">Sign in</string>
@@ -182,6 +187,8 @@
     <string name="textFieldOptional">(Optional)</string>
     <string name="tooLargeFilesDescription">The max transfer size has been exceeded.</string>
     <string name="tooLargeFilesTitle">That’s a bit much…</string>
+    <string name="transferAvailabilityAlertDescription">Your link will remain active for the first 15 days. An email will invite you to extend it for another 15 days.</string>
+    <string name="transferAvailabilityAlertTitle">Transfer availability</string>
     <string name="transferContentHeader">Transfer content:</string>
     <string name="transferExpiredButton">Delete from history</string>
     <string name="transferExpiredDateReachedDescription">Sorry, this transfer expired on %s. You can no longer download or view the files.</string>

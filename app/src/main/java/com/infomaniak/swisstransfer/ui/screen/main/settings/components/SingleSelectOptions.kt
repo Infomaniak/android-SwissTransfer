@@ -47,6 +47,7 @@ import com.infomaniak.swisstransfer.ui.components.SharpRippleButton
 import com.infomaniak.swisstransfer.ui.images.AppImages.AppIcons
 import com.infomaniak.swisstransfer.ui.images.icons.Add
 import com.infomaniak.swisstransfer.ui.images.icons.Checkmark
+import com.infomaniak.swisstransfer.ui.images.icons.Leaf
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
 
 @Composable
@@ -84,11 +85,21 @@ private fun SettingOptionItem(item: SettingOption, isSelected: Boolean, onClick:
                 Spacer(Modifier.height(Margin.Large))
             }
 
-            Text(
-                text = item.title(),
-                style = SwissTransferTheme.typography.bodyRegular,
-                modifier = Modifier.weight(1.0f),
-            )
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = item.title(),
+                    style = SwissTransferTheme.typography.bodyRegular,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                item.trailingIcon?.let {
+                    Icon(
+                        modifier = Modifier.padding(start = Margin.Small),
+                        imageVector = it,
+                        contentDescription = item.trailingIconContentDescription,
+                        tint = SwissTransferTheme.materialColors.primary,
+                    )
+                }
+            }
 
             if (isSelected) Spacer(Modifier.width(Margin.Medium))
             AnimatedVisibility(
@@ -110,6 +121,9 @@ interface SettingOption {
     val title: @Composable () -> String
     val imageVector: ImageVector?
     val imageVectorResId: Int?
+    val trailingIcon: ImageVector? get() = null
+    val trailingIconContentDescription: String?
+        @Composable get() = null
 
     val icon: ImageVector?
         @Composable get() = imageVector ?: imageVectorResId?.let { ImageVector.vectorResource(it) }
@@ -131,9 +145,17 @@ private fun Preview() {
                     override val imageVector = null
                     override val imageVectorResId = null
                 }
+                val textItemWithIcon = object : SettingOption {
+                    override val title: @Composable () -> String = { stringResource(R.string.appName) }
+                    override val imageVector = null
+                    override val imageVectorResId = null
+                    override val trailingIcon: ImageVector = AppIcons.Leaf
+                }
                 SettingOptionItem(item = iconItem, isSelected = true) {}
                 SettingOptionItem(item = iconItem, isSelected = false) {}
                 SettingOptionItem(item = textItem, isSelected = false) {}
+                SettingOptionItem(item = textItemWithIcon, isSelected = false) {}
+                SettingOptionItem(item = textItemWithIcon, isSelected = true) {}
             }
         }
     }

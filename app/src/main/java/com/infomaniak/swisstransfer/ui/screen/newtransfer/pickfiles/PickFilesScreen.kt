@@ -134,7 +134,7 @@ fun PickFilesScreen(
     val selectedOrganization by organizationSwitcherViewModel.selectedOrganization.collectAsStateWithLifecycle()
     val organizations by organizationSwitcherViewModel.organizations.collectAsStateWithLifecycle()
 
-    val validityPeriod: ValidityPeriodOption by pickFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
+    val validityPeriod: ValidityPeriodOption? by pickFilesViewModel.selectedValidityPeriodOption.collectAsStateWithLifecycle()
     val downloadLimit: DownloadLimitOption by pickFilesViewModel.selectedDownloadLimitOption.collectAsStateWithLifecycle()
     val passwordOption: PasswordTransferOption by pickFilesViewModel.selectedPasswordOption.collectAsStateWithLifecycle()
     val emailLanguage: EmailLanguageOption by pickFilesViewModel.selectedLanguageOption.collectAsStateWithLifecycle()
@@ -238,7 +238,7 @@ private fun HandleStartupFilePick(openFilePickerEvent: ReceiveChannel<Unit>, pic
 }
 
 @Composable
-private fun PickFilesScreen(
+internal fun PickFilesScreen(
     files: () -> List<FileUi>,
     canSendStatus: () -> CanSendStatus,
     onTransferTitleChange: (String) -> Unit,
@@ -257,6 +257,7 @@ private fun PickFilesScreen(
 ) {
 
     val shouldShowEmailAddressesFields by remember { derivedStateOf { selectedTransferType.get() == TransferTypeUi.Mail } }
+    var isSelectingValidityPeriodToSend by rememberSaveable { mutableStateOf(false) }
 
     BottomStickyButtonScaffold(
         modifier = Modifier.imePadding(),
@@ -271,7 +272,13 @@ private fun PickFilesScreen(
                 modifier = modifier,
                 canSendStatus = canSendStatus,
                 expectsClick = isAwaitingSend,
-                onClick = onSendButtonClick,
+                onClick = {
+                    if (transferOptionsCallbacks.settingStateOf(TransferOptionType.VALIDITY_DURATION) == null) {
+                        isSelectingValidityPeriodToSend = true
+                    } else {
+                        onSendButtonClick()
+                    }
+                },
             )
         },
         content = {
@@ -294,6 +301,18 @@ private fun PickFilesScreen(
         },
         snackbarHostState = snackbarHostState,
     )
+
+    if (isSelectingValidityPeriodToSend) {
+        ValidityPeriodBottomSheet(
+            initialValue = transferOptionsCallbacks.settingStateOf(TransferOptionType.VALIDITY_DURATION),
+            confirmationButtonTitle = stringResource(R.string.transferSendButton),
+            onOptionClicked = {
+                transferOptionsCallbacks.onTransferOptionValueSelected(it)
+                onSendButtonClick()
+            },
+            closeBottomSheet = { isSelectingValidityPeriodToSend = false },
+        )
+    }
 }
 
 @Composable
