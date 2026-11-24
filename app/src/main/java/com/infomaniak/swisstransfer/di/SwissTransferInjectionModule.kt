@@ -103,7 +103,7 @@ private fun ApiEnvironment.toKmpApiEnvironment(): KmpApiEnvironement {
         ApiEnvironment.PreProd -> KmpApiEnvironement.Preprod
         ApiEnvironment.Prod -> KmpApiEnvironement.Prod
         is ApiEnvironment.Custom -> KmpApiEnvironement.Custom(
-            url = KmpApiEnvironement.Prod.baseUrl,
+            url = KmpApiEnvironement.Preprod.baseUrl,
             urlV2 = "https://swisstransfer.$host"
         )
     }
