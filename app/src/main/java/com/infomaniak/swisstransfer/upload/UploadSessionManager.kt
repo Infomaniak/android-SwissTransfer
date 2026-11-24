@@ -26,6 +26,7 @@ import androidx.work.WorkManager
 import com.infomaniak.core.common.Xor
 import com.infomaniak.core.common.cancellable
 import com.infomaniak.core.common.withPartialWakeLock
+import com.infomaniak.core.file.InputStreamCounter
 import com.infomaniak.core.network.NetworkAvailability
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.multiplatform_swisstransfer.SharedApiUrlCreator
@@ -92,10 +93,8 @@ class UploadSessionManager @Inject constructor(
         cancelTransferSignals: Channel<Unit>,
         shouldRetrySignals: Channel<Boolean>,
     ) {
-        @Suppress("VariableNeverRead") // Only here for the setter.
         var currentState by uploadState::value
 
-        @Suppress("AssignedValueIsNeverRead") // Updates are sent via uploadState.
         val startRequestWithExactSize: StartUploadRequest = tryCompletingUnlessCancelled(
             waitForCancellationSignal = { cancelTransferSignals.receive() },
             valueIfCancelled = null
@@ -139,14 +138,12 @@ class UploadSessionManager @Inject constructor(
         )
     }
 
-    @Suppress("AssignedValueIsNeverRead") // Updates are sent via uploadState.
     private suspend fun handleNewTransferWithExactSizes(
         startRequest: StartUploadRequest,
         uploadState: MutableStateFlow<UploadState?>,
         cancelTransferSignals: Channel<Unit>,
         shouldRetrySignals: Channel<Boolean>,
     ) {
-        @Suppress("VariableNeverRead") // Only here for the setter.
         var currentState by uploadState::value
 
         suspend fun shouldRetry(): Boolean = shouldRetrySignals.receive()
@@ -251,10 +248,8 @@ class UploadSessionManager @Inject constructor(
         shouldRetry: suspend () -> Boolean,
     ): TransferUploader.UploadResult? {
         repeatWhileActive retryLoop@{
-            @Suppress("VariableNeverRead") // Only here for the setter.
             var currentState by uploadState::value
 
-            @Suppress("AssignedValueIsNeverRead") // Updates are sent via uploadState.
             runCatching {
                 return tryCompletingWithInternet(
                     withoutInternet = {
@@ -413,7 +408,7 @@ private suspend fun measureFilesSizesInParallel(
             var lastYield = TimeSource.Monotonic.markNow()
             val exactSize = counter.fileSizeFor(
                 uri = pickedFile.uri,
-                onTotalBytesUpdate = { skippedBytes, totalBytes ->
+                onChunkRead = { skippedBytes, totalBytes ->
                     if (totalBytes > maxSize) {
                         throw FileSizeExceededException("File exceeded the size limit. Uri: ${pickedFile.uri}")
                     }
@@ -428,7 +423,7 @@ private suspend fun measureFilesSizesInParallel(
                         ensureActive()
                     }
                 }
-            )
+            )!!
             pickedFile.copy(size = exactSize)
         }
     }.awaitAll()

@@ -66,7 +66,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.infomaniak.core.auth.models.user.User
 import com.infomaniak.core.common.mapSync
 import com.infomaniak.core.permissionmanager.rationale.RationalePermissionManagerState
@@ -114,7 +113,6 @@ import kotlinx.coroutines.launch
 
 private val HORIZONTAL_PADDING = Margin.Medium
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PickFilesScreen(
     pickFilesViewModel: PickFilesViewModel,
@@ -147,7 +145,7 @@ fun PickFilesScreen(
     fun pickFiles() {
         try {
             filePickerLauncher.launch(arrayOf("*/*"))
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             context.showToast(R.string.startActivityCantHandleAction)
         }
     }
@@ -390,7 +388,7 @@ private fun EmailAddressesTextFields(
 ) = with(emailTextFieldCallbacks) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val contactRetreivalError = stringResource(R.string.errorContactPicker)
+    val contactRetrievalError = stringResource(R.string.errorContactPicker)
 
     fun buildPickEmailContactIntent(): Intent = Intent(ACTION_PICK, Email.CONTENT_URI).apply {
         putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -398,7 +396,7 @@ private fun EmailAddressesTextFields(
 
     fun handlePickedContacts(result: ActivityResult) {
         if (result.resultCode != Activity.RESULT_OK || result.data == null) {
-            scope.launch { snackbarHostState.showSnackbar(contactRetreivalError) }
+            scope.launch { snackbarHostState.showSnackbar(contactRetrievalError) }
             return
         }
         val dataIntent = result.data ?: return
