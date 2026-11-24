@@ -187,7 +187,7 @@ class TransferValidityPeriodTest {
                         canSendStatus = { CanSendStatus.Yes },
                         onTransferTitleChange = {},
                         emailTextFieldCallbacks = EmailTextFieldCallbacks(
-                            transferAuthorEmail = GetSetCallbacks(get = { "" }, set = {}),
+                            transferAuthorEmail = remember {  mutableStateOf("") },
                             isAuthorEmailInvalid = { false },
                             recipientEmail = GetSetCallbacks(get = { "" }, set = {}),
                             isRecipientEmailInvalid = { false },
