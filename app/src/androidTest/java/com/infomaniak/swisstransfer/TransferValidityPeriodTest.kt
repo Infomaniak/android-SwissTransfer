@@ -33,7 +33,7 @@ import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.isSelected
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -134,8 +134,8 @@ class TransferValidityPeriodTest {
     }
 
     @Test
-    fun thirtyDaysForSignedInUser_requiresConfirmationAndCanBeCancelled() {
-        showPickFiles(isSignedIn = true)
+    fun thirtyDaysForGuestUser_requiresConfirmationAndCanBeCancelled() {
+        showPickFiles(isSignedIn = false)
         clickSend()
         selectDays(30)
 
@@ -159,8 +159,8 @@ class TransferValidityPeriodTest {
     }
 
     @Test
-    fun thirtyDaysForGuest_sendsWithoutAvailabilityConfirmation() {
-        showPickFiles()
+    fun thirtyDaysForSignedInUser_sendsWithoutAvailabilityConfirmation() {
+        showPickFiles(isSignedIn = true)
         clickSend()
         selectDays(30)
 
