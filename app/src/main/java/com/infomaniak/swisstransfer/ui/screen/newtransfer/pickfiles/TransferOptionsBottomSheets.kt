@@ -128,7 +128,7 @@ fun ValidityPeriodBottomSheet(
                 selectedItem = { options.indexOf(initialValue).takeIf { it >= 0 } },
                 setSelectedItem = { position ->
                     val option = options[position]
-                    if (option == ValidityPeriodOption.THIRTY && !isGuest) {
+                    if (option == ValidityPeriodOption.THIRTY && isGuest) {
                         isShowingAvailabilityAlert = true
                     } else {
                         select(option)
