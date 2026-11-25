@@ -134,8 +134,8 @@ class TransferValidityPeriodTest {
     }
 
     @Test
-    fun thirtyDaysForSignedInUser_requiresConfirmationAndCanBeCancelled() {
-        showPickFiles(isSignedIn = true)
+    fun thirtyDaysForGuestUser_requiresConfirmationAndCanBeCancelled() {
+        showPickFiles(isSignedIn = false)
         clickSend()
         selectDays(30)
 
@@ -159,8 +159,8 @@ class TransferValidityPeriodTest {
     }
 
     @Test
-    fun thirtyDaysForGuest_sendsWithoutAvailabilityConfirmation() {
-        showPickFiles()
+    fun thirtyDaysForSignedInUser_sendsWithoutAvailabilityConfirmation() {
+        showPickFiles(isSignedIn = true)
         clickSend()
         selectDays(30)
 
