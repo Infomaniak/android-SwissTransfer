@@ -88,7 +88,7 @@ fun ValidateUserEmailScreen(
     val emailToValidate = state.info.authorEmail
     val validationStatusFlow = remember(emailToValidate) { validateUserEmailViewModel.validationStatus(emailToValidate) }
     val uiState: ValidateEmailUiStatus? by validationStatusFlow.collectAsState(null)
-    val isLoading by remember { derivedStateOf { uiState == ValidateEmailUiStatus.SendingCode } }
+    val isLoading by remember { derivedStateOf { uiState == null || uiState == ValidateEmailUiStatus.SendingCode } }
     val isInvalidVerificationCode by remember {
         derivedStateOf {
             uiState.safeCast<ValidateEmailUiStatus.WaitingForCode>()
