@@ -97,6 +97,7 @@ class ValidateUserEmailViewModel @Inject constructor(
                             if (lastSentCodeExpiration.toTimeMark().hasPassedNow()) {
                                 break // Last code expired, accept re-sending user request.
                             }
+                            sentCompletable.complete(false)
                         }
                         UserAction.ResendCode(onSent = { sentCompletable.complete(it) })
                     },
