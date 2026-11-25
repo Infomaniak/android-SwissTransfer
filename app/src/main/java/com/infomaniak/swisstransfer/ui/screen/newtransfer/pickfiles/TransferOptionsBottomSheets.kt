@@ -106,7 +106,7 @@ fun ValidityPeriodBottomSheet(
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val options = ValidityPeriodOption.entries.sortedBy { it.apiValue.days }
-    val isApiV2 = LocalUser.current.isApiV2()
+    val isGuest = !LocalUser.current.isApiV2()
     var isShowingAvailabilityAlert by rememberSaveable { mutableStateOf(false) }
 
     fun select(option: ValidityPeriodOption) {
@@ -128,7 +128,7 @@ fun ValidityPeriodBottomSheet(
                 selectedItem = { options.indexOf(initialValue).takeIf { it >= 0 } },
                 setSelectedItem = { position ->
                     val option = options[position]
-                    if (option == ValidityPeriodOption.THIRTY && isApiV2) {
+                    if (option == ValidityPeriodOption.THIRTY && !isGuest) {
                         isShowingAvailabilityAlert = true
                     } else {
                         select(option)
