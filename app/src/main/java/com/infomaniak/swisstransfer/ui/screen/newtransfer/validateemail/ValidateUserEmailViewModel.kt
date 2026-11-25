@@ -78,7 +78,7 @@ class ValidateUserEmailViewModel @Inject constructor(
             val lastSentCodeExpiration = validationStatus.lastSentCodeExpiration()
                 ?: return@transformLatest // Already validated. Should exit.
 
-            val otpSubmissions = Channel<String>(capacity = 1)
+            val otpSubmissions = Channel<String>(capacity = 1) // Allow processing a code typed while re-send was running.
             repeatWhileActive {
                 val codeResendRequests = Channel<CompletableDeferred<Boolean>>()
                 val waitingForCode = ValidateEmailUiStatus.WaitingForCode(
@@ -110,6 +110,9 @@ class ValidateUserEmailViewModel @Inject constructor(
                     UserAction.DismissLastIssue -> return@repeatWhileActive run { lastIssue = null }
                     is UserAction.ResendCode -> return@repeatWhileActive runCatching {
                         lastIssue = null
+                        // We allow typing the code even while the re-send request is performed,
+                        // so that in case of a timeout while waiting for backend response,
+                        // any code typed eventually gets processed.
                         emit(waitingForCode.copy(lastSentCodeExpiration = null, resendCode = { false }, lastIssue = null))
                         uploadManager.resendValidationEmail(
                             validationId = validationStatus.id,
