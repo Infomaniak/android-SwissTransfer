@@ -55,7 +55,7 @@ import com.infomaniak.swisstransfer.ui.screen.main.settings.ValidityPeriodOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SingleSelectOptions
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
-import com.infomaniak.swisstransfer.ui.utils.isApiV2
+import com.infomaniak.swisstransfer.ui.utils.isGuest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +106,7 @@ fun ValidityPeriodBottomSheet(
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val options = ValidityPeriodOption.entries.sortedBy { it.apiValue.days }
-    val isGuest = !LocalUser.current.isApiV2()
+    val isGuest = LocalUser.current.isGuest()
     var isShowingAvailabilityAlert by rememberSaveable { mutableStateOf(false) }
 
     fun select(option: ValidityPeriodOption) {
