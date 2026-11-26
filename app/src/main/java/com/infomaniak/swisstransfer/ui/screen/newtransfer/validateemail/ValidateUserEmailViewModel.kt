@@ -36,6 +36,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
@@ -90,17 +91,7 @@ class ValidateUserEmailViewModel @Inject constructor(
                 emit(waitingForCode)
                 val action: UserAction = raceOf(
                     { UserAction.ValidateWithOtp(otpSubmissions.receive()) },
-                    {
-                        var sentCompletable: CompletableDeferred<Boolean>
-                        while (true) {
-                            sentCompletable = codeResendRequests.receive() // It's UI responsibility to respect the timer.
-                            if (lastSentCodeExpiration.toTimeMark().hasPassedNow()) {
-                                break // Last code expired, accept re-sending user request.
-                            }
-                            sentCompletable.complete(false)
-                        }
-                        UserAction.ResendCode(onSent = { sentCompletable.complete(it) })
-                    },
+                    { awaitEligibleResendRequest(codeResendRequests, lastSentCodeExpiration) },
                     {
                         issueDismissals.receive()
                         UserAction.DismissLastIssue
@@ -134,6 +125,21 @@ class ValidateUserEmailViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private suspend fun awaitEligibleResendRequest(
+        codeResendRequests: ReceiveChannel<CompletableDeferred<Boolean>>,
+        lastSentCodeExpiration: Instant
+    ): UserAction.ResendCode {
+        var sentCompletable: CompletableDeferred<Boolean>
+        while (true) {
+            sentCompletable = codeResendRequests.receive() // It's UI responsibility to respect the timer.
+            if (lastSentCodeExpiration.toTimeMark().hasPassedNow()) {
+                break // Last code expired, accept re-sending user request.
+            }
+            sentCompletable.complete(false)
+        }
+        return UserAction.ResendCode(onSent = { sentCompletable.complete(it) })
     }
 
     private sealed interface UserAction {
