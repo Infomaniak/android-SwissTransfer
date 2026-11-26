@@ -68,6 +68,7 @@ class ValidateUserEmailViewModel @Inject constructor(
     private fun validationStatusFor(email: String): Flow<ValidateEmailUiStatus>  {
         var lastIssue: DismissableIssue? = null
         val issueDismissals = Channel<Unit>()
+        val otpSubmissions = Channel<String>(capacity = 1) // Allow processing a code typed while re-send was running.
         return uploadManager.emailValidationStatus(email = email).onEach {
             val isEmailValidated = it != null && it.lastSentCodeExpirationTimestampSeconds == null
             if (isEmailValidated) UploadForegroundService.retry()
@@ -78,7 +79,6 @@ class ValidateUserEmailViewModel @Inject constructor(
             val lastSentCodeExpiration = validationStatus.lastSentCodeExpiration()
                 ?: return@transformLatest // Already validated. Should exit.
 
-            val otpSubmissions = Channel<String>(capacity = 1) // Allow processing a code typed while re-send was running.
             repeatWhileActive {
                 val codeResendRequests = Channel<CompletableDeferred<Boolean>>()
                 val waitingForCode = ValidateEmailUiStatus.WaitingForCode(
