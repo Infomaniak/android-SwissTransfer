@@ -234,6 +234,7 @@
     <string name="transferVirusDetectedTitle">Niezgodne pliki</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Czy na pewno chcesz anulować transfer?</string>
     <string name="uploadErrorDescription">Transfer nie zadziałał, daj mu jeszcze jedną szansę. Jeśli problem będzie się utrzymywał, skontaktuj się z naszym zespołem wsparcia.</string>
+    <string name="uploadErrorSignInDescription">Zaloguj się, aby wysyłać transfery.</string>
     <string name="uploadErrorTitle">Poczekaj, co tu się właśnie stało?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">własne centra danych bez klimatyzacji</string>
     <string name="uploadProgressDescriptionArgumentIndependence">niezależność technologiczną w Europie.</string>

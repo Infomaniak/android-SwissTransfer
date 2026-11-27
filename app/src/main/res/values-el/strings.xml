@@ -222,6 +222,7 @@
     <string name="transferVirusDetectedTitle">Μη συμβατά αρχεία</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Είσαι σίγουρος ότι θέλεις να ακυρώσεις τη μεταφορά;</string>
     <string name="uploadErrorDescription">Η μεταφορά δεν λειτούργησε, δώσε της μια ακόμα ευκαιρία. Αν το πρόβλημα παραμένει, επικοινώνησε με την ομάδα υποστήριξής μας.</string>
+    <string name="uploadErrorSignInDescription">Συνδέσου για να στείλεις τις μεταφορές σου.</string>
     <string name="uploadErrorTitle">Περίμενε, τι συνέβη μόλις;</string>
     <string name="uploadProgressDescriptionArgumentEnergy">τα δικά μας κέντρα δεδομένων, χωρίς κλιματισμό</string>
     <string name="uploadProgressDescriptionArgumentIndependence">τεχνολογική ανεξαρτησία στην Ευρώπη.</string>

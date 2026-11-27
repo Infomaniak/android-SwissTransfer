@@ -227,6 +227,7 @@
     <string name="transferVirusDetectedTitle">Non-compliant files</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Are you sure you want to cancel the transfer?</string>
     <string name="uploadErrorDescription">The transfer didn’t work, give it another chance. If the problem persists, contact our support team.</string>
+    <string name="uploadErrorSignInDescription">Sign in to send your transfers.</string>
     <string name="uploadErrorTitle">Wait, what just happened?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">our own data centers, without air conditioning</string>
     <string name="uploadProgressDescriptionArgumentIndependence">technological independence in Europe.</string>

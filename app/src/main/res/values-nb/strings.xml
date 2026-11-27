@@ -222,6 +222,7 @@
     <string name="transferVirusDetectedTitle">Ikke-kompatible filer</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Er du sikker på at du vil avbryte overføringen?</string>
     <string name="uploadErrorDescription">Overføringen fungerte ikke, gi det en ny sjanse. Hvis problemet vedvarer, kontakt supportteamet vårt.</string>
+    <string name="uploadErrorSignInDescription">Logg inn for å sende overføringene dine.</string>
     <string name="uploadErrorTitle">Vent, hva skjedde akkurat?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">våre egne datasentre, uten klimaanlegg</string>
     <string name="uploadProgressDescriptionArgumentIndependence">teknologisk uavhengighet i Europa.</string>

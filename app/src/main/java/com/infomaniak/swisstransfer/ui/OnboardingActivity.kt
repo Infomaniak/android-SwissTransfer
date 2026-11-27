@@ -165,7 +165,12 @@ class OnboardingActivity : ComponentActivity() {
                 accountUtils.loginGuestUser()
             }
             users.forEach { user -> accountUtils.addUser(user) }
-            if (shouldDisplayRequiredLogin) finish() else completeOnboarding()
+            if (shouldDisplayRequiredLogin) {
+                setResult(RESULT_OK)
+                finish()
+            } else {
+                completeOnboarding()
+            }
         }
     }
 

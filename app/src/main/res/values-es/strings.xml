@@ -222,6 +222,7 @@
     <string name="transferVirusDetectedTitle">Archivos no compatibles</string>
     <string name="uploadCancelConfirmBottomSheetTitle">¿Estás seguro de que quieres cancelar la transferencia?</string>
     <string name="uploadErrorDescription">La transferencia no ha funcionado, dale otra oportunidad. Si el problema persiste, ponte en contacto con nuestro equipo de asistencia.</string>
+    <string name="uploadErrorSignInDescription">Inicia sesión para enviar tus transferencias.</string>
     <string name="uploadErrorTitle">¿Pero qué, qué?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">nuestros propios centros de datos, sin aire acondicionado</string>
     <string name="uploadProgressDescriptionArgumentIndependence">la independencia tecnológica en Europa.</string>
