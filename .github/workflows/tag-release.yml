@@ -1,0 +1,35 @@
+name: Tag release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/build.gradle.kts
+
+permissions:
+  contents: write
+
+jobs:
+  tag-release:
+    name: Push release tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create and push version tag
+        run: |
+          VERSION_NAME="$(sed -n 's/^[[:space:]]*versionName = "\([^"]*\)".*/\1/p' app/build.gradle.kts)"
+          if [ -z "$VERSION_NAME" ]; then
+            echo "Could not read versionName from app/build.gradle.kts" >&2
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION_NAME" >/dev/null 2>&1; then
+            echo "Tag $VERSION_NAME already exists"
+            exit 0
+          fi
+
+          git tag "$VERSION_NAME"
+          git push origin "$VERSION_NAME"
