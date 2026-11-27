@@ -102,7 +102,9 @@ private fun AppIntegrityUploadFailureScreen(
         {
             loginLauncher.launch(Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_REQUIRED_LOGIN_KEY, true))
         }
-    } else null
+    } else {
+        null
+    }
 
     UploadFailureScreen(
         exitNewTransfer = cancel,
