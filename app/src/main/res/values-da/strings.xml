@@ -135,10 +135,12 @@
     <string name="settingsDeleteMyAccount">Slet min konto</string>
     <string name="settingsDownloadsLimitTitle">Angiv en standarddownloadgrænse for dine overføringer</string>
     <string name="settingsEmailLanguageTitle">Angiv et standardsprog for dine e-mailoverføringer</string>
+    <string name="settingsEmailLanguageValueDutch">Hollandsk</string>
     <string name="settingsEmailLanguageValueEnglish">Engelsk</string>
     <string name="settingsEmailLanguageValueFrench">Fransk</string>
     <string name="settingsEmailLanguageValueGerman">Tysk</string>
     <string name="settingsEmailLanguageValueItalian">Italiensk</string>
+    <string name="settingsEmailLanguageValuePortuguese">Portugisisk</string>
     <string name="settingsEmailLanguageValueSpanish">Spansk</string>
     <string name="settingsHelpAndSupport">Hjælp &amp; Support</string>
     <string name="settingsMatomoDescription">Matomo er et analyseværktøj, der udelukkende hostes og administreres af Infomaniak for at forstå, hvordan applikationen bruges.\n\nVed at studere disse data er vores team i stand til løbende at forbedre applikationens grænseflade.</string>
@@ -242,8 +244,10 @@
     <string name="validateMailDescription">Vi har sendt en kode til %s. Indtast den nedenfor for at verificere din e-mailadresse i appen:</string>
     <string name="validateMailInfo">Husk at tjekke spam-mappen for din e-mailadresse.</string>
     <string name="validateMailResendCode">Send en kode igen</string>
-    <string name="validateMailResendCodeTemplate">Send en kode igen (%ds)</string>
+    <string name="validateMailResendCodeTemplate">Send en kode igen (%s)</string>
     <string name="validateMailTitle">Tjek din e-mail</string>
     <string name="validateMailUnknownError">Der opstod en fejl. Prøv venligst igen om et øjeblik.</string>
+    <string name="validateMailTooManyAttemptsError">For mange forsøg. Prøv igen senere.</string>
+    <string name="validateMailCodeExpiredError">Denne bekræftelseskode er udløbet. Bed om en ny.</string>
     <string name="version">Version</string>
 </resources>

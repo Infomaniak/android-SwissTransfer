@@ -28,6 +28,7 @@ import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
 import com.infomaniak.multiplatform_swisstransfer.common.models.EmailLanguage
 import com.infomaniak.swisstransfer.R
 import com.infomaniak.swisstransfer.ui.MatomoSwissTransfer
+import com.infomaniak.swisstransfer.ui.screen.main.settings.EmailLanguageOption.Companion.toTransferOption
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.OptionScaffold
 import com.infomaniak.swisstransfer.ui.screen.main.settings.components.SettingOption
 import com.infomaniak.swisstransfer.ui.theme.SwissTransferTheme
@@ -40,7 +41,7 @@ fun SettingsEmailLanguageScreen(
     val appSettings = myAccountViewModel.appSettingsFlow.collectAsStateWithLifecycle(null)
 
     SettingsEmailLanguageScreen(
-        selectedEmailLanguagePosition = { appSettings.value?.emailLanguage?.ordinal },
+        selectedEmailLanguagePosition = { appSettings.value?.emailLanguage?.toTransferOption()?.ordinal },
         navigateBack = navigateBack,
         onEmailLanguageChange = { myAccountViewModel.setEmailLanguage(it) },
     )
@@ -59,8 +60,8 @@ private fun SettingsEmailLanguageScreen(
         selectedSettingOptionPosition = selectedEmailLanguagePosition,
         matomoValue = MatomoScreen.EmailLanguageSetting,
         setSelectedSettingOptionPosition = { position ->
-            MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguage.entries[position].value)
-            onEmailLanguageChange(EmailLanguage.entries[position])
+            MatomoSwissTransfer.trackSettingsGlobalEmailLanguageEvent(EmailLanguageOption.entries[position].apiValue.value)
+            onEmailLanguageChange(EmailLanguageOption.entries[position].apiValue)
         },
         navigateBack = navigateBack,
     )
@@ -96,7 +97,18 @@ enum class EmailLanguageOption(
         { stringResource(R.string.settingsEmailLanguageValueSpanish) },
         imageVectorResId = R.drawable.flag_es,
         apiValue = EmailLanguage.SPANISH,
-    );
+    ),
+    PORTUGUESE(
+        { stringResource(R.string.settingsEmailLanguageValuePortuguese) },
+        imageVectorResId = R.drawable.flag_pt,
+        apiValue = EmailLanguage.PORTUGUESE,
+    ),
+    DUTCH(
+        { stringResource(R.string.settingsEmailLanguageValueDutch) },
+        imageVectorResId = R.drawable.flag_nl,
+        apiValue = EmailLanguage.DUTCH,
+    ),
+    ;
 
     companion object {
         fun EmailLanguage.toTransferOption() = when (this) {
@@ -105,6 +117,8 @@ enum class EmailLanguageOption(
             EmailLanguage.GERMAN -> GERMAN
             EmailLanguage.ITALIAN -> ITALIAN
             EmailLanguage.SPANISH -> SPANISH
+            EmailLanguage.PORTUGUESE -> PORTUGUESE
+            EmailLanguage.DUTCH -> DUTCH
         }
     }
 }
@@ -115,7 +129,7 @@ private fun Preview() {
     SwissTransferTheme {
         Surface {
             SettingsEmailLanguageScreen(
-                selectedEmailLanguagePosition = { EmailLanguage.FRENCH.ordinal },
+                selectedEmailLanguagePosition = { EmailLanguageOption.FRENCH.ordinal },
                 navigateBack = {},
                 onEmailLanguageChange = {},
             )

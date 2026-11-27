@@ -24,13 +24,11 @@ import com.infomaniak.multiplatform_swisstransfer.SwissTransferInjection
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
 import com.infomaniak.multiplatform_swisstransfer.managers.FileManager
-import com.infomaniak.multiplatform_swisstransfer.managers.InMemoryUploadManager
 import com.infomaniak.multiplatform_swisstransfer.managers.TransferManager
 import com.infomaniak.multiplatform_swisstransfer.managers.UploadV2Manager
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.NotificationsUtils
 import com.infomaniak.swisstransfer.upload.UploadSessionStarter
-import com.infomaniak.swisstransfer.upload.UploadSessionStarterV1
 import com.infomaniak.swisstransfer.upload.UploadSessionStarterV2
 import dagger.Lazy
 import dagger.Module
@@ -71,19 +69,9 @@ object SwissTransferInjectionModule {
 
     @Provides
     fun provideUploadSessionStarter(
-        sti: SwissTransferInjection,
         appIntegrityManager: AppIntegrityManager,
-        sharedApiUrlCreator: SharedApiUrlCreator,
-        legacyUploadManager: InMemoryUploadManager,
         uploadManager: UploadV2Manager,
-    ): UploadSessionStarter = when {
-        sti.accountManager.shouldUseV1Api -> UploadSessionStarterV1(
-            appIntegrityManager = appIntegrityManager,
-            sharedApiUrlCreator = sharedApiUrlCreator,
-            uploadManager = legacyUploadManager,
-        )
-        else -> UploadSessionStarterV2(uploadManager)
-    }
+    ): UploadSessionStarter = UploadSessionStarterV2(appIntegrityManager, uploadManager)
 
     @Provides
     @Singleton
@@ -103,10 +91,6 @@ object SwissTransferInjectionModule {
 
     @Provides
     @Singleton
-    fun provideV1UploadManager(sti: SwissTransferInjection): InMemoryUploadManager = sti.inMemoryUploadManager
-
-    @Provides
-    @Singleton
     fun provideUploadManager(sti: SwissTransferInjection): UploadV2Manager = sti.uploadV2Manager
 
     @Provides
@@ -118,6 +102,9 @@ private fun ApiEnvironment.toKmpApiEnvironment(): KmpApiEnvironement {
     return when (this) {
         ApiEnvironment.PreProd -> KmpApiEnvironement.Preprod
         ApiEnvironment.Prod -> KmpApiEnvironement.Prod
-        is ApiEnvironment.Custom -> error("Custom api environment is not handled by the kmp lib")
+        is ApiEnvironment.Custom -> KmpApiEnvironement.Custom(
+            url = KmpApiEnvironement.Preprod.baseUrl,
+            urlV2 = "https://swisstransfer.$host"
+        )
     }
 }

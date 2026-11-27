@@ -80,7 +80,7 @@ fun SwissTransferTextField(
 
     var shouldShowPassword: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    var text by rememberSaveable { mutableStateOf(initialValue) }
+    var text by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
 
     val displayLabel = if (isRequired) label else "$label ${stringResource(R.string.textFieldOptional)}"
 

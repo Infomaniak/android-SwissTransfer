@@ -19,8 +19,6 @@ package com.infomaniak.swisstransfer.upload
 
 import android.app.Activity
 import com.infomaniak.core.appintegrity.IntegrityDialogResponse
-import com.infomaniak.core.common.Xor
-import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadDestination
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.upload.UploadSessionRequest
 import com.infomaniak.multiplatform_swisstransfer.network.models.transfer.v2.TransferApi
 
@@ -39,7 +37,7 @@ abstract class UploadSessionStarter {
 
         data class Success(
             val request: UploadSessionRequest,
-            val destination: Xor<UploadDestination, TransferApi>,
+            val destination: TransferApi,
         ) : Result
 
         data object EmailValidationRequired : Result

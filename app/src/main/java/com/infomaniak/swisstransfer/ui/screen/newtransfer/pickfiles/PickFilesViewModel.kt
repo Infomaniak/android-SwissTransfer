@@ -38,7 +38,7 @@ import com.infomaniak.core.common.tryCompletingWhileTrue
 import com.infomaniak.core.common.utils.isEmailRfc5321Compliant
 import com.infomaniak.core.sentry.SentryLog
 import com.infomaniak.core.ui.compose.basics.CallableState
-import com.infomaniak.core.ui.compose.basics.collectAsStateIn
+import com.infomaniak.core.ui.compose.basics.collectAsState
 import com.infomaniak.multiplatform_swisstransfer.common.interfaces.ui.FileUi
 import com.infomaniak.multiplatform_swisstransfer.managers.AccountManager
 import com.infomaniak.multiplatform_swisstransfer.managers.AppSettingsManager
@@ -59,6 +59,7 @@ import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.T
 import com.infomaniak.swisstransfer.ui.screen.newtransfer.pickfiles.components.TransferTypeUi.Companion.toTransferTypeUi
 import com.infomaniak.swisstransfer.ui.utils.AccountUtils
 import com.infomaniak.swisstransfer.ui.utils.GetSetCallbacks
+import com.infomaniak.swisstransfer.ui.utils.isGuest
 import com.infomaniak.swisstransfer.upload.NewTransferParams
 import com.infomaniak.swisstransfer.upload.UploadForegroundService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -81,6 +82,7 @@ import kotlinx.coroutines.withContext
 import splitties.coroutines.repeatWhileActive
 import splitties.experimental.ExperimentalSplittiesApi
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class PickFilesViewModel @Inject constructor(
@@ -106,6 +108,7 @@ class PickFilesViewModel @Inject constructor(
     val importedFilesDebounced: StateFlow<List<FileUi>>
 
     val selectedTransferTypeFlow = savedStateHandle.getStateFlow(SELECTED_TRANSFER_TYPE, TransferTypeUi.Link)
+    val transferType by selectedTransferTypeFlow.collectAsState()
 
     fun importUris(uris: List<Uri>) {
         UploadForegroundService.addFiles(uris)
@@ -146,7 +149,9 @@ class PickFilesViewModel @Inject constructor(
     }
 
     //region Transfer Author Email
-    private var transferAuthorEmail by mutableStateOf("")
+    private val isGuestUser: Boolean by accountUtils.currentUserFlow.map { it.isGuest() }.collectAsState(initialValue = false)
+    private val transferAuthorEmailState = mutableStateOf("")
+    private var transferAuthorEmail by transferAuthorEmailState
     private val isAuthorEmailInvalid by derivedStateOf { !transferAuthorEmail.isEmailRfc5321Compliant() }
     //endregion
 
@@ -198,7 +203,7 @@ class PickFilesViewModel @Inject constructor(
         )
 
         @OptIn(FlowPreview::class)
-        importedFilesDebounced = pickedFilesFlow.debounce(50).stateIn(
+        importedFilesDebounced = pickedFilesFlow.debounce(50.milliseconds).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList(),
@@ -236,19 +241,22 @@ class PickFilesViewModel @Inject constructor(
         }
     }
 
+    private fun isAuthorEmailRequired(): Boolean = isGuestUser || transferType == TransferTypeUi.Mail
+
     private fun buildCanSendStatusFlow(): StateFlow<CanSendStatus> {
-        val transferType by selectedTransferTypeFlow.collectAsStateIn(viewModelScope)
-        val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsStateIn(viewModelScope)
-        val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsStateIn(viewModelScope)
-        val pickedFilesIssues by pickedFilesIssues().collectAsStateIn(viewModelScope)
+        val isHandlingPickedFiles by UploadForegroundService.isHandlingPickedFilesFlow.collectAsState()
+        val uploadOngoing by UploadForegroundService.uploadStateFlow.mapSync { it != null }.collectAsState()
+        val pickedFilesIssues by pickedFilesIssues().collectAsState()
         return snapshotFlow {
-            val issues = buildSet<Issue> {
+            val issues: Set<Issue> = buildSet {
                 if (uploadOngoing) add(Issue.UploadOngoing)
                 if (isHandlingPickedFiles) add(Issue.Files.Processing)
                 addAll(pickedFilesIssues)
-                if (transferType == TransferTypeUi.Mail) {
+                if (isAuthorEmailRequired()) {
                     if (transferAuthorEmail.isEmpty()) add(Issue.Email.AuthorUnspecified)
                     if (isAuthorEmailInvalid) add(Issue.Email.AuthorInvalid)
+                }
+                if (transferType == TransferTypeUi.Mail) {
                     val hasValidRecipient = validatedRecipientsEmails.isNotEmpty() || recipientEmail.trim().isValidEmail()
                     if (!hasValidRecipient) add(Issue.Email.NoValidatedRecipients)
                 }
@@ -320,7 +328,7 @@ class PickFilesViewModel @Inject constructor(
         validityPeriod = checkNotNull(selectedValidityPeriodOption.value) {
             "A transfer duration must be selected before sending"
         }.apiValue,
-        authorEmail = if (selectedTransferTypeFlow.value == TransferTypeUi.Mail) transferAuthorEmail.trim() else "",
+        authorEmail = if (isAuthorEmailRequired()) transferAuthorEmail.trim() else "",
         password = if (selectedPasswordOption.value == PasswordTransferOption.ACTIVATED) transferPassword else NO_PASSWORD,
         title = transferTitle,
         message = transferMessage,
@@ -387,7 +395,7 @@ class PickFilesViewModel @Inject constructor(
 
     fun getEmailTextFieldCallbacks(): EmailTextFieldCallbacks {
         return EmailTextFieldCallbacks(
-            transferAuthorEmail = GetSetCallbacks(get = { transferAuthorEmail }, set = { transferAuthorEmail = it }),
+            transferAuthorEmail = transferAuthorEmailState,
             isAuthorEmailInvalid = { isAuthorEmailInvalid },
             recipientEmail = GetSetCallbacks(get = { recipientEmail }, set = { recipientEmail = it }),
             isRecipientEmailInvalid = { isRecipientEmailInvalid },
