@@ -24,9 +24,6 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,13 +31,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.infomaniak.core.appintegrity.IntegrityDialogResponse
 import com.infomaniak.core.ui.compose.basics.CallableState
 import com.infomaniak.core.ui.compose.bottomstickybuttonscaffolds.BottomStickyButtonScaffold
-import com.infomaniak.core.ui.compose.margin.Margin
 import com.infomaniak.core.ui.compose.preview.PreviewAllWindows
 import com.infomaniak.core.ui.compose.theme.ThemedImage
 import com.infomaniak.multiplatform_swisstransfer.common.matomo.MatomoScreen
@@ -100,7 +95,7 @@ private fun AppIntegrityUploadFailureScreen(
     }
     val signIn: (() -> Unit)? = {
         loginLauncher.launch(Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_REQUIRED_LOGIN_KEY, true))
-    }.takeIf { LocalUser.current == null }
+    }.takeIf { LocalUser.current == null && failure.showRemediationDialog == null }
 
     UploadFailureScreen(
         exitNewTransfer = cancel,
@@ -135,27 +130,24 @@ private fun UploadFailureScreen(
 
     BottomStickyButtonScaffold(
         topBar = { BrandTopAppBar() },
-        topButton = if (canShowRemediationDialog || signIn != null) {
-            { modifier ->
-                Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(Margin.Small)) {
-                    if (canShowRemediationDialog) {
-                        LargeButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            style = ButtonType.Secondary,
-                            title = stringResource(RCore.string.buttonRetry),
-                            onClick = { remediationRequest.complete() },
-                        )
-                    }
-                    if (signIn != null) {
-                        LargeButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            title = stringResource(R.string.settingsSignIn),
-                            onClick = signIn,
-                        )
-                    }
-                }
+        topButton = when {
+            canShowRemediationDialog -> { modifier ->
+                LargeButton(
+                    modifier = modifier,
+                    style = ButtonType.Secondary,
+                    title = stringResource(RCore.string.buttonRetry),
+                    onClick = { remediationRequest.complete() },
+                )
             }
-        } else null,
+            signIn != null -> { modifier ->
+                LargeButton(
+                    modifier = modifier,
+                    title = stringResource(R.string.settingsSignIn),
+                    onClick = signIn,
+                )
+            }
+            else -> null
+        },
         bottomButton = {
             LargeButton(
                 modifier = it,
