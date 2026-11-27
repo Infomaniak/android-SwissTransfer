@@ -74,24 +74,7 @@ fun UploadFailureScreen(
 
     val failure: UploadState.Failure = failureState.value
     when (failure) {
-        is UploadState.Failure.AppIntegrityIssue -> {
-            val context = LocalContext.current
-            val loginLauncher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) cancel()
-            }
-            val signIn: (() -> Unit)? = if (LocalUser.current == null) {
-                {
-                    loginLauncher.launch(Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_REQUIRED_LOGIN_KEY, true))
-                }
-            } else null
-
-            UploadFailureScreen(
-                exitNewTransfer = cancel,
-                desc = stringResource(RAppIntegrity.string.errorAppIntegrity),
-                showRemediationDialog = failure.showRemediationDialog,
-                signIn = signIn,
-            )
-        }
+        is UploadState.Failure.AppIntegrityIssue -> AppIntegrityUploadFailureScreen(failure, cancel)
         UploadState.Failure.SizeExceeded -> UploadFailureScreen(
             exitNewTransfer = cancel,
             title = stringResource(R.string.tooLargeFilesTitle),
@@ -104,6 +87,29 @@ fun UploadFailureScreen(
             desc = stringResource(R.string.restrictedLocation)
         )
     }
+}
+
+@Composable
+private fun AppIntegrityUploadFailureScreen(
+    failure: UploadState.Failure.AppIntegrityIssue,
+    cancel: CallableState<Unit>,
+) {
+    val context = LocalContext.current
+    val loginLauncher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) cancel()
+    }
+    val signIn: (() -> Unit)? = if (LocalUser.current == null) {
+        {
+            loginLauncher.launch(Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_REQUIRED_LOGIN_KEY, true))
+        }
+    } else null
+
+    UploadFailureScreen(
+        exitNewTransfer = cancel,
+        desc = stringResource(RAppIntegrity.string.errorAppIntegrity),
+        showRemediationDialog = failure.showRemediationDialog,
+        signIn = signIn,
+    )
 }
 
 @Composable
