@@ -98,13 +98,9 @@ private fun AppIntegrityUploadFailureScreen(
     val loginLauncher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) cancel()
     }
-    val signIn: (() -> Unit)? = if (LocalUser.current == null) {
-        {
-            loginLauncher.launch(Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_REQUIRED_LOGIN_KEY, true))
-        }
-    } else {
-        null
-    }
+    val signIn: (() -> Unit)? = {
+        loginLauncher.launch(Intent(context, OnboardingActivity::class.java).putExtra(EXTRA_REQUIRED_LOGIN_KEY, true))
+    }.takeIf { LocalUser.current == null }
 
     UploadFailureScreen(
         exitNewTransfer = cancel,
