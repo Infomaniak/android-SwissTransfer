@@ -222,6 +222,7 @@
     <string name="transferVirusDetectedTitle">Fichiers non conformes</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Es-tu certain de vouloir annuler le transfert ?</string>
     <string name="uploadErrorDescription">Le transfert n’a pas fonctionné, donne-lui une autre chance. Si le problème persiste, contacte notre support.</string>
+    <string name="uploadErrorSignInDescription">Connecte-toi pour pouvoir envoyer tes transferts.</string>
     <string name="uploadErrorTitle">Qu’est-ce que quoi ?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">nos propres data centers, sans climatisation</string>
     <string name="uploadProgressDescriptionArgumentIndependence">l’indépendance technologique en Europe.</string>

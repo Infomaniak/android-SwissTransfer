@@ -222,6 +222,7 @@
     <string name="transferVirusDetectedTitle">Vaatimustenvastaisia tiedostoja</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Haluatko varmasti peruuttaa siirron?</string>
     <string name="uploadErrorDescription">Siirto ei onnistunut, anna sille toinen mahdollisuus. Jos ongelma jatkuu, ota yhteyttä tukitiimiimme.</string>
+    <string name="uploadErrorSignInDescription">Kirjaudu sisään, jotta voit lähettää siirtosi.</string>
     <string name="uploadErrorTitle">Odota, mitä juuri tapahtui?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">omat palvelinkeskuksemme, ilman ilmastointia</string>
     <string name="uploadProgressDescriptionArgumentIndependence">teknologista riippumattomuutta Euroopassa.</string>

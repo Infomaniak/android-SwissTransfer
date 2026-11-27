@@ -222,6 +222,7 @@
     <string name="transferVirusDetectedTitle">Nicht konforme Dateien</string>
     <string name="uploadCancelConfirmBottomSheetTitle">Bist du dir sicher, dass du die Transfer rückgängig machen willst?</string>
     <string name="uploadErrorDescription">Die Übertragung hat nicht funktioniert, gib ihr noch eine Chance. Wenn das Problem weiterhin besteht, wende dich an unseren Support.</string>
+    <string name="uploadErrorSignInDescription">Melde dich an, um deine Übertragungen zu senden.</string>
     <string name="uploadErrorTitle">Was ist das denn?</string>
     <string name="uploadProgressDescriptionArgumentEnergy">unsere eigenen Rechenzentren ohne Klimaanlagen</string>
     <string name="uploadProgressDescriptionArgumentIndependence">die technologische Unabhängigkeit in Europa.</string>
